@@ -1,0 +1,41 @@
+title: "Port Tack Learning"
+description: >-
+  Learning pathways in computer science and robotics for middle and
+  high school students.
+url: "https://learn.porttack.com"
+baseurl: ""
+
+theme: minima
+minima:
+  skin: classic
+
+# One collection per learning pathway. Add new pathways here and in
+# _data/pathways.yml at the same time.
+collections:
+  rov:
+    output: true
+    permalink: /rov/:name/
+
+defaults:
+  - scope: { path: "", type: "rov" }
+    values:
+      layout: lesson
+      pathway: rov
+
+header_pages:
+  - index.md
+  - license.md
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - CLAUDE.md
+  - tools/
+  - source/
+  - vendor/

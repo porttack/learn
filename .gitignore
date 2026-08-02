@@ -1,0 +1,13 @@
+# Jekyll
+_site/
+.jekyll-cache/
+.jekyll-metadata
+Gemfile.lock
+vendor/
+
+# Source books — working input, never committed. See CLAUDE.md.
+source/
+*.epub
+*.pdf
+
+.DS_Store

@@ -1,0 +1,9 @@
+- id: rov
+  title: "MATE ROV: Physical Computing"
+  collection: rov
+  url: /rov/
+  status: in-progress
+  blurb: >-
+    Build the electronics and control code for an underwater ROV, from
+    soldering headers through thruster control and sensor payloads.
+    Raspberry Pi Pico and MicroPython, programmed in the browser.
