@@ -21,9 +21,9 @@ collections:
   electronics101:
     output: true
     permalink: /electronics101/:name/
-  studio:
+  rovrobotics:
     output: true
-    permalink: /studio/:name/
+    permalink: /rovrobotics/:name/
 
 defaults:
   - scope: { path: "", type: "rov" }
@@ -38,10 +38,10 @@ defaults:
     values:
       layout: lesson
       pathway: electronics101
-  - scope: { path: "", type: "studio" }
+  - scope: { path: "", type: "rovrobotics" }
     values:
       layout: lesson
-      pathway: studio
+      pathway: rovrobotics
 
 header_pages:
   - index.md

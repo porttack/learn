@@ -29,10 +29,10 @@
     soldering headers through thruster control and sensor payloads.
     Raspberry Pi Pico and MicroPython, programmed in the browser.
 
-- id: studio
-  title: "SEL Studio: Running an ROV Program"
-  collection: studio
-  url: /studio/
+- id: rovrobotics
+  title: "ROV Robotics"
+  collection: rovrobotics
+  url: /rovrobotics/
   status: in-progress
   blurb: >-
     The curriculum and working practices behind a MATE ROV team run as an
