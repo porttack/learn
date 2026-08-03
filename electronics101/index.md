@@ -17,7 +17,14 @@ across courses, not specific to any one class.
 <ol class="lesson-list">
 {% assign lessons = site.electronics101 | sort: "order" %}
 {% for lesson in lessons %}
-  <li><a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a></li>
+  <li>
+    <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
+    {% if lesson.order == 0 %}
+    <ul class="lesson-sublist">
+      <li><a href="https://porttack.com/2026/05/04/kilo-and-milli.html">Kilo &amp; milli: borrowing the meter stick</a> (read this first)</li>
+    </ul>
+    {% endif %}
+  </li>
 {% endfor %}
 </ol>
 
