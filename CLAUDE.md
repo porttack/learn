@@ -6,6 +6,36 @@ CS/robotics program. Deployed via GitHub Pages on a custom domain.
 Author is the classroom teacher. Readers are students (grades 6-12), plus
 other teachers who may reuse material.
 
+## Courses
+
+The author teaches three official courses (2026-27 course descriptions).
+Pathways in this repo are focus units built from these, not 1:1 with them —
+a course may draw on several pathways, and a pathway may be shared across
+courses. In practice `_pico` and `_electronics101` are foundational
+material reused across AP Computer Science Principles and Programming with
+Robotics, not tied to one course — don't assume a lesson there belongs to
+just one of them.
+
+**Exploring Computer Science** — no prerequisite. Intro programming course:
+building blocks of code, then graphics-based projects (animations, games,
+interactive applications). No prior experience assumed.
+
+**AP Computer Science Principles** — prerequisite: Exploring Computer
+Science or teacher recommendation. Adapted from Harvard's CS50 (CS50 AP).
+Covers algorithms, abstraction, data, global impact, internet technologies.
+Programming-heavy but fundamentally about computational thinking; students
+are encouraged to sit the AP exam in May.
+**Currently shifting to a much more Python-centric version**, built around
+*Think Python* and CS50's Python track (cs50-python) — expect new
+pathway/lesson content here as that transition lands.
+
+**Programming with Robotics** — prerequisite: Exploring Computer Science
+AND teacher recommendation. Underwater robotics (MATE ROV): students run
+the class as a simulated engineering company with roles/titles, meeting an
+RFP from the competition manual — design, build, and test an ROV, then
+compete at local/regional events. This is the course the `rovrobotics`
+pathway serves.
+
 ## Architecture
 
 One Jekyll **collection per pathway**. A pathway is a sequenced set of
