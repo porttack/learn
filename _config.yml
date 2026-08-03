@@ -18,6 +18,9 @@ collections:
   pico:
     output: true
     permalink: /pico/:name/
+  electronics101:
+    output: true
+    permalink: /electronics101/:name/
 
 defaults:
   - scope: { path: "", type: "rov" }
@@ -28,6 +31,10 @@ defaults:
     values:
       layout: lesson
       pathway: pico
+  - scope: { path: "", type: "electronics101" }
+    values:
+      layout: lesson
+      pathway: electronics101
 
 header_pages:
   - index.md

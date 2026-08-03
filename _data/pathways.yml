@@ -8,6 +8,17 @@
     flashing firmware, and physical computing fundamentals. Foundational
     material shared across courses, not specific to any one class.
 
+- id: electronics101
+  title: "Electronics 101"
+  collection: electronics101
+  url: /electronics101/
+  status: in-progress
+  blurb: >-
+    Build nine circuits in Tinkercad, from a single AA cell to a micro:bit
+    aiming a servo, then rebuild the last five with real parts. You build
+    first and we talk about it after. Foundational material shared across
+    courses, meant to run alongside the early Pico lessons.
+
 - id: rov
   title: "MATE ROV: Physical Computing"
   collection: rov

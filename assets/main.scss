@@ -89,6 +89,60 @@ figure {
   padding-left: 0;
 }
 
+.checkoff-fields {
+  display: flex;
+  gap: 1.5em;
+  align-items: baseline;
+  margin: 1.5em 0;
+}
+
+.fill-line {
+  display: inline-block;
+  min-width: 12em;
+  border-bottom: 1px solid $grey-color;
+
+  &.short {
+    min-width: 5em;
+  }
+}
+
+p.fill-line {
+  display: block;
+  min-width: 0;
+  height: 1.6em;
+}
+
+table.checkoff {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+
+  th, td {
+    border: 1px solid $grey-color;
+    padding: 0.5em 0.7em;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: $grey-color-light;
+  }
+
+  td.checkbox-cell {
+    width: 2.5em;
+    text-align: center;
+  }
+
+  &.checkoff-voltage td:not(:first-child) {
+    height: 2em;
+  }
+}
+
+.checkoff-note {
+  font-size: 0.9em;
+  color: $grey-color-dark;
+}
+
 @media print {
   .site-header,
   .site-footer,
@@ -98,7 +152,8 @@ figure {
   }
 
   figure,
-  .callout {
+  .callout,
+  table.checkoff tr {
     break-inside: avoid;
   }
 
