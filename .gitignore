@@ -10,6 +10,12 @@ source/
 *.epub
 *.pdf
 
+# Private teacher planning notes — candid working drafts, never committed.
+# Content meant to be checked in belongs in _program-notes-public/ instead.
+# See CLAUDE.md.
+_program-notes/
+_tmp/
+
 # Claude Code local overrides — settings.json (shared) is committed,
 # settings.local.json (personal/machine-specific) is not.
 .claude/settings.local.json

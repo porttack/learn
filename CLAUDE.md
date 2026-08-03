@@ -45,12 +45,27 @@ lessons for one course or unit.
     _rovrobotics/  MATE ROV: running the program as an engineering studio
     _electronics101/  Tinkercad circuit sequence
 
-Collections give `/rovrobotics/03-independent-contractors/` for free via the
-permalink config. Each pathway also has a landing page at
-`rovrobotics/index.md` with `permalink: /rovrobotics/`.
+Collections give `/rovrobotics/card-0-2-writing-a-design-decision-record/`
+for free via the permalink config. Filenames use the stable card number, not
+a sequence prefix, so inserting a lesson later never forces a rename cascade;
+`order:` front matter alone drives sort and prev/next nav. Each pathway also
+has a landing page at `rovrobotics/index.md` with `permalink: /rovrobotics/`.
 
 `_data/pathways.yml` drives the site index. Add a pathway there when you
 create its collection, and add the collection to `_config.yml`.
+
+### Teacher planning notes
+
+Two non-collection, non-published directories (Jekyll ignores underscore
+prefixes by default) hold planning material that isn't a lesson:
+
+    _program-notes/         gitignored. Candid working drafts.
+    _program-notes-public/  committed. The same kind of material, reviewed.
+
+Write freely in `_program-notes/`. Once something no longer needs that
+privacy, move it to `_program-notes-public/` before committing. Neither
+directory is ever rendered as a page; if something needs to be visible to
+students, it belongs in a pathway directory instead.
 
 ## Stack
 
