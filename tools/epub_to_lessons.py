@@ -190,7 +190,23 @@ def render_link(el, ctx):
 
 
 def render_listing_block(div, ctx):
-    lines = [pre.text or "" for pre in div.findall("pre")]
+    plain_pres = div.findall("pre")
+    if plain_pres:
+        # Plain listing: one <pre class="rpi-listing"> per line, exact text.
+        lines = [pre.text or "" for pre in plain_pres]
+    else:
+        # Syntax-highlighted (Pygments/Rouge) variant, seen in chapter 4:
+        # one <div class="highlight"><pre>...<code>token</code>...</pre></div>
+        # per line. Flatten the token spans back into plain source text.
+        lines = []
+        for highlight in div.findall("div"):
+            pre = highlight.find("pre")
+            if pre is not None:
+                lines.append("".join(pre.itertext()))
+    # A lone NBSP is this book's print-layout placeholder for a blank line
+    # within a listing (real Python indentation could never be an NBSP, so
+    # this can't be legitimate code content -- always safe to drop).
+    lines = ["" if line.replace("\xa0", "").strip() == "" else line for line in lines]
     code = "\n".join(line.rstrip("\n") for line in lines)
     return f"```python\n{code}\n```"
 
