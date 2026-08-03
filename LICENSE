@@ -1,3 +1,8 @@
+This repository mixes code and educational content under different licences.
+See `_data/sources.yml` for the full source manifest.
+
+## Code (tools/)
+
 MIT License
 
 Copyright (c) 2026 MrBrown
@@ -19,3 +24,28 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Original site content
+
+Copyright (c) 2026 Port Tack Learning
+
+Lessons whose front matter declares `source: original` are licensed under the
+Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+License (CC BY-NC-SA 4.0):
+
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+## Adapted content
+
+Lessons whose front matter declares a `source:` value other than `original`
+(e.g. `rpi-pico-2e`) are derivative works of the source listed under that id
+in `_data/sources.yml`, and are licensed under **that source's own licence**,
+not the licence above.
+
+The Raspberry Pi Pico MicroPython material is CC BY-NC-SA 3.0 Unported. Its
+ShareAlike term requires derivatives to remain under a compatible licence,
+and 3.0 Unported is not one-way compatible with 4.0 — so these pages stay at
+CC BY-NC-SA 3.0 Unported and cannot be relicensed to 4.0 by virtue of this
+file.
+
+https://creativecommons.org/licenses/by-nc-sa/3.0/

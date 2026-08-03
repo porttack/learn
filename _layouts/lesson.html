@@ -1,0 +1,38 @@
+---
+layout: default
+---
+{% assign pathway_meta = site.data.pathways | where: "id", page.pathway | first %}
+{% assign pathway_pages = site[page.pathway] | sort: "order" %}
+{% assign current_index = -1 %}
+{% for p in pathway_pages %}
+  {% if p.url == page.url %}{% assign current_index = forloop.index0 %}{% endif %}
+{% endfor %}
+{% assign prev_index = current_index | minus: 1 %}
+{% assign next_index = current_index | plus: 1 %}
+
+<article class="lesson">
+  {% if pathway_meta %}
+  <p class="pathway-back"><a href="{{ pathway_meta.url | relative_url }}">&larr; {{ pathway_meta.title }}</a></p>
+  {% endif %}
+  <p class="lesson-label">
+    {% if pathway_meta %}{{ pathway_meta.title }}{% else %}{{ page.pathway }}{% endif %}
+    &middot; Lesson {{ page.order }}
+  </p>
+  <h1>{{ page.title }}</h1>
+
+  {{ content }}
+
+  <nav class="lesson-nav">
+    {% if current_index > 0 %}
+      {% assign prev_page = pathway_pages[prev_index] %}
+      <a class="lesson-prev" href="{{ prev_page.url | relative_url }}">&larr; {{ prev_page.title }}</a>
+    {% endif %}
+    <button class="print-button" onclick="window.print()">Print this lesson</button>
+    {% if next_index < pathway_pages.size %}
+      {% assign next_page = pathway_pages[next_index] %}
+      <a class="lesson-next" href="{{ next_page.url | relative_url }}">{{ next_page.title }} &rarr;</a>
+    {% endif %}
+  </nav>
+
+  {% include provenance.html %}
+</article>

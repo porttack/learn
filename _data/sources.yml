@@ -1,0 +1,43 @@
+# Source material manifest. Committed; the files themselves are not.
+#
+# Every lesson's `source:` front matter field must match an `id` here, or be
+# `original`. The provenance footer renders from this file.
+#
+# `use:` is the governing field:
+#   adapt     Openly licensed. May be adapted and republished on this site.
+#   reference Read to inform lessons. NEVER reproduce, quote at length, or
+#             republish. Cite and link instead.
+#   original  Written for this site.
+
+- id: original
+  use: original
+  title: "Original course material"
+  author: "Port Tack Learning"
+  licence: "CC BY-NC-SA 4.0"
+
+- id: rpi-pico-2e
+  use: adapt
+  title: "Get Started with MicroPython on Raspberry Pi Pico, 2nd Edition"
+  author: "Gareth Halfacree and Ben Everard"
+  publisher: "Raspberry Pi Ltd."
+  year: 2024
+  isbn: "978-1-912047-29-1"
+  licence: "CC BY-NC-SA 3.0 Unported"
+  licence_url: "https://creativecommons.org/licenses/by-nc-sa/3.0/"
+  dir: source/rpi-pico-2e/
+  notes: >-
+    "Except where otherwise noted." Photographs by Brian O'Halloran and
+    illustrations by Sam Alder may be separately licensed. Flag image reuse
+    for review. ShareAlike keeps derivatives at 3.0; not compatible with 4.0.
+
+- id: mate-rov-manuals
+  use: reference
+  title: "MATE ROV Competition Manuals"
+  author: "MATE Inspiration for Innovation"
+  licence: "Assume all rights reserved unless the document states otherwise"
+  dir: source/mate-rov-manuals/
+  notes: >-
+    Free to download is not free to republish. Read it to align lessons with
+    mission tasks, scoring, and safety requirements. Never reproduce rubric
+    tables, mission descriptions, or specification text. Paraphrase, cite the
+    section, and link to the official manual. Verify the copyright page.

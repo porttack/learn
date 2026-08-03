@@ -1,3 +1,13 @@
+- id: pico
+  title: "MicroPython on Raspberry Pi Pico"
+  collection: pico
+  url: /pico/
+  status: in-progress
+  blurb: >-
+    Get acquainted with the Raspberry Pi Pico and MicroPython: wiring,
+    flashing firmware, and physical computing fundamentals. Foundational
+    material shared across courses, not specific to any one class.
+
 - id: rov
   title: "MATE ROV: Physical Computing"
   collection: rov

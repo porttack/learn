@@ -1,0 +1,17 @@
+{% assign src = site.data.sources | where: "id", page.source | first %}
+{% if src %}
+<footer class="provenance">
+  {% if src.use == "adapt" %}
+  <p>
+    Adapted from <cite>{{ src.title }}</cite>{% if src.year %}, {{ src.year }}{% endif %},
+    by {{ src.author }}{% if src.publisher %} ({{ src.publisher }}){% endif %}.
+    Licensed under <a href="{{ src.licence_url }}">{{ src.licence }}</a>.
+  </p>
+  {% if src.notes %}<p class="provenance-notes">{{ src.notes }}</p>{% endif %}
+  {% elsif src.use == "original" %}
+  <p>&copy; {{ site.time | date: "%Y" }} {{ src.author }}. Licensed under {{ src.licence }}.</p>
+  {% else %}
+  <p>Source: {{ src.title }}{% if src.author %}, {{ src.author }}{% endif %}.</p>
+  {% endif %}
+</footer>
+{% endif %}

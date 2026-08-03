@@ -89,7 +89,7 @@ Front matter:
     title: "Reading a depth sensor"
     pathway: rov
     order: 8
-    source: original          # or adapted-rpi-pico-2e
+    source: original          # or rpi-pico-2e
     ---
 
 Figures:

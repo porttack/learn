@@ -10,4 +10,12 @@ source/
 *.epub
 *.pdf
 
+# Claude Code local overrides — settings.json (shared) is committed,
+# settings.local.json (personal/machine-specific) is not.
+.claude/settings.local.json
+
+# Python
+__pycache__/
+*.pyc
+
 .DS_Store
