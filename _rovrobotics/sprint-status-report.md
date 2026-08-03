@@ -132,7 +132,7 @@ Filed or not filed is what gets tracked. Nobody is scoring your rows line by
 line.
 
 At your 1-on-1, expect me to pick one row from your own report and ask you one
-live question about it. I may also spot-check one card on your signoff sheet the
+live question about it. I may also spot-check one card on your [signoff sheet]({{ '/rovrobotics/signoff-sheet/' | relative_url }}) the
 same way. Same rule as everything else on this site: written work is
 preparation, the live question is the check.
 

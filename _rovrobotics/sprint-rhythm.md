@@ -35,7 +35,7 @@ A card is a piece of skill or knowledge with something to show at the end. Most 
 
 Two ways. The card list says which.
 
-**Peer verified.** Somebody who has already cleared that card watches you do it, asks you about it, and signs your signoff sheet. That signature means something: if a card you signed turns out to be hollow, that is on you too. Two of those and you do not verify cards again this semester.
+**Peer verified.** Somebody who has already cleared that card watches you do it, asks you about it, and signs your [signoff sheet]({{ '/rovrobotics/signoff-sheet/' | relative_url }}). That signature means something: if a card you signed turns out to be hollow, that is on you too. Two of those and you do not verify cards again this semester.
 
 **Verified by me.** Safety cards, anything on the critical path, all of Unit 4 software. Oral, and I will ask you to change something while I watch.
 
@@ -148,7 +148,7 @@ Bring it. No folder, no meeting. I am not collecting it and not grading it. We o
 
 **Your folder is about you:**
 
-- **Signoff sheet.** Every card, the date, who verified it. First page.
+- **[Signoff sheet]({{ '/rovrobotics/signoff-sheet/' | relative_url }}).** Every card, the date, who verified it. First page.
 - Printed status reports
 - 1-on-1 sheets, signed by both of us
 - Whatever your cleared cards produced

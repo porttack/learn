@@ -70,9 +70,10 @@ mechanism, but without the longer before-class reading and prep prompt.
       and [Your Sprint Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }}):
       once per sprint, due before the 1-on-1, goals table with status codes.
       Only the link was fixed so far, not the surrounding paragraph.
-- [ ] **A way to track which cards and DDRs each student has cleared**, ideally
-      matching the paper signoff sheet [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }})
-      now describes. Whatever it is has to cost minutes a day, not minutes a
+- [ ] **A way to track which cards and DDRs each student has cleared digitally.**
+      The paper mechanism is now fully specified: [Your Signoff Sheet]({{ '/rovrobotics/signoff-sheet/' | relative_url }}),
+      forty rows in the student's folder, peer- or teacher-verified. Nothing
+      digital exists yet, and it has to cost minutes a day, not minutes a
       student, or it won't survive the semester.
 - [ ] **The "box of dead things."** Card 2.7 (Connection Autopsy) needs a
       collection of failed connectors and splices in hand. Start collecting now.
