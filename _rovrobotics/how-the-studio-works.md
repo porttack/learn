@@ -59,6 +59,8 @@ finish, defend, and be proud of.
 
 ## Where things live
 
+- The daily and sprint schedule, in full: [How This Class Runs]({{ '/rovrobotics/how-this-class-runs/' | relative_url }})
+- The reasoning behind that schedule: [Why This Class Runs This Way]({{ '/rovrobotics/why-this-class-runs-this-way/' | relative_url }})
 - How we plan the season and the sprints: [Waterfall and Agile]({{ '/rovrobotics/waterfall-and-agile/' | relative_url }})
 - What you owe every week: [Your Weekly Status Report]({{ '/rovrobotics/weekly-status-report/' | relative_url }})
 - How decisions get written down: [Card 0.2, Writing a Design Decision Record]({{ '/rovrobotics/card-0-2-writing-a-design-decision-record/' | relative_url }})

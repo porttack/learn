@@ -10,7 +10,8 @@ This pathway is a work in progress, and this page says so out loud instead of
 pretending otherwise. It's a running list of what's missing or still rough, kept
 here so it's visible rather than living only in one teacher's head.
 
-Last swept: 2026-08-02, right after a rewrite of Unit 0 and the front-door pages.
+Last swept: 2026-08-02, after publishing [How This Class Runs]({{ '/rovrobotics/how-this-class-runs/' | relative_url }}),
+[Why This Class Runs This Way]({{ '/rovrobotics/why-this-class-runs-this-way/' | relative_url }}), and Card 0.6.
 
 ## Blocking, dated
 
@@ -23,6 +24,19 @@ Last swept: 2026-08-02, right after a rewrite of Unit 0 and the front-door pages
       having the real sheets in hand.
 - [ ] **Unit 2 reading packet.** Needed by Sep 22 (Sprint 2 start). Units 3-5
       packets can trail.
+- [ ] **Retro and sprint-planning meeting format.** [How This Class Runs]({{ '/rovrobotics/how-this-class-runs/' | relative_url }})
+      says this out loud already: who talks when, what gets written down, and how
+      team commitments reconcile with individual 1-on-1 goals is still unsettled.
+      Needs to land before Sprint 1.
+- [ ] **Water access for the twelve Week 3 Tuesdays isn't confirmed.** Both rhythm
+      pages hedge with "if we have water access" on purpose; the dry-integration
+      fallback is written down, the actual pool calendar isn't.
+- [ ] **Front matter packet** (safety agreement, syllabus, Ten Bullets, procurement
+      rule, card list) needs one print run before Sprint 1, then it lives on the
+      wall until binders arrive in January.
+- [ ] **Sprint and BOM dates need pinning to the real calendar.** Twelve Week 2
+      BOM deadlines, sprint boundaries against the six grading closes, and the
+      two deadlines that land early because they cross winter and spring break.
 
 ## Content debt in Units 1-5
 
@@ -39,6 +53,9 @@ mechanism, but without the longer before-class reading and prep prompt.
 - [ ] Heading style drifts a little card to card ("Why This Matters" vs "Why This
       Matters for Competition," a few different resource-section subtitles).
       Cheap to fix, low priority.
+- [ ] **Verification prompt bank needs expansion.** The 90-second oral checks
+      draw on a bank of questions per card; only a subset of cards have one
+      built out so far.
 
 ## Missing systems
 
@@ -63,6 +80,9 @@ mechanism, but without the longer before-class reading and prep prompt.
       starts a fresh page for each unit, but cards within the same unit can still
       run together mid-page.
 - [ ] **Optional: show the unit name on each card**, not just a lesson number.
+- [ ] **Student-facing card list needs prerequisites visible and bench-versus-table
+      marked.** Students choose their own cards now instead of being assigned
+      them, so this has to be schedulable at a glance, not discovered mid-sprint.
 
 ## Housekeeping
 
