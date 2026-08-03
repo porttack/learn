@@ -10,8 +10,10 @@ This pathway is a work in progress, and this page says so out loud instead of
 pretending otherwise. It's a running list of what's missing or still rough, kept
 here so it's visible rather than living only in one teacher's head.
 
-Last swept: 2026-08-02, after publishing [How This Class Runs]({{ '/rovrobotics/how-this-class-runs/' | relative_url }}),
-[Why This Class Runs This Way]({{ '/rovrobotics/why-this-class-runs-this-way/' | relative_url }}), and Card 0.6.
+Last swept: 2026-08-03, after splitting the rhythm page into
+[Daily Rhythm]({{ '/rovrobotics/daily-rhythm/' | relative_url }}),
+[Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }}), and
+[Sprint Calendar]({{ '/rovrobotics/sprint-calendar/' | relative_url }}).
 
 ## Blocking, dated
 
@@ -24,19 +26,14 @@ Last swept: 2026-08-02, after publishing [How This Class Runs]({{ '/rovrobotics/
       having the real sheets in hand.
 - [ ] **Unit 2 reading packet.** Needed by Sep 22 (Sprint 2 start). Units 3-5
       packets can trail.
-- [ ] **Retro and sprint-planning meeting format.** [How This Class Runs]({{ '/rovrobotics/how-this-class-runs/' | relative_url }})
-      says this out loud already: who talks when, what gets written down, and how
-      team commitments reconcile with individual 1-on-1 goals is still unsettled.
-      Needs to land before Sprint 1.
-- [ ] **Water access for the twelve Week 3 Tuesdays isn't confirmed.** Both rhythm
-      pages hedge with "if we have water access" on purpose; the dry-integration
-      fallback is written down, the actual pool calendar isn't.
+- [ ] **Water access for the twelve Week 3 Tuesdays isn't confirmed.** The
+      [Sprint Calendar]({{ '/rovrobotics/sprint-calendar/' | relative_url }}) now
+      lists a specific water day for every sprint, but those dates are targets,
+      not a confirmed pool booking. The dry-integration fallback is written down;
+      the actual reservation isn't.
 - [ ] **Front matter packet** (safety agreement, syllabus, Ten Bullets, procurement
       rule, card list) needs one print run before Sprint 1, then it lives on the
       wall until binders arrive in January.
-- [ ] **Sprint and BOM dates need pinning to the real calendar.** Twelve Week 2
-      BOM deadlines, sprint boundaries against the six grading closes, and the
-      two deadlines that land early because they cross winter and spring break.
 
 ## Content debt in Units 1-5
 
@@ -56,16 +53,28 @@ mechanism, but without the longer before-class reading and prep prompt.
 - [ ] **Verification prompt bank needs expansion.** The 90-second oral checks
       draw on a bank of questions per card; only a subset of cards have one
       built out so far.
+- [ ] **Existing cards only describe teacher verification.** [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }})
+      now splits clearing into peer-verified and teacher-verified, per card. No
+      published card (e.g. Card 0.6) says which kind it is yet, and all of them
+      still read as teacher-only ("Mr. B watched...").
 
 ## Missing systems
 
 - [ ] **Design spec template.** Needed by spring sprint planning. Card 5.9
       already promises this exists; it doesn't yet.
 - [ ] **CA CTE standards alignment table.**
-- [ ] **A way to track which cards and DDRs each student has cleared.** The
-      [weekly status report]({{ '/rovrobotics/weekly-status-report/' | relative_url }})
-      covers hours. It doesn't cover this. Whatever it is has to cost minutes a
-      day, not minutes a student, or it won't survive the semester.
+- [ ] **[Weekly Status Report]({{ '/rovrobotics/weekly-status-report/' | relative_url }})
+      needs a rewrite or a retirement.** It describes a weekly Schoology post;
+      [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }}) now
+      describes a different, per-sprint Google Doc status report with its own
+      format (goal status codes, retro follow-through, a signoff sheet). The two
+      pages currently contradict each other about what a student turns in and
+      when. This is the same open question as the tracking item below, since a
+      signoff sheet is now specified on paper but nothing digital exists yet.
+- [ ] **A way to track which cards and DDRs each student has cleared**, ideally
+      matching the paper signoff sheet [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }})
+      now describes. Whatever it is has to cost minutes a day, not minutes a
+      student, or it won't survive the semester.
 - [ ] **The "box of dead things."** Card 2.7 (Connection Autopsy) needs a
       collection of failed connectors and splices in hand. Start collecting now.
 
@@ -89,3 +98,6 @@ mechanism, but without the longer before-class reading and prep prompt.
 - [ ] A full teacher read-through of the new [DDR card]({{ '/rovrobotics/card-0-2-writing-a-design-decision-record/' | relative_url }})
       and [Waterfall and Agile]({{ '/rovrobotics/waterfall-and-agile/' | relative_url }})
       page before they're used in class.
+- [ ] [Daily Rhythm]({{ '/rovrobotics/daily-rhythm/' | relative_url }}) ends with
+      "TBD - it might be 3 or 4" under The Two Habits. Draft placeholder left in
+      on a live student page; resolve before Sprint 1.

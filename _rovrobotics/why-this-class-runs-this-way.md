@@ -1,12 +1,12 @@
 ---
 title: "Why This Class Runs This Way"
-order: 7
+order: 9
 source: original
 ---
 
 # Why This Class Runs This Way
 
-[The rhythm page]({{ '/rovrobotics/how-this-class-runs/' | relative_url }}) tells you what happens. This one tells you why, including the places where I am not sure yet and the places where previous versions of this class failed.
+[Daily Rhythm]({{ '/rovrobotics/daily-rhythm/' | relative_url }}), [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }}), and [Sprint Calendar]({{ '/rovrobotics/sprint-calendar/' | relative_url }}) tell you what happens. This one tells you why, including the places where I am not sure yet and the places where previous versions of this class failed.
 
 I am publishing this because a rule that only works when you do not know the reason is a bad rule. If something here does not survive you reading it, it was going to break by April anyway, and I would rather find out in August.
 
@@ -57,7 +57,7 @@ Practical consequence: for a lot of cards I will ask you to change something on 
 
 ## The arithmetic that does not quite work
 
-The rhythm page says three cards per sprint fit in the 3:00 to 3:30 seated block. Let me show you the actual math, because it is close but it does not close.
+[Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }}) says three cards per sprint fit in the 3:00 to 3:30 seated block. Let me show you the actual math, because it is close but it does not close.
 
 Three cards at 45 to 60 minutes each is 135 to 180 minutes per sprint.
 
@@ -111,7 +111,7 @@ Not a secret, so you might as well know.
 
 ## The parts that depend on people who are not me
 
-**Water access is not confirmed for all twelve sprints.** The rhythm page says "if we have water access" on purpose. Pool scheduling involves a facility I do not control, and I would rather hedge in August and exceed it than promise twelve water days and cancel four.
+**Water access is not confirmed for all twelve sprints.** The [Sprint Calendar]({{ '/rovrobotics/sprint-calendar/' | relative_url }}) lists a water day for every sprint, but each one is subject to pool access, on purpose. Pool scheduling involves a facility I do not control, and I would rather hedge in August and exceed it than promise twelve water days and cancel four.
 
 If a water day falls through, the sprint still ends with a demonstration: assembled, powered, tethered, running dry on the bench. A sprint that ends with nothing demonstrated is a sprint whose deadline was fiction, and we are not doing that.
 
