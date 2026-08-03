@@ -21,6 +21,9 @@ collections:
   electronics101:
     output: true
     permalink: /electronics101/:name/
+  studio:
+    output: true
+    permalink: /studio/:name/
 
 defaults:
   - scope: { path: "", type: "rov" }
@@ -35,6 +38,10 @@ defaults:
     values:
       layout: lesson
       pathway: electronics101
+  - scope: { path: "", type: "studio" }
+    values:
+      layout: lesson
+      pathway: studio
 
 header_pages:
   - index.md

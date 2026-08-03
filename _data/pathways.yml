@@ -28,3 +28,14 @@
     Build the electronics and control code for an underwater ROV, from
     soldering headers through thruster control and sensor payloads.
     Raspberry Pi Pico and MicroPython, programmed in the browser.
+
+- id: studio
+  title: "SEL Studio: Running an ROV Program"
+  collection: studio
+  url: /studio/
+  status: in-progress
+  blurb: >-
+    The curriculum and working practices behind a MATE ROV team run as an
+    engineering company. Sprints, pool days, design decision records, and a
+    library of lesson cards covering water physics, electricity, control,
+    software, and ocean science.
