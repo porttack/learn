@@ -13,11 +13,27 @@ software, and ocean science.
 
 ## Contents
 
-<ol class="lesson-list">
-{% assign lessons = site.rovrobotics | sort: "order" %}
-{% for lesson in lessons %}
+{% assign all = site.rovrobotics | sort: "order" %}
+{% assign reference = all | where_exp: "l", "l.unit == nil" %}
+{% assign cards = all | where_exp: "l", "l.unit != nil" %}
+{% assign units = cards | group_by: "unit" | sort: "name" %}
+
+### Start here
+
+<ul class="lesson-list">
+{% for lesson in reference %}
   <li><a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a></li>
 {% endfor %}
-</ol>
+</ul>
+
+{% for unit in units %}
+### {{ unit.name }}
+
+<ul class="lesson-list">
+{% for lesson in unit.items %}
+  <li><a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a></li>
+{% endfor %}
+</ul>
+{% endfor %}
 
 [Print the whole pathway]({{ '/rovrobotics/print/' | relative_url }})

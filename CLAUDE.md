@@ -160,11 +160,13 @@ pseudocode presented as if it runs.
 - Code that touches thrusters, power, or anything in water gets a safety
   callout. Water and mains-adjacent power near teenagers is the real risk in
   this course, not bad syntax.
+- **No em dashes or en dashes in student-facing content.** Part of the
+  program's AI-signal awareness; a stray em dash reads as machine-written to
+  the students and parents who notice. Applies to prose, not to code.
 
 ## Writing style
 
 - Plain, direct, age-appropriate for grades 6-12 without being condescending.
-- Use em dashes sparingly.
 - Second person. "You'll wire the sensor," not "the student will wire."
 - Explain why before how. Students who know why a pull-up resistor is there
   will debug; students who copied a diagram won't.

@@ -172,6 +172,10 @@ table.checkoff {
     break-after: avoid;
   }
 
+  .print-unit-divider {
+    break-before: page;
+  }
+
   a[href^="http"]:after {
     content: " (" attr(href) ")";
     font-size: 0.8em;
