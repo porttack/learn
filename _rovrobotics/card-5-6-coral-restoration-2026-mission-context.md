@@ -3,6 +3,9 @@ title: "Card 5.6: Coral Restoration (2026 Mission Context)"
 order: 41
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Socratic seminar | **Time:** 30 min | **Prerequisites:** Card 0.1. Swap this card's topic when the 2027 manual drops.

@@ -3,6 +3,9 @@ title: "Card 2.3: Wire Prep, Splicing, and Waterproofing"
 order: 18
 source: original
 unit: "2. Electricity and Fabrication"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Unit:** Electricity

@@ -3,6 +3,9 @@ title: "Card 3.1: PWM"
 order: 23
 source: original
 unit: "3. Control and Actuation"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Bench + code | **Time:** 40 min | **Prerequisites:** None; feeds 3.2, 3.3, 3.5

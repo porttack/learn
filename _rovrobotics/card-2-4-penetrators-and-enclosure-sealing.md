@@ -3,6 +3,9 @@ title: "Card 2.4: Penetrators and Enclosure Sealing"
 order: 19
 source: original
 unit: "2. Electricity and Fabrication"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Teardown + potting practice | **Time:** 40 min plus cure time | **Prerequisites:** Card 2.3 (Wire Prep)

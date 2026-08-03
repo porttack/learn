@@ -40,14 +40,26 @@ software, and ocean science.
 
 ---
 
+Please know that this is a work-in-progress. Quite a bit of it represents rough draft slop. In 2026-27, many of these will be rewritten. Some already are. If you want to make improvements, please ask your teacher; he'd appreciate it and the content is all in github.
+
 {% for unit in units %}
 ### {{ unit.name }}
 
-<ul class="lesson-list">
+<table class="checkoff">
+<thead>
+<tr><th>Card</th><th>Status</th><th>Solo?</th><th>Est.</th></tr>
+</thead>
+<tbody>
 {% for lesson in unit.items %}
-  <li><a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a></li>
+<tr>
+<td><a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a></td>
+<td>{{ lesson.status | default: "n/a" }}</td>
+<td>{% if lesson.solo %}Yes{% else %}No{% endif %}</td>
+<td>{{ lesson.duration | default: "n/a" }}</td>
+</tr>
 {% endfor %}
-</ul>
+</tbody>
+</table>
 {% endfor %}
 
 [Print the whole pathway]({{ '/rovrobotics/print/' | relative_url }})

@@ -3,6 +3,9 @@ title: "Card 1.1: Archimedes and Buoyancy"
 order: 12
 source: original
 unit: "1. Water Physics"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 ## Before Class Reading: The Two-Thousand-Year-Old Cheat Code

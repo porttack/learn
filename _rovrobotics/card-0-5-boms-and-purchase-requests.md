@@ -3,6 +3,9 @@ title: "Card 0.5: BOMs and Purchase Requests"
 order: 10
 source: original
 unit: "0. Engineering Process"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 ## Before Class Reading: The Part Is Not Coming

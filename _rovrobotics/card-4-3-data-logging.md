@@ -3,6 +3,9 @@ title: "Card 4.3: Data Logging"
 order: 33
 source: original
 unit: "4. Software"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Code workshop | **Time:** 40 min | **Prerequisites:** Ladder rungs 5 to 7

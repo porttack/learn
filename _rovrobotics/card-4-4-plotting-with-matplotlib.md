@@ -3,6 +3,9 @@ title: "Card 4.4: Plotting with matplotlib"
 order: 34
 source: original
 unit: "4. Software"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Code workshop | **Time:** 30 min | **Prerequisites:** Card 4.3

@@ -3,6 +3,9 @@ title: "Card 1.3: Buoyancy Control and the Argo Mechanism"
 order: 14
 source: original
 unit: "1. Water Physics"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 ## Before Class Reading: The Machine That Swallows the Ocean

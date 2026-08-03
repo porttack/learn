@@ -3,6 +3,9 @@ title: "Card 5.3: Seabed 2030, Why Map the Ocean"
 order: 38
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Socratic seminar | **Time:** 40 min | **Prerequisites:** Card 0.1

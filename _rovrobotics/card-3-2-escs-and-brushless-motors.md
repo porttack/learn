@@ -3,6 +3,9 @@ title: "Card 3.2: ESCs and Brushless Motors"
 order: 24
 source: original
 unit: "3. Control and Actuation"
+status: Draft
+solo: false
+duration: "1 wk"
 ---
 
 **Format:** Bench spin | **Time:** 40 min | **Prerequisites:** Card 3.1

@@ -3,6 +3,9 @@ title: "Card 0.6: Running a Standup"
 order: 11
 source: original
 unit: "0. Engineering Process"
+status: Draft
+solo: false
+duration: "1 wk"
 ---
 
 **Unit:** 0, Engineering Process

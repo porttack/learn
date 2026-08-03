@@ -3,6 +3,9 @@ title: "Card 5.8: Ocean Acidification"
 order: 43
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Demo experiment + short seminar | **Time:** 40 min | **Prerequisites:** None

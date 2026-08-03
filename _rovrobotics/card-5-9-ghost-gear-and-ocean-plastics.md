@@ -3,6 +3,9 @@ title: "Card 5.9: Ghost Gear and Ocean Plastics"
 order: 44
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Short seminar + design exercise | **Time:** 40 min | **Prerequisites:** Card 0.1

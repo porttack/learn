@@ -3,6 +3,9 @@ title: "Card 3.8: Cameras, Analog vs. USB"
 order: 30
 source: original
 unit: "3. Control and Actuation"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Compare + measure | **Time:** 40 min | **Prerequisites:** None

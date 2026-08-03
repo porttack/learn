@@ -3,6 +3,9 @@ title: "Card 2.5: Series, Parallel, and Tether Voltage Drop"
 order: 20
 source: original
 unit: "2. Electricity and Fabrication"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Measurement + calculation | **Time:** 40 min | **Prerequisites:** Card 2.1

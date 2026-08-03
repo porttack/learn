@@ -3,6 +3,9 @@ title: "Card 0.1: How a Socratic Seminar Works"
 order: 6
 source: original
 unit: "0. Engineering Process"
+status: Draft
+solo: false
+duration: "1 wk"
 ---
 
 ## Before Class Reading: Arguing Like an Engineer

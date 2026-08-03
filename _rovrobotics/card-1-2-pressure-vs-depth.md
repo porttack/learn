@@ -3,6 +3,9 @@ title: "Card 1.2: Pressure vs. Depth"
 order: 13
 source: original
 unit: "1. Water Physics"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 ## Before Class Reading: The Patient Squeeze

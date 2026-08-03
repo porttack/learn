@@ -3,6 +3,9 @@ title: "Card 3.3: Servos and Steppers (Choosing an Actuator)"
 order: 25
 source: original
 unit: "3. Control and Actuation"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Unit:** Control & Actuation

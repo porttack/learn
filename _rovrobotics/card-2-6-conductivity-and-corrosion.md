@@ -3,6 +3,9 @@ title: "Card 2.6: Conductivity and Corrosion"
 order: 21
 source: original
 unit: "2. Electricity and Fabrication"
+status: Draft
+solo: true
+duration: "2 wk"
 ---
 
 **Format:** Experiment (multi-day observation) | **Time:** 30 min setup, checks over a week | **Prerequisites:** Card 2.1 helps

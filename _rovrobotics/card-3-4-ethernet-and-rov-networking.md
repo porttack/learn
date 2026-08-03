@@ -3,6 +3,9 @@ title: "Card 3.4: Ethernet and ROV Networking"
 order: 26
 source: original
 unit: "3. Control and Actuation"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Unit:** Control & Actuation

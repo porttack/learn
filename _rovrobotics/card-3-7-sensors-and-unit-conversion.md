@@ -3,6 +3,9 @@ title: "Card 3.7: Sensors and Unit Conversion"
 order: 29
 source: original
 unit: "3. Control and Actuation"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Code + verification | **Time:** 30 min | **Prerequisites:** Cards 1.2, 3.1 helps

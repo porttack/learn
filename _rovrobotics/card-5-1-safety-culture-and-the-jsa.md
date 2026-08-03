@@ -3,6 +3,9 @@ title: "Card 5.1: Safety Culture and the JSA"
 order: 36
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Instruction + writing workshop | **Time:** 40 min | **Prerequisites:** None; early in the season

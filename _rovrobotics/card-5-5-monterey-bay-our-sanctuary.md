@@ -3,6 +3,9 @@ title: "Card 5.5: Monterey Bay, Our Sanctuary"
 order: 40
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Socratic seminar | **Time:** 40 min | **Prerequisites:** Card 0.1

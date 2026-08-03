@@ -3,6 +3,9 @@ title: "Card 4.1: The Terminal and SSH"
 order: 31
 source: original
 unit: "4. Software"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Hands-on scavenger hunt | **Time:** 40 min | **Prerequisites:** None; first rung of the software ladder

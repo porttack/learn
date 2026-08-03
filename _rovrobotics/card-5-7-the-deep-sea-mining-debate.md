@@ -3,6 +3,9 @@ title: "Card 5.7: The Deep-Sea Mining Debate"
 order: 42
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Structured debate | **Time:** 40 min, best seminar of the year | **Prerequisites:** Card 0.1

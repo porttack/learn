@@ -41,6 +41,21 @@ Most of Units 2 through 5 are still short stubs compared to the full treatment
 Units 0 and 1 got: a core question, a resource, an activity, and a clearing
 mechanism, but without the longer before-class reading and prep prompt.
 
+Every card on the site is drafted by Fable and marked **Draft** on the pathway
+index regardless of how complete it looks. None of them are "Ready" until a
+human has actually taught from one and signed off on it.
+
+- [ ] **Unit 4 (Software) needs a substantial rewrite, not a polish pass.**
+      The teacher already teaches software in other ways, and Cards 4.1, 4.3,
+      4.4, and 4.5 as drafted don't match that. Some of it still needs to be
+      taught here; most of the unit will likely be rebuilt from scratch rather
+      than edited in place.
+- [ ] **Card 4.2 (The Python Ladder) was removed** as a redundant summary of
+      the real [Python Ladder]({{ '/rovrobotics/python-ladder/' | relative_url }})
+      page, which is hidden from the pathway nav but still linked from
+      [How the Studio Works]({{ '/rovrobotics/how-the-studio-works/' | relative_url }}).
+      Worth deciding whether that page should be un-hidden now that Unit 4's
+      card list no longer has an entry pointing to it.
 - [ ] Decide whether every card needs the longer format, or whether that's
       deliberately front-loaded into Units 0 and 1 (the ones taught before anyone
       has touched a robot).

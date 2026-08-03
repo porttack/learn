@@ -3,6 +3,9 @@ title: "Card 1.4: Drag, Thrust, and Hull Shape"
 order: 15
 source: original
 unit: "1. Water Physics"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 ## Before Class Reading: What the Water Charges You

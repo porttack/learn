@@ -3,6 +3,9 @@ title: "Card 5.4: The Argo Program"
 order: 39
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Socratic seminar + data touch | **Time:** 40 min | **Prerequisites:** Card 1.3 strongly recommended

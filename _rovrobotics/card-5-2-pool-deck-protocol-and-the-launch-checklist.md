@@ -3,6 +3,9 @@ title: "Card 5.2: Pool Deck Protocol and the Launch Checklist"
 order: 37
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Team drafting + tabletop rehearsal | **Time:** 40 min | **Prerequisites:** Card 5.1

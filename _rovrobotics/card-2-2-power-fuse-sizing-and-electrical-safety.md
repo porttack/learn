@@ -3,6 +3,9 @@ title: "Card 2.2: Power, Fuse Sizing, and Electrical Safety"
 order: 17
 source: original
 unit: "2. Electricity and Fabrication"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Calculation workshop | **Time:** 40 min | **Prerequisites:** Card 2.1

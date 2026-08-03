@@ -3,6 +3,9 @@ title: "Card 0.4: Score Autopsy, Reading a MATE Scoresheet"
 order: 9
 source: original
 unit: "0. Engineering Process"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 ## Before Class Reading: Where the Points Actually Are

@@ -3,6 +3,9 @@ title: "Card 2.1: Ohm's Law"
 order: 16
 source: original
 unit: "2. Electricity and Fabrication"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Bench measurement | **Time:** 40 min | **Prerequisites:** None

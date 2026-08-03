@@ -3,6 +3,9 @@ title: "Card 0.2: Writing a Design Decision Record"
 order: 7
 source: original
 unit: "0. Engineering Process"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 ## Before Class Reading: Where Decisions Go to Die

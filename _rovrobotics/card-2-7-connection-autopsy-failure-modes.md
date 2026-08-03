@@ -3,6 +3,9 @@ title: "Card 2.7: Connection Autopsy (Failure Modes)"
 order: 22
 source: original
 unit: "2. Electricity and Fabrication"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Forensic teardown | **Time:** 40 min | **Prerequisites:** Cards 2.3, 2.6

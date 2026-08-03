@@ -3,6 +3,9 @@ title: "Card 0.7: Reading a SID"
 order: 12
 source: original
 unit: "0. Engineering Process"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 ## Before Class Reading: The Map of the Machine

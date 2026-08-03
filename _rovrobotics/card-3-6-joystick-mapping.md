@@ -3,6 +3,9 @@ title: "Card 3.6: Joystick Mapping"
 order: 28
 source: original
 unit: "3. Control and Actuation"
+status: Draft
+solo: false
+duration: "1 wk"
 ---
 
 **Format:** Code + feel test | **Time:** 40 min | **Prerequisites:** Card 3.1; a Python ladder rung or partner helps

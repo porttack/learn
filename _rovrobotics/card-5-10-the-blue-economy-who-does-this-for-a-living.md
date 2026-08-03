@@ -3,6 +3,9 @@ title: "Card 5.10: The Blue Economy, Who Does This for a Living"
 order: 45
 source: original
 unit: "5. Mission Science and Safety"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Research sprint + share-out | **Time:** 40 min, best late in the season | **Prerequisites:** None

@@ -3,6 +3,9 @@ title: "Card 4.5: State Machines"
 order: 35
 source: original
 unit: "4. Software"
+status: Draft
+solo: true
+duration: "1 wk"
 ---
 
 **Format:** Design discussion + paper artifact | **Time:** 40 min | **Prerequisites:** Ladder rung 3; Card 3.5 pairs well
