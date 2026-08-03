@@ -1,7 +1,8 @@
 ---
 title: "Why This Class Runs This Way"
-order: 9
+order: 5
 source: original
+nav: primary
 ---
 
 # Why This Class Runs This Way

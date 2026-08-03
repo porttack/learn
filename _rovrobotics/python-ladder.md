@@ -1,7 +1,8 @@
 ---
 title: "The Python Ladder"
-order: 5
+order: 10
 source: original
+nav: hidden
 ---
 
 How the ladder works (from Card 4.2): read the chapter, practice in the Colab notebook (never collected, never graded), then build the rung's transfer task, a small program in robot context. Clear the rung with a 90-second live demo: run it, then modify it on request. Live modification is the whole check.

@@ -1,7 +1,8 @@
 ---
 title: "Sprint Calendar 2026-27"
-order: 8
+order: 3
 source: original
+nav: primary
 ---
 
 # Sprint Calendar 2026-27

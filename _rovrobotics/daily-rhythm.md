@@ -1,7 +1,8 @@
 ---
 title: "Daily Rhythm"
-order: 6
+order: 4
 source: original
+nav: primary
 ---
 
 # Daily Rhythm

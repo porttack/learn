@@ -1,7 +1,8 @@
 ---
 title: "Waterfall and Agile: Why We Use Both"
-order: 2
+order: 7
 source: original
+nav: secondary
 ---
 
 Sooner or later someone in this room notices something odd. We write a semester plan in August that runs to December, and we also run three week sprints where the plan can change every time. Which one is it?

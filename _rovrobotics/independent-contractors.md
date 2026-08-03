@@ -1,7 +1,8 @@
 ---
 title: "Independent Contractors"
-order: 4
+order: 9
 source: original
+nav: secondary
 ---
 
 Most of the company works in teams of 3 to 7. A small number of students may instead work as **independent contractors**: a company of one, doing a project the studio actually needs.

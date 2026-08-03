@@ -15,13 +15,25 @@ software, and ocean science.
 
 {% assign all = site.rovrobotics | sort: "order" %}
 {% assign reference = all | where_exp: "l", "l.unit == nil" %}
+{% assign primary = reference | where_exp: "l", "l.nav == 'primary'" %}
+{% assign secondary = reference | where_exp: "l", "l.nav == 'secondary'" %}
 {% assign cards = all | where_exp: "l", "l.unit != nil" %}
 {% assign units = cards | group_by: "unit" | sort: "name" %}
 
 ### Start here
 
 <ul class="lesson-list">
-{% for lesson in reference %}
+{% for lesson in primary %}
+  <li><a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a></li>
+{% endfor %}
+</ul>
+
+---
+
+### Also Useful
+
+<ul class="lesson-list">
+{% for lesson in secondary %}
   <li><a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a></li>
 {% endfor %}
 </ul>

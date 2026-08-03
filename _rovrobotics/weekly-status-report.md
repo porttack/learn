@@ -1,7 +1,8 @@
 ---
 title: "Your Weekly Status Report"
-order: 3
+order: 8
 source: original
+nav: secondary
 ---
 
 Every Thursday, in the last five minutes of studio, you post a status report. This is the real version of the thing every engineer eventually does at a real job: a short update on what happened, what is next, and what is in the way.

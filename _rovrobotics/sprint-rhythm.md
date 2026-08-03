@@ -1,7 +1,8 @@
 ---
 title: "Sprint Rhythm"
-order: 7
+order: 2
 source: original
+nav: primary
 ---
 
 # Sprint Rhythm

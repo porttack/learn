@@ -101,3 +101,6 @@ mechanism, but without the longer before-class reading and prep prompt.
 - [ ] [Daily Rhythm]({{ '/rovrobotics/daily-rhythm/' | relative_url }}) ends with
       "TBD - it might be 3 or 4" under The Two Habits. Draft placeholder left in
       on a live student page; resolve before Sprint 1.
+- [ ] [The Class and the Team]({{ '/rovrobotics/the-class-and-the-team/' | relative_url }})
+      lists the Robotics Team's meeting time as "TBD" in the comparison table.
+      Needs a real time before this page goes in front of families.

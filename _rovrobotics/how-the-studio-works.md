@@ -1,7 +1,8 @@
 ---
 title: "How the Studio Works"
-order: 1
+order: 6
 source: original
+nav: secondary
 ---
 
 The classroom is a studio, and we run it like an engineering company. This
@@ -59,6 +60,7 @@ finish, defend, and be proud of.
 
 ## Where things live
 
+- How the class relates to the competitive team: [The Class and the Team]({{ '/rovrobotics/the-class-and-the-team/' | relative_url }})
 - The daily schedule, in full: [Daily Rhythm]({{ '/rovrobotics/daily-rhythm/' | relative_url }})
 - The sprint schedule, in full: [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }})
 - Every date for the year: [Sprint Calendar]({{ '/rovrobotics/sprint-calendar/' | relative_url }})
