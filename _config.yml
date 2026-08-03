@@ -12,9 +12,6 @@ minima:
 # One collection per learning pathway. Add new pathways here and in
 # _data/pathways.yml at the same time.
 collections:
-  rov:
-    output: true
-    permalink: /rov/:name/
   pico:
     output: true
     permalink: /pico/:name/
@@ -26,10 +23,6 @@ collections:
     permalink: /rovrobotics/:name/
 
 defaults:
-  - scope: { path: "", type: "rov" }
-    values:
-      layout: lesson
-      pathway: rov
   - scope: { path: "", type: "pico" }
     values:
       layout: lesson

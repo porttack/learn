@@ -11,11 +11,13 @@ other teachers who may reuse material.
 One Jekyll **collection per pathway**. A pathway is a sequenced set of
 lessons for one course or unit.
 
-    _rov/          MATE ROV: physical computing with Raspberry Pi Pico
-    _cs/           (future)
+    _pico/         MicroPython on Raspberry Pi Pico
+    _rovrobotics/  MATE ROV: running the program as an engineering studio
+    _electronics101/  Tinkercad circuit sequence
 
-Collections give `/rov/03-gpio-basics/` for free via the permalink config.
-Each pathway also has a landing page at `rov/index.md` with `permalink: /rov/`.
+Collections give `/rovrobotics/03-independent-contractors/` for free via the
+permalink config. Each pathway also has a landing page at
+`rovrobotics/index.md` with `permalink: /rovrobotics/`.
 
 `_data/pathways.yml` drives the site index. Add a pathway there when you
 create its collection, and add the collection to `_config.yml`.
@@ -87,7 +89,7 @@ Front matter:
     ---
     layout: lesson
     title: "Reading a depth sensor"
-    pathway: rov
+    pathway: rovrobotics
     order: 8
     source: original          # or rpi-pico-2e
     ---
@@ -95,7 +97,7 @@ Front matter:
 Figures:
 
     <figure id="fig-8-2">
-      <img src="{{ '/assets/img/rov/fig-8-2.jpg' | relative_url }}" alt="…">
+      <img src="{{ '/assets/img/rovrobotics/fig-8-2.jpg' | relative_url }}" alt="…">
       <figcaption>Figure 8-2: …</figcaption>
     </figure>
 

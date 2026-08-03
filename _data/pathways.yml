@@ -19,16 +19,6 @@
     first and we talk about it after. Foundational material shared across
     courses, meant to run alongside the early Pico lessons.
 
-- id: rov
-  title: "MATE ROV: Physical Computing"
-  collection: rov
-  url: /rov/
-  status: in-progress
-  blurb: >-
-    Build the electronics and control code for an underwater ROV, from
-    soldering headers through thruster control and sensor payloads.
-    Raspberry Pi Pico and MicroPython, programmed in the browser.
-
 - id: rovrobotics
   title: "ROV Robotics"
   collection: rovrobotics
