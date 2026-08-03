@@ -63,14 +63,13 @@ mechanism, but without the longer before-class reading and prep prompt.
 - [ ] **Design spec template.** Needed by spring sprint planning. Card 5.9
       already promises this exists; it doesn't yet.
 - [ ] **CA CTE standards alignment table.**
-- [ ] **[Weekly Status Report]({{ '/rovrobotics/weekly-status-report/' | relative_url }})
-      needs a rewrite or a retirement.** It describes a weekly Schoology post;
-      [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }}) now
-      describes a different, per-sprint Google Doc status report with its own
-      format (goal status codes, retro follow-through, a signoff sheet). The two
-      pages currently contradict each other about what a student turns in and
-      when. This is the same open question as the tracking item below, since a
-      signoff sheet is now specified on paper but nothing digital exists yet.
+- [ ] **[Card 0.3]({{ '/rovrobotics/card-0-3-sprint-planning-and-estimation/' | relative_url }})
+      still describes the old weekly Schoology report.** "Starting this
+      Thursday, you post a short status report every week: Progress, Near-term
+      goals, Concerns..." needs rewriting to match [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }})
+      and [Your Sprint Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }}):
+      once per sprint, due before the 1-on-1, goals table with status codes.
+      Only the link was fixed so far, not the surrounding paragraph.
 - [ ] **A way to track which cards and DDRs each student has cleared**, ideally
       matching the paper signoff sheet [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }})
       now describes. Whatever it is has to cost minutes a day, not minutes a

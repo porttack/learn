@@ -34,7 +34,7 @@ separate makeup track, because there is only one system.
 Work is complete or not yet, and redos are always open. Your grade starts the
 year on this basis: you keep your A by keeping your cards cleared and your
 contributions real and visible. Contributions become visible through your
-weekly status report, which also carries your hours. That record belongs to
+sprint status report, which also carries your hours. That record belongs to
 you.
 
 ## Two habits
@@ -66,7 +66,7 @@ finish, defend, and be proud of.
 - Every date for the year: [Sprint Calendar]({{ '/rovrobotics/sprint-calendar/' | relative_url }})
 - The reasoning behind all of it: [Why This Class Runs This Way]({{ '/rovrobotics/why-this-class-runs-this-way/' | relative_url }})
 - How we plan the season and the sprints: [Waterfall and Agile]({{ '/rovrobotics/waterfall-and-agile/' | relative_url }})
-- What you owe every week: [Your Weekly Status Report]({{ '/rovrobotics/weekly-status-report/' | relative_url }})
+- What you owe every sprint: [Your Sprint Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }})
 - How decisions get written down: [Card 0.2, Writing a Design Decision Record]({{ '/rovrobotics/card-0-2-writing-a-design-decision-record/' | relative_url }})
 - A different contract with the same standards: [Independent Contractors]({{ '/rovrobotics/independent-contractors/' | relative_url }})
 - The season-long coding track: [The Python Ladder]({{ '/rovrobotics/python-ladder/' | relative_url }})

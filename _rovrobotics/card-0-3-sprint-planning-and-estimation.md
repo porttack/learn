@@ -58,7 +58,7 @@ Sanity check before submitting: add up the session estimates per person. If anyo
 
 ## Your Weekly Status Report
 
-Starting this Thursday, you post a short status report every week: Progress, Near-term goals, Concerns, plus your hours. It is how the teacher and your team track a commitment like the one you just made without anyone chasing anyone down. See [Your Weekly Status Report]({{ '/rovrobotics/weekly-status-report/' | relative_url }}) for the format and where it goes. Your first report is due this Thursday, and every deliverable you just committed to should show up in a future Progress bullet.
+Starting this Thursday, you post a short status report every week: Progress, Near-term goals, Concerns, plus your hours. It is how the teacher and your team track a commitment like the one you just made without anyone chasing anyone down. See [Your Sprint Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }}) for the format and where it goes. Your first report is due this Thursday, and every deliverable you just committed to should show up in a future Progress bullet.
 
 ## Clearing This Card
 

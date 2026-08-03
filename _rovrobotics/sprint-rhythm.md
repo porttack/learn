@@ -15,8 +15,6 @@ Twelve sprints this year, numbered 1 through 12. Three weeks each, six sessions.
 | **Week 2** | **BOM due 5:00** + build | Scrambled standup + taught card + build |
 | **Week 3** | Water day | **1-on-1s** + self-directed work |
 
-Sprints 1 and 7 are two weeks. No water day, one taught card, 1-on-1s on Week 2 Thursday.
-
 See also: [Daily Rhythm]({{ '/rovrobotics/daily-rhythm/' | relative_url }}) · [Sprint Calendar]({{ '/rovrobotics/sprint-calendar/' | relative_url }}) · [Why This Class Runs This Way]({{ '/rovrobotics/why-this-class-runs-this-way/' | relative_url }})
 
 ---
@@ -94,13 +92,15 @@ If we do not have water that sprint, it becomes a dry integration test: assemble
 
 ---
 
-## Week 3 Thursday: 1-on-1s
+## Week 3: 1-on-1s
 
 **The graded checkpoint. The one you cannot skip.**
 
-Very little in this class is graded directly. This is. If you miss it you will see it in your grade, and there is no version of "I forgot" that fixes it afterward.
+Very little in this class is graded directly. This is. Making it happen is your job, not mine.
 
-Sign up for a slot. Slots are limited per session and go first come. If a game is going to eat the last Thursday, book earlier. That is the whole solution and it is available to everyone.
+Thursday of Week 3 is when I am set aside for 1-on-1s, since it is also the day I am not teaching a card. Sign up for a slot. Slots are limited per session and go first come. If a game is going to eat that Thursday, book earlier in the week instead, or catch me another day. Thursday is just the easiest day to find me, not the only one. Getting a time that works is on you.
+
+If the whole week gets away from you, email me before the sprint ends and ask for an emergency review at the start of the next sprint. I would rather do that than have it just not happen. What actually costs you the grade is silence: a 1-on-1 that never happened and was never asked about.
 
 While I am meeting people one at a time I am unavailable for two hours. **Week 3 Thursday is a self-directed session** and a bad day for anything that wants me watching. No soldering, no first-time tool use, no fabrication you have not done before.
 

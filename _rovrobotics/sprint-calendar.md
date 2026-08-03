@@ -73,7 +73,7 @@ Always a Tuesday. Subject to pool access. If one falls through, that sprint ends
 
 ## 1-on-1s
 
-Always the Thursday that ends the sprint. Usually about five minutes each, driven by the status report you submitted beforehand.
+The default is the Thursday that ends the sprint, since that's when I'm set aside for them. Usually about five minutes each, driven by the status report you submitted beforehand. Getting a slot that works is on you: book earlier in the week if Thursday won't work, or email for an emergency review at the start of the next sprint if the whole week got away from you.
 
 | | | | | | |
 |---|---|---|---|---|---|
