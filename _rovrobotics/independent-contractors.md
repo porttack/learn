@@ -12,7 +12,7 @@ Most of the company works in teams of 3 to 7. A small number of students may ins
 A contractor is not a punishment and not an escape. It is a different contract with the same standards. Contractors:
 
 - Commit deliverables at sprint planning like every team, and demo at every pool day or sprint review
-- Clear the same lesson cards, write the same DDRs, and file the same weekly status report
+- Clear the same lesson cards, write the same DDRs, and file the same status report
 - Own every deliverable personally. There is no teammate to point at, and no teammate to hide behind
 - Build things the company will use. Contractor projects sell their product back to the teams
 

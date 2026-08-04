@@ -59,9 +59,9 @@ As a team, draft 3 to 5 deliverables for Sprint 1. For each one write:
 
 Sanity check before submitting: add up the session estimates per person. If anyone is over 6, you have overcommitted and must cut or split.
 
-## Your Weekly Status Report
+## Your Status Report
 
-Starting this Thursday, you post a short status report every week: Progress, Near-term goals, Concerns, plus your hours. It is how the teacher and your team track a commitment like the one you just made without anyone chasing anyone down. See [Your Three-Week Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }}) for the format and where it goes. Your first report is due this Thursday, and every deliverable you just committed to should show up in a future Progress bullet.
+Once each sprint, due before your 1-on-1 in Week 3, you write a status report: goals and progress against them, a photo or screenshot, concerns, your hours, and your retro. It is how the teacher and your team track a commitment like the one you just made without anyone chasing anyone down. See [Your Three-Week Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }}) for the format and where it goes. Start it now and add to it as you go, so every deliverable you just committed to shows up in a Progress row by the time you print it.
 
 ## Clearing This Card
 

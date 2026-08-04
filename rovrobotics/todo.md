@@ -78,13 +78,6 @@ human has actually taught from one and signed off on it.
 - [ ] **Design spec template.** Needed by spring sprint planning. Card 5.9
       already promises this exists; it doesn't yet.
 - [ ] **CA CTE standards alignment table.**
-- [ ] **[Card 0.3]({{ '/rovrobotics/card-0-3-sprint-planning-and-estimation/' | relative_url }})
-      still describes the old weekly Schoology report.** "Starting this
-      Thursday, you post a short status report every week: Progress, Near-term
-      goals, Concerns..." needs rewriting to match [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }})
-      and [Your Three-Week Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }}):
-      once per sprint, due before the 1-on-1, goals table with status codes.
-      Only the link was fixed so far, not the surrounding paragraph.
 - [ ] **A way to track which cards and DDRs each student has cleared digitally.**
       The paper mechanism is now fully specified: [About Your Lesson Card Signoff Sheet]({{ '/rovrobotics/signoff-sheet/' | relative_url }}),
       forty rows in the student's folder, peer- or teacher-verified. Nothing
