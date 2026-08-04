@@ -15,8 +15,7 @@ layout: default
   <p class="pathway-back"><a href="{{ pathway_meta.url | relative_url }}">&larr; {{ pathway_meta.title }}</a></p>
   {% endif %}
   <p class="lesson-label">
-    {% if pathway_meta %}{{ pathway_meta.title }}{% else %}{{ page.pathway }}{% endif %}
-    &middot; Lesson {{ page.order }}
+    {% unless pathway_meta %}{{ page.pathway }} &middot; {% endunless %}Lesson {{ page.order }}
   </p>
   <h1>{{ page.title }}</h1>
 
