@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "When the world closes the loop"
+title: "Photoresistor"
 pathway: electronics101
 order: 4
 source: original

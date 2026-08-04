@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "When code closes the loop"
+title: "Connect a Microbit"
 pathway: electronics101
 order: 5
 source: original
