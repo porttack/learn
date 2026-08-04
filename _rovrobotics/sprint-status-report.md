@@ -1,8 +1,8 @@
 ---
-title: "Your Sprint Status Report"
-order: 8
+title: "Your Three-Week Status Report"
+order: 5
 source: original
-nav: secondary
+nav: primary
 ---
 
 Once per sprint, you sit down and take stock of your own work. What got done,

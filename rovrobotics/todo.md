@@ -82,11 +82,11 @@ human has actually taught from one and signed off on it.
       still describes the old weekly Schoology report.** "Starting this
       Thursday, you post a short status report every week: Progress, Near-term
       goals, Concerns..." needs rewriting to match [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }})
-      and [Your Sprint Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }}):
+      and [Your Three-Week Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }}):
       once per sprint, due before the 1-on-1, goals table with status codes.
       Only the link was fixed so far, not the surrounding paragraph.
 - [ ] **A way to track which cards and DDRs each student has cleared digitally.**
-      The paper mechanism is now fully specified: [Your Signoff Sheet]({{ '/rovrobotics/signoff-sheet/' | relative_url }}),
+      The paper mechanism is now fully specified: [About Your Lesson Card Signoff Sheet]({{ '/rovrobotics/signoff-sheet/' | relative_url }}),
       forty rows in the student's folder, peer- or teacher-verified. Nothing
       digital exists yet, and it has to cost minutes a day, not minutes a
       student, or it won't survive the semester.

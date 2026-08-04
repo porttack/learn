@@ -1,8 +1,8 @@
 ---
-title: "Your Signoff Sheet"
-order: 9
+title: "About Your Lesson Card Signoff Sheet"
+order: 6
 source: original
-nav: secondary
+nav: primary
 ---
 
 Cards clear out loud, not on paper. But something has to remember that they

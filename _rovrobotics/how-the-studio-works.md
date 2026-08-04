@@ -1,6 +1,6 @@
 ---
 title: "How the Studio Works"
-order: 6
+order: 7
 source: original
 nav: secondary
 ---
@@ -66,7 +66,7 @@ finish, defend, and be proud of.
 - Every date for the year: [Sprint Calendar]({{ '/rovrobotics/sprint-calendar/' | relative_url }})
 - The reasoning behind all of it: [Why This Class Runs This Way]({{ '/rovrobotics/why-this-class-runs-this-way/' | relative_url }})
 - How we plan the season and the sprints: [Waterfall and Agile]({{ '/rovrobotics/waterfall-and-agile/' | relative_url }})
-- What you owe every sprint: [Your Sprint Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }})
+- What you owe every sprint: [Your Three-Week Status Report]({{ '/rovrobotics/sprint-status-report/' | relative_url }})
 - How decisions get written down: [Card 0.2, Writing a Design Decision Record]({{ '/rovrobotics/card-0-2-writing-a-design-decision-record/' | relative_url }})
 - A different contract with the same standards: [Independent Contractors]({{ '/rovrobotics/independent-contractors/' | relative_url }})
 - The season-long coding track: [The Python Ladder]({{ '/rovrobotics/python-ladder/' | relative_url }})

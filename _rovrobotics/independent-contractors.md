@@ -1,6 +1,6 @@
 ---
 title: "Independent Contractors"
-order: 10
+order: 9
 source: original
 nav: secondary
 ---
