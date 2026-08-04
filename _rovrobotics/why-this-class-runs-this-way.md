@@ -5,8 +5,6 @@ source: original
 nav: secondary
 ---
 
-# Why This Class Runs This Way
-
 [Daily Rhythm]({{ '/rovrobotics/daily-rhythm/' | relative_url }}), [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }}), and [Sprint Calendar]({{ '/rovrobotics/sprint-calendar/' | relative_url }}) tell you what happens. This one tells you why, including the places where I am not sure yet and the places where previous versions of this class failed.
 
 I am publishing this because a rule that only works when you do not know the reason is a bad rule. If something here does not survive you reading it, it was going to break by April anyway, and I would rather find out in August.

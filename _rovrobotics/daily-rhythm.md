@@ -5,8 +5,6 @@ source: original
 nav: primary
 ---
 
-# Daily Rhythm
-
 We meet Tuesday and Thursday, 3:00 to 5:00.
 
 | Time | What |

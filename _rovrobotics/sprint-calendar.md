@@ -5,8 +5,6 @@ source: original
 nav: primary
 ---
 
-# Sprint Calendar 2026-27
-
 Twelve sprints, three weeks each. Print this. Put it in your folder.
 
 See also: [Daily Rhythm]({{ '/rovrobotics/daily-rhythm/' | relative_url }}) · [Sprint Rhythm]({{ '/rovrobotics/sprint-rhythm/' | relative_url }}) · [Why This Class Runs This Way]({{ '/rovrobotics/why-this-class-runs-this-way/' | relative_url }})

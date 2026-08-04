@@ -5,8 +5,6 @@ source: original
 nav: primary
 ---
 
-# Sprint Rhythm
-
 Twelve sprints this year, numbered 1 through 12. Three weeks each, six sessions. Every sprint has the same shape.
 
 | | Tuesday | Thursday |

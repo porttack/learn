@@ -5,8 +5,6 @@ source: original
 nav: primary
 ---
 
-# What Is a Lesson Card?
-
 Every card you see in this pathway, Card 0.2, Card 3.5, Card 5.7, follows the
 same shape. Once you know the shape, you can walk into any of them cold.
 
