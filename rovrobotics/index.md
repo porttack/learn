@@ -51,8 +51,12 @@ Please know that this is a work-in-progress. Quite a bit of it represents rough 
 </thead>
 <tbody>
 {% for lesson in unit.items %}
+{% assign gated = false %}
+{% if lesson.status == "Draft" or lesson.status == "Slop" %}
+  {% assign gated = true %}
+{% endif %}
 <tr>
-<td><a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a></td>
+<td>{% if gated %}<span class="card-title-gated" data-href="{{ lesson.url | relative_url }}">{{ lesson.title }}</span>{% else %}<a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>{% endif %}</td>
 <td>{{ lesson.status | default: "n/a" }}</td>
 <td>{% if lesson.solo %}Yes{% else %}No{% endif %}</td>
 <td>{{ lesson.duration | default: "n/a" }}</td>
@@ -61,6 +65,17 @@ Please know that this is a work-in-progress. Quite a bit of it represents rough 
 </tbody>
 </table>
 {% endfor %}
+
+<script>
+if (new URLSearchParams(location.search).get("show") === "all") {
+  document.querySelectorAll(".card-title-gated[data-href]").forEach(function (el) {
+    var a = document.createElement("a");
+    a.href = el.getAttribute("data-href");
+    a.textContent = el.textContent;
+    el.replaceWith(a);
+  });
+}
+</script>
 
 [Print the whole pathway]({{ '/rovrobotics/print/' | relative_url }})
 
