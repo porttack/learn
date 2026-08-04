@@ -1,4 +1,4 @@
-# INTEGRATE.md: Adding the SEL Studio pathway to porttack/learn
+# INTEGRATE.md: Adding the Studio pathway to porttack/learn
 
 This archive contains a complete Jekyll collection built to match the existing
 conventions in `porttack/learn` (collections in `_<id>/`, landing page at
@@ -63,7 +63,7 @@ and add to `defaults:`
 
 ```yaml
 - id: studio
-  title: "SEL Studio: Running an ROV Program"
+  title: "Studio: Running an ROV Program"
   collection: studio
   url: /studio/
   status: in-progress
@@ -123,7 +123,7 @@ open:
 >    `defaults` scope setting `layout: lesson` and `pathway: studio`, following
 >    the exact pattern used by the existing `rov` collection.
 > 3. Append a `studio` entry to `_data/pathways.yml` matching the shape of the
->    existing entries. Title: "SEL Studio: Running an ROV Program". Status:
+>    existing entries. Title: "Studio: Running an ROV Program". Status:
 >    in-progress. Write the blurb from `studio/index.md`.
 > 4. Confirm every file in `_studio/` has `title`, `order`, and `source`
 >    front matter, that `order` runs 1 to 44 with no gaps or duplicates, and

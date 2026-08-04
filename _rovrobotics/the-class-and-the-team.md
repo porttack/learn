@@ -5,7 +5,7 @@ source: original
 nav: primary
 ---
 
-Sea Exploration League runs two things that look similar from the outside and are not the same thing. One is a class you enroll in and get a grade for. The other is a competitive team you try out for and volunteer your afternoons to. They overlap heavily. This page explains the difference so nobody is surprised in September.
+This program runs two things that look similar from the outside and are not the same thing. One is a class you enroll in and get a grade for. The other is a competitive team you try out for and volunteer your afternoons to. They overlap heavily. This page explains the difference so nobody is surprised in September.
 
 ## The short version
 
