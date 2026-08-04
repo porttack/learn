@@ -181,7 +181,7 @@ None of these are trick questions. All of them are easy if you have been doing t
 
 ## The Weekly Log
 
-Each team keeps a log, one entry a week, written by a **rotating scribe**. Four or five short documents a week for the whole shop.
+Each team keeps a log, one entry a week, written by a **rotating scribe**. Four or five short documents a week for the whole studio.
 
 Lives in `02 Teams/<your team>/Logs/`. Not graded. I read it.
 

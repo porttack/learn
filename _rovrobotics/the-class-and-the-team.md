@@ -19,7 +19,7 @@ Sea Exploration League runs two things that look similar from the outside and ar
 | Do you get credit | Yes, CTE credit toward the ICT pathway | No credit, no grade |
 | Is attendance required | Yes, it is a class | Not formally, but showing up is how you stay on the team |
 | Who runs it | Mr. B, as your teacher | Mr. B and other mentors, as volunteers |
-| What you owe it | The work on the card list | Your time, and the same shop norms |
+| What you owe it | The work on the card list | Your time, and the same studio norms |
 
 ## The class: ROV / ROV2
 
@@ -38,11 +38,11 @@ Your grade starts high and stays high by keeping your cards cleared, your report
 
 The team is the group that competes. For 2026-27 that means MATE ROV, at the Monterey Bay regional in the spring, in the RANGER class. Other competitions may come later, FIRST among them, but nothing beyond MATE is on the calendar this year. The team owns the competition: registration, the technical documentation, the engineering presentation, mission runs on deck, and the outside pool days that no class period is long enough to hold.
 
-The team is not a single company. It currently looks like four MATE companies under one roof, each with its own roster, its own leadership, and its own entry. Companies share the shop, share knowledge, and sometimes share code. They do not share a scoresheet.
+The team is not a single company. It currently looks like four MATE companies under one roof, each with its own roster, its own leadership, and its own entry. Companies share the studio, share knowledge, and sometimes share code. They do not share a scoresheet.
 
 The team runs on the same three-week sprint rhythm as the class, which is deliberate. Sprint deadlines land in the same place for everyone, so a company can plan around a pool day without translating between two calendars.
 
-The team is entirely volunteer supported. I am a volunteer when I coach it, and so are the other mentors. That is the honest reason it works differently from the class. There is no attendance sheet and no grade protecting you. Attendance is technically voluntary, but staying on a roster is not. If you are not there, the work does not happen and your company notices. Being on the team is a privilege that depends on doing the work and following the shop norms, which are our version of Tom Sachs' Ten Bullets. Show up on time. Write things down. Do the work.
+The team is entirely volunteer supported. I am a volunteer when I coach it, and so are the other mentors. That is the honest reason it works differently from the class. There is no attendance sheet and no grade protecting you. Attendance is technically voluntary, but staying on a roster is not. If you are not there, the work does not happen and your company notices. Being on the team is a privilege that depends on doing the work and following the studio norms, which are our version of Tom Sachs' Ten Bullets. Show up on time. Write things down. Do the work.
 
 ### Prerequisites
 

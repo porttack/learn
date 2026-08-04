@@ -26,7 +26,7 @@ The power supply says 12 volts. The thrusters at the end of our tether disagree.
 Measurements, the graph, and the design paragraph, plus a 90-second oral check: "The robot browns out when all thrusters fire. Give me two fixes that do not involve buying a new tether, and their costs."
 
 ## If You Miss This Class
-Spare tether and meter in the shop; same artifact and check.
+Spare tether and meter in the studio; same artifact and check.
 
 ## Why This Matters
 Voltage drop explains a whole family of mysterious pool failures: cameras rebooting, ESCs cutting out, sluggish thrust under load. After this card, those stop being mysteries.

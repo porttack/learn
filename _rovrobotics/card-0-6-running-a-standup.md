@@ -31,7 +31,7 @@ Your job as facilitator is four things and none of them involve having answers.
 
 **Park the blockers.** This is the whole skill. Somebody names a problem, and the room's instinct is to solve it. Yours is to say who can help with that, talk at 3:30, and go to the next person. The problem still gets solved. It gets solved by two people at a bench instead of seven people standing around.
 
-**Carry one sentence to shop sync.** After team standups, each facilitator gives the room a single sentence: what your team is doing this session and what you are blocked on. Not a summary of the standup. One sentence.
+**Carry one sentence to studio sync.** After team standups, each facilitator gives the room a single sentence: what your team is doing this session and what you are blocked on. Not a summary of the standup. One sentence.
 
 What you are not doing: answering questions, assigning work, evaluating anybody, or reporting to Mr. B.
 

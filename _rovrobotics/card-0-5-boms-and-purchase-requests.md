@@ -41,7 +41,7 @@ This season the intake runs through a supply chain manager who logs every reques
 
 ## Activity: Write a Real Request (your artifact)
 
-Take one deliverable from your team's Sprint 1 commitment that needs a part. Write the complete BOM row for it. If your deliverable truly needs nothing, write the row for a real consumable the shop will need (heat shrink, solder, PVC fittings, zip... no, not zip ties near water; pick something legal).
+Take one deliverable from your team's Sprint 1 commitment that needs a part. Write the complete BOM row for it. If your deliverable truly needs nothing, write the row for a real consumable the studio will need (heat shrink, solder, PVC fittings, zip... no, not zip ties near water; pick something legal).
 
 Common failure modes to avoid, all real examples from last year:
 - A link to a product category page instead of the exact item

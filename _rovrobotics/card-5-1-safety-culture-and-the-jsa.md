@@ -27,4 +27,4 @@ Your revised JSA, plus a 90-second oral check: "Which control on your sheet is m
 Examples and the template are in the folder; write, get a peer review from any cleared student, same check.
 
 ## Why This Matters
-The company safety review is a scored submission built from exactly these, so every cleared card contributes real lines to it. More honestly: the shop runs power tools, soldering irons, and 12-volt systems next to water, and the culture where students write the hazards is the culture where students catch them.
+The company safety review is a scored submission built from exactly these, so every cleared card contributes real lines to it. More honestly: the studio runs power tools, soldering irons, and 12-volt systems next to water, and the culture where students write the hazards is the culture where students catch them.

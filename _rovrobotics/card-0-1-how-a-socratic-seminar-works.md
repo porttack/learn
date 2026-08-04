@@ -22,7 +22,7 @@ Why does an engineering class train this? Because every design review, every spr
 
 One more thing: the seminar only works if people arrive loaded. A seminar where nobody prepared is just a slow conversation about vibes. That is what prep notes are for, and it is why they are the artifact for every seminar card this year.
 
-**Prep prompt (bring in writing):** Our first practice seminar topic is "Our claws keep failing. Why?" Write (1) one claim about why, with your reasoning, (2) one piece of evidence from something you personally saw or did on this team, and (3) one question you honestly want the group to take up. Your evidence must be something that happened in our shop or at our pool days; nobody outside this room can write it for you.
+**Prep prompt (bring in writing):** Our first practice seminar topic is "Our claws keep failing. Why?" Write (1) one claim about why, with your reasoning, (2) one piece of evidence from something you personally saw or did on this team, and (3) one question you honestly want the group to take up. Your evidence must be something that happened in our studio or at our pool days; nobody outside this room can write it for you.
 
 ---
 

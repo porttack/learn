@@ -9,7 +9,7 @@ duration: "1 wk"
 ---
 
 **Unit:** Electricity
-**Format:** Bench demo + hands-on practice (this is a shop skill card, not a seminar card)
+**Format:** Bench demo + hands-on practice (this is a studio skill card, not a seminar card)
 **Time:** 30 to 40 minutes plus practice
 **Prerequisites:** None. Pairs well with Card 2.7 (Connection Autopsy), taught later, once you have splices of your own to inspect.
 
@@ -39,7 +39,7 @@ Your artifact is a finished splice sample tagged with your name. It clears when 
 - **Dunk test:** 24 hours submerged, then multimeter continuity check and visual inspection for water intrusion under the shrink.
 - **90-second oral check:** name the three failure points from the demo and explain which test would catch each one.
 
-Passing samples go on the shop wall as the reference standard. Future students judge their work against the wall.
+Passing samples go on the studio wall as the reference standard. Future students judge their work against the wall.
 
 ## If You Miss This Class
 

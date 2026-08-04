@@ -56,8 +56,8 @@ Turn in your annotated SID, then a 90-second oral check: trace a DIFFERENT path 
 
 ## If You Miss This Class
 
-Identical, done during build time. The printed SIDs live in the shop.
+Identical, done during build time. The printed SIDs live in the studio.
 
 ## Why This Matters for Competition
 
-The SID is a required scored submission, and safety inspection at the venue works directly from it: if the vehicle does not match the SID, we fix it on the deck while the clock runs. A team where everyone reads the SID catches those mismatches in the shop in March instead of poolside in May. This card is also the foundation for the fuse sizing and voltage drop cards later, where you will do the math on the paths you traced today.
+The SID is a required scored submission, and safety inspection at the venue works directly from it: if the vehicle does not match the SID, we fix it on the deck while the clock runs. A team where everyone reads the SID catches those mismatches in the studio in March instead of poolside in May. This card is also the foundation for the fuse sizing and voltage drop cards later, where you will do the math on the paths you traced today.

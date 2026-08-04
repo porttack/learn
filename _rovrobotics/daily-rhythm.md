@@ -47,13 +47,13 @@ When a blocker comes up, try to brainstorm some help or a solution or repioritia
 
 You are telling your team. I will be at the back, and some days I will be listening to a different corner than yours.
 
-A room where everyone reports to the teacher is a roll call. A room where people report to each other is a shop.
+A room where everyone reports to the teacher is a roll call. A room where people report to each other is a studio.
 
 ### Who runs it
 
 **Rotating facilitator.** Not the team lead, not permanently anybody.
 
-Running a standup is mechanical: call the order, hold people to one sentence, park the blockers, carry one sentence to shop sync. It takes no authority and it is not a promotion. Everybody does it, and by spring everybody here has run a meeting.
+Running a standup is mechanical: call the order, hold people to one sentence, park the blockers, carry one sentence to studio sync. It takes no authority and it is not a promotion. Everybody does it, and by spring everybody here has run a meeting.
 
 Facilitating cleanly twice is [Card 0.6]({{ '/rovrobotics/card-0-6-running-a-standup/' | relative_url }}).
 

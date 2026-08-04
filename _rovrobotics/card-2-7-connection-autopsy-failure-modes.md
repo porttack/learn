@@ -11,7 +11,7 @@ duration: "1 wk"
 **Format:** Forensic teardown | **Time:** 40 min | **Prerequisites:** Cards 2.3, 2.6
 
 ## Core Question
-The shop keeps a box of dead things: flooded splices, corroded connectors, stripped servos, cracked potting. Every one failed for a reason. Can you read the reason out of the corpse?
+The studio keeps a box of dead things: flooded splices, corroded connectors, stripped servos, cracked potting. Every one failed for a reason. Can you read the reason out of the corpse?
 
 ## Resource (~10 min)
 Failure vocabulary: water intrusion, corrosion, fatigue, strain failure, cold joint, insulation damage, wrong-part-for-the-job. One worked example: the teacher autopsies one failed part aloud, evidence first, conclusion last.
