@@ -54,6 +54,34 @@ has a landing page at `rovrobotics/index.md` with `permalink: /rovrobotics/`.
 `_data/pathways.yml` drives the site index. Add a pathway there when you
 create its collection, and add the collection to `_config.yml`.
 
+### Mounted external pathways
+
+Not every pathway is a collection. `working-in-python/` is a git submodule
+tracking the `gh-pages` branch of the separate `porttack/working-in-python`
+repo — a pre-built static Sphinx site (an AP CSP-oriented fork of Allen
+Downey's *Think Python* 3e), not Jekyll source. It also publishes
+independently at python.porttack.com; this is a second, mirrored copy, not
+a migration.
+
+It still gets a `_data/pathways.yml` entry (for the homepage card) but no
+collection, no `_config.yml` collection block, and no lesson front matter —
+it's served as plain static files underneath its mount path.
+
+Because it's pre-built with root-relative-free (`_static/...`, `chap01.html`)
+asset paths, it can be mounted at any subpath without breaking. The one
+gotcha: Jekyll excludes `_`-prefixed paths by default, and its `include:`
+config only re-includes nested directories by **bare basename**, not by
+full relative path — hence `_config.yml`'s `include:` lists `_static`,
+`_sources`, `_sphinx_design_static` unqualified, not `working-in-python/_static`.
+
+To pull in a new build after the upstream repo pushes to its `gh-pages`
+branch (including after a force-push — that's fine, submodules just track
+whatever commit `gh-pages` points to when you update):
+
+    git submodule update --remote working-in-python
+    git add working-in-python
+    git commit -m "Update working-in-python mirror"
+
 ### Teacher planning notes
 
 Two non-collection, non-published directories (Jekyll ignores underscore

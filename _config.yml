@@ -54,3 +54,14 @@ exclude:
   - tools/
   - source/
   - vendor/
+  - working-in-python/CNAME
+
+# working-in-python is a submodule holding a pre-built Sphinx site (not
+# Jekyll source). Its underscore-prefixed asset dirs would otherwise be
+# silently dropped by Jekyll's default exclusion of "_"-prefixed paths.
+# Jekyll's include matching for nested dirs works by basename only, not
+# by full path, so these must be listed bare (no "working-in-python/" prefix).
+include:
+  - _static
+  - _sources
+  - _sphinx_design_static

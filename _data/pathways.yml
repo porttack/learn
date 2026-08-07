@@ -29,3 +29,13 @@
     engineering company. Sprints, pool days, design decision records, and a
     library of lesson cards covering water physics, electricity, control,
     software, and ocean science.
+
+- id: working-in-python
+  title: "Working in Python"
+  url: /working-in-python/
+  status: in-progress
+  blurb: >-
+    An AP CSP-oriented adaptation of Allen Downey's <em>Think Python</em>,
+    3rd edition (CC BY-NC-SA 4.0). Mirrored here from its own book repo,
+    which also publishes independently at
+    <a href="https://python.porttack.com">python.porttack.com</a>.
