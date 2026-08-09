@@ -30,6 +30,16 @@
     library of lesson cards covering water physics, electricity, control,
     software, and ocean science.
 
+- id: ap-csp-reference
+  title: "AP CSP Reference"
+  url: /ap-csp-reference/
+  status: in-progress
+  blurb: >-
+    Quick-lookup material for AP Computer Science Principles, starting
+    with a plain-English guide to the exam's pseudocode language, with a
+    Python translation for every construct. Not sequenced lessons, just
+    things to check while you work.
+
 - id: working-in-python
   title: "Working in Python"
   url: /working-in-python/

@@ -1,0 +1,565 @@
+---
+layout: null
+permalink: /ap-csp-reference/pseudocode/
+title: "AP CSP Pseudocode Quick Reference"
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AP CSP Pseudocode Quick Reference</title>
+<style>
+  :root {
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #55606b;
+    --line: #d7dde2;
+    --card-bg: #f7f9fa;
+    --accent: #0f5c66;
+    --code-bg: #eef2f3;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 1.5rem;
+    max-width: 68rem;
+    margin-inline: auto;
+    background: var(--paper);
+    color: var(--ink);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  code, .mono, .syntax, .example pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  a { color: var(--accent); }
+
+  header.page-head {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .back-link { font-size: 0.85em; }
+
+  h1 {
+    margin: 0.4rem 0 0.2rem;
+    font-size: 1.7rem;
+  }
+
+  .subtitle {
+    margin: 0 0 0.6rem;
+    color: var(--muted);
+  }
+
+  .intro {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.92em;
+  }
+
+  .intro p { margin: 0.4em 0; }
+
+  .legend {
+    font-size: 0.85em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    border-top: 1px dashed var(--line);
+    padding-top: 0.5rem;
+  }
+
+  .legend dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.15em 0.7em;
+    margin: 0.3em 0 0;
+  }
+
+  .legend dt { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em 0.8em;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.2rem;
+    font-size: 0.88em;
+  }
+
+  .toc a { text-decoration: none; }
+
+  main.constructs {
+    columns: 2;
+    column-gap: 1.4rem;
+  }
+
+  section.construct {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.7rem 0.9rem;
+    margin: 0 0 1.1rem;
+    background: var(--paper);
+  }
+
+  section.construct h2 {
+    font-size: 1.02rem;
+    margin: 0 0 0.35em;
+    color: var(--accent);
+  }
+
+  .syntax {
+    display: block;
+    background: var(--code-bg);
+    border-radius: 4px;
+    padding: 0.5em 0.6em;
+    font-size: 0.86em;
+    white-space: pre-wrap;
+    margin: 0.3em 0 0.5em;
+  }
+
+  .semantics {
+    margin: 0.3em 0 0.6em;
+    font-size: 0.92em;
+  }
+
+  .examples {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 0.7em;
+    font-size: 0.84em;
+  }
+
+  .examples h3 {
+    grid-column: span 1;
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin: 0 0 0.2em;
+  }
+
+  .examples pre {
+    margin: 0;
+    background: var(--code-bg);
+    border-radius: 4px;
+    padding: 0.5em 0.6em;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  section.gotchas {
+    break-before: column;
+    margin-top: 0;
+  }
+
+  h2.section-title {
+    break-before: column;
+    font-size: 1.15rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.2em;
+    column-span: all;
+  }
+
+  .gotcha {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border-left: 4px solid #b8590f;
+    background: #fdf3ec;
+    border-radius: 0 4px 4px 0;
+    padding: 0.5em 0.8em;
+    margin: 0 0 1em;
+    font-size: 0.9em;
+  }
+
+  .gotcha .wrong { color: #8a3b0f; font-weight: 600; }
+  .gotcha .right { color: #1b1f23; font-weight: 600; }
+
+  footer.page-foot {
+    column-span: all;
+    margin-top: 1.5rem;
+    padding-top: 0.8rem;
+    border-top: 2px solid var(--accent);
+    font-size: 0.8em;
+    color: var(--muted);
+  }
+
+  footer.page-foot p { margin: 0.4em 0; }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem; font-size: 15px; }
+    main.constructs { columns: 1; }
+    .examples { grid-template-columns: 1fr; }
+    .examples h3.py-label { margin-top: 0.4em; }
+  }
+
+  @media print {
+    @page { size: letter landscape; margin: 0.45in; }
+    body { max-width: none; padding: 0; font-size: 10.5pt; }
+    .toc { display: none; }
+    a { color: inherit; text-decoration: none; }
+    a[href^="http"]:after {
+      content: " (" attr(href) ")";
+      font-size: 0.75em;
+      color: var(--muted);
+    }
+    main.constructs { columns: 3; column-gap: 0.9rem; }
+    section.construct { padding: 0.5rem 0.65rem; margin-bottom: 0.8rem; }
+    .intro { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-head">
+  <p class="back-link"><a href="{{ '/ap-csp-reference/' | relative_url }}">&larr; AP CSP Reference</a></p>
+  <h1>AP CSP Pseudocode Quick Reference</h1>
+  <p class="subtitle">The exam pseudocode language, explained in plain English, with a Python translation next to every construct.</p>
+</header>
+
+<div class="intro">
+  <p>
+    The AP CSP multiple-choice exam is written in the College Board's own pseudocode
+    language, not Python. This page is an independent, unofficial study reference:
+    it explains that pseudocode language construct by construct and shows the Python
+    you'd write for the same idea, since this course is Python first.
+  </p>
+  <p>
+    This is not a copy of the College Board's reference sheet. Read the real one at
+    exam time: the
+    <a href="https://apcentral.collegeboard.org/media/pdf/ap-computer-science-principles-exam-reference-sheet.pdf">official AP CSP Exam Reference Sheet (PDF)</a>,
+    via the
+    <a href="https://apcentral.collegeboard.org/courses/ap-computer-science-principles/exam">AP CSP exam page on AP Central</a>.
+  </p>
+</div>
+
+<div class="legend">
+  How to read the syntax boxes below:
+  <dl>
+    <dt>ALL CAPS</dt><dd>a pseudocode keyword. Type it exactly as shown.</dd>
+    <dt>lowercase</dt><dd>a placeholder. Replace it with your own name, value, or expression.</dd>
+    <dt>{ }</dt><dd>a block containing one or more statements.</dd>
+    <dt>[ ]</dt><dd>everything inside is optional.</dd>
+  </dl>
+</div>
+
+<ul class="toc">
+  <li><a href="#assignment">Assignment &amp; I/O</a></li>
+  <li><a href="#arithmetic">Arithmetic, MOD, RANDOM</a></li>
+  <li><a href="#operators">Relational &amp; Boolean operators</a></li>
+  <li><a href="#conditionals">IF / IF-ELSE</a></li>
+  <li><a href="#loops">Repetition</a></li>
+  <li><a href="#lists">Lists</a></li>
+  <li><a href="#procedures">Procedures</a></li>
+  <li><a href="#robot">Robot procedures</a></li>
+  <li><a href="#gotchas">Gotchas</a></li>
+</ul>
+
+<main class="constructs">
+
+<section class="construct" id="assignment">
+  <h2>Assignment &amp; input/output</h2>
+  <span class="syntax">variable &larr; expression
+DISPLAY (expression)
+variable &larr; INPUT ()</span>
+  <p class="semantics">
+    <code>&larr;</code> stores the value on its right in the variable on its left.
+    <code>DISPLAY</code> shows a value to the user. <code>INPUT</code> reads one
+    value the user provides, so it's typically used on the right side of an
+    assignment.
+  </p>
+  <div class="examples">
+    <h3>Pseudocode</h3><h3 class="py-label">Python</h3>
+<pre>depth &larr; INPUT ()
+DISPLAY (depth)
+DISPLAY ("meters")</pre>
+<pre>depth = input()
+print(depth)
+print("meters")</pre>
+  </div>
+</section>
+
+<section class="construct" id="arithmetic">
+  <h2>Arithmetic, MOD, RANDOM</h2>
+  <span class="syntax">a + b, a - b, a * b, a / b
+a MOD b
+RANDOM (a, b)</span>
+  <p class="semantics">
+    The four arithmetic symbols work as expected, and division always gives the
+    exact numeric answer, not a truncated one. <code>MOD</code> gives the
+    remainder after dividing <code>a</code> by <code>b</code>.
+    <code>RANDOM (a, b)</code> gives back a random integer from <code>a</code> to
+    <code>b</code>, and both ends are possible results.
+  </p>
+  <div class="examples">
+    <h3>Pseudocode</h3><h3 class="py-label">Python</h3>
+<pre>buoy &larr; RANDOM (1, 6)
+isEven &larr; (count MOD 2) = 0</pre>
+<pre>buoy = random.randint(1, 6)
+is_even = (count % 2) == 0</pre>
+  </div>
+</section>
+
+<section class="construct" id="operators">
+  <h2>Relational &amp; Boolean operators</h2>
+  <span class="syntax">=, &ne;, &gt;, &lt;, &ge;, &le;
+NOT condition
+condition1 AND condition2
+condition1 OR condition2</span>
+  <p class="semantics">
+    The relational operators compare two values and give back true or false.
+    A bare <code>=</code> here means "is equal to", a question, not an
+    assignment. <code>NOT</code>, <code>AND</code>, and <code>OR</code> combine
+    true/false values the same way they do in everyday logic.
+  </p>
+  <div class="examples">
+    <h3>Pseudocode</h3><h3 class="py-label">Python</h3>
+<pre>safe &larr; (temp &ge; 10) AND (temp &le; 28)
+IF (NOT safe)
+{
+  DISPLAY ("out of range")
+}</pre>
+<pre>safe = (temp >= 10) and (temp <= 28)
+if not safe:
+    print("out of range")</pre>
+  </div>
+</section>
+
+<section class="construct" id="conditionals">
+  <h2>IF / IF-ELSE</h2>
+  <span class="syntax">IF (condition)
+{
+  statements
+}
+[ ELSE
+{
+  statements
+} ]</span>
+  <p class="semantics">
+    Runs the first block only when <code>condition</code> is true. The
+    optional <code>ELSE</code> block runs instead when it's false. Another
+    <code>IF</code> can go inside either block to nest conditions.
+  </p>
+  <div class="examples">
+    <h3>Pseudocode</h3><h3 class="py-label">Python</h3>
+<pre>IF (depth &gt; 30)
+{
+  DISPLAY ("deep zone")
+}
+ELSE
+{
+  IF (depth &gt; 10)
+  {
+    DISPLAY ("mid zone")
+  }
+  ELSE
+  {
+    DISPLAY ("shallow zone")
+  }
+}</pre>
+<pre>if depth > 30:
+    print("deep zone")
+elif depth > 10:
+    print("mid zone")
+else:
+    print("shallow zone")</pre>
+  </div>
+</section>
+
+<section class="construct" id="loops">
+  <h2>Repetition</h2>
+  <span class="syntax">REPEAT n TIMES
+{ statements }
+
+REPEAT UNTIL (condition)
+{ statements }
+
+FOR EACH item IN list
+{ statements }</span>
+  <p class="semantics">
+    <code>REPEAT n TIMES</code> runs the block exactly <code>n</code> times.
+    <code>REPEAT UNTIL</code> checks <code>condition</code> before every pass,
+    including the first, and keeps looping while it's false; it stops the
+    moment the condition becomes true. <code>FOR EACH</code> runs the block
+    once per item in <code>list</code>, in order.
+  </p>
+  <div class="examples">
+    <h3>Pseudocode</h3><h3 class="py-label">Python</h3>
+<pre>reading &larr; 100
+REPEAT UNTIL (reading &lt; 5)
+{
+  reading &larr; reading / 2
+}
+DISPLAY (reading)</pre>
+<pre>reading = 100
+while not (reading < 5):
+    reading = reading / 2
+print(reading)</pre>
+  </div>
+</section>
+
+<section class="construct" id="lists">
+  <h2>Lists</h2>
+  <span class="syntax">list &larr; [value1, value2, value3]
+list[i]
+INSERT (list, i, value)
+APPEND (list, value)
+REMOVE (list, i)
+LENGTH (list)</span>
+  <p class="semantics">
+    Lists are numbered starting at 1, so <code>list[1]</code> is the first
+    item and <code>list[LENGTH(list)]</code> is the last. <code>APPEND</code>
+    adds a value to the end; <code>INSERT</code> puts one at position
+    <code>i</code>, shifting later items over; <code>REMOVE</code> takes the
+    item at position <code>i</code> out and shifts later items back.
+  </p>
+  <div class="examples">
+    <h3>Pseudocode</h3><h3 class="py-label">Python</h3>
+<pre>tags &larr; ["A1", "A2", "A3"]
+APPEND (tags, "A4")
+REMOVE (tags, 1)
+DISPLAY (tags[1])</pre>
+<pre>tags = ["A1", "A2", "A3"]
+tags.append("A4")
+tags.pop(0)
+print(tags[0])</pre>
+  </div>
+</section>
+
+<section class="construct" id="procedures">
+  <h2>Procedures</h2>
+  <span class="syntax">PROCEDURE name (param1, param2)
+{
+  statements
+  [ RETURN (expression) ]
+}</span>
+  <p class="semantics">
+    Defines a named block that can take parameters and be run later by
+    calling <code>name(...)</code>. Parameters are local to the procedure:
+    changing one doesn't change whatever variable the caller passed in.
+    <code>RETURN</code> hands a value back to the caller and ends the
+    procedure immediately; a procedure with no <code>RETURN</code> is called
+    for what it does, not for a value.
+  </p>
+  <div class="examples">
+    <h3>Pseudocode</h3><h3 class="py-label">Python</h3>
+<pre>PROCEDURE average (a, b)
+{
+  RETURN ((a + b) / 2)
+}
+DISPLAY (average(18, 22))</pre>
+<pre>def average(a, b):
+    return (a + b) / 2
+
+print(average(18, 22))</pre>
+  </div>
+</section>
+
+<section class="construct" id="robot">
+  <h2>Robot procedures</h2>
+  <span class="syntax">MOVE_FORWARD ()
+ROTATE_LEFT ()
+ROTATE_RIGHT ()
+CAN_MOVE (direction)</span>
+  <p class="semantics">
+    The robot sits in one square of a grid and faces one direction at a
+    time. <code>MOVE_FORWARD</code> steps it one square in that direction;
+    <code>ROTATE_LEFT</code>/<code>ROTATE_RIGHT</code> turn it 90&deg;
+    without moving it. <code>CAN_MOVE(direction)</code> checks whether the
+    square one step away in <code>direction</code> is open, and returns true
+    or false without moving the robot.
+  </p>
+  <div class="examples">
+    <h3>Pseudocode</h3><h3 class="py-label">Python-style</h3>
+<pre>REPEAT UNTIL (NOT CAN_MOVE(DOWN))
+{
+  MOVE_FORWARD ()
+}
+IF (CAN_MOVE(RIGHT))
+{
+  ROTATE_RIGHT ()
+  MOVE_FORWARD ()
+}</pre>
+<pre>while rover.can_move("down"):
+    rover.move_forward()
+if rover.can_move("right"):
+    rover.rotate_right()
+    rover.move_forward()</pre>
+  </div>
+</section>
+
+</main>
+
+<h2 class="section-title" id="gotchas">Gotchas for this class</h2>
+<main class="constructs">
+
+<div class="gotcha">
+  <p><span class="wrong">Misconception:</span> lists start at index 0, same as
+  a Python list.</p>
+  <p><span class="right">Correction:</span> pseudocode lists start at 1.
+  <code>list[1]</code> is the first item, and <code>LENGTH(list)</code> is the
+  index of the last one. Add or subtract 1 when you translate to Python.</p>
+</div>
+
+<div class="gotcha">
+  <p><span class="wrong">Misconception:</span> a bare <code>=</code> assigns a
+  value, because that's what it does in Python.</p>
+  <p><span class="right">Correction:</span> in this pseudocode, <code>&larr;</code>
+  is the only assignment symbol. A bare <code>=</code> is always a comparison,
+  the same job Python's <code>==</code> does.</p>
+</div>
+
+<div class="gotcha">
+  <p><span class="wrong">Misconception:</span> since <code>MOD</code> handles
+  remainders, <code>/</code> must throw the remainder away too.</p>
+  <p><span class="right">Correction:</span> <code>/</code> always gives the
+  exact, real-number answer. There's no separate whole-number-division
+  operator in this pseudocode, only <code>/</code> and <code>MOD</code>.</p>
+</div>
+
+<div class="gotcha">
+  <p><span class="wrong">Misconception:</span> <code>REPEAT UNTIL</code> runs
+  while its condition is true, the same feel as <code>REPEAT n TIMES</code>.</p>
+  <p><span class="right">Correction:</span> <code>REPEAT UNTIL</code> runs
+  while the condition is false and stops once it becomes true. The condition
+  is checked before every pass, including the first, so a condition that
+  starts out true skips the block entirely.</p>
+</div>
+
+<div class="gotcha">
+  <p><span class="wrong">Misconception:</span> a variable created inside a
+  <code>PROCEDURE</code> is visible everywhere, like a global.</p>
+  <p><span class="right">Correction:</span> variables and parameters created
+  inside a procedure exist only for that one call. Nothing outside the
+  procedure can see or change them, and nothing the procedure does to a
+  parameter changes the caller's original variable.</p>
+</div>
+
+</main>
+
+<footer class="page-foot">
+  <p>
+    This page is an independent, unofficial study reference written for a
+    high school AP Computer Science Principles class. It is not published by,
+    reviewed by, or affiliated with the College Board. For the authoritative
+    version, see the
+    <a href="https://apcentral.collegeboard.org/media/pdf/ap-computer-science-principles-exam-reference-sheet.pdf">official AP CSP Exam Reference Sheet</a>
+    on AP Central.
+  </p>
+  <p>
+    &copy; Port Tack Learning. Licensed under
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+  </p>
+</footer>
+
+</body>
+</html>
