@@ -16,6 +16,8 @@ needed.
 
 ## Contents
 
+**I'm in the process of porting this Creative Commons licensed book for my students and classroom. It is only partially ported right now.**
+
 <ol class="lesson-list">
 {% assign lessons = site.pico | sort: "order" %}
 {% for lesson in lessons %}
