@@ -69,10 +69,15 @@ it's served as plain static files underneath its mount path.
 
 Because it's pre-built with root-relative-free (`_static/...`, `chap01.html`)
 asset paths, it can be mounted at any subpath without breaking. The one
-gotcha: Jekyll excludes `_`-prefixed paths by default, and its `include:`
-config only re-includes nested directories by **bare basename**, not by
-full relative path — hence `_config.yml`'s `include:` lists `_static`,
-`_sources`, `_sphinx_design_static` unqualified, not `working-in-python/_static`.
+gotcha: Jekyll excludes `_`-prefixed entries by default, and its `include:`
+config re-includes them by **bare basename only** — never by relative or
+nested path. `Jekyll::Reader#read_directories` walks one directory at a
+time and hands `EntryFilter` just the bare filename it's looking at, so a
+pattern like `working-in-python/*/files/__*.ipynb` can never match anything;
+it has to be `__*.ipynb`. This is true for files as much as directories —
+hence `_config.yml`'s `include:` lists `_static`, `_sources`,
+`_sphinx_design_static`, `__*.ipynb`, `_exercises*.ipynb` all unqualified,
+never prefixed with `working-in-python/`.
 
 To pull in a new build after the upstream repo pushes to its `gh-pages`
 branch (including after a force-push — that's fine, submodules just track
