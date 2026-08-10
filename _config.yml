@@ -65,3 +65,5 @@ include:
   - _static
   - _sources
   - _sphinx_design_static
+  - "working-in-python/*/files/__*.ipynb"
+  - "working-in-python/*/files/_exercises*.ipynb"
