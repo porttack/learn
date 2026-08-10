@@ -11,10 +11,15 @@ Effective date: August 10, 2026
 ## Short version
 
 This site does not collect, store, or transmit any personal information
-from anyone who visits it. There are no accounts, no forms, no cookies
-set by this site, and no analytics or tracking scripts. It is a set of
-static pages, and there is nowhere on this site that visitor data could
-go, even if that were the intent.
+from anyone who visits it. There are no accounts, no forms, and no
+analytics or tracking scripts. Almost every page is a static file with
+nowhere for visitor data to go, even if that were the intent.
+
+The one exception is the Working in Python pathway, which embeds an
+in-browser Python environment (JupyterLite) so you can run notebooks
+live. That environment uses your browser's own local storage to save
+your work between visits. That storage stays entirely on your device
+and is never transmitted to any server. It is explained in full below.
 
 ## Why that is true, technically
 
@@ -27,8 +32,10 @@ to every visitor's browser.
 That means:
 
 - **There is no server-side application.** No code runs per visitor,
-  per request, or at all, on any server under anyone's control. A
-  visitor's browser just downloads and displays files.
+  per request, or at all, on any server under anyone's control. Where a
+  page needs to run code, such as the in-browser Python notebooks
+  described below, that execution happens entirely inside the visitor's
+  own browser, not on a server.
 - **There is no database.** A database exists to give an application
   somewhere to write data. There is no application here, so there is
   nothing to write to and nothing that persists between visits.
@@ -49,12 +56,51 @@ place.
 ## What is not on this site
 
 - No user accounts or login of any kind
-- No cookies set by this site
 - No analytics (for example, Google Analytics), tracking pixels, or
   advertising code
-- No comment sections or embedded third-party widgets that set cookies
-  or require a login
+- No comment sections or embedded third-party widgets that require a
+  login
 - No forms, quizzes, or file uploads that transmit data anywhere
+- No cookies of any kind used to identify, track, or recognize you
+  across visits or across sites. (The Working in Python pathway saves
+  your notebook files locally using your browser's storage, not
+  cookies; explained in the next section.)
+
+## Interactive Python notebooks (JupyterLite)
+
+The Working in Python pathway embeds
+[JupyterLite](https://jupyterlite.readthedocs.io/), a full Python
+environment that runs entirely inside your browser tab using
+WebAssembly (specifically, Pyodide, a WebAssembly build of Python).
+There is no server-side Python kernel anywhere. When you run a cell,
+the computation happens on your own device, the same way a browser game
+runs entirely on your device.
+
+To let you keep your work between visits, without a server to save it
+to, JupyterLite stores your notebook files and workspace settings using
+your browser's own local storage: mainly `IndexedDB` (for the notebook
+files themselves) and `localStorage` (for interface state, like which
+files you have open). This is ordinary behavior for any browser
+application that needs to remember state without a server, the same way
+a browser game might save your progress locally. It means:
+
+- Your saved notebooks and edits live only in your browser, on your
+  device.
+- That storage is scoped to this site's address, the same as any other
+  website's local storage. Other sites cannot read it.
+- Nothing in it is transmitted to, or retrievable by, this site, the
+  course teacher, or GitHub. There is no server-side code here that
+  could receive it, per the architecture described above.
+- You can clear it at any time through your browser's site settings.
+  Doing so resets your saved notebooks in that environment.
+
+No cookie is involved in saving your work. (JupyterLite's underlying
+code is adapted from full Jupyter Server, which separately checks for a
+`_xsrf` cookie as cross-site request forgery protection when talking to
+a real server over the network. Because there is no real server here,
+that check is inert: it has nothing to read and nothing meaningful to
+set. It plays no role in storing your notebooks and carries no
+information about you.)
 
 ## Hosting and standard web server logs
 
@@ -82,7 +128,11 @@ site maintains no such records, because:
   such as example engineering-team documents in the robotics pathway)
   is instructional material, not a record about any individual student.
 - It has no database, account system, or backend that could persist
-  any visitor's data, student or otherwise.
+  any visitor's data, student or otherwise. This includes the
+  in-browser Python notebooks described above: work saved there is
+  written only to the student's own browser storage, never to a server,
+  so it is not a record maintained by anyone but the student's own
+  device.
 
 Because no personally identifiable student information is collected,
 stored, or transmitted through this site, its use does not implicate
