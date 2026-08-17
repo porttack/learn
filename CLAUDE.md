@@ -73,11 +73,25 @@ gotcha: Jekyll excludes `_`-prefixed entries by default, and its `include:`
 config re-includes them by **bare basename only** — never by relative or
 nested path. `Jekyll::Reader#read_directories` walks one directory at a
 time and hands `EntryFilter` just the bare filename it's looking at, so a
-pattern like `working-in-python/*/files/__*.ipynb` can never match anything;
-it has to be `__*.ipynb`. This is true for files as much as directories —
-hence `_config.yml`'s `include:` lists `_static`, `_sources`,
-`_sphinx_design_static`, `__*.ipynb`, `_exercises*.ipynb` all unqualified,
-never prefixed with `working-in-python/`.
+pattern like `working-in-python/*/files/_static` can never match anything;
+it has to be `_static` bare, never prefixed with `working-in-python/`. This is
+true for files as much as directories -- but as of working-in-python's
+2026-08-16 naming cleanup, its chapter/exercises notebooks are no longer
+underscore-prefixed at all (`ChapterNN-<Title>[-exercises].ipynb`, Title
+Case), so Jekyll includes those by default with no entry needed. The
+"teach"/"blank" classroom-projection copy went through two more renames the
+same day before working-in-python decided to stop shipping it into the
+JupyterLite build at all for now (see that repo's AUDIT.md, 2026-08-16, for
+the full back-and-forth) -- it doesn't exist in that submodule right now, so
+nothing to include for it either. `_config.yml`'s `include:` now only lists
+the handful of `.ipynb` files that still are underscore-prefixed: the two
+front-matter notebooks (also Title
+Case now: `_Start-Here.ipynb`, `_Using-Notebooks.ipynb`), plus two temporary
+aliases for chapters 2 and 3 (old, all-lowercase served names, deliberately
+NOT recapitalized since they exist only to match whatever a student's browser
+may already have cached -- kept a few days post-cleanup, see that repo's
+AUDIT.md, 2026-08-16). Remove the alias lines once working-in-python's own
+`ALIASES` dict drops them.
 
 To pull in a new build after the upstream repo pushes to its `gh-pages`
 branch (including after a force-push — that's fine, submodules just track
