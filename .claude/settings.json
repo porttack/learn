@@ -1,8 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "defaultMode": "acceptEdits",
-
     "allow": [
       "Bash",
       "Read",
@@ -18,18 +16,12 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:docs.micropython.org)",
       "WebFetch(domain:viper-ide.org)",
-      "WebFetch(domain:creativecommons.org)"
+      "WebFetch(domain:creativecommons.org)",
+      "WebFetch(domain:playfulinvention.com)",
+      "WebFetch(domain:www.playfulinvention.com)",
+      "Bash(cd /Users/ebrown/src/working-in-python && grep -n \"@default\\(\\\\\"lite_dir\\\\\"\\)\" -A5 .venv/lib/python3.11/site-packages/jupyterlite_core/config.py)",
+      "Read(//Users/ebrown/src/working-in-python/**)"
     ],
-
-    "ask": [
-      "Bash(git push *)",
-      "Bash(git push:*)",
-      "Bash(gh repo *)",
-      "Bash(gh repo:*)",
-      "Bash(gh api *)",
-      "Bash(gh api:*)"
-    ],
-
     "deny": [
       "Bash(sudo *)",
       "Bash(sudo:*)",
@@ -49,6 +41,18 @@
       "Read(//Users/**/.config/gh/**)",
       "Write(./source/**)",
       "Edit(./source/**)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git push:*)",
+      "Bash(gh repo *)",
+      "Bash(gh repo:*)",
+      "Bash(gh api *)",
+      "Bash(gh api:*)"
+    ],
+    "defaultMode": "acceptEdits",
+    "additionalDirectories": [
+      "/Users/ebrown/src/working-in-python"
     ]
   }
 }
