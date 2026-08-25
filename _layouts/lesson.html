@@ -15,7 +15,7 @@ layout: default
   <p class="pathway-back"><a href="{{ pathway_meta.url | relative_url }}">&larr; {{ pathway_meta.title }}</a></p>
   {% endif %}
   <p class="lesson-label">
-    {% unless pathway_meta %}{{ page.pathway }} &middot; {% endunless %}Lesson {{ page.order }}
+    {% unless pathway_meta %}{{ page.pathway }} &middot; {% endunless %}{{ pathway_meta.item_label | default: "Lesson" }} {{ page.order }}
   </p>
   <h1>{{ page.title }}</h1>
   {% if page.unit %}
@@ -38,3 +38,20 @@ layout: default
 
   {% include provenance.html %}
 </article>
+
+<script>
+document.addEventListener('click', function (event) {
+  var btn = event.target.closest('.copy-btn');
+  if (!btn) return;
+  var code = btn.parentElement.querySelector('code');
+  if (!code) return;
+  var text = code.textContent.replace(/\n+$/, '');
+  navigator.clipboard.writeText(text).then(function () {
+    clearTimeout(btn._copyTimeout);
+    btn.classList.add('copied');
+    btn._copyTimeout = setTimeout(function () {
+      btn.classList.remove('copied');
+    }, 1500);
+  });
+});
+</script>

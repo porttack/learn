@@ -30,6 +30,31 @@
     illustrations by Sam Alder may be separately licensed. Flag image reuse
     for review. ShareAlike keeps derivatives at 3.0; not compatible with 4.0.
 
+- id: cs50-ap
+  use: adapt
+  title: "CS50 AP"
+  author: "David J. Malan and the CS50 team, Harvard University"
+  licence: "CC BY-NC-SA 4.0"
+  licence_url: "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+  notes: >-
+    Problem statements adapted from cs50.harvard.edu/ap. Same approach as
+    the cs50-python source: the cs50 library is never required, though it's
+    available in cs50.dev if a lesson mentions it. style50, check50, and
+    submit50 are still used, since students already work in cs50.dev. Each
+    lesson links back to the original problem.
+
+- id: cs50-python
+  use: adapt
+  title: "CS50's Introduction to Programming with Python"
+  author: "David J. Malan and the CS50 team, Harvard University"
+  licence: "CC BY-NC-SA 4.0"
+  licence_url: "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+  notes: >-
+    Problem statements adapted from cs50.harvard.edu/python. Same approach as
+    the cs50-ap source: the cs50 library is never required, though it's
+    available in cs50.dev if a lesson mentions it. Each lesson links back to
+    the original problem.
+
 - id: mate-rov-manuals
   use: reference
   title: "MATE ROV Competition Manuals"

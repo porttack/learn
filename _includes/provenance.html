@@ -8,6 +8,7 @@
     Licensed under <a href="{{ src.licence_url }}">{{ src.licence }}</a>.
   </p>
   {% if src.notes %}<p class="provenance-notes">{{ src.notes }}</p>{% endif %}
+  {% if page.source_url %}<p class="provenance-link"><a href="{{ page.source_url }}">original problem</a></p>{% endif %}
   {% elsif src.use == "original" %}
   <p>&copy; {{ site.time | date: "%Y" }} {{ src.author }}. Licensed under {{ src.licence }}.</p>
   {% else %}

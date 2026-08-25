@@ -30,6 +30,18 @@
     library of lesson cards covering water physics, electricity, control,
     software, and ocean science.
 
+- id: cs50psets
+  title: "CS50 Problem Sets"
+  collection: cs50psets
+  url: /cs50-psets/
+  status: in-progress
+  item_label: "Problem"
+  blurb: >-
+    Problem sets adapted from Harvard's CS50 AP curriculum, rewritten to use
+    plain Python (<code>input()</code>, <code>int()</code>) instead of the
+    <code>cs50</code> library. Same problems, same standards, no extra
+    training wheels.
+
 - id: ap-csp-reference
   title: "AP CSP Reference"
   url: /ap-csp-reference/

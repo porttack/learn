@@ -28,6 +28,14 @@ These lessons stay under that license — the ShareAlike term means they
 can't be relicensed to 4.0. Photographs and illustrations from the book
 may carry separate rights; see the notice on individual pages.
 
+Other lessons are adapted from [Harvard's CS50
+AP](https://cs50.harvard.edu/ap) curriculum, by David J. Malan and the
+CS50 team, also licensed
+[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+These problem sets are rewritten so that students use plain `input()`
+and `int()` instead of the `cs50` library's `get_int`; each lesson links
+back to the original.
+
 ## What's not licensed for reuse
 
 Some source material (like MATE ROV competition manuals) is consulted to

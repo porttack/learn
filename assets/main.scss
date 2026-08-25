@@ -33,6 +33,23 @@ figure {
   }
 }
 
+.video-embed {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%;
+  margin: 1.5em 0;
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+}
+
 .callout {
   margin: 1.5em 0;
   padding: 1em 1.2em;
@@ -77,10 +94,67 @@ figure {
   }
 }
 
+.copy-command {
+  position: relative;
+  margin: 1em 0;
+
+  pre {
+    margin: 0;
+    padding-right: 3em;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.8em;
+    height: 1.8em;
+    padding: 0;
+    background: $background-color;
+    color: $grey-color-dark;
+    border: 1px solid $grey-color-light;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      color: $text-color;
+      border-color: $grey-color;
+    }
+
+    .check-icon {
+      display: none;
+    }
+
+    &.copied {
+      color: #2e7d32;
+      border-color: #2e7d32;
+
+      .copy-icon {
+        display: none;
+      }
+
+      .check-icon {
+        display: block;
+      }
+    }
+  }
+}
+
 .provenance {
   margin-top: 2em;
   font-size: 0.85em;
   color: $grey-color-dark;
+
+  .provenance-link {
+    font-size: 0.85em;
+
+    a {
+      color: $grey-color;
+    }
+  }
 }
 
 .pathway-list,
@@ -158,8 +232,14 @@ table.checkoff {
   .site-header,
   .site-footer,
   .lesson-nav,
-  .print-button {
+  .print-button,
+  .copy-btn,
+  .video-embed {
     display: none !important;
+  }
+
+  .copy-command pre {
+    padding-right: 0;
   }
 
   figure,

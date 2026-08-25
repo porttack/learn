@@ -21,6 +21,9 @@ collections:
   rovrobotics:
     output: true
     permalink: /rovrobotics/:name/
+  cs50psets:
+    output: true
+    permalink: /cs50-psets/:name/
 
 defaults:
   - scope: { path: "", type: "pico" }
@@ -35,6 +38,10 @@ defaults:
     values:
       layout: lesson
       pathway: rovrobotics
+  - scope: { path: "", type: "cs50psets" }
+    values:
+      layout: lesson
+      pathway: cs50psets
 
 header_pages:
   - index.md
