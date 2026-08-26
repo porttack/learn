@@ -359,7 +359,7 @@ Try `484921` above to see how it works, then see the specification below
 for what your own program needs to do.
 
 <figure class="hex-preview">
-  <a href="{{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}">
+  <a class="hex-preview-link" href="{{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}">
     <table>
       <thead><tr><th>Dec</th><th>Bin</th><th>Hex</th><th>Chr</th></tr></thead>
       <tbody>
@@ -369,7 +369,12 @@ for what your own program needs to do.
       </tbody>
     </table>
   </a>
-  <figcaption>Three rows from the full table, enough to decode <code>484921</code> into HI! Click to open the whole thing.</figcaption>
+  <figcaption>
+    Three rows from the full table, enough to decode <code>484921</code>
+    into HI! See the
+    <a href="{{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}">complete ASCII / hex table</a>
+    for everything else.
+  </figcaption>
 </figure>
 
 ## Getting Started
@@ -563,3 +568,34 @@ Check your correctness:
 Submit your work:
 
 {% include copy-command.html command="submit50 porttack/cs50/problems/py/pathfinder" %}
+
+<hr>
+
+## Glossary
+
+- **hexadecimal** — Base-16, using 0 through 9 and A through F. Four bits
+  per digit, so one byte is exactly two hex digits.
+- **byte** — Eight bits. Enough to hold one of 256 values.
+- **ASCII** — A table assigning a number from 0 to 127 to each of a small
+  set of characters. `int()` and `chr()` move between a hex byte and the
+  character it represents.
+- **string** — A type that represents sequences of characters.
+
+<hr>
+
+## Standards Alignment
+
+**AP CSP:** [2.1 Binary Numbers](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-2.1) (Big Idea 2, 17 to 22% of the exam). Also [3.13 Developing Procedures](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.13), headers only, covering the optional helper-function requirement in "To Get Full Credit" rather than the core spec.
+**California 9-12:** [9-12.DA.8](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.DA.8)
+**CSTA 2026:** [HS-ALG-PS-02](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-ALG-PS-02)
+**CA CTE (ICT):** [C4.4](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.4) (Pathway C).
+
+Converting a two-digit hex byte into the character it represents, and
+back, is 2.1's binary place-value idea one layer up: hex digits are a
+compact stand-in for four bits at a time. It's DA.8 in different words
+too, since the same character can be written as a letter or as a byte,
+and moving between them is the whole point of this problem. C4.4 names
+that same idea from the CTE side: data has types, and those types get
+encoded in specific ways. The optional helper function in "To Get Full
+Credit" is 3.13 and CSTA's HS-ALG-PS-02 territory: wrapping the
+byte-to-character conversion in its own function instead of inlining it.
