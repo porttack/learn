@@ -37,10 +37,10 @@
   status: in-progress
   item_label: "Problem"
   blurb: >-
-    Problem sets adapted from Harvard's CS50 AP curriculum, rewritten to use
-    plain Python (<code>input()</code>, <code>int()</code>) instead of the
-    <code>cs50</code> library. Same problems, same standards, no extra
-    training wheels.
+    A mix of problem sets: some adapted from Harvard's CS50 AP and CS50
+    Python curricula, some written from scratch by teachers and past
+    students of this class. Same standards either way, checked and
+    submitted with check50 and submit50.
 
 - id: ap-csp-reference
   title: "AP CSP Reference"
