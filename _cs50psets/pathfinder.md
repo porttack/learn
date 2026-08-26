@@ -1,6 +1,6 @@
 ---
 title: "Pathfinder"
-order: 5
+order: 2
 source: original
 ---
 
@@ -34,7 +34,7 @@ source: original
   var travelMs = 650;
   var messagePauseMs = 5000;
 
-  var messages = ['STATUS', 'SPACE PIRATE', 'NO DISCO', 'SCIENCE IT', 'PIRATE NINJA', 'BOTANY WINS', 'HI MOM', 'NOT DEAD', 'MORE POTATOES!'];
+  var messages = ['HOWALIVE?', 'STATUS', 'SPACE PIRATE', 'NO DISCO', 'SCIENCE IT', 'PIRATE NINJA', 'BOTANY WINS', 'HI MOM', 'NOT DEAD', 'MORE POTATOES!'];
   var msgData = messages.map(function (m) {
     var bytes = [];
     for (var i = 0; i < m.length; i++) {
@@ -61,6 +61,14 @@ source: original
     return from + diff * t;
   }
 
+  // When the next sign to read is the same one the camera is already
+  // sitting on, the shortest path is zero degrees -- indistinguishable
+  // from not moving at all. Spin all the way around instead, so a
+  // repeated digit is still visibly a new reading.
+  function fullLoopLerp(from, t) {
+    return from + t * 2 * Math.PI;
+  }
+
   function easeInOutQuad(t) {
     return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
   }
@@ -79,8 +87,18 @@ source: original
   var columns = []; // one entry per byte: { h1, h2, letter, h1Jit, h2Jit, letterJit }
   var state = 'dwell';
   var stateStart = null;
-  var fromAngle = angleForIndex(msgData[0][0].d1);
+  var lastTargetIndex = msgData[0][0].d1;
+  var fromAngle = angleForIndex(lastTargetIndex);
   var toAngle = fromAngle;
+  var travelFullLoop = false;
+
+  function setTarget(nextIndex) {
+    travelFullLoop = (nextIndex === lastTargetIndex);
+    lastTargetIndex = nextIndex;
+    fromAngle = toAngle;
+    toAngle = angleForIndex(nextIndex);
+    state = 'travel';
+  }
 
   function drawCamera(x, y, angle) {
     ctx.save();
@@ -214,9 +232,7 @@ source: original
     if (digitPhase === 0) {
       columns.push({ h1: b.hex.charAt(0), h2: null, letter: null, h1Jit: jitter(), h2Jit: null, letterJit: null });
       digitPhase = 1;
-      fromAngle = toAngle;
-      toAngle = angleForIndex(b.d2);
-      state = 'travel';
+      setTarget(b.d2);
     } else {
       var col = columns[columns.length - 1];
       col.h2 = b.hex.charAt(1);
@@ -231,9 +247,7 @@ source: original
       } else {
         byteIndex += 1;
         digitPhase = 0;
-        fromAngle = toAngle;
-        toAngle = angleForIndex(bytes[byteIndex].d1);
-        state = 'travel';
+        setTarget(bytes[byteIndex].d1);
       }
     }
   }
@@ -243,9 +257,7 @@ source: original
     byteIndex = 0;
     digitPhase = 0;
     columns = [];
-    fromAngle = toAngle;
-    toAngle = angleForIndex(msgData[msgIndex][0].d1);
-    state = 'travel';
+    setTarget(msgData[msgIndex][0].d1);
   }
 
   function draw(t) {
@@ -269,7 +281,9 @@ source: original
     } else {
       var progress = Math.min(elapsed / travelMs, 1);
       var eased = easeInOutQuad(progress);
-      var current = shortestAngleLerp(fromAngle, toAngle, eased);
+      var current = travelFullLoop
+        ? fullLoopLerp(fromAngle, eased)
+        : shortestAngleLerp(fromAngle, toAngle, eased);
       render(current, null);
       if (progress >= 1) {
         state = 'dwell';
@@ -293,23 +307,20 @@ source: original
 In *The Martian*, Mark Watney is stranded on Mars with no way to talk to
 NASA directly. The only working camera nearby is on the old Pathfinder
 rover, and all NASA can do with it is aim it: pan left or right, tilt up or
-down, snap a picture. That's not nothing, though. NASA lays a grid of
-hexadecimal digits, `0` through `F`, over the range the camera can point
-to. Aim at one grid position, snap a picture, and Watney can read off one
-hex digit. Two digits make one byte, and one byte, run through ASCII, is
-one character. Point, shoot, point, shoot, and a sentence spells itself out
-one letter at a time. (This isn't just movie invention: it's close to how
-JPL engineers actually planned to talk back to the real Pathfinder rover if
-its radio ever failed.)
+down. That's not nothing, though. Mark lays a grid of hexadecimal digits,
+`0` through `F`, out where the camera can see it: 16 signs spaced 22.5
+degrees apart in a full circle around the rover, one for each digit. NASA
+rotates the camera to one grid position, and Mark reads off one hex digit.
+Two digits make one byte, and one byte, run through ASCII, is one
+character. Rotate, pause, rotate, pause, and a sentence spells itself out
+one letter at a time.
 
-There's no room on a rover's camera grid for a space bar. In this problem,
-the message you're decoding is one unbroken string of hex digits, exactly
-like it would arrive from Mars: no spaces, no punctuation, no separators
-between one letter's two digits and the next letter's two digits.
+[Watch the scene](https://www.youtube.com/watch?v=0xkP_FQUsuM&t=220s) (starts
+around 3:40, runs to about 4:00).
 
 <div class="pset-demo">
   <label for="pathfinder-input">Transmission (hex):</label>
-  <input type="text" id="pathfinder-input" placeholder="e.g. 48656C6C6F" autocomplete="off">
+  <input type="text" id="pathfinder-input" placeholder="e.g. 484921" autocomplete="off">
   <p id="pathfinder-result"></p>
 </div>
 
@@ -344,8 +355,22 @@ between one letter's two digits and the next letter's two digits.
 })();
 </script>
 
-Try `48656C6C6F` above to see how it works, then see the specification
-below for what your own program needs to do.
+Try `484921` above to see how it works, then see the specification below
+for what your own program needs to do.
+
+<figure class="hex-preview">
+  <a href="{{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}">
+    <table>
+      <thead><tr><th>Dec</th><th>Bin</th><th>Hex</th><th>Chr</th></tr></thead>
+      <tbody>
+        <tr><td>72</td><td>1001000</td><td>48</td><td>H</td></tr>
+        <tr><td>73</td><td>1001001</td><td>49</td><td>I</td></tr>
+        <tr><td>33</td><td>0100001</td><td>21</td><td>!</td></tr>
+      </tbody>
+    </table>
+  </a>
+  <figcaption>Three rows from the full table, enough to decode <code>484921</code> into HI! Click to open the whole thing.</figcaption>
+</figure>
 
 ## Getting Started
 
@@ -472,16 +497,25 @@ NOT DEAD
 
 ## Hints
 
-- You can walk a string two characters at a time with
-  `range(0, len(s), 2)`, taking a two-character slice `s[i:i+2]` on each
-  pass.
-- `int(pair, 16)` converts a two-character hex string into the integer it
-  represents, the same way `int("42")` converts a decimal string, just in
-  base 16 instead of base 10.
-- `chr()` converts that integer into the character it corresponds to in
+<details class="hint-toggle" markdown="1">
+<summary>Need a hint?</summary>
+
+- Converting two hex digits into the byte they represent is a change of
+  base: `int("4D", 16)` gives you `77`, the same way `int("42")` gives
+  you `42`, just reading the string in base 16 instead of base 10. Try
+  it with a pair of digits from your own transmission in place of
+  `"4D"`.
+- `chr()` turns that integer into the character it corresponds to in
   ASCII, the reverse of what `ord()` does.
-- Build up the decoded message by concatenating characters onto a string
-  in a loop, the same way you would in Caesar.
+- You'll build the decoded message one character at a time. Starting
+  with an empty string and adding to it inside a loop works:
+  `message = message + chr(...)`, or the shorthand `message += chr(...)`.
+- You still need a way to walk through the transmission two characters
+  at a time instead of one, and there's more than one way to set that
+  loop up. Think about what you want your loop variable to count, and
+  how you'd turn each count into a two-character piece of the string.
+
+</details>
 
 ## To Get Full Credit
 

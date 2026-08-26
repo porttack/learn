@@ -118,6 +118,49 @@ figure {
   }
 }
 
+.hex-preview {
+  margin: 1.5em auto;
+  max-width: 280px;
+
+  a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover table {
+      border-color: $grey-color;
+    }
+
+    &:hover th {
+      background: $grey-color;
+      color: $background-color;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  th, td {
+    border: 1px solid $grey-color-light;
+    padding: 0.3em 0.5em;
+    text-align: center;
+  }
+
+  th {
+    background: $grey-color-light;
+  }
+
+  figcaption {
+    font-size: 0.8em;
+    text-align: center;
+    margin-top: 0.5em;
+    color: $grey-color;
+  }
+}
+
 .pset-demo {
   margin: 1.5em 0;
   padding: 1em 1.2em;
@@ -256,6 +299,46 @@ figure {
   &.challenge {
     border-left-color: #8e44ad;
     background: #f4eaf8;
+  }
+}
+
+.hint-toggle {
+  margin: 1.5em 0;
+  border: 1px solid $grey-color-light;
+  border-radius: 6px;
+  padding: 0 1.2em;
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.8em 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::before {
+      content: "\25B8";
+      display: inline-block;
+      transition: transform 0.15s ease;
+    }
+  }
+
+  &[open] summary {
+    border-bottom: 1px solid $grey-color-light;
+    margin-bottom: 1em;
+
+    &::before {
+      transform: rotate(90deg);
+    }
+  }
+
+  > :last-child {
+    padding-bottom: 1em;
   }
 }
 

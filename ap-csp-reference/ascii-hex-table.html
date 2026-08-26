@@ -1,0 +1,547 @@
+---
+layout: null
+permalink: /ap-csp-reference/ascii-hex-table/
+title: "ASCII / Hex Table"
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASCII / Hex Table</title>
+<style>
+  :root {
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #55606b;
+    --line: #d7dde2;
+    --card-bg: #f7f9fa;
+    --accent: #0f5c66;
+    --code-bg: #eef2f3;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 1.5rem;
+    max-width: 68rem;
+    margin-inline: auto;
+    background: var(--paper);
+    color: var(--ink);
+    font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  code, .mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  a { color: var(--accent); }
+
+  header.page-head {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .back-link { font-size: 0.85em; }
+
+  h1 {
+    margin: 0.4rem 0 0.2rem;
+    font-size: 1.7rem;
+  }
+
+  .subtitle {
+    margin: 0 0 0.6rem;
+    color: var(--muted);
+  }
+
+  .intro {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.92em;
+  }
+
+  .intro p { margin: 0.4em 0; }
+
+  .intro .example {
+    background: var(--code-bg);
+    border-radius: 4px;
+    padding: 0.15em 0.4em;
+  }
+
+  table.ascii-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  table.ascii-grid th,
+  table.ascii-grid td {
+    border: 1px solid var(--line);
+    text-align: center;
+    padding: 0.35em 0.1em;
+  }
+
+  table.ascii-grid thead th {
+    background: var(--accent);
+    color: var(--paper);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1.05em;
+  }
+
+  table.ascii-grid tbody th {
+    background: var(--card-bg);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1.05em;
+    color: var(--accent);
+  }
+
+  table.ascii-grid caption {
+    caption-side: top;
+    text-align: left;
+    font-size: 0.85em;
+    color: var(--muted);
+    margin-bottom: 0.4em;
+  }
+
+  .cell-hex {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.68em;
+    color: var(--muted);
+    line-height: 1.2;
+  }
+
+  .cell-glyph {
+    display: block;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 1.5em;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .cell-glyph.word {
+    font-size: 0.85em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  h2.ref-heading {
+    font-size: 1.15rem;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.2em;
+    margin: 1.6rem 0 0.6rem;
+  }
+
+  .full-reference {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0 0.6rem;
+  }
+
+  table.ref-block {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82em;
+  }
+
+  table.ref-block th,
+  table.ref-block td {
+    border: 1px solid var(--line);
+    padding: 0.08em 0.35em;
+    text-align: left;
+  }
+
+  table.ref-block thead th {
+    background: var(--card-bg);
+    font-size: 0.85em;
+  }
+
+  table.ref-block td.bin,
+  table.ref-block th:nth-child(2) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  .nib + .nib {
+    margin-left: 0.35em;
+  }
+
+  .ctrl {
+    font-size: 0.82em;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  footer.page-foot {
+    margin-top: 1.5rem;
+    padding-top: 0.8rem;
+    border-top: 2px solid var(--accent);
+    font-size: 0.8em;
+    color: var(--muted);
+  }
+
+  footer.page-foot p { margin: 0.4em 0; }
+
+  @media print {
+    @page { size: letter landscape; margin: 0.4in; margin-top: 0.75in; }
+    body { max-width: none; padding: 0; font-size: 11pt; }
+    a { color: inherit; text-decoration: none; }
+    .back-link { display: none; }
+    .cell-glyph { font-size: 1.7em; }
+    header.page-head { padding-bottom: 0.15rem; margin-bottom: 0.2rem; }
+    h1 { font-size: 1.15rem; margin: 0.05rem 0; }
+    .subtitle { margin: 0; font-size: 0.8em; }
+    .intro { padding: 0.25rem 0.6rem; margin-bottom: 0.3rem; font-size: 0.75em; }
+    .intro p { margin: 0.15em 0; }
+    h2.ref-heading { break-before: page; margin: 0 0 0.25rem; }
+    table.ref-block { break-inside: avoid; page-break-inside: avoid; font-size: 0.66em; }
+    table.ref-block th, table.ref-block td { padding: 0.04em 0.3em; }
+  }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem; font-size: 14px; }
+    table.ascii-grid { font-size: 0.85em; }
+    .cell-glyph { font-size: 1.15em; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-head">
+  <p class="back-link"><a href="{{ '/ap-csp-reference/' | relative_url }}">&larr; AP CSP Reference</a></p>
+  <h1>ASCII / Hex Table</h1>
+  <p class="subtitle">Decimal, binary, and hex for every ASCII character, 0 through 127.</p>
+</header>
+
+<div class="intro">
+  <p>
+    Codes 0 through 31, plus 127, are unprintable control characters
+    (things like <span class="mono">TAB</span> and <span class="mono">LF</span>,
+    a line break) and are shown by name instead of by symbol. Everything
+    from 32 through 126 is a normal, visible character.
+  </p>
+</div>
+
+<div class="full-reference">
+    <table class="ref-block">
+      <thead><tr><th>Dec</th><th>Bin</th><th>Hex</th><th>Chr</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td class="bin"><span class="nib">0000</span><span class="nib">0000</span></td><td>00</td><td><span class="ctrl">NUL</span></td></tr>
+        <tr><td>1</td><td class="bin"><span class="nib">0000</span><span class="nib">0001</span></td><td>01</td><td><span class="ctrl">SOH</span></td></tr>
+        <tr><td>2</td><td class="bin"><span class="nib">0000</span><span class="nib">0010</span></td><td>02</td><td><span class="ctrl">STX</span></td></tr>
+        <tr><td>3</td><td class="bin"><span class="nib">0000</span><span class="nib">0011</span></td><td>03</td><td><span class="ctrl">ETX</span></td></tr>
+        <tr><td>4</td><td class="bin"><span class="nib">0000</span><span class="nib">0100</span></td><td>04</td><td><span class="ctrl">EOT</span></td></tr>
+        <tr><td>5</td><td class="bin"><span class="nib">0000</span><span class="nib">0101</span></td><td>05</td><td><span class="ctrl">ENQ</span></td></tr>
+        <tr><td>6</td><td class="bin"><span class="nib">0000</span><span class="nib">0110</span></td><td>06</td><td><span class="ctrl">ACK</span></td></tr>
+        <tr><td>7</td><td class="bin"><span class="nib">0000</span><span class="nib">0111</span></td><td>07</td><td><span class="ctrl">BEL</span></td></tr>
+        <tr><td>8</td><td class="bin"><span class="nib">0000</span><span class="nib">1000</span></td><td>08</td><td><span class="ctrl">BS</span></td></tr>
+        <tr><td>9</td><td class="bin"><span class="nib">0000</span><span class="nib">1001</span></td><td>09</td><td><span class="ctrl">TAB</span></td></tr>
+        <tr><td>10</td><td class="bin"><span class="nib">0000</span><span class="nib">1010</span></td><td>0A</td><td><span class="ctrl">LF</span></td></tr>
+        <tr><td>11</td><td class="bin"><span class="nib">0000</span><span class="nib">1011</span></td><td>0B</td><td><span class="ctrl">VT</span></td></tr>
+        <tr><td>12</td><td class="bin"><span class="nib">0000</span><span class="nib">1100</span></td><td>0C</td><td><span class="ctrl">FF</span></td></tr>
+        <tr><td>13</td><td class="bin"><span class="nib">0000</span><span class="nib">1101</span></td><td>0D</td><td><span class="ctrl">CR</span></td></tr>
+        <tr><td>14</td><td class="bin"><span class="nib">0000</span><span class="nib">1110</span></td><td>0E</td><td><span class="ctrl">SO</span></td></tr>
+        <tr><td>15</td><td class="bin"><span class="nib">0000</span><span class="nib">1111</span></td><td>0F</td><td><span class="ctrl">SI</span></td></tr>
+        <tr><td>16</td><td class="bin"><span class="nib">0001</span><span class="nib">0000</span></td><td>10</td><td><span class="ctrl">DLE</span></td></tr>
+        <tr><td>17</td><td class="bin"><span class="nib">0001</span><span class="nib">0001</span></td><td>11</td><td><span class="ctrl">DC1</span></td></tr>
+        <tr><td>18</td><td class="bin"><span class="nib">0001</span><span class="nib">0010</span></td><td>12</td><td><span class="ctrl">DC2</span></td></tr>
+        <tr><td>19</td><td class="bin"><span class="nib">0001</span><span class="nib">0011</span></td><td>13</td><td><span class="ctrl">DC3</span></td></tr>
+        <tr><td>20</td><td class="bin"><span class="nib">0001</span><span class="nib">0100</span></td><td>14</td><td><span class="ctrl">DC4</span></td></tr>
+        <tr><td>21</td><td class="bin"><span class="nib">0001</span><span class="nib">0101</span></td><td>15</td><td><span class="ctrl">NAK</span></td></tr>
+        <tr><td>22</td><td class="bin"><span class="nib">0001</span><span class="nib">0110</span></td><td>16</td><td><span class="ctrl">SYN</span></td></tr>
+        <tr><td>23</td><td class="bin"><span class="nib">0001</span><span class="nib">0111</span></td><td>17</td><td><span class="ctrl">ETB</span></td></tr>
+        <tr><td>24</td><td class="bin"><span class="nib">0001</span><span class="nib">1000</span></td><td>18</td><td><span class="ctrl">CAN</span></td></tr>
+        <tr><td>25</td><td class="bin"><span class="nib">0001</span><span class="nib">1001</span></td><td>19</td><td><span class="ctrl">EM</span></td></tr>
+        <tr><td>26</td><td class="bin"><span class="nib">0001</span><span class="nib">1010</span></td><td>1A</td><td><span class="ctrl">SUB</span></td></tr>
+        <tr><td>27</td><td class="bin"><span class="nib">0001</span><span class="nib">1011</span></td><td>1B</td><td><span class="ctrl">ESC</span></td></tr>
+        <tr><td>28</td><td class="bin"><span class="nib">0001</span><span class="nib">1100</span></td><td>1C</td><td><span class="ctrl">FS</span></td></tr>
+        <tr><td>29</td><td class="bin"><span class="nib">0001</span><span class="nib">1101</span></td><td>1D</td><td><span class="ctrl">GS</span></td></tr>
+        <tr><td>30</td><td class="bin"><span class="nib">0001</span><span class="nib">1110</span></td><td>1E</td><td><span class="ctrl">RS</span></td></tr>
+        <tr><td>31</td><td class="bin"><span class="nib">0001</span><span class="nib">1111</span></td><td>1F</td><td><span class="ctrl">US</span></td></tr>
+      </tbody>
+    </table>
+    <table class="ref-block">
+      <thead><tr><th>Dec</th><th>Bin</th><th>Hex</th><th>Chr</th></tr></thead>
+      <tbody>
+        <tr><td>32</td><td class="bin"><span class="nib">0010</span><span class="nib">0000</span></td><td>20</td><td><span class="ctrl">SP</span></td></tr>
+        <tr><td>33</td><td class="bin"><span class="nib">0010</span><span class="nib">0001</span></td><td>21</td><td>!</td></tr>
+        <tr><td>34</td><td class="bin"><span class="nib">0010</span><span class="nib">0010</span></td><td>22</td><td>&quot;</td></tr>
+        <tr><td>35</td><td class="bin"><span class="nib">0010</span><span class="nib">0011</span></td><td>23</td><td>#</td></tr>
+        <tr><td>36</td><td class="bin"><span class="nib">0010</span><span class="nib">0100</span></td><td>24</td><td>$</td></tr>
+        <tr><td>37</td><td class="bin"><span class="nib">0010</span><span class="nib">0101</span></td><td>25</td><td>%</td></tr>
+        <tr><td>38</td><td class="bin"><span class="nib">0010</span><span class="nib">0110</span></td><td>26</td><td>&amp;</td></tr>
+        <tr><td>39</td><td class="bin"><span class="nib">0010</span><span class="nib">0111</span></td><td>27</td><td>'</td></tr>
+        <tr><td>40</td><td class="bin"><span class="nib">0010</span><span class="nib">1000</span></td><td>28</td><td>(</td></tr>
+        <tr><td>41</td><td class="bin"><span class="nib">0010</span><span class="nib">1001</span></td><td>29</td><td>)</td></tr>
+        <tr><td>42</td><td class="bin"><span class="nib">0010</span><span class="nib">1010</span></td><td>2A</td><td>*</td></tr>
+        <tr><td>43</td><td class="bin"><span class="nib">0010</span><span class="nib">1011</span></td><td>2B</td><td>+</td></tr>
+        <tr><td>44</td><td class="bin"><span class="nib">0010</span><span class="nib">1100</span></td><td>2C</td><td>,</td></tr>
+        <tr><td>45</td><td class="bin"><span class="nib">0010</span><span class="nib">1101</span></td><td>2D</td><td>-</td></tr>
+        <tr><td>46</td><td class="bin"><span class="nib">0010</span><span class="nib">1110</span></td><td>2E</td><td>.</td></tr>
+        <tr><td>47</td><td class="bin"><span class="nib">0010</span><span class="nib">1111</span></td><td>2F</td><td>/</td></tr>
+        <tr><td>48</td><td class="bin"><span class="nib">0011</span><span class="nib">0000</span></td><td>30</td><td>0</td></tr>
+        <tr><td>49</td><td class="bin"><span class="nib">0011</span><span class="nib">0001</span></td><td>31</td><td>1</td></tr>
+        <tr><td>50</td><td class="bin"><span class="nib">0011</span><span class="nib">0010</span></td><td>32</td><td>2</td></tr>
+        <tr><td>51</td><td class="bin"><span class="nib">0011</span><span class="nib">0011</span></td><td>33</td><td>3</td></tr>
+        <tr><td>52</td><td class="bin"><span class="nib">0011</span><span class="nib">0100</span></td><td>34</td><td>4</td></tr>
+        <tr><td>53</td><td class="bin"><span class="nib">0011</span><span class="nib">0101</span></td><td>35</td><td>5</td></tr>
+        <tr><td>54</td><td class="bin"><span class="nib">0011</span><span class="nib">0110</span></td><td>36</td><td>6</td></tr>
+        <tr><td>55</td><td class="bin"><span class="nib">0011</span><span class="nib">0111</span></td><td>37</td><td>7</td></tr>
+        <tr><td>56</td><td class="bin"><span class="nib">0011</span><span class="nib">1000</span></td><td>38</td><td>8</td></tr>
+        <tr><td>57</td><td class="bin"><span class="nib">0011</span><span class="nib">1001</span></td><td>39</td><td>9</td></tr>
+        <tr><td>58</td><td class="bin"><span class="nib">0011</span><span class="nib">1010</span></td><td>3A</td><td>:</td></tr>
+        <tr><td>59</td><td class="bin"><span class="nib">0011</span><span class="nib">1011</span></td><td>3B</td><td>;</td></tr>
+        <tr><td>60</td><td class="bin"><span class="nib">0011</span><span class="nib">1100</span></td><td>3C</td><td>&lt;</td></tr>
+        <tr><td>61</td><td class="bin"><span class="nib">0011</span><span class="nib">1101</span></td><td>3D</td><td>=</td></tr>
+        <tr><td>62</td><td class="bin"><span class="nib">0011</span><span class="nib">1110</span></td><td>3E</td><td>&gt;</td></tr>
+        <tr><td>63</td><td class="bin"><span class="nib">0011</span><span class="nib">1111</span></td><td>3F</td><td>?</td></tr>
+      </tbody>
+    </table>
+    <table class="ref-block">
+      <thead><tr><th>Dec</th><th>Bin</th><th>Hex</th><th>Chr</th></tr></thead>
+      <tbody>
+        <tr><td>64</td><td class="bin"><span class="nib">0100</span><span class="nib">0000</span></td><td>40</td><td>@</td></tr>
+        <tr><td>65</td><td class="bin"><span class="nib">0100</span><span class="nib">0001</span></td><td>41</td><td>A</td></tr>
+        <tr><td>66</td><td class="bin"><span class="nib">0100</span><span class="nib">0010</span></td><td>42</td><td>B</td></tr>
+        <tr><td>67</td><td class="bin"><span class="nib">0100</span><span class="nib">0011</span></td><td>43</td><td>C</td></tr>
+        <tr><td>68</td><td class="bin"><span class="nib">0100</span><span class="nib">0100</span></td><td>44</td><td>D</td></tr>
+        <tr><td>69</td><td class="bin"><span class="nib">0100</span><span class="nib">0101</span></td><td>45</td><td>E</td></tr>
+        <tr><td>70</td><td class="bin"><span class="nib">0100</span><span class="nib">0110</span></td><td>46</td><td>F</td></tr>
+        <tr><td>71</td><td class="bin"><span class="nib">0100</span><span class="nib">0111</span></td><td>47</td><td>G</td></tr>
+        <tr><td>72</td><td class="bin"><span class="nib">0100</span><span class="nib">1000</span></td><td>48</td><td>H</td></tr>
+        <tr><td>73</td><td class="bin"><span class="nib">0100</span><span class="nib">1001</span></td><td>49</td><td>I</td></tr>
+        <tr><td>74</td><td class="bin"><span class="nib">0100</span><span class="nib">1010</span></td><td>4A</td><td>J</td></tr>
+        <tr><td>75</td><td class="bin"><span class="nib">0100</span><span class="nib">1011</span></td><td>4B</td><td>K</td></tr>
+        <tr><td>76</td><td class="bin"><span class="nib">0100</span><span class="nib">1100</span></td><td>4C</td><td>L</td></tr>
+        <tr><td>77</td><td class="bin"><span class="nib">0100</span><span class="nib">1101</span></td><td>4D</td><td>M</td></tr>
+        <tr><td>78</td><td class="bin"><span class="nib">0100</span><span class="nib">1110</span></td><td>4E</td><td>N</td></tr>
+        <tr><td>79</td><td class="bin"><span class="nib">0100</span><span class="nib">1111</span></td><td>4F</td><td>O</td></tr>
+        <tr><td>80</td><td class="bin"><span class="nib">0101</span><span class="nib">0000</span></td><td>50</td><td>P</td></tr>
+        <tr><td>81</td><td class="bin"><span class="nib">0101</span><span class="nib">0001</span></td><td>51</td><td>Q</td></tr>
+        <tr><td>82</td><td class="bin"><span class="nib">0101</span><span class="nib">0010</span></td><td>52</td><td>R</td></tr>
+        <tr><td>83</td><td class="bin"><span class="nib">0101</span><span class="nib">0011</span></td><td>53</td><td>S</td></tr>
+        <tr><td>84</td><td class="bin"><span class="nib">0101</span><span class="nib">0100</span></td><td>54</td><td>T</td></tr>
+        <tr><td>85</td><td class="bin"><span class="nib">0101</span><span class="nib">0101</span></td><td>55</td><td>U</td></tr>
+        <tr><td>86</td><td class="bin"><span class="nib">0101</span><span class="nib">0110</span></td><td>56</td><td>V</td></tr>
+        <tr><td>87</td><td class="bin"><span class="nib">0101</span><span class="nib">0111</span></td><td>57</td><td>W</td></tr>
+        <tr><td>88</td><td class="bin"><span class="nib">0101</span><span class="nib">1000</span></td><td>58</td><td>X</td></tr>
+        <tr><td>89</td><td class="bin"><span class="nib">0101</span><span class="nib">1001</span></td><td>59</td><td>Y</td></tr>
+        <tr><td>90</td><td class="bin"><span class="nib">0101</span><span class="nib">1010</span></td><td>5A</td><td>Z</td></tr>
+        <tr><td>91</td><td class="bin"><span class="nib">0101</span><span class="nib">1011</span></td><td>5B</td><td>[</td></tr>
+        <tr><td>92</td><td class="bin"><span class="nib">0101</span><span class="nib">1100</span></td><td>5C</td><td>\</td></tr>
+        <tr><td>93</td><td class="bin"><span class="nib">0101</span><span class="nib">1101</span></td><td>5D</td><td>]</td></tr>
+        <tr><td>94</td><td class="bin"><span class="nib">0101</span><span class="nib">1110</span></td><td>5E</td><td>^</td></tr>
+        <tr><td>95</td><td class="bin"><span class="nib">0101</span><span class="nib">1111</span></td><td>5F</td><td>_</td></tr>
+      </tbody>
+    </table>
+    <table class="ref-block">
+      <thead><tr><th>Dec</th><th>Bin</th><th>Hex</th><th>Chr</th></tr></thead>
+      <tbody>
+        <tr><td>96</td><td class="bin"><span class="nib">0110</span><span class="nib">0000</span></td><td>60</td><td>`</td></tr>
+        <tr><td>97</td><td class="bin"><span class="nib">0110</span><span class="nib">0001</span></td><td>61</td><td>a</td></tr>
+        <tr><td>98</td><td class="bin"><span class="nib">0110</span><span class="nib">0010</span></td><td>62</td><td>b</td></tr>
+        <tr><td>99</td><td class="bin"><span class="nib">0110</span><span class="nib">0011</span></td><td>63</td><td>c</td></tr>
+        <tr><td>100</td><td class="bin"><span class="nib">0110</span><span class="nib">0100</span></td><td>64</td><td>d</td></tr>
+        <tr><td>101</td><td class="bin"><span class="nib">0110</span><span class="nib">0101</span></td><td>65</td><td>e</td></tr>
+        <tr><td>102</td><td class="bin"><span class="nib">0110</span><span class="nib">0110</span></td><td>66</td><td>f</td></tr>
+        <tr><td>103</td><td class="bin"><span class="nib">0110</span><span class="nib">0111</span></td><td>67</td><td>g</td></tr>
+        <tr><td>104</td><td class="bin"><span class="nib">0110</span><span class="nib">1000</span></td><td>68</td><td>h</td></tr>
+        <tr><td>105</td><td class="bin"><span class="nib">0110</span><span class="nib">1001</span></td><td>69</td><td>i</td></tr>
+        <tr><td>106</td><td class="bin"><span class="nib">0110</span><span class="nib">1010</span></td><td>6A</td><td>j</td></tr>
+        <tr><td>107</td><td class="bin"><span class="nib">0110</span><span class="nib">1011</span></td><td>6B</td><td>k</td></tr>
+        <tr><td>108</td><td class="bin"><span class="nib">0110</span><span class="nib">1100</span></td><td>6C</td><td>l</td></tr>
+        <tr><td>109</td><td class="bin"><span class="nib">0110</span><span class="nib">1101</span></td><td>6D</td><td>m</td></tr>
+        <tr><td>110</td><td class="bin"><span class="nib">0110</span><span class="nib">1110</span></td><td>6E</td><td>n</td></tr>
+        <tr><td>111</td><td class="bin"><span class="nib">0110</span><span class="nib">1111</span></td><td>6F</td><td>o</td></tr>
+        <tr><td>112</td><td class="bin"><span class="nib">0111</span><span class="nib">0000</span></td><td>70</td><td>p</td></tr>
+        <tr><td>113</td><td class="bin"><span class="nib">0111</span><span class="nib">0001</span></td><td>71</td><td>q</td></tr>
+        <tr><td>114</td><td class="bin"><span class="nib">0111</span><span class="nib">0010</span></td><td>72</td><td>r</td></tr>
+        <tr><td>115</td><td class="bin"><span class="nib">0111</span><span class="nib">0011</span></td><td>73</td><td>s</td></tr>
+        <tr><td>116</td><td class="bin"><span class="nib">0111</span><span class="nib">0100</span></td><td>74</td><td>t</td></tr>
+        <tr><td>117</td><td class="bin"><span class="nib">0111</span><span class="nib">0101</span></td><td>75</td><td>u</td></tr>
+        <tr><td>118</td><td class="bin"><span class="nib">0111</span><span class="nib">0110</span></td><td>76</td><td>v</td></tr>
+        <tr><td>119</td><td class="bin"><span class="nib">0111</span><span class="nib">0111</span></td><td>77</td><td>w</td></tr>
+        <tr><td>120</td><td class="bin"><span class="nib">0111</span><span class="nib">1000</span></td><td>78</td><td>x</td></tr>
+        <tr><td>121</td><td class="bin"><span class="nib">0111</span><span class="nib">1001</span></td><td>79</td><td>y</td></tr>
+        <tr><td>122</td><td class="bin"><span class="nib">0111</span><span class="nib">1010</span></td><td>7A</td><td>z</td></tr>
+        <tr><td>123</td><td class="bin"><span class="nib">0111</span><span class="nib">1011</span></td><td>7B</td><td>{</td></tr>
+        <tr><td>124</td><td class="bin"><span class="nib">0111</span><span class="nib">1100</span></td><td>7C</td><td>|</td></tr>
+        <tr><td>125</td><td class="bin"><span class="nib">0111</span><span class="nib">1101</span></td><td>7D</td><td>}</td></tr>
+        <tr><td>126</td><td class="bin"><span class="nib">0111</span><span class="nib">1110</span></td><td>7E</td><td>~</td></tr>
+        <tr><td>127</td><td class="bin"><span class="nib">0111</span><span class="nib">1111</span></td><td>7F</td><td><span class="ctrl">DEL</span></td></tr>
+      </tbody>
+    </table>
+</div>
+
+<h2 class="ref-heading">Quick lookup by hex pair</h2>
+<div class="intro">
+  <p>
+    Each character's hex code has two digits. The first digit picks the
+    <strong>row</strong>, the second picks the <strong>column</strong>;
+    the character where they meet is what that byte represents. For
+    example, <span class="example mono">4D</span> is row <span class="mono">4</span>,
+    column <span class="mono">D</span>: <strong>M</strong>. Going the other
+    way, <strong>M</strong> is in row <span class="mono">4</span>, column
+    <span class="mono">D</span>, so its hex code is <span class="example mono">4D</span>.
+  </p>
+</div>
+
+<table class="ascii-grid">
+  <caption>Row = first hex digit, column = second hex digit.</caption>
+  <thead>
+    <tr>
+      <th scope="col">&nbsp;</th>
+      <th scope="col">0</th>
+      <th scope="col">1</th>
+      <th scope="col">2</th>
+      <th scope="col">3</th>
+      <th scope="col">4</th>
+      <th scope="col">5</th>
+      <th scope="col">6</th>
+      <th scope="col">7</th>
+      <th scope="col">8</th>
+      <th scope="col">9</th>
+      <th scope="col">A</th>
+      <th scope="col">B</th>
+      <th scope="col">C</th>
+      <th scope="col">D</th>
+      <th scope="col">E</th>
+      <th scope="col">F</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">2</th>
+      <td><span class="cell-hex">20</span><span class="cell-glyph word">SPACE</span></td>
+      <td><span class="cell-hex">21</span><span class="cell-glyph">!</span></td>
+      <td><span class="cell-hex">22</span><span class="cell-glyph">&quot;</span></td>
+      <td><span class="cell-hex">23</span><span class="cell-glyph">#</span></td>
+      <td><span class="cell-hex">24</span><span class="cell-glyph">$</span></td>
+      <td><span class="cell-hex">25</span><span class="cell-glyph">%</span></td>
+      <td><span class="cell-hex">26</span><span class="cell-glyph">&amp;</span></td>
+      <td><span class="cell-hex">27</span><span class="cell-glyph">'</span></td>
+      <td><span class="cell-hex">28</span><span class="cell-glyph">(</span></td>
+      <td><span class="cell-hex">29</span><span class="cell-glyph">)</span></td>
+      <td><span class="cell-hex">2A</span><span class="cell-glyph">*</span></td>
+      <td><span class="cell-hex">2B</span><span class="cell-glyph">+</span></td>
+      <td><span class="cell-hex">2C</span><span class="cell-glyph">,</span></td>
+      <td><span class="cell-hex">2D</span><span class="cell-glyph">-</span></td>
+      <td><span class="cell-hex">2E</span><span class="cell-glyph">.</span></td>
+      <td><span class="cell-hex">2F</span><span class="cell-glyph">/</span></td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td><span class="cell-hex">30</span><span class="cell-glyph">0</span></td>
+      <td><span class="cell-hex">31</span><span class="cell-glyph">1</span></td>
+      <td><span class="cell-hex">32</span><span class="cell-glyph">2</span></td>
+      <td><span class="cell-hex">33</span><span class="cell-glyph">3</span></td>
+      <td><span class="cell-hex">34</span><span class="cell-glyph">4</span></td>
+      <td><span class="cell-hex">35</span><span class="cell-glyph">5</span></td>
+      <td><span class="cell-hex">36</span><span class="cell-glyph">6</span></td>
+      <td><span class="cell-hex">37</span><span class="cell-glyph">7</span></td>
+      <td><span class="cell-hex">38</span><span class="cell-glyph">8</span></td>
+      <td><span class="cell-hex">39</span><span class="cell-glyph">9</span></td>
+      <td><span class="cell-hex">3A</span><span class="cell-glyph">:</span></td>
+      <td><span class="cell-hex">3B</span><span class="cell-glyph">;</span></td>
+      <td><span class="cell-hex">3C</span><span class="cell-glyph">&lt;</span></td>
+      <td><span class="cell-hex">3D</span><span class="cell-glyph">=</span></td>
+      <td><span class="cell-hex">3E</span><span class="cell-glyph">&gt;</span></td>
+      <td><span class="cell-hex">3F</span><span class="cell-glyph">?</span></td>
+    </tr>
+    <tr>
+      <th scope="row">4</th>
+      <td><span class="cell-hex">40</span><span class="cell-glyph">@</span></td>
+      <td><span class="cell-hex">41</span><span class="cell-glyph">A</span></td>
+      <td><span class="cell-hex">42</span><span class="cell-glyph">B</span></td>
+      <td><span class="cell-hex">43</span><span class="cell-glyph">C</span></td>
+      <td><span class="cell-hex">44</span><span class="cell-glyph">D</span></td>
+      <td><span class="cell-hex">45</span><span class="cell-glyph">E</span></td>
+      <td><span class="cell-hex">46</span><span class="cell-glyph">F</span></td>
+      <td><span class="cell-hex">47</span><span class="cell-glyph">G</span></td>
+      <td><span class="cell-hex">48</span><span class="cell-glyph">H</span></td>
+      <td><span class="cell-hex">49</span><span class="cell-glyph">I</span></td>
+      <td><span class="cell-hex">4A</span><span class="cell-glyph">J</span></td>
+      <td><span class="cell-hex">4B</span><span class="cell-glyph">K</span></td>
+      <td><span class="cell-hex">4C</span><span class="cell-glyph">L</span></td>
+      <td><span class="cell-hex">4D</span><span class="cell-glyph">M</span></td>
+      <td><span class="cell-hex">4E</span><span class="cell-glyph">N</span></td>
+      <td><span class="cell-hex">4F</span><span class="cell-glyph">O</span></td>
+    </tr>
+    <tr>
+      <th scope="row">5</th>
+      <td><span class="cell-hex">50</span><span class="cell-glyph">P</span></td>
+      <td><span class="cell-hex">51</span><span class="cell-glyph">Q</span></td>
+      <td><span class="cell-hex">52</span><span class="cell-glyph">R</span></td>
+      <td><span class="cell-hex">53</span><span class="cell-glyph">S</span></td>
+      <td><span class="cell-hex">54</span><span class="cell-glyph">T</span></td>
+      <td><span class="cell-hex">55</span><span class="cell-glyph">U</span></td>
+      <td><span class="cell-hex">56</span><span class="cell-glyph">V</span></td>
+      <td><span class="cell-hex">57</span><span class="cell-glyph">W</span></td>
+      <td><span class="cell-hex">58</span><span class="cell-glyph">X</span></td>
+      <td><span class="cell-hex">59</span><span class="cell-glyph">Y</span></td>
+      <td><span class="cell-hex">5A</span><span class="cell-glyph">Z</span></td>
+      <td><span class="cell-hex">5B</span><span class="cell-glyph">[</span></td>
+      <td><span class="cell-hex">5C</span><span class="cell-glyph">\</span></td>
+      <td><span class="cell-hex">5D</span><span class="cell-glyph">]</span></td>
+      <td><span class="cell-hex">5E</span><span class="cell-glyph">^</span></td>
+      <td><span class="cell-hex">5F</span><span class="cell-glyph">_</span></td>
+    </tr>
+    <tr>
+      <th scope="row">6</th>
+      <td><span class="cell-hex">60</span><span class="cell-glyph">`</span></td>
+      <td><span class="cell-hex">61</span><span class="cell-glyph">a</span></td>
+      <td><span class="cell-hex">62</span><span class="cell-glyph">b</span></td>
+      <td><span class="cell-hex">63</span><span class="cell-glyph">c</span></td>
+      <td><span class="cell-hex">64</span><span class="cell-glyph">d</span></td>
+      <td><span class="cell-hex">65</span><span class="cell-glyph">e</span></td>
+      <td><span class="cell-hex">66</span><span class="cell-glyph">f</span></td>
+      <td><span class="cell-hex">67</span><span class="cell-glyph">g</span></td>
+      <td><span class="cell-hex">68</span><span class="cell-glyph">h</span></td>
+      <td><span class="cell-hex">69</span><span class="cell-glyph">i</span></td>
+      <td><span class="cell-hex">6A</span><span class="cell-glyph">j</span></td>
+      <td><span class="cell-hex">6B</span><span class="cell-glyph">k</span></td>
+      <td><span class="cell-hex">6C</span><span class="cell-glyph">l</span></td>
+      <td><span class="cell-hex">6D</span><span class="cell-glyph">m</span></td>
+      <td><span class="cell-hex">6E</span><span class="cell-glyph">n</span></td>
+      <td><span class="cell-hex">6F</span><span class="cell-glyph">o</span></td>
+    </tr>
+    <tr>
+      <th scope="row">7</th>
+      <td><span class="cell-hex">70</span><span class="cell-glyph">p</span></td>
+      <td><span class="cell-hex">71</span><span class="cell-glyph">q</span></td>
+      <td><span class="cell-hex">72</span><span class="cell-glyph">r</span></td>
+      <td><span class="cell-hex">73</span><span class="cell-glyph">s</span></td>
+      <td><span class="cell-hex">74</span><span class="cell-glyph">t</span></td>
+      <td><span class="cell-hex">75</span><span class="cell-glyph">u</span></td>
+      <td><span class="cell-hex">76</span><span class="cell-glyph">v</span></td>
+      <td><span class="cell-hex">77</span><span class="cell-glyph">w</span></td>
+      <td><span class="cell-hex">78</span><span class="cell-glyph">x</span></td>
+      <td><span class="cell-hex">79</span><span class="cell-glyph">y</span></td>
+      <td><span class="cell-hex">7A</span><span class="cell-glyph">z</span></td>
+      <td><span class="cell-hex">7B</span><span class="cell-glyph">{</span></td>
+      <td><span class="cell-hex">7C</span><span class="cell-glyph">|</span></td>
+      <td><span class="cell-hex">7D</span><span class="cell-glyph">}</span></td>
+      <td><span class="cell-hex">7E</span><span class="cell-glyph">~</span></td>
+      <td>&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+
+<footer class="page-foot">
+  <p>
+    Used by the <a href="{{ '/cs50-psets/pathfinder/' | relative_url }}">Pathfinder</a>
+    problem, and anywhere else in this course that converts between hex
+    and text.
+  </p>
+  <p>
+    &copy; Eric Brown. Licensed under
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>.
+  </p>
+</footer>
+
+</body>
+</html>

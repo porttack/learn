@@ -15,6 +15,9 @@ lessons, just things to check while you work.
   the College Board's exam pseudocode language explained in plain English,
   with a Python translation next to every construct. Prints cleanly if you
   want a paper copy.
+- [ASCII / hex table]({{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}),
+  decimal, binary, and hex for every ASCII character, plus a quick-lookup
+  grid by hex digit pair. Prints cleanly, one landscape page per section.
 - [Create Performance Task: Student Handouts (PDF)](https://apcentral.collegeboard.org/media/pdf/ap-csp-student-task-directions.pdf),
   the College Board's official task directions and requirements. Read this
   one straight from the source.
