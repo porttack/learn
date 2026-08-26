@@ -131,6 +131,67 @@ figure {
   }
 }
 
+.terminal-demo {
+  margin: 1.5em 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+
+  .terminal-demo-bar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 12px;
+    background: #3a3a3a;
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+
+      &.red { background: #ff5f56; }
+      &.yellow { background: #ffbd2e; }
+      &.green { background: #27c93f; }
+    }
+  }
+
+  pre {
+    margin: 0;
+    padding: 1em 1.2em;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    height: 370px;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      font-size: inherit;
+    }
+  }
+
+  .terminal-cursor {
+    display: inline-block;
+    width: 0.5em;
+    background: #d4d4d4;
+    animation: terminal-blink 1s steps(1) infinite;
+  }
+}
+
+.terminal-demo-print {
+  display: none;
+}
+
+@keyframes terminal-blink {
+  50% { opacity: 0; }
+}
+
 .callout {
   margin: 1.5em 0;
   padding: 1em 1.2em;
@@ -316,8 +377,13 @@ table.checkoff {
   .print-button,
   .copy-btn,
   .video-embed,
-  .pset-demo {
+  .pset-demo,
+  .terminal-demo {
     display: none !important;
+  }
+
+  .terminal-demo-print {
+    display: block !important;
   }
 
   .copy-command pre {

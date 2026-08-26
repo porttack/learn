@@ -158,35 +158,106 @@ many times as you like.
 - Structure your program with at least one function besides `main()`.
   You might write one to build the square, or one to prompt for and
   validate the size; that part's up to you.
-- Put your name on the first line of the file, as a comment.
-- After your name, add a comment with this question, and answer it in
-  at least two complete sentences: *What challenges did you face while
-  solving this problem? How did you overcome them? If you were to do
-  this again, what would you change or improve in your solution?*
+- At the end of the program, add a comment describing any challenges
+  you ran into or what you'd improve if you did this again. A sentence
+  or two is fine.
 
 ## Usage
 
-Your program should behave per the examples below. The underlined text
-is what a user has typed.
+Your program should behave like the demo below.
 
-```
-$ python square.py
+<div class="terminal-demo">
+  <div class="terminal-demo-bar">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+  </div>
+  <pre><code id="square-usage-terminal"></code><span class="terminal-cursor">&nbsp;</span></pre>
+</div>
+
+<pre class="terminal-demo-print">$ python square.py
 Size: 0
 Size: -1
 Size: 9
 Size: 2
 ##
 ##
-```
 
-```
 $ python square.py
 Size: 4
 ####
 #  #
 #  #
 ####
-```
+</pre>
+
+<script>
+(function () {
+  var el = document.getElementById('square-usage-terminal');
+  if (!el) return;
+
+  var script = [
+    { text: '$ ', type: false },
+    { text: 'python square.py', type: true, speed: 90 },
+    { text: '\n', type: false },
+    { text: 'Size: ', type: false },
+    { text: '0\n', type: true, speed: 150 },
+    { text: 'Size: ', type: false },
+    { text: '-1\n', type: true, speed: 150 },
+    { text: 'Size: ', type: false },
+    { text: '9\n', type: true, speed: 150 },
+    { text: 'Size: ', type: false },
+    { text: '2\n', type: true, speed: 150 },
+    { text: '##\n##\n\n', type: false },
+    { text: '$ ', type: false },
+    { text: 'python square.py', type: true, speed: 90 },
+    { text: '\n', type: false },
+    { text: 'Size: ', type: false },
+    { text: '4\n', type: true, speed: 150 },
+    { text: '####\n#  #\n#  #\n####\n', type: false }
+  ];
+
+  var pauseBetweenLoops = 3200;
+  var pauseBetweenLines = 550;
+
+  function typeText(text, speed, cb) {
+    var i = 0;
+    (function step() {
+      if (i < text.length) {
+        el.textContent += text.charAt(i);
+        i++;
+        setTimeout(step, speed);
+      } else {
+        cb();
+      }
+    })();
+  }
+
+  function playStep(index) {
+    if (index >= script.length) {
+      setTimeout(function () {
+        el.textContent = '';
+        playStep(0);
+      }, pauseBetweenLoops);
+      return;
+    }
+    var item = script[index];
+    if (item.type) {
+      typeText(item.text, item.speed, function () { playStep(index + 1); });
+    } else {
+      el.textContent += item.text;
+      setTimeout(function () { playStep(index + 1); }, pauseBetweenLines);
+    }
+  }
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    var full = '';
+    for (var i = 0; i < script.length; i++) full += script[i].text;
+    el.textContent = full;
+  } else {
+    playStep(0);
+  }
+})();
+</script>
 
 ## Bonus
 
