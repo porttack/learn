@@ -20,6 +20,9 @@ plaintext:  HELLO
 ciphertext: URYYB
 ```
 
+(`plaintext:` has an extra trailing space so it lines up under
+`ciphertext:` below it.)
+
 <div class="pset-demo">
   <label for="caesar-shift">Shift (k):</label>
   <input type="number" id="caesar-shift" value="3" min="0" step="1">
@@ -102,7 +105,9 @@ using Caesar's cipher.
   non-negative integer. Let's call it *k* for the sake of discussion.
 - If your program is executed without any command-line arguments, or
   with more than one, print an error message of your choice and exit
-  immediately with a status code of 1 (`sys.exit(1)`).
+  immediately with a status code of 1 (`exit(1)`). The message's exact
+  wording doesn't matter and isn't checked; only the exit code is. The
+  Usage examples below just show one message you could use.
 - You can assume that, if a user does provide a command-line argument,
   it will be a non-negative integer. No need to check that it's
   numeric, but you do need to convert it to an `int` yourself.
@@ -126,8 +131,8 @@ using Caesar's cipher.
 
 ## Usage
 
-Your program should behave per the examples below. The underlined text
-is what a user has typed.
+Your program should behave per the examples below. As above,
+`plaintext:` carries an extra trailing space so both labels line up.
 
 ```
 $ python caesar.py 1
@@ -160,10 +165,11 @@ Usage: python caesar.py k
 ## Hints
 
 `argv` is a list of strings representing the command-line arguments;
-`len(argv)` tells you how many there are. You'll need to import it:
+`len(argv)` tells you how many there are. You'll need to import both
+`argv` and `exit`:
 
 ```python
-from sys import argv
+from sys import argv, exit
 ```
 
 Once you've confirmed there's exactly one argument, you can access it
@@ -178,7 +184,12 @@ for c in p:
 ```
 
 You may also find Python's `ord()` and `chr()` functions useful for
-rotating letters.
+rotating letters. Letters are contiguous in ASCII: `ord("a")` through
+`ord("z")` are 26 numbers in a row (and separately, so are `ord("A")`
+through `ord("Z")`). Subtracting the first one turns a letter into a
+position from 0 to 25, which you can rotate and wrap with `% 26`, then
+turn back into a letter by adding the first one back and calling
+`chr()`.
 
 ## Style and Submission
 
@@ -190,8 +201,43 @@ Check your style:
 
 Check your correctness:
 
-{% include copy-command.html command="check50 cs50/problems/2019/ap/sentimental/caesar" %}
+{% include copy-command.html command="check50 porttack/cs50/problems/py/caesar" %}
 
 Submit your work:
 
-{% include copy-command.html command="submit50 cs50/problems/2019/ap/sentimental/caesar" %}
+{% include copy-command.html command="submit50 porttack/cs50/problems/py/caesar" %}
+
+<hr>
+
+## Glossary
+
+- **algorithm** — A finite sequence of steps that solves a problem or
+  completes a task. Can be written in English, pseudocode, or code.
+- **loop** — A statement that runs one or more statements, often
+  repeatedly. (AP calls this iteration.)
+- **ASCII** — A table assigning a number from 0 to 127 to each of a
+  small set of characters. `ord()` and `chr()` move between a
+  character and its ASCII number.
+- **encryption** — Encoding data so only holders of the key can read
+  it. A Caesar cipher is a very weak form of this: the key is just a
+  number from 0 to 25, so it can be broken by trying every one.
+- **modulus operator** — The `%` operator, which works on integers and
+  returns the remainder when one number is divided by another. It's
+  what wraps the alphabet around from `Z` back to `A`. (AP calls this
+  `MOD`.)
+
+<hr>
+
+## Standards Alignment
+
+**AP CSP:** [3.4 Strings](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.4), [3.8 Iteration](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.8), [3.13 Developing Procedures](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.13) (Big Idea 3, 30–35% of the exam). Also [5.6 Safe Computing](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-5.6), headers only — the exam doesn't test encryption mechanics, but this is where the concept lives.
+**California 9-12:** [9-12.DA.8](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.DA.8), [9-12.NI.6](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.NI.6)
+**CSTA 2026:** [HS-ALG-PS-02](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-ALG-PS-02), [HS-SYS-SE-33](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-SYS-SE-33)
+**CA CTE (ICT):** [C4.9](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.9), [C4.4](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.4) (Pathway C). Also [C2.2](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C2.2), headers only.
+
+Rotating letters through `ord()`/`chr()` is 3.4 and 3.8 in miniature:
+a string walked one character at a time. The shift doubling as a
+command-line argument is 3.13's territory, and ICT's C4.9 in different
+words; converting a letter to a number and back is DA.8. Caesar's own
+cipher is a case study for 5.6 and NI.6: a tiny keyspace is what makes
+it breakable, which is exactly the tradeoff those standards are about.
