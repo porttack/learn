@@ -4,6 +4,24 @@ order: 3
 source: original
 ---
 
+<figure id="fig-palindrome-mirror" class="palindrome-mirror">
+  <svg viewBox="0 0 400 170" role="img" aria-labelledby="palindrome-mirror-title">
+    <title id="palindrome-mirror-title">The word "racecar" with a faded, upside-down reflection of itself underneath, like a word reflected in still water</title>
+    <defs>
+      <linearGradient id="palindrome-fade" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#828282" stop-opacity="0.45"/>
+        <stop offset="100%" stop-color="#828282" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <text x="200" y="66" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="52" fill="#111">racecar</text>
+    <line x1="30" y1="82" x2="370" y2="82" stroke="#dedede" stroke-width="1"/>
+    <g transform="translate(0,166) scale(1,-1)">
+      <text x="200" y="66" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="52" fill="url(#palindrome-fade)">racecar</text>
+    </g>
+  </svg>
+  <figcaption>Racecar reads the same forwards and backwards, like its own reflection.</figcaption>
+</figure>
+
 ## Background
 
 A palindrome is a word that reads the same forwards and backwards,
@@ -12,6 +30,40 @@ reads in a sentence and counts how many of its words are palindromes.
 
 This problem was originally written for this class's C track by a
 past student, and is adapted here for Python.
+
+<div class="palindrome-demo">
+  <label for="palindrome-input">Try a word:</label>
+  <input type="text" id="palindrome-input" placeholder="e.g. racecar" autocomplete="off">
+  <p id="palindrome-result"></p>
+</div>
+
+<script>
+(function () {
+  var input = document.getElementById('palindrome-input');
+  var result = document.getElementById('palindrome-result');
+  if (!input || !result) return;
+
+  input.addEventListener('input', function () {
+    var cleaned = input.value.toLowerCase().replace(/[^a-z]/g, '');
+    if (cleaned.length === 0) {
+      result.textContent = '';
+      return;
+    }
+    var reversed = cleaned.split('').reverse().join('');
+    if (cleaned.length < 2) {
+      result.textContent = '"' + cleaned + '" is too short to count as a palindrome.';
+    } else if (cleaned === reversed) {
+      result.textContent = '"' + cleaned + '" is a palindrome!';
+    } else {
+      result.textContent = '"' + cleaned + '" reversed is "' + reversed + '", not a palindrome.';
+    }
+  });
+})();
+</script>
+
+This is just a single-word checker to build your intuition. Your
+program needs to handle a whole sentence at once, which is a bit more
+work; see the specification below.
 
 ## Getting Started
 
