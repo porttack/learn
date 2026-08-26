@@ -12,8 +12,9 @@ says which kind it is in its attribution footer, generated from the
 
 ## Original lessons
 
-Lessons written for this course are &copy; Port Tack Learning, licensed
-under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+Lessons written for this course, including some originally written by
+past students and adapted here, are &copy; Eric Brown, licensed under
+[Creative Commons Attribution-NonCommercial-ShareAlike 4.0
 International](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 (CC BY-NC-SA 4.0). You're free to reuse and adapt them for non-commercial
 teaching, with attribution, under the same license.
@@ -28,13 +29,14 @@ These lessons stay under that license — the ShareAlike term means they
 can't be relicensed to 4.0. Photographs and illustrations from the book
 may carry separate rights; see the notice on individual pages.
 
-Other lessons are adapted from [Harvard's CS50
-AP](https://cs50.harvard.edu/ap) curriculum, by David J. Malan and the
-CS50 team, also licensed
+Other lessons are adapted from Harvard's [CS50
+AP](https://cs50.harvard.edu/ap) and [CS50's Introduction to
+Programming with Python](https://cs50.harvard.edu/python) curricula, by
+David J. Malan and the CS50 team, also licensed
 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
-These problem sets are rewritten so that students use plain `input()`
-and `int()` instead of the `cs50` library's `get_int`; each lesson links
-back to the original.
+These problem sets don't require the `cs50` library the way the
+originals do; plain `input()` and `int()` work just as well and are
+what we use in class. Each lesson links back to the original.
 
 ## What's not licensed for reuse
 

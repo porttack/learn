@@ -12,7 +12,7 @@
 - id: original
   use: original
   title: "Original course material"
-  author: "Port Tack Learning"
+  author: "Eric Brown"
   licence: "CC BY-NC-SA 4.0"
 
 - id: rpi-pico-2e
