@@ -50,14 +50,29 @@ figure {
   }
 }
 
-.palindrome-mirror {
+.pset-hero {
   svg {
     max-width: 100%;
     height: auto;
   }
 }
 
-.palindrome-demo {
+.pset-hero-compact {
+  max-width: 200px;
+  margin: 1em auto 1.5em;
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+
+  figcaption {
+    font-size: 0.8em;
+  }
+}
+
+.pset-demo {
   margin: 1.5em 0;
   padding: 1em 1.2em;
   border: 1px solid $grey-color-light;
@@ -68,6 +83,10 @@ figure {
     display: block;
     font-weight: 600;
     margin-bottom: 0.4em;
+
+    &:not(:first-child) {
+      margin-top: 0.8em;
+    }
   }
 
   input[type="text"] {
@@ -80,10 +99,20 @@ figure {
     border-radius: 4px;
   }
 
+  input[type="number"] {
+    font: inherit;
+    width: 5em;
+    box-sizing: border-box;
+    padding: 0.4em 0.6em;
+    border: 1px solid $grey-color;
+    border-radius: 4px;
+  }
+
   p {
     margin: 0.6em 0 0;
     min-height: 1.4em;
     font-weight: 600;
+    word-break: break-word;
   }
 }
 
@@ -272,7 +301,7 @@ table.checkoff {
   .print-button,
   .copy-btn,
   .video-embed,
-  .palindrome-demo {
+  .pset-demo {
     display: none !important;
   }
 

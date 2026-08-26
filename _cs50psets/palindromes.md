@@ -4,7 +4,7 @@ order: 3
 source: original
 ---
 
-<figure id="fig-palindrome-mirror" class="palindrome-mirror">
+<figure id="fig-palindrome-mirror" class="pset-hero">
   <svg viewBox="0 0 400 170" role="img" aria-labelledby="palindrome-mirror-title">
     <title id="palindrome-mirror-title">The word "racecar" with a faded, upside-down reflection of itself underneath, like a word reflected in still water</title>
     <defs>
@@ -31,7 +31,7 @@ reads in a sentence and counts how many of its words are palindromes.
 This problem was originally written for this class's C track by a
 past student, and is adapted here for Python.
 
-<div class="palindrome-demo">
+<div class="pset-demo">
   <label for="palindrome-input">Try a word:</label>
   <input type="text" id="palindrome-input" placeholder="e.g. racecar" autocomplete="off">
   <p id="palindrome-result"></p>

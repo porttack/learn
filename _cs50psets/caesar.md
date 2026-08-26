@@ -5,6 +5,11 @@ source: cs50-ap
 source_url: "https://docs.cs50.net/2019/ap/problems/sentimental/caesar/caesar.html"
 ---
 
+<figure id="fig-caesar-bust" class="pset-hero-compact">
+  <img src="{{ '/assets/img/cs50psets/caesar-bust.jpg' | relative_url }}" alt="A 1st-century BC marble bust identified as Julius Caesar, on display at the Archaeological Museum of Sparti">
+  <figcaption>Julius Caesar, the cipher's namesake, is said to have used a shift of 3 to protect his military messages. (Photo: George E. Koronaios, CC0)</figcaption>
+</figure>
+
 ## Background
 
 Implement a program that encrypts messages using Caesar's cipher.
@@ -14,6 +19,51 @@ $ python caesar.py 13
 plaintext:  HELLO
 ciphertext: URYYB
 ```
+
+<div class="pset-demo">
+  <label for="caesar-shift">Shift (k):</label>
+  <input type="number" id="caesar-shift" value="3" min="0" step="1">
+  <label for="caesar-text">Plaintext:</label>
+  <input type="text" id="caesar-text" placeholder="e.g. HELLO" autocomplete="off">
+  <p id="caesar-result"></p>
+</div>
+
+<script>
+(function () {
+  var shiftInput = document.getElementById('caesar-shift');
+  var textInput = document.getElementById('caesar-text');
+  var result = document.getElementById('caesar-result');
+  if (!shiftInput || !textInput || !result) return;
+
+  function update() {
+    var k = parseInt(shiftInput.value, 10);
+    var text = textInput.value;
+    if (isNaN(k) || k < 0 || text.length === 0) {
+      result.textContent = '';
+      return;
+    }
+    var out = '';
+    for (var i = 0; i < text.length; i++) {
+      var code = text.charCodeAt(i);
+      if (code >= 65 && code <= 90) {
+        out += String.fromCharCode(((code - 65 + k) % 26) + 65);
+      } else if (code >= 97 && code <= 122) {
+        out += String.fromCharCode(((code - 97 + k) % 26) + 97);
+      } else {
+        out += text[i];
+      }
+    }
+    result.textContent = out;
+  }
+
+  shiftInput.addEventListener('input', update);
+  textInput.addEventListener('input', update);
+})();
+</script>
+
+This only encrypts, since that's all the assignment asks for. Use it
+to check your own program's output against, once you've started
+writing `caesar.py`.
 
 ## Walkthrough
 
