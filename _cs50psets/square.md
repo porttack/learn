@@ -305,3 +305,33 @@ Check your correctness:
 Submit your work:
 
 {% include copy-command.html command="submit50 porttack/cs50/problems/py/square" %}
+
+<hr>
+
+## Glossary
+
+- **algorithm** — A finite sequence of steps that solves a problem or
+  completes a task. Can be written in English, pseudocode, or code.
+- **loop** — A statement that runs one or more statements, often
+  repeatedly. (AP calls this iteration.)
+- **conditional statement** — A statement that controls the flow of
+  execution depending on some condition. Informally, this is usually
+  an if statement, which might include an elif and an else. (AP calls
+  this selection.)
+- **boolean expression** — An expression whose value is either True or
+  False.
+
+<hr>
+
+## Standards Alignment
+
+**AP CSP:** [3.5 Boolean Expressions](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.5), [3.8 Iteration](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.8), [3.13 Developing Procedures](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.13) (Big Idea 3, 30–35% of the exam). Also [3.7 Nested Conditionals](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.7), headers only — the edge test reads like a nested condition even when it's written as one boolean expression.
+**California 9-12:** [9-12.AP.14](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.AP.14), [9-12.AP.16](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.AP.16)
+**CSTA 2026:** [HS-ALG-PS-02](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-ALG-PS-02), [HS-PRO-PD-12](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-PRO-PD-12)
+**CA CTE (ICT):** [C4.9](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.9), [C5.4](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C5.4) (Pathway C).
+
+Testing whether a cell is on the border is 3.5's Boolean expression
+doing the work a nested conditional (3.7) would do more verbosely. The
+required helper function is 3.13 and AP.16's "break it into
+procedures" in practice, and ICT's C4.9. Running check50 against your
+solution is C5.4's "testing is a distinct step."

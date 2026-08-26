@@ -146,3 +146,29 @@ Check your correctness:
 Submit your work:
 
 {% include copy-command.html command="submit50 porttack/cs50/problems/py/palindromes" %}
+
+<hr>
+
+## Glossary
+
+- **string** — A type that represents sequences of characters.
+- **substring** — A contiguous portion of a string.
+- **index** — An integer value used to select an item in a sequence,
+  such as a character in a string. In Python indices start from 0.
+- **boolean expression** — An expression whose value is either True or
+  False.
+
+<hr>
+
+## Standards Alignment
+
+**AP CSP:** [3.4 Strings](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.4), [3.5 Boolean Expressions](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.5) (Big Idea 3, 30–35% of the exam). Also [3.9 Developing Algorithms](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.9), headers only.
+**California 9-12:** [9-12.AP.14](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.AP.14)
+**CSTA 2026:** [HS-ALG-PS-02](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-ALG-PS-02)
+**CA CTE (ICT):** [C4.9](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.9) (Pathway C).
+
+Cleaning each word down to its letters and comparing it to its own
+reverse is 3.4's string-as-sequence idea plus 3.5's Boolean test in one
+line. Looping over the words with a running count is AP.14's
+control-structure choice in practice, and ICT's C4.9 in different
+words.
