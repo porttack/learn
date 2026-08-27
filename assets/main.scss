@@ -100,10 +100,16 @@ figure {
     filter: sepia(0.7) saturate(2.2) hue-rotate(-28deg) brightness(0.95) contrast(1.1);
   }
 
-  canvas {
+  .pathfinder-canvas-wrap {
+    position: relative;
     flex: 1 1 auto;
     width: 100%;
     max-width: 270px;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
     height: auto;
   }
 
@@ -115,6 +121,31 @@ figure {
       width: 100%;
       height: 160px;
     }
+  }
+}
+
+.pathfinder-translate-btn {
+  position: absolute;
+  right: 6%;
+  bottom: 6%;
+  font: inherit;
+  font-size: 0.8em;
+  font-weight: 600;
+  background: $grey-color-dark;
+  color: $background-color;
+  border: none;
+  border-radius: 5px;
+  padding: 0.35em 0.7em;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover:not(:disabled) {
+    opacity: 0.85;
+  }
+
+  &:disabled {
+    opacity: 0;
+    pointer-events: none;
   }
 }
 

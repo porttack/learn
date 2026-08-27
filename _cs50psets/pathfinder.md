@@ -7,9 +7,12 @@ source: original
 <figure id="fig-pathfinder-dial" class="pathfinder-hero">
   <div class="pathfinder-hero-row">
     <img src="{{ '/assets/img/cs50psets/pathfinder-lander.jpg' | relative_url }}" alt="A grainy 1997 photo taken by the Sojourner rover, looking back at the Pathfinder lander on the Martian surface, its camera mast standing up in the middle of the deflated airbags" class="pathfinder-photo">
-    <canvas id="pathfinder-dial-canvas" width="270" height="410" role="img" aria-label="A dial of 16 signs, 0 through F, arranged in a circle, with a camera rotating in place at the center and shining a beam at the sign it is reading, while the hex digits and the letters they decode to accumulate in a sand tray below"></canvas>
+    <div class="pathfinder-canvas-wrap">
+      <canvas id="pathfinder-dial-canvas" width="270" height="450" role="img" aria-label="A dial of 16 signs, 0 through F, arranged in a circle, with a camera rotating in place at the center and shining a beam at the sign it is reading, while the hex digits accumulate in a sand tray below. Once a full word's hex digits are written, a button in the corner of the tray translates them into letters."></canvas>
+      <button type="button" id="pathfinder-translate-btn" class="pathfinder-translate-btn" disabled>Translate to ASCII</button>
+    </div>
   </div>
-  <figcaption>NASA's real Pathfinder lander, photographed by the Sojourner rover on sol 33 (NASA/JPL-Caltech). Its camera, mounted on the mast in the middle of the picture, is what this problem is modeled on: it rotated in place, pausing at a sign to read a hex digit, then rotating to the next.</figcaption>
+  <figcaption>NASA's real Pathfinder lander, photographed by the Sojourner rover on sol 33 (NASA/JPL-Caltech). Its camera, mounted on the mast in the middle of the picture, is what this problem is modeled on: it rotated in place, pausing at a sign to read a hex digit, then rotating to the next. Try decoding the hex yourself before you click; the <a href="{{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}">ASCII / hex table</a> can help.</figcaption>
 </figure>
 
 <script>
@@ -19,7 +22,7 @@ source: original
   var ctx = canvas.getContext('2d');
   var dpr = window.devicePixelRatio || 1;
   var cssWidth = 270;
-  var cssHeight = 410;
+  var cssHeight = 450;
   canvas.width = cssWidth * dpr;
   canvas.height = cssHeight * dpr;
   canvas.style.width = cssWidth + 'px';
@@ -29,10 +32,11 @@ source: original
   var digits = '0123456789ABCDEF';
   var dialX = 135, dialY = 105;
   var signRadius = 80, signSize = 11;
-  var boardX = 5, boardY = 216, boardW = 260, boardH = 172;
+  var boardX = 5, boardY = 216, boardW = 260, boardH = 212;
   var dwellMs = 800;
   var travelMs = 650;
-  var messagePauseMs = 5000;
+  var interactionTimeoutMs = 20000;
+  var translateBtn = document.getElementById('pathfinder-translate-btn');
 
   var messages = ['HOWALIVE?', 'STATUS', 'SPACE PIRATE', 'NO DISCO', 'SCIENCE IT', 'PIRATE NINJA', 'BOTANY WINS', 'HI MOM', 'NOT DEAD', 'MORE POTATOES!'];
   var msgData = messages.map(function (m) {
@@ -237,13 +241,13 @@ source: original
       var col = columns[columns.length - 1];
       col.h2 = b.hex.charAt(1);
       col.h2Jit = jitter();
-      col.letter = b.ch;
-      col.letterJit = jitter();
 
       if (byteIndex === bytes.length - 1) {
-        // Last byte of the message: hold the finished word on screen
-        // before erasing, instead of clearing it in this same tick.
-        state = 'messagePause';
+        // Every byte's hex is written, but the letters stay hidden until
+        // someone clicks the button. Nothing happens on its own from
+        // here -- this only advances on a real click.
+        state = 'awaitingGuess';
+        if (translateBtn) translateBtn.disabled = false;
       } else {
         byteIndex += 1;
         digitPhase = 0;
@@ -252,12 +256,39 @@ source: original
     }
   }
 
-  function startNextMessage() {
-    msgIndex = (msgIndex + 1) % msgData.length;
+  function revealLetters() {
+    if (state !== 'awaitingGuess') return;
+    var bytes = msgData[msgIndex];
+    for (var i = 0; i < columns.length; i++) {
+      columns[i].letter = bytes[i].ch;
+      columns[i].letterJit = jitter();
+    }
+    state = 'revealed';
+    stateStart = null;
+    if (translateBtn) {
+      translateBtn.textContent = 'Next Phrase';
+      translateBtn.disabled = false;
+    }
+  }
+
+  function goToNextMessage() {
+    if (state !== 'revealed') return;
+    if (msgData.length > 1) {
+      var nextIndex;
+      do {
+        nextIndex = Math.floor(Math.random() * msgData.length);
+      } while (nextIndex === msgIndex);
+      msgIndex = nextIndex;
+    }
     byteIndex = 0;
     digitPhase = 0;
     columns = [];
     setTarget(msgData[msgIndex][0].d1);
+    stateStart = null;
+    if (translateBtn) {
+      translateBtn.textContent = 'Translate to ASCII';
+      translateBtn.disabled = true;
+    }
   }
 
   function draw(t) {
@@ -272,11 +303,15 @@ source: original
         revealDigit();
         stateStart = t;
       }
-    } else if (state === 'messagePause') {
+    } else if (state === 'awaitingGuess') {
       render(toAngle, null);
-      if (elapsed > messagePauseMs) {
-        startNextMessage();
-        stateStart = t;
+      if (elapsed > interactionTimeoutMs) {
+        revealLetters();
+      }
+    } else if (state === 'revealed') {
+      render(toAngle, null);
+      if (elapsed > interactionTimeoutMs) {
+        goToNextMessage();
       }
     } else {
       var progress = Math.min(elapsed / travelMs, 1);
@@ -292,6 +327,13 @@ source: original
     }
 
     if (!reduceMotion) requestAnimationFrame(draw);
+  }
+
+  if (translateBtn) {
+    translateBtn.addEventListener('click', function () {
+      if (state === 'awaitingGuess') revealLetters();
+      else if (state === 'revealed') goToNextMessage();
+    });
   }
 
   if (reduceMotion) {
