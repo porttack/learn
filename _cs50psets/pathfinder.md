@@ -10,7 +10,54 @@ source: original
     <div class="pathfinder-canvas-wrap">
       <canvas id="pathfinder-dial-canvas" width="270" height="450" role="img" aria-label="A dial of 16 signs, 0 through F, arranged in a circle, with a camera rotating in place at the center and shining a beam at the sign it is reading, while the hex digits accumulate in a sand tray below. Once a full word's hex digits are written, a button in the corner of the tray translates them into letters."></canvas>
       <button type="button" id="pathfinder-translate-btn" class="pathfinder-translate-btn" disabled>Translate to ASCII</button>
+      <button type="button" class="hex-quickref-toggle" id="hex-quickref-toggle" aria-expanded="false">Hex ref</button>
     </div>
+  </div>
+  <div class="hex-quickref-panel" id="hex-quickref-panel">
+    <p class="hex-quickref-hint">Click a letter to guess the next one.</p>
+    <table>
+      <tr>
+        <td data-ch="A"><span class="qr-ch">A</span><span class="qr-hex">41</span></td>
+        <td data-ch="B"><span class="qr-ch">B</span><span class="qr-hex">42</span></td>
+        <td data-ch="C"><span class="qr-ch">C</span><span class="qr-hex">43</span></td>
+        <td data-ch="D"><span class="qr-ch">D</span><span class="qr-hex">44</span></td>
+        <td data-ch="E"><span class="qr-ch">E</span><span class="qr-hex">45</span></td>
+        <td data-ch="F"><span class="qr-ch">F</span><span class="qr-hex">46</span></td>
+      </tr>
+      <tr>
+        <td data-ch="G"><span class="qr-ch">G</span><span class="qr-hex">47</span></td>
+        <td data-ch="H"><span class="qr-ch">H</span><span class="qr-hex">48</span></td>
+        <td data-ch="I"><span class="qr-ch">I</span><span class="qr-hex">49</span></td>
+        <td data-ch="J"><span class="qr-ch">J</span><span class="qr-hex">4A</span></td>
+        <td data-ch="K"><span class="qr-ch">K</span><span class="qr-hex">4B</span></td>
+        <td data-ch="L"><span class="qr-ch">L</span><span class="qr-hex">4C</span></td>
+      </tr>
+      <tr>
+        <td data-ch="M"><span class="qr-ch">M</span><span class="qr-hex">4D</span></td>
+        <td data-ch="N"><span class="qr-ch">N</span><span class="qr-hex">4E</span></td>
+        <td data-ch="O"><span class="qr-ch">O</span><span class="qr-hex">4F</span></td>
+        <td data-ch="P"><span class="qr-ch">P</span><span class="qr-hex">50</span></td>
+        <td data-ch="Q"><span class="qr-ch">Q</span><span class="qr-hex">51</span></td>
+        <td data-ch="R"><span class="qr-ch">R</span><span class="qr-hex">52</span></td>
+      </tr>
+      <tr>
+        <td data-ch="S"><span class="qr-ch">S</span><span class="qr-hex">53</span></td>
+        <td data-ch="T"><span class="qr-ch">T</span><span class="qr-hex">54</span></td>
+        <td data-ch="U"><span class="qr-ch">U</span><span class="qr-hex">55</span></td>
+        <td data-ch="V"><span class="qr-ch">V</span><span class="qr-hex">56</span></td>
+        <td data-ch="W"><span class="qr-ch">W</span><span class="qr-hex">57</span></td>
+        <td data-ch="X"><span class="qr-ch">X</span><span class="qr-hex">58</span></td>
+      </tr>
+      <tr>
+        <td data-ch="Y"><span class="qr-ch">Y</span><span class="qr-hex">59</span></td>
+        <td data-ch="Z"><span class="qr-ch">Z</span><span class="qr-hex">5A</span></td>
+        <td data-ch=" "><span class="qr-ch">SP</span><span class="qr-hex">20</span></td>
+        <td data-ch="!"><span class="qr-ch">!</span><span class="qr-hex">21</span></td>
+        <td data-ch="?"><span class="qr-ch">?</span><span class="qr-hex">3F</span></td>
+        <td></td>
+      </tr>
+    </table>
+    <a class="hex-quickref-link" href="{{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}">Full ASCII / hex table &rarr;</a>
   </div>
   <figcaption>NASA's real Pathfinder lander, photographed by the Sojourner rover on sol 33 (NASA/JPL-Caltech). Its camera, mounted on the mast in the middle of the picture, is what this problem is modeled on: it rotated in place, pausing at a sign to read a hex digit, then rotating to the next. Try decoding the hex yourself before you click; the <a href="{{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}">ASCII / hex table</a> can help.</figcaption>
 </figure>
@@ -256,6 +303,15 @@ source: original
     }
   }
 
+  function finishReveal() {
+    state = 'revealed';
+    stateStart = null;
+    if (translateBtn) {
+      translateBtn.textContent = 'Next Phrase';
+      translateBtn.disabled = false;
+    }
+  }
+
   function revealLetters() {
     if (state !== 'awaitingGuess') return;
     var bytes = msgData[msgIndex];
@@ -263,12 +319,40 @@ source: original
       columns[i].letter = bytes[i].ch;
       columns[i].letterJit = jitter();
     }
-    state = 'revealed';
-    stateStart = null;
-    if (translateBtn) {
-      translateBtn.textContent = 'Next Phrase';
-      translateBtn.disabled = false;
+    finishReveal();
+  }
+
+  // The next column that's a legitimate guessing target: its hex is
+  // fully written (both digits) but its letter isn't filled in yet.
+  // Returns -1 if there isn't one -- either everything so far is
+  // already guessed, or the camera hasn't finished that byte's second
+  // digit yet.
+  function nextGuessableIndex() {
+    for (var i = 0; i < columns.length; i++) {
+      if (columns[i].letter === null) {
+        return columns[i].h2 !== null ? i : -1;
+      }
     }
+    return -1;
+  }
+
+  // Called when someone clicks a letter in the quick-reference popup.
+  // Works as soon as a byte's hex digits are both up in the sand, even
+  // if the camera is still reading later bytes of the same word.
+  // Returns true if it was the correct next letter (and fills it into
+  // the sand), false otherwise.
+  function guessLetter(ch) {
+    if (state === 'revealed') return false;
+    var idx = nextGuessableIndex();
+    if (idx === -1) return false;
+    var bytes = msgData[msgIndex];
+    if (bytes[idx].ch !== ch) return false;
+    columns[idx].letter = ch;
+    columns[idx].letterJit = jitter();
+    // Compare against the message's true length, not columns.length --
+    // the camera may not have read the later bytes yet.
+    if (idx === bytes.length - 1) finishReveal();
+    return true;
   }
 
   function goToNextMessage() {
@@ -336,6 +420,19 @@ source: original
     });
   }
 
+  var quickrefCells = document.querySelectorAll('#hex-quickref-panel td[data-ch]');
+  for (var qi = 0; qi < quickrefCells.length; qi++) {
+    (function (cell) {
+      cell.addEventListener('click', function () {
+        var correct = guessLetter(cell.getAttribute('data-ch'));
+        if (!correct) {
+          cell.classList.add('is-wrong');
+          setTimeout(function () { cell.classList.remove('is-wrong'); }, 400);
+        }
+      });
+    })(quickrefCells[qi]);
+  }
+
   if (reduceMotion) {
     render(angleForIndex(msgData[0][0].d1), msgData[0][0].d1);
   } else {
@@ -394,6 +491,37 @@ around 3:40, runs to about 4:00).
   }
 
   input.addEventListener('input', update);
+})();
+</script>
+
+<script>
+(function () {
+  var toggle = document.getElementById('hex-quickref-toggle');
+  var panel = document.getElementById('hex-quickref-panel');
+  if (!toggle || !panel) return;
+
+  function close() {
+    panel.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  function open() {
+    panel.classList.add('is-open');
+    toggle.setAttribute('aria-expanded', 'true');
+  }
+
+  toggle.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (panel.classList.contains('is-open')) close(); else open();
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!panel.contains(e.target) && e.target !== toggle) close();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') close();
+  });
 })();
 </script>
 
