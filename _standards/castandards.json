@@ -1,0 +1,252 @@
+{
+ "meta": {
+  "source": "California K-12 Computer Science Standards (California Department of Education), reissued with framework alignment updates through Nov. 2023",
+  "extracted": "2026-07-30",
+  "source_pages": 270,
+  "grade_band_covered": "9-12",
+  "shape_note": "Extraction matches the expected shape exactly: five strands, thirty core 9-12 standards (CS.1-3, NI.4-7, DA.8-11, AP.12-22, IC.23-30). A separate '9-12 Specialty' set (9-12S.*, e.g. 9-12S.CS.1) exists in the same document for a more advanced/specialized pathway; it is a different, non-core standard set and is not indexed here."
+ },
+ "standards": [
+  {
+   "code": "9-12.CS.1",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Computing systems hide their internal workings behind a simpler experience for the person using them.",
+   "scope_note": "About hardware/device abstraction (e.g., a phone hiding its GPS hardware from the user), not software abstraction in code."
+  },
+  {
+   "code": "9-12.CS.2",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Application software, system software, and hardware form layers that each manage their own part of getting a task done."
+  },
+  {
+   "code": "9-12.CS.3",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Troubleshooting a complex problem means researching, testing, and drawing on past experience with similar problems, and writing that process down so someone else can repeat it."
+  },
+  {
+   "code": "9-12.NI.4",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Networks have to satisfy real performance demands -- latency, bandwidth, throughput -- for the organizations that depend on them."
+  },
+  {
+   "code": "9-12.NI.5",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "The internet's design, including how it looks up addresses and routes traffic, is what lets it scale and stay reliable."
+  },
+  {
+   "code": "9-12.NI.6",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Different security threats call for different defenses, and choosing between them is a tradeoff, not a solved problem."
+  },
+  {
+   "code": "9-12.NI.7",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Cryptographic techniques protect data in transit, and symmetric and asymmetric approaches trade off differently for cost and use case."
+  },
+  {
+   "code": "9-12.DA.8",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "The same real-world thing -- a color, a character, an image -- can be represented digitally in more than one way, and converting between those representations is a normal task."
+  },
+  {
+   "code": "9-12.DA.9",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "How data is organized and where it's stored is a choice with real consequences for cost, speed, reliability, privacy, and integrity."
+  },
+  {
+   "code": "9-12.DA.10",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Turning a data set into a visualization is itself a design choice that shapes what other people take away from it."
+  },
+  {
+   "code": "9-12.DA.11",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "A computational model is only useful once it's been checked against real observations and adjusted where it doesn't match."
+  },
+  {
+   "code": "9-12.AP.12",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Solving a computational problem often means combining an algorithm you already know with one you design yourself."
+  },
+  {
+   "code": "9-12.AP.13",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Once a problem needs more than a handful of related values, a collection replaces a pile of separately named variables."
+  },
+  {
+   "code": "9-12.AP.14",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Different control structures for the same task read differently and run differently, and choosing between them is a real design decision."
+  },
+  {
+   "code": "9-12.AP.15",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "A program built around events -- a button press, a timer -- responds to things happening rather than running start to finish in one line."
+  },
+  {
+   "code": "9-12.AP.16",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Breaking a big problem into smaller ones, each solved by its own procedure, module, or class, is what makes a complex program manageable."
+  },
+  {
+   "code": "9-12.AP.17",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "A program built from separate, interacting pieces -- including code someone else wrote -- is organized by modular design."
+  },
+  {
+   "code": "9-12.AP.18",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Designing for a broad audience means building in a way to collect feedback from real users and revising the design in response."
+  },
+  {
+   "code": "9-12.AP.19",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Using someone else's library or code comes with license terms that limit what you can do with it."
+  },
+  {
+   "code": "9-12.AP.20",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "A program gets better through repeated rounds of testing and fixing, aimed at more than just correctness -- performance and ease of use matter too."
+  },
+  {
+   "code": "9-12.AP.21",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Building something as a team, in defined roles, with shared tools, is different work from building it alone."
+  },
+  {
+   "code": "9-12.AP.22",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "As a program's design takes shape, writing the decisions down -- in whatever form fits -- is what makes the process legible to anyone else who looks at it later."
+  },
+  {
+   "code": "9-12.IC.23",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Computing changes personal, social, economic, and cultural practices, not always for the better."
+  },
+  {
+   "code": "9-12.IC.24",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Bias built into a computing artifact, often from assumptions its designers didn't question, has to be actively tested for and reduced."
+  },
+  {
+   "code": "9-12.IC.25",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "The same algorithm often turns out to solve problems in fields far from where it was first designed."
+  },
+  {
+   "code": "9-12.IC.26",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "New technologies reshape social, economic, and political structures in ways worth examining critically, not just adopting."
+  },
+  {
+   "code": "9-12.IC.27",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Digital collaboration tools connect people across cultures and professions in ways that reshape how teams work together."
+  },
+  {
+   "code": "9-12.IC.28",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Intellectual property law cuts both ways for innovation: it protects creators, but it can also limit what gets built next."
+  },
+  {
+   "code": "9-12.IC.29",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "A lot of personal data is collected automatically, without the person it describes actively participating, and that raises its own privacy concerns."
+  },
+  {
+   "code": "9-12.IC.30",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "core": true,
+   "paraphrase": "Privacy laws and ethics differ across places and contexts, and evaluating a policy means weighing its social and economic tradeoffs."
+  }
+ ]
+}

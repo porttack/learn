@@ -1,0 +1,759 @@
+<title>CA ICT &amp; Anchor Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+</style>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<h2><a href="#anchors">Anchor Standards</a></h2><ul>
+<li class="topic-link"><a href="#anchor-1.0">1.0 Academics</a></li>
+<li class="topic-link"><a href="#anchor-2.0">2.0 Communications</a></li>
+<li class="topic-link"><a href="#anchor-3.0">3.0 Career Planning and Management</a></li>
+<li class="topic-link"><a href="#anchor-4.0">4.0 Technology</a></li>
+<li class="topic-link"><a href="#anchor-5.0">5.0 Problem Solving and Critical Thinking</a></li>
+<li class="topic-link"><a href="#anchor-6.0">6.0 Health and Safety</a></li>
+<li class="topic-link"><a href="#anchor-7.0">7.0 Responsibility and Flexibility</a></li>
+<li class="topic-link"><a href="#anchor-8.0">8.0 Ethics and Legal Responsibilities</a></li>
+<li class="topic-link"><a href="#anchor-9.0">9.0 Leadership and Teamwork</a></li>
+<li class="topic-link"><a href="#anchor-10.0">10.0 Technical Knowledge and Skills</a></li>
+<li class="topic-link"><a href="#anchor-11.0">11.0 Demonstration and Application</a></li>
+</ul><h2><a href="#pathwayC">Pathway C · Software and Systems Development Pathway</a></h2><ul>
+<li class="topic-link"><a href="#pathwayC-C1.0">C1.0 Systems Development Process</a></li>
+<li class="topic-link"><a href="#pathwayC-C2.0">C2.0 Requirements Analysis</a></li>
+<li class="topic-link"><a href="#pathwayC-C3.0">C3.0 Human-Computer Interfaces</a></li>
+<li class="topic-link"><a href="#pathwayC-C4.0">C4.0 Programming Languages</a></li>
+<li class="topic-link"><a href="#pathwayC-C5.0">C5.0 Testing &amp; Debugging</a></li>
+<li class="topic-link"><a href="#pathwayC-C6.0">C6.0 Media Integration</a></li>
+<li class="topic-link"><a href="#pathwayC-C7.0">C7.0 Web &amp; Online Development</a></li>
+<li class="topic-link"><a href="#pathwayC-C8.0">C8.0 Databases</a></li>
+<li class="topic-link"><a href="#pathwayC-C9.0">C9.0 Devices &amp; Robotics</a></li>
+<li class="topic-link"><a href="#pathwayC-C10.0">C10.0 Intelligent Computing</a></li>
+</ul>
+</nav>
+<main>
+<h1>CA ICT &amp; Anchor Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of California's CTE Model
+Curriculum Standards, ICT sector (2013): the 11 cross-sector anchor standards plus
+Pathway C (Software and Systems Development). <strong>What this is not.</strong> Original
+paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<h2 id="anchors">Anchor Standards</h2>
+<div class="topic" id="T-1.0">
+<h3><a class="anchor-link" href="#T-1.0">#</a><span class="code-badge">1.0</span> Academics</h3>
+<p class="paraphrase">Successfully finishing an ICT pathway means meeting the academic standards tied to it, on the way to further education or a job.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-2.0">
+<h3><a class="anchor-link" href="#T-2.0">#</a><span class="code-badge">2.0</span> Communications</h3>
+<p class="paraphrase">Working in ICT means using the sector's own vocabulary and communicating clearly, in writing, speech, and multimedia, at a career-ready level.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-2.1"><a class="anchor-link" href="#T-2.1">#</a><span class="code-badge">2.1</span> Communication follows a basic model: someone sends a message, someone else receives it.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-2.2"><a class="anchor-link" href="#T-2.2">#</a><span class="code-badge">2.2</span> Communication can break down, and recognizing what gets in the way of a message landing correctly is its own skill.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-2.3"><a class="anchor-link" href="#T-2.3">#</a><span class="code-badge">2.3</span> Reading both what's said and what's implied, then responding appropriately, is part of communicating well.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-2.4"><a class="anchor-link" href="#T-2.4">#</a><span class="code-badge">2.4</span> Clean spelling, grammar, and formatting show up in both written and electronic communication.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-2.5"><a class="anchor-link" href="#T-2.5">#</a><span class="code-badge">2.5</span> The same information often needs to reach different audiences, which means adapting the medium and format each time.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-2.6"><a class="anchor-link" href="#T-2.6">#</a><span class="code-badge">2.6</span> Using digital media and communication tools safely, legally, and responsibly is expected, not optional.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-2.7"><a class="anchor-link" href="#T-2.7">#</a><span class="code-badge">2.7</span> Writing clearly and communicating well, especially with people outside your own background, is its own working skill.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-2.8"><a class="anchor-link" href="#T-2.8">#</a><span class="code-badge">2.8</span> Serving a customer well starts from understanding what a customer-oriented approach actually looks like.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-3.0">
+<h3><a class="anchor-link" href="#T-3.0">#</a><span class="code-badge">3.0</span> Career Planning and Management</h3>
+<p class="paraphrase">Making good career decisions means pulling together career information from many different kinds of sources.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-3.1"><a class="anchor-link" href="#T-3.1">#</a><span class="code-badge">3.1</span> Knowing your own interests, aptitudes, and skills is the starting point for any real career decision.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-3.2"><a class="anchor-link" href="#T-3.2">#</a><span class="code-badge">3.2</span> Traits like trustworthiness, respect, and responsibility carry real weight in how a career turns out.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-3.3"><a class="anchor-link" href="#T-3.3">#</a><span class="code-badge">3.3</span> Information and communication technologies themselves are tools people use to plan and decide on a career.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-3.4"><a class="anchor-link" href="#T-3.4">#</a><span class="code-badge">3.4</span> Different careers demand different levels of education, training, certification, or licensing, and that's worth researching directly.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-3.5"><a class="anchor-link" href="#T-3.5">#</a><span class="code-badge">3.5</span> A career plan has to account for shifting job trends, social needs, and the economy, not just personal preference.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-3.6"><a class="anchor-link" href="#T-3.6">#</a><span class="code-badge">3.6</span> Professional organizations, industry groups, and labor unions all play a role in how a working society functions.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-3.7"><a class="anchor-link" href="#T-3.7">#</a><span class="code-badge">3.7</span> Small businesses matter to both the California and the global economy.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-3.8"><a class="anchor-link" href="#T-3.8">#</a><span class="code-badge">3.8</span> Employers and colleges increasingly look at a candidate's digital footprint when evaluating them.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-3.9"><a class="anchor-link" href="#T-3.9">#</a><span class="code-badge">3.9</span> A career plan should reflect a person's actual interests, potential pathways, and options after high school.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-4.0">
+<h3><a class="anchor-link" href="#T-4.0">#</a><span class="code-badge">4.0</span> Technology</h3>
+<p class="paraphrase">Both existing and brand-new technology get used in the ICT workplace to research and produce information, products, and services.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-4.1"><a class="anchor-link" href="#T-4.1">#</a><span class="code-badge">4.1</span> Electronic references are a normal source for gathering information and building products or services.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-4.2"><a class="anchor-link" href="#T-4.2">#</a><span class="code-badge">4.2</span> Technology-based communication tools can help unpack complicated systems and issues, when used responsibly.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-4.3"><a class="anchor-link" href="#T-4.3">#</a><span class="code-badge">4.3</span> More than one source often needs to be pulled together, weighed against each other, and reconciled -- and information and communication technologies are the tools for doing that.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-4.4"><a class="anchor-link" href="#T-4.4">#</a><span class="code-badge">4.4</span> Not all information found digitally is equally trustworthy, and spotting bias or intent in a source matters.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-4.5"><a class="anchor-link" href="#T-4.5">#</a><span class="code-badge">4.5</span> Technology keeps changing, and tracking how it has, does, and will affect a given pathway is worth doing directly.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-4.6"><a class="anchor-link" href="#T-4.6">#</a><span class="code-badge">4.6</span> Different information and communication technologies serve different populations, and choosing the right one is part of the task.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-5.0">
+<h3><a class="anchor-link" href="#T-5.0">#</a><span class="code-badge">5.0</span> Problem Solving and Critical Thinking</h3>
+<p class="paraphrase">ICT problems get solved through research, ranging from quick lookups to sustained investigation, using critical and creative thinking.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-5.1"><a class="anchor-link" href="#T-5.1">#</a><span class="code-badge">5.1</span> Asking the right question, from more than one point of view, is often the first real step in solving a problem.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-5.2"><a class="anchor-link" href="#T-5.2">#</a><span class="code-badge">5.2</span> Work problems don't always have a predictable shape, and different kinds of reasoning fit different situations.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-5.3"><a class="anchor-link" href="#T-5.3">#</a><span class="code-badge">5.3</span> A complex work environment is a system, and understanding how its parts interact explains its outcomes.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-5.4"><a class="anchor-link" href="#T-5.4">#</a><span class="code-badge">5.4</span> Drawing a sound conclusion from analysis is what actually informs a good decision.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-5.5"><a class="anchor-link" href="#T-5.5">#</a><span class="code-badge">5.5</span> Tracking a problem to its source takes a structured, logical approach, not guesswork.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a></div>
+<div class="item-note">Chapter 5's Debugging section traces a symptom back to its structural cause rather than guessing: an indentation error reported at one line but caused by the line above, a decibels bug reported at line 5 but actually on line 4 (integer division). Headers only -- the chapter demonstrates this but doesn't name it as its own skill.</div>
+</li>
+<li id="T-5.6"><a class="anchor-link" href="#T-5.6">#</a><span class="code-badge">5.6</span> Knowing where to look for help solving a problem is itself a resource worth knowing.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-5.7"><a class="anchor-link" href="#T-5.7">#</a><span class="code-badge">5.7</span> Some problems get solved by working through them repeatedly, refining the approach each pass.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></div>
+<div class="item-note">Chapter 7's has_e build-up (inline loop, then encapsulated, then a boolean return, then parameterized) and the incremental construction of uses_any mirror this standard's start-rough-and-refine framing -- the same pattern as AP's 3.9 Developing Algorithms, from the Anchor-standard side.</div>
+</li>
+<li id="T-5.8"><a class="anchor-link" href="#T-5.8">#</a><span class="code-badge">5.8</span> Algorithms are a tool for solving problems, not just an abstract concept.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-5.9"><a class="anchor-link" href="#T-5.9">#</a><span class="code-badge">5.9</span> A large problem becomes tractable once it's broken into smaller components.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a></div>
+<div class="item-note">Chapter 3's 'Why functions?' section explicitly frames functions as a way to divide a big program into smaller, debuggable, reusable pieces -- a direct match. Chapter 4's development plan is a literal, numbered decomposition procedure. Chapter 5's recursive decomposition (countdown, the Sierpinski exercise splitting a triangle of degree n into three of degree n-1) is a purer instance of the same idea.</div>
+</li>
+<li id="T-5.10"><a class="anchor-link" href="#T-5.10">#</a><span class="code-badge">5.10</span> Layers of abstraction let you work with a system without tracking every detail underneath it.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a></div>
+<div class="item-note">Calling repeat/print_twice without re-deriving what's inside them is a first, light instance of working through a layer of abstraction -- headers only, since the book doesn't use the word 'abstraction' this early and the connection is implicit. Chapter 4's interface/implementation split (two different circle implementations sharing one interface) makes the concept explicit for the first time. Chapter 6's leap of faith -- trusting a function's return value without re-examining its body -- is the clearest, most direct treatment of abstraction in the book so far.</div>
+</li>
+<li id="T-5.11"><a class="anchor-link" href="#T-5.11">#</a><span class="code-badge">5.11</span> Numbers can be represented in more than one base system, including binary and hexadecimal.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-5.12"><a class="anchor-link" href="#T-5.12">#</a><span class="code-badge">5.12</span> Boolean logic underlies both decision-making and searching in computing.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-note">Chapter 5's boolean expressions and logical operators feed directly into its if statements -- boolean logic driving decision-making is the chapter's structure, not just present in it. Chapter 7's has_e/uses_any (booleans built from in/or) driving linear search, and Chapter 8's re.search result tested against None, are the searching half of the same standard -- the single best new match found in either chapter.</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-6.0">
+<h3><a class="anchor-link" href="#T-6.0">#</a><span class="code-badge">6.0</span> Health and Safety</h3>
+<p class="paraphrase">ICT work environments come with their own health and safety procedures, and their own specialized vocabulary.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-6.1"><a class="anchor-link" href="#T-6.1">#</a><span class="code-badge">6.1</span> Material Safety Data Sheets exist to be located and followed.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.2"><a class="anchor-link" href="#T-6.2">#</a><span class="code-badge">6.2</span> Workplace policies and regulations spell out what employers and employees are each responsible for.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.3"><a class="anchor-link" href="#T-6.3">#</a><span class="code-badge">6.3</span> Keeping tools, equipment, and supplies stored, clean, and in working order is itself a health and safety practice.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.4"><a class="anchor-link" href="#T-6.4">#</a><span class="code-badge">6.4</span> Lifting, bending, and moving equipment safely protects the person doing it.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.5"><a class="anchor-link" href="#T-6.5">#</a><span class="code-badge">6.5</span> Preventing and responding to workplace accidents includes understanding ergonomics.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.6"><a class="anchor-link" href="#T-6.6">#</a><span class="code-badge">6.6</span> A safe, healthy workplace has to be actively maintained, not just assumed.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.7"><a class="anchor-link" href="#T-6.7">#</a><span class="code-badge">6.7</span> OSHA laws and regulations apply to this workplace and are worth knowing.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.8"><a class="anchor-link" href="#T-6.8">#</a><span class="code-badge">6.8</span> Maintaining safety and health in the workplace is an ongoing responsibility, restated here as its own point.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.9"><a class="anchor-link" href="#T-6.9">#</a><span class="code-badge">6.9</span> E-waste carries health, environmental, and legal risk if it isn't disposed of properly.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.10"><a class="anchor-link" href="#T-6.10">#</a><span class="code-badge">6.10</span> Using natural resources like paper and ink deliberately, not wastefully, is a workplace habit.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-6.11"><a class="anchor-link" href="#T-6.11">#</a><span class="code-badge">6.11</span> Conserving energy while computing -- powering down equipment, using power-saving settings -- is a small but real practice.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-7.0">
+<h3><a class="anchor-link" href="#T-7.0">#</a><span class="code-badge">7.0</span> Responsibility and Flexibility</h3>
+<p class="paraphrase">Working in the ICT sector means collaborating in ways that show personal and professional responsibility, flexibility, and respect.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-7.1"><a class="anchor-link" href="#T-7.1">#</a><span class="code-badge">7.1</span> Financial management choices ripple outward into the economy, the workforce, and the community.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-7.2"><a class="anchor-link" href="#T-7.2">#</a><span class="code-badge">7.2</span> Following through on your role -- whether it's personal, in your community, or at work -- takes real accountability.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-7.3"><a class="anchor-link" href="#T-7.3">#</a><span class="code-badge">7.3</span> Roles and responsibilities shift over time, and adapting to that is part of the job.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-7.4"><a class="anchor-link" href="#T-7.4">#</a><span class="code-badge">7.4</span> Managing time efficiently is what actually lets responsibilities get fulfilled.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-7.5"><a class="anchor-link" href="#T-7.5">#</a><span class="code-badge">7.5</span> High-quality work applies to how a product or presentation is designed, not just built.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-7.6"><a class="anchor-link" href="#T-7.6">#</a><span class="code-badge">7.6</span> Responsible financial management is a skill in its own right, not just a personal habit.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-7.7"><a class="anchor-link" href="#T-7.7">#</a><span class="code-badge">7.7</span> A professional work demeanor includes both behavior and appropriate attire for the field.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-7.8"><a class="anchor-link" href="#T-7.8">#</a><span class="code-badge">7.8</span> Issues with global reach touch the ICT sector too, and documenting that impact is worth doing.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-8.0">
+<h3><a class="anchor-link" href="#T-8.0">#</a><span class="code-badge">8.0</span> Ethics and Legal Responsibilities</h3>
+<p class="paraphrase">Professional, ethical, legal behavior means responding thoughtfully to different perspectives and following applicable laws, regulations, and norms.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-8.1"><a class="anchor-link" href="#T-8.1">#</a><span class="code-badge">8.1</span> Quality assurance standards exist to be understood and actually put into practice.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-8.2"><a class="anchor-link" href="#T-8.2">#</a><span class="code-badge">8.2</span> Regulatory agencies at every level of government have their own laws and regulations covering this sector.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-8.3"><a class="anchor-link" href="#T-8.3">#</a><span class="code-badge">8.3</span> Ethical, legal practice in ICT means matching the workplace standards the sector has set.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-8.4"><a class="anchor-link" href="#T-8.4">#</a><span class="code-badge">8.4</span> Personal integrity, confidentiality, and ethical behavior matter directly to how a workplace functions.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-8.5"><a class="anchor-link" href="#T-8.5">#</a><span class="code-badge">8.5</span> An organization's culture and practices shape its whole working environment.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-8.6"><a class="anchor-link" href="#T-8.6">#</a><span class="code-badge">8.6</span> Copyright and intellectual property law apply to proprietary information, including how it gets cited.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-8.7"><a class="anchor-link" href="#T-8.7">#</a><span class="code-badge">8.7</span> Confidential information comes with its own rules about who it can be shared with.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-8.8"><a class="anchor-link" href="#T-8.8">#</a><span class="code-badge">8.8</span> Wider technology adoption has brought its own legal and ethical problems, including hacking, scams, and privacy breaches.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-9.0">
+<h3><a class="anchor-link" href="#T-9.0">#</a><span class="code-badge">9.0</span> Leadership and Teamwork</h3>
+<p class="paraphrase">Working with peers means engaging with different perspectives, leadership styles, group dynamics, and resolving conflict productively.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-9.1"><a class="anchor-link" href="#T-9.1">#</a><span class="code-badge">9.1</span> Good leaders share a recognizable set of responsibilities, competencies, and behaviors.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-9.2"><a class="anchor-link" href="#T-9.2">#</a><span class="code-badge">9.2</span> Successful teams share traits: leadership, cooperation, collaboration, and sound decision-making.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-9.3"><a class="anchor-link" href="#T-9.3">#</a><span class="code-badge">9.3</span> Teamwork, leadership, and citizenship matter in school, community, and workplace settings alike.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-9.4"><a class="anchor-link" href="#T-9.4">#</a><span class="code-badge">9.4</span> Being part of a professional organization, or competing in career-development events, can genuinely sharpen academic preparation and open career doors.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-9.5"><a class="anchor-link" href="#T-9.5">#</a><span class="code-badge">9.5</span> Today's world is interconnected, and that calls for a genuinely global outlook.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-9.6"><a class="anchor-link" href="#T-9.6">#</a><span class="code-badge">9.6</span> Respecting individual and cultural differences is part of valuing diversity in the workplace.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-9.7"><a class="anchor-link" href="#T-9.7">#</a><span class="code-badge">9.7</span> Real ICT-sector problems get solved through active, interactive teamwork.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-10.0">
+<h3><a class="anchor-link" href="#T-10.0">#</a><span class="code-badge">10.0</span> Technical Knowledge and Skills</h3>
+<p class="paraphrase">Every pathway in this sector draws on the same core toolkit of hands-on know-how, put into practice by following procedure carefully.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-10.1"><a class="anchor-link" href="#T-10.1">#</a><span class="code-badge">10.1</span> The ICT sector has its own terminology and practices worth being able to interpret and explain.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.2"><a class="anchor-link" href="#T-10.2">#</a><span class="code-badge">10.2</span> Every corner of the ICT sector comes with its own rules, regulations, and expectations to follow.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.3"><a class="anchor-link" href="#T-10.3">#</a><span class="code-badge">10.3</span> Projects and products in this sector have their own specific requirements and expectations to build toward.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.4"><a class="anchor-link" href="#T-10.4">#</a><span class="code-badge">10.4</span> Working with industry experts is a real way to gain specific technical knowledge and skill.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.5"><a class="anchor-link" href="#T-10.5">#</a><span class="code-badge">10.5</span> Both a single computer and a network are built from hardware and software parts that depend on each other.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.6"><a class="anchor-link" href="#T-10.6">#</a><span class="code-badge">10.6</span> Different kinds of information -- text, images, sound, video -- take up different amounts of data, and media formats vary in capacity.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.7"><a class="anchor-link" href="#T-10.7">#</a><span class="code-badge">10.7</span> Metric prefixes like kilo, mega, giga, and tera describe scale throughout computing.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.8"><a class="anchor-link" href="#T-10.8">#</a><span class="code-badge">10.8</span> Security in computing rests on concepts like authorization, access rights, and encryption.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.9"><a class="anchor-link" href="#T-10.9">#</a><span class="code-badge">10.9</span> Industry-standard software -- word processors, spreadsheets, databases, multimedia tools -- are common working tools.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.10"><a class="anchor-link" href="#T-10.10">#</a><span class="code-badge">10.10</span> Files get organized and managed within a hierarchical system.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.11"><a class="anchor-link" href="#T-10.11">#</a><span class="code-badge">10.11</span> Text, data, sound, video, and images can all move from one software program or system to another, and there's more than one route for doing it.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.12"><a class="anchor-link" href="#T-10.12">#</a><span class="code-badge">10.12</span> Different kinds of information call for different search strategies.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.13"><a class="anchor-link" href="#T-10.13">#</a><span class="code-badge">10.13</span> Retrieved information should be checked for accuracy, relevance, and completeness.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-10.14"><a class="anchor-link" href="#T-10.14">#</a><span class="code-badge">10.14</span> Online resources can meaningfully support collaboration, research, publishing, communication, and productivity -- or fail to.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-11.0">
+<h3><a class="anchor-link" href="#T-11.0">#</a><span class="code-badge">11.0</span> Demonstration and Application</h3>
+<p class="paraphrase">The knowledge and skills named across this sector's anchor and pathway standards get demonstrated directly, in classrooms, labs, and real workplace settings.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-11.1"><a class="anchor-link" href="#T-11.1">#</a><span class="code-badge">11.1</span> Work-based learning experiences extend and apply what's learned in the classroom and lab.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-11.2"><a class="anchor-link" href="#T-11.2">#</a><span class="code-badge">11.2</span> Getting genuinely good at a technical pathway is what actually opens the door to certification, licensure, or further study.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-11.3"><a class="anchor-link" href="#T-11.3">#</a><span class="code-badge">11.3</span> Entrepreneurship, self-employment, and new ventures are all real options worth understanding.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-11.4"><a class="anchor-link" href="#T-11.4">#</a><span class="code-badge">11.4</span> Entrepreneurial practices and behaviors apply specifically within ICT-sector opportunities.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-11.5"><a class="anchor-link" href="#T-11.5">#</a><span class="code-badge">11.5</span> A portfolio is one way to show evidence of the skills and knowledge named in these standards.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<h2 id="pathwayC">Pathway C · Software and Systems Development Pathway</h2>
+<p class="paraphrase">Students in this pathway prepare for computer-science-related careers: designing, building, deploying, and maintaining the software systems that keep modern organizations running, from e-commerce to healthcare records to entertainment.</p>
+<div class="topic" id="T-C1.0">
+<h3><a class="anchor-link" href="#T-C1.0">#</a><span class="code-badge">C1.0</span> Systems Development Process</h3>
+<p class="paraphrase">Building software well means following a real systems-development process, not improvising.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C1.1"><a class="anchor-link" href="#T-C1.1">#</a><span class="code-badge">C1.1</span> A systems-development life cycle moves through recognizable phases: analysis, design, programming, testing, deployment, maintenance, and improvement.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C1.2"><a class="anchor-link" href="#T-C1.2">#</a><span class="code-badge">C1.2</span> Systems development can follow different models, including a traditional life-cycle approach or agile methods.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C1.3"><a class="anchor-link" href="#T-C1.3">#</a><span class="code-badge">C1.3</span> Specifications and requirements for a piece of software, new or existing, get developed through a real process.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C1.4"><a class="anchor-link" href="#T-C1.4">#</a><span class="code-badge">C1.4</span> Working on a development team means operating within that team's defined scope and boundaries.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C1.5"><a class="anchor-link" href="#T-C1.5">#</a><span class="code-badge">C1.5</span> Versioning is how a project's milestones get tracked over time.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C1.6"><a class="anchor-link" href="#T-C1.6">#</a><span class="code-badge">C1.6</span> Flowcharts and UML are tools for diagramming a process.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-C2.0">
+<h3><a class="anchor-link" href="#T-C2.0">#</a><span class="code-badge">C2.0</span> Requirements Analysis</h3>
+<p class="paraphrase">Software and systems requirements need to be defined and analyzed before building starts.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C2.1"><a class="anchor-link" href="#T-C2.1">#</a><span class="code-badge">C2.1</span> Development work serves different ends: automating a task, making people more productive, building a model to analyze something, or simply entertaining.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C2.2"><a class="anchor-link" href="#T-C2.2">#</a><span class="code-badge">C2.2</span> Development work can have unintended consequences -- bugs, security holes, health or environmental risk, privacy problems -- that are worth watching for and preventing.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C2.3"><a class="anchor-link" href="#T-C2.3">#</a><span class="code-badge">C2.3</span> A development strategy should target what a specific customer actually needs and wants.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C2.4"><a class="anchor-link" href="#T-C2.4">#</a><span class="code-badge">C2.4</span> Understanding a customer's needs is a distinct analytical step in development.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C2.5"><a class="anchor-link" href="#T-C2.5">#</a><span class="code-badge">C2.5</span> Requirements and possible solutions both need to be worked out and written down before they can be built.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-C3.0">
+<h3><a class="anchor-link" href="#T-C3.0">#</a><span class="code-badge">C3.0</span> Human-Computer Interfaces</h3>
+<p class="paraphrase">The interface between a person and a piece of technology is itself something to design well.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C3.1"><a class="anchor-link" href="#T-C3.1">#</a><span class="code-badge">C3.1</span> Every interface runs on the same basic cycle: input, processing, output.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C3.2"><a class="anchor-link" href="#T-C3.2">#</a><span class="code-badge">C3.2</span> A good interface reflects real knowledge of how people think, move, and interact socially.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C3.3"><a class="anchor-link" href="#T-C3.3">#</a><span class="code-badge">C3.3</span> Accessibility -- for users with disabilities and users who don't speak English -- has to be actively supported, not assumed.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-C4.0">
+<h3><a class="anchor-link" href="#T-C4.0">#</a><span class="code-badge">C4.0</span> Programming Languages</h3>
+<p class="paraphrase">Software gets built in a programming language, and that language sits at some level of abstraction.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C4.1"><a class="anchor-link" href="#T-C4.1">#</a><span class="code-badge">C4.1</span> Programming languages range from low-level, close to the hardware, to high-level and web-based.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C4.2"><a class="anchor-link" href="#T-C4.2">#</a><span class="code-badge">C4.2</span> Programming languages and protocols interact -- client-side code, server-side code, and a query language reaching into a database are all pieces of the same system.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C4.3"><a class="anchor-link" href="#T-C4.3">#</a><span class="code-badge">C4.3</span> Software gets built inside some kind of environment -- a simple content editor on one end, a full-featured IDE on the other.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C4.4"><a class="anchor-link" href="#T-C4.4">#</a><span class="code-badge">C4.4</span> Data has types, and those types get encoded in specific ways.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap01.html?readonly">Chapter 1 (Welcome)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a></div>
+<div class="item-note">Chapter 1 introduces int, float, and str as distinct types with different encodings, and the type() function to check them -- a direct match. Chapter 6's Checking types section (isinstance, a type-guarded factorial) extends it with a second, applied instance -- checking a type at runtime, not just naming types.</div>
+</li>
+<li id="T-C4.5"><a class="anchor-link" href="#T-C4.5">#</a><span class="code-badge">C4.5</span> Programming paradigms differ -- procedural, object-oriented, event-driven, multithreaded -- and each shapes how code gets structured.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C4.6"><a class="anchor-link" href="#T-C4.6">#</a><span class="code-badge">C4.6</span> Every programming language has its own syntax, and using it correctly matters.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap01.html?readonly">Chapter 1 (Welcome)</a>, <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a></div>
+<div class="item-note">Chapter 1 introduces syntax errors (missing parentheses, illegal quote marks); Chapter 2's Debugging section explicitly names 'syntax error' as one of three error kinds. Both are about a language's own syntax rules, matching this standard directly.</div>
+</li>
+<li id="T-C4.7"><a class="anchor-link" href="#T-C4.7">#</a><span class="code-badge">C4.7</span> Data structures, arrays, objects, files, and databases are all ways of organizing a program's data.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-note">Chapter 8's Writing files section (open, read mode vs 'w' mode, close) is a direct match for this standard's 'files' item.</div>
+</li>
+<li id="T-C4.8"><a class="anchor-link" href="#T-C4.8">#</a><span class="code-badge">C4.8</span> Object-oriented programming brings its own vocabulary: objects, properties, methods, inheritance.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C4.9"><a class="anchor-link" href="#T-C4.9">#</a><span class="code-badge">C4.9</span> A working program leans on a shared toolkit of constructs -- branches and loops, reusable procedures and functions that take parameters, variables to hold state, ways to recover from errors, and sometimes a function that calls itself.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-note">Chapter 2 introduces variables; Chapter 3 introduces functions, parameters, and the for loop, plus error handling via %%expect. Chapter 4 adds keyword arguments and more parameter work than chapters 2-3 combined. Chapter 5 adds branches (conditionals) and Chapter 6 adds recursion -- 'sometimes a function that calls itself' is this standard's own closing phrase, and Chapter 6's factorial/fibonacci are exactly that. Chapter 7 reinforces variables-holding-state (Updating variables) and a second error-recovery demo. Chapter 8 adds branch-on-condition file-reading loops and TypeError/IndexError recovery. By chapter 8 this standard's full construct list is covered.</div>
+</li>
+<li id="T-C4.10"><a class="anchor-link" href="#T-C4.10">#</a><span class="code-badge">C4.10</span> Different queueing, sorting, and searching algorithms trade off differently against each other.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></div>
+<div class="item-note">Chapter 7's Search section explicitly names and builds the linear-search pattern -- the searching half of this standard. The trade-off half isn't reached; no second search algorithm exists yet to compare it against. Headers only.</div>
+</li>
+<li id="T-C4.11"><a class="anchor-link" href="#T-C4.11">#</a><span class="code-badge">C4.11</span> Development work needs documentation aimed at more than one audience -- comments for other programmers, manuals for users.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a></div>
+<div class="item-note">Chapter 2's Comments section is the 'comments for other programmers' half of this standard. Chapter 4's Docstrings section is a more formal instance of the same half -- a documented contract rather than a plain comment, so a distinct but related carrier, not a repeat. The 'manuals for users' half still isn't addressed anywhere.</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-C5.0">
+<h3><a class="anchor-link" href="#T-C5.0">#</a><span class="code-badge">C5.0</span> Testing &amp; Debugging</h3>
+<p class="paraphrase">Software has to be tested, debugged, and improved, not just written.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C5.1"><a class="anchor-link" href="#T-C5.1">#</a><span class="code-badge">C5.1</span> Reliable, effective, efficient software shares recognizable characteristics.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C5.2"><a class="anchor-link" href="#T-C5.2">#</a><span class="code-badge">C5.2</span> A program sometimes has to change because its own specification changed, or because the technology around it moved on.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C5.3"><a class="anchor-link" href="#T-C5.3">#</a><span class="code-badge">C5.3</span> Code can be optimized deliberately for better performance.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C5.4"><a class="anchor-link" href="#T-C5.4">#</a><span class="code-badge">C5.4</span> Testing is a distinct step applied to both software and the broader project.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></div>
+<div class="item-note">Chapter 7's Doctest section -- docstring-embedded tests, a dedicated pass/fail vocabulary, and a runner function built for the purpose -- is close to a literal match for testing as its own distinct development step.</div>
+</li>
+<li id="T-C5.5"><a class="anchor-link" href="#T-C5.5">#</a><span class="code-badge">C5.5</span> A finished result gets evaluated against what it was originally required to do.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C5.6"><a class="anchor-link" href="#T-C5.6">#</a><span class="code-badge">C5.6</span> Debugging is part of quality assurance, not separate from it.
+<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap01.html?readonly">Chapter 1 (Welcome)</a>, <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-note">Every chapter's Debugging section -- same pattern as AP CRD-1.4/CRD-2.I, already the carrier for AP topic 1.4 in every chapter. Headers only throughout; no single chapter's Debugging section is more chapter-specific than any other's.</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-C6.0">
+<h3><a class="anchor-link" href="#T-C6.0">#</a><span class="code-badge">C6.0</span> Media Integration</h3>
+<p class="paraphrase">Development projects often pull together more than one kind of media.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C6.1"><a class="anchor-link" href="#T-C6.1">#</a><span class="code-badge">C6.1</span> A print piece, a video, an audio track, and an interactive experience each have their own basic design vocabulary.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C6.2"><a class="anchor-link" href="#T-C6.2">#</a><span class="code-badge">C6.2</span> Media gets encoded in different ways -- vector versus bitmap graphics, different bit depths -- and each choice trades off differently.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C6.3"><a class="anchor-link" href="#T-C6.3">#</a><span class="code-badge">C6.3</span> Editing media takes the right tool for the format -- something for animating frame by frame, something for drawing or touching up an image, something for modeling in three dimensions.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C6.4"><a class="anchor-link" href="#T-C6.4">#</a><span class="code-badge">C6.4</span> A multimedia project -- video, game, interactive site -- moves from storyboard through to finished production.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C6.5"><a class="anchor-link" href="#T-C6.5">#</a><span class="code-badge">C6.5</span> Choosing a file format and compression level for media is its own analytical decision.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C6.6"><a class="anchor-link" href="#T-C6.6">#</a><span class="code-badge">C6.6</span> Media has to actually be integrated into a finished project, using the right tools for the job.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C6.7"><a class="anchor-link" href="#T-C6.7">#</a><span class="code-badge">C6.7</span> A finished project can include media built to a professional standard -- pictures, write-ups, sound, footage -- made or recorded directly rather than borrowed.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-C7.0">
+<h3><a class="anchor-link" href="#T-C7.0">#</a><span class="code-badge">C7.0</span> Web &amp; Online Development</h3>
+<p class="paraphrase">Web and online projects come with their own development process.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C7.1"><a class="anchor-link" href="#T-C7.1">#</a><span class="code-badge">C7.1</span> Web hosting and related services need both server hardware and the right software.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C7.2"><a class="anchor-link" href="#T-C7.2">#</a><span class="code-badge">C7.2</span> Getting content live online means registering a domain name and arranging both hosting and email for it.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C7.3"><a class="anchor-link" href="#T-C7.3">#</a><span class="code-badge">C7.3</span> Search engine optimization, including keyword and metadata strategy, is how a site attracts visitors.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C7.4"><a class="anchor-link" href="#T-C7.4">#</a><span class="code-badge">C7.4</span> E-commerce capability means handling a shopping cart and credit-card transactions, not just listing products.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C7.5"><a class="anchor-link" href="#T-C7.5">#</a><span class="code-badge">C7.5</span> A website, an online business, or a personal e-portfolio is meant to actually go live, not just stay a plan.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C7.6"><a class="anchor-link" href="#T-C7.6">#</a><span class="code-badge">C7.6</span> Delivering and retrieving online content quickly is its own optimization problem.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-C8.0">
+<h3><a class="anchor-link" href="#T-C8.0">#</a><span class="code-badge">C8.0</span> Databases</h3>
+<p class="paraphrase">Databases are their own kind of software development.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C8.1"><a class="anchor-link" href="#T-C8.1">#</a><span class="code-badge">C8.1</span> Databases play a critical role in how modern organizations actually function.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C8.2"><a class="anchor-link" href="#T-C8.2">#</a><span class="code-badge">C8.2</span> Databases are built from basic structures: fields, records, tables, and views.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C8.3"><a class="anchor-link" href="#T-C8.3">#</a><span class="code-badge">C8.3</span> Tables relate to each other in specific ways -- one-to-one, one-to-many, many-to-many -- established through primary keys, foreign keys, and indexes.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C8.4"><a class="anchor-link" href="#T-C8.4">#</a><span class="code-badge">C8.4</span> Data modeling is how a database gets designed around real business needs.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C8.5"><a class="anchor-link" href="#T-C8.5">#</a><span class="code-badge">C8.5</span> Queries are the tool for extracting and manipulating data, whether selecting it or acting on it.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C8.6"><a class="anchor-link" href="#T-C8.6">#</a><span class="code-badge">C8.6</span> A well-normalized database follows an appropriate schema.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C8.7"><a class="anchor-link" href="#T-C8.7">#</a><span class="code-badge">C8.7</span> Moving data between a database and other applications comes with real limitations and challenges.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C8.8"><a class="anchor-link" href="#T-C8.8">#</a><span class="code-badge">C8.8</span> Turning data into things such as cross-tabulations, graphs, or charts is what actually makes it useful for deciding something.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-C9.0">
+<h3><a class="anchor-link" href="#T-C9.0">#</a><span class="code-badge">C9.0</span> Devices &amp; Robotics</h3>
+<p class="paraphrase">Software gets developed for more than just general-purpose computers, including robotics and other devices.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C9.1"><a class="anchor-link" href="#T-C9.1">#</a><span class="code-badge">C9.1</span> Device-focused development shows up anywhere from personal computers to robots to smart appliances.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C9.2"><a class="anchor-link" href="#T-C9.2">#</a><span class="code-badge">C9.2</span> Installing equipment and assembling hardware both call for the right tools and testing.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C9.3"><a class="anchor-link" href="#T-C9.3">#</a><span class="code-badge">C9.3</span> Hardware is what actually captures input, processes it, and acts on it.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C9.4"><a class="anchor-link" href="#T-C9.4">#</a><span class="code-badge">C9.4</span> Embedded programming involves digital logic, how data is represented at the machine level, and how memory is organized.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C9.5"><a class="anchor-link" href="#T-C9.5">#</a><span class="code-badge">C9.5</span> A microcontroller can be programmed to run a device or a robot.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<div class="topic" id="T-C10.0">
+<h3><a class="anchor-link" href="#T-C10.0">#</a><span class="code-badge">C10.0</span> Intelligent Computing</h3>
+<p class="paraphrase">Intelligent computing is its own area of software development.</p>
+<p class="meta">Unassigned</p>
+<ul class="ek-list">
+<li id="T-C10.1"><a class="anchor-link" href="#T-C10.1">#</a><span class="code-badge">C10.1</span> Models of intelligent behavior raise the question of what actually distinguishes a human from a machine.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C10.2"><a class="anchor-link" href="#T-C10.2">#</a><span class="code-badge">C10.2</span> Intelligent computing covers areas like perception, proximity sensing, processing, and control.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C10.3"><a class="anchor-link" href="#T-C10.3">#</a><span class="code-badge">C10.3</span> AI methods include things like neural networks, Bayesian inference, fuzzy logic, and finite state machines.
+<div class="item-meta">Unassigned</div>
+</li>
+<li id="T-C10.4"><a class="anchor-link" href="#T-C10.4">#</a><span class="code-badge">C10.4</span> Making AI behavior actually happen can lean on math-based modeling, reinforcement learning, or probability-based analysis, among other methods.
+<div class="item-meta">Unassigned</div>
+</li>
+</ul>
+</div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>

@@ -1,0 +1,39 @@
+{
+ "meta": {
+  "title": "Outside-the-book supplement (lab practice, CPT, misc.)",
+  "base_url": null,
+  "locator_kind": "none",
+  "locator_url_template": null,
+  "source": "supplement"
+ },
+ "coverage": {
+  "apcsp": {
+   "1.1": {
+    "locators": [],
+    "note": "No pair-programming or collaborative-workflow content anywhere in the book. Taught continuously, through lab pair work and the Create Performance Task, not as a standalone lesson."
+   },
+   "3.11": {
+    "locators": [],
+    "note": "The book teaches linear search explicitly (chap07, named 'linear search' in the text) but never introduces binary search, even conceptually -- no `bisect`, no sorted-list halving example anywhere. Taught in the November algorithms block."
+   },
+   "3.16": {
+    "locators": [],
+    "note": "No dedicated simulation content in chapters 1-13; 'simulation' as a word only surfaces in chap19 (independent-study range, not this topic's natural home). chap12's random-number work is adjacent but not the same idea (generating text, not modeling a process). Taught in the November algorithms block."
+   },
+   "3.17": {
+    "locators": [],
+    "note": "No informal efficiency discussion (counting statement executions, comparing two algorithms for the same problem) appears anywhere in chapters 1-13. Occurrences of the word 'efficient' in the book are incidental, not this topic. Taught in the November algorithms block."
+   },
+   "3.18": {
+    "locators": [],
+    "note": "Not carried by this book at all; a conceptual, non-programming topic. Taught in the November algorithms block."
+   }
+  },
+  "castandards": {
+   "9-12.AP.21": {
+    "locators": [],
+    "note": "Same practice as AP CRD-1.1 (Collaboration). Taught continuously, through lab pair work and the Create Performance Task, not as a standalone lesson."
+   }
+  }
+ }
+}

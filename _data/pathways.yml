@@ -61,3 +61,12 @@
     3rd edition (CC BY-NC-SA 4.0). Mirrored here from its own book repo,
     which also publishes independently at
     <a href="https://python.porttack.com">python.porttack.com</a>.
+
+- id: standards
+  title: "Standards Reference"
+  url: /standards/
+  status: in-progress
+  blurb: >-
+    Cross-source lookup for AP CSP, California 9-12 CS, CSTA 2026, and CA
+    CTE (ICT) standards, plus a reverse map showing which book chapter, unit
+    plan, or lesson carries each code. Not sequenced lessons, a reference.

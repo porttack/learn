@@ -1,0 +1,492 @@
+<title>CSTA 2026 Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+</style>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<h2><a href="#AlgorithmsDesign">Algorithms &amp; Design</a></h2><ul>
+<li class="topic-link"><a href="#T-HS-ALG-PS-01">HS-ALG-PS-01</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-PS-02">HS-ALG-PS-02</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-PS-03">HS-ALG-PS-03</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-PS-04">HS-ALG-PS-04</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-PS-05">HS-ALG-PS-05</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-ML-06">HS-ALG-ML-06</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-ML-07">HS-ALG-ML-07</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-ML-08">HS-ALG-ML-08</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-IM-09">HS-ALG-IM-09</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-IM-10">HS-ALG-IM-10</a></li>
+<li class="topic-link"><a href="#T-HS-ALG-IM-11">HS-ALG-IM-11</a></li>
+</ul>
+<h2><a href="#ComputingSociety">Computing &amp; Society</a></h2><ul>
+<li class="topic-link"><a href="#T-HS-SOC-HI-38">HS-SOC-HI-38</a></li>
+<li class="topic-link"><a href="#T-HS-SOC-HI-39">HS-SOC-HI-39</a></li>
+<li class="topic-link"><a href="#T-HS-SOC-ET-40">HS-SOC-ET-40</a></li>
+<li class="topic-link"><a href="#T-HS-SOC-ET-41">HS-SOC-ET-41</a></li>
+<li class="topic-link"><a href="#T-HS-SOC-ET-42">HS-SOC-ET-42</a></li>
+<li class="topic-link"><a href="#T-HS-SOC-HU-43">HS-SOC-HU-43</a></li>
+<li class="topic-link"><a href="#T-HS-SOC-HU-44">HS-SOC-HU-44</a></li>
+<li class="topic-link"><a href="#T-HS-SOC-CE-45">HS-SOC-CE-45</a></li>
+<li class="topic-link"><a href="#T-HS-SOC-CE-46">HS-SOC-CE-46</a></li>
+</ul>
+<h2><a href="#DataAnalysis">Data &amp; Analysis</a></h2><ul>
+<li class="topic-link"><a href="#T-HS-DAT-DC-21">HS-DAT-DC-21</a></li>
+<li class="topic-link"><a href="#T-HS-DAT-DC-22">HS-DAT-DC-22</a></li>
+<li class="topic-link"><a href="#T-HS-DAT-DC-23">HS-DAT-DC-23</a></li>
+<li class="topic-link"><a href="#T-HS-DAT-DC-24">HS-DAT-DC-24</a></li>
+<li class="topic-link"><a href="#T-HS-DAT-DI-25">HS-DAT-DI-25</a></li>
+<li class="topic-link"><a href="#T-HS-DAT-DI-26">HS-DAT-DI-26</a></li>
+<li class="topic-link"><a href="#T-HS-DAT-IM-27">HS-DAT-IM-27</a></li>
+<li class="topic-link"><a href="#T-HS-DAT-IM-28">HS-DAT-IM-28</a></li>
+</ul>
+<h2><a href="#Programming">Programming</a></h2><ul>
+<li class="topic-link"><a href="#T-HS-PRO-PD-12">HS-PRO-PD-12</a></li>
+<li class="topic-link"><a href="#T-HS-PRO-PD-13">HS-PRO-PD-13</a></li>
+<li class="topic-link"><a href="#T-HS-PRO-PD-14">HS-PRO-PD-14</a></li>
+<li class="topic-link"><a href="#T-HS-PRO-PD-15">HS-PRO-PD-15</a></li>
+<li class="topic-link"><a href="#T-HS-PRO-VD-16">HS-PRO-VD-16</a></li>
+<li class="topic-link"><a href="#T-HS-PRO-RD-17">HS-PRO-RD-17</a></li>
+<li class="topic-link"><a href="#T-HS-PRO-RD-18">HS-PRO-RD-18</a></li>
+<li class="topic-link"><a href="#T-HS-PRO-TR-19">HS-PRO-TR-19</a></li>
+<li class="topic-link"><a href="#T-HS-PRO-TR-20">HS-PRO-TR-20</a></li>
+</ul>
+<h2><a href="#SystemsSecurity">Systems &amp; Security</a></h2><ul>
+<li class="topic-link"><a href="#T-HS-SYS-HW-29">HS-SYS-HW-29</a></li>
+<li class="topic-link"><a href="#T-HS-SYS-HW-30">HS-SYS-HW-30</a></li>
+<li class="topic-link"><a href="#T-HS-SYS-SE-31">HS-SYS-SE-31</a></li>
+<li class="topic-link"><a href="#T-HS-SYS-SE-32">HS-SYS-SE-32</a></li>
+<li class="topic-link"><a href="#T-HS-SYS-SE-33">HS-SYS-SE-33</a></li>
+<li class="topic-link"><a href="#T-HS-SYS-NT-34">HS-SYS-NT-34</a></li>
+<li class="topic-link"><a href="#T-HS-SYS-NT-35">HS-SYS-NT-35</a></li>
+<li class="topic-link"><a href="#T-HS-SYS-IM-36">HS-SYS-IM-36</a></li>
+<li class="topic-link"><a href="#T-HS-SYS-IM-37">HS-SYS-IM-37</a></li>
+</ul>
+</nav>
+<main>
+<h1>CSTA 2026 Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of the CSTA 2026 K-12 Computer
+Science Standards (high-school level), for linking from standards-alignment work.
+<strong>What this is not.</strong> Original paraphrases, not CSTA's text; only codes are
+reproduced as-is.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<section class="big-idea" id="AlgorithmsDesign"><h2>Algorithms &amp; Design</h2>
+<div class="subconcept-heading">Algorithmic Problem Solving</div>
+<div class="topic" id="T-HS-ALG-PS-01">
+<h3><a class="anchor-link" href="#T-HS-ALG-PS-01">#</a><span class="code-badge">HS-ALG-PS-01</span></h3>
+<p class="paraphrase">Solving a problem well often means choosing the right data structure to go with the algorithm, not just writing steps in isolation.</p>
+<p class="note">The focus is picking and using structures a language already provides (like a list or a class) to support the plan, not implementing custom structures from scratch -- a leaderboard built on a list plus a sort is the kind of example this covers.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-ALG-PS-02">
+<h3><a class="anchor-link" href="#T-HS-ALG-PS-02">#</a><span class="code-badge">HS-ALG-PS-02</span></h3>
+<p class="paraphrase">An algorithm can be reworked to run more clearly or efficiently by wrapping repeated steps in a function and using loops or conditionals instead of restating logic.</p>
+<p class="note">This is about restructuring code with existing constructs like functions and loops, not formal efficiency analysis or advanced recursive optimization.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></p>
+<p class="note">Chapter 3 wraps repeated print statements in repeat/print_verse and introduces the for loop, matching this standard's function-plus-loop-instead-of-restated-logic framing. Chapter 4's Refactoring section is the chapter's own named term for exactly this. Chapter 5's logical-operators-instead-of-nested-conditionals rewrite is the conditional half of the same idea. Chapter 7's has_e progression (inline loop → function → boolean return) is another instance, headers only. Optimizing for efficiency, the standard's other half, isn't addressed anywhere.</p>
+</div>
+<div class="topic" id="T-HS-ALG-PS-03">
+<h3><a class="anchor-link" href="#T-HS-ALG-PS-03">#</a><span class="code-badge">HS-ALG-PS-03</span></h3>
+<p class="paraphrase">Comparing two algorithms for the same job means checking more than just whether they work -- how fast they run and how easy they are to read matter too.</p>
+<p class="note">Comparisons can be informal or based on test runs rather than a formal proof of running time.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-ALG-PS-04">
+<h3><a class="anchor-link" href="#T-HS-ALG-PS-04">#</a><span class="code-badge">HS-ALG-PS-04</span></h3>
+<p class="paraphrase">An algorithm that always gives the same result from the same input behaves differently from one that leans on randomness and can vary run to run.</p>
+<p class="note">Explaining the distinction in plain terms is enough; formal probability calculations aren't expected.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-ALG-PS-05">
+<h3><a class="anchor-link" href="#T-HS-ALG-PS-05">#</a><span class="code-badge">HS-ALG-PS-05</span></h3>
+<p class="paraphrase">Content that comes out of an AI tool -- text, an image, even code -- deserves a critical look for whether it's accurate, skewed, or capable of causing harm.</p>
+<p class="note">The judgment call is about the output itself, not about understanding how the model that produced it works internally.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Impacts of Algorithms &amp; Design</div>
+<div class="topic" id="T-HS-ALG-IM-09">
+<h3><a class="anchor-link" href="#T-HS-ALG-IM-09">#</a><span class="code-badge">HS-ALG-IM-09</span></h3>
+<p class="paraphrase">Designing something so that it's genuinely usable by a wide range of people means researching what those people need and thinking ahead about a design's social and ethical side effects.</p>
+<p class="note">Considering accessibility law and practical inclusive-design choices (contrast, navigation, plain language) is the expectation, not meeting every clause of a formal accessibility standard.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-ALG-IM-10">
+<h3><a class="anchor-link" href="#T-HS-ALG-IM-10">#</a><span class="code-badge">HS-ALG-IM-10</span></h3>
+<p class="paraphrase">Both an algorithm built from explicit rules and one trained on data can end up treating people unfairly, and tracing where that unfairness comes from is part of evaluating it responsibly.</p>
+<p class="note">The analysis stays conceptual -- recognizing patterns of bias and suggesting fixes -- rather than auditing a real company's system or running statistics on it.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-ALG-IM-11">
+<h3><a class="anchor-link" href="#T-HS-ALG-IM-11">#</a><span class="code-badge">HS-ALG-IM-11</span></h3>
+<p class="paraphrase">Every algorithmic system's design quietly favors some outcomes over others, and naming which values -- efficiency, privacy, fairness -- got prioritized is part of understanding it.</p>
+<p class="note">The goal is identifying the priorities baked into a design, not reverse-engineering a real company's business model.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Machine Learning</div>
+<div class="topic" id="T-HS-ALG-ML-06">
+<h3><a class="anchor-link" href="#T-HS-ALG-ML-06">#</a><span class="code-badge">HS-ALG-ML-06</span></h3>
+<p class="paraphrase">Picking one kind of AI approach over another for a task is a decision that should be defended, weighing things like how much data there is and how easy the result is for a person to interpret.</p>
+<p class="note">The point is arguing for a choice between approaches, not building or deriving the math behind them.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-ALG-ML-07">
+<h3><a class="anchor-link" href="#T-HS-ALG-ML-07">#</a><span class="code-badge">HS-ALG-ML-07</span></h3>
+<p class="paraphrase">Before trusting a dataset, it's worth asking where it came from, how complete and accurate it is, whether it represents everyone it should, and whether using it raises privacy concerns.</p>
+<p class="note">This is a critical-eyes evaluation, not a statistical proof of bias or a formal correction procedure.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-ALG-ML-08">
+<h3><a class="anchor-link" href="#T-HS-ALG-ML-08">#</a><span class="code-badge">HS-ALG-ML-08</span></h3>
+<p class="paraphrase">Building a working machine-learning model for a specific job means choosing suitable data and tools, training it, and checking whether it actually performs the task.</p>
+<p class="note">Using an existing tool or simple library to build and test the model is the expectation, not writing the learning algorithm from scratch.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<section class="big-idea" id="ComputingSociety"><h2>Computing &amp; Society</h2>
+<div class="subconcept-heading">Career Exploration</div>
+<div class="topic" id="T-HS-SOC-CE-45">
+<h3><a class="anchor-link" href="#T-HS-SOC-CE-45">#</a><span class="code-badge">HS-SOC-CE-45</span></h3>
+<p class="paraphrase">Looking at how real, varied computing professionals actually work -- the problems they run into, the barriers they've navigated -- connects computational thinking back to the people who practice it.</p>
+<p class="note">Analyzing existing public accounts (an interview, a podcast) is the expectation, not conducting original interviews.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SOC-CE-46">
+<h3><a class="anchor-link" href="#T-HS-SOC-CE-46">#</a><span class="code-badge">HS-SOC-CE-46</span></h3>
+<p class="paraphrase">What a student has learned in computing can be weighed against their own interests and where they might want to go next, without needing to settle on a final answer.</p>
+<p class="note">Reflecting on the connection is the task; committing to a specific career path is not.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Emerging Technologies</div>
+<div class="topic" id="T-HS-SOC-ET-40">
+<h3><a class="anchor-link" href="#T-HS-SOC-ET-40">#</a><span class="code-badge">HS-SOC-ET-40</span></h3>
+<p class="paraphrase">An emerging technology usually does something genuinely different under the hood, and that difference is what lets it do new things or get past an old limitation.</p>
+<p class="note">How deep the technical explanation goes depends on the topic and the students -- the underlying advanced theory isn't required.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SOC-ET-41">
+<h3><a class="anchor-link" href="#T-HS-SOC-ET-41">#</a><span class="code-badge">HS-SOC-ET-41</span></h3>
+<p class="paraphrase">A new technology's upside rarely lands evenly -- weighing its benefits against its costs means asking who gets left out of the access or the outcomes.</p>
+<p class="note">A reasoned, conceptual argument is the goal, not a formal data-driven study.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SOC-ET-42">
+<h3><a class="anchor-link" href="#T-HS-SOC-ET-42">#</a><span class="code-badge">HS-SOC-ET-42</span></h3>
+<p class="paraphrase">Sketching out how an emerging technology could tackle a real problem means backing the idea with real research and being honest about who might be helped or harmed by it.</p>
+<p class="note">A design document grounded in research is the deliverable, not a working, production-ready build.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">History of Computing</div>
+<div class="topic" id="T-HS-SOC-HI-38">
+<h3><a class="anchor-link" href="#T-HS-SOC-HI-38">#</a><span class="code-badge">HS-SOC-HI-38</span></h3>
+<p class="paraphrase">Tracing a technology's history from its start to now usually turns up moments where forces outside the technology itself -- economics, culture, politics -- pushed its design or adoption in a particular direction.</p>
+<p class="note">Working from reliable secondary sources is the expectation, not original historical research or deep economic modeling.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SOC-HI-39">
+<h3><a class="anchor-link" href="#T-HS-SOC-HI-39">#</a><span class="code-badge">HS-SOC-HI-39</span></h3>
+<p class="paraphrase">A privacy law or a rule about algorithmic transparency exists to head off some specific harm, and being able to explain that reasoning is what this is really about.</p>
+<p class="note">Explaining the reasoning behind a policy is the point, not drafting legal language or mastering the lawmaking process.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Humans &amp; Computing</div>
+<div class="topic" id="T-HS-SOC-HU-43">
+<h3><a class="anchor-link" href="#T-HS-SOC-HU-43">#</a><span class="code-badge">HS-SOC-HU-43</span></h3>
+<p class="paraphrase">The people behind a computing system -- the ones who chose its data, tuned it, decided how it gets used -- make choices that carry their own risks and benefits down the line.</p>
+<p class="note">Tracing those human choices and their consequences is the focus, not building or mathematically analyzing the underlying model.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SOC-HU-44">
+<h3><a class="anchor-link" href="#T-HS-SOC-HU-44">#</a><span class="code-badge">HS-SOC-HU-44</span></h3>
+<p class="paraphrase">Whether an AI system could ever be intelligent the way a person is opens real philosophical questions about consciousness and who's responsible for what it does.</p>
+<p class="note">This is a debate about ideas, not an exploration of neuroscience or a specific model's architecture.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<section class="big-idea" id="DataAnalysis"><h2>Data &amp; Analysis</h2>
+<div class="subconcept-heading">Data Collection &amp; Preparation</div>
+<div class="topic" id="T-HS-DAT-DC-21">
+<h3><a class="anchor-link" href="#T-HS-DAT-DC-21">#</a><span class="code-badge">HS-DAT-DC-21</span></h3>
+<p class="paraphrase">A simulation often needs input data that doesn't exist yet, and a simple program or spreadsheet formula can manufacture data meeting whatever constraints the simulation calls for.</p>
+<p class="note">Producing the data that feeds into an existing simulation is the task, not building the simulation itself.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-DAT-DC-22">
+<h3><a class="anchor-link" href="#T-HS-DAT-DC-22">#</a><span class="code-badge">HS-DAT-DC-22</span></h3>
+<p class="paraphrase">A data dictionary spells out, for every column in a dataset, its name, its type, and the values it's allowed to hold -- plus how columns depend on each other, like a skipped survey question leaving a related answer blank.</p>
+<p class="note">Documenting an existing dataset this way is the task; building the dataset, or handling huge or specialized data, is not.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-DAT-DC-23">
+<h3><a class="anchor-link" href="#T-HS-DAT-DC-23">#</a><span class="code-badge">HS-DAT-DC-23</span></h3>
+<p class="paraphrase">Messy text data -- inconsistent capitalization, typos, a name and a date crammed into one field -- usually needs cleanup before it's useful, and a spreadsheet or short script can do that work.</p>
+<p class="note">Recognizing where a pattern-matching tool like a regular expression would help is part of this; building a cleaning tool from scratch, or handling huge unstructured feeds, is not.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="note">Chapter 8's is_special_line (stripping Gutenberg header/footer cruft) and re.sub-based British-to-American spelling normalization are direct instances of cleaning up messy text data with a pattern-matching tool -- close to a literal match for this standard's own scope note.</p>
+</div>
+<div class="topic" id="T-HS-DAT-DC-24">
+<h3><a class="anchor-link" href="#T-HS-DAT-DC-24">#</a><span class="code-badge">HS-DAT-DC-24</span></h3>
+<p class="paraphrase">There's more than one way to check that a dataset's values are the right type and fall in a sensible range, and weighing those approaches against each other is its own skill.</p>
+<p class="note">Comparing validation approaches conceptually is the expectation; writing the validation code or using statistical models is not.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Data Investigation</div>
+<div class="topic" id="T-HS-DAT-DI-25">
+<h3><a class="anchor-link" href="#T-HS-DAT-DI-25">#</a><span class="code-badge">HS-DAT-DI-25</span></h3>
+<p class="paraphrase">Turning a dataset with several variables into a chart -- a scatter plot, a stacked bar chart -- is how a question about that data gets answered visually.</p>
+<p class="note">Using existing tools like spreadsheets to build the visualization is the expectation, not writing code to generate it or running formal statistics.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-DAT-DI-26">
+<h3><a class="anchor-link" href="#T-HS-DAT-DI-26">#</a><span class="code-badge">HS-DAT-DI-26</span></h3>
+<p class="paraphrase">A chart or simulation someone else built can still mislead -- a truncated axis, a biased sample -- and spotting those limits is as important as reading the result itself.</p>
+<p class="note">Critiquing an existing data product is the task, not building one or fixing the code behind it.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Impacts of Data Science</div>
+<div class="topic" id="T-HS-DAT-IM-27">
+<h3><a class="anchor-link" href="#T-HS-DAT-IM-27">#</a><span class="code-badge">HS-DAT-IM-27</span></h3>
+<p class="paraphrase">Collecting and processing data at scale carries real costs beyond the technical -- consent, who owns the data, bias baked into it, misinformation, even the environmental footprint of the data centers running it.</p>
+<p class="note">The analysis is conceptual, not a formal legal or economic study of data policy.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-DAT-IM-28">
+<h3><a class="anchor-link" href="#T-HS-DAT-IM-28">#</a><span class="code-badge">HS-DAT-IM-28</span></h3>
+<p class="paraphrase">Whether an existing data-privacy law or policy actually works is a debatable question, and building an argument on either side -- including whether public pressure or behavior change might work better than a new law -- is the point.</p>
+<p class="note">Debating the policy's effectiveness is the expectation; reading the actual legal text is not.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<section class="big-idea" id="Programming"><h2>Programming</h2>
+<div class="subconcept-heading">Program Development</div>
+<div class="topic" id="T-HS-PRO-PD-12">
+<h3><a class="anchor-link" href="#T-HS-PRO-PD-12">#</a><span class="code-badge">HS-PRO-PD-12</span></h3>
+<p class="paraphrase">Splitting a program into distinct, well-organized pieces -- functions, imported libraries, or objects -- makes the result easier to read and easier to reuse.</p>
+<p class="note">Straightforward decomposition is the target; elaborate design patterns or deep class hierarchies aren't expected.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></p>
+<p class="note">Chapter 3's function definitions -- especially building print_verse out of first_two_lines/last_three_lines/repeat -- directly match splitting a program into reusable, readable pieces. Chapter 4's encapsulation/generalization/refactoring sequence (square → polygon → polyline, then circle → arc → polyline) is a stronger instance of the same standard. Chapter 7's uses_none = not uses_any(...) and the exercises deriving uses_all from uses_only/uses_any (instead of a new loop) extend it again.</p>
+</div>
+<div class="topic" id="T-HS-PRO-PD-13">
+<h3><a class="anchor-link" href="#T-HS-PRO-PD-13">#</a><span class="code-badge">HS-PRO-PD-13</span></h3>
+<p class="paraphrase">Good program development leans on outside resources -- reference docs, existing libraries, simple APIs, and the features built into a development environment -- rather than reinventing everything from scratch.</p>
+<p class="note">Using these resources well is the goal, not building new ones.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="note">Chapter 2's `import math` and its use of math.pi/math.sqrt/math.pow is this book's first real use of an existing library. Chapter 4 (jupyturtle), Chapter 7 (`from doctest import run_docstring_examples`), and Chapter 8 (`re`) are secondary instances of the same pattern -- genuine but not new information each time, so headers only. The rest of this standard -- API docs, IDE features -- isn't addressed anywhere.</p>
+</div>
+<div class="topic" id="T-HS-PRO-PD-14">
+<h3><a class="anchor-link" href="#T-HS-PRO-PD-14">#</a><span class="code-badge">HS-PRO-PD-14</span></h3>
+<p class="paraphrase">Anything borrowed from someone else -- code, art, sound -- needs to be credited according to whatever terms it was shared under.</p>
+<p class="note">Practicing honest attribution is the point, not mastering copyright law itself.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-PRO-PD-15">
+<h3><a class="anchor-link" href="#T-HS-PRO-PD-15">#</a><span class="code-badge">HS-PRO-PD-15</span></h3>
+<p class="paraphrase">Working on a program as a team goes better with some structure -- assigned roles, a shared design document, and a way to track who changed what.</p>
+<p class="note">Classroom-scale tools and practices are the expectation, not professional-grade project management.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Reading &amp; Documenting</div>
+<div class="topic" id="T-HS-PRO-RD-17">
+<h3><a class="anchor-link" href="#T-HS-PRO-RD-17">#</a><span class="code-badge">HS-PRO-RD-17</span></h3>
+<p class="paraphrase">Reading someone else's code well means being able to explain what each moving part does -- a variable holding state, a loop repeating until some condition, a conditional branching on it -- and how those parts cooperate.</p>
+<p class="note">This is about tracing a manageable segment of code, not untangling a large system with many interacting structures.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="note">Chapter 3's stack diagrams and tracebacks explain what a function's parameters and loop are doing, but conditionals (the standard's third element) don't appear until chapter 5 -- partial there. Chapter 5's countdown stack trace and Chapter 7's predict-the-output prompts (total, count, which doctest fails) complete the triad: a variable holding state, a loop or conditional, and how they cooperate. Chapter 6's factorial trace and Chapter 8's file-reading loop (a state variable, a loop repeating on a condition, a conditional branching on it) are further worked instances of the same standard.</p>
+</div>
+<div class="topic" id="T-HS-PRO-RD-18">
+<h3><a class="anchor-link" href="#T-HS-PRO-RD-18">#</a><span class="code-badge">HS-PRO-RD-18</span></h3>
+<p class="paraphrase">Code that an AI tool produces still has to be tested against what it was actually supposed to do, including checking that it holds up on tricky or edge-case inputs.</p>
+<p class="note">The task is testing and judging the output, not understanding the model that generated it.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Testing &amp; Refining</div>
+<div class="topic" id="T-HS-PRO-TR-19">
+<h3><a class="anchor-link" href="#T-HS-PRO-TR-19">#</a><span class="code-badge">HS-PRO-TR-19</span></h3>
+<p class="paraphrase">Finishing a program includes checking it against its own original plan -- does it work correctly, does it do what it was meant to, and is it actually pleasant and accessible to use.</p>
+<p class="note">This is a self- or peer-review against the project's own stated goals, not a formal verification process or industry tooling.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-PRO-TR-20">
+<h3><a class="anchor-link" href="#T-HS-PRO-TR-20">#</a><span class="code-badge">HS-PRO-TR-20</span></h3>
+<p class="paraphrase">Feedback and test results should actually change the program -- tightening up usability, accessibility, or accuracy -- even if not every issue gets fixed at once.</p>
+<p class="note">Meaningful, partial improvement is the expectation, not chasing full optimization or fixing every possible issue.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Variables &amp; Data Storage</div>
+<div class="topic" id="T-HS-PRO-VD-16">
+<h3><a class="anchor-link" href="#T-HS-PRO-VD-16">#</a><span class="code-badge">HS-PRO-VD-16</span></h3>
+<p class="paraphrase">Choosing the right structure -- a list, a dictionary -- to hold a program's data is what makes storing, retrieving, and changing that data manageable.</p>
+<p class="note">Common built-in structures are the scope here; things like linked lists, trees, and graphs are not.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<section class="big-idea" id="SystemsSecurity"><h2>Systems &amp; Security</h2>
+<div class="subconcept-heading">Hardware &amp; Software</div>
+<div class="topic" id="T-HS-SYS-HW-29">
+<h3><a class="anchor-link" href="#T-HS-SYS-HW-29">#</a><span class="code-badge">HS-SYS-HW-29</span></h3>
+<p class="paraphrase">An operating system stands apart from ordinary software because its job is managing the machine itself -- memory, storage, whatever's plugged in -- so other programs can just run.</p>
+<p class="note">Describing that role is the goal, not learning how an operating system is actually coded or configuring its internals.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SYS-HW-30">
+<h3><a class="anchor-link" href="#T-HS-SYS-HW-30">#</a><span class="code-badge">HS-SYS-HW-30</span></h3>
+<p class="paraphrase">Putting a real device to work on some everyday task also means noticing what it can't do -- battery life, screen size, and other limits that come with the choice.</p>
+<p class="note">Using a device thoughtfully is the expectation, not building one or writing code that controls its hardware directly.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Impacts of Computing Systems</div>
+<div class="topic" id="T-HS-SYS-IM-36">
+<h3><a class="anchor-link" href="#T-HS-SYS-IM-36">#</a><span class="code-badge">HS-SYS-IM-36</span></h3>
+<p class="paraphrase">Laws and policies about how computing systems get built and used usually exist for a reason -- technical, legal, or social -- and explaining that reasoning matters more than reciting the rule.</p>
+<p class="note">Understanding why a policy exists is the point; reading the legal text itself is not.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SYS-IM-37">
+<h3><a class="anchor-link" href="#T-HS-SYS-IM-37">#</a><span class="code-badge">HS-SYS-IM-37</span></h3>
+<p class="paraphrase">Computing infrastructure has a physical life cycle -- energy-hungry data centers, e-waste, supply chains -- and those costs don't land on everyone equally, which makes asking who's affected and why part of the investigation.</p>
+<p class="note">Researching and explaining the impact is the task, not proposing a technical fix for it.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Networks</div>
+<div class="topic" id="T-HS-SYS-NT-34">
+<h3><a class="anchor-link" href="#T-HS-SYS-NT-34">#</a><span class="code-badge">HS-SYS-NT-34</span></h3>
+<p class="paraphrase">A network diagram shows both the physical pieces -- servers, routers, devices -- and the software running on them, and how all of it connects to get work done.</p>
+<p class="note">Drawing the diagram is the task, not physically building the network.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SYS-NT-35">
+<h3><a class="anchor-link" href="#T-HS-SYS-NT-35">#</a><span class="code-badge">HS-SYS-NT-35</span></h3>
+<p class="paraphrase">The internet is really a network stitched together out of many smaller networks, with its own layered structure, hardware like routers, and protocols like TCP/IP tying it together -- which sets it apart from something like a single classroom network.</p>
+<p class="note">A high-level, conceptual grasp is the goal, not configuring real equipment or analyzing network traffic.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="subconcept-heading">Security</div>
+<div class="topic" id="T-HS-SYS-SE-31">
+<h3><a class="anchor-link" href="#T-HS-SYS-SE-31">#</a><span class="code-badge">HS-SYS-SE-31</span></h3>
+<p class="paraphrase">Every security measure protects something at some cost -- multifactor login guards an account but makes it slower to get into -- and naming that trade-off is part of understanding security.</p>
+<p class="note">Recognizing these trade-offs conceptually is the goal, not implementing the security measures.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SYS-SE-32">
+<h3><a class="anchor-link" href="#T-HS-SYS-SE-32">#</a><span class="code-badge">HS-SYS-SE-32</span></h3>
+<p class="paraphrase">The same security breach can hit different groups in different ways -- a person's identity, a company's finances, a whole community's trust in a system -- and sorting out who's affected and how is more than just listing consequences.</p>
+<p class="note">This is broad-impact analysis, not a forensic investigation or professional-grade tooling.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="T-HS-SYS-SE-33">
+<h3><a class="anchor-link" href="#T-HS-SYS-SE-33">#</a><span class="code-badge">HS-SYS-SE-33</span></h3>
+<p class="paraphrase">Given a described security weakness, proposing a fix means naming the vulnerability, what could go wrong because of it, and concrete steps -- technical and non-technical -- to close the gap.</p>
+<p class="note">Proposing the fix is the task; actually building it is not.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>

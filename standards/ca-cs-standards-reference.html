@@ -1,0 +1,351 @@
+<title>CA CS Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+</style>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<h2><a href="#AP">AP · Algorithms &amp; Programming</a></h2><ul>
+<li class="topic-link"><a href="#S-9-12.AP.12">9-12.AP.12</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.13">9-12.AP.13</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.14">9-12.AP.14</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.15">9-12.AP.15</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.16">9-12.AP.16</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.17">9-12.AP.17</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.18">9-12.AP.18</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.19">9-12.AP.19</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.20">9-12.AP.20</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.21">9-12.AP.21</a></li>
+<li class="topic-link"><a href="#S-9-12.AP.22">9-12.AP.22</a></li>
+</ul>
+<h2><a href="#CS">CS · Computing Systems</a></h2><ul>
+<li class="topic-link"><a href="#S-9-12.CS.1">9-12.CS.1</a></li>
+<li class="topic-link"><a href="#S-9-12.CS.2">9-12.CS.2</a></li>
+<li class="topic-link"><a href="#S-9-12.CS.3">9-12.CS.3</a></li>
+</ul>
+<h2><a href="#DA">DA · Data &amp; Analysis</a></h2><ul>
+<li class="topic-link"><a href="#S-9-12.DA.8">9-12.DA.8</a></li>
+<li class="topic-link"><a href="#S-9-12.DA.9">9-12.DA.9</a></li>
+<li class="topic-link"><a href="#S-9-12.DA.10">9-12.DA.10</a></li>
+<li class="topic-link"><a href="#S-9-12.DA.11">9-12.DA.11</a></li>
+</ul>
+<h2><a href="#IC">IC · Impacts of Computing</a></h2><ul>
+<li class="topic-link"><a href="#S-9-12.IC.23">9-12.IC.23</a></li>
+<li class="topic-link"><a href="#S-9-12.IC.24">9-12.IC.24</a></li>
+<li class="topic-link"><a href="#S-9-12.IC.25">9-12.IC.25</a></li>
+<li class="topic-link"><a href="#S-9-12.IC.26">9-12.IC.26</a></li>
+<li class="topic-link"><a href="#S-9-12.IC.27">9-12.IC.27</a></li>
+<li class="topic-link"><a href="#S-9-12.IC.28">9-12.IC.28</a></li>
+<li class="topic-link"><a href="#S-9-12.IC.29">9-12.IC.29</a></li>
+<li class="topic-link"><a href="#S-9-12.IC.30">9-12.IC.30</a></li>
+</ul>
+<h2><a href="#NI">NI · Networks &amp; the Internet</a></h2><ul>
+<li class="topic-link"><a href="#S-9-12.NI.4">9-12.NI.4</a></li>
+<li class="topic-link"><a href="#S-9-12.NI.5">9-12.NI.5</a></li>
+<li class="topic-link"><a href="#S-9-12.NI.6">9-12.NI.6</a></li>
+<li class="topic-link"><a href="#S-9-12.NI.7">9-12.NI.7</a></li>
+</ul>
+</nav>
+<main>
+<h1>CA CS Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of California's 9-12 Computer
+Science core standards (adopted 2018), for linking from standards-alignment work.
+<strong>What this is not.</strong> Original paraphrases, not the CDE's text; only codes
+are reproduced as-is.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<section class="big-idea" id="AP">
+<h2><a class="anchor-link" href="#AP">#</a><span class="code-badge">AP</span> Algorithms &amp; Programming</h2>
+<div class="topic" id="S-9-12.AP.12">
+<h3><a class="anchor-link" href="#S-9-12.AP.12">#</a><span class="code-badge">9-12.AP.12</span></h3>
+<p class="paraphrase">Solving a computational problem often means combining an algorithm you already know with one you design yourself.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap09.html?readonly">Chapter 9 (Lists)</a></p>
+<p class="note">Chapter 7 develops a linear-search algorithm from scratch; Chapter 9's 'Sorting lists' uses an existing (built-in) sort. Together they match 'combination of original and existing algorithms' well.</p>
+</div>
+<div class="topic" id="S-9-12.AP.13">
+<h3><a class="anchor-link" href="#S-9-12.AP.13">#</a><span class="code-badge">9-12.AP.13</span></h3>
+<p class="paraphrase">Once a problem needs more than a handful of related values, a collection replaces a pile of separately named variables.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap09.html?readonly">Chapter 9 (Lists)</a></p>
+<p class="note">Direct match to Chapter 9 (Lists).</p>
+</div>
+<div class="topic" id="S-9-12.AP.14">
+<h3><a class="anchor-link" href="#S-9-12.AP.14">#</a><span class="code-badge">9-12.AP.14</span></h3>
+<p class="paraphrase">Different control structures for the same task read differently and run differently, and choosing between them is a real design decision.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a></p>
+<p class="note">Strong match: the CED's own worked example here is comparing iterative vs. recursive Fibonacci -- and Chapter 6 has a 'Fibonacci' section built on Chapter 5's recursion material. The book only ever demonstrates the recursive side (see the AP index's 3.8 Iteration note on the missing `while` loop), so the iterative half of this comparison is thinner than the recursive half.</p>
+</div>
+<div class="topic" id="S-9-12.AP.15">
+<h3><a class="anchor-link" href="#S-9-12.AP.15">#</a><span class="code-badge">9-12.AP.15</span></h3>
+<p class="paraphrase">A program built around events -- a button press, a timer -- responds to things happening rather than running start to finish in one line.</p>
+<p class="meta">Not covered by Working in Python</p>
+<p class="note">Real gap: every program in this book runs top-to-bottom to completion. There is no event-driven or GUI programming anywhere in chapters 1-13 (turtle graphics is imperative, not event-based).</p>
+</div>
+<div class="topic" id="S-9-12.AP.16">
+<h3><a class="anchor-link" href="#S-9-12.AP.16">#</a><span class="code-badge">9-12.AP.16</span></h3>
+<p class="paraphrase">Breaking a big problem into smaller ones, each solved by its own procedure, module, or class, is what makes a complex program manageable.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a></p>
+<p class="note">Chapter 3/Chapter 4's function-decomposition material carries the procedure half directly. Chapters 14-19 (classes) carry the class-based half of this standard too, but that range is independent-study/post-AP pathway per the treatment matrix, not part of the Aug-Dec sequence this standard would be taught alongside.</p>
+</div>
+<div class="topic" id="S-9-12.AP.17">
+<h3><a class="anchor-link" href="#S-9-12.AP.17">#</a><span class="code-badge">9-12.AP.17</span></h3>
+<p class="paraphrase">A program built from separate, interacting pieces -- including code someone else wrote -- is organized by modular design.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="note">Same evidence as AP AAP-3.D (Libraries): Chapter 2 introduces `import`, Chapter 4 (jupyturtle) and Chapter 8 (`re`) are the worked examples.</p>
+</div>
+<div class="topic" id="S-9-12.AP.18">
+<h3><a class="anchor-link" href="#S-9-12.AP.18">#</a><span class="code-badge">9-12.AP.18</span></h3>
+<p class="paraphrase">Designing for a broad audience means building in a way to collect feedback from real users and revising the design in response.</p>
+<p class="meta">Not covered by Working in Python</p>
+<p class="note">Chapter 4's development plan is a solo, technical process -- it never involves gathering feedback from an audience of users. Real gap, distinct from AP.21/CRD-1.1's collaboration gap: this one is about user feedback, not teammate collaboration.</p>
+</div>
+<div class="topic" id="S-9-12.AP.19">
+<h3><a class="anchor-link" href="#S-9-12.AP.19">#</a><span class="code-badge">9-12.AP.19</span></h3>
+<p class="paraphrase">Using someone else's library or code comes with license terms that limit what you can do with it.</p>
+<p class="meta">Not covered by Working in Python</p>
+<p class="note">Not covered. Same gap as AP CRD-2.H (acknowledging code from other sources) -- the book never discusses licensing or attribution of borrowed code, even though Chapter 4/Chapter 8 use libraries.</p>
+</div>
+<div class="topic" id="S-9-12.AP.20">
+<h3><a class="anchor-link" href="#S-9-12.AP.20">#</a><span class="code-badge">9-12.AP.20</span></h3>
+<p class="paraphrase">A program gets better through repeated rounds of testing and fixing, aimed at more than just correctness -- performance and ease of use matter too.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></p>
+<p class="note">Chapter 4's development plan and Chapter 7's doctest work carry the iterative-testing half. Usability and accessibility specifically -- this standard's other named dimensions -- aren't addressed anywhere in the book.</p>
+</div>
+<div class="topic" id="S-9-12.AP.21">
+<h3><a class="anchor-link" href="#S-9-12.AP.21">#</a><span class="code-badge">9-12.AP.21</span></h3>
+<p class="paraphrase">Building something as a team, in defined roles, with shared tools, is different work from building it alone.</p>
+<p class="meta">Covered by Outside-the-book supplement (lab practice, CPT, misc.), no locator on record</p>
+<p class="note">Same practice as AP CRD-1.1 (Collaboration). Taught continuously, through lab pair work and the Create Performance Task, not as a standalone lesson.</p>
+</div>
+<div class="topic" id="S-9-12.AP.22">
+<h3><a class="anchor-link" href="#S-9-12.AP.22">#</a><span class="code-badge">9-12.AP.22</span></h3>
+<p class="paraphrase">As a program's design takes shape, writing the decisions down -- in whatever form fits -- is what makes the process legible to anyone else who looks at it later.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a></p>
+<p class="note">Chapter 4's docstrings and development-plan material carry the in-code documentation half. The graphics/presentation/demonstration forms of documentation this standard also names aren't part of the book.</p>
+</div>
+</section>
+<section class="big-idea" id="CS">
+<h2><a class="anchor-link" href="#CS">#</a><span class="code-badge">CS</span> Computing Systems</h2>
+<div class="topic" id="S-9-12.CS.1">
+<h3><a class="anchor-link" href="#S-9-12.CS.1">#</a><span class="code-badge">9-12.CS.1</span></h3>
+<p class="paraphrase">Computing systems hide their internal workings behind a simpler experience for the person using them.</p>
+<p class="note">About hardware/device abstraction (e.g., a phone hiding its GPS hardware from the user), not software abstraction in code.</p>
+<p class="meta">Not covered by Working in Python</p>
+<p class="note">Nothing in the book addresses this. Not covered by the AP crosswalk either -- a systems-level topic with no obvious carrier in either framework as currently scoped.</p>
+</div>
+<div class="topic" id="S-9-12.CS.2">
+<h3><a class="anchor-link" href="#S-9-12.CS.2">#</a><span class="code-badge">9-12.CS.2</span></h3>
+<p class="paraphrase">Application software, system software, and hardware form layers that each manage their own part of getting a task done.</p>
+<p class="meta">Not covered by Working in Python</p>
+<p class="note">Not covered. Same status as CS.1 -- a hardware/systems topic outside this book's scope.</p>
+</div>
+<div class="topic" id="S-9-12.CS.3">
+<h3><a class="anchor-link" href="#S-9-12.CS.3">#</a><span class="code-badge">9-12.CS.3</span></h3>
+<p class="paraphrase">Troubleshooting a complex problem means researching, testing, and drawing on past experience with similar problems, and writing that process down so someone else can repeat it.</p>
+<p class="meta">Not covered by Working in Python</p>
+<p class="note">The descriptive statement's examples (network connectivity, help-desk guidelines) are about systems/hardware troubleshooting, not code debugging. Every chapter's 'Debugging' section teaches the code-debugging skill this is adjacent to, but that carries AP CRD-1.4, not this standard as written -- deliberately not claiming credit here for a different skill.</p>
+</div>
+</section>
+<section class="big-idea" id="DA">
+<h2><a class="anchor-link" href="#DA">#</a><span class="code-badge">DA</span> Data &amp; Analysis</h2>
+<div class="topic" id="S-9-12.DA.8">
+<h3><a class="anchor-link" href="#S-9-12.DA.8">#</a><span class="code-badge">9-12.DA.8</span></h3>
+<p class="paraphrase">The same real-world thing -- a color, a character, an image -- can be represented digitally in more than one way, and converting between those representations is a normal task.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap07b.html?readonly">Interlude B (Representing Data, outline only)</a></p>
+<p class="note">Same underlying content as AP 2.1/DAT-1.A (data represented using bits), carried by the interlude between chapters 7 and 8 ('Representing Data', Interlude B) -- see apcsp.json's 2.1 note for the full carrier detail, including that Interlude B is an outline only as of 2026-08-17, not drafted prose. Previously logged as carried by CS50T Multimedia, same as that AP topic; removed 2026-08-09 -- teacher confirms that supplement hasn't been taught since year one. Pico I2C unit remains a secondary, partial touchpoint.</p>
+</div>
+<div class="topic" id="S-9-12.DA.9">
+<h3><a class="anchor-link" href="#S-9-12.DA.9">#</a><span class="code-badge">9-12.DA.9</span></h3>
+<p class="paraphrase">How data is organized and where it's stored is a choice with real consequences for cost, speed, reliability, privacy, and integrity.</p>
+<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap07b.html?readonly">Interlude B (Representing Data, outline only)</a></p>
+<p class="note">Partially carried: the CED's own worked example for this standard is file-size-vs-quality tradeoffs across image formats -- the same territory as AP 2.2/DAT-1.D (data compression), which the interlude between chapters 7 and 8 ('Representing Data', Interlude B) now covers. But DA.9's scope is broader than 2.2 alone (storage location, cost, reliability, privacy, integrity), and Interlude B's outline doesn't reach those dimensions -- see apcsp.json's 2.2 note. As of 2026-08-17 Interlude B is an outline only, not drafted prose. Previously logged as carried by CS50T Multimedia; removed 2026-08-09, same reason as DA.8.</p>
+</div>
+<div class="topic" id="S-9-12.DA.10">
+<h3><a class="anchor-link" href="#S-9-12.DA.10">#</a><span class="code-badge">9-12.DA.10</span></h3>
+<p class="paraphrase">Turning a data set into a visualization is itself a design choice that shapes what other people take away from it.</p>
+<p class="meta">Not covered by Working in Python</p>
+<p class="note">Real gap: the book has no plotting/visualization content anywhere (no charting library is used in chapters 1-13). Chapter 12's word-frequency and Markov work processes data but never visualizes it.</p>
+</div>
+<div class="topic" id="S-9-12.DA.11">
+<h3><a class="anchor-link" href="#S-9-12.DA.11">#</a><span class="code-badge">9-12.DA.11</span></h3>
+<p class="paraphrase">A computational model is only useful once it's been checked against real observations and adjusted where it doesn't match.</p>
+<p class="meta">Not covered by Working in Python</p>
+<p class="note">Not covered. Chapter 12's Markov text model is a model of sorts but the chapter never validates or refines it against real-world data the way this standard describes -- too loose a connection to claim as a carrier.</p>
+</div>
+</section>
+<section class="big-idea" id="IC">
+<h2><a class="anchor-link" href="#IC">#</a><span class="code-badge">IC</span> Impacts of Computing</h2>
+<div class="topic" id="S-9-12.IC.23">
+<h3><a class="anchor-link" href="#S-9-12.IC.23">#</a><span class="code-badge">9-12.IC.23</span></h3>
+<p class="paraphrase">Computing changes personal, social, economic, and cultural practices, not always for the better.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.IC.24">
+<h3><a class="anchor-link" href="#S-9-12.IC.24">#</a><span class="code-badge">9-12.IC.24</span></h3>
+<p class="paraphrase">Bias built into a computing artifact, often from assumptions its designers didn't question, has to be actively tested for and reduced.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.IC.25">
+<h3><a class="anchor-link" href="#S-9-12.IC.25">#</a><span class="code-badge">9-12.IC.25</span></h3>
+<p class="paraphrase">The same algorithm often turns out to solve problems in fields far from where it was first designed.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.IC.26">
+<h3><a class="anchor-link" href="#S-9-12.IC.26">#</a><span class="code-badge">9-12.IC.26</span></h3>
+<p class="paraphrase">New technologies reshape social, economic, and political structures in ways worth examining critically, not just adopting.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.IC.27">
+<h3><a class="anchor-link" href="#S-9-12.IC.27">#</a><span class="code-badge">9-12.IC.27</span></h3>
+<p class="paraphrase">Digital collaboration tools connect people across cultures and professions in ways that reshape how teams work together.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.IC.28">
+<h3><a class="anchor-link" href="#S-9-12.IC.28">#</a><span class="code-badge">9-12.IC.28</span></h3>
+<p class="paraphrase">Intellectual property law cuts both ways for innovation: it protects creators, but it can also limit what gets built next.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.IC.29">
+<h3><a class="anchor-link" href="#S-9-12.IC.29">#</a><span class="code-badge">9-12.IC.29</span></h3>
+<p class="paraphrase">A lot of personal data is collected automatically, without the person it describes actively participating, and that raises its own privacy concerns.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.IC.30">
+<h3><a class="anchor-link" href="#S-9-12.IC.30">#</a><span class="code-badge">9-12.IC.30</span></h3>
+<p class="paraphrase">Privacy laws and ethics differ across places and contexts, and evaluating a policy means weighing its social and economic tradeoffs.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+</section>
+<section class="big-idea" id="NI">
+<h2><a class="anchor-link" href="#NI">#</a><span class="code-badge">NI</span> Networks &amp; the Internet</h2>
+<div class="topic" id="S-9-12.NI.4">
+<h3><a class="anchor-link" href="#S-9-12.NI.4">#</a><span class="code-badge">9-12.NI.4</span></h3>
+<p class="paraphrase">Networks have to satisfy real performance demands -- latency, bandwidth, throughput -- for the organizations that depend on them.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.NI.5">
+<h3><a class="anchor-link" href="#S-9-12.NI.5">#</a><span class="code-badge">9-12.NI.5</span></h3>
+<p class="paraphrase">The internet's design, including how it looks up addresses and routes traffic, is what lets it scale and stay reliable.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.NI.6">
+<h3><a class="anchor-link" href="#S-9-12.NI.6">#</a><span class="code-badge">9-12.NI.6</span></h3>
+<p class="paraphrase">Different security threats call for different defenses, and choosing between them is a tradeoff, not a solved problem.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+<div class="topic" id="S-9-12.NI.7">
+<h3><a class="anchor-link" href="#S-9-12.NI.7">#</a><span class="code-badge">9-12.NI.7</span></h3>
+<p class="paraphrase">Cryptographic techniques protect data in transit, and symmetric and asymmetric approaches trade off differently for cost and use case.</p>
+<p class="meta">Covered by Little Brother / Big Brother (unit plan), no locator on record</p>
+</div>
+</section>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>

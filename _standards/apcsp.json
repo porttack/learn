@@ -1,0 +1,2146 @@
+{
+ "meta": {
+  "ced_version": "AP CSP Course and Exam Description, effective Fall 2023 (V.1)",
+  "extracted": "2026-07-30",
+  "source_pages": 262,
+  "section_ii_format": "on-exam-day written response with Personalized Project Reference",
+  "cpt_class_hours_minimum": 9,
+  "mcq_format": "70 multiple-choice questions in 120 minutes, worth 70% of the exam score: 57 individual single-select, 8 individual multi-select (65 individual questions total), plus one 5-question single-select set tied to a computing-innovation reading passage",
+  "class_periods_note": "The CED's 'Course at a Glance' table does not list a suggested number of class periods per topic. The numbers printed next to each topic in that table are references to Computational Thinking Practice numbers (1-6, see the practices list), not time estimates. Every topic below carries class_periods: null for this reason, not because extraction failed.",
+  "practice_note": "Practice 6 (Responsible Computing) is not assessed on the multiple-choice section at all -- it is assessed only through the Create Performance Task -- so it carries no MCQ weight range."
+ },
+ "big_ideas": [
+  {
+   "id": "CRD",
+   "number": 1,
+   "name": "Creative Development",
+   "mcq_weight_low": 10,
+   "mcq_weight_high": 13
+  },
+  {
+   "id": "DAT",
+   "number": 2,
+   "name": "Data",
+   "mcq_weight_low": 17,
+   "mcq_weight_high": 22
+  },
+  {
+   "id": "AAP",
+   "number": 3,
+   "name": "Algorithms and Programming",
+   "mcq_weight_low": 30,
+   "mcq_weight_high": 35
+  },
+  {
+   "id": "CSN",
+   "number": 4,
+   "name": "Computer Systems and Networks",
+   "mcq_weight_low": 11,
+   "mcq_weight_high": 15
+  },
+  {
+   "id": "IOC",
+   "number": 5,
+   "name": "Impact of Computing",
+   "mcq_weight_low": 21,
+   "mcq_weight_high": 26
+  }
+ ],
+ "practices": [
+  {
+   "id": "P1",
+   "name": "Computational Solution Design",
+   "mcq_weight_low": 18,
+   "mcq_weight_high": 25
+  },
+  {
+   "id": "P2",
+   "name": "Algorithms and Program Development",
+   "mcq_weight_low": 20,
+   "mcq_weight_high": 28
+  },
+  {
+   "id": "P3",
+   "name": "Abstraction in Program Development",
+   "mcq_weight_low": 7,
+   "mcq_weight_high": 12
+  },
+  {
+   "id": "P4",
+   "name": "Code Analysis",
+   "mcq_weight_low": 12,
+   "mcq_weight_high": 19
+  },
+  {
+   "id": "P5",
+   "name": "Computing Innovations",
+   "mcq_weight_low": 28,
+   "mcq_weight_high": 33
+  },
+  {
+   "id": "P6",
+   "name": "Responsible Computing",
+   "mcq_weight_low": null,
+   "mcq_weight_high": null
+  }
+ ],
+ "topics": [
+  {
+   "code": "1.1",
+   "big_idea": "CRD",
+   "title": "Collaboration",
+   "los": [
+    {
+     "code": "CRD-1.A",
+     "text": "Explain how collaborating with others makes a computing innovation better than one person could make alone.",
+     "eks": [
+      {
+       "code": "CRD-1.A.1",
+       "text": "A computing innovation always has software running as a core piece of what it does."
+      },
+      {
+       "code": "CRD-1.A.2",
+       "text": "A computing innovation might be a physical device, a piece of software, or just an idea about how computing gets used -- it doesn't have to be a physical thing."
+      },
+      {
+       "code": "CRD-1.A.3",
+       "text": "When the people building something bring different backgrounds and skills to the table, the result usually reflects that range of perspectives."
+      },
+      {
+       "code": "CRD-1.A.4",
+       "text": "Bringing in people with different viewpoints is one way to keep bias from creeping into a computing innovation."
+      },
+      {
+       "code": "CRD-1.A.5",
+       "text": "Talking with and listening to the people who will use a computing innovation is a key part of building it well."
+      },
+      {
+       "code": "CRD-1.A.6",
+       "text": "Feedback from potential users helps developers see a program's purpose from more than one angle and shape it around what those users actually need."
+      }
+     ]
+    },
+    {
+     "code": "CRD-1.B",
+     "text": "Explain how a team, not just one person, is often behind a given computing innovation.",
+     "eks": [
+      {
+       "code": "CRD-1.B.1",
+       "text": "Web-based tools let programmers share work and comment on each other's ideas and files even when they aren't in the same room."
+      },
+      {
+       "code": "CRD-1.B.2",
+       "text": "Pair programming is one common pattern teams use for working together on code."
+      }
+     ]
+    },
+    {
+     "code": "CRD-1.C",
+     "text": "Show good interpersonal habits when working with a team.",
+     "eks": [
+      {
+       "code": "CRD-1.C.1",
+       "text": "Teams that collaborate well tend to practice skills such as clear communication, reaching agreement as a group, resolving disagreements, and negotiating."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Working with other people, and giving them credit, changes how a computing project turns out.",
+   "class_periods": null
+  },
+  {
+   "code": "1.2",
+   "big_idea": "CRD",
+   "title": "Program Function and Purpose",
+   "los": [
+    {
+     "code": "CRD-2.A",
+     "text": "Describe what a given computing innovation is meant to accomplish.",
+     "eks": [
+      {
+       "code": "CRD-2.A.1",
+       "text": "Computing innovations exist either to solve a problem or to let someone express a creative interest."
+      },
+      {
+       "code": "CRD-2.A.2",
+       "text": "Knowing why a computing innovation exists makes it easier for developers to actually build it."
+      }
+     ]
+    },
+    {
+     "code": "CRD-2.B",
+     "text": "Explain what a program or a piece of it actually does when it runs.",
+     "eks": [
+      {
+       "code": "CRD-2.B.1",
+       "text": "A program -- also called software -- is a set of statements that carries out a specific job when a computer runs it."
+      },
+      {
+       "code": "CRD-2.B.2",
+       "text": "A code segment is just part of a program: a smaller group of statements within the larger whole."
+      },
+      {
+       "code": "CRD-2.B.3",
+       "text": "A program has to keep working correctly across a range of different inputs and circumstances, not just one case."
+      },
+      {
+       "code": "CRD-2.B.4",
+       "text": "A program's behavior is what it does while running, usually described in terms of how someone interacts with it."
+      },
+      {
+       "code": "CRD-2.B.5",
+       "text": "You can describe a program at a high level -- just what it accomplishes -- or in more detail, including how the code produces that result."
+      }
+     ]
+    },
+    {
+     "code": "CRD-2.C",
+     "text": "Recognize what counts as input to a given program.",
+     "eks": [
+      {
+       "code": "CRD-2.C.1",
+       "text": "Inputs are data fed into a computer for a program to work with, and they can take forms like touch, sound, images, or text."
+      },
+      {
+       "code": "CRD-2.C.2",
+       "text": "An event ties an action to input data that gets passed along to a program."
+      },
+      {
+       "code": "CRD-2.C.3",
+       "text": "Pressing a key, clicking a mouse, launching a program, or any other defined action can trigger an event that changes the program's flow."
+      },
+      {
+       "code": "CRD-2.C.4",
+       "text": "What a program outputs is typically shaped by the input it receives."
+      },
+      {
+       "code": "CRD-2.C.5",
+       "text": "Event-driven programs run their statements in response to triggers, not strictly in a fixed top-to-bottom order."
+      },
+      {
+       "code": "CRD-2.C.6",
+       "text": "Input isn't limited to a human user -- it can also come from another program."
+      }
+     ]
+    },
+    {
+     "code": "CRD-2.D",
+     "text": "Recognize what counts as output from a given program.",
+     "eks": [
+      {
+       "code": "CRD-2.D.1",
+       "text": "Outputs are data a program sends out to some device, and like inputs, they can be tactile, audio, visual, or text."
+      },
+      {
+       "code": "CRD-2.D.2",
+       "text": "What a program outputs usually depends on its input, or on values it has stored internally from before."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "A program exists to do something for someone, and describing what it does means naming its inputs, its outputs, and the behavior that connects them.",
+   "class_periods": null
+  },
+  {
+   "code": "1.3",
+   "big_idea": "CRD",
+   "title": "Program Design and Development",
+   "los": [
+    {
+     "code": "CRD-2.E",
+     "text": "Build a program by following some kind of development process.",
+     "eks": [
+      {
+       "code": "CRD-2.E.1",
+       "text": "A development process can be planned out step by step, or it can be more open-ended and exploratory."
+      },
+      {
+       "code": "CRD-2.E.2",
+       "text": "Several development processes exist, but they tend to share common phases: investigating and reflecting, designing, prototyping, and testing."
+      },
+      {
+       "code": "CRD-2.E.3",
+       "text": "An iterative process means going back and revising earlier work based on feedback, test results, or reflection, sometimes more than once."
+      },
+      {
+       "code": "CRD-2.E.4",
+       "text": "An incremental process means splitting a problem into smaller pieces and confirming each piece works before folding it into the whole program."
+      }
+     ]
+    },
+    {
+     "code": "CRD-2.F",
+     "text": "Design both a program and how a user will interact with it.",
+     "eks": [
+      {
+       "code": "CRD-2.F.1",
+       "text": "Designing a program starts with investigating what it actually needs to do."
+      },
+      {
+       "code": "CRD-2.F.2",
+       "text": "That investigation helps clarify the constraints on the program along with the needs and interests of the people who'll use it."
+      },
+      {
+       "code": "CRD-2.F.3",
+       "text": "Investigation can take forms like surveys, testing with users, interviews, or just watching people directly."
+      },
+      {
+       "code": "CRD-2.F.4",
+       "text": "A program's requirements spell out how it should function, which can include how users are expected to interact with it."
+      },
+      {
+       "code": "CRD-2.F.5",
+       "text": "A specification is the document that lays out a program's requirements."
+      },
+      {
+       "code": "CRD-2.F.6",
+       "text": "The design phase of development is where you figure out how to meet a given specification."
+      },
+      {
+       "code": "CRD-2.F.7",
+       "text": "Design work can include brainstorming, sketching out plans and storyboards, breaking the program into modules and components, drawing diagrams of the interface layout, and planning how the program will be tested."
+      }
+     ]
+    },
+    {
+     "code": "CRD-2.G",
+     "text": "Write documentation that explains what a code segment or program is for.",
+     "eks": [
+      {
+       "code": "CRD-2.G.1",
+       "text": "Documentation is written text that explains what a code segment, event, procedure, or program does and how it came to be built that way."
+      },
+      {
+       "code": "CRD-2.G.2",
+       "text": "Comments are documentation embedded in the code for human readers; they have no effect on how the program actually runs."
+      },
+      {
+       "code": "CRD-2.G.3",
+       "text": "Documentation should be written all along the way a program is developed, not just at the end."
+      },
+      {
+       "code": "CRD-2.G.4",
+       "text": "Good documentation makes it easier to build and maintain correct programs, whether you're working alone or with a team."
+      },
+      {
+       "code": "CRD-2.G.5",
+       "text": "Some programming environments don't support comments at all, so documentation has to happen some other way."
+      }
+     ]
+    },
+    {
+     "code": "CRD-2.H",
+     "text": "Give credit for code segments that came from somewhere else.",
+     "eks": [
+      {
+       "code": "CRD-2.H.1",
+       "text": "Any code segment built by a group or borrowed from another source deserves acknowledgment."
+      },
+      {
+       "code": "CRD-2.H.2",
+       "text": "That acknowledgment usually lives in the program's documentation and should name where the code came from or who wrote it."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Building a program well means planning before writing, documenting while writing, and being willing to revise.",
+   "class_periods": null
+  },
+  {
+   "code": "1.4",
+   "big_idea": "CRD",
+   "title": "Identifying and Correcting Errors",
+   "los": [
+    {
+     "code": "CRD-2.I",
+     "text": "Find and fix a mistake in an algorithm or program.",
+     "eks": [
+      {
+       "code": "CRD-2.I.1",
+       "text": "A logic error is a flaw in the algorithm's or program's reasoning that makes it behave wrong even though it runs."
+      },
+      {
+       "code": "CRD-2.I.2",
+       "text": "A syntax error happens when code breaks the grammar rules of the programming language."
+      },
+      {
+       "code": "CRD-2.I.3",
+       "text": "A run-time error shows up while the program is actually executing, and different languages define their own kinds of these."
+      },
+      {
+       "code": "CRD-2.I.4",
+       "text": "An overflow error happens when a computer tries to store or handle a number bigger, or smaller, than its allowed range."
+      },
+      {
+       "code": "CRD-2.I.5",
+       "text": "Good ways to track down and fix errors include using test cases, tracing through code by hand, using visualizations, using a debugger, or adding extra output to see what's happening."
+      }
+     ]
+    },
+    {
+     "code": "CRD-2.J",
+     "text": "Pick inputs and matching expected outputs to verify that an algorithm or program works correctly.",
+     "eks": [
+      {
+       "code": "CRD-2.J.1",
+       "text": "Testing means running a program on chosen inputs and checking whether it produces the outcomes you expect, then using what you learn to fix the algorithm or program."
+      },
+      {
+       "code": "CRD-2.J.2",
+       "text": "Good test inputs should include cases right at or just past the smallest and largest values a program is expected to handle."
+      },
+      {
+       "code": "CRD-2.J.3",
+       "text": "You need to know a program's requirements before you can choose test inputs that make sense."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Programs fail in a few recognizable ways, and testing with well-chosen inputs -- including edge cases -- is how those failures get found before a user does.",
+   "class_periods": null
+  },
+  {
+   "code": "2.1",
+   "big_idea": "DAT",
+   "title": "Binary Numbers",
+   "los": [
+    {
+     "code": "DAT-1.A",
+     "text": "Show how information gets encoded as sequences of bits.",
+     "eks": [
+      {
+       "code": "DAT-1.A.1",
+       "text": "A data value can live in a variable, sit inside a list, stand alone as a constant, or move into and out of a function as an argument or return value."
+      },
+      {
+       "code": "DAT-1.A.2",
+       "text": "Every piece of data a computer works with ultimately breaks down into bits at the hardware level."
+      },
+      {
+       "code": "DAT-1.A.3",
+       "text": "A bit is just a binary digit, one of two possible values, 0 or 1."
+      },
+      {
+       "code": "DAT-1.A.4",
+       "text": "Eight bits grouped together make one byte."
+      },
+      {
+       "code": "DAT-1.A.5",
+       "text": "Abstraction means stripping away details that don't matter right now so the important idea stands out on its own."
+      },
+      {
+       "code": "DAT-1.A.6",
+       "text": "Combining bits in different patterns lets them stand for higher-level things like numbers, letters, or colors."
+      },
+      {
+       "code": "DAT-1.A.7",
+       "text": "An identical string of bits can mean completely different things depending on how a program interprets it."
+      },
+      {
+       "code": "DAT-1.A.8",
+       "text": "Analog data vary continuously rather than in fixed steps -- think of a runner's position over a race or the volume of a song rising and falling."
+      },
+      {
+       "code": "DAT-1.A.9",
+       "text": "Turning a continuous, real-world signal into digital data is itself a form of abstraction."
+      },
+      {
+       "code": "DAT-1.A.10",
+       "text": "Sampling captures an analog signal by measuring it at evenly spaced moments in time, and each of those measurements gets converted into stored bits."
+      }
+     ]
+    },
+    {
+     "code": "DAT-1.B",
+     "text": "Describe what can go wrong when a fixed number of bits is used to hold a value.",
+     "eks": [
+      {
+       "code": "DAT-1.B.1",
+       "text": "When a language stores integers in a fixed number of bits, there's a ceiling on how large or small those numbers can get, and exceeding it can cause overflow or similar errors."
+      },
+      {
+       "code": "DAT-1.B.2",
+       "text": "Some languages sidestep that limit by letting integers grow as large as available memory allows, which is true of the pseudocode language used on the exam."
+      },
+      {
+       "code": "DAT-1.B.3",
+       "text": "Real numbers face a similar bit-width limit, which can produce rounding errors, since many real numbers can only be stored as approximations."
+      }
+     ]
+    },
+    {
+     "code": "DAT-1.C",
+     "text": "Convert positive integers between base 10 and base 2, and put binary numbers in order.",
+     "eks": [
+      {
+       "code": "DAT-1.C.1",
+       "text": "Data can be written out in different number bases, binary and decimal among them."
+      },
+      {
+       "code": "DAT-1.C.2",
+       "text": "Base 2 has only two digits to work with, 0 and 1."
+      },
+      {
+       "code": "DAT-1.C.3",
+       "text": "Base 10 uses ten digits, 0 through 9."
+      },
+      {
+       "code": "DAT-1.C.4",
+       "text": "Just like in decimal, where a binary digit sits determines what it's worth -- multiply the digit by the value of its place."
+      },
+      {
+       "code": "DAT-1.C.5",
+       "text": "Each position's place value is the base raised to that position's power, counting positions from 0 at the rightmost digit and increasing going left."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Computers store everything as bits, and binary place-value works the same way decimal place-value does, just base 2 instead of base 10.",
+   "class_periods": null,
+   "exclusions": [
+    "specific range limitations for real numbers are outside course/exam scope (EK DAT-1.B.3)"
+   ]
+  },
+  {
+   "code": "2.2",
+   "big_idea": "DAT",
+   "title": "Data Compression",
+   "los": [
+    {
+     "code": "DAT-1.D",
+     "text": "Weigh different compression algorithms against each other to pick the right one for a given situation.",
+     "eks": [
+      {
+       "code": "DAT-1.D.1",
+       "text": "Compressing data shrinks the number of bits needed to store or send it."
+      },
+      {
+       "code": "DAT-1.D.2",
+       "text": "A smaller bit count doesn't automatically mean the data carries less information."
+      },
+      {
+       "code": "DAT-1.D.3",
+       "text": "How much compression shrinks a file depends on both how much repetition was in the original data and which algorithm is used."
+      },
+      {
+       "code": "DAT-1.D.4",
+       "text": "Lossless compression cuts down the bit count while still allowing the original data to be rebuilt exactly."
+      },
+      {
+       "code": "DAT-1.D.5",
+       "text": "Lossy compression can shrink data much further, but what comes back out is only close to the original, not identical."
+      },
+      {
+       "code": "DAT-1.D.6",
+       "text": "Because lossy methods don't have to preserve every detail, they typically achieve smaller sizes than lossless methods."
+      },
+      {
+       "code": "DAT-1.D.7",
+       "text": "When getting back the exact original matters most, lossless compression is the right choice."
+      },
+      {
+       "code": "DAT-1.D.8",
+       "text": "When shrinking size or speeding up transmission matters most, lossy compression is typically preferred."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Compression trades off file size against fidelity; lossless keeps everything, lossy throws some of it away for a bigger size reduction.",
+   "class_periods": null
+  },
+  {
+   "code": "2.3",
+   "big_idea": "DAT",
+   "title": "Extracting Information from Data",
+   "los": [
+    {
+     "code": "DAT-2.A",
+     "text": "Explain what kinds of information a person can pull out of a data set.",
+     "eks": [
+      {
+       "code": "DAT-2.A.1",
+       "text": "Information is what you get once facts and patterns have been pulled out of raw data."
+      },
+      {
+       "code": "DAT-2.A.2",
+       "text": "Data can reveal trends, expose connections, and point toward solutions to problems."
+      },
+      {
+       "code": "DAT-2.A.3",
+       "text": "Processing data can turn up a correlation between two variables, but correlation alone doesn't prove one causes the other -- that takes further investigation."
+      },
+      {
+       "code": "DAT-2.A.4",
+       "text": "One data source is often not enough to support a conclusion, so multiple sources may need to be combined."
+      }
+     ]
+    },
+    {
+     "code": "DAT-2.B",
+     "text": "Explain what can be learned from metadata rather than the data itself.",
+     "eks": [
+      {
+       "code": "DAT-2.B.1",
+       "text": "Metadata describes data -- for a photo, that might mean when it was taken or how large the file is, rather than the picture itself."
+      },
+      {
+       "code": "DAT-2.B.2",
+       "text": "Editing or removing metadata leaves the underlying data untouched."
+      },
+      {
+       "code": "DAT-2.B.3",
+       "text": "Metadata helps people locate, sort, and keep track of information."
+      },
+      {
+       "code": "DAT-2.B.4",
+       "text": "Extra context from metadata can make a data set more useful."
+      },
+      {
+       "code": "DAT-2.B.5",
+       "text": "Metadata gives data a structure it can be organized around."
+      }
+     ]
+    },
+    {
+     "code": "DAT-2.C",
+     "text": "Recognize the obstacles that come up when working with data.",
+     "eks": [
+      {
+       "code": "DAT-2.C.1",
+       "text": "What can be done with data is limited by the skills of the people involved and the tools available to them."
+      },
+      {
+       "code": "DAT-2.C.2",
+       "text": "Data sets, big or small, come with recurring headaches: missing entries, bad values, needing cleanup, or needing to be merged with other sources."
+      },
+      {
+       "code": "DAT-2.C.3",
+       "text": "Data collected from free-text entry tends to come out inconsistent, since different people abbreviate, spell, and capitalize things differently."
+      },
+      {
+       "code": "DAT-2.C.4",
+       "text": "Cleaning data standardizes it -- swapping equivalent spellings or abbreviations for one consistent form -- without changing what it means."
+      },
+      {
+       "code": "DAT-2.C.5",
+       "text": "Bias frequently comes from what kind of data gets collected or where it comes from, and piling on more data of the same kind won't fix it."
+      },
+      {
+       "code": "DAT-2.C.6",
+       "text": "How much can be learned from a data set is tied to its size."
+      },
+      {
+       "code": "DAT-2.C.7",
+       "text": "A single machine may struggle to process very large data sets, which is where parallel computing comes in."
+      },
+      {
+       "code": "DAT-2.C.8",
+       "text": "A system's ability to scale matters, since its computing capacity shapes what data can be stored and processed."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Raw data becomes information once a program finds the patterns in it, and real data sets are rarely clean enough to do that without some processing first.",
+   "class_periods": null
+  },
+  {
+   "code": "2.4",
+   "big_idea": "DAT",
+   "title": "Using Programs with Data",
+   "los": [
+    {
+     "code": "DAT-2.D",
+     "text": "Use a program as the tool for pulling information out of data.",
+     "eks": [
+      {
+       "code": "DAT-2.D.1",
+       "text": "Running data through a program is one way to turn it into information."
+      },
+      {
+       "code": "DAT-2.D.2",
+       "text": "Insights drawn from data can be communicated through tables, diagrams, written explanations, and other visual formats."
+      },
+      {
+       "code": "DAT-2.D.3",
+       "text": "Search tools make locating specific information much faster."
+      },
+      {
+       "code": "DAT-2.D.4",
+       "text": "Filtering tools help surface relevant information and spot patterns within a data set."
+      },
+      {
+       "code": "DAT-2.D.5",
+       "text": "Spreadsheet-style programs make it easier to organize data and notice trends in it."
+      },
+      {
+       "code": "DAT-2.D.6",
+       "text": "Common data operations include applying a change to every item in a set, keeping only items that meet some condition, combining or comparing values across a set, and turning a data set into a chart or graph."
+      }
+     ]
+    },
+    {
+     "code": "DAT-2.E",
+     "text": "Describe how running data through programs generates insight and knowledge.",
+     "eks": [
+      {
+       "code": "DAT-2.E.1",
+       "text": "Getting insight from data is often a back-and-forth process, where a program gets run repeatedly and adjusted along the way."
+      },
+      {
+       "code": "DAT-2.E.2",
+       "text": "Writing programs to filter and clean up messy data is itself a way of gaining understanding from it."
+      },
+      {
+       "code": "DAT-2.E.3",
+       "text": "Merging separate data sources, grouping similar items, and sorting data into categories are all techniques programs use to extract meaning."
+      },
+      {
+       "code": "DAT-2.E.4",
+       "text": "Converting or reshaping digital information into a different form can itself reveal new understanding."
+      },
+      {
+       "code": "DAT-2.E.5",
+       "text": "Running data through a transformation can bring hidden patterns to the surface."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Programs that read, combine, and rewrite data files let a person do with a data set what would be impractical by hand.",
+   "class_periods": null
+  },
+  {
+   "code": "3.1",
+   "big_idea": "AAP",
+   "title": "Variables and Assignments",
+   "los": [
+    {
+     "code": "AAP-1.A",
+     "text": "Store a value in a variable so a program can refer to it by name.",
+     "eks": [
+      {
+       "code": "AAP-1.A.1",
+       "text": "A variable acts like a labeled container in a program; at any given moment it holds one value, though that value itself might be a list or other structure bundling several values together."
+      },
+      {
+       "code": "AAP-1.A.2",
+       "text": "Picking clear, descriptive variable names makes code easier to read and makes it obvious what each name is standing in for."
+      },
+      {
+       "code": "AAP-1.A.3",
+       "text": "Many languages sort data into types -- numbers, Booleans, lists, strings, and so on -- and a variable references data of some particular type."
+      },
+      {
+       "code": "AAP-1.A.4",
+       "text": "Certain values fit one data type more naturally than another."
+      }
+     ]
+    },
+    {
+     "code": "AAP-1.B",
+     "text": "Figure out what a variable holds after an assignment statement runs.",
+     "eks": [
+      {
+       "code": "AAP-1.B.1",
+       "text": "Assignment is the mechanism a program uses to change what value a variable is currently holding."
+      },
+      {
+       "code": "AAP-1.B.2",
+       "text": "The reference sheet's assignment arrow works by first evaluating the expression on the right, then storing a copy of that result in the variable named on the left."
+      },
+      {
+       "code": "AAP-1.B.3",
+       "text": "A variable always reflects only its most recent assignment; for instance, if b is set equal to a and a is changed afterward, b keeps the old value it copied, not the new one."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "A variable is a named place to keep a value, and assignment is how that name gets pointed at a value.",
+   "class_periods": null
+  },
+  {
+   "code": "3.2",
+   "big_idea": "AAP",
+   "title": "Data Abstraction",
+   "los": [
+    {
+     "code": "AAP-1.C",
+     "text": "Use a variable to hold an entire list or string of values.",
+     "eks": [
+      {
+       "code": "AAP-1.C.1",
+       "text": "A list is simply an ordered run of elements, written out as comma-separated values inside brackets."
+      },
+      {
+       "code": "AAP-1.C.2",
+       "text": "Each individual value inside a list is called an element, and every element has its own index."
+      },
+      {
+       "code": "AAP-1.C.3",
+       "text": "Indexing -- numbering positions with natural numbers -- is the usual way to point at a particular spot in a list or string."
+      },
+      {
+       "code": "AAP-1.C.4",
+       "text": "A string is likewise just an ordered run, but of characters rather than arbitrary elements."
+      }
+     ]
+    },
+    {
+     "code": "AAP-1.D",
+     "text": "Build a data abstraction out of a list, and explain how that abstraction keeps a program simpler.",
+     "eks": [
+      {
+       "code": "AAP-1.D.1",
+       "text": "Data abstraction draws a line between what a data type looks like from the outside and how it is actually built underneath."
+      },
+      {
+       "code": "AAP-1.D.2",
+       "text": "By giving a whole collection of data one name, a data abstraction hides the underlying representation and keeps the program easier to reason about."
+      },
+      {
+       "code": "AAP-1.D.3",
+       "text": "Lists are the tool this course uses to build data abstractions."
+      },
+      {
+       "code": "AAP-1.D.4",
+       "text": "Programs built around a good data abstraction tend to be simpler to write and maintain going forward."
+      },
+      {
+       "code": "AAP-1.D.5",
+       "text": "A single data abstraction can hold elements of more than one type at once."
+      },
+      {
+       "code": "AAP-1.D.6",
+       "text": "Bundling several related values into one list lets a program treat them as though they were a single item; some languages call this same structure an array instead."
+      },
+      {
+       "code": "AAP-1.D.7",
+       "text": "The reference sheet's list notation covers writing out a list of values directly, writing empty brackets to start with nothing, and assigning one variable's list contents to another, which copies the values rather than linking them."
+      },
+      {
+       "code": "AAP-1.D.8",
+       "text": "On the reference sheet, list indices start at 1 and run through the list's length; asking for an index outside that range is an error that stops the program."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Grouping related values under one name lets a program treat a collection as a single thing instead of tracking each part separately.",
+   "class_periods": null,
+   "exclusions": [
+    "linked lists are outside course/exam scope (EK AAP-1.D.6)"
+   ]
+  },
+  {
+   "code": "3.3",
+   "big_idea": "AAP",
+   "title": "Mathematical Expressions",
+   "los": [
+    {
+     "code": "AAP-2.A",
+     "text": "Describe an algorithm that runs its steps in order, without writing it in any particular programming language.",
+     "eks": [
+      {
+       "code": "AAP-2.A.1",
+       "text": "An algorithm is just a finite recipe of steps aimed at one specific task."
+      },
+      {
+       "code": "AAP-2.A.2",
+       "text": "Algorithms don't have to be written in a programming language at all -- plain language, diagrams, and pseudocode all work."
+      },
+      {
+       "code": "AAP-2.A.3",
+       "text": "To actually run on a computer, an algorithm eventually gets translated into some programming language."
+      },
+      {
+       "code": "AAP-2.A.4",
+       "text": "Sequencing, selection, and iteration are the only building blocks needed to construct any algorithm."
+      }
+     ]
+    },
+    {
+     "code": "AAP-2.B",
+     "text": "Turn a step-by-step algorithm into a sequence of code statements.",
+     "eks": [
+      {
+       "code": "AAP-2.B.1",
+       "text": "Sequencing just means running each instruction in the order it was written."
+      },
+      {
+       "code": "AAP-2.B.2",
+       "text": "A statement is one piece of code that carries out a single action."
+      },
+      {
+       "code": "AAP-2.B.3",
+       "text": "An expression can be built from a plain value, a variable, an operator, or a call to a procedure that hands back a value."
+      },
+      {
+       "code": "AAP-2.B.4",
+       "text": "Evaluating any expression collapses it down to exactly one resulting value."
+      },
+      {
+       "code": "AAP-2.B.5",
+       "text": "Order-of-operations rules, set by the language, govern the sequence in which expressions get evaluated."
+      },
+      {
+       "code": "AAP-2.B.6",
+       "text": "Statements written in sequence run in the order they appear, top to bottom."
+      },
+      {
+       "code": "AAP-2.B.7",
+       "text": "Writing an algorithm clearly and readably matters, not just writing one that works."
+      }
+     ]
+    },
+    {
+     "code": "AAP-2.C",
+     "text": "Work out what an expression using arithmetic operators evaluates to.",
+     "eks": [
+      {
+       "code": "AAP-2.C.1",
+       "text": "The common arithmetic operators -- add, subtract, multiply, divide, and modulus -- show up in nearly every language."
+      },
+      {
+       "code": "AAP-2.C.2",
+       "text": "The reference sheet's MOD operator gives the remainder of dividing one non-negative integer by a positive one; 17 MOD 5, for example, comes out to 2."
+      },
+      {
+       "code": "AAP-2.C.3",
+       "text": "The reference sheet lists +, -, *, /, and MOD as the operators for doing arithmetic on two values -- for instance, 17 / 5 comes out to 3.4."
+      },
+      {
+       "code": "AAP-2.C.4",
+       "text": "Standard math order-of-operations rules apply, and MOD is treated with the same precedence as multiplication and division."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Arithmetic and comparison operators combine into expressions the same way in code as they do on paper, with the same rules about order of operations.",
+   "class_periods": null
+  },
+  {
+   "code": "3.4",
+   "big_idea": "AAP",
+   "title": "Strings",
+   "los": [
+    {
+     "code": "AAP-2.D",
+     "text": "Work out what an expression that manipulates strings evaluates to.",
+     "eks": [
+      {
+       "code": "AAP-2.D.1",
+       "text": "Concatenation is just gluing two or more strings together, end to end, into one new string."
+      },
+      {
+       "code": "AAP-2.D.2",
+       "text": "A substring is any piece cut out of a larger, existing string."
+      }
+     ]
+    },
+    {
+     "code": "AAP-2.E",
+     "text": "Write and evaluate expressions that compare two variables, expressions, or values with relational operators.",
+     "eks": [
+      {
+       "code": "AAP-2.E.1",
+       "text": "A Boolean is a value that can only ever be true or false."
+      },
+      {
+       "code": "AAP-2.E.2",
+       "text": "The reference sheet's relational operators -- equals, not-equals, greater-than, less-than, greater-or-equal, less-or-equal -- compare two things and always produce a Boolean; two equal values compared with equals, for example, come out true."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Text is data too, and a string is handled as a sequence of characters that can be measured, sliced, and searched.",
+   "class_periods": null
+  },
+  {
+   "code": "3.5",
+   "big_idea": "AAP",
+   "title": "Boolean Expressions",
+   "los": [
+    {
+     "code": "AAP-2.F",
+     "text": "Write and evaluate expressions that combine Boolean values with logical operators.",
+     "eks": [
+      {
+       "code": "AAP-2.F.1",
+       "text": "The reference sheet's logical operators -- NOT, AND, OR -- each take Boolean input and produce a Boolean result."
+      },
+      {
+       "code": "AAP-2.F.2",
+       "text": "NOT flips a condition: the result is true exactly when the condition is false, and false when the condition is true."
+      },
+      {
+       "code": "AAP-2.F.3",
+       "text": "AND requires both of its two conditions to be true for the whole expression to come out true."
+      },
+      {
+       "code": "AAP-2.F.4",
+       "text": "OR requires just one of its two conditions, or both, to be true for the whole expression to come out true."
+      },
+      {
+       "code": "AAP-2.F.5",
+       "text": "Logical operators work on operands that can themselves be a whole Boolean expression or just one bare Boolean value."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "An expression that evaluates to true or false is what a program's decisions are built on.",
+   "class_periods": null
+  },
+  {
+   "code": "3.6",
+   "big_idea": "AAP",
+   "title": "Conditionals",
+   "los": [
+    {
+     "code": "AAP-2.G",
+     "text": "Describe an algorithm that branches based on a condition, without writing it in a programming language.",
+     "eks": [
+      {
+       "code": "AAP-2.G.1",
+       "text": "Selection is what decides, based on whether a condition is true or false, which part of an algorithm actually runs."
+      }
+     ]
+    },
+    {
+     "code": "AAP-2.H",
+     "text": "Write conditional statements and figure out what they do.",
+     "eks": [
+      {
+       "code": "AAP-2.H.1",
+       "text": "An if-statement changes the normal top-to-bottom flow of a program by choosing which statements run based on a Boolean condition."
+      },
+      {
+       "code": "AAP-2.H.2",
+       "text": "The reference sheet's plain IF form runs its block only when the condition is true, and does nothing at all when the condition is false."
+      },
+      {
+       "code": "AAP-2.H.3",
+       "text": "The reference sheet's IF/ELSE form runs one block when the condition is true and a different block when it is false, so one branch or the other always executes."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "An if-statement lets a program take one path or another depending on whether a condition holds.",
+   "class_periods": null
+  },
+  {
+   "code": "3.7",
+   "big_idea": "AAP",
+   "title": "Nested Conditionals",
+   "los": [
+    {
+     "code": "AAP-2.I",
+     "text": "Write nested conditional statements and figure out what they do.",
+     "eks": [
+      {
+       "code": "AAP-2.I.1",
+       "text": "Nesting a conditional means putting one if-statement inside the body of another."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Putting one conditional inside another lets a program handle more than two possible outcomes.",
+   "class_periods": null
+  },
+  {
+   "code": "3.8",
+   "big_idea": "AAP",
+   "title": "Iteration",
+   "los": [
+    {
+     "code": "AAP-2.J",
+     "text": "Describe an algorithm that repeats steps, without writing it in a programming language.",
+     "eks": [
+      {
+       "code": "AAP-2.J.1",
+       "text": "Iteration is the part of an algorithm that runs again and again, either a set number of times or until some condition is satisfied."
+      }
+     ]
+    },
+    {
+     "code": "AAP-2.K",
+     "text": "Write iteration statements and figure out what they produce or do.",
+     "eks": [
+      {
+       "code": "AAP-2.K.1",
+       "text": "An iteration statement breaks the normal top-to-bottom flow by running a set of statements over and over, possibly zero times, until some stopping condition is reached."
+      },
+      {
+       "code": "AAP-2.K.2",
+       "text": "The reference sheet's REPEAT n TIMES form runs its block a fixed number of times, n."
+      },
+      {
+       "code": "AAP-2.K.3",
+       "text": "The reference sheet's REPEAT UNTIL(condition) form keeps running its block, checking the condition before each pass, until that condition finally comes out true."
+      },
+      {
+       "code": "AAP-2.K.4",
+       "text": "A REPEAT UNTIL loop runs forever if its ending condition can never become true."
+      },
+      {
+       "code": "AAP-2.K.5",
+       "text": "Because REPEAT UNTIL checks its condition before running the block, the loop body can end up never executing at all if the condition already holds on the first check."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Repeating a block of statements, either a fixed number of times or until some condition changes, is how a program does the same kind of work over and over.",
+   "class_periods": null
+  },
+  {
+   "code": "3.9",
+   "big_idea": "AAP",
+   "title": "Developing Algorithms",
+   "los": [
+    {
+     "code": "AAP-2.L",
+     "text": "Compare two or more algorithms to see whether they actually produce the same outcome.",
+     "eks": [
+      {
+       "code": "AAP-2.L.1",
+       "text": "Different-looking algorithms can still accomplish the exact same task."
+      },
+      {
+       "code": "AAP-2.L.2",
+       "text": "Conversely, algorithms that look almost identical can still produce different results or side effects."
+      },
+      {
+       "code": "AAP-2.L.3",
+       "text": "Certain conditional statements have an equivalent Boolean expression that does the same job."
+      },
+      {
+       "code": "AAP-2.L.4",
+       "text": "The reverse also holds: certain Boolean expressions have an equivalent conditional statement."
+      },
+      {
+       "code": "AAP-2.L.5",
+       "text": "More than one algorithm can be written to solve the very same problem."
+      }
+     ]
+    },
+    {
+     "code": "AAP-2.M",
+     "text": "Build new algorithms, including by combining or adapting ones that already exist.",
+     "eks": [
+      {
+       "code": "AAP-2.M.1",
+       "text": "A new algorithm can start from scratch, or be built by combining or tweaking algorithms that already exist."
+      },
+      {
+       "code": "AAP-2.M.2",
+       "text": "Familiar algorithms, like finding the max or min of some numbers, computing a sum or average, checking whether one integer divides another evenly, or routing a robot through a maze, are useful raw material for building something new."
+      },
+      {
+       "code": "AAP-2.M.3",
+       "text": "Reusing already-correct algorithms as building blocks saves development time, cuts down on testing, and makes it easier to track down errors."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Building an algorithm from scratch usually means starting with a rough version and refining it in small, testable steps.",
+   "class_periods": null
+  },
+  {
+   "code": "3.10",
+   "big_idea": "AAP",
+   "title": "Lists",
+   "los": [
+    {
+     "code": "AAP-2.N",
+     "text": "A student should be able to write and evaluate expressions that read or change list elements using indexing and the standard list procedures.",
+     "eks": [
+      {
+       "code": "AAP-2.N.1",
+       "text": "The reference sheet defines the core list operations: read an element by its index (the first element is index 1), copy an element into a variable, store a value into an element, copy one element's value into another, insert a value at a given index (shifting later values right and growing the list by one), append a value at the end, remove a value at a given index (shifting later values left and shrinking the list by one), and find the current length of a list."
+      },
+      {
+       "code": "AAP-2.N.2",
+       "text": "Any list procedure has to follow the syntax rules of whatever language it's written in."
+      }
+     ]
+    },
+    {
+     "code": "AAP-2.O",
+     "text": "A student should be able to write loops that step through a list and figure out what an algorithm that walks a list produces.",
+     "eks": [
+      {
+       "code": "AAP-2.O.1",
+       "text": "Walking through a list can touch every element, or it can stop after covering just some of them."
+      },
+      {
+       "code": "AAP-2.O.2",
+       "text": "A loop is the tool used to move across a list's elements."
+      },
+      {
+       "code": "AAP-2.O.3",
+       "text": "The reference sheet's FOR EACH item IN aList construct runs its block once for every element of aList, setting item to each value in turn from first to last."
+      },
+      {
+       "code": "AAP-2.O.4",
+       "text": "Recognizing common loop-based patterns, such as finding the largest or smallest value, or totaling or averaging a list of numbers, gives you building blocks for writing new algorithms."
+      },
+      {
+       "code": "AAP-2.O.5",
+       "text": "Linear (or sequential) search steps through a list one element at a time until it finds the target or runs out of elements."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "A list holds an ordered sequence of values that a program can step through one at a time.",
+   "class_periods": null,
+   "exclusions": [
+    "traversing two lists at once with a shared index (parallel traversal) is outside course/exam scope (EK AAP-2.O.1)"
+   ]
+  },
+  {
+   "code": "3.11",
+   "big_idea": "AAP",
+   "title": "Binary Search",
+   "los": [
+    {
+     "code": "AAP-2.P",
+     "text": "A student should be able to work out how many steps a binary search takes and explain what conditions binary search needs to work.",
+     "eks": [
+      {
+       "code": "AAP-2.P.1",
+       "text": "Binary search checks the middle of a sorted list and throws away the half that can't contain the target, repeating that halving until the value turns up or nothing is left to check."
+      },
+      {
+       "code": "AAP-2.P.2",
+       "text": "Binary search only works if the data is already sorted."
+      },
+      {
+       "code": "AAP-2.P.3",
+       "text": "On sorted data, binary search usually beats linear search for speed."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Searching a sorted collection by repeatedly cutting the remaining range in half finds a value in far fewer steps than checking every element.",
+   "class_periods": null,
+   "exclusions": [
+    "specific implementations of the binary search algorithm are outside course/exam scope (EK AAP-2.P.1)"
+   ]
+  },
+  {
+   "code": "3.12",
+   "big_idea": "AAP",
+   "title": "Calling Procedures",
+   "los": [
+    {
+     "code": "AAP-3.A",
+     "text": "A student should be able to write a call to a procedure and predict what that call does or returns.",
+     "eks": [
+      {
+       "code": "AAP-3.A.1",
+       "text": "A procedure is a named chunk of code that can accept parameters and hand back a result."
+      },
+      {
+       "code": "AAP-3.A.2",
+       "text": "Different languages use different words, like function or method, for the same idea of a procedure."
+      },
+      {
+       "code": "AAP-3.A.3",
+       "text": "Parameters are the variables a procedure expects as input; arguments are the actual values supplied for those parameters at the call site."
+      },
+      {
+       "code": "AAP-3.A.4",
+       "text": "Calling a procedure pauses the caller, runs the procedure's own statements, and then hands control back to right after the call once the procedure finishes or hits a return."
+      },
+      {
+       "code": "AAP-3.A.5",
+       "text": "The reference sheet's procName(arg1, arg2, ...) notation calls a procedure and matches each argument to the corresponding parameter in order."
+      },
+      {
+       "code": "AAP-3.A.6",
+       "text": "The reference sheet's DISPLAY(expression) prints the value of expression and adds a trailing space."
+      },
+      {
+       "code": "AAP-3.A.7",
+       "text": "The reference sheet's RETURN(expression) statement sends control back to the caller and passes along the value of expression."
+      },
+      {
+       "code": "AAP-3.A.8",
+       "text": "Writing result <- procName(arg1, arg2, ...) on the reference sheet stores whatever the procedure returns into result."
+      },
+      {
+       "code": "AAP-3.A.9",
+       "text": "The reference sheet's INPUT() procedure reads a value typed by the user and gives it back as its result."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Calling a function hands control to a separate block of code and, often, gets a value back in return.",
+   "class_periods": null
+  },
+  {
+   "code": "3.13",
+   "big_idea": "AAP",
+   "title": "Developing Procedures",
+   "los": [
+    {
+     "code": "AAP-3.B",
+     "text": "A student should be able to explain how wrapping code in procedures keeps a program manageable.",
+     "eks": [
+      {
+       "code": "AAP-3.B.1",
+       "text": "Procedural abstraction is naming a process so that it can be used just by knowing what it does, without needing to know how it's built inside."
+      },
+      {
+       "code": "AAP-3.B.2",
+       "text": "A big problem's solution can be assembled from procedures that each solve one smaller piece of it."
+      },
+      {
+       "code": "AAP-3.B.3",
+       "text": "Modularity is the practice of splitting a program into separate, smaller subprograms."
+      },
+      {
+       "code": "AAP-3.B.4",
+       "text": "Instead of copying code around, a procedure can pull out the shared behavior into one general version, which cuts down on repetition and complexity."
+      },
+      {
+       "code": "AAP-3.B.5",
+       "text": "Parameters let one procedure serve many different inputs instead of needing a separate version for each case."
+      },
+      {
+       "code": "AAP-3.B.6",
+       "text": "Breaking code into procedures also makes it easier to read."
+      },
+      {
+       "code": "AAP-3.B.7",
+       "text": "Because callers only depend on what a procedure does, its inner workings can be rewritten, say to run faster or use less memory, without warning anyone, as long as its outward behavior doesn't change."
+      }
+     ]
+    },
+    {
+     "code": "AAP-3.C",
+     "text": "A student should be able to write their own procedures as a way of managing a program's complexity.",
+     "eks": [
+      {
+       "code": "AAP-3.C.1",
+       "text": "The reference sheet's PROCEDURE procName(parameter1, parameter2, ...) { block } form defines a procedure, with any number of parameters, that runs the given block when called."
+      },
+      {
+       "code": "AAP-3.C.2",
+       "text": "Adding a RETURN(expression) inside that same procedure form makes it hand back a value, with RETURN able to fire at any point in the block and immediately hand control back to the caller."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Writing a function well means giving it parameters general enough to be reused, and a name and docstring that explain what it does without exposing how.",
+   "class_periods": null
+  },
+  {
+   "code": "3.14",
+   "big_idea": "AAP",
+   "title": "Libraries",
+   "los": [
+    {
+     "code": "AAP-3.D",
+     "text": "A student should be able to pick a suitable library or piece of existing code when building a new program.",
+     "eks": [
+      {
+       "code": "AAP-3.D.1",
+       "text": "A library bundles up procedures that other programs can call on."
+      },
+      {
+       "code": "AAP-3.D.2",
+       "text": "Code you reuse can come from inside your own project or from an outside source such as a library."
+      },
+      {
+       "code": "AAP-3.D.3",
+       "text": "Relying on libraries makes it easier to build a complicated program."
+      },
+      {
+       "code": "AAP-3.D.4",
+       "text": "An API describes how a library's procedures are meant to behave and be called."
+      },
+      {
+       "code": "AAP-3.D.5",
+       "text": "You need a library's or API's documentation to know what it offers and how to use it correctly."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Importing a library brings in code someone else already wrote and tested, so a program can use it without reimplementing it.",
+   "class_periods": null
+  },
+  {
+   "code": "3.15",
+   "big_idea": "AAP",
+   "title": "Random Values",
+   "los": [
+    {
+     "code": "AAP-3.E",
+     "text": "A student should be able to write expressions that produce random values and reason about what those expressions might return.",
+     "eks": [
+      {
+       "code": "AAP-3.E.1",
+       "text": "The reference sheet's RANDOM(a, b) returns a random whole number between a and b, inclusive, with every value in that range equally likely."
+      },
+      {
+       "code": "AAP-3.E.2",
+       "text": "Because a program calls a random number generator, running it more than once can give different outcomes each time."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "A program can introduce controlled unpredictability by drawing values from a random-number generator instead of computing them.",
+   "class_periods": null
+  },
+  {
+   "code": "3.16",
+   "big_idea": "AAP",
+   "title": "Simulations",
+   "los": [
+    {
+     "code": "AAP-3.F",
+     "text": "A student should be able to explain how a computer can stand in for something in the real world, and weigh a simulation against the real thing it models.",
+     "eks": [
+      {
+       "code": "AAP-3.F.1",
+       "text": "A simulation is a simplified stand-in for a more complicated real object or process, built for one particular purpose."
+      },
+      {
+       "code": "AAP-3.F.2",
+       "text": "A simulation tracks a changing situation by updating a set of values that represent its current state."
+      },
+      {
+       "code": "AAP-3.F.3",
+       "text": "Simulations copy real events so people can study them and draw conclusions without the limits the real world imposes."
+      },
+      {
+       "code": "AAP-3.F.4",
+       "text": "Turning something real into a simulation means leaving out details or simplifying how it behaves."
+      },
+      {
+       "code": "AAP-3.F.5",
+       "text": "Whatever real-world elements a simulation's designer chooses to include or leave out can bias the result."
+      },
+      {
+       "code": "AAP-3.F.6",
+       "text": "Simulations earn their keep when the real version would be impractical to run, for instance because it's too big, too small, too fast, too slow, too costly, or too dangerous."
+      },
+      {
+       "code": "AAP-3.F.7",
+       "text": "Running simulations helps people form hypotheses about a phenomenon and then sharpen them."
+      },
+      {
+       "code": "AAP-3.F.8",
+       "text": "A simulation can use a random number generator to mimic the unpredictability found in the real world."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "A simulation stands in for a real process that would be too slow, risky, or expensive to run for real, trading some realism for repeatability.",
+   "class_periods": null
+  },
+  {
+   "code": "3.17",
+   "big_idea": "AAP",
+   "title": "Algorithmic Efficiency",
+   "los": [
+    {
+     "code": "AAP-4.A",
+     "text": "A student should be able to distinguish algorithms that finish in a reasonable amount of time from those that don't, and recognize when a heuristic makes more sense than an exact solution.",
+     "eks": [
+      {
+       "code": "AAP-4.A.1",
+       "text": "A problem describes a task in general terms, while an instance of that problem pins down specific input, so sorting is the problem but sorting the list (2, 3, 1, 7) is one instance of it."
+      },
+      {
+       "code": "AAP-4.A.2",
+       "text": "A decision problem just wants a yes or no answer, while an optimization problem asks you to find the best solution out of many candidates."
+      },
+      {
+       "code": "AAP-4.A.3",
+       "text": "Efficiency measures roughly how much computing power an algorithm needs, usually described in terms of how the input size affects it."
+      },
+      {
+       "code": "AAP-4.A.4",
+       "text": "Figuring out an algorithm's efficiency relies on formal or mathematical reasoning."
+      },
+      {
+       "code": "AAP-4.A.5",
+       "text": "One informal way to gauge efficiency is to count how many times a given statement or set of statements actually runs."
+      },
+      {
+       "code": "AAP-4.A.6",
+       "text": "Two algorithms that both correctly solve the same problem can still differ in efficiency."
+      },
+      {
+       "code": "AAP-4.A.7",
+       "text": "An algorithm counts as running in reasonable time if its growth is polynomial or slower (constant, linear, squared, cubed, and so on), while exponential or factorial growth counts as unreasonable."
+      },
+      {
+       "code": "AAP-4.A.8",
+       "text": "When a problem has no efficient algorithm, an exact answer in reasonable time isn't possible, so people settle for an approximate one instead."
+      },
+      {
+       "code": "AAP-4.A.9",
+       "text": "A heuristic gives up the guarantee of the best possible answer in exchange for being practical, useful when methods guaranteed to find the optimal solution would take too long."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Algorithms that solve the same problem are not equally fast, and how an algorithm's running time grows with input size is what separates a practical solution from an impractical one.",
+   "class_periods": null,
+   "exclusions": [
+    "formal/mathematical (Big-O) analysis of algorithms is outside course/exam scope (EK AAP-4.A.3)",
+    "specific heuristic solutions are outside course/exam scope (EK AAP-4.A.9)"
+   ]
+  },
+  {
+   "code": "3.18",
+   "big_idea": "AAP",
+   "title": "Undecidable Problems",
+   "los": [
+    {
+     "code": "AAP-4.B",
+     "text": "A student should be able to explain why some problems in computer science can't be decided algorithmically at all.",
+     "eks": [
+      {
+       "code": "AAP-4.B.1",
+       "text": "A decidable problem is a yes/no problem that some algorithm can always answer correctly, like asking whether a given number is even."
+      },
+      {
+       "code": "AAP-4.B.2",
+       "text": "An undecidable problem is a yes/no problem that no algorithm can be built to always answer correctly."
+      },
+      {
+       "code": "AAP-4.B.3",
+       "text": "Even a problem that's undecidable overall might still have particular cases that some algorithm can solve, just not every case."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Some yes-or-no problems have no algorithm that can always answer correctly, no matter how much time is allowed.",
+   "class_periods": null,
+   "exclusions": [
+    "determining whether a given problem is undecidable is outside course/exam scope (EK AAP-4.B.2)"
+   ]
+  },
+  {
+   "code": "4.1",
+   "big_idea": "CSN",
+   "title": "The Internet",
+   "los": [
+    {
+     "code": "CSN-1.A",
+     "text": "Describe how networked devices cooperate to move data from one point to another.",
+     "eks": [
+      {
+       "code": "CSN-1.A.1",
+       "text": "Any physical device capable of running software counts as a computing device -- laptops, phones, servers, routers, and embedded sensors are all examples."
+      },
+      {
+       "code": "CSN-1.A.2",
+       "text": "When several computing devices and pieces of software work together toward one goal, that combination is called a computing system."
+      },
+      {
+       "code": "CSN-1.A.3",
+       "text": "A computer network is simply a set of computing devices linked together so they can exchange data."
+      },
+      {
+       "code": "CSN-1.A.4",
+       "text": "Because it is made of connected devices working toward a purpose, a network itself counts as a kind of computing system."
+      },
+      {
+       "code": "CSN-1.A.5",
+       "text": "A path is the unbroken chain of directly linked devices that data travels along to get from a sender to a receiver."
+      },
+      {
+       "code": "CSN-1.A.6",
+       "text": "Figuring out which path data should take from source to destination is what routing means."
+      },
+      {
+       "code": "CSN-1.A.7",
+       "text": "A network's bandwidth caps how much data can move through it within a set period of time."
+      },
+      {
+       "code": "CSN-1.A.8",
+       "text": "Bandwidth is typically expressed as a rate, in bits per second."
+      }
+     ]
+    },
+    {
+     "code": "CSN-1.B",
+     "text": "Describe the properties that let the Internet function as a single, connected network.",
+     "eks": [
+      {
+       "code": "CSN-1.B.1",
+       "text": "The Internet is really a network of networks, held together by shared, publicly documented protocols rather than ones any single company owns."
+      },
+      {
+       "code": "CSN-1.B.2",
+       "text": "Getting online requires linking your device to some other device that already has a connection to the Internet."
+      },
+      {
+       "code": "CSN-1.B.3",
+       "text": "A protocol is a shared rulebook that every party agrees to follow so a system behaves predictably."
+      },
+      {
+       "code": "CSN-1.B.4",
+       "text": "Because the Internet's protocols are public rather than proprietary, it is easy for anyone to add new devices to it."
+      },
+      {
+       "code": "CSN-1.B.5",
+       "text": "Data on the Internet usually is not routed along a path chosen ahead of time -- the route tends to be worked out on the fly."
+      },
+      {
+       "code": "CSN-1.B.6",
+       "text": "Scalability describes a system's ability to grow and handle new demand without breaking down."
+      },
+      {
+       "code": "CSN-1.B.7",
+       "text": "Scalability was a deliberate design goal of the Internet from the start."
+      }
+     ]
+    },
+    {
+     "code": "CSN-1.C",
+     "text": "Describe how information travels across the Internet in packet form.",
+     "eks": [
+      {
+       "code": "CSN-1.C.1",
+       "text": "Data crossing the Internet moves as a stream that gets broken into smaller pieces, each wrapped up as a packet."
+      },
+      {
+       "code": "CSN-1.C.2",
+       "text": "Along with a piece of the actual data, each packet carries extra information used for routing it to its destination and for putting it back together afterward."
+      },
+      {
+       "code": "CSN-1.C.3",
+       "text": "There is no guarantee packets arrive in the order they were sent, or that they arrive at all."
+      },
+      {
+       "code": "CSN-1.C.4",
+       "text": "IP, TCP, and UDP are examples of protocols commonly used to move data across the Internet."
+      }
+     ]
+    },
+    {
+     "code": "CSN-1.D",
+     "text": "Explain how the World Wide Web differs from, and depends on, the Internet.",
+     "eks": [
+      {
+       "code": "CSN-1.D.1",
+       "text": "The Web is a collection of interlinked pages, programs, and files."
+      },
+      {
+       "code": "CSN-1.D.2",
+       "text": "HTTP is one of the protocols the Web relies on."
+      },
+      {
+       "code": "CSN-1.D.3",
+       "text": "The Web runs on top of the Internet rather than being a separate network of its own."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "The internet moves data between computers by breaking it into pieces and routing each piece independently through a shared network of devices.",
+   "class_periods": null
+  },
+  {
+   "code": "4.2",
+   "big_idea": "CSN",
+   "title": "Fault Tolerance",
+   "los": [
+    {
+     "code": "CSN-1.E",
+     "text": "Using the Internet as an example, explain what makes a system fault-tolerant, why that matters, and where such a system might still be vulnerable.",
+     "eks": [
+      {
+       "code": "CSN-1.E.1",
+       "text": "Engineers built the Internet with fault tolerance in mind, using abstraction layers for moving and routing data."
+      },
+      {
+       "code": "CSN-1.E.2",
+       "text": "Redundancy means building in extra components so a system can absorb the loss of some parts without failing outright."
+      },
+      {
+       "code": "CSN-1.E.3",
+       "text": "Building more than one route between the same two devices is one concrete way to give a network backup capacity."
+      },
+      {
+       "code": "CSN-1.E.4",
+       "text": "When part of the Internet fails, later traffic can usually be rerouted around the failure instead."
+      },
+      {
+       "code": "CSN-1.E.5",
+       "text": "A system that keeps working even after some of its parts fail is called fault-tolerant -- a valuable trait, since large systems tend to fail unpredictably and often in clusters, and fault tolerance lets people keep using the network anyway."
+      },
+      {
+       "code": "CSN-1.E.6",
+       "text": "Building in redundancy usually costs extra resources, but it buys fault tolerance in exchange."
+      },
+      {
+       "code": "CSN-1.E.7",
+       "text": "Having multiple possible routes between two points makes the Internet more dependable and better able to grow to serve more devices and people."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "A system built from unreliable parts can still be reliable overall if it is designed to keep working when some of those parts fail.",
+   "class_periods": null
+  },
+  {
+   "code": "4.3",
+   "big_idea": "CSN",
+   "title": "Parallel and Distributed Computing",
+   "los": [
+    {
+     "code": "CSN-2.A",
+     "text": "Compare sequential, parallel, and distributed approaches to solving a problem, and judge how efficient each one is.",
+     "eks": [
+      {
+       "code": "CSN-2.A.1",
+       "text": "Sequential computing runs a program's operations one after another, in order."
+      },
+      {
+       "code": "CSN-2.A.2",
+       "text": "Parallel computing splits a program into smaller sequential pieces, several of which run at the same time."
+      },
+      {
+       "code": "CSN-2.A.3",
+       "text": "Distributed computing spreads a single program's work across multiple separate devices."
+      },
+      {
+       "code": "CSN-2.A.4",
+       "text": "One way to judge which of two solutions is more efficient is to compare how long each one takes to finish the same task."
+      },
+      {
+       "code": "CSN-2.A.5",
+       "text": "A sequential solution's total running time is just the sum of the time each of its steps takes."
+      },
+      {
+       "code": "CSN-2.A.6",
+       "text": "A parallel solution's running time is its sequential steps added to whichever parallel branch takes the longest."
+      },
+      {
+       "code": "CSN-2.A.7",
+       "text": "The speedup of a parallel solution comes from dividing how long the task takes sequentially by how long it takes running in parallel."
+      }
+     ]
+    },
+    {
+     "code": "CSN-2.B",
+     "text": "Weigh the advantages and drawbacks of using parallel or distributed computing.",
+     "eks": [
+      {
+       "code": "CSN-2.B.1",
+       "text": "A parallel-computing solution is made up of both a portion that runs in parallel and a portion that runs sequentially."
+      },
+      {
+       "code": "CSN-2.B.2",
+       "text": "Solutions built around parallel computing generally scale up better than ones that stay purely sequential."
+      },
+      {
+       "code": "CSN-2.B.3",
+       "text": "Distributed computing can make a problem solvable at all when one computer lacks the time or storage to handle it alone."
+      },
+      {
+       "code": "CSN-2.B.4",
+       "text": "Distributed computing can also solve much larger problems considerably faster than a single computer working alone could."
+      },
+      {
+       "code": "CSN-2.B.5",
+       "text": "As more of a solution gets parallelized, the leftover sequential portion increasingly limits how much faster it can go -- past a certain point, adding more parallel work stops helping much."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Splitting a problem across multiple processors or machines can finish it faster than one processor working alone.",
+   "class_periods": null
+  },
+  {
+   "code": "5.1",
+   "big_idea": "IOC",
+   "title": "Beneficial and Harmful Effects",
+   "los": [
+    {
+     "code": "IOC-1.A",
+     "text": "Show that a single outcome of a computing innovation can be seen as helpful in one respect and damaging in another.",
+     "eks": [
+      {
+       "code": "IOC-1.A.1",
+       "text": "Computing innovations don't appear on their own -- someone builds them."
+      },
+      {
+       "code": "IOC-1.A.2",
+       "text": "As new computing tools appear, people often change how they get everyday tasks done."
+      },
+      {
+       "code": "IOC-1.A.3",
+       "text": "Some consequences of an innovation only show up after it's already in use, not before."
+      },
+      {
+       "code": "IOC-1.A.4",
+       "text": "The same outcome might strike one person as a benefit and another as a problem -- or even seem like both to the same person."
+      },
+      {
+       "code": "IOC-1.A.5",
+       "text": "Progress in computing has sparked new creative work in fields well outside computing itself, like medicine, engineering, communication, and art."
+      }
+     ]
+    },
+    {
+     "code": "IOC-1.B",
+     "text": "Describe how a computing innovation can end up affecting things well outside what it was built for.",
+     "eks": [
+      {
+       "code": "IOC-1.B.1",
+       "text": "Tools built for one purpose often get repurposed later -- the Web began as a way for scientists to trade information quickly, targeted ads help companies but can be exploited, and machine learning has driven progress in medicine and business while also enabling discrimination."
+      },
+      {
+       "code": "IOC-1.B.2",
+       "text": "How an innovation gets used can end up hurting society, the economy, or culture."
+      },
+      {
+       "code": "IOC-1.B.3",
+       "text": "A conscientious programmer thinks ahead about ways their creation might be repurposed and weighs the good and bad that could follow."
+      },
+      {
+       "code": "IOC-1.B.4",
+       "text": "No programmer can foresee every possible use of what they build."
+      },
+      {
+       "code": "IOC-1.B.5",
+       "text": "Sometimes an innovation's side effects turn out to be good, spurring progress in unrelated areas."
+      },
+      {
+       "code": "IOC-1.B.6",
+       "text": "Once a program spreads to a huge audience quickly, its effects can grow far beyond what its creator ever intended or could control."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "A computing innovation can end up used in ways its creators never intended, for better and for worse.",
+   "class_periods": null
+  },
+  {
+   "code": "5.2",
+   "big_idea": "IOC",
+   "title": "Digital Divide",
+   "los": [
+    {
+     "code": "IOC-1.C",
+     "text": "Identify the factors that leave some groups with less access to computing than others.",
+     "eks": [
+      {
+       "code": "IOC-1.C.1",
+       "text": "How available the internet is differs by income level, location, demographic group, and from one country to another."
+      },
+      {
+       "code": "IOC-1.C.2",
+       "text": "The term \"digital divide\" names the gap in access to devices and internet connectivity that tracks income, geography, or demographics."
+      },
+      {
+       "code": "IOC-1.C.3",
+       "text": "This gap shows up at both the individual level and the level of whole communities."
+      },
+      {
+       "code": "IOC-1.C.4",
+       "text": "It raises fairness and power questions that play out at both a local and a worldwide scale."
+      },
+      {
+       "code": "IOC-1.C.5",
+       "text": "Choices made by individual people, companies, and governments all shape how wide this gap gets."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Unequal access to computing and the internet, across geography, income, and other lines, shapes who benefits from computing innovations.",
+   "class_periods": null
+  },
+  {
+   "code": "5.3",
+   "big_idea": "IOC",
+   "title": "Computing Bias",
+   "los": [
+    {
+     "code": "IOC-1.D",
+     "text": "Show how bias can find its way into a computing innovation.",
+     "eks": [
+      {
+       "code": "IOC-1.D.1",
+       "text": "A system can inherit human prejudice either from the logic its developers coded in or from patterns already present in the data it was trained on."
+      },
+      {
+       "code": "IOC-1.D.2",
+       "text": "It's on programmers to actively work to strip bias out of their algorithms rather than let existing human biases carry through."
+      },
+      {
+       "code": "IOC-1.D.3",
+       "text": "Bias can creep in at any stage of building software, not just one."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Software can reproduce and amplify existing human biases, whether through the data it learns from or the assumptions built into its logic.",
+   "class_periods": null
+  },
+  {
+   "code": "5.4",
+   "big_idea": "IOC",
+   "title": "Crowdsourcing",
+   "los": [
+    {
+     "code": "IOC-1.E",
+     "text": "Describe how large numbers of people can work together on a problem via computing.",
+     "eks": [
+      {
+       "code": "IOC-1.E.1",
+       "text": "When information and public data are easy to reach, it becomes easier to spot problems, build solutions, and share what was found."
+      },
+      {
+       "code": "IOC-1.E.2",
+       "text": "Scientific research increasingly draws on volunteers scattered across many locations rather than a single lab."
+      },
+      {
+       "code": "IOC-1.E.3",
+       "text": "Citizen science is research where non-experts, spread out and using their own devices, help gather the data."
+      },
+      {
+       "code": "IOC-1.E.4",
+       "text": "Crowdsourcing means pulling in contributions or information from a big pool of people online."
+      },
+      {
+       "code": "IOC-1.E.5",
+       "text": "What people can accomplish grows when computing lets them team up."
+      },
+      {
+       "code": "IOC-1.E.6",
+       "text": "Crowdsourcing has created new ways to collaborate, including linking a business idea or a cause directly with people willing to fund it."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Gathering small contributions from very large numbers of people, over the internet, can solve problems no small group could tackle alone.",
+   "class_periods": null
+  },
+  {
+   "code": "5.5",
+   "big_idea": "IOC",
+   "title": "Legal and Ethical Concerns",
+   "los": [
+    {
+     "code": "IOC-1.F",
+     "text": "Describe legal and ethical questions raised by how computing gets used.",
+     "eks": [
+      {
+       "code": "IOC-1.F.1",
+       "text": "Something made on a computer belongs, as intellectual property, to whoever made it or the organization behind it."
+      },
+      {
+       "code": "IOC-1.F.2",
+       "text": "Because digital material is so easy to copy and spread, questions of who owns it, what it's worth, and how it can be used become harder to settle."
+      },
+      {
+       "code": "IOC-1.F.3",
+       "text": "Protecting intellectual property takes deliberate effort."
+      },
+      {
+       "code": "IOC-1.F.4",
+       "text": "Passing off someone else's uncredited work as your own is plagiarism, and it can carry legal risk."
+      },
+      {
+       "code": "IOC-1.F.5",
+       "text": "Some licensing models -- Creative Commons, open-source software, and open-access publishing -- exist specifically to let creators legally share and let others build on their work."
+      },
+      {
+       "code": "IOC-1.F.6",
+       "text": "Anything you use that someone else created should be credited to them."
+      },
+      {
+       "code": "IOC-1.F.7",
+       "text": "These open licensing models have widened how much digital content people can freely reach."
+      },
+      {
+       "code": "IOC-1.F.8",
+       "text": "Just like any other technology, computing can be turned toward harming people, and that raises legal and ethical red flags."
+      },
+      {
+       "code": "IOC-1.F.9",
+       "text": "Computing often gets tangled up in social and political disputes, which brings its own legal and ethical baggage."
+      },
+      {
+       "code": "IOC-1.F.10",
+       "text": "Unequal access to computing is itself an ethical issue."
+      },
+      {
+       "code": "IOC-1.F.11",
+       "text": "Specific flashpoints include software that unlocks access to streaming media, algorithms carrying built-in bias, and devices that continuously track and analyze people's activity."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Digitizing information raises questions of ownership and proper credit that copying on paper never had to answer at the same scale.",
+   "class_periods": null
+  },
+  {
+   "code": "5.6",
+   "big_idea": "IOC",
+   "title": "Safe Computing",
+   "los": [
+    {
+     "code": "IOC-2.A",
+     "text": "Explain the privacy dangers that come from gathering and keeping personal data on computers.",
+     "eks": [
+      {
+       "code": "IOC-2.A.1",
+       "text": "Personally identifiable information (PII) is any data that can identify or be tied back to a specific person -- things like a Social Security number, age, race, phone number, medical records, financial details, or biometric data."
+      },
+      {
+       "code": "IOC-2.A.2",
+       "text": "A search engine can keep a log of what a user has searched for over time."
+      },
+      {
+       "code": "IOC-2.A.3",
+       "text": "A website can track who has visited its pages and when."
+      },
+      {
+       "code": "IOC-2.A.4",
+       "text": "Location data can be gathered by the devices, sites, and networks a person uses."
+      },
+      {
+       "code": "IOC-2.A.5",
+       "text": "Technology makes it possible to gather and use information involving people, groups, and organizations -- sometimes to their benefit, sometimes not."
+      },
+      {
+       "code": "IOC-2.A.6",
+       "text": "A record of past searches can be used to recommend sites or target ads at a person."
+      },
+      {
+       "code": "IOC-2.A.7",
+       "text": "Separate bits of personal data -- location, cookies, browsing history -- can be combined to build a detailed picture of one person."
+      },
+      {
+       "code": "IOC-2.A.8",
+       "text": "Personal data shared online can also be used to make a person's online experience more tailored to them."
+      },
+      {
+       "code": "IOC-2.A.9",
+       "text": "Stored personal information can streamline checkout when someone shops online."
+      },
+      {
+       "code": "IOC-2.A.10",
+       "text": "When companies or governments collect and organize personal information, that data can be misused if privacy safeguards aren't in place."
+      },
+      {
+       "code": "IOC-2.A.11",
+       "text": "Content posted online can travel and be reused far past its original context in damaging ways -- an email gets forwarded, a tweet gets retweeted, a social post gets seen by a future employer."
+      },
+      {
+       "code": "IOC-2.A.12",
+       "text": "Personal information can be exploited for stalking, identity theft, or planning other crimes."
+      },
+      {
+       "code": "IOC-2.A.13",
+       "text": "Content is hard to fully remove once it's been posted online."
+      },
+      {
+       "code": "IOC-2.A.14",
+       "text": "Software can log a person's movements -- where they went, the route taken, and how long they stayed."
+      },
+      {
+       "code": "IOC-2.A.15",
+       "text": "What people post on social media can be pieced together with other sources to infer private facts about them that were never directly shared."
+      }
+     ]
+    },
+    {
+     "code": "IOC-2.B",
+     "text": "Explain both how computing systems can be defended and how they can be attacked.",
+     "eks": [
+      {
+       "code": "IOC-2.B.1",
+       "text": "Verifying who someone is -- through strong passwords or multifactor checks -- keeps devices and data safe from people who shouldn't have access."
+      },
+      {
+       "code": "IOC-2.B.2",
+       "text": "A good password is one the account owner can recall easily but that someone who knows them well still couldn't guess."
+      },
+      {
+       "code": "IOC-2.B.3",
+       "text": "Multifactor authentication requires proving your identity with several independent pieces of evidence, typically drawn from at least two of: something you know, something you have, and something you are."
+      },
+      {
+       "code": "IOC-2.B.4",
+       "text": "Because multifactor authentication needs two or more separate steps, an attacker has to defeat every layer, not just one, to break in."
+      },
+      {
+       "code": "IOC-2.B.5",
+       "text": "Encryption scrambles data so only authorized parties can read it, and decryption reverses that; symmetric encryption uses one shared key for both directions, while public-key encryption uses a published key to lock the message and a private key, held only by the recipient, to unlock it."
+      },
+      {
+       "code": "IOC-2.B.6",
+       "text": "Certificate authorities vouch for who owns a given encryption key by issuing digital certificates, and the whole system rests on trusting those authorities."
+      },
+      {
+       "code": "IOC-2.B.7",
+       "text": "Antivirus and anti-malware software helps catch and block infections before they take hold."
+      },
+      {
+       "code": "IOC-2.B.8",
+       "text": "A computer virus is malicious code that can duplicate itself and sneak onto a machine without permission, often by riding along inside a legitimate program and then running on its own."
+      },
+      {
+       "code": "IOC-2.B.9",
+       "text": "Malware is any software written to harm a system or seize some control over how it operates."
+      },
+      {
+       "code": "IOC-2.B.10",
+       "text": "Every real system has some flaw an attacker could exploit, which is why installing regular updates matters -- they patch those weaknesses."
+      },
+      {
+       "code": "IOC-2.B.11",
+       "text": "Users can limit what data an app is allowed to collect by checking and adjusting its permission settings."
+      }
+     ]
+    },
+    {
+     "code": "IOC-2.C",
+     "text": "Describe the methods attackers use to break into computing systems without permission.",
+     "eks": [
+      {
+       "code": "IOC-2.C.1",
+       "text": "Phishing tricks a person into handing over personal details, which an attacker can then use to break into things like bank accounts or email."
+      },
+      {
+       "code": "IOC-2.C.2",
+       "text": "Keylogging secretly records every key a user presses, letting an attacker capture passwords and other private information."
+      },
+      {
+       "code": "IOC-2.C.3",
+       "text": "Traffic on a public network can be intercepted, read, or altered in transit -- a rogue access point is one way that happens."
+      },
+      {
+       "code": "IOC-2.C.4",
+       "text": "A rogue access point is a fake wireless hotspot that lets an attacker slip into a network that's supposed to be secure."
+      },
+      {
+       "code": "IOC-2.C.5",
+       "text": "A dangerous link can be hidden so it looks harmless on a webpage or in an email."
+      },
+      {
+       "code": "IOC-2.C.6",
+       "text": "Unwanted emails, attachments, links, or forms can compromise a system's security, and they may come either from a stranger or from a trusted contact whose own account has been hijacked."
+      },
+      {
+       "code": "IOC-2.C.7",
+       "text": "Free downloads from sketchy freeware or shareware sites are a common way malware sneaks onto a machine."
+      }
+     ]
+    }
+   ],
+   "paraphrase": "Personal data collected online carries real risk, and encryption and authentication are the main tools for limiting who can get at it.",
+   "class_periods": null,
+   "exclusions": [
+    "specific mathematical procedures for encryption/decryption are outside course/exam scope (EK IOC-2.B.5)"
+   ]
+  }
+ ]
+}

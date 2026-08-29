@@ -1,0 +1,695 @@
+{
+ "meta": {
+  "source": "CSTA K-12 Computer Science Standards, 2026 revision",
+  "extracted": "2026-08-08",
+  "level_covered": "High School",
+  "shape_note": "Extraction covers only the 46 core 'High School' level standards across 5 concepts (Algorithms & Design, Programming, Data & Analysis, Systems & Security, Computing & Society). The CSTA 2026 revision also defines two elective specialization tiers, 'Specialty I' (73 standards) and 'Specialty II' (62 standards), covering Data Science, Cybersecurity, Artificial Intelligence, Game Development, Software Development, Physical Computing, and X+CS -- a different, elective standard set, not indexed here, mirroring how castandards.json excludes the CA framework's '9-12 Specialty' set."
+ },
+ "standards": [
+  {
+   "code": "HS-ALG-PS-01",
+   "concept": "Algorithms & Design",
+   "subconcept": "Algorithmic Problem Solving",
+   "paraphrase": "Solving a problem well often means choosing the right data structure to go with the algorithm, not just writing steps in isolation.",
+   "scope_note": "The focus is picking and using structures a language already provides (like a list or a class) to support the plan, not implementing custom structures from scratch -- a leaderboard built on a list plus a sort is the kind of example this covers.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "HS-ALG-PS-02",
+   "concept": "Algorithms & Design",
+   "subconcept": "Algorithmic Problem Solving",
+   "paraphrase": "An algorithm can be reworked to run more clearly or efficiently by wrapping repeated steps in a function and using loops or conditionals instead of restating logic.",
+   "scope_note": "This is about restructuring code with existing constructs like functions and loops, not formal efficiency analysis or advanced recursive optimization.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Creativity"
+   ]
+  },
+  {
+   "code": "HS-ALG-PS-03",
+   "concept": "Algorithms & Design",
+   "subconcept": "Algorithmic Problem Solving",
+   "paraphrase": "Comparing two algorithms for the same job means checking more than just whether they work -- how fast they run and how easy they are to read matter too.",
+   "scope_note": "Comparisons can be informal or based on test runs rather than a formal proof of running time.",
+   "practices": [
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-ALG-PS-04",
+   "concept": "Algorithms & Design",
+   "subconcept": "Algorithmic Problem Solving",
+   "paraphrase": "An algorithm that always gives the same result from the same input behaves differently from one that leans on randomness and can vary run to run.",
+   "scope_note": "Explaining the distinction in plain terms is enough; formal probability calculations aren't expected.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-ALG-PS-05",
+   "concept": "Algorithms & Design",
+   "subconcept": "Algorithmic Problem Solving",
+   "paraphrase": "Content that comes out of an AI tool -- text, an image, even code -- deserves a critical look for whether it's accurate, skewed, or capable of causing harm.",
+   "scope_note": "The judgment call is about the output itself, not about understanding how the model that produced it works internally.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Sense of Belonging"
+   ]
+  },
+  {
+   "code": "HS-ALG-ML-06",
+   "concept": "Algorithms & Design",
+   "subconcept": "Machine Learning",
+   "paraphrase": "Picking one kind of AI approach over another for a task is a decision that should be defended, weighing things like how much data there is and how easy the result is for a person to interpret.",
+   "scope_note": "The point is arguing for a choice between approaches, not building or deriving the math behind them.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-ALG-ML-07",
+   "concept": "Algorithms & Design",
+   "subconcept": "Machine Learning",
+   "paraphrase": "Before trusting a dataset, it's worth asking where it came from, how complete and accurate it is, whether it represents everyone it should, and whether using it raises privacy concerns.",
+   "scope_note": "This is a critical-eyes evaluation, not a statistical proof of bias or a formal correction procedure.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "HS-ALG-ML-08",
+   "concept": "Algorithms & Design",
+   "subconcept": "Machine Learning",
+   "paraphrase": "Building a working machine-learning model for a specific job means choosing suitable data and tools, training it, and checking whether it actually performs the task.",
+   "scope_note": "Using an existing tool or simple library to build and test the model is the expectation, not writing the learning algorithm from scratch.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "HS-ALG-IM-09",
+   "concept": "Algorithms & Design",
+   "subconcept": "Impacts of Algorithms & Design",
+   "paraphrase": "Designing something so that it's genuinely usable by a wide range of people means researching what those people need and thinking ahead about a design's social and ethical side effects.",
+   "scope_note": "Considering accessibility law and practical inclusive-design choices (contrast, navigation, plain language) is the expectation, not meeting every clause of a formal accessibility standard.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "HS-ALG-IM-10",
+   "concept": "Algorithms & Design",
+   "subconcept": "Impacts of Algorithms & Design",
+   "paraphrase": "Both an algorithm built from explicit rules and one trained on data can end up treating people unfairly, and tracing where that unfairness comes from is part of evaluating it responsibly.",
+   "scope_note": "The analysis stays conceptual -- recognizing patterns of bias and suggesting fixes -- rather than auditing a real company's system or running statistics on it.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-ALG-IM-11",
+   "concept": "Algorithms & Design",
+   "subconcept": "Impacts of Algorithms & Design",
+   "paraphrase": "Every algorithmic system's design quietly favors some outcomes over others, and naming which values -- efficiency, privacy, fairness -- got prioritized is part of understanding it.",
+   "scope_note": "The goal is identifying the priorities baked into a design, not reverse-engineering a real company's business model.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-PRO-PD-12",
+   "concept": "Programming",
+   "subconcept": "Program Development",
+   "paraphrase": "Splitting a program into distinct, well-organized pieces -- functions, imported libraries, or objects -- makes the result easier to read and easier to reuse.",
+   "scope_note": "Straightforward decomposition is the target; elaborate design patterns or deep class hierarchies aren't expected.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Creativity"
+   ]
+  },
+  {
+   "code": "HS-PRO-PD-13",
+   "concept": "Programming",
+   "subconcept": "Program Development",
+   "paraphrase": "Good program development leans on outside resources -- reference docs, existing libraries, simple APIs, and the features built into a development environment -- rather than reinventing everything from scratch.",
+   "scope_note": "Using these resources well is the goal, not building new ones.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "HS-PRO-PD-14",
+   "concept": "Programming",
+   "subconcept": "Program Development",
+   "paraphrase": "Anything borrowed from someone else -- code, art, sound -- needs to be credited according to whatever terms it was shared under.",
+   "scope_note": "Practicing honest attribution is the point, not mastering copyright law itself.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Inclusive Collaboration: 3. Communicate effectively about computing."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Sense of Belonging"
+   ]
+  },
+  {
+   "code": "HS-PRO-PD-15",
+   "concept": "Programming",
+   "subconcept": "Program Development",
+   "paraphrase": "Working on a program as a team goes better with some structure -- assigned roles, a shared design document, and a way to track who changed what.",
+   "scope_note": "Classroom-scale tools and practices are the expectation, not professional-grade project management.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Sense of Belonging",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "HS-PRO-VD-16",
+   "concept": "Programming",
+   "subconcept": "Variables & Data Storage",
+   "paraphrase": "Choosing the right structure -- a list, a dictionary -- to hold a program's data is what makes storing, retrieving, and changing that data manageable.",
+   "scope_note": "Common built-in structures are the scope here; things like linked lists, trees, and graphs are not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "HS-PRO-RD-17",
+   "concept": "Programming",
+   "subconcept": "Reading & Documenting",
+   "paraphrase": "Reading someone else's code well means being able to explain what each moving part does -- a variable holding state, a loop repeating until some condition, a conditional branching on it -- and how those parts cooperate.",
+   "scope_note": "This is about tracing a manageable segment of code, not untangling a large system with many interacting structures.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "HS-PRO-RD-18",
+   "concept": "Programming",
+   "subconcept": "Reading & Documenting",
+   "paraphrase": "Code that an AI tool produces still has to be tested against what it was actually supposed to do, including checking that it holds up on tricky or edge-case inputs.",
+   "scope_note": "The task is testing and judging the output, not understanding the model that generated it.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-PRO-TR-19",
+   "concept": "Programming",
+   "subconcept": "Testing & Refining",
+   "paraphrase": "Finishing a program includes checking it against its own original plan -- does it work correctly, does it do what it was meant to, and is it actually pleasant and accessible to use.",
+   "scope_note": "This is a self- or peer-review against the project's own stated goals, not a formal verification process or industry tooling.",
+   "practices": [
+    "Computational Thinking: 9. Test and refine computing technologies.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "HS-PRO-TR-20",
+   "concept": "Programming",
+   "subconcept": "Testing & Refining",
+   "paraphrase": "Feedback and test results should actually change the program -- tightening up usability, accessibility, or accuracy -- even if not every issue gets fixed at once.",
+   "scope_note": "Meaningful, partial improvement is the expectation, not chasing full optimization or fixing every possible issue.",
+   "practices": [
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-DAT-DC-21",
+   "concept": "Data & Analysis",
+   "subconcept": "Data Collection & Preparation",
+   "paraphrase": "A simulation often needs input data that doesn't exist yet, and a simple program or spreadsheet formula can manufacture data meeting whatever constraints the simulation calls for.",
+   "scope_note": "Producing the data that feeds into an existing simulation is the task, not building the simulation itself.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "HS-DAT-DC-22",
+   "concept": "Data & Analysis",
+   "subconcept": "Data Collection & Preparation",
+   "paraphrase": "A data dictionary spells out, for every column in a dataset, its name, its type, and the values it's allowed to hold -- plus how columns depend on each other, like a skipped survey question leaving a related answer blank.",
+   "scope_note": "Documenting an existing dataset this way is the task; building the dataset, or handling huge or specialized data, is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "HS-DAT-DC-23",
+   "concept": "Data & Analysis",
+   "subconcept": "Data Collection & Preparation",
+   "paraphrase": "Messy text data -- inconsistent capitalization, typos, a name and a date crammed into one field -- usually needs cleanup before it's useful, and a spreadsheet or short script can do that work.",
+   "scope_note": "Recognizing where a pattern-matching tool like a regular expression would help is part of this; building a cleaning tool from scratch, or handling huge unstructured feeds, is not.",
+   "practices": [
+    "Computational Thinking: 9. Test and refine computing technologies.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "HS-DAT-DC-24",
+   "concept": "Data & Analysis",
+   "subconcept": "Data Collection & Preparation",
+   "paraphrase": "There's more than one way to check that a dataset's values are the right type and fall in a sensible range, and weighing those approaches against each other is its own skill.",
+   "scope_note": "Comparing validation approaches conceptually is the expectation; writing the validation code or using statistical models is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "HS-DAT-DI-25",
+   "concept": "Data & Analysis",
+   "subconcept": "Data Investigation",
+   "paraphrase": "Turning a dataset with several variables into a chart -- a scatter plot, a stacked bar chart -- is how a question about that data gets answered visually.",
+   "scope_note": "Using existing tools like spreadsheets to build the visualization is the expectation, not writing code to generate it or running formal statistics.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "HS-DAT-DI-26",
+   "concept": "Data & Analysis",
+   "subconcept": "Data Investigation",
+   "paraphrase": "A chart or simulation someone else built can still mislead -- a truncated axis, a biased sample -- and spotting those limits is as important as reading the result itself.",
+   "scope_note": "Critiquing an existing data product is the task, not building one or fixing the code behind it.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-DAT-IM-27",
+   "concept": "Data & Analysis",
+   "subconcept": "Impacts of Data Science",
+   "paraphrase": "Collecting and processing data at scale carries real costs beyond the technical -- consent, who owns the data, bias baked into it, misinformation, even the environmental footprint of the data centers running it.",
+   "scope_note": "The analysis is conceptual, not a formal legal or economic study of data policy.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-DAT-IM-28",
+   "concept": "Data & Analysis",
+   "subconcept": "Impacts of Data Science",
+   "paraphrase": "Whether an existing data-privacy law or policy actually works is a debatable question, and building an argument on either side -- including whether public pressure or behavior change might work better than a new law -- is the point.",
+   "scope_note": "Debating the policy's effectiveness is the expectation; reading the actual legal text is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SYS-HW-29",
+   "concept": "Systems & Security",
+   "subconcept": "Hardware & Software",
+   "paraphrase": "An operating system stands apart from ordinary software because its job is managing the machine itself -- memory, storage, whatever's plugged in -- so other programs can just run.",
+   "scope_note": "Describing that role is the goal, not learning how an operating system is actually coded or configuring its internals.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "HS-SYS-HW-30",
+   "concept": "Systems & Security",
+   "subconcept": "Hardware & Software",
+   "paraphrase": "Putting a real device to work on some everyday task also means noticing what it can't do -- battery life, screen size, and other limits that come with the choice.",
+   "scope_note": "Using a device thoughtfully is the expectation, not building one or writing code that controls its hardware directly.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "HS-SYS-SE-31",
+   "concept": "Systems & Security",
+   "subconcept": "Security",
+   "paraphrase": "Every security measure protects something at some cost -- multifactor login guards an account but makes it slower to get into -- and naming that trade-off is part of understanding security.",
+   "scope_note": "Recognizing these trade-offs conceptually is the goal, not implementing the security measures.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SYS-SE-32",
+   "concept": "Systems & Security",
+   "subconcept": "Security",
+   "paraphrase": "The same security breach can hit different groups in different ways -- a person's identity, a company's finances, a whole community's trust in a system -- and sorting out who's affected and how is more than just listing consequences.",
+   "scope_note": "This is broad-impact analysis, not a forensic investigation or professional-grade tooling.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SYS-SE-33",
+   "concept": "Systems & Security",
+   "subconcept": "Security",
+   "paraphrase": "Given a described security weakness, proposing a fix means naming the vulnerability, what could go wrong because of it, and concrete steps -- technical and non-technical -- to close the gap.",
+   "scope_note": "Proposing the fix is the task; actually building it is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "HS-SYS-NT-34",
+   "concept": "Systems & Security",
+   "subconcept": "Networks",
+   "paraphrase": "A network diagram shows both the physical pieces -- servers, routers, devices -- and the software running on them, and how all of it connects to get work done.",
+   "scope_note": "Drawing the diagram is the task, not physically building the network.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "HS-SYS-NT-35",
+   "concept": "Systems & Security",
+   "subconcept": "Networks",
+   "paraphrase": "The internet is really a network stitched together out of many smaller networks, with its own layered structure, hardware like routers, and protocols like TCP/IP tying it together -- which sets it apart from something like a single classroom network.",
+   "scope_note": "A high-level, conceptual grasp is the goal, not configuring real equipment or analyzing network traffic.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "HS-SYS-IM-36",
+   "concept": "Systems & Security",
+   "subconcept": "Impacts of Computing Systems",
+   "paraphrase": "Laws and policies about how computing systems get built and used usually exist for a reason -- technical, legal, or social -- and explaining that reasoning matters more than reciting the rule.",
+   "scope_note": "Understanding why a policy exists is the point; reading the legal text itself is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SYS-IM-37",
+   "concept": "Systems & Security",
+   "subconcept": "Impacts of Computing Systems",
+   "paraphrase": "Computing infrastructure has a physical life cycle -- energy-hungry data centers, e-waste, supply chains -- and those costs don't land on everyone equally, which makes asking who's affected and why part of the investigation.",
+   "scope_note": "Researching and explaining the impact is the task, not proposing a technical fix for it.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SOC-HI-38",
+   "concept": "Computing & Society",
+   "subconcept": "History of Computing",
+   "paraphrase": "Tracing a technology's history from its start to now usually turns up moments where forces outside the technology itself -- economics, culture, politics -- pushed its design or adoption in a particular direction.",
+   "scope_note": "Working from reliable secondary sources is the expectation, not original historical research or deep economic modeling.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 3. Communicate effectively about computing."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SOC-HI-39",
+   "concept": "Computing & Society",
+   "subconcept": "History of Computing",
+   "paraphrase": "A privacy law or a rule about algorithmic transparency exists to head off some specific harm, and being able to explain that reasoning is what this is really about.",
+   "scope_note": "Explaining the reasoning behind a policy is the point, not drafting legal language or mastering the lawmaking process.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SOC-ET-40",
+   "concept": "Computing & Society",
+   "subconcept": "Emerging Technologies",
+   "paraphrase": "An emerging technology usually does something genuinely different under the hood, and that difference is what lets it do new things or get past an old limitation.",
+   "scope_note": "How deep the technical explanation goes depends on the topic and the students -- the underlying advanced theory isn't required.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 3. Communicate effectively about computing."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SOC-ET-41",
+   "concept": "Computing & Society",
+   "subconcept": "Emerging Technologies",
+   "paraphrase": "A new technology's upside rarely lands evenly -- weighing its benefits against its costs means asking who gets left out of the access or the outcomes.",
+   "scope_note": "A reasoned, conceptual argument is the goal, not a formal data-driven study.",
+   "practices": [
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SOC-ET-42",
+   "concept": "Computing & Society",
+   "subconcept": "Emerging Technologies",
+   "paraphrase": "Sketching out how an emerging technology could tackle a real problem means backing the idea with real research and being honest about who might be helped or harmed by it.",
+   "scope_note": "A design document grounded in research is the deliverable, not a working, production-ready build.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "HS-SOC-HU-43",
+   "concept": "Computing & Society",
+   "subconcept": "Humans & Computing",
+   "paraphrase": "The people behind a computing system -- the ones who chose its data, tuned it, decided how it gets used -- make choices that carry their own risks and benefits down the line.",
+   "scope_note": "Tracing those human choices and their consequences is the focus, not building or mathematically analyzing the underlying model.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 3. Communicate effectively about computing."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SOC-HU-44",
+   "concept": "Computing & Society",
+   "subconcept": "Humans & Computing",
+   "paraphrase": "Whether an AI system could ever be intelligent the way a person is opens real philosophical questions about consciousness and who's responsible for what it does.",
+   "scope_note": "This is a debate about ideas, not an exploration of neuroscience or a specific model's architecture.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SOC-CE-45",
+   "concept": "Computing & Society",
+   "subconcept": "Career Exploration",
+   "paraphrase": "Looking at how real, varied computing professionals actually work -- the problems they run into, the barriers they've navigated -- connects computational thinking back to the people who practice it.",
+   "scope_note": "Analyzing existing public accounts (an interview, a podcast) is the expectation, not conducting original interviews.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "HS-SOC-CE-46",
+   "concept": "Computing & Society",
+   "subconcept": "Career Exploration",
+   "paraphrase": "What a student has learned in computing can be weighed against their own interests and where they might want to go next, without needing to settle on a final answer.",
+   "scope_note": "Reflecting on the connection is the task; committing to a specific career path is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Sense of Belonging"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,758 @@
+{
+ "meta": {
+  "source": "California Career Technical Education Model Curriculum Standards -- Information and Communication Technologies (ICT) sector, California Department of Education",
+  "extracted": "2026-08-08",
+  "scope_note": "Covers the 11 cross-sector Anchor Standards (common to all 15 CTE industry sectors) plus the Information and Communication Technologies sector's Pathway C, Software and Systems Development -- the pathway that maps to a Python programming course. The ICT sector's other three pathways (A. Information Support and Services, B. Networking, D. Games and Simulation) are not indexed here; add them the same way if this course is ever articulated toward one of them."
+ },
+ "anchor_standards": [
+  {
+   "code": "1.0",
+   "name": "Academics",
+   "paraphrase": "Successfully finishing an ICT pathway means meeting the academic standards tied to it, on the way to further education or a job.",
+   "items": []
+  },
+  {
+   "code": "2.0",
+   "name": "Communications",
+   "paraphrase": "Working in ICT means using the sector's own vocabulary and communicating clearly, in writing, speech, and multimedia, at a career-ready level.",
+   "items": [
+    {
+     "code": "2.1",
+     "paraphrase": "Communication follows a basic model: someone sends a message, someone else receives it."
+    },
+    {
+     "code": "2.2",
+     "paraphrase": "Communication can break down, and recognizing what gets in the way of a message landing correctly is its own skill."
+    },
+    {
+     "code": "2.3",
+     "paraphrase": "Reading both what's said and what's implied, then responding appropriately, is part of communicating well."
+    },
+    {
+     "code": "2.4",
+     "paraphrase": "Clean spelling, grammar, and formatting show up in both written and electronic communication."
+    },
+    {
+     "code": "2.5",
+     "paraphrase": "The same information often needs to reach different audiences, which means adapting the medium and format each time."
+    },
+    {
+     "code": "2.6",
+     "paraphrase": "Using digital media and communication tools safely, legally, and responsibly is expected, not optional."
+    },
+    {
+     "code": "2.7",
+     "paraphrase": "Writing clearly and communicating well, especially with people outside your own background, is its own working skill."
+    },
+    {
+     "code": "2.8",
+     "paraphrase": "Serving a customer well starts from understanding what a customer-oriented approach actually looks like."
+    }
+   ]
+  },
+  {
+   "code": "3.0",
+   "name": "Career Planning and Management",
+   "paraphrase": "Making good career decisions means pulling together career information from many different kinds of sources.",
+   "items": [
+    {
+     "code": "3.1",
+     "paraphrase": "Knowing your own interests, aptitudes, and skills is the starting point for any real career decision."
+    },
+    {
+     "code": "3.2",
+     "paraphrase": "Traits like trustworthiness, respect, and responsibility carry real weight in how a career turns out."
+    },
+    {
+     "code": "3.3",
+     "paraphrase": "Information and communication technologies themselves are tools people use to plan and decide on a career."
+    },
+    {
+     "code": "3.4",
+     "paraphrase": "Different careers demand different levels of education, training, certification, or licensing, and that's worth researching directly."
+    },
+    {
+     "code": "3.5",
+     "paraphrase": "A career plan has to account for shifting job trends, social needs, and the economy, not just personal preference."
+    },
+    {
+     "code": "3.6",
+     "paraphrase": "Professional organizations, industry groups, and labor unions all play a role in how a working society functions."
+    },
+    {
+     "code": "3.7",
+     "paraphrase": "Small businesses matter to both the California and the global economy."
+    },
+    {
+     "code": "3.8",
+     "paraphrase": "Employers and colleges increasingly look at a candidate's digital footprint when evaluating them."
+    },
+    {
+     "code": "3.9",
+     "paraphrase": "A career plan should reflect a person's actual interests, potential pathways, and options after high school."
+    }
+   ]
+  },
+  {
+   "code": "4.0",
+   "name": "Technology",
+   "paraphrase": "Both existing and brand-new technology get used in the ICT workplace to research and produce information, products, and services.",
+   "items": [
+    {
+     "code": "4.1",
+     "paraphrase": "Electronic references are a normal source for gathering information and building products or services."
+    },
+    {
+     "code": "4.2",
+     "paraphrase": "Technology-based communication tools can help unpack complicated systems and issues, when used responsibly."
+    },
+    {
+     "code": "4.3",
+     "paraphrase": "More than one source often needs to be pulled together, weighed against each other, and reconciled -- and information and communication technologies are the tools for doing that."
+    },
+    {
+     "code": "4.4",
+     "paraphrase": "Not all information found digitally is equally trustworthy, and spotting bias or intent in a source matters."
+    },
+    {
+     "code": "4.5",
+     "paraphrase": "Technology keeps changing, and tracking how it has, does, and will affect a given pathway is worth doing directly."
+    },
+    {
+     "code": "4.6",
+     "paraphrase": "Different information and communication technologies serve different populations, and choosing the right one is part of the task."
+    }
+   ]
+  },
+  {
+   "code": "5.0",
+   "name": "Problem Solving and Critical Thinking",
+   "paraphrase": "ICT problems get solved through research, ranging from quick lookups to sustained investigation, using critical and creative thinking.",
+   "items": [
+    {
+     "code": "5.1",
+     "paraphrase": "Asking the right question, from more than one point of view, is often the first real step in solving a problem."
+    },
+    {
+     "code": "5.2",
+     "paraphrase": "Work problems don't always have a predictable shape, and different kinds of reasoning fit different situations."
+    },
+    {
+     "code": "5.3",
+     "paraphrase": "A complex work environment is a system, and understanding how its parts interact explains its outcomes."
+    },
+    {
+     "code": "5.4",
+     "paraphrase": "Drawing a sound conclusion from analysis is what actually informs a good decision."
+    },
+    {
+     "code": "5.5",
+     "paraphrase": "Tracking a problem to its source takes a structured, logical approach, not guesswork."
+    },
+    {
+     "code": "5.6",
+     "paraphrase": "Knowing where to look for help solving a problem is itself a resource worth knowing."
+    },
+    {
+     "code": "5.7",
+     "paraphrase": "Some problems get solved by working through them repeatedly, refining the approach each pass."
+    },
+    {
+     "code": "5.8",
+     "paraphrase": "Algorithms are a tool for solving problems, not just an abstract concept."
+    },
+    {
+     "code": "5.9",
+     "paraphrase": "A large problem becomes tractable once it's broken into smaller components."
+    },
+    {
+     "code": "5.10",
+     "paraphrase": "Layers of abstraction let you work with a system without tracking every detail underneath it."
+    },
+    {
+     "code": "5.11",
+     "paraphrase": "Numbers can be represented in more than one base system, including binary and hexadecimal."
+    },
+    {
+     "code": "5.12",
+     "paraphrase": "Boolean logic underlies both decision-making and searching in computing."
+    }
+   ]
+  },
+  {
+   "code": "6.0",
+   "name": "Health and Safety",
+   "paraphrase": "ICT work environments come with their own health and safety procedures, and their own specialized vocabulary.",
+   "items": [
+    {
+     "code": "6.1",
+     "paraphrase": "Material Safety Data Sheets exist to be located and followed."
+    },
+    {
+     "code": "6.2",
+     "paraphrase": "Workplace policies and regulations spell out what employers and employees are each responsible for."
+    },
+    {
+     "code": "6.3",
+     "paraphrase": "Keeping tools, equipment, and supplies stored, clean, and in working order is itself a health and safety practice."
+    },
+    {
+     "code": "6.4",
+     "paraphrase": "Lifting, bending, and moving equipment safely protects the person doing it."
+    },
+    {
+     "code": "6.5",
+     "paraphrase": "Preventing and responding to workplace accidents includes understanding ergonomics."
+    },
+    {
+     "code": "6.6",
+     "paraphrase": "A safe, healthy workplace has to be actively maintained, not just assumed."
+    },
+    {
+     "code": "6.7",
+     "paraphrase": "OSHA laws and regulations apply to this workplace and are worth knowing."
+    },
+    {
+     "code": "6.8",
+     "paraphrase": "Maintaining safety and health in the workplace is an ongoing responsibility, restated here as its own point."
+    },
+    {
+     "code": "6.9",
+     "paraphrase": "E-waste carries health, environmental, and legal risk if it isn't disposed of properly."
+    },
+    {
+     "code": "6.10",
+     "paraphrase": "Using natural resources like paper and ink deliberately, not wastefully, is a workplace habit."
+    },
+    {
+     "code": "6.11",
+     "paraphrase": "Conserving energy while computing -- powering down equipment, using power-saving settings -- is a small but real practice."
+    }
+   ]
+  },
+  {
+   "code": "7.0",
+   "name": "Responsibility and Flexibility",
+   "paraphrase": "Working in the ICT sector means collaborating in ways that show personal and professional responsibility, flexibility, and respect.",
+   "items": [
+    {
+     "code": "7.1",
+     "paraphrase": "Financial management choices ripple outward into the economy, the workforce, and the community."
+    },
+    {
+     "code": "7.2",
+     "paraphrase": "Following through on your role -- whether it's personal, in your community, or at work -- takes real accountability."
+    },
+    {
+     "code": "7.3",
+     "paraphrase": "Roles and responsibilities shift over time, and adapting to that is part of the job."
+    },
+    {
+     "code": "7.4",
+     "paraphrase": "Managing time efficiently is what actually lets responsibilities get fulfilled."
+    },
+    {
+     "code": "7.5",
+     "paraphrase": "High-quality work applies to how a product or presentation is designed, not just built."
+    },
+    {
+     "code": "7.6",
+     "paraphrase": "Responsible financial management is a skill in its own right, not just a personal habit."
+    },
+    {
+     "code": "7.7",
+     "paraphrase": "A professional work demeanor includes both behavior and appropriate attire for the field."
+    },
+    {
+     "code": "7.8",
+     "paraphrase": "Issues with global reach touch the ICT sector too, and documenting that impact is worth doing."
+    }
+   ]
+  },
+  {
+   "code": "8.0",
+   "name": "Ethics and Legal Responsibilities",
+   "paraphrase": "Professional, ethical, legal behavior means responding thoughtfully to different perspectives and following applicable laws, regulations, and norms.",
+   "items": [
+    {
+     "code": "8.1",
+     "paraphrase": "Quality assurance standards exist to be understood and actually put into practice."
+    },
+    {
+     "code": "8.2",
+     "paraphrase": "Regulatory agencies at every level of government have their own laws and regulations covering this sector."
+    },
+    {
+     "code": "8.3",
+     "paraphrase": "Ethical, legal practice in ICT means matching the workplace standards the sector has set."
+    },
+    {
+     "code": "8.4",
+     "paraphrase": "Personal integrity, confidentiality, and ethical behavior matter directly to how a workplace functions."
+    },
+    {
+     "code": "8.5",
+     "paraphrase": "An organization's culture and practices shape its whole working environment."
+    },
+    {
+     "code": "8.6",
+     "paraphrase": "Copyright and intellectual property law apply to proprietary information, including how it gets cited."
+    },
+    {
+     "code": "8.7",
+     "paraphrase": "Confidential information comes with its own rules about who it can be shared with."
+    },
+    {
+     "code": "8.8",
+     "paraphrase": "Wider technology adoption has brought its own legal and ethical problems, including hacking, scams, and privacy breaches."
+    }
+   ]
+  },
+  {
+   "code": "9.0",
+   "name": "Leadership and Teamwork",
+   "paraphrase": "Working with peers means engaging with different perspectives, leadership styles, group dynamics, and resolving conflict productively.",
+   "items": [
+    {
+     "code": "9.1",
+     "paraphrase": "Good leaders share a recognizable set of responsibilities, competencies, and behaviors."
+    },
+    {
+     "code": "9.2",
+     "paraphrase": "Successful teams share traits: leadership, cooperation, collaboration, and sound decision-making."
+    },
+    {
+     "code": "9.3",
+     "paraphrase": "Teamwork, leadership, and citizenship matter in school, community, and workplace settings alike."
+    },
+    {
+     "code": "9.4",
+     "paraphrase": "Being part of a professional organization, or competing in career-development events, can genuinely sharpen academic preparation and open career doors."
+    },
+    {
+     "code": "9.5",
+     "paraphrase": "Today's world is interconnected, and that calls for a genuinely global outlook."
+    },
+    {
+     "code": "9.6",
+     "paraphrase": "Respecting individual and cultural differences is part of valuing diversity in the workplace."
+    },
+    {
+     "code": "9.7",
+     "paraphrase": "Real ICT-sector problems get solved through active, interactive teamwork."
+    }
+   ]
+  },
+  {
+   "code": "10.0",
+   "name": "Technical Knowledge and Skills",
+   "paraphrase": "Every pathway in this sector draws on the same core toolkit of hands-on know-how, put into practice by following procedure carefully.",
+   "items": [
+    {
+     "code": "10.1",
+     "paraphrase": "The ICT sector has its own terminology and practices worth being able to interpret and explain."
+    },
+    {
+     "code": "10.2",
+     "paraphrase": "Every corner of the ICT sector comes with its own rules, regulations, and expectations to follow."
+    },
+    {
+     "code": "10.3",
+     "paraphrase": "Projects and products in this sector have their own specific requirements and expectations to build toward."
+    },
+    {
+     "code": "10.4",
+     "paraphrase": "Working with industry experts is a real way to gain specific technical knowledge and skill."
+    },
+    {
+     "code": "10.5",
+     "paraphrase": "Both a single computer and a network are built from hardware and software parts that depend on each other."
+    },
+    {
+     "code": "10.6",
+     "paraphrase": "Different kinds of information -- text, images, sound, video -- take up different amounts of data, and media formats vary in capacity."
+    },
+    {
+     "code": "10.7",
+     "paraphrase": "Metric prefixes like kilo, mega, giga, and tera describe scale throughout computing."
+    },
+    {
+     "code": "10.8",
+     "paraphrase": "Security in computing rests on concepts like authorization, access rights, and encryption."
+    },
+    {
+     "code": "10.9",
+     "paraphrase": "Industry-standard software -- word processors, spreadsheets, databases, multimedia tools -- are common working tools."
+    },
+    {
+     "code": "10.10",
+     "paraphrase": "Files get organized and managed within a hierarchical system."
+    },
+    {
+     "code": "10.11",
+     "paraphrase": "Text, data, sound, video, and images can all move from one software program or system to another, and there's more than one route for doing it."
+    },
+    {
+     "code": "10.12",
+     "paraphrase": "Different kinds of information call for different search strategies."
+    },
+    {
+     "code": "10.13",
+     "paraphrase": "Retrieved information should be checked for accuracy, relevance, and completeness."
+    },
+    {
+     "code": "10.14",
+     "paraphrase": "Online resources can meaningfully support collaboration, research, publishing, communication, and productivity -- or fail to."
+    }
+   ]
+  },
+  {
+   "code": "11.0",
+   "name": "Demonstration and Application",
+   "paraphrase": "The knowledge and skills named across this sector's anchor and pathway standards get demonstrated directly, in classrooms, labs, and real workplace settings.",
+   "items": [
+    {
+     "code": "11.1",
+     "paraphrase": "Work-based learning experiences extend and apply what's learned in the classroom and lab."
+    },
+    {
+     "code": "11.2",
+     "paraphrase": "Getting genuinely good at a technical pathway is what actually opens the door to certification, licensure, or further study."
+    },
+    {
+     "code": "11.3",
+     "paraphrase": "Entrepreneurship, self-employment, and new ventures are all real options worth understanding."
+    },
+    {
+     "code": "11.4",
+     "paraphrase": "Entrepreneurial practices and behaviors apply specifically within ICT-sector opportunities."
+    },
+    {
+     "code": "11.5",
+     "paraphrase": "A portfolio is one way to show evidence of the skills and knowledge named in these standards."
+    }
+   ]
+  }
+ ],
+ "pathway": {
+  "id": "C",
+  "name": "Software and Systems Development Pathway",
+  "description": "Students in this pathway prepare for computer-science-related careers: designing, building, deploying, and maintaining the software systems that keep modern organizations running, from e-commerce to healthcare records to entertainment.",
+  "standards": [
+   {
+    "code": "C1.0",
+    "name": "Systems Development Process",
+    "paraphrase": "Building software well means following a real systems-development process, not improvising.",
+    "items": [
+     {
+      "code": "C1.1",
+      "paraphrase": "A systems-development life cycle moves through recognizable phases: analysis, design, programming, testing, deployment, maintenance, and improvement."
+     },
+     {
+      "code": "C1.2",
+      "paraphrase": "Systems development can follow different models, including a traditional life-cycle approach or agile methods."
+     },
+     {
+      "code": "C1.3",
+      "paraphrase": "Specifications and requirements for a piece of software, new or existing, get developed through a real process."
+     },
+     {
+      "code": "C1.4",
+      "paraphrase": "Working on a development team means operating within that team's defined scope and boundaries."
+     },
+     {
+      "code": "C1.5",
+      "paraphrase": "Versioning is how a project's milestones get tracked over time."
+     },
+     {
+      "code": "C1.6",
+      "paraphrase": "Flowcharts and UML are tools for diagramming a process."
+     }
+    ]
+   },
+   {
+    "code": "C2.0",
+    "name": "Requirements Analysis",
+    "paraphrase": "Software and systems requirements need to be defined and analyzed before building starts.",
+    "items": [
+     {
+      "code": "C2.1",
+      "paraphrase": "Development work serves different ends: automating a task, making people more productive, building a model to analyze something, or simply entertaining."
+     },
+     {
+      "code": "C2.2",
+      "paraphrase": "Development work can have unintended consequences -- bugs, security holes, health or environmental risk, privacy problems -- that are worth watching for and preventing."
+     },
+     {
+      "code": "C2.3",
+      "paraphrase": "A development strategy should target what a specific customer actually needs and wants."
+     },
+     {
+      "code": "C2.4",
+      "paraphrase": "Understanding a customer's needs is a distinct analytical step in development."
+     },
+     {
+      "code": "C2.5",
+      "paraphrase": "Requirements and possible solutions both need to be worked out and written down before they can be built."
+     }
+    ]
+   },
+   {
+    "code": "C3.0",
+    "name": "Human-Computer Interfaces",
+    "paraphrase": "The interface between a person and a piece of technology is itself something to design well.",
+    "items": [
+     {
+      "code": "C3.1",
+      "paraphrase": "Every interface runs on the same basic cycle: input, processing, output."
+     },
+     {
+      "code": "C3.2",
+      "paraphrase": "A good interface reflects real knowledge of how people think, move, and interact socially."
+     },
+     {
+      "code": "C3.3",
+      "paraphrase": "Accessibility -- for users with disabilities and users who don't speak English -- has to be actively supported, not assumed."
+     }
+    ]
+   },
+   {
+    "code": "C4.0",
+    "name": "Programming Languages",
+    "paraphrase": "Software gets built in a programming language, and that language sits at some level of abstraction.",
+    "items": [
+     {
+      "code": "C4.1",
+      "paraphrase": "Programming languages range from low-level, close to the hardware, to high-level and web-based."
+     },
+     {
+      "code": "C4.2",
+      "paraphrase": "Programming languages and protocols interact -- client-side code, server-side code, and a query language reaching into a database are all pieces of the same system."
+     },
+     {
+      "code": "C4.3",
+      "paraphrase": "Software gets built inside some kind of environment -- a simple content editor on one end, a full-featured IDE on the other."
+     },
+     {
+      "code": "C4.4",
+      "paraphrase": "Data has types, and those types get encoded in specific ways."
+     },
+     {
+      "code": "C4.5",
+      "paraphrase": "Programming paradigms differ -- procedural, object-oriented, event-driven, multithreaded -- and each shapes how code gets structured."
+     },
+     {
+      "code": "C4.6",
+      "paraphrase": "Every programming language has its own syntax, and using it correctly matters."
+     },
+     {
+      "code": "C4.7",
+      "paraphrase": "Data structures, arrays, objects, files, and databases are all ways of organizing a program's data."
+     },
+     {
+      "code": "C4.8",
+      "paraphrase": "Object-oriented programming brings its own vocabulary: objects, properties, methods, inheritance."
+     },
+     {
+      "code": "C4.9",
+      "paraphrase": "A working program leans on a shared toolkit of constructs -- branches and loops, reusable procedures and functions that take parameters, variables to hold state, ways to recover from errors, and sometimes a function that calls itself."
+     },
+     {
+      "code": "C4.10",
+      "paraphrase": "Different queueing, sorting, and searching algorithms trade off differently against each other."
+     },
+     {
+      "code": "C4.11",
+      "paraphrase": "Development work needs documentation aimed at more than one audience -- comments for other programmers, manuals for users."
+     }
+    ]
+   },
+   {
+    "code": "C5.0",
+    "name": "Testing & Debugging",
+    "paraphrase": "Software has to be tested, debugged, and improved, not just written.",
+    "items": [
+     {
+      "code": "C5.1",
+      "paraphrase": "Reliable, effective, efficient software shares recognizable characteristics."
+     },
+     {
+      "code": "C5.2",
+      "paraphrase": "A program sometimes has to change because its own specification changed, or because the technology around it moved on."
+     },
+     {
+      "code": "C5.3",
+      "paraphrase": "Code can be optimized deliberately for better performance."
+     },
+     {
+      "code": "C5.4",
+      "paraphrase": "Testing is a distinct step applied to both software and the broader project."
+     },
+     {
+      "code": "C5.5",
+      "paraphrase": "A finished result gets evaluated against what it was originally required to do."
+     },
+     {
+      "code": "C5.6",
+      "paraphrase": "Debugging is part of quality assurance, not separate from it."
+     }
+    ]
+   },
+   {
+    "code": "C6.0",
+    "name": "Media Integration",
+    "paraphrase": "Development projects often pull together more than one kind of media.",
+    "items": [
+     {
+      "code": "C6.1",
+      "paraphrase": "A print piece, a video, an audio track, and an interactive experience each have their own basic design vocabulary."
+     },
+     {
+      "code": "C6.2",
+      "paraphrase": "Media gets encoded in different ways -- vector versus bitmap graphics, different bit depths -- and each choice trades off differently."
+     },
+     {
+      "code": "C6.3",
+      "paraphrase": "Editing media takes the right tool for the format -- something for animating frame by frame, something for drawing or touching up an image, something for modeling in three dimensions."
+     },
+     {
+      "code": "C6.4",
+      "paraphrase": "A multimedia project -- video, game, interactive site -- moves from storyboard through to finished production."
+     },
+     {
+      "code": "C6.5",
+      "paraphrase": "Choosing a file format and compression level for media is its own analytical decision."
+     },
+     {
+      "code": "C6.6",
+      "paraphrase": "Media has to actually be integrated into a finished project, using the right tools for the job."
+     },
+     {
+      "code": "C6.7",
+      "paraphrase": "A finished project can include media built to a professional standard -- pictures, write-ups, sound, footage -- made or recorded directly rather than borrowed."
+     }
+    ]
+   },
+   {
+    "code": "C7.0",
+    "name": "Web & Online Development",
+    "paraphrase": "Web and online projects come with their own development process.",
+    "items": [
+     {
+      "code": "C7.1",
+      "paraphrase": "Web hosting and related services need both server hardware and the right software."
+     },
+     {
+      "code": "C7.2",
+      "paraphrase": "Getting content live online means registering a domain name and arranging both hosting and email for it."
+     },
+     {
+      "code": "C7.3",
+      "paraphrase": "Search engine optimization, including keyword and metadata strategy, is how a site attracts visitors."
+     },
+     {
+      "code": "C7.4",
+      "paraphrase": "E-commerce capability means handling a shopping cart and credit-card transactions, not just listing products."
+     },
+     {
+      "code": "C7.5",
+      "paraphrase": "A website, an online business, or a personal e-portfolio is meant to actually go live, not just stay a plan."
+     },
+     {
+      "code": "C7.6",
+      "paraphrase": "Delivering and retrieving online content quickly is its own optimization problem."
+     }
+    ]
+   },
+   {
+    "code": "C8.0",
+    "name": "Databases",
+    "paraphrase": "Databases are their own kind of software development.",
+    "items": [
+     {
+      "code": "C8.1",
+      "paraphrase": "Databases play a critical role in how modern organizations actually function."
+     },
+     {
+      "code": "C8.2",
+      "paraphrase": "Databases are built from basic structures: fields, records, tables, and views."
+     },
+     {
+      "code": "C8.3",
+      "paraphrase": "Tables relate to each other in specific ways -- one-to-one, one-to-many, many-to-many -- established through primary keys, foreign keys, and indexes."
+     },
+     {
+      "code": "C8.4",
+      "paraphrase": "Data modeling is how a database gets designed around real business needs."
+     },
+     {
+      "code": "C8.5",
+      "paraphrase": "Queries are the tool for extracting and manipulating data, whether selecting it or acting on it."
+     },
+     {
+      "code": "C8.6",
+      "paraphrase": "A well-normalized database follows an appropriate schema."
+     },
+     {
+      "code": "C8.7",
+      "paraphrase": "Moving data between a database and other applications comes with real limitations and challenges."
+     },
+     {
+      "code": "C8.8",
+      "paraphrase": "Turning data into things such as cross-tabulations, graphs, or charts is what actually makes it useful for deciding something."
+     }
+    ]
+   },
+   {
+    "code": "C9.0",
+    "name": "Devices & Robotics",
+    "paraphrase": "Software gets developed for more than just general-purpose computers, including robotics and other devices.",
+    "items": [
+     {
+      "code": "C9.1",
+      "paraphrase": "Device-focused development shows up anywhere from personal computers to robots to smart appliances."
+     },
+     {
+      "code": "C9.2",
+      "paraphrase": "Installing equipment and assembling hardware both call for the right tools and testing."
+     },
+     {
+      "code": "C9.3",
+      "paraphrase": "Hardware is what actually captures input, processes it, and acts on it."
+     },
+     {
+      "code": "C9.4",
+      "paraphrase": "Embedded programming involves digital logic, how data is represented at the machine level, and how memory is organized."
+     },
+     {
+      "code": "C9.5",
+      "paraphrase": "A microcontroller can be programmed to run a device or a robot."
+     }
+    ]
+   },
+   {
+    "code": "C10.0",
+    "name": "Intelligent Computing",
+    "paraphrase": "Intelligent computing is its own area of software development.",
+    "items": [
+     {
+      "code": "C10.1",
+      "paraphrase": "Models of intelligent behavior raise the question of what actually distinguishes a human from a machine."
+     },
+     {
+      "code": "C10.2",
+      "paraphrase": "Intelligent computing covers areas like perception, proximity sensing, processing, and control."
+     },
+     {
+      "code": "C10.3",
+      "paraphrase": "AI methods include things like neural networks, Bayesian inference, fuzzy logic, and finite state machines."
+     },
+     {
+      "code": "C10.4",
+      "paraphrase": "Making AI behavior actually happen can lean on math-based modeling, reinforcement learning, or probability-based analysis, among other methods."
+     }
+    ]
+   }
+  ]
+ }
+}
