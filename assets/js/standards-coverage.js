@@ -423,7 +423,12 @@
     // itself, so it rides with HS).
     'ca': ['ap', 'ca-hs', 'ca-ict', 'ca-ms'],
     'ca-hs': ['ap', 'ca-hs', 'ca-ict'],
-    'ca-ms': ['ca-ms']
+    'ca-ms': ['ca-ms'],
+    // Not tied to a visible view-toggle-btn -- only reachable via a
+    // recommendation link (see wireRecommendations) for a class whose
+    // relevant panels don't match one of the five buttons above.
+    'ca-cs': ['ca-hs', 'ca-ms'],
+    'ca-hs-ict': ['ca-hs', 'ca-ict']
   };
 
   function wirePanelActions() {
@@ -468,16 +473,20 @@
     panelEls.forEach(function (el) {
       el.querySelector('summary').addEventListener('click', clearActive);
     });
+
+    return { applyView: applyView, clearActive: clearActive };
   }
 
   // ---------- Recommendations: one-click "set up the picker for this class" ----------
   //
   // Each button names the exact set of sources to check (everything else gets
-  // unchecked -- "turn on X only") and a view preset id matching one of the
-  // view-toggle-btn elements' data-view (wired in wirePanelActions above), so
-  // clicking a recommendation both narrows the sources sidebar and switches to
-  // the matching panel view in one action.
-  function wireRecommendations(handleToggle) {
+  // unchecked -- "turn on X only") and a view preset id. Where that id matches
+  // one of the five view-toggle-btn elements' data-view, clicking it presses
+  // that button same as a manual click would; some classes need a panel
+  // combination none of those five buttons cover (e.g. CA 9-12 + ICT only,
+  // with no AP and no CA 6-8), so those ids exist only in VIEW_PRESETS and are
+  // applied directly via panelActions, leaving no view-toggle-btn pressed.
+  function wireRecommendations(handleToggle, panelActions) {
     document.querySelectorAll('.reco-link').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var wanted = (btn.getAttribute('data-sources') || '').split(',').filter(Boolean);
@@ -485,8 +494,14 @@
           cb.checked = wanted.indexOf(cb.getAttribute('data-source')) !== -1;
         });
         handleToggle();
-        var viewBtn = document.getElementById('view-show-' + btn.getAttribute('data-view'));
-        if (viewBtn) viewBtn.click();
+        var view = btn.getAttribute('data-view');
+        var viewBtn = document.getElementById('view-show-' + view);
+        if (viewBtn) {
+          viewBtn.click();
+        } else {
+          panelActions.applyView(view);
+          panelActions.clearActive();
+        }
       });
     });
   }
@@ -674,7 +689,7 @@
       document.querySelectorAll('.panel-ref-link').forEach(function (a) {
         a.addEventListener('click', function (e) { e.stopPropagation(); });
       });
-      wirePanelActions();
+      var panelActions = wirePanelActions();
 
       badgeRegistry = Array.prototype.slice.call(document.querySelectorAll('.cov-badge')).map(function (el) {
         var framework = el.getAttribute('data-framework');
@@ -689,7 +704,7 @@
 
       wireBadgeInteractions(coverageByFramework, checkedSourceSet);
       wireCrossRefToggles();
-      wireRecommendations(handleToggle);
+      wireRecommendations(handleToggle, panelActions);
     });
   }).catch(function (err) {
     document.getElementById('panels').innerHTML =
