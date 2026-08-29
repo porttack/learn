@@ -1,0 +1,111 @@
+{
+ "meta": {
+  "title": "CMU CS Academy \u2014 CS1",
+  "base_url": "https://academy.cs.cmu.edu/",
+  "locator_kind": "unit",
+  "locator_url_template": null,
+  "source": "cmu_cs1",
+  "locator_titles": {
+   "1": "Creating Drawings",
+   "2": "Functions, Mouse Events, Properties",
+   "3": "Mouse Motion, Conditionals, Helper Functions",
+   "4": "More Conditionals, Key Events, Methods",
+   "5": "Complex Conditionals, More Key Events",
+   "6": "Groups, Step Events, Motion",
+   "7": "New Shapes, Local Variables, For Loops",
+   "8": "Math Functions, Random, Nested Loops",
+   "9": "Types, Strings, While Loops",
+   "10": "Lists and Return Values",
+   "11": "2D Lists and Board Games",
+   "12": "Final Project",
+   "creative-task": "Creative Task (every unit, 1-10)",
+   "collaborative": "Collaborative task (every unit)"
+  },
+  "caveat": "Mapped from the teacher's own unit-by-unit scope-and-sequence analysis (porttack.com, \"CodeHS vs CMU\", Appendix C), not from CMU's official standards document -- that document omits AP.14, which this mapping argues (with evidence from the Creative Task's own design step) is actually taught."
+ },
+ "coverage": {
+  "castandards": {
+   "9-12.AP.12": {
+    "locators": [
+     8,
+     11
+    ],
+    "note": "Math/random/nested loops (unit 8) and 2D lists/board-game logic (unit 11) both involve choosing and adapting existing algorithms."
+   },
+   "9-12.AP.13": {
+    "locators": [
+     10,
+     11
+    ],
+    "note": "Lists and 2D lists are core, assessed content (units 10-11), not an optional add-on."
+   },
+   "9-12.AP.14": {
+    "locators": [
+     3,
+     4,
+     5,
+     7,
+     8,
+     9,
+     "creative-task"
+    ],
+    "note": "Woven through every conditionals/loop unit (3-5, 7-9) and made explicit in the Creative Task's own design step, which has students list the concepts they plan to use and justify why -- the standard's own language, 'justify the selection.' Not in CMU's own official standards document; the teacher's own classroom analysis argues it should be."
+   },
+   "9-12.AP.15": {
+    "locators": [
+     2,
+     3,
+     4,
+     5,
+     6,
+     12
+    ],
+    "note": "Iterative development through events (mouse, key, step) recurs across units 2-6 and the final project (unit 12)."
+   },
+   "9-12.AP.16": {
+    "locators": [
+     3
+    ],
+    "note": "Helper functions, introduced in unit 3, are decomposition into subproblems."
+   },
+   "9-12.AP.17": {
+    "locators": [
+     2,
+     4,
+     7,
+     10
+    ],
+    "note": "Modular design via functions, methods, and library calls across units 2, 4, 7, and 10."
+   },
+   "9-12.AP.18": {
+    "locators": [
+     "creative-task"
+    ],
+    "note": "Design-for-audience is the Creative Task's rubric, but the rubric itself does not require a feedback step -- CMU claims the standard on the task's design intent; whether it's actually met depends on the teacher building a feedback step in. In this teacher's own classroom it is."
+   },
+   "9-12.AP.19": {
+    "locators": [],
+    "checked": true,
+    "note": "Not taught in CS1 -- software license limitations are deliberately deferred to AP CS Principles, where this teacher covers it directly with his own materials."
+   },
+   "9-12.AP.20": {
+    "locators": [
+     "creative-task"
+    ],
+    "note": "The Creative Task's build-reflect-revise cycle runs ten times a year."
+   },
+   "9-12.AP.21": {
+    "locators": [
+     "collaborative"
+    ],
+    "note": "Real-time shared-editor pair programming is built into every unit, not a capstone."
+   },
+   "9-12.AP.22": {
+    "locators": [
+     "creative-task"
+    ],
+    "note": "The Creative Task requires describing the program and reflecting on what changed and why -- documentation of design decisions, ten times a year."
+   }
+  }
+ }
+}
