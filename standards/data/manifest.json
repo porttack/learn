@@ -1,0 +1,74 @@
+{
+ "catalog": [
+  "apcsp",
+  "castandards",
+  "csta2026",
+  "ca-ict-anchor"
+ ],
+ "sources": [
+  {
+   "slug": "working_in_python",
+   "file": "working-in-python.json",
+   "title": "Working in Python",
+   "abbrev": "WIP",
+   "hue_light": "#2a78d6",
+   "hue_dark": "#3987e5"
+  },
+  {
+   "slug": "little_brother",
+   "file": "little-brother.json",
+   "title": "Little Brother / Big Brother (unit plan)",
+   "abbrev": "LB",
+   "hue_light": "#eb6834",
+   "hue_dark": "#d95926"
+  },
+  {
+   "slug": "cmu_cs1",
+   "file": "cmu-cs1.json",
+   "title": "CMU CS Academy \u2014 CS1",
+   "abbrev": "CS1",
+   "hue_light": "#1baf7a",
+   "hue_dark": "#199e70"
+  },
+  {
+   "slug": "codehs_corgi",
+   "file": "codehs-corgi.json",
+   "title": "CodeHS \u2014 Corgi (Intro to JS)",
+   "abbrev": "Corgi",
+   "hue_light": "#eda100",
+   "hue_dark": "#c98500"
+  },
+  {
+   "slug": "cs50ap",
+   "file": "cs50ap.json",
+   "title": "CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)",
+   "abbrev": "CS50AP",
+   "hue_light": "#e87ba4",
+   "hue_dark": "#d55181"
+  },
+  {
+   "slug": "cs50ap_extended",
+   "file": "cs50ap-extended.json",
+   "title": "CS50 AP -- extended (weeks 0-6 remainder)",
+   "abbrev": "CS50AP+",
+   "hue_light": "#008300",
+   "hue_dark": "#008300"
+  },
+  {
+   "slug": "cs50p",
+   "file": "cs50p.json",
+   "title": "CS50 Python -- weeks 0-8",
+   "abbrev": "CS50P",
+   "hue_light": "#4a3aa7",
+   "hue_dark": "#9085e9"
+  },
+  {
+   "slug": "cmu_cs0",
+   "file": "cmu-cs0.json",
+   "title": "CS0",
+   "abbrev": "CS0",
+   "hue_light": "#e34948",
+   "hue_dark": "#e66767"
+  }
+ ]
+}

@@ -1,0 +1,79 @@
+{
+ "meta": {
+  "title": "Little Brother / Big Brother (unit plan)",
+  "base_url": "https://porttack.com",
+  "locator_kind": "unit",
+  "locator_url_template": null,
+  "source": "little_brother",
+  "abbrev": "LB"
+ },
+ "coverage": {
+  "apcsp": {
+   "4.1": {
+    "locators": []
+   },
+   "4.2": {
+    "locators": []
+   },
+   "4.3": {
+    "locators": []
+   },
+   "5.1": {
+    "locators": []
+   },
+   "5.2": {
+    "locators": []
+   },
+   "5.3": {
+    "locators": []
+   },
+   "5.4": {
+    "locators": []
+   },
+   "5.5": {
+    "locators": []
+   },
+   "5.6": {
+    "locators": []
+   }
+  },
+  "castandards": {
+   "9-12.NI.4": {
+    "locators": []
+   },
+   "9-12.NI.5": {
+    "locators": []
+   },
+   "9-12.NI.6": {
+    "locators": []
+   },
+   "9-12.NI.7": {
+    "locators": []
+   },
+   "9-12.IC.23": {
+    "locators": []
+   },
+   "9-12.IC.24": {
+    "locators": []
+   },
+   "9-12.IC.25": {
+    "locators": []
+   },
+   "9-12.IC.26": {
+    "locators": []
+   },
+   "9-12.IC.27": {
+    "locators": []
+   },
+   "9-12.IC.28": {
+    "locators": []
+   },
+   "9-12.IC.29": {
+    "locators": []
+   },
+   "9-12.IC.30": {
+    "locators": []
+   }
+  }
+ }
+}

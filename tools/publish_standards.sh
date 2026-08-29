@@ -7,11 +7,15 @@
 # Jekyll-agnostic (working-in-python's Sphinx build consumes the same script
 # unwrapped).
 #
-# The coverage map (build_coverage_map.py) is /standards/'s actual landing
-# page (index.html) -- a curated, named list of sources, not "everything in
-# the carriers directory": supplement is excluded (not a named course an
-# admin would recognize) and cs50psets doesn't exist yet. Add a new source's
-# slug to COVERAGE_MAP_SOURCES below once its carrier file is real.
+# /standards/'s landing page (index.html) is hand-authored, not generated --
+# it's a static shell that fetches standards/data/*.json at runtime and
+# renders the coverage map client-side, with a checkbox per source. This
+# script only refreshes that data (standards/data/), via
+# publish_standards_data.py -- the curated source list + hue assignment live
+# there now (formerly build_coverage_map.py, which rendered the page
+# server-side and is retired). Editing standards/index.html or
+# assets/js/standards-coverage.js is a normal hand-edit; this script has
+# nothing to do with them.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TMP="$(mktemp -d)"
@@ -30,13 +34,7 @@ cp "$TMP"/*.html "$ROOT/standards/"
   tail -n +3 "$TMP/standards-alignment.md"
 } > "$ROOT/standards/alignment.md"
 
-COVERAGE_MAP_SOURCES=(working_in_python little_brother cmu_cs1 codehs_corgi cs50ap cs50ap_extended cs50p cmu_cs0)
-SOURCE_ARGS=()
-for s in "${COVERAGE_MAP_SOURCES[@]}"; do SOURCE_ARGS+=(--source "$s"); done
-
-python3 "$ROOT/tools/build_coverage_map.py" --catalog "$ROOT/_standards" --carriers "$ROOT/_standards/carriers" \
-  --out "$ROOT/standards" --filename index.html --with-refs-nav \
-  --title "Standards Coverage" "${SOURCE_ARGS[@]}"
+python3 "$ROOT/tools/publish_standards_data.py" --catalog "$ROOT/_standards" --carriers "$ROOT/_standards/carriers" --out "$ROOT/standards/data"
 
 rm -rf "$TMP"
-echo "Published cross-source reference pages + coverage map (index.html) to $ROOT/standards/"
+echo "Published cross-source reference pages + coverage data (standards/data/) to $ROOT/standards/"

@@ -144,13 +144,14 @@ Bring it back into `_standards/carriers/<slug>.json` in this repo. To use it:
 
 ```
 python3 tools/build_alignment.py --catalog _standards --carriers _standards/carriers --out <dir> --source <your_slug> [--source <another>]
-python3 tools/build_coverage_map.py --catalog _standards --carriers _standards/carriers --out <dir> --source <your_slug> [--source <another>]
 ```
 
-If it's combined with other sources on `learn.porttack.com/standards/`, also
-add its slug to `SOURCE_ORDER` near the top of `tools/build_coverage_map.py`
-(append it — don't insert it before an already-shipped source, since that
-would shift everyone else's assigned color).
+If it's combined with other sources on `learn.porttack.com/standards/`
+(the client-side coverage map, rendered by `assets/js/standards-coverage.js`
+from JSON `tools/publish_standards_data.py` publishes), add its slug to
+`SOURCE_ORDER` near the top of `tools/publish_standards_data.py` (append it
+— don't insert it before an already-shipped source, since that would shift
+everyone else's assigned color) and rerun `tools/publish_standards.sh`.
 
 ## `rollups` (optional, rare)
 

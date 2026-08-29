@@ -1,0 +1,197 @@
+{
+ "meta": {
+  "title": "CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)",
+  "base_url": "https://cs50.harvard.edu/ap/2025/curriculum",
+  "locator_kind": "week",
+  "locator_url_template": "{base_url}/x/weeks/{locator}/",
+  "source": "cs50ap",
+  "locator_titles": {
+   "0": "Week 0: Scratch -- data representation only (unary, binary, decimal, ASCII, Unicode, RGB)",
+   "3": "Week 3: Algorithms (searching, sorting, asymptotic notation, recursion)",
+   "4": "Week 4: Memory -- data representation only (hexadecimal, images, file I/O)",
+   "7": "Week 7: SQL",
+   "8": "Week 8: HTML, CSS, JavaScript",
+   "9": "Week 9: Flask"
+  },
+  "caveat": "Mapped from CS50 AP's own published per-week topic lists (https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/<n>/), not from an audit of lecture or problem-set content -- comparable confidence to codehs_corgi, not cmu_cs1. The weeks-0-and-4 split between 'data representation' and everything else in those weeks is this teacher's own editorial cut, not a division CS50 itself draws; see cs50ap_extended for the other half.",
+  "abbrev": "CS50AP"
+ },
+ "coverage": {
+  "apcsp": {
+   "2.1": {
+    "locators": [
+     0,
+     4
+    ],
+    "note": "Unary/binary/decimal/ASCII/Unicode/RGB (week 0) and hexadecimal (week 4) are both explicitly named -- this is DAT-1's own topic, encoding information as sequences of bits."
+   },
+   "2.4": {
+    "locators": [
+     7
+    ],
+    "note": "SQL is literally a program for pulling information out of a data set -- Tables, Statements, and Keywords/Functions are named week-7 topics."
+   },
+   "3.9": {
+    "locators": [
+     3
+    ],
+    "note": "Comparing Linear Search against Binary Search, and Bubble/Selection Sort against Merge Sort, is exactly 'compare two or more algorithms to see whether they produce the same outcome.'"
+   },
+   "3.11": {
+    "locators": [
+     3
+    ],
+    "note": "Binary Search is a named subsection of week 3, alongside its own Shorts video."
+   },
+   "3.17": {
+    "locators": [
+     3
+    ],
+    "note": "Asymptotic Notation (O, \u03a9, \u0398) is the week's own explicit framing for algorithmic efficiency."
+   },
+   "4.1": {
+    "locators": [
+     8
+    ],
+    "note": "Routers, TCP/IP, and DNS are named week-8 topics, with an 'Internet Primer' Short and demo ('Passing TCP/IP Packet')."
+   },
+   "5.6": {
+    "locators": [
+     7,
+     9
+    ],
+    "note": "SQL Injection Attacks are a named week-7 topic (an attack method); Sessions and Cookies (week 9) are the mechanism by which a site collects and holds data about a visitor across requests."
+   }
+  },
+  "castandards": {
+   "9-12.DA.8": {
+    "locators": [
+     0,
+     4
+    ],
+    "note": "Same representation claim as apcsp 2.1: the same image or character can be encoded more than one way (unary/binary/decimal/ASCII/Unicode/RGB, hexadecimal)."
+   },
+   "9-12.DA.9": {
+    "locators": [
+     7
+    ],
+    "note": "SQL's own named topics -- Tables, Types, Constraints, Indexes -- are exactly 'how data is organized and where it's stored.'"
+   },
+   "9-12.NI.5": {
+    "locators": [
+     8
+    ],
+    "note": "DNS plus routing (named week-8 topics) is literally 'how the internet looks up addresses and routes traffic.'"
+   },
+   "9-12.NI.6": {
+    "locators": [
+     7
+    ],
+    "note": "SQL Injection Attacks, a named topic, is a concrete security threat calling for a specific defense (parameterized queries)."
+   },
+   "9-12.AP.12": {
+    "locators": [
+     3
+    ],
+    "note": "Same algorithms-comparison claim as apcsp 3.9."
+   },
+   "9-12.IC.29": {
+    "locators": [
+     9
+    ],
+    "note": "Sessions and Cookies, named week-9 topics, are the concrete mechanism for collecting a visitor's data automatically between requests."
+   }
+  },
+  "csta2026": {
+   "HS-ALG-PS-03": {
+    "locators": [
+     3
+    ],
+    "note": "Asymptotic Notation is comparing algorithms by more than whether they're correct."
+   },
+   "HS-DAT-DC-22": {
+    "locators": [
+     7
+    ],
+    "note": "SQL's Types and Constraints, applied per column, are a data dictionary made explicit and enforced by the database itself."
+   },
+   "HS-SYS-NT-34": {
+    "locators": [
+     8
+    ],
+    "note": "Routers, TCP/IP, and DNS are the named physical/logical pieces a network diagram would show."
+   },
+   "HS-SYS-NT-35": {
+    "locators": [
+     8
+    ],
+    "note": "The week frames the internet as networks cooperating (Routers, TCP/IP, DNS) rather than one single network."
+   },
+   "HS-SYS-SE-33": {
+    "locators": [
+     7
+    ],
+    "note": "SQL Injection Attacks, paired with its standard defense (parameterized queries), is 'given a weakness, propose a fix.'"
+   }
+  },
+  "ca-ict-anchor": {
+   "5.11": {
+    "locators": [
+     0,
+     4
+    ],
+    "note": "Base conversion -- unary/binary/decimal (week 0), hexadecimal (week 4) -- is this anchor standard by name."
+   },
+   "5.12": {
+    "locators": [
+     3
+    ],
+    "note": "Binary Search depends on the Boolean comparison at each step (higher/lower/found)."
+   },
+   "10.6": {
+    "locators": [
+     0,
+     4
+    ],
+    "note": "RGB (week 0) and Images/file I/O (week 4) are concrete cases of different media taking different amounts of data to represent."
+   },
+   "C4.2": {
+    "locators": [
+     8,
+     9
+    ],
+    "note": "JavaScript (client-side), Flask (server-side), and SQL (query language) interacting is this standard's own example, and is literally how weeks 7-9 fit together."
+   },
+   "C7.1": {
+    "locators": [
+     8
+    ],
+    "note": "The week-8 internet primer (routers, servers, DNS) is the hardware-and-software-together claim this standard makes."
+   },
+   "C7.5": {
+    "locators": [
+     9
+    ],
+    "note": "Flask, with Route and Sessions, is the point where a project becomes an actually-served application rather than a local script."
+   },
+   "C8.1": {
+    "locators": [
+     7
+    ],
+    "note": "SQL is a full week on its own -- databases get more instructional weight here than anywhere else in this teacher's courses."
+   },
+   "C8.2": {
+    "locators": [
+     7
+    ],
+    "note": "Tables (a named topic) are exactly this standard's 'fields, records, tables, and views.'"
+   },
+   "C8.5": {
+    "locators": [
+     7
+    ],
+    "note": "SQL's own Statements and Keywords/Functions are how a database gets queried and manipulated."
+   }
+  }
+ }
+}
