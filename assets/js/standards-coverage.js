@@ -388,21 +388,71 @@
     });
   }
 
-  // ---------- Open all / close all, for the panel-level <details> ----------
+  // ---------- Panel view presets (Open all / Close all / Show CA*), for the panel-level <details> ----------
+  //
+  // Each panel carries a data-panel-category attribute (set where the panels
+  // array is built, below). A preset is just the set of categories to leave
+  // open; null means "every category" (Open all). These are mutually
+  // exclusive, button-group style, rather than the momentary link-style
+  // actions elsewhere on the page (source All/None) -- unlike those, "which
+  // preset is active" is durable state a reader benefits from seeing at a
+  // glance, so exactly one button stays visually pressed until another preset
+  // is chosen or the reader manually opens/closes a panel by hand.
+  var VIEW_PRESETS = {
+    'open-all': null,
+    'close-all': [],
+    // Admins reviewing this page care about CA compliance, not CSTA -- so
+    // "Show CA" is every non-CSTA panel, not literally every California-named
+    // one alone; "HS"/"MS" split that same set by which grade band each panel
+    // actually serves (CTE/ICT is a high-school-only pathway, not grade-banded
+    // itself, so it rides with HS).
+    'ca': ['ap', 'ca-hs', 'ca-ict', 'ca-ms'],
+    'ca-hs': ['ap', 'ca-hs', 'ca-ict'],
+    'ca-ms': ['ca-ms']
+  };
 
   function wirePanelActions() {
-    var expandBtn = document.getElementById('panels-expand-all');
-    var collapseBtn = document.getElementById('panels-collapse-all');
-    if (expandBtn) {
-      expandBtn.addEventListener('click', function () {
-        document.querySelectorAll('.cov-panel > details').forEach(function (d) { d.setAttribute('open', ''); });
+    var buttons = Array.prototype.slice.call(document.querySelectorAll('.view-toggle-btn'));
+    var panelEls = Array.prototype.slice.call(document.querySelectorAll('.cov-panel'));
+
+    function clearActive() {
+      buttons.forEach(function (b) { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
+    }
+    function setActive(btn) {
+      clearActive();
+      btn.classList.add('is-active');
+      btn.setAttribute('aria-pressed', 'true');
+    }
+    function applyView(view) {
+      var categories = VIEW_PRESETS[view];
+      panelEls.forEach(function (el) {
+        var details = el.querySelector('details');
+        var show = categories === null || categories.indexOf(el.getAttribute('data-panel-category')) !== -1;
+        if (show) details.setAttribute('open', ''); else details.removeAttribute('open');
       });
     }
-    if (collapseBtn) {
-      collapseBtn.addEventListener('click', function () {
-        document.querySelectorAll('.cov-panel > details').forEach(function (d) { d.removeAttribute('open'); });
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        applyView(btn.getAttribute('data-view'));
+        setActive(btn);
       });
-    }
+    });
+
+    // Default view on first load: admins mainly look at the high-school-facing
+    // CA panels, so start there rather than everything wide open.
+    var defaultBtn = document.getElementById('view-show-ca-hs');
+    if (defaultBtn) { applyView('ca-hs'); setActive(defaultBtn); }
+
+    // A manual open/close on any one panel no longer matches a named preset --
+    // clear the pressed button so the group doesn't keep claiming a state that
+    // no longer holds. Listens on <summary> (the actual user control) rather
+    // than the details' "toggle" event, since browsers queue "toggle" as an
+    // async task -- listening there would race the setActive() call above and
+    // this file's own applyView() calls, clearing a press we just set.
+    panelEls.forEach(function (el) {
+      el.querySelector('summary').addEventListener('click', clearActive);
+    });
   }
 
   // ---------- Detail panel (click-to-open), built lazily from current checkbox state ----------
@@ -553,16 +603,19 @@
       var coverageByFramework = {};
       manifest.catalog.forEach(function (fw) { coverageByFramework[fw] = makeCoverage(carrierFiles, fw); });
 
+      // Third element is this panel's data-panel-category, consumed by
+      // VIEW_PRESETS in wirePanelActions() to decide what Open all / Close
+      // all / Show CA* leave open.
       var panels = [
-        ['AP Computer Science Principles', renderApcspPanel(catalogs.apcsp)],
-        ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12', 'castandards')],
-        ['CSTA 2017 (Grades 9-12)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017')],
-        ['CSTA 2026', renderCsta2026Panel(catalogs.csta2026)],
-        ['California CTE (ICT)', renderCaIctPanel(catalogs['ca-ict-anchor'])],
+        ['AP Computer Science Principles', renderApcspPanel(catalogs.apcsp), 'ap'],
+        ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12', 'castandards'), 'ca-hs'],
+        ['CSTA 2017 (Grades 9-12)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017'), 'csta'],
+        ['CSTA 2026', renderCsta2026Panel(catalogs.csta2026), 'csta'],
+        ['California CTE (ICT)', renderCaIctPanel(catalogs['ca-ict-anchor']), 'ca-ict'],
         // Last, deliberately: these two are the only middle-school-level panels
         // among otherwise all-high-school frameworks.
-        ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8', 'castandards')],
-        ['CSTA 2017 (Grades 6-8)', renderCastandardsPanel(catalogs.csta2017, '6-8', 'csta2017')],
+        ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8', 'castandards'), 'ca-ms'],
+        ['CSTA 2017 (Grades 6-8)', renderCastandardsPanel(catalogs.csta2017, '6-8', 'csta2017'), 'csta'],
       ];
       // Each panel is a native <details>, open by default -- collapsing one
       // shrinks it to just its title bar (the chevron before the heading),
@@ -570,7 +623,7 @@
       // sidebar. <summary> may contain a single heading element per spec.
       document.getElementById('panels').innerHTML = panels
         .map(function (p) {
-          return '<div class="cov-panel"><details open><summary><h2>' + esc(p[0]) + '</h2></summary>' + p[1] + '</details></div>';
+          return '<div class="cov-panel" data-panel-category="' + esc(p[2]) + '"><details open><summary><h2>' + esc(p[0]) + '</h2></summary>' + p[1] + '</details></div>';
         })
         .join('\n');
       wirePanelActions();

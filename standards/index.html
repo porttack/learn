@@ -95,13 +95,14 @@ noscript p {
 }
 .cov-refs-nav { font-size: .85rem; color: var(--muted); margin: 1.2rem 0 0; line-height: 1.6; }
 .cov-refs-nav a { color: var(--accent); }
-.panel-actions { margin: 0 0 1.2rem; font-size: .85rem; }
-.panel-actions button {
-  background: none; border: none; padding: 0; color: var(--accent); text-decoration: underline;
-  font: inherit; cursor: pointer;
+.panel-actions { margin: 0 0 1.2rem; font-size: .85rem; display: flex; gap: .4rem; flex-wrap: wrap; }
+.view-toggle-btn {
+  background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .3rem .7rem; color: var(--fg); font: inherit; cursor: pointer;
 }
-.panel-actions button:hover { color: var(--fg); }
-.panel-actions .sep { color: var(--muted); margin: 0 .4em; }
+.view-toggle-btn:hover { border-color: var(--accent); }
+.view-toggle-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.view-toggle-btn.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .cov-panel { margin: 2.5rem 0; }
 .cov-panel h2 { font-size: 1.4rem; margin: 0 0 .3rem; display: inline; }
 .cov-panel > details > summary {
@@ -214,8 +215,12 @@ Standards reference:<br>
 <div id="panel-resizer" class="panel-resizer"></div>
 <main id="coverage-content">
 <h1>Standards Coverage</h1>
-<div class="panel-actions">
-<button type="button" id="panels-expand-all">Open all</button><span class="sep">&middot;</span><button type="button" id="panels-collapse-all">Close all</button>
+<div class="panel-actions" role="group" aria-label="Which standards panels to show">
+<button type="button" class="view-toggle-btn" id="view-open-all" data-view="open-all" aria-pressed="false">Open all</button>
+<button type="button" class="view-toggle-btn" id="view-close-all" data-view="close-all" aria-pressed="false">Close all</button>
+<button type="button" class="view-toggle-btn" id="view-show-ca" data-view="ca" aria-pressed="false">Show CA</button>
+<button type="button" class="view-toggle-btn" id="view-show-ca-hs" data-view="ca-hs" aria-pressed="false">Show CA HS</button>
+<button type="button" class="view-toggle-btn" id="view-show-ca-ms" data-view="ca-ms" aria-pressed="false">Show CA MS</button>
 </div>
 <noscript><p>This page needs JavaScript to render the coverage grid.</p></noscript>
 <div id="panels"></div>
