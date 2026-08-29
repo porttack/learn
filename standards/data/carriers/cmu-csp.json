@@ -1,0 +1,305 @@
+{
+ "meta": {
+  "title": "Carnegie Mellon's AP CSP in Python",
+  "abbrev": "CMU-CSP",
+  "base_url": "https://academy.cs.cmu.edu/course-info#:~:text=EXPLORE%20THE%205%20UNITS",
+  "locator_kind": "unit",
+  "locator_url_template": null,
+  "source": "cmu_csp",
+  "locator_titles": {
+   "1": "Unit 1: Intro to CMU Graphics (Drawing Basics, More About Drawing, Create Task Design)",
+   "2": "Unit 2: Functions, Mouse Events, Conditionals",
+   "3": "Unit 3: Groups, Lists, and Loops",
+   "4": "Unit 4: Complex Conditionals, More Events, and Libraries",
+   "5": "Unit 5: Create Performance Task (supplemental, used with/in place of Code.org's own CPT unit)",
+   "test-prep": "Optional: AP Test Prep",
+   "supplemental": "Optional: Supplemental Materials (Nested Loops, 2D Lists, Project Practice)"
+  },
+  "caveat": "Covers only CMU's own programming units -- by the teacher's own instruction, nothing from Code.org's units is included here (see codeorg-apcsp.json). apcsp and castandards entries are this carrier's own read of CMU's pacing guide and the co-branded syllabus's Big-Idea tags -- direct, lesson-level evidence. csta2017 entries are NOT independently sourced: they're mechanically derived from this carrier's own castandards codes via _standards/crosswalk-castandards-csta2017.json, so treat them as exactly as confident as the castandards claim they ride on, never as a separate confirmation. csta2026 and ca-ict-anchor entries are this carrier's own topic-level inference, kept deliberately sparse -- included only where a unit's content is a clean, specific match, not forced onto every unit."
+ },
+ "coverage": {
+  "apcsp": {
+   "1.1": {
+    "locators": [
+     1,
+     5
+    ],
+    "note": "Unit 1's Create Task Design section (Intro & Creativity and Planning) and Unit 5's Create Performance Task both center on the pair/individual creative-project format CMU calls a Creative Task."
+   },
+   "1.2": {
+    "locators": [
+     1,
+     5
+    ],
+    "note": "Create Task Design (Unit 1) and the Create PT itself (Unit 5) both require students to state a program's purpose before building it."
+   },
+   "1.3": {
+    "locators": [
+     1,
+     5
+    ],
+    "note": "Unit 1's 'Intro & Creativity and Planning' step and Unit 5's design guide + example graded projects are CMU's own program-design-and-development materials for this product."
+   },
+   "3.1": {
+    "locators": [
+     2
+    ],
+    "note": "Unit 2's dedicated Variables lesson (Mouse Events week 2), after general shape Properties."
+   },
+   "3.4": {
+    "locators": [
+     4
+    ],
+    "note": "Unit 4's Strings lesson, paired with Types and Input the same week."
+   },
+   "3.6": {
+    "locators": [
+     2
+    ],
+    "note": "Unit 2's if-else Conditionals and if-elif-else lessons."
+   },
+   "3.7": {
+    "locators": [
+     4
+    ],
+    "note": "Unit 4's Complex Conditionals lessons: Compound conditionals and Nested conditionals, named as such."
+   },
+   "3.8": {
+    "locators": [
+     3,
+     "supplemental",
+     "test-prep"
+    ],
+    "note": "Unit 3's Traversing Groups / Traversing a list with len and range. The optional Supplemental unit adds Nested For Loops; the optional Test Prep unit's 'Robot and While Loops' lesson is this product's only evidence of a real `while` loop -- indefinite iteration, not just the `for`-style traversal the core 4-unit sequence teaches."
+   },
+   "3.9": {
+    "locators": [
+     "test-prep"
+    ],
+    "note": "From the (optional) AP Test Prep unit -- not required for the AP exam, and not part of the 4-unit core pacing guide's 56 class days. Test Prep's own 'Algorithms' and 'Simulations' review lessons."
+   },
+   "3.10": {
+    "locators": [
+     3,
+     "supplemental"
+    ],
+    "note": "Unit 3's Lists, Traversing a list, and List methods lessons. The optional Supplemental unit extends this to 2D lists."
+   },
+   "3.12": {
+    "locators": [
+     2,
+     4
+    ],
+    "note": "Unit 2's Function Basics and Multiple Parameters; Unit 4's 'Functions that Return Values' lesson."
+   },
+   "3.13": {
+    "locators": [
+     2
+    ],
+    "note": "Unit 2's Function Basics lesson pairs a 'Debugging and Test Cases' sub-lesson with function development from the start."
+   },
+   "3.14": {
+    "locators": [
+     4
+    ],
+    "note": "Unit 4's own Libraries lesson (Functions that Return Values, Random Numbers) and Using Media (Images)."
+   },
+   "3.15": {
+    "locators": [
+     4
+    ],
+    "note": "Unit 4's Random Numbers lesson, under the Libraries heading (Python's random library)."
+   },
+   "3.16": {
+    "locators": [
+     "test-prep"
+    ],
+    "note": "From the (optional) AP Test Prep unit -- not required for the AP exam, and not part of the 4-unit core pacing guide's 56 class days. Test Prep's own 'Simulations' review lesson."
+   },
+   "1.4": {
+    "locators": [
+     2
+    ],
+    "note": "Unit 2's Function Basics week pairs a named 'Debugging and Test Cases' sub-lesson with the function-writing lesson -- the only unit in this product's pacing guide with debugging named as its own sub-lesson."
+   }
+  },
+  "castandards": {
+   "9-12.AP.12": {
+    "locators": [
+     3,
+     "test-prep"
+    ],
+    "note": "Unit 3's loop/traversal work chooses and adapts algorithms over groups and lists; Test Prep's Algorithms review lesson makes the same skill explicit."
+   },
+   "9-12.AP.13": {
+    "locators": [
+     3
+    ],
+    "note": "Lists and Groups (Unit 3) are core, assessed content, not an optional add-on -- same argument cmu_cs1.json makes for its own units 10-11."
+   },
+   "9-12.AP.14": {
+    "locators": [
+     2,
+     4,
+     "test-prep"
+    ],
+    "note": "Conditionals (Unit 2), nested/compound conditionals (Unit 4), and Test Prep's explicit while-vs-for loop comparison ('Robot and While Loops') are all control-structure choices this standard names."
+   },
+   "9-12.AP.16": {
+    "locators": [
+     2
+    ],
+    "note": "Function Basics, introduced in Unit 2, is decomposition into subproblems -- same argument cmu_cs1.json makes for its own unit 3."
+   },
+   "9-12.AP.17": {
+    "locators": [
+     4
+    ],
+    "note": "Unit 4's Libraries lesson (calling pre-written library code, including media) is modular design via library calls."
+   },
+   "9-12.AP.18": {
+    "locators": [
+     5
+    ],
+    "note": "The Create PT's design guide and example graded projects are explicitly audience-facing (a real AP exam submission an outside reader scores), a stronger claim than cmu_cs1.json can make for its own Creative Task, which only has a feedback step if the teacher builds one in."
+   },
+   "9-12.AP.19": {
+    "locators": [],
+    "checked": true,
+    "note": "Not taught in this product's pacing guide -- software license limitations aren't named in either source PDF, matching cmu_cs1.json's own explicit gap for its unit-19 equivalent."
+   },
+   "9-12.AP.20": {
+    "locators": [
+     5
+    ],
+    "note": "The Create PT is a build-reflect-revise cycle by design (practice Create Tasks, then the graded submission); the syllabus PDF tags this unit's collaborative option with CTP1/CTP3/CTP4/CTP6."
+   },
+   "9-12.AP.21": {
+    "locators": [
+     5
+    ],
+    "note": "The syllabus PDF explicitly offers a collaborative Creative Task grouping option for the unit that maps onto this product's Unit 5."
+   },
+   "9-12.AP.22": {
+    "locators": [
+     5
+    ],
+    "note": "The Create PT's own written-response prompts about the finished program are documentation of design decisions -- the CPT cannot be submitted without them."
+   }
+  },
+  "csta2017": {
+   "3A-AP-14": {
+    "locators": [
+     3
+    ],
+    "note": "Mechanically derived from this carrier's own 9-12.AP.13 entry via the castandards-csta2017 crosswalk (strength: strong) -- not independently checked against a CMU or CSTA source document."
+   },
+   "3A-AP-15": {
+    "locators": [
+     2,
+     4,
+     "test-prep"
+    ],
+    "note": "Mechanically derived from this carrier's own 9-12.AP.14 entry via the castandards-csta2017 crosswalk (strength: strong)."
+   },
+   "3A-AP-17": {
+    "locators": [
+     2
+    ],
+    "note": "Mechanically derived from this carrier's own 9-12.AP.16 entry via the castandards-csta2017 crosswalk (strength: strong)."
+   },
+   "3A-AP-18": {
+    "locators": [
+     4
+    ],
+    "note": "Mechanically derived from this carrier's own 9-12.AP.17 entry via the castandards-csta2017 crosswalk (strength: strong)."
+   },
+   "3A-AP-19": {
+    "locators": [
+     5
+    ],
+    "note": "Mechanically derived from this carrier's own 9-12.AP.18 entry via the castandards-csta2017 crosswalk (strength: strong)."
+   },
+   "3A-AP-21": {
+    "locators": [
+     5
+    ],
+    "note": "Mechanically derived from this carrier's own 9-12.AP.20 entry via the castandards-csta2017 crosswalk (strength: strong)."
+   },
+   "3A-AP-22": {
+    "locators": [
+     5
+    ],
+    "note": "Mechanically derived from this carrier's own 9-12.AP.21 entry via the castandards-csta2017 crosswalk (strength: strong)."
+   },
+   "3A-AP-23": {
+    "locators": [
+     5
+    ],
+    "note": "Mechanically derived from this carrier's own 9-12.AP.22 entry via the castandards-csta2017 crosswalk (strength: strong)."
+   }
+  },
+  "csta2026": {
+   "HS-PRO-PD-12": {
+    "locators": [
+     2
+    ],
+    "note": "This carrier's own inference, not an official document: Unit 2's Function Basics lesson splits a program into functions, the construct this standard names."
+   },
+   "HS-PRO-VD-16": {
+    "locators": [
+     3
+    ],
+    "note": "This carrier's own inference: Unit 3 has students choose between Groups and Lists to hold a program's data, the choice this standard names."
+   },
+   "HS-PRO-TR-19": {
+    "locators": [
+     2,
+     5
+    ],
+    "note": "This carrier's own inference: Unit 2's named 'Debugging and Test Cases' sub-lesson, and the Create PT's own practice-then-submit structure."
+   },
+   "HS-PRO-TR-20": {
+    "locators": [
+     5
+    ],
+    "note": "This carrier's own inference: the Create PT's design guide and example graded projects imply a revise-from-feedback step, though (as with 9-12.AP.18 above) CMU's own materials don't require one."
+   },
+   "HS-ALG-PS-02": {
+    "locators": [
+     3,
+     "supplemental"
+    ],
+    "note": "This carrier's own inference: wrapping repeated steps in a loop, over Groups/Lists (Unit 3) and again over 2D lists (optional Supplemental unit)."
+   },
+   "HS-ALG-PS-04": {
+    "locators": [
+     4
+    ],
+    "note": "This carrier's own inference: Unit 4's Random Numbers lesson is the clearest instance of a program that doesn't give the same result from the same input."
+   }
+  },
+  "ca-ict-anchor": {
+   "C4.9": {
+    "locators": [
+     2,
+     3,
+     4
+    ],
+    "note": "This carrier's own inference, quoting the standard's own language: 'a shared toolkit of constructs -- branches and loops, reusable functions' is exactly Units 2-4's Conditionals, Loops, and Functions content."
+   },
+   "C4.7": {
+    "locators": [
+     3
+    ],
+    "note": "This carrier's own inference: Groups and Lists (Unit 3) are the data-structure content this standard names."
+   },
+   "C5.6": {
+    "locators": [
+     2
+    ],
+    "note": "This carrier's own inference: Unit 2's named Debugging and Test Cases sub-lesson treats debugging as part of building the program, not a separate step -- this standard's own framing."
+   }
+  }
+ }
+}

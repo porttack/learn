@@ -70,6 +70,22 @@
    "abbrev": "CS0",
    "hue_light": "#e34948",
    "hue_dark": "#e66767"
+  },
+  {
+   "slug": "cmu_csp",
+   "file": "cmu-csp.json",
+   "title": "Carnegie Mellon's AP CSP in Python",
+   "abbrev": "CMU-CSP",
+   "hue_light": "#288cbd",
+   "hue_dark": "#0f7bd7"
+  },
+  {
+   "slug": "codeorg_apcsp",
+   "file": "codeorg-apcsp.json",
+   "title": "Code.org's AP CSP (Units 1,2,5,8,10)",
+   "abbrev": "CO-CSP",
+   "hue_light": "#8ca50d",
+   "hue_dark": "#5c7000"
   }
  ],
  "crosswalks": [

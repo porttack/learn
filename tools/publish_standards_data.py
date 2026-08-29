@@ -32,7 +32,13 @@ CROSSWALKS = [
 # ~8 dark) -- the right check here, since strips render in this same fixed order every
 # time, so only neighboring strips are ever actually adjacent. One slot per content
 # source; order is the CVD-safety mechanism (dataviz skill's color-formula.md) -- do
-# not reorder casually. Supports up to 8 sources without new validation work.
+# not reorder casually. Supports up to 10 sources without new validation work.
+#
+# Slots 9-10 (cyan, olive) added 2026-08-29 alongside cmu_csp/codeorg_apcsp: re-ran
+# the full 10-slot adjacent check in both modes (node scripts/validate_palette.js
+# "<all 10 hexes>" --mode light, then --mode dark) -- both PASS, worst adjacent CVD
+# unchanged from the 8-slot baseline (new pairs are #e34948/#e66767 (8, red) vs
+# #288cbd/#0f7bd7 (9, cyan), and #288cbd/#0f7bd7 vs #8ca50d/#5c7000 (10, olive)).
 HUES = [
     ("#2a78d6", "#3987e5"),  # 1 blue
     ("#eb6834", "#d95926"),  # 2 orange
@@ -42,6 +48,8 @@ HUES = [
     ("#008300", "#008300"),  # 6 green
     ("#4a3aa7", "#9085e9"),  # 7 violet
     ("#e34948", "#e66767"),  # 8 red
+    ("#288cbd", "#0f7bd7"),  # 9 cyan
+    ("#8ca50d", "#5c7000"),  # 10 olive
 ]
 
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
@@ -55,11 +63,10 @@ HUES = [
 # slot were separated from another real source's slot by an unused reserved slot, a
 # combined view showing just the real sources would render two colors adjacent that
 # were never validated as a pair. Keeping real sources contiguous at the front avoids
-# that: all 8 slots (blue/orange/aqua/yellow/magenta/green/violet/red) were validated
-# together, so any subset of today's eight sources is safe in any combination.
-# cs50psets has no carrier file and is skipped below (harmless to leave it here,
-# past the end of HUES) -- when it becomes real, HUES needs a 9th color and a fresh
-# validation pass, same as every slot addition before it.
+# that: all 10 slots were validated together, so any subset of today's ten sources is
+# safe in any combination. cs50psets has no carrier file and is skipped below
+# (harmless to leave it here, past the end of HUES) -- when it becomes real, HUES
+# needs an 11th color and a fresh validation pass, same as every slot addition before it.
 SOURCE_ORDER = [
     "working_in_python",
     "little_brother",
@@ -69,6 +76,8 @@ SOURCE_ORDER = [
     "cs50ap_extended",
     "cs50p",
     "cmu_cs0",
+    "cmu_csp",
+    "codeorg_apcsp",
     "cs50psets",
 ]
 
