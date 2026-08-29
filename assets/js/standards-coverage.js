@@ -392,8 +392,8 @@
         : '<span class="source-title">' + label + '</span>';
       return (
         '<label class="source-row">' +
-        '<input type="checkbox" checked data-source="' + esc(s.slug) + '">' +
-        '<span class="swatch" style="background:var(--hue-' + esc(s.slug) + ')"></span>' +
+        '<input type="checkbox" checked class="source-checkbox" data-source="' + esc(s.slug) +
+        '" style="--swatch-color:var(--hue-' + esc(s.slug) + ')">' +
         titleHtml +
         '</label>'
       );

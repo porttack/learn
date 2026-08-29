@@ -43,11 +43,31 @@ aside#source-picker h2 { font-size: 0.75rem; text-transform: uppercase; letter-s
 .source-picker-actions button:hover { color: var(--fg); }
 .source-picker-actions .sep { color: var(--muted); margin: 0 .4em; }
 .source-row { display: flex; align-items: center; gap: .55rem; padding: .3rem 0; cursor: pointer; }
-.source-row input[type="checkbox"] {
-  flex: 0 0 auto; width: 16px; height: 16px; margin: 0; accent-color: var(--accent);
-  cursor: pointer;
+/* The checkbox doubles as the legend swatch -- its own source color, hollow
+   when unchecked (a colored outline, so identity still reads even when
+   toggled off) and solid-filled with a checkmark when checked.
+   --swatch-color is set inline per-checkbox from the same --hue-<slug>
+   variable the bars use. The checkmark is white with mix-blend-mode:
+   difference rather than a fixed ink color -- a single fixed color can't
+   contrast reliably against all 8 hues (light yellow and dark violet fills
+   need opposite ink), but difference-blended white always renders as
+   whatever color is visually farthest from what's underneath it. */
+.source-row input[type="checkbox"].source-checkbox {
+  appearance: none; -webkit-appearance: none;
+  flex: 0 0 auto; width: 17px; height: 17px; margin: 0; border-radius: 5px;
+  border: 2px solid var(--swatch-color); background: transparent;
+  cursor: pointer; position: relative;
 }
-.source-row .swatch { width: 14px; height: 14px; border-radius: 4px; flex: 0 0 auto; border: 1px solid var(--border); }
+.source-row input[type="checkbox"].source-checkbox:hover { filter: brightness(1.15); }
+.source-row input[type="checkbox"].source-checkbox:focus-visible {
+  outline: 2px solid var(--fg); outline-offset: 2px;
+}
+.source-row input[type="checkbox"].source-checkbox:checked::after {
+  content: ""; position: absolute; left: 4px; top: 0px; width: 5px; height: 9px;
+  border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg);
+  mix-blend-mode: difference;
+}
+.source-row input[type="checkbox"].source-checkbox:checked { background: var(--swatch-color); }
 .source-row .source-title { flex: 1 1 auto; }
 a.source-title.source-link { color: var(--accent); text-decoration: underline; }
 a.source-title.source-link:hover { text-decoration-thickness: 2px; }
