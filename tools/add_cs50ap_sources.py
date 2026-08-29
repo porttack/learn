@@ -41,7 +41,8 @@ CAVEAT = (
 
 CS50AP = {
     "meta": {
-        "title": "CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)",
+        "title": "Harvard's CS50AP (Weeks 0, 3, 7-9)",
+        "abbrev": "CS50AP",
         "base_url": BASE_URL,
         "locator_kind": "week",
         "locator_url_template": "{base_url}/x/weeks/{locator}/",
@@ -178,7 +179,8 @@ CS50AP = {
 
 CS50AP_EXTENDED = {
     "meta": {
-        "title": "CS50 AP -- extended (weeks 0-6 remainder)",
+        "title": "Harvard's CS50AP (C Language Content) (Weeks 1-6)",
+        "abbrev": "CS50AP-C",
         "base_url": BASE_URL,
         "locator_kind": "week",
         "locator_url_template": "{base_url}/x/weeks/{locator}/",

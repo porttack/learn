@@ -1,6 +1,6 @@
 {
  "meta": {
-  "title": "Working in Python",
+  "title": "Working in Python (a jupyter notebook)",
   "base_url": "https://python.porttack.com",
   "locator_kind": "chapter",
   "locator_url_template": "{base_url}/chap{locator}.html",

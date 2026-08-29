@@ -22,14 +22,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CARRIERS_DIR = ROOT / "_standards" / "carriers"
 
-BASE_URL = "https://cs50.harvard.edu/python/notes"
+BASE_URL = "https://cs50.harvard.edu/python/"
 
 CS50P = {
     "meta": {
-        "title": "CS50 Python -- weeks 0-8",
+        "title": "Harvard's CS50-Python (Weeks 0-8)",
+        "abbrev": "CS50P",
         "base_url": BASE_URL,
         "locator_kind": "week",
-        "locator_url_template": "{base_url}/{locator}/",
+        # base_url is the course's front-door page (used as the sidebar's link
+        # target), not the notes sub-path -- "notes/" is folded into the
+        # template itself instead, so a real per-week link is still
+        # {base_url}notes/{locator}/, e.g. https://cs50.harvard.edu/python/notes/0/.
+        "locator_url_template": "{base_url}notes/{locator}/",
         "source": "cs50p",
         "locator_titles": {
             "0": "Lecture 0: Functions, Variables, Strings, def",

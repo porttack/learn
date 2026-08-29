@@ -63,7 +63,7 @@ CARRIERS_DIR = ROOT / "_standards" / "carriers"
 
 CMU_CS0 = {
     "meta": {
-        "title": "CMU Exploring Programming with Python",
+        "title": "Carnegie Mellon's Exploring Programming with Python (Middle School)",
         "abbrev": "CS0",
         "base_url": "https://academy.cs.cmu.edu/course-info#:~:text=EXPLORE%20THE%204%20UNITS",
         "locator_kind": "unit",
