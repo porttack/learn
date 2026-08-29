@@ -154,25 +154,40 @@
         .map(function (e) { return e.source; });
     }
 
+    // When no checked/visible source actually covers the code, fall back to
+    // listing every source that does (checked or not) -- a badge sitting there
+    // white/unassigned given the current picker selection is exactly when a
+    // teacher wants to know which other source they could turn a source on
+    // for, not just "Unassigned" with nothing to act on.
     function carrierHtml(code, visibleSources) {
-      var entries = get(code).filter(function (e) { return visibleSources.has(e.source); });
+      var allEntries = get(code);
+      var checkedCovering = allEntries.filter(function (e) {
+        return visibleSources.has(e.source) && isCovering(e.entry);
+      });
+      var fallback = !checkedCovering.length;
+      var entries = fallback
+        ? allEntries.filter(function (e) { return isCovering(e.entry); })
+        : allEntries.filter(function (e) { return visibleSources.has(e.source); });
       if (!entries.length) return 'Unassigned';
-      return entries
-        .map(function (e) {
-          var source = e.source, entry = e.entry;
-          var locs = entry.locators || [];
-          var anchors = entry.anchors || {};
-          var title = esc((sourceMeta[source] || {}).title || source);
-          if (locs.length) {
-            var clauses = locs
-              .map(function (loc) { return locatorClause(source, loc, anchors[String(loc)]); })
-              .join(', ');
-            return 'Covered by ' + title + ': ' + clauses;
-          }
-          if (entry.checked) return 'Not covered by ' + title;
-          return 'Covered by ' + title + ', no locator on record';
-        })
-        .join('; ');
+      var lines = entries.map(function (e) {
+        var source = e.source, entry = e.entry;
+        var locs = entry.locators || [];
+        var anchors = entry.anchors || {};
+        var abbrev = esc((sourceMeta[source] || {}).abbrev || source);
+        var text;
+        if (locs.length) {
+          text = locs.map(function (loc) { return locatorClause(source, loc, anchors[String(loc)]); }).join(', ');
+        } else if (entry.checked) {
+          text = 'Not covered';
+        } else {
+          text = 'No locator on record';
+        }
+        return '<strong>' + abbrev + '</strong>: ' + text;
+      });
+      var note = fallback
+        ? '<div class="tt-source-note">Not covered by any selected source. Covered elsewhere by:</div>'
+        : '';
+      return note + lines.join('<br>');
     }
 
     function noteFor(code, source) {
