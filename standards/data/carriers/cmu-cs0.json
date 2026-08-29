@@ -1,8 +1,8 @@
 {
  "meta": {
-  "title": "CS0",
+  "title": "CMU Exploring Programming with Python",
   "abbrev": "CS0",
-  "base_url": "https://academy.cs.cmu.edu/",
+  "base_url": "https://academy.cs.cmu.edu/course-info#:~:text=EXPLORE%20THE%204%20UNITS",
   "locator_kind": "unit",
   "locator_url_template": null,
   "source": "cmu_cs0",

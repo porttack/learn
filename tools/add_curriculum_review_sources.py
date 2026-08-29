@@ -43,7 +43,10 @@ CMU_UNIT_TITLES = {
 CMU_CS1 = {
     "meta": {
         "title": "CMU CS Academy — CS1",
-        "base_url": "https://academy.cs.cmu.edu/",
+        "abbrev": "CS1",
+        # course-info, not the bare site root -- see cmu_cs0's carrier-building
+        # script for why (client-rendered SPA, no discoverable deep-link anchor).
+        "base_url": "https://academy.cs.cmu.edu/course-info",
         "locator_kind": "unit",
         "locator_url_template": None,
         "source": "cmu_cs1",
@@ -125,6 +128,7 @@ CORGI_UNIT_TITLES = {
 CODEHS_CORGI = {
     "meta": {
         "title": "CodeHS — Corgi (Intro to JS)",
+        "abbrev": "Corgi",
         "base_url": "https://codehs.com/",
         "locator_kind": "unit",
         "locator_url_template": None,

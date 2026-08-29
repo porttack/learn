@@ -1,7 +1,7 @@
 {
  "meta": {
   "title": "CMU CS Academy \u2014 CS1",
-  "base_url": "https://academy.cs.cmu.edu/",
+  "base_url": "https://academy.cs.cmu.edu/course-info",
   "locator_kind": "unit",
   "locator_url_template": null,
   "source": "cmu_cs1",

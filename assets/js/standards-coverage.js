@@ -317,20 +317,39 @@
 
   // ---------- Sidebar: one checkbox per manifest source, all checked by default ----------
 
-  function renderSourcePicker(manifest, onChange) {
+  function renderSourcePicker(manifest, carrierFiles, onChange) {
     var list = document.getElementById('source-list');
     list.innerHTML = manifest.sources.map(function (s) {
+      var label = esc(s.abbrev) + ': ' + esc(s.title);
+      var baseUrl = (carrierFiles[s.slug] || {}).meta && carrierFiles[s.slug].meta.base_url;
+      var titleHtml = baseUrl
+        ? '<a class="source-title source-link" href="' + esc(baseUrl) + '" target="_blank" rel="noopener">' + label + '</a>'
+        : '<span class="source-title">' + label + '</span>';
       return (
         '<label class="source-row">' +
         '<input type="checkbox" checked data-source="' + esc(s.slug) + '">' +
         '<span class="swatch" style="background:var(--hue-' + esc(s.slug) + ')"></span>' +
-        '<span class="source-title">' + esc(s.title) + '</span>' +
+        titleHtml +
         '</label>'
       );
     }).join('\n');
-    list.querySelectorAll('input[type=checkbox]').forEach(function (cb) {
+    var checkboxes = list.querySelectorAll('input[type=checkbox]');
+    checkboxes.forEach(function (cb) {
       cb.addEventListener('change', onChange);
     });
+    // Without this, a click on the link bubbles up to the <label> and also
+    // toggles the checkbox -- native label-forwarding behavior on a click that
+    // already did something (navigate), not what a reader clicking a link wants.
+    list.querySelectorAll('a.source-link').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.stopPropagation(); });
+    });
+
+    function setAll(checked) {
+      checkboxes.forEach(function (cb) { cb.checked = checked; });
+      onChange();
+    }
+    document.getElementById('source-select-all').addEventListener('click', function () { setAll(true); });
+    document.getElementById('source-select-none').addEventListener('click', function () { setAll(false); });
   }
 
   function checkedSourceSet() {
@@ -376,7 +395,7 @@
       results[1].forEach(function (pair) { catalogs[pair[0]] = pair[1]; });
 
       injectHueStyle(manifest);
-      renderSourcePicker(manifest, handleToggle);
+      renderSourcePicker(manifest, carrierFiles, handleToggle);
 
       var coverageByFramework = {};
       manifest.catalog.forEach(function (fw) { coverageByFramework[fw] = makeCoverage(carrierFiles, fw); });

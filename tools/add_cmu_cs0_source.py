@@ -41,6 +41,19 @@ below:
 
 Like cmu_cs1.json, this only maps against castandards -- no apcsp/csta2026/
 ca-ict-anchor claims, matching that carrier's own precedent for CMU sources.
+
+meta.base_url points at academy.cs.cmu.edu/course-info rather than the bare
+site root -- that page is a client-rendered React SPA (no server-side HTML,
+content loaded by a JS bundle) with no discoverable stable hash/anchor of
+its own for deep-linking straight to the "Exploring Programming with
+Python" box (searched both shipped JS bundles for "exploring" and for a
+location.hash/scrollIntoView convention -- neither turned up anything
+usable). The URL uses a browser-native Text Fragment
+(#:~:text=EXPLORE%20THE%204%20UNITS) instead, which sidesteps that entirely
+-- the browser scrolls to and highlights the matching text in the *rendered*
+DOM after the SPA's own JS paints it, independent of whatever routing the
+site itself does or doesn't support. Supported by Chromium-based browsers
+and recent Safari; unsupported browsers just load the plain page, no error.
 """
 import json
 from pathlib import Path
@@ -50,9 +63,9 @@ CARRIERS_DIR = ROOT / "_standards" / "carriers"
 
 CMU_CS0 = {
     "meta": {
-        "title": "CS0",
+        "title": "CMU Exploring Programming with Python",
         "abbrev": "CS0",
-        "base_url": "https://academy.cs.cmu.edu/",
+        "base_url": "https://academy.cs.cmu.edu/course-info#:~:text=EXPLORE%20THE%204%20UNITS",
         "locator_kind": "unit",
         "locator_url_template": None,
         "source": "cmu_cs0",
