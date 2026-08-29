@@ -3,10 +3,202 @@
   "source": "California K-12 Computer Science Standards (California Department of Education), reissued with framework alignment updates through Nov. 2023",
   "extracted": "2026-07-30",
   "source_pages": 270,
-  "grade_band_covered": "9-12",
-  "shape_note": "Extraction matches the expected shape exactly: five strands, thirty core 9-12 standards (CS.1-3, NI.4-7, DA.8-11, AP.12-22, IC.23-30). A separate '9-12 Specialty' set (9-12S.*, e.g. 9-12S.CS.1) exists in the same document for a more advanced/specialized pathway; it is a different, non-core standard set and is not indexed here."
+  "grade_band_covered": "6-8, 9-12",
+  "shape_note": "Extraction matches the expected shape exactly: five strands, thirty core 9-12 standards (CS.1-3, NI.4-7, DA.8-11, AP.12-22, IC.23-30). A separate '9-12 Specialty' set (9-12S.*, e.g. 9-12S.CS.1) exists in the same document for a more advanced/specialized pathway; it is a different, non-core standard set and is not indexed here. Extended 2026-08-28 with the 6-8 band (24 standards: CS.1-3, NI.4-6, DA.7-9, AP.10-19, IC.20-24), extracted from the teacher's own CA CS Standards 3-12 spreadsheet (working-in-python/scratch/standards-source/, gitignored). No 3-5 or 9-12 Specialty entries are indexed -- out of scope for this pass."
  },
  "standards": [
+  {
+   "code": "6-8.AP.10",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Flowcharts and pseudocode let you design and check an algorithm before writing any real code."
+  },
+  {
+   "code": "6-8.AP.11",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "A variable's name should say what it holds, since that's what makes the operations performed on it make sense to someone reading the code."
+  },
+  {
+   "code": "6-8.AP.12",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Real programs combine multiple control structures and compound conditions, and get built up iteratively rather than all at once."
+  },
+  {
+   "code": "6-8.AP.13",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Breaking a problem into smaller subproblems makes it possible to design, build, and review a program piece by piece."
+  },
+  {
+   "code": "6-8.AP.14",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "A procedure that takes parameters can be reused for many different inputs instead of being rewritten each time."
+  },
+  {
+   "code": "6-8.AP.15",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "A solution actually meets user needs only if you go get feedback from teammates and users and use it to refine the design."
+  },
+  {
+   "code": "6-8.AP.16",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Reusing someone else's code, media, or library in your own program is normal practice, as long as you credit where it came from."
+  },
+  {
+   "code": "6-8.AP.17",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Testing a program well means trying a deliberate range of test cases, not just the one you expect to work."
+  },
+  {
+   "code": "6-8.AP.18",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Building something as a team means splitting up tasks and keeping to a shared timeline, not just dividing the code."
+  },
+  {
+   "code": "6-8.AP.19",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Documentation is what makes a program usable, readable, testable, and debuggable by someone other than the person who wrote it."
+  },
+  {
+   "code": "6-8.CS.1",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "A computing device's design shapes how easily people can actually use it, and proposing a change to that design is itself a real engineering task."
+  },
+  {
+   "code": "6-8.CS.2",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Building something that collects and shares data means choosing hardware and software components together, weighing tradeoffs like cost, speed, and size."
+  },
+  {
+   "code": "6-8.CS.3",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Fixing a broken computing system means working through a structured troubleshooting process, not guessing -- and a problem in one connected device can come from another."
+  },
+  {
+   "code": "6-8.DA.7",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "The same data can be represented in more than one way, and choosing a representation changes what's easy to see in it."
+  },
+  {
+   "code": "6-8.DA.8",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Raw data collected with computational tools usually needs to be transformed before it's actually useful for answering a question."
+  },
+  {
+   "code": "6-8.DA.9",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "A computational model lets you change one variable at a time and observe the effect, which is how you test what's actually driving a result."
+  },
+  {
+   "code": "6-8.IC.20",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Computing technologies that reshape daily life and careers always come with tradeoffs worth weighing, not just benefits."
+  },
+  {
+   "code": "6-8.IC.21",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Existing technologies can carry real bias and accessibility problems baked into their design, worth examining directly."
+  },
+  {
+   "code": "6-8.IC.22",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Building a computational artifact often means collaborating with many contributors, not working alone."
+  },
+  {
+   "code": "6-8.IC.23",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "A license is a tradeoff between protecting a creator's rights and letting other people use and modify their work."
+  },
+  {
+   "code": "6-8.IC.24",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Making information public and keeping it private and secure are competing goods, and choosing between them is a real tradeoff."
+  },
+  {
+   "code": "6-8.NI.4",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Protocols are the agreed-upon rules that let messages actually get where they're going across a network, quickly and with errors handled."
+  },
+  {
+   "code": "6-8.NI.5",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Every network faces real security threats, and different threats call for different countermeasures."
+  },
+  {
+   "code": "6-8.NI.6",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "6-8",
+   "core": true,
+   "paraphrase": "Sending information securely usually takes more than one protective method working together, not a single fix."
+  },
   {
    "code": "9-12.CS.1",
    "strand": "CS",
