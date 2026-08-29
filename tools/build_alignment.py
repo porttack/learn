@@ -559,7 +559,8 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
     lines.append("## By source")
     lines.append("")
     for source in sorted(carrier_files):
-        lines.append(f"### {source}")
+        title = carrier_files[source]["meta"].get("title", source)
+        lines.append(f"### {title} {{#{source}}}")
         for fw, entries in carrier_files[source].get("coverage", {}).items():
             codes = sorted(entries)
             if codes:

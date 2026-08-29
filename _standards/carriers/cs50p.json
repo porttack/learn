@@ -16,7 +16,8 @@
    "7": "Lecture 7: Regular Expressions",
    "8": "Lecture 8: Object-Oriented Programming"
   },
-  "caveat": "Mapped from CS50 Python's own published lecture-notes headings (cs50.harvard.edu/python/notes/<n>/), not from an audit of problem-set content -- comparable confidence to cs50ap/cs50ap_extended, not cmu_cs1. Week 9 (Et Cetera plus the course's closing 'Congratulations!' note) is excluded by direction -- it's a miscellaneous-syntax grab-bag and a wrap-up, not sequenced instruction this teacher uses."
+  "caveat": "Mapped from CS50 Python's own published lecture-notes headings (cs50.harvard.edu/python/notes/<n>/), not from an audit of problem-set content -- comparable confidence to cs50ap/cs50ap_extended, not cmu_cs1. Week 9 (Et Cetera plus the course's closing 'Congratulations!' note) is excluded by direction -- it's a miscellaneous-syntax grab-bag and a wrap-up, not sequenced instruction this teacher uses.",
+  "abbrev": "CS50P"
  },
  "coverage": {
   "apcsp": {

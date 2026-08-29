@@ -104,8 +104,13 @@ footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1p
 }
 .cov-badge-btn:hover, .cov-badge-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .cov-badge.has-coverage .cov-badge-btn { background: color-mix(in oklch, var(--muted) 22%, var(--bg)); }
-.cov-bars { display: flex; flex-direction: column; gap: 1px; margin-top: 4px; }
-.cov-bar { height: 4px; width: 100%; border-radius: 1px; }
+.cov-bars { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.cov-bar {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .6rem;
+  font-weight: 600; line-height: 1.7; letter-spacing: .01em; white-space: nowrap;
+  padding: 0 .4em; border-left: 3px solid; border-radius: 2px;
+  background: var(--code-bg); color: var(--fg); text-align: left;
+}
 .cov-tooltip {
   display: none; position: absolute; top: 100%; left: 0; z-index: 10; margin-top: .35rem;
   background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
@@ -177,7 +182,7 @@ Standards reference:
 <a href="alignment/">coverage detail</a>
 </div>
 <div class="provenance">
-  <strong>What this is.</strong> Which of Working in Python + Little Brother / Big Brother (unit plan) + CMU CS Academy — CS1 + CodeHS — Corgi (Intro to JS) + CS50 AP -- taught subset (weeks 0, 3, 4, 7-9) + CS50 AP -- extended (weeks 0-6 remainder) + CS50 Python -- weeks 0-8 covers each standard,
+  <strong>What this is.</strong> Which of Working in Python + Little Brother / Big Brother (unit plan) + CMU CS Academy — CS1 + CodeHS — Corgi (Intro to JS) + CS50 AP -- taught subset (weeks 0, 3, 4, 7-9) + CS50 AP -- extended (weeks 0-6 remainder) + CS50 Python -- weeks 0-8 + CS0 covers each standard,
   one badge per standard. A gray badge is covered by something; a white badge is not
   covered by anything -- that's the gap to look for. The bars underneath show how
   many sources contribute (one color-coded bar per covering source, stacked). Click
@@ -191,6 +196,7 @@ Standards reference:
 <span><span class="cov-swatch" style="background:var(--hue-5)"></span>CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)</span>
 <span><span class="cov-swatch" style="background:var(--hue-6)"></span>CS50 AP -- extended (weeks 0-6 remainder)</span>
 <span><span class="cov-swatch" style="background:var(--hue-7)"></span>CS50 Python -- weeks 0-8</span>
+<span><span class="cov-swatch" style="background:var(--hue-8)"></span>CS0</span>
 </div>
 <div class="cov-panel"><h2>AP Computer Science Principles</h2><div class="cov-group">
 <div class="cov-group-title">Big Idea 1: Creative Development (10–13%)</div>
@@ -205,7 +211,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="1.2">1.2</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">1.2 · Program Function and Purpose</div>
 <div class="tt-paraphrase">A program exists to do something for someone, and describing what it does means naming its inputs, its outputs, and the behavior that connects them.</div>
@@ -214,7 +220,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="1.3">1.3</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">1.3 · Program Design and Development</div>
 <div class="tt-paraphrase">Building a program well means planning before writing, documenting while writing, and being willing to revise.</div>
@@ -223,7 +229,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="1.4">1.4</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">1.4 · Identifying and Correcting Errors</div>
 <div class="tt-paraphrase">Programs fail in a few recognizable ways, and testing with well-chosen inputs -- including edge cases -- is how those failures get found before a user does.</div>
@@ -235,7 +241,7 @@ Standards reference:
 <div class="cov-group-title">Big Idea 2: Data (17–22%)</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="2.1">2.1</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">2.1 · Binary Numbers</div>
 <div class="tt-paraphrase">Computers store everything as bits, and binary place-value works the same way decimal place-value does, just base 2 instead of base 10.</div>
@@ -244,7 +250,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="2.2">2.2</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">2.2 · Data Compression</div>
 <div class="tt-paraphrase">Compression trades off file size against fidelity; lossless keeps everything, lossy throws some of it away for a bigger size reduction.</div>
@@ -253,7 +259,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="2.3">2.3</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">2.3 · Extracting Information from Data</div>
 <div class="tt-paraphrase">Raw data becomes information once a program finds the patterns in it, and real data sets are rarely clean enough to do that without some processing first.</div>
@@ -262,7 +268,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="2.4">2.4</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-5)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">2.4 · Using Programs with Data</div>
 <div class="tt-paraphrase">Programs that read, combine, and rewrite data files let a person do with a data set what would be impractical by hand.</div>
@@ -274,7 +280,7 @@ Standards reference:
 <div class="cov-group-title">Big Idea 3: Algorithms and Programming (30–35%)</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.1">3.1</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.1 · Variables and Assignments</div>
 <div class="tt-paraphrase">A variable is a named place to keep a value, and assignment is how that name gets pointed at a value.</div>
@@ -283,7 +289,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.2">3.2</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.2 · Data Abstraction</div>
 <div class="tt-paraphrase">Grouping related values under one name lets a program treat a collection as a single thing instead of tracking each part separately.</div>
@@ -292,7 +298,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.3">3.3</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.3 · Mathematical Expressions</div>
 <div class="tt-paraphrase">Arithmetic and comparison operators combine into expressions the same way in code as they do on paper, with the same rules about order of operations.</div>
@@ -301,7 +307,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.4">3.4</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.4 · Strings</div>
 <div class="tt-paraphrase">Text is data too, and a string is handled as a sequence of characters that can be measured, sliced, and searched.</div>
@@ -310,7 +316,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.5">3.5</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.5 · Boolean Expressions</div>
 <div class="tt-paraphrase">An expression that evaluates to true or false is what a program's decisions are built on.</div>
@@ -319,7 +325,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.6">3.6</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.6 · Conditionals</div>
 <div class="tt-paraphrase">An if-statement lets a program take one path or another depending on whether a condition holds.</div>
@@ -328,7 +334,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.7">3.7</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.7 · Nested Conditionals</div>
 <div class="tt-paraphrase">Putting one conditional inside another lets a program handle more than two possible outcomes.</div>
@@ -337,7 +343,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.8">3.8</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.8 · Iteration</div>
 <div class="tt-paraphrase">Repeating a block of statements, either a fixed number of times or until some condition changes, is how a program does the same kind of work over and over.</div>
@@ -346,7 +352,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.9">3.9</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.9 · Developing Algorithms</div>
 <div class="tt-paraphrase">Building an algorithm from scratch usually means starting with a rough version and refining it in small, testable steps.</div>
@@ -355,7 +361,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.10">3.10</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.10 · Lists</div>
 <div class="tt-paraphrase">A list holds an ordered sequence of values that a program can step through one at a time.</div>
@@ -364,7 +370,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.11">3.11</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.11 · Binary Search</div>
 <div class="tt-paraphrase">Searching a sorted collection by repeatedly cutting the remaining range in half finds a value in far fewer steps than checking every element.</div>
@@ -373,7 +379,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.12">3.12</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.12 · Calling Procedures</div>
 <div class="tt-paraphrase">Calling a function hands control to a separate block of code and, often, gets a value back in return.</div>
@@ -382,7 +388,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.13">3.13</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.13 · Developing Procedures</div>
 <div class="tt-paraphrase">Writing a function well means giving it parameters general enough to be reused, and a name and docstring that explain what it does without exposing how.</div>
@@ -391,7 +397,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.14">3.14</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.14 · Libraries</div>
 <div class="tt-paraphrase">Importing a library brings in code someone else already wrote and tested, so a program can use it without reimplementing it.</div>
@@ -400,7 +406,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.15">3.15</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.15 · Random Values</div>
 <div class="tt-paraphrase">A program can introduce controlled unpredictability by drawing values from a random-number generator instead of computing them.</div>
@@ -418,7 +424,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="3.17">3.17</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">3.17 · Algorithmic Efficiency</div>
 <div class="tt-paraphrase">Algorithms that solve the same problem are not equally fast, and how an algorithm's running time grows with input size is what separates a practical solution from an impractical one.</div>
@@ -439,7 +445,7 @@ Standards reference:
 <div class="cov-group-title">Big Idea 4: Computer Systems and Networks (11–15%)</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="4.1">4.1</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">4.1 · The Internet</div>
 <div class="tt-paraphrase">The internet moves data between computers by breaking it into pieces and routing each piece independently through a shared network of devices.</div>
@@ -448,7 +454,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="4.2">4.2</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">4.2 · Fault Tolerance</div>
 <div class="tt-paraphrase">A system built from unreliable parts can still be reliable overall if it is designed to keep working when some of those parts fail.</div>
@@ -457,7 +463,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="4.3">4.3</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">4.3 · Parallel and Distributed Computing</div>
 <div class="tt-paraphrase">Splitting a problem across multiple processors or machines can finish it faster than one processor working alone.</div>
@@ -469,7 +475,7 @@ Standards reference:
 <div class="cov-group-title">Big Idea 5: Impact of Computing (21–26%)</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.1">5.1</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.1 · Beneficial and Harmful Effects</div>
 <div class="tt-paraphrase">A computing innovation can end up used in ways its creators never intended, for better and for worse.</div>
@@ -478,7 +484,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.2">5.2</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.2 · Digital Divide</div>
 <div class="tt-paraphrase">Unequal access to computing and the internet, across geography, income, and other lines, shapes who benefits from computing innovations.</div>
@@ -487,7 +493,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.3">5.3</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.3 · Computing Bias</div>
 <div class="tt-paraphrase">Software can reproduce and amplify existing human biases, whether through the data it learns from or the assumptions built into its logic.</div>
@@ -496,7 +502,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.4">5.4</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.4 · Crowdsourcing</div>
 <div class="tt-paraphrase">Gathering small contributions from very large numbers of people, over the internet, can solve problems no small group could tackle alone.</div>
@@ -505,7 +511,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.5">5.5</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.5 · Legal and Ethical Concerns</div>
 <div class="tt-paraphrase">Digitizing information raises questions of ownership and proper credit that copying on paper never had to answer at the same scale.</div>
@@ -514,7 +520,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.6">5.6</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.6 · Safe Computing</div>
 <div class="tt-paraphrase">Personal data collected online carries real risk, and encryption and authentication are the main tools for limiting who can get at it.</div>
@@ -525,7 +531,7 @@ Standards reference:
 <div class="cov-group-title">CS · Computing Systems</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.CS.1">CS.1</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.CS.1</div>
 <div class="tt-paraphrase">Computing systems hide their internal workings behind a simpler experience for the person using them.</div>
@@ -534,7 +540,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.CS.2">CS.2</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-6)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.CS.2</div>
 <div class="tt-paraphrase">Application software, system software, and hardware form layers that each manage their own part of getting a task done.</div>
@@ -543,7 +549,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.CS.3">CS.3</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.CS.3</div>
 <div class="tt-paraphrase">Troubleshooting a complex problem means researching, testing, and drawing on past experience with similar problems, and writing that process down so someone else can repeat it.</div>
@@ -555,7 +561,7 @@ Standards reference:
 <div class="cov-group-title">NI · Networks &amp; the Internet</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.NI.4">NI.4</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.NI.4</div>
 <div class="tt-paraphrase">Networks have to satisfy real performance demands -- latency, bandwidth, throughput -- for the organizations that depend on them.</div>
@@ -564,7 +570,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.NI.5">NI.5</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.NI.5</div>
 <div class="tt-paraphrase">The internet's design, including how it looks up addresses and routes traffic, is what lets it scale and stay reliable.</div>
@@ -573,7 +579,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.NI.6">NI.6</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.NI.6</div>
 <div class="tt-paraphrase">Different security threats call for different defenses, and choosing between them is a tradeoff, not a solved problem.</div>
@@ -582,7 +588,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.NI.7">NI.7</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span><span class="cov-bar" style="background:var(--hue-6)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.NI.7</div>
 <div class="tt-paraphrase">Cryptographic techniques protect data in transit, and symmetric and asymmetric approaches trade off differently for cost and use case.</div>
@@ -594,7 +600,7 @@ Standards reference:
 <div class="cov-group-title">DA · Data &amp; Analysis</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.DA.8">DA.8</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.DA.8</div>
 <div class="tt-paraphrase">The same real-world thing -- a color, a character, an image -- can be represented digitally in more than one way, and converting between those representations is a normal task.</div>
@@ -603,7 +609,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.DA.9">DA.9</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-5)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.DA.9</div>
 <div class="tt-paraphrase">How data is organized and where it's stored is a choice with real consequences for cost, speed, reliability, privacy, and integrity.</div>
@@ -633,25 +639,25 @@ Standards reference:
 <div class="cov-group-title">AP · Algorithms &amp; Programming</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.12">AP.12</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.12</div>
 <div class="tt-paraphrase">Solving a computational problem often means combining an algorithm you already know with one you design yourself.</div>
-<div class="tt-source">Covered by CMU CS Academy — CS1: Unit 8 (Math Functions, Random, Nested Loops), Unit 11 (2D Lists and Board Games); Covered by CodeHS — Corgi (Intro to JS): Unit 2 (Karel Challenges), Unit 5 (Graphics Challenges), Unit 7 (Control Structures Challenges), Unit 9 (Functions Challenges), Unit 11 (Animations Challenges); Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/3/?readonly">Unit 3 (Week 3: Algorithms (searching, sorting, asymptotic notation, recursion))</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap09.html?readonly">Chapter 9 (Lists)</a></div>
+<div class="tt-source">Covered by CS0, no locator on record; Covered by CMU CS Academy — CS1: Unit 8 (Math Functions, Random, Nested Loops), Unit 11 (2D Lists and Board Games); Covered by CodeHS — Corgi (Intro to JS): Unit 2 (Karel Challenges), Unit 5 (Graphics Challenges), Unit 7 (Control Structures Challenges), Unit 9 (Functions Challenges), Unit 11 (Animations Challenges); Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/3/?readonly">Unit 3 (Week 3: Algorithms (searching, sorting, asymptotic notation, recursion))</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap09.html?readonly">Chapter 9 (Lists)</a></div>
 </div>
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.13">AP.13</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.13</div>
 <div class="tt-paraphrase">Once a problem needs more than a handful of related values, a collection replaces a pile of separately named variables.</div>
-<div class="tt-source">Covered by CMU CS Academy — CS1: Unit 10 (Lists and Return Values), Unit 11 (2D Lists and Board Games); Covered by CodeHS — Corgi (Intro to JS): Unit optional-extension (Optional extension: Data Structures); Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/5/?readonly">Unit 5 (Week 5: Data Structures)</a>; Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/2/?readonly">Unit 2 (Lecture 2: Loops, Lists, Dictionaries)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap09.html?readonly">Chapter 9 (Lists)</a></div>
+<div class="tt-source">Covered by CS0, no locator on record; Covered by CMU CS Academy — CS1: Unit 10 (Lists and Return Values), Unit 11 (2D Lists and Board Games); Covered by CodeHS — Corgi (Intro to JS): Unit optional-extension (Optional extension: Data Structures); Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/5/?readonly">Unit 5 (Week 5: Data Structures)</a>; Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/2/?readonly">Unit 2 (Lecture 2: Loops, Lists, Dictionaries)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap09.html?readonly">Chapter 9 (Lists)</a></div>
 </div>
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.14">AP.14</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.14</div>
 <div class="tt-paraphrase">Different control structures for the same task read differently and run differently, and choosing between them is a real design decision.</div>
@@ -660,16 +666,16 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.15">AP.15</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.15</div>
 <div class="tt-paraphrase">A program built around events -- a button press, a timer -- responds to things happening rather than running start to finish in one line.</div>
-<div class="tt-source">Covered by CMU CS Academy — CS1: Unit 2 (Functions, Mouse Events, Properties), Unit 3 (Mouse Motion, Conditionals, Helper Functions), Unit 4 (More Conditionals, Key Events, Methods), Unit 5 (Complex Conditionals, More Key Events), Unit 6 (Groups, Step Events, Motion), Unit 12 (Final Project); Covered by CodeHS — Corgi (Intro to JS): Unit 10 (Animation and Games), Unit 11 (Animations Challenges), Unit 12 (Project: Breakout); Not covered by Working in Python</div>
+<div class="tt-source">Covered by CS0, no locator on record; Covered by CMU CS Academy — CS1: Unit 2 (Functions, Mouse Events, Properties), Unit 3 (Mouse Motion, Conditionals, Helper Functions), Unit 4 (More Conditionals, Key Events, Methods), Unit 5 (Complex Conditionals, More Key Events), Unit 6 (Groups, Step Events, Motion), Unit 12 (Final Project); Covered by CodeHS — Corgi (Intro to JS): Unit 10 (Animation and Games), Unit 11 (Animations Challenges), Unit 12 (Project: Breakout); Not covered by Working in Python</div>
 </div>
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.16">AP.16</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.16</div>
 <div class="tt-paraphrase">Breaking a big problem into smaller ones, each solved by its own procedure, module, or class, is what makes a complex program manageable.</div>
@@ -678,16 +684,16 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.17">AP.17</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.17</div>
 <div class="tt-paraphrase">A program built from separate, interacting pieces -- including code someone else wrote -- is organized by modular design.</div>
-<div class="tt-source">Covered by CMU CS Academy — CS1: Unit 2 (Functions, Mouse Events, Properties), Unit 4 (More Conditionals, Key Events, Methods), Unit 7 (New Shapes, Local Variables, For Loops), Unit 10 (Lists and Return Values); Covered by CodeHS — Corgi (Intro to JS): Unit 1 (Programming with Karel), Unit 3 (JavaScript Basics), Unit 8 (Functions), Unit 9 (Functions Challenges); Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/6/?readonly">Unit 6 (Week 6: Python)</a>; Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/4/?readonly">Unit 4 (Lecture 4: Libraries)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="tt-source">Covered by CS0, no locator on record; Covered by CMU CS Academy — CS1: Unit 2 (Functions, Mouse Events, Properties), Unit 4 (More Conditionals, Key Events, Methods), Unit 7 (New Shapes, Local Variables, For Loops), Unit 10 (Lists and Return Values); Covered by CodeHS — Corgi (Intro to JS): Unit 1 (Programming with Karel), Unit 3 (JavaScript Basics), Unit 8 (Functions), Unit 9 (Functions Challenges); Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/6/?readonly">Unit 6 (Week 6: Python)</a>; Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/4/?readonly">Unit 4 (Lecture 4: Libraries)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
 </div>
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.18">AP.18</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.18</div>
 <div class="tt-paraphrase">Designing for a broad audience means building in a way to collect feedback from real users and revising the design in response.</div>
@@ -705,16 +711,16 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.20">AP.20</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.20</div>
 <div class="tt-paraphrase">A program gets better through repeated rounds of testing and fixing, aimed at more than just correctness -- performance and ease of use matter too.</div>
-<div class="tt-source">Covered by CMU CS Academy — CS1: Unit creative-task (Creative Task (every unit, 1-10)); Covered by CodeHS — Corgi (Intro to JS): Unit 13 (Final Project); Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/5/?readonly">Unit 5 (Lecture 5: Unit Tests)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></div>
+<div class="tt-source">Covered by CS0, no locator on record; Covered by CMU CS Academy — CS1: Unit creative-task (Creative Task (every unit, 1-10)); Covered by CodeHS — Corgi (Intro to JS): Unit 13 (Final Project); Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/5/?readonly">Unit 5 (Lecture 5: Unit Tests)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></div>
 </div>
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.21">AP.21</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.21</div>
 <div class="tt-paraphrase">Building something as a team, in defined roles, with shared tools, is different work from building it alone.</div>
@@ -723,11 +729,11 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.AP.22">AP.22</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-3)"></span><span class="cov-bar" style="background:var(--hue-4)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-3)" title="CMU CS Academy — CS1">CS1</span><span class="cov-bar" style="border-left-color:var(--hue-4)" title="CodeHS — Corgi (Intro to JS)">Corgi</span><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.AP.22</div>
 <div class="tt-paraphrase">As a program's design takes shape, writing the decisions down -- in whatever form fits -- is what makes the process legible to anyone else who looks at it later.</div>
-<div class="tt-source">Covered by CMU CS Academy — CS1: Unit creative-task (Creative Task (every unit, 1-10)); Covered by CodeHS — Corgi (Intro to JS): Unit 13 (Final Project); Covered by Working in Python: <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a></div>
+<div class="tt-source">Covered by CS0, no locator on record; Covered by CMU CS Academy — CS1: Unit creative-task (Creative Task (every unit, 1-10)); Covered by CodeHS — Corgi (Intro to JS): Unit 13 (Final Project); Covered by Working in Python: <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a></div>
 </div>
 </div></div>
 </div>
@@ -735,7 +741,7 @@ Standards reference:
 <div class="cov-group-title">IC · Impacts of Computing</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.IC.23">IC.23</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.IC.23</div>
 <div class="tt-paraphrase">Computing changes personal, social, economic, and cultural practices, not always for the better.</div>
@@ -744,7 +750,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.IC.24">IC.24</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.IC.24</div>
 <div class="tt-paraphrase">Bias built into a computing artifact, often from assumptions its designers didn't question, has to be actively tested for and reduced.</div>
@@ -753,7 +759,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.IC.25">IC.25</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.IC.25</div>
 <div class="tt-paraphrase">The same algorithm often turns out to solve problems in fields far from where it was first designed.</div>
@@ -762,7 +768,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.IC.26">IC.26</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.IC.26</div>
 <div class="tt-paraphrase">New technologies reshape social, economic, and political structures in ways worth examining critically, not just adopting.</div>
@@ -771,7 +777,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.IC.27">IC.27</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.IC.27</div>
 <div class="tt-paraphrase">Digital collaboration tools connect people across cultures and professions in ways that reshape how teams work together.</div>
@@ -780,7 +786,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.IC.28">IC.28</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.IC.28</div>
 <div class="tt-paraphrase">Intellectual property law cuts both ways for innovation: it protects creators, but it can also limit what gets built next.</div>
@@ -789,7 +795,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.IC.29">IC.29</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.IC.29</div>
 <div class="tt-paraphrase">A lot of personal data is collected automatically, without the person it describes actively participating, and that raises its own privacy concerns.</div>
@@ -798,7 +804,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="9-12.IC.30">IC.30</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-2)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-2)" title="Little Brother / Big Brother (unit plan)">LB</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">9-12.IC.30</div>
 <div class="tt-paraphrase">Privacy laws and ethics differ across places and contexts, and evaluating a policy means weighing its social and economic tradeoffs.</div>
@@ -809,7 +815,7 @@ Standards reference:
 <div class="cov-group-title">Algorithms &amp; Design</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-ALG-PS-01">ALG-PS-01</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-6)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-ALG-PS-01</div>
 <div class="tt-paraphrase">Solving a problem well often means choosing the right data structure to go with the algorithm, not just writing steps in isolation.</div>
@@ -818,7 +824,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-ALG-PS-02">ALG-PS-02</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-ALG-PS-02</div>
 <div class="tt-paraphrase">An algorithm can be reworked to run more clearly or efficiently by wrapping repeated steps in a function and using loops or conditionals instead of restating logic.</div>
@@ -827,7 +833,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-ALG-PS-03">ALG-PS-03</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-ALG-PS-03</div>
 <div class="tt-paraphrase">Comparing two algorithms for the same job means checking more than just whether they work -- how fast they run and how easy they are to read matter too.</div>
@@ -911,7 +917,7 @@ Standards reference:
 <div class="cov-group-title">Programming</div>
 <div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-PRO-PD-12">PRO-PD-12</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-PRO-PD-12</div>
 <div class="tt-paraphrase">Splitting a program into distinct, well-organized pieces -- functions, imported libraries, or objects -- makes the result easier to read and easier to reuse.</div>
@@ -920,7 +926,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-PRO-PD-13">PRO-PD-13</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-PRO-PD-13</div>
 <div class="tt-paraphrase">Good program development leans on outside resources -- reference docs, existing libraries, simple APIs, and the features built into a development environment -- rather than reinventing everything from scratch.</div>
@@ -947,7 +953,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-PRO-VD-16">PRO-VD-16</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-PRO-VD-16</div>
 <div class="tt-paraphrase">Choosing the right structure -- a list, a dictionary -- to hold a program's data is what makes storing, retrieving, and changing that data manageable.</div>
@@ -956,7 +962,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-PRO-RD-17">PRO-RD-17</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-PRO-RD-17</div>
 <div class="tt-paraphrase">Reading someone else's code well means being able to explain what each moving part does -- a variable holding state, a loop repeating until some condition, a conditional branching on it -- and how those parts cooperate.</div>
@@ -974,7 +980,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-PRO-TR-19">PRO-TR-19</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-PRO-TR-19</div>
 <div class="tt-paraphrase">Finishing a program includes checking it against its own original plan -- does it work correctly, does it do what it was meant to, and is it actually pleasant and accessible to use.</div>
@@ -1004,7 +1010,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-DAT-DC-22">DAT-DC-22</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-DAT-DC-22</div>
 <div class="tt-paraphrase">A data dictionary spells out, for every column in a dataset, its name, its type, and the values it's allowed to hold -- plus how columns depend on each other, like a skipped survey question leaving a related answer blank.</div>
@@ -1013,7 +1019,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-DAT-DC-23">DAT-DC-23</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-DAT-DC-23</div>
 <div class="tt-paraphrase">Messy text data -- inconsistent capitalization, typos, a name and a date crammed into one field -- usually needs cleanup before it's useful, and a spreadsheet or short script can do that work.</div>
@@ -1022,7 +1028,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-DAT-DC-24">DAT-DC-24</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-DAT-DC-24</div>
 <div class="tt-paraphrase">There's more than one way to check that a dataset's values are the right type and fall in a sensible range, and weighing those approaches against each other is its own skill.</div>
@@ -1106,7 +1112,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-SYS-SE-33">SYS-SE-33</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-SYS-SE-33</div>
 <div class="tt-paraphrase">Given a described security weakness, proposing a fix means naming the vulnerability, what could go wrong because of it, and concrete steps -- technical and non-technical -- to close the gap.</div>
@@ -1115,7 +1121,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-SYS-NT-34">SYS-NT-34</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-SYS-NT-34</div>
 <div class="tt-paraphrase">A network diagram shows both the physical pieces -- servers, routers, devices -- and the software running on them, and how all of it connects to get work done.</div>
@@ -1124,7 +1130,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="HS-SYS-NT-35">SYS-NT-35</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">HS-SYS-NT-35</div>
 <div class="tt-paraphrase">The internet is really a network stitched together out of many smaller networks, with its own layered structure, hardware like routers, and protocols like TCP/IP tying it together -- which sets it apart from something like a single classroom network.</div>
@@ -1481,7 +1487,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.5">5.5</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.5</div>
 <div class="tt-paraphrase">Tracking a problem to its source takes a structured, logical approach, not guesswork.</div>
@@ -1499,7 +1505,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.7">5.7</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.7</div>
 <div class="tt-paraphrase">Some problems get solved by working through them repeatedly, refining the approach each pass.</div>
@@ -1508,7 +1514,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.8">5.8</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-6)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.8</div>
 <div class="tt-paraphrase">Algorithms are a tool for solving problems, not just an abstract concept.</div>
@@ -1517,7 +1523,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.9">5.9</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.9</div>
 <div class="tt-paraphrase">A large problem becomes tractable once it's broken into smaller components.</div>
@@ -1526,7 +1532,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.10">5.10</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.10</div>
 <div class="tt-paraphrase">Layers of abstraction let you work with a system without tracking every detail underneath it.</div>
@@ -1535,7 +1541,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.11">5.11</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.11</div>
 <div class="tt-paraphrase">Numbers can be represented in more than one base system, including binary and hexadecimal.</div>
@@ -1544,7 +1550,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="5.12">5.12</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">5.12</div>
 <div class="tt-paraphrase">Boolean logic underlies both decision-making and searching in computing.</div>
@@ -1904,7 +1910,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="10.6">10.6</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">10.6</div>
 <div class="tt-paraphrase">Different kinds of information -- text, images, sound, video -- take up different amounts of data, and media formats vary in capacity.</div>
@@ -1922,7 +1928,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="10.8">10.8</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-6)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">10.8</div>
 <div class="tt-paraphrase">Security in computing rests on concepts like authorization, access rights, and encryption.</div>
@@ -2158,7 +2164,7 @@ Standards reference:
 </div></div></div>
 <div class="cov-subgroup"><h4>C4.0 Programming Languages</h4><div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.1">C4.1</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-6)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.1</div>
 <div class="tt-paraphrase">Programming languages range from low-level, close to the hardware, to high-level and web-based.</div>
@@ -2167,7 +2173,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.2">C4.2</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.2</div>
 <div class="tt-paraphrase">Programming languages and protocols interact -- client-side code, server-side code, and a query language reaching into a database are all pieces of the same system.</div>
@@ -2185,7 +2191,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.4">C4.4</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.4</div>
 <div class="tt-paraphrase">Data has types, and those types get encoded in specific ways.</div>
@@ -2194,7 +2200,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.5">C4.5</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.5</div>
 <div class="tt-paraphrase">Programming paradigms differ -- procedural, object-oriented, event-driven, multithreaded -- and each shapes how code gets structured.</div>
@@ -2203,7 +2209,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.6">C4.6</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.6</div>
 <div class="tt-paraphrase">Every programming language has its own syntax, and using it correctly matters.</div>
@@ -2212,7 +2218,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.7">C4.7</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.7</div>
 <div class="tt-paraphrase">Data structures, arrays, objects, files, and databases are all ways of organizing a program's data.</div>
@@ -2221,7 +2227,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.8">C4.8</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.8</div>
 <div class="tt-paraphrase">Object-oriented programming brings its own vocabulary: objects, properties, methods, inheritance.</div>
@@ -2230,7 +2236,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.9">C4.9</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.9</div>
 <div class="tt-paraphrase">A working program leans on a shared toolkit of constructs -- branches and loops, reusable procedures and functions that take parameters, variables to hold state, ways to recover from errors, and sometimes a function that calls itself.</div>
@@ -2239,7 +2245,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.10">C4.10</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.10</div>
 <div class="tt-paraphrase">Different queueing, sorting, and searching algorithms trade off differently against each other.</div>
@@ -2248,7 +2254,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C4.11">C4.11</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C4.11</div>
 <div class="tt-paraphrase">Development work needs documentation aimed at more than one audience -- comments for other programmers, manuals for users.</div>
@@ -2284,7 +2290,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C5.4">C5.4</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C5.4</div>
 <div class="tt-paraphrase">Testing is a distinct step applied to both software and the broader project.</div>
@@ -2302,7 +2308,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C5.6">C5.6</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-1)"></span><span class="cov-bar" style="background:var(--hue-6)"></span><span class="cov-bar" style="background:var(--hue-7)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-1)" title="Working in Python">WIP</span><span class="cov-bar" style="border-left-color:var(--hue-6)" title="CS50 AP -- extended (weeks 0-6 remainder)">CS50AP+</span><span class="cov-bar" style="border-left-color:var(--hue-7)" title="CS50 Python -- weeks 0-8">CS50P</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C5.6</div>
 <div class="tt-paraphrase">Debugging is part of quality assurance, not separate from it.</div>
@@ -2374,7 +2380,7 @@ Standards reference:
 </div></div></div>
 <div class="cov-subgroup"><h4>C7.0 Web &amp; Online Development</h4><div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C7.1">C7.1</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C7.1</div>
 <div class="tt-paraphrase">Web hosting and related services need both server hardware and the right software.</div>
@@ -2410,7 +2416,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C7.5">C7.5</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C7.5</div>
 <div class="tt-paraphrase">A website, an online business, or a personal e-portfolio is meant to actually go live, not just stay a plan.</div>
@@ -2428,7 +2434,7 @@ Standards reference:
 </div></div></div>
 <div class="cov-subgroup"><h4>C8.0 Databases</h4><div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C8.1">C8.1</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C8.1</div>
 <div class="tt-paraphrase">Databases play a critical role in how modern organizations actually function.</div>
@@ -2437,7 +2443,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C8.2">C8.2</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C8.2</div>
 <div class="tt-paraphrase">Databases are built from basic structures: fields, records, tables, and views.</div>
@@ -2464,7 +2470,7 @@ Standards reference:
 </div>
 <div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="C8.5">C8.5</button>
-<div class="cov-bars"><span class="cov-bar" style="background:var(--hue-5)"></span></div>
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-5)" title="CS50 AP -- taught subset (weeks 0, 3, 4, 7-9)">CS50AP</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">C8.5</div>
 <div class="tt-paraphrase">Queries are the tool for extracting and manipulating data, whether selecting it or acting on it.</div>
@@ -2640,13 +2646,13 @@ Standards reference:
 </div>
 <div class="cov-group">
 <div class="cov-group-title">DA · Data &amp; Analysis</div>
-<div class="cov-grid"><div class="cov-badge">
+<div class="cov-grid"><div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="6-8.DA.7">DA.7</button>
-
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">6-8.DA.7</div>
 <div class="tt-paraphrase">The same data can be represented in more than one way, and choosing a representation changes what's easy to see in it.</div>
-
+<div class="tt-source">Covered by CS0: Unit 1 (Drawing with Shapes)</div>
 </div>
 </div>
 <div class="cov-badge">
@@ -2679,31 +2685,31 @@ Standards reference:
 
 </div>
 </div>
-<div class="cov-badge">
+<div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="6-8.AP.11">AP.11</button>
-
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">6-8.AP.11</div>
 <div class="tt-paraphrase">A variable's name should say what it holds, since that's what makes the operations performed on it make sense to someone reading the code.</div>
-
+<div class="tt-source">Covered by CS0: Unit 1 (Drawing with Shapes)</div>
 </div>
 </div>
-<div class="cov-badge">
+<div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="6-8.AP.12">AP.12</button>
-
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">6-8.AP.12</div>
 <div class="tt-paraphrase">Real programs combine multiple control structures and compound conditions, and get built up iteratively rather than all at once.</div>
-
+<div class="tt-source">Covered by CS0: Unit 2 (Basic Animations), Unit 3 (Giving Programs Options), Unit 4 (Animating Lots of Shapes)</div>
 </div>
 </div>
-<div class="cov-badge">
+<div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="6-8.AP.13">AP.13</button>
-
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">6-8.AP.13</div>
 <div class="tt-paraphrase">Breaking a problem into smaller subproblems makes it possible to design, build, and review a program piece by piece.</div>
-
+<div class="tt-source">Covered by CS0: Unit 4.1 (Unit 4, Lesson 1 (within Animating Lots of Shapes))</div>
 </div>
 </div>
 <div class="cov-badge">
@@ -2715,13 +2721,13 @@ Standards reference:
 
 </div>
 </div>
-<div class="cov-badge">
+<div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="6-8.AP.15">AP.15</button>
-
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">6-8.AP.15</div>
 <div class="tt-paraphrase">A solution actually meets user needs only if you go get feedback from teammates and users and use it to refine the design.</div>
-
+<div class="tt-source">Covered by CS0: Unit creative-task (Creative Tasks (every unit, 1-4))</div>
 </div>
 </div>
 <div class="cov-badge">
@@ -2742,13 +2748,13 @@ Standards reference:
 
 </div>
 </div>
-<div class="cov-badge">
+<div class="cov-badge has-coverage">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="6-8.AP.18">AP.18</button>
-
+<div class="cov-bars"><span class="cov-bar" style="border-left-color:var(--hue-8)" title="CS0">CS0</span></div>
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">6-8.AP.18</div>
 <div class="tt-paraphrase">Building something as a team means splitting up tasks and keeping to a shared timeline, not just dividing the code.</div>
-
+<div class="tt-source">Covered by CS0: Unit collaborative (Collaborative tasks)</div>
 </div>
 </div>
 <div class="cov-badge">

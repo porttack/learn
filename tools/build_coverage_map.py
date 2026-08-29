@@ -61,8 +61,11 @@ HUES = [
 # slot were separated from another real source's slot by an unused reserved slot, a
 # combined view showing just the real sources would render two colors adjacent that
 # were never validated as a pair. Keeping real sources contiguous at the front avoids
-# that: slots 1-7 (blue/orange/aqua/yellow/magenta/green/violet) were validated
-# together, so any subset of today's seven sources is safe in any combination.
+# that: all 8 slots (blue/orange/aqua/yellow/magenta/green/violet/red) were validated
+# together, so any subset of today's eight sources is safe in any combination.
+# cs50psets has no carrier file and is never actually rendered (harmless to leave it
+# here at slot 9, past the end of HUES) -- when it becomes real, HUES needs a 9th
+# color and a fresh validation pass, same as every slot addition before it.
 SOURCE_ORDER = [
     "working_in_python",
     "little_brother",
@@ -71,6 +74,7 @@ SOURCE_ORDER = [
     "cs50ap",
     "cs50ap_extended",
     "cs50p",
+    "cmu_cs0",
     "cs50psets",
 ]
 SOURCE_HUE_SLOT = {source: i + 1 for i, source in enumerate(SOURCE_ORDER)}
@@ -97,8 +101,13 @@ COVERAGE_CSS = (
 }
 .cov-badge-btn:hover, .cov-badge-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .cov-badge.has-coverage .cov-badge-btn { background: color-mix(in oklch, var(--muted) 22%, var(--bg)); }
-.cov-bars { display: flex; flex-direction: column; gap: 1px; margin-top: 4px; }
-.cov-bar { height: 4px; width: 100%; border-radius: 1px; }
+.cov-bars { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.cov-bar {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .6rem;
+  font-weight: 600; line-height: 1.7; letter-spacing: .01em; white-space: nowrap;
+  padding: 0 .4em; border-left: 3px solid; border-radius: 2px;
+  background: var(--code-bg); color: var(--fg); text-align: left;
+}
 .cov-tooltip {
   display: none; position: absolute; top: 100%; left: 0; z-index: 10; margin-top: .35rem;
   background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
@@ -143,15 +152,28 @@ TOOLTIP_JS = """
 """
 
 
-def bars_html(covering):
+def bars_html(covering, cov):
     """A bar only for a source that actually covers this code -- no placeholder for
     "not covered," since the badge's own gray/white fill already answers "covered by
     anything at all." Stacked vertically in SOURCE_ORDER, so more bars = more sources,
-    at a glance; which exact source(s) is in the tooltip, not encoded positionally."""
+    at a glance; which exact source(s) is in the tooltip too, not just here.
+
+    Each bar carries its source's short abbrev as a text label, in normal ink on the
+    page's own surface, with only a colored left edge for the source -- not colored
+    text-on-fill. Some hues read too close to each other at a glance (this is why:
+    yellow/magenta, or violet, whose light- and dark-mode values are opposite ends of
+    the lightness scale), and no single text color stays legible against every hue in
+    both themes at once. Text is the reliable identifier; color is a secondary cue
+    beside it, not the thing carrying the identity -- the same principle the badge
+    codes themselves already follow (always labeled, never color-alone)."""
     ordered = [s for s in SOURCE_ORDER if s in covering]
     if not ordered:
         return ""
-    bars = "".join(f'<span class="cov-bar" style="background:var(--hue-{SOURCE_HUE_SLOT[s]})"></span>' for s in ordered)
+    bars = "".join(
+        f'<span class="cov-bar" style="border-left-color:var(--hue-{SOURCE_HUE_SLOT[s]})" title="{esc(cov.source_meta.get(s, {}).get("title", s))}">'
+        f'{esc(cov.source_meta.get(s, {}).get("abbrev", s))}</span>'
+        for s in ordered
+    )
     return f'<div class="cov-bars">{bars}</div>'
 
 
@@ -163,7 +185,7 @@ def badge_html(code, display_code, title, paraphrase, cov):
     cls = "cov-badge has-coverage" if covering else "cov-badge"
     return f"""<div class="{cls}">
 <button class="cov-badge-btn" aria-expanded="false" aria-label="{esc(code)}">{esc(display_code)}</button>
-{bars_html(covering)}
+{bars_html(covering, cov)}
 <div class="cov-tooltip" role="dialog">
 <div class="tt-code">{heading}</div>
 <div class="tt-paraphrase">{esc(paraphrase)}</div>

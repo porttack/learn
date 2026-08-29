@@ -21,7 +21,8 @@
    "creative-task": "Creative Task (every unit, 1-10)",
    "collaborative": "Collaborative task (every unit)"
   },
-  "caveat": "Mapped from the teacher's own unit-by-unit scope-and-sequence analysis (porttack.com, \"CodeHS vs CMU\", Appendix C), not from CMU's official standards document -- that document omits AP.14, which this mapping argues (with evidence from the Creative Task's own design step) is actually taught."
+  "caveat": "Mapped from the teacher's own unit-by-unit scope-and-sequence analysis (porttack.com, \"CodeHS vs CMU\", Appendix C), not from CMU's official standards document -- that document omits AP.14, which this mapping argues (with evidence from the Creative Task's own design step) is actually taught.",
+  "abbrev": "CS1"
  },
  "coverage": {
   "castandards": {

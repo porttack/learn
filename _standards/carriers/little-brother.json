@@ -4,7 +4,8 @@
   "base_url": "https://porttack.com",
   "locator_kind": "unit",
   "locator_url_template": null,
-  "source": "little_brother"
+  "source": "little_brother",
+  "abbrev": "LB"
  },
  "coverage": {
   "apcsp": {

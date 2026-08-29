@@ -13,7 +13,8 @@
    "8": "Week 8: HTML, CSS, JavaScript",
    "9": "Week 9: Flask"
   },
-  "caveat": "Mapped from CS50 AP's own published per-week topic lists (https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/<n>/), not from an audit of lecture or problem-set content -- comparable confidence to codehs_corgi, not cmu_cs1. The weeks-0-and-4 split between 'data representation' and everything else in those weeks is this teacher's own editorial cut, not a division CS50 itself draws; see cs50ap_extended for the other half."
+  "caveat": "Mapped from CS50 AP's own published per-week topic lists (https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/<n>/), not from an audit of lecture or problem-set content -- comparable confidence to codehs_corgi, not cmu_cs1. The weeks-0-and-4 split between 'data representation' and everything else in those weeks is this teacher's own editorial cut, not a division CS50 itself draws; see cs50ap_extended for the other half.",
+  "abbrev": "CS50AP"
  },
  "coverage": {
   "apcsp": {

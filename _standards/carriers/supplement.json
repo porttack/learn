@@ -4,7 +4,8 @@
   "base_url": null,
   "locator_kind": "none",
   "locator_url_template": null,
-  "source": "supplement"
+  "source": "supplement",
+  "abbrev": "Supp"
  },
  "coverage": {
   "apcsp": {

@@ -39,6 +39,7 @@ want it; you don't need it to write a carrier file.
 | Field | Required? | What it is |
 |---|---|---|
 | `title` | yes | Human-readable name, shown in legends and tooltips. e.g. `"CMU CS Academy — CS1"` |
+| `abbrev` | yes, once you have ≥4 sources in one combined view | Short mnemonic (2-7 chars), shown as a text label directly on the coverage-map's per-source bars. e.g. `"CS1"`, `"CS50AP+"`. Once several sources are combined, some hues read too close to each other at a glance — the abbrev, not the color, is what actually disambiguates a bar. Pick something a reader would recognize without checking the legend. |
 | `source` | yes | The slug, matching the filename (underscores). Must match exactly what you'll pass to `--source` on the command line. |
 | `base_url` | yes (use `null` if none) | The site/platform's own base URL, if it has one. Doesn't need to be a real deep-linkable page. |
 | `locator_kind` | yes | A short word for what a "locator" means for this source — `"chapter"`, `"unit"`, `"none"`. Only changes display wording (e.g. "Chapter 3" vs "Unit 3"); doesn't affect behavior. |

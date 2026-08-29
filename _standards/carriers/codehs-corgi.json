@@ -22,7 +22,8 @@
    "14": "Final Exam",
    "optional-extension": "Optional extension: Data Structures"
   },
-  "caveat": "Inferred from the public CodeHS Corgi syllabus's topic list (porttack.com, \"CodeHS vs CMU\", Appendix C), not audited against the platform directly -- the syllabus lists topics at a coarser grain than CMU's own scope and sequence, so this mapping carries materially lower confidence than the cmu_cs1 carrier file."
+  "caveat": "Inferred from the public CodeHS Corgi syllabus's topic list (porttack.com, \"CodeHS vs CMU\", Appendix C), not audited against the platform directly -- the syllabus lists topics at a coarser grain than CMU's own scope and sequence, so this mapping carries materially lower confidence than the cmu_cs1 carrier file.",
+  "abbrev": "Corgi"
  },
  "coverage": {
   "castandards": {
