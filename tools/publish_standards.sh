@@ -30,7 +30,7 @@ cp "$TMP"/*.html "$ROOT/standards/"
   tail -n +3 "$TMP/standards-alignment.md"
 } > "$ROOT/standards/alignment.md"
 
-COVERAGE_MAP_SOURCES=(working_in_python little_brother cmu_cs1 codehs_corgi cs50ap cs50ap_extended)
+COVERAGE_MAP_SOURCES=(working_in_python little_brother cmu_cs1 codehs_corgi cs50ap cs50ap_extended cs50p)
 SOURCE_ARGS=()
 for s in "${COVERAGE_MAP_SOURCES[@]}"; do SOURCE_ARGS+=(--source "$s"); done
 

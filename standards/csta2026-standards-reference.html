@@ -305,14 +305,16 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-DAT-DC-23">#</a><span class="code-badge">HS-DAT-DC-23</span></h3>
 <p class="paraphrase">Messy text data -- inconsistent capitalization, typos, a name and a date crammed into one field -- usually needs cleanup before it's useful, and a spreadsheet or short script can do that work.</p>
 <p class="note">Recognizing where a pattern-matching tool like a regular expression would help is part of this; building a cleaning tool from scratch, or handling huge unstructured feeds, is not.</p>
-<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="meta">Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/7/?readonly">Unit 7 (Lecture 7: Regular Expressions)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="note">Cleaning Up User Input, a named week-7 heading, is this standard's own messy-text-data problem, solved with regular expressions.</p>
 <p class="note">Chapter 8's is_special_line (stripping Gutenberg header/footer cruft) and re.sub-based British-to-American spelling normalization are direct instances of cleaning up messy text data with a pattern-matching tool -- close to a literal match for this standard's own scope note.</p>
 </div>
 <div class="topic" id="T-HS-DAT-DC-24">
 <h3><a class="anchor-link" href="#T-HS-DAT-DC-24">#</a><span class="code-badge">HS-DAT-DC-24</span></h3>
 <p class="paraphrase">There's more than one way to check that a dataset's values are the right type and fall in a sensible range, and weighing those approaches against each other is its own skill.</p>
 <p class="note">Comparing validation approaches conceptually is the expectation; writing the validation code or using statistical models is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/7/?readonly">Unit 7 (Lecture 7: Regular Expressions)</a></p>
+<p class="note">Extracting User Input, a named week-7 heading, is checking that a value has the shape a program expects before using it.</p>
 </div>
 <div class="subconcept-heading">Data Investigation</div>
 <div class="topic" id="T-HS-DAT-DI-25">
@@ -347,16 +349,18 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-PRO-PD-12">#</a><span class="code-badge">HS-PRO-PD-12</span></h3>
 <p class="paraphrase">Splitting a program into distinct, well-organized pieces -- functions, imported libraries, or objects -- makes the result easier to read and easier to reuse.</p>
 <p class="note">Straightforward decomposition is the target; elaborate design patterns or deep class hierarchies aren't expected.</p>
-<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/6/?readonly">Unit 6 (Week 6: Python)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></p>
+<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/6/?readonly">Unit 6 (Week 6: Python)</a>; Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/0/?readonly">Unit 0 (Lecture 0: Functions, Variables, Strings, def)</a>, <a href="https://cs50.harvard.edu/python/notes/8/?readonly">Unit 8 (Lecture 8: Object-Oriented Programming)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></p>
 <p class="note">Functions, named in both weeks, are splitting a program into well-organized pieces.</p>
+<p class="note">Functions (week 0) and Classes (week 8) are named, well-organized pieces a program gets split into.</p>
 <p class="note">Chapter 3's function definitions -- especially building print_verse out of first_two_lines/last_three_lines/repeat -- directly match splitting a program into reusable, readable pieces. Chapter 4's encapsulation/generalization/refactoring sequence (square → polygon → polyline, then circle → arc → polyline) is a stronger instance of the same standard. Chapter 7's uses_none = not uses_any(...) and the exercises deriving uses_all from uses_only/uses_any (instead of a new loop) extend it again.</p>
 </div>
 <div class="topic" id="T-HS-PRO-PD-13">
 <h3><a class="anchor-link" href="#T-HS-PRO-PD-13">#</a><span class="code-badge">HS-PRO-PD-13</span></h3>
 <p class="paraphrase">Good program development leans on outside resources -- reference docs, existing libraries, simple APIs, and the features built into a development environment -- rather than reinventing everything from scratch.</p>
 <p class="note">Using these resources well is the goal, not building new ones.</p>
-<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>; Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/4/?readonly">Unit 4 (Lecture 4: Libraries)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
 <p class="note">Manual Pages, a named week-1 topic, are exactly the reference documentation this standard describes leaning on.</p>
+<p class="note">Libraries, Packages, and APIs, named week-4 headings, are exactly the outside resources and reference docs this standard describes leaning on.</p>
 <p class="note">Chapter 2's `import math` and its use of math.pi/math.sqrt/math.pow is this book's first real use of an existing library. Chapter 4 (jupyturtle), Chapter 7 (`from doctest import run_docstring_examples`), and Chapter 8 (`re`) are secondary instances of the same pattern -- genuine but not new information each time, so headers only. The rest of this standard -- API docs, IDE features -- isn't addressed anywhere.</p>
 </div>
 <div class="topic" id="T-HS-PRO-PD-14">
@@ -390,7 +394,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-PRO-TR-19">#</a><span class="code-badge">HS-PRO-TR-19</span></h3>
 <p class="paraphrase">Finishing a program includes checking it against its own original plan -- does it work correctly, does it do what it was meant to, and is it actually pleasant and accessible to use.</p>
 <p class="note">This is a self- or peer-review against the project's own stated goals, not a formal verification process or industry tooling.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/5/?readonly">Unit 5 (Lecture 5: Unit Tests)</a></p>
+<p class="note">assert and pytest, named week-5 headings, are checking a program against its own plan.</p>
 </div>
 <div class="topic" id="T-HS-PRO-TR-20">
 <h3><a class="anchor-link" href="#T-HS-PRO-TR-20">#</a><span class="code-badge">HS-PRO-TR-20</span></h3>
@@ -403,8 +408,9 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-PRO-VD-16">#</a><span class="code-badge">HS-PRO-VD-16</span></h3>
 <p class="paraphrase">Choosing the right structure -- a list, a dictionary -- to hold a program's data is what makes storing, retrieving, and changing that data manageable.</p>
 <p class="note">Common built-in structures are the scope here; things like linked lists, trees, and graphs are not.</p>
-<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/5/?readonly">Unit 5 (Week 5: Data Structures)</a></p>
+<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/5/?readonly">Unit 5 (Week 5: Data Structures)</a>; Covered by CS50 Python -- weeks 0-8: <a href="https://cs50.harvard.edu/python/notes/2/?readonly">Unit 2 (Lecture 2: Loops, Lists, Dictionaries)</a></p>
 <p class="note">Arrays (week 2) and the named data structures (week 5) are choosing the right structure to hold a program's data.</p>
+<p class="note">Lists and Dictionaries, named week-2 headings, are choosing the right structure to hold a program's data.</p>
 </div>
 </section>
 <section class="big-idea" id="SystemsSecurity"><h2>Systems &amp; Security</h2>

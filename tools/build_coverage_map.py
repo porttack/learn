@@ -61,8 +61,8 @@ HUES = [
 # slot were separated from another real source's slot by an unused reserved slot, a
 # combined view showing just the real sources would render two colors adjacent that
 # were never validated as a pair. Keeping real sources contiguous at the front avoids
-# that: slots 1-6 (blue/orange/aqua/yellow/magenta/green) were validated together, so
-# any subset of today's six sources is safe in any combination.
+# that: slots 1-7 (blue/orange/aqua/yellow/magenta/green/violet) were validated
+# together, so any subset of today's seven sources is safe in any combination.
 SOURCE_ORDER = [
     "working_in_python",
     "little_brother",
@@ -70,6 +70,7 @@ SOURCE_ORDER = [
     "codehs_corgi",
     "cs50ap",
     "cs50ap_extended",
+    "cs50p",
     "cs50psets",
 ]
 SOURCE_HUE_SLOT = {source: i + 1 for i, source in enumerate(SOURCE_ORDER)}
