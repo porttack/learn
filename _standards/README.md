@@ -1,11 +1,27 @@
 # _standards/
 
 Canonical catalog of standard codes and original paraphrases: `apcsp.json`,
-`castandards.json`, `csta2026.json`, `ca-ict-anchor.json`, `crosswalk.json`.
-Each contains only official codes and paraphrases written for this project —
-never verbatim framework text. The third-party framework documents these are
-built from (the AP CSP CED, California K-12 CS Standards, CSTA 2026, CA CTE
-ICT) are never committed here.
+`castandards.json`, `csta2026.json`, `csta2017.json`, `ca-ict-anchor.json`,
+`crosswalk.json`, `crosswalk-castandards-csta2017.json`. Each contains only
+official codes and paraphrases written for this project — never verbatim
+framework text. The third-party framework documents these are built from (the
+AP CSP CED, California K-12 CS Standards, CSTA 2026, CSTA 2017, CA CTE ICT)
+are never committed here.
+
+`csta2017.json`'s paraphrases are written directly from CSTA's own 2017 text,
+independently of `castandards.json` — even for the Level 2 (6-8) standards
+California adapted almost unchanged, the point of cataloging both frameworks
+is to let a reader compare their actual wording, so reusing one file's
+paraphrase in the other would defeat that. `crosswalk-castandards-csta2017.json`
+is what actually makes the comparison possible: a hand-built, code-to-code
+mapping with a strength rating (`strong`/`partial`/`related`) and a note on
+any difference in wording or scope, in the same spirit as `crosswalk.json`
+below but for California's standards against CSTA 2017 instead of AP CSP. It
+surfaces some real divergences — CA's 6-8.IC.23 (software licensing) has no
+Level 2 counterpart at all, CA's core 9-12 AP strand draws entirely from
+CSTA's Level 3A (all seventeen of Level 3B's AP standards go unindexed on the
+CA side), and a few CA 9-12 standards turn out to renumber or blend CSTA's
+Level 3A/3B standards in ways the code alone doesn't reveal.
 
 **This directory used to live in `working-in-python`.** It moved here because
 it stopped being book-specific the moment a second content source

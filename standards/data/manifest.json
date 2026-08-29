@@ -3,6 +3,7 @@
   "apcsp",
   "castandards",
   "csta2026",
+  "csta2017",
   "ca-ict-anchor"
  ],
  "sources": [
@@ -69,6 +70,15 @@
    "abbrev": "CS0",
    "hue_light": "#e34948",
    "hue_dark": "#e66767"
+  }
+ ],
+ "crosswalks": [
+  {
+   "between": [
+    "castandards",
+    "csta2017"
+   ],
+   "file": "castandards-csta2017.json"
   }
  ]
 }

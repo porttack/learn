@@ -165,13 +165,30 @@ noscript p {
   display: none; position: absolute; top: 100%; left: 0; z-index: 10; margin-top: .35rem;
   background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
   padding: .7rem .9rem; box-shadow: 0 6px 20px rgba(0,0,0,.18); width: max-content;
-  max-width: 280px; font-size: .82rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  max-width: 320px; font-size: .82rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 .cov-badge.is-open .cov-tooltip { display: block; }
 .cov-tooltip .tt-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent); }
 .cov-tooltip .tt-paraphrase { margin: .4em 0; color: var(--fg); }
 .cov-tooltip .tt-source { margin: .3em 0 0; color: var(--muted); }
 .cov-anchor-block { opacity: .6; font-size: .92em; }
+/* Cross-framework compare: a chevron per matched standard in the other
+   framework, expanding in place (not a nested floating tooltip) to show that
+   standard's own paraphrase side by side with this one. */
+.tt-crosswalk { margin: .5em 0; }
+.tt-xref-toggle {
+  display: block; width: 100%; text-align: left; background: none; border: none; padding: .15em 0;
+  color: var(--muted); font: inherit; font-size: .92em; cursor: pointer;
+}
+.tt-xref-toggle:hover, .tt-xref-toggle:focus-visible { color: var(--fg); }
+.tt-xref-chevron { display: inline-block; width: 1em; }
+.tt-xref-strength { color: var(--muted); }
+.tt-xref-detail {
+  margin: .2em 0 .5em 1.1em; padding: .3em .6em; border-left: 2px solid var(--border); font-size: .95em;
+}
+.tt-xref-detail .tt-xref-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent); }
+.tt-xref-detail .tt-xref-text { margin: .25em 0; color: var(--fg); }
+.tt-xref-detail .tt-xref-note { color: var(--muted); font-style: italic; }
 </style>
 </head>
 <body>
@@ -189,6 +206,7 @@ Standards reference:<br>
 <a href="apcsp-standards-reference.html">AP CSP</a> &middot;
 <a href="ca-cs-standards-reference.html">California 9-12</a> &middot;
 <a href="csta2026-standards-reference.html">CSTA 2026</a> &middot;
+<a href="csta2017-standards-reference.html">CSTA 2017</a> &middot;
 <a href="ca-ict-anchor-standards-reference.html">CA ICT</a> &middot;
 <a href="alignment/">coverage detail</a>
 </div>

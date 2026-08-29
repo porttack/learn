@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CSTA 2017 Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<h2><a href="#AP">AP · Algorithms &amp; Programming</a></h2><ul>
+<li class="topic-link"><a href="#S-2-AP-10">2-AP-10</a></li>
+<li class="topic-link"><a href="#S-2-AP-11">2-AP-11</a></li>
+<li class="topic-link"><a href="#S-2-AP-12">2-AP-12</a></li>
+<li class="topic-link"><a href="#S-2-AP-13">2-AP-13</a></li>
+<li class="topic-link"><a href="#S-2-AP-14">2-AP-14</a></li>
+<li class="topic-link"><a href="#S-2-AP-15">2-AP-15</a></li>
+<li class="topic-link"><a href="#S-2-AP-16">2-AP-16</a></li>
+<li class="topic-link"><a href="#S-2-AP-17">2-AP-17</a></li>
+<li class="topic-link"><a href="#S-2-AP-18">2-AP-18</a></li>
+<li class="topic-link"><a href="#S-2-AP-19">2-AP-19</a></li>
+<li class="topic-link"><a href="#S-3A-AP-13">3A-AP-13</a></li>
+<li class="topic-link"><a href="#S-3A-AP-14">3A-AP-14</a></li>
+<li class="topic-link"><a href="#S-3A-AP-15">3A-AP-15</a></li>
+<li class="topic-link"><a href="#S-3A-AP-16">3A-AP-16</a></li>
+<li class="topic-link"><a href="#S-3A-AP-17">3A-AP-17</a></li>
+<li class="topic-link"><a href="#S-3A-AP-18">3A-AP-18</a></li>
+<li class="topic-link"><a href="#S-3A-AP-19">3A-AP-19</a></li>
+<li class="topic-link"><a href="#S-3A-AP-20">3A-AP-20</a></li>
+<li class="topic-link"><a href="#S-3A-AP-21">3A-AP-21</a></li>
+<li class="topic-link"><a href="#S-3A-AP-22">3A-AP-22</a></li>
+<li class="topic-link"><a href="#S-3A-AP-23">3A-AP-23</a></li>
+<li class="topic-link"><a href="#S-3B-AP-08">3B-AP-08</a></li>
+<li class="topic-link"><a href="#S-3B-AP-09">3B-AP-09</a></li>
+<li class="topic-link"><a href="#S-3B-AP-10">3B-AP-10</a></li>
+<li class="topic-link"><a href="#S-3B-AP-11">3B-AP-11</a></li>
+<li class="topic-link"><a href="#S-3B-AP-12">3B-AP-12</a></li>
+<li class="topic-link"><a href="#S-3B-AP-13">3B-AP-13</a></li>
+<li class="topic-link"><a href="#S-3B-AP-14">3B-AP-14</a></li>
+<li class="topic-link"><a href="#S-3B-AP-15">3B-AP-15</a></li>
+<li class="topic-link"><a href="#S-3B-AP-16">3B-AP-16</a></li>
+<li class="topic-link"><a href="#S-3B-AP-17">3B-AP-17</a></li>
+<li class="topic-link"><a href="#S-3B-AP-18">3B-AP-18</a></li>
+<li class="topic-link"><a href="#S-3B-AP-19">3B-AP-19</a></li>
+<li class="topic-link"><a href="#S-3B-AP-20">3B-AP-20</a></li>
+<li class="topic-link"><a href="#S-3B-AP-21">3B-AP-21</a></li>
+<li class="topic-link"><a href="#S-3B-AP-22">3B-AP-22</a></li>
+<li class="topic-link"><a href="#S-3B-AP-23">3B-AP-23</a></li>
+<li class="topic-link"><a href="#S-3B-AP-24">3B-AP-24</a></li>
+</ul>
+<h2><a href="#CS">CS · Computing Systems</a></h2><ul>
+<li class="topic-link"><a href="#S-2-CS-01">2-CS-01</a></li>
+<li class="topic-link"><a href="#S-2-CS-02">2-CS-02</a></li>
+<li class="topic-link"><a href="#S-2-CS-03">2-CS-03</a></li>
+<li class="topic-link"><a href="#S-3A-CS-01">3A-CS-01</a></li>
+<li class="topic-link"><a href="#S-3A-CS-02">3A-CS-02</a></li>
+<li class="topic-link"><a href="#S-3A-CS-03">3A-CS-03</a></li>
+<li class="topic-link"><a href="#S-3B-CS-01">3B-CS-01</a></li>
+<li class="topic-link"><a href="#S-3B-CS-02">3B-CS-02</a></li>
+</ul>
+<h2><a href="#DA">DA · Data &amp; Analysis</a></h2><ul>
+<li class="topic-link"><a href="#S-2-DA-07">2-DA-07</a></li>
+<li class="topic-link"><a href="#S-2-DA-08">2-DA-08</a></li>
+<li class="topic-link"><a href="#S-2-DA-09">2-DA-09</a></li>
+<li class="topic-link"><a href="#S-3A-DA-09">3A-DA-09</a></li>
+<li class="topic-link"><a href="#S-3A-DA-10">3A-DA-10</a></li>
+<li class="topic-link"><a href="#S-3A-DA-11">3A-DA-11</a></li>
+<li class="topic-link"><a href="#S-3A-DA-12">3A-DA-12</a></li>
+<li class="topic-link"><a href="#S-3B-DA-05">3B-DA-05</a></li>
+<li class="topic-link"><a href="#S-3B-DA-06">3B-DA-06</a></li>
+<li class="topic-link"><a href="#S-3B-DA-07">3B-DA-07</a></li>
+</ul>
+<h2><a href="#IC">IC · Impacts of Computing</a></h2><ul>
+<li class="topic-link"><a href="#S-2-IC-20">2-IC-20</a></li>
+<li class="topic-link"><a href="#S-2-IC-21">2-IC-21</a></li>
+<li class="topic-link"><a href="#S-2-IC-22">2-IC-22</a></li>
+<li class="topic-link"><a href="#S-2-IC-23">2-IC-23</a></li>
+<li class="topic-link"><a href="#S-3A-IC-24">3A-IC-24</a></li>
+<li class="topic-link"><a href="#S-3A-IC-25">3A-IC-25</a></li>
+<li class="topic-link"><a href="#S-3A-IC-26">3A-IC-26</a></li>
+<li class="topic-link"><a href="#S-3A-IC-27">3A-IC-27</a></li>
+<li class="topic-link"><a href="#S-3A-IC-28">3A-IC-28</a></li>
+<li class="topic-link"><a href="#S-3A-IC-29">3A-IC-29</a></li>
+<li class="topic-link"><a href="#S-3A-IC-30">3A-IC-30</a></li>
+<li class="topic-link"><a href="#S-3B-IC-25">3B-IC-25</a></li>
+<li class="topic-link"><a href="#S-3B-IC-26">3B-IC-26</a></li>
+<li class="topic-link"><a href="#S-3B-IC-27">3B-IC-27</a></li>
+<li class="topic-link"><a href="#S-3B-IC-28">3B-IC-28</a></li>
+</ul>
+<h2><a href="#NI">NI · Networks &amp; the Internet</a></h2><ul>
+<li class="topic-link"><a href="#S-2-NI-04">2-NI-04</a></li>
+<li class="topic-link"><a href="#S-2-NI-05">2-NI-05</a></li>
+<li class="topic-link"><a href="#S-2-NI-06">2-NI-06</a></li>
+<li class="topic-link"><a href="#S-3A-NI-04">3A-NI-04</a></li>
+<li class="topic-link"><a href="#S-3A-NI-05">3A-NI-05</a></li>
+<li class="topic-link"><a href="#S-3A-NI-06">3A-NI-06</a></li>
+<li class="topic-link"><a href="#S-3A-NI-07">3A-NI-07</a></li>
+<li class="topic-link"><a href="#S-3A-NI-08">3A-NI-08</a></li>
+<li class="topic-link"><a href="#S-3B-NI-03">3B-NI-03</a></li>
+<li class="topic-link"><a href="#S-3B-NI-04">3B-NI-04</a></li>
+</ul>
+</nav>
+<main>
+<h1>CSTA 2017 Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of the CSTA K-12 Computer
+Science Standards, Revised 2017 (Computer Science Teachers Association) -- Level 2 (grades 6-8)
+and, merged into one 9-12 band, Levels 3A (grades 9-10, required of all students) and 3B (grades
+11-12, elective/specialty, marked as such below), for linking from standards-alignment work.
+<strong>What this is not.</strong> Original paraphrases, not CSTA's text; only codes are reproduced
+as-is. See _standards/crosswalk-castandards-csta2017.json for how these compare to California's own
+K-12 CS standards -- most match closely, but a few diverge in wording or don't correspond to any
+single CA standard.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<section class="big-idea" id="AP">
+<h2><a class="anchor-link" href="#AP">#</a><span class="code-badge">AP</span> Algorithms &amp; Programming</h2>
+<div class="topic" id="S-2-AP-10">
+<h3><a class="anchor-link" href="#S-2-AP-10">#</a><span class="code-badge">2-AP-10</span></h3>
+<p class="paraphrase">A problem too complex to solve on the spot can still be organized into an algorithm using a flowchart or pseudocode, even before any real code gets written.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-AP-11">
+<h3><a class="anchor-link" href="#S-2-AP-11">#</a><span class="code-badge">2-AP-11</span></h3>
+<p class="paraphrase">A variable is a named container whose contents can change, and naming it clearly is what makes the operations you perform on it make sense later.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-AP-12">
+<h3><a class="anchor-link" href="#S-2-AP-12">#</a><span class="code-badge">2-AP-12</span></h3>
+<p class="paraphrase">Nesting loops inside each other, or combining conditions with AND/OR/NOT, lets a program handle situations a single loop or single condition never could, and getting there takes iteration, not one pass.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-AP-13">
+<h3><a class="anchor-link" href="#S-2-AP-13">#</a><span class="code-badge">2-AP-13</span></h3>
+<p class="paraphrase">Breaking a problem into subproblems, and those into still smaller parts, is what lets a team, or just one person, focus on one piece of a program at a time.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-AP-14">
+<h3><a class="anchor-link" href="#S-2-AP-14">#</a><span class="code-badge">2-AP-14</span></h3>
+<p class="paraphrase">A procedure that repeats the same instructions can be generalized with a parameter, so one instruction like "drawCircle" can produce circles of any size instead of just one.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-AP-15">
+<h3><a class="anchor-link" href="#S-2-AP-15">#</a><span class="code-badge">2-AP-15</span></h3>
+<p class="paraphrase">A program only ends up meeting user needs if you actually go get feedback from teammates and users along the way and let it change your design.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-AP-16">
+<h3><a class="anchor-link" href="#S-2-AP-16">#</a><span class="code-badge">2-AP-16</span></h3>
+<p class="paraphrase">Building on someone else's code, image, or library is a normal part of making something more interesting, as long as you credit where each piece came from.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-AP-17">
+<h3><a class="anchor-link" href="#S-2-AP-17">#</a><span class="code-badge">2-AP-17</span></h3>
+<p class="paraphrase">Testing a program well means deliberately trying inputs you expect to break it, like zero or a negative number, not just the input you expect to work.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-AP-18">
+<h3><a class="anchor-link" href="#S-2-AP-18">#</a><span class="code-badge">2-AP-18</span></h3>
+<p class="paraphrase">A team project runs on assigned roles and a shared timeline, not just everyone quietly working on whatever part they feel like.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-AP-19">
+<h3><a class="anchor-link" href="#S-2-AP-19">#</a><span class="code-badge">2-AP-19</span></h3>
+<p class="paraphrase">Documentation, like a project overview or comments in the code, is what lets someone else actually follow, test, and debug a program you wrote.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-13">
+<h3><a class="anchor-link" href="#S-3A-AP-13">#</a><span class="code-badge">3A-AP-13</span></h3>
+<p class="paraphrase">Building a prototype around a problem that actually interests you is a legitimate way to practice applying an algorithm, not just a classroom exercise.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-14">
+<h3><a class="anchor-link" href="#S-3A-AP-14">#</a><span class="code-badge">3A-AP-14</span></h3>
+<p class="paraphrase">When several near-identical variables start to pile up, a list lets you generalize the pattern instead of repeating nearly the same code for each one.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-15">
+<h3><a class="anchor-link" href="#S-3A-AP-15">#</a><span class="code-badge">3A-AP-15</span></h3>
+<p class="paraphrase">Picking one control structure over another, like a loop instead of recursion, is a real design decision with tradeoffs in readability and performance that you should be able to defend.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-16">
+<h3><a class="anchor-link" href="#S-3A-AP-16">#</a><span class="code-badge">3A-AP-16</span></h3>
+<p class="paraphrase">An event, like a button press or a location change, can trigger a procedure, which is how real apps built for a practical purpose or a social issue actually respond to their users.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-17">
+<h3><a class="anchor-link" href="#S-3A-AP-17">#</a><span class="code-badge">3A-AP-17</span></h3>
+<p class="paraphrase">Breaking a hard problem down systematically, into procedures, modules, or objects, is what makes it possible to reuse pieces that already exist instead of solving everything from scratch.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-18">
+<h3><a class="anchor-link" href="#S-3A-AP-18">#</a><span class="code-badge">3A-AP-18</span></h3>
+<p class="paraphrase">A complex artifact is usually a system of smaller interacting pieces, whether that's procedures inside one program or several programs that work together, each with its own role.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-19">
+<h3><a class="anchor-link" href="#S-3A-AP-19">#</a><span class="code-badge">3A-AP-19</span></h3>
+<p class="paraphrase">Designing for a broad audience means building in a systematic way to actually collect feedback from a range of users, then revising based on what you hear.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-20">
+<h3><a class="anchor-link" href="#S-3A-AP-20">#</a><span class="code-badge">3A-AP-20</span></h3>
+<p class="paraphrase">Before you build on someone else's library, its license is worth reading closely, since different licenses restrict what you're allowed to do with the result in different ways.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-21">
+<h3><a class="anchor-link" href="#S-3A-AP-21">#</a><span class="code-badge">3A-AP-21</span></h3>
+<p class="paraphrase">Testing and refining a program isn't just about fixing bugs, it's also the process that makes it more usable and accessible to the people who'll actually use it.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-22">
+<h3><a class="anchor-link" href="#S-3A-AP-22">#</a><span class="code-badge">3A-AP-22</span></h3>
+<p class="paraphrase">Building something as a team means taking on a specific role and using real collaborative tools, like shared code or shared documents, not just splitting up the work informally.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-AP-23">
+<h3><a class="anchor-link" href="#S-3A-AP-23">#</a><span class="code-badge">3A-AP-23</span></h3>
+<p class="paraphrase">A complex program's design decisions need to be documented somehow, whether that's written notes, diagrams, a presentation, or a live demonstration, so the reasoning survives past the moment you made the choice.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-08">
+<h3><a class="anchor-link" href="#S-3B-AP-08">#</a><span class="code-badge">3B-AP-08</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Artificial intelligence is already quietly running things like ad delivery, self-driving cars, and fraud detection, and it's worth being able to name where it shows up.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-09">
+<h3><a class="anchor-link" href="#S-3B-AP-09">#</a><span class="code-badge">3B-AP-09</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Building even a simple AI algorithm, enough to play tic-tac-toe or guess a number, is a concrete way to understand what "artificial intelligence" actually means underneath the term.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-10">
+<h3><a class="anchor-link" href="#S-3B-AP-10">#</a><span class="code-badge">3B-AP-10</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Classic algorithms like sorting and searching aren't just theory, adapting one to fit your actual problem is a normal, practical move.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-11">
+<h3><a class="anchor-link" href="#S-3B-AP-11">#</a><span class="code-badge">3B-AP-11</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Comparing two algorithms for the same job means weighing all three of efficiency, correctness, and clarity, not just whichever one runs first.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-12">
+<h3><a class="anchor-link" href="#S-3B-AP-12">#</a><span class="code-badge">3B-AP-12</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Fundamental data structures, strings, lists, stacks, queues, each fit some problems better than others, and choosing between them is a real design decision.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-13">
+<h3><a class="anchor-link" href="#S-3B-AP-13">#</a><span class="code-badge">3B-AP-13</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Tracing exactly how a recursive algorithm calls itself and unwinds is what actually makes recursion click, more than just reading the definition.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-14">
+<h3><a class="anchor-link" href="#S-3B-AP-14">#</a><span class="code-badge">3B-AP-14</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">At this level you're expected to build your own components, procedures, modules, or objects, rather than only using ones handed to you.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-15">
+<h3><a class="anchor-link" href="#S-3B-AP-15">#</a><span class="code-badge">3B-AP-15</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">A large, messy problem usually contains a smaller generalizable pattern, and finding it is what makes the problem solvable at all.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-16">
+<h3><a class="anchor-link" href="#S-3B-AP-16">#</a><span class="code-badge">3B-AP-16</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Reaching for an existing library or API instead of rebuilding it yourself is a normal, expected way to solve a problem, not a shortcut to avoid.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-17">
+<h3><a class="anchor-link" href="#S-3B-AP-17">#</a><span class="code-badge">3B-AP-17</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Building software for a real audience benefits from following an actual life cycle process, like agile, spiral, or waterfall, rather than just starting to code.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-18">
+<h3><a class="anchor-link" href="#S-3B-AP-18">#</a><span class="code-badge">3B-AP-18</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Common weaknesses like missing bounds checks or weak input validation are exactly the kind of thing that turns an ordinary program into a compromised one.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-19">
+<h3><a class="anchor-link" href="#S-3B-AP-19">#</a><span class="code-badge">3B-AP-19</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">The same program idea often needs real changes to run correctly across different platforms, like desktop, web, and mobile.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-20">
+<h3><a class="anchor-link" href="#S-3B-AP-20">#</a><span class="code-badge">3B-AP-20</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">A group software project runs on real tooling, version control, an IDE, and documented code, not just splitting up files and hoping they merge.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-21">
+<h3><a class="anchor-link" href="#S-3B-AP-21">#</a><span class="code-badge">3B-AP-21</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Verifying a program against its own design spec means writing your own deliberate series of test cases, not just running it once and eyeballing the result.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-22">
+<h3><a class="anchor-link" href="#S-3B-AP-22">#</a><span class="code-badge">3B-AP-22</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Adding a feature to existing code can quietly break something else that depended on the old behavior, and that unintended consequence is worth discussing, not just the intended one.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-23">
+<h3><a class="anchor-link" href="#S-3B-AP-23">#</a><span class="code-badge">3B-AP-23</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">A code review is where qualities like correctness, readability, and scalability actually get evaluated, not just assumed because the program runs.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-AP-24">
+<h3><a class="anchor-link" href="#S-3B-AP-24">#</a><span class="code-badge">3B-AP-24</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Different programming languages, block-based versus text, high-level versus low-level, genuinely suit different kinds of problems, and that's a real basis for choosing one.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<section class="big-idea" id="CS">
+<h2><a class="anchor-link" href="#CS">#</a><span class="code-badge">CS</span> Computing Systems</h2>
+<div class="topic" id="S-2-CS-01">
+<h3><a class="anchor-link" href="#S-2-CS-01">#</a><span class="code-badge">2-CS-01</span></h3>
+<p class="paraphrase">Watching how people actually use a device, like a laptop or a controller you design yourself, is what turns "this feels clunky" into a specific, arguable improvement.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-CS-02">
+<h3><a class="anchor-link" href="#S-2-CS-02">#</a><span class="code-badge">2-CS-02</span></h3>
+<p class="paraphrase">A project that collects and exchanges data needs hardware and software chosen together, weighing things like cost, size, speed, and how the pieces will actually connect.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-CS-03">
+<h3><a class="anchor-link" href="#S-2-CS-03">#</a><span class="code-badge">2-CS-03</span></h3>
+<p class="paraphrase">A broken device might be failing because of something connected to it, not the device itself, so troubleshooting needs a structured process, not a guess.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-CS-01">
+<h3><a class="anchor-link" href="#S-3A-CS-01">#</a><span class="code-badge">3A-CS-01</span></h3>
+<p class="paraphrase">Devices you use every day, like a car stereo or a medical monitor, hide the implementation details behind a simpler interface, and you can reason about one without needing to understand the other.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-CS-02">
+<h3><a class="anchor-link" href="#S-3A-CS-02">#</a><span class="code-badge">3A-CS-02</span></h3>
+<p class="paraphrase">A computer's software stacks in layers, from the app you're using down through the operating system to the physical hardware, and each layer only needs to talk to the ones right next to it.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-CS-03">
+<h3><a class="anchor-link" href="#S-3A-CS-03">#</a><span class="code-badge">3A-CS-03</span></h3>
+<p class="paraphrase">Troubleshooting a hard problem is itself a skill worth writing down, so someone else can follow the same systematic process instead of guessing.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-CS-01">
+<h3><a class="anchor-link" href="#S-3B-CS-01">#</a><span class="code-badge">3B-CS-01</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">An operating system juggles several distinct jobs at once, like memory management, storage, running processes, and access control, and it helps to be able to name which job is which.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-CS-02">
+<h3><a class="anchor-link" href="#S-3B-CS-02">#</a><span class="code-badge">3B-CS-02</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Logic, input, and output aren't abstract ideas, they're implemented in real hardware components like logic gates and I/O pins, and you can trace how.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<section class="big-idea" id="DA">
+<h2><a class="anchor-link" href="#DA">#</a><span class="code-badge">DA</span> Data &amp; Analysis</h2>
+<div class="topic" id="S-2-DA-07">
+<h3><a class="anchor-link" href="#S-2-DA-07">#</a><span class="code-badge">2-DA-07</span></h3>
+<p class="paraphrase">The exact same piece of data, like a color, can be written down as binary, as an RGB value, as a hex code, or in plain words, and switching between those representations is a skill in itself.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-DA-08">
+<h3><a class="anchor-link" href="#S-2-DA-08">#</a><span class="code-badge">2-DA-08</span></h3>
+<p class="paraphrase">Data collected with a computational tool is rarely ready to use as-is; cleaning it up, like removing irrelevant responses from a survey, is what makes it actually useful and reliable.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-DA-09">
+<h3><a class="anchor-link" href="#S-2-DA-09">#</a><span class="code-badge">2-DA-09</span></h3>
+<p class="paraphrase">A computational model gets better by comparing what it predicted against what actually happened, then adjusting the model based on that gap.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-DA-09">
+<h3><a class="anchor-link" href="#S-3A-DA-09">#</a><span class="code-badge">3A-DA-09</span></h3>
+<p class="paraphrase">The same real-world thing, a letter, a number, a color, can be represented in more than one bit-level encoding, and you should be able to convert between them.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-DA-10">
+<h3><a class="anchor-link" href="#S-3A-DA-10">#</a><span class="code-badge">3A-DA-10</span></h3>
+<p class="paraphrase">Where and how you store data, like locally versus in the cloud, involves real tradeoffs in cost, speed, and privacy, not just a technical preference.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-DA-11">
+<h3><a class="anchor-link" href="#S-3A-DA-11">#</a><span class="code-badge">3A-DA-11</span></h3>
+<p class="paraphrase">A good interactive visualization, built with the right software tool, can make a real-world pattern clear to someone who'd never see it in a raw data table.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-DA-12">
+<h3><a class="anchor-link" href="#S-3A-DA-12">#</a><span class="code-badge">3A-DA-12</span></h3>
+<p class="paraphrase">A computational model built from real data can capture how its pieces actually relate to each other, then be tested against more data to see if it holds up.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-DA-05">
+<h3><a class="anchor-link" href="#S-3B-DA-05">#</a><span class="code-badge">3B-DA-05</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">The right data analysis tool can surface a real pattern, like a trend in social media activity or shopping behavior, that's invisible in the raw numbers.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-DA-06">
+<h3><a class="anchor-link" href="#S-3B-DA-06">#</a><span class="code-badge">3B-DA-06</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Which data collection tool or technique you choose should be driven by the claim you're trying to support, not picked out of convenience.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-DA-07">
+<h3><a class="anchor-link" href="#S-3B-DA-07">#</a><span class="code-badge">3B-DA-07</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">A model or simulation is only useful for testing a hypothesis if you can actually judge how well it does that job, which is its own skill.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<section class="big-idea" id="IC">
+<h2><a class="anchor-link" href="#IC">#</a><span class="code-badge">IC</span> Impacts of Computing</h2>
+<div class="topic" id="S-2-IC-20">
+<h3><a class="anchor-link" href="#S-2-IC-20">#</a><span class="code-badge">2-IC-20</span></h3>
+<p class="paraphrase">A new computing technology, like a driverless car, is never purely good or purely bad for daily life and careers, and naming the actual tradeoff is the point.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-IC-21">
+<h3><a class="anchor-link" href="#S-2-IC-21">#</a><span class="code-badge">2-IC-21</span></h3>
+<p class="paraphrase">A technology tested mostly on one kind of user, like facial recognition trained on lighter skin tones, can end up biased or inaccessible in ways worth discussing directly, not glossing over.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-IC-22">
+<h3><a class="anchor-link" href="#S-2-IC-22">#</a><span class="code-badge">2-IC-22</span></h3>
+<p class="paraphrase">Gathering ideas or content from a large group, whether that's a classroom or an online community, is a real strategy for building something, not a shortcut around real collaboration.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-IC-23">
+<h3><a class="anchor-link" href="#S-2-IC-23">#</a><span class="code-badge">2-IC-23</span></h3>
+<p class="paraphrase">Sharing information publicly can build an audience or a reputation, but it also opens the door to the kind of personal information that makes social engineering attacks work, and weighing that tradeoff is the actual skill.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-IC-24">
+<h3><a class="anchor-link" href="#S-3A-IC-24">#</a><span class="code-badge">3A-IC-24</span></h3>
+<p class="paraphrase">Computing doesn't just change what's technically possible, it reshapes personal, ethical, social, economic, and cultural practices, and those effects are worth evaluating directly.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-IC-25">
+<h3><a class="anchor-link" href="#S-3A-IC-25">#</a><span class="code-badge">3A-IC-25</span></h3>
+<p class="paraphrase">An artifact can carry bias or leave some users out without anyone intending it, which is why testing specifically for that and refining the design is its own step.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-IC-26">
+<h3><a class="anchor-link" href="#S-3A-IC-26">#</a><span class="code-badge">3A-IC-26</span></h3>
+<p class="paraphrase">The same algorithm can often solve problems in more than one field, and showing that connection is part of understanding what the algorithm actually does.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-IC-27">
+<h3><a class="anchor-link" href="#S-3A-IC-27">#</a><span class="code-badge">3A-IC-27</span></h3>
+<p class="paraphrase">The right collaboration tools can connect a project team across cultures and career fields that would otherwise never cross paths.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-IC-28">
+<h3><a class="anchor-link" href="#S-3A-IC-28">#</a><span class="code-badge">3A-IC-28</span></h3>
+<p class="paraphrase">Intellectual property law cuts both ways: it can protect a creator's incentive to innovate, and it can also be used to block others from building on that work.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-IC-29">
+<h3><a class="anchor-link" href="#S-3A-IC-29">#</a><span class="code-badge">3A-IC-29</span></h3>
+<p class="paraphrase">A lot of data gets collected automatically, without a user ever noticing, which raises privacy concerns that are easy to miss if you only think about the data you knowingly hand over.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-IC-30">
+<h3><a class="anchor-link" href="#S-3A-IC-30">#</a><span class="code-badge">3A-IC-30</span></h3>
+<p class="paraphrase">Privacy isn't just a personal preference, it has social and economic consequences that show up in debates over safety, law, and ethics.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-IC-25">
+<h3><a class="anchor-link" href="#S-3B-IC-25">#</a><span class="code-badge">3B-IC-25</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Building something isn't neutral, and evaluating it for both its benefits and its potential harms to society is part of finishing the job.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-IC-26">
+<h3><a class="anchor-link" href="#S-3B-IC-26">#</a><span class="code-badge">3B-IC-26</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Who actually gets access to computing resources worldwide is shaped by equity and influence, not just availability, and that unevenness has real consequences.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-IC-27">
+<h3><a class="anchor-link" href="#S-3B-IC-27">#</a><span class="code-badge">3B-IC-27</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Looking at how computing has already reshaped a field, like healthcare or entertainment, is a reasonable basis for predicting where it goes next.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-IC-28">
+<h3><a class="anchor-link" href="#S-3B-IC-28">#</a><span class="code-badge">3B-IC-28</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Laws and regulations around software aren't settled facts, they're genuinely debatable, and forming a position on one is part of understanding it.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<section class="big-idea" id="NI">
+<h2><a class="anchor-link" href="#NI">#</a><span class="code-badge">NI</span> Networks &amp; the Internet</h2>
+<div class="topic" id="S-2-NI-04">
+<h3><a class="anchor-link" href="#S-2-NI-04">#</a><span class="code-badge">2-NI-04</span></h3>
+<p class="paraphrase">Protocols are the rules that decide how a message actually gets across a network quickly, correctly, and with errors handled, and modeling that role is different from just naming the protocol.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-NI-05">
+<h3><a class="anchor-link" href="#S-2-NI-05">#</a><span class="code-badge">2-NI-05</span></h3>
+<p class="paraphrase">Keeping electronic information safe takes both physical safeguards, like locked doors, and digital ones, like firewalls and HTTPS, and explaining how each actually protects the data is the point.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-2-NI-06">
+<h3><a class="anchor-link" href="#S-2-NI-06">#</a><span class="code-badge">2-NI-06</span></h3>
+<p class="paraphrase">Trying out more than one encryption method yourself, from a simple letter-substitution cipher up to modeling public-key encryption, is how the idea of "securing a message" stops being abstract.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-NI-04">
+<h3><a class="anchor-link" href="#S-3A-NI-04">#</a><span class="code-badge">3A-NI-04</span></h3>
+<p class="paraphrase">How well a network scales and holds up depends on how its routers, switches, servers, layout, and addressing all work together, not any one piece alone.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-NI-05">
+<h3><a class="anchor-link" href="#S-3A-NI-05">#</a><span class="code-badge">3A-NI-05</span></h3>
+<p class="paraphrase">Real attacks like ransomware or phishing show concretely how sensitive data can be exposed or destroyed, which is why studying actual incidents teaches more than an abstract warning.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-NI-06">
+<h3><a class="anchor-link" href="#S-3A-NI-06">#</a><span class="code-badge">3A-NI-06</span></h3>
+<p class="paraphrase">Choosing a security measure for a given situation means weighing more than just how well it works -- its efficiency, feasibility, and ethical impact matter too.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-NI-07">
+<h3><a class="anchor-link" href="#S-3A-NI-07">#</a><span class="code-badge">3A-NI-07</span></h3>
+<p class="paraphrase">Tighter security almost always costs something in usability, and picking a security measure means being honest about that tradeoff.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3A-NI-08">
+<h3><a class="anchor-link" href="#S-3A-NI-08">#</a><span class="code-badge">3A-NI-08</span></h3>
+<p class="paraphrase">Every cybersecurity recommendation trades something away, and justifying a choice means being able to explain that tradeoff to whoever has to live with it.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-NI-03">
+<h3><a class="anchor-link" href="#S-3B-NI-03">#</a><span class="code-badge">3B-NI-03</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">A network's real-world performance comes down to concrete factors like bandwidth, load, delay, and topology, and a network simulator is a reasonable way to see how each one bites.</p>
+<p class="meta">Unassigned</p>
+</div>
+<div class="topic" id="S-3B-NI-04">
+<h3><a class="anchor-link" href="#S-3B-NI-04">#</a><span class="code-badge">3B-NI-04</span></h3>
+<p class="note">Level 3B: elective/specialty, not required of all students.</p>
+<p class="paraphrase">Developers protect a system from unauthorized access with several different tools working together -- encryption, authentication, secure coding, key management -- and each has its own strengths.</p>
+<p class="meta">Unassigned</p>
+</div>
+</section>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+</body>
+</html>

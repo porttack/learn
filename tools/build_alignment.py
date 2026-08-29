@@ -16,13 +16,14 @@ Outputs, into --out:
   apcsp-standards-reference.html
   ca-cs-standards-reference.html
   csta2026-standards-reference.html
+  csta2017-standards-reference.html
   ca-ict-anchor-standards-reference.html
   standards-alignment.md   (by-locator, by-standard, and gap views, plus a
                              per-framework coverage summary)
 
 Anchor scheme (fixed, matches existing external links -- do not change):
   T-<code>  AP CSP topics, CSTA 2026, CA ICT
-  S-<code>  California 9-12
+  S-<code>  California 9-12, CSTA 2017
   bare P1..P6, bare big-idea ids (CRD/DAT/...), bare LO/EK codes
 """
 import argparse
@@ -400,6 +401,52 @@ are reproduced as-is."""
     return page("CA CS Standards Reference", "\n".join(toc), "\n".join(body), provenance)
 
 
+# ---------- CSTA 2017 ----------
+
+def render_csta2017(catalog, cov, scope_label):
+    by_strand = {}
+    for s in catalog["standards"]:
+        by_strand.setdefault(s["strand"], []).append(s)
+    strand_names = {s["strand"]: s["strand_name"] for s in catalog["standards"]}
+
+    toc = []
+    for strand in sorted(by_strand):
+        toc.append(f'<h2><a href="#{strand}">{strand} · {esc(strand_names[strand])}</a></h2><ul>')
+        for s in by_strand[strand]:
+            toc.append(f'<li class="topic-link"><a href="#S-{s["code"]}">{s["code"]}</a></li>')
+        toc.append("</ul>")
+
+    body = []
+    for strand in sorted(by_strand):
+        body.append(f'<section class="big-idea" id="{strand}">')
+        body.append(f'<h2><a class="anchor-link" href="#{strand}">#</a><span class="code-badge">{strand}</span> {esc(strand_names[strand])}</h2>')
+        for s in by_strand[strand]:
+            body.append(f'<div class="topic" id="S-{s["code"]}">')
+            body.append(f'<h3><a class="anchor-link" href="#S-{s["code"]}">#</a><span class="code-badge">{s["code"]}</span></h3>')
+            if not s.get("core", True):
+                body.append('<p class="note">Level 3B: elective/specialty, not required of all students.</p>')
+            body.append(f'<p class="paraphrase">{esc(s["paraphrase"])}</p>')
+            line = cov.carrier_html(s["code"])
+            if line:
+                body.append(f'<p class="meta">{line}</p>')
+            for note in cov.notes(s["code"]):
+                body.append(f'<p class="note">{esc(note)}</p>')
+            body.append("</div>")
+        body.append("</section>")
+
+    provenance = """<strong>What this is.</strong> A locally built index of the CSTA K-12 Computer
+Science Standards, Revised 2017 (Computer Science Teachers Association) -- Level 2 (grades 6-8)
+and, merged into one 9-12 band, Levels 3A (grades 9-10, required of all students) and 3B (grades
+11-12, elective/specialty, marked as such below), for linking from standards-alignment work.
+<strong>What this is not.</strong> Original paraphrases, not CSTA's text; only codes are reproduced
+as-is. See _standards/crosswalk-castandards-csta2017.json for how these compare to California's own
+K-12 CS standards -- most match closely, but a few diverge in wording or don't correspond to any
+single CA standard."""
+    if scope_label:
+        provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
+    return page("CSTA 2017 Standards Reference", "\n".join(toc), "\n".join(body), provenance)
+
+
 # ---------- CSTA 2026 ----------
 
 def render_csta2026(catalog, cov, scope_label):
@@ -549,6 +596,7 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
         "apcsp": [t["code"] for t in catalogs["apcsp"]["topics"]],
         "castandards": [s["code"] for s in catalogs["castandards"]["standards"]],
         "csta2026": [s["code"] for s in catalogs["csta2026"]["standards"]],
+        "csta2017": [s["code"] for s in catalogs["csta2017"]["standards"]],
         "ca-ict-anchor": [i["code"] for grp in catalogs["ca-ict-anchor"]["anchor_standards"] + catalogs["ca-ict-anchor"]["pathway"]["standards"] for i in grp.get("items", [])],
     }
     for fw, codes in fw_entries.items():
@@ -589,7 +637,7 @@ def main():
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
-    catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in ["apcsp", "castandards", "csta2026", "ca-ict-anchor"]}
+    catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in ["apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor"]}
     sources = set(args.source) if args.source else None
     carrier_files = load_carrier_files(args.carriers, sources)
 
@@ -598,10 +646,11 @@ def main():
     (out / "apcsp-standards-reference.html").write_text(render_apcsp(catalogs["apcsp"], covs["apcsp"], args.scope_label))
     (out / "ca-cs-standards-reference.html").write_text(render_castandards(catalogs["castandards"], covs["castandards"], args.scope_label))
     (out / "csta2026-standards-reference.html").write_text(render_csta2026(catalogs["csta2026"], covs["csta2026"], args.scope_label))
+    (out / "csta2017-standards-reference.html").write_text(render_csta2017(catalogs["csta2017"], covs["csta2017"], args.scope_label))
     (out / "ca-ict-anchor-standards-reference.html").write_text(render_ca_ict(catalogs["ca-ict-anchor"], covs["ca-ict-anchor"], args.scope_label))
     (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))
 
-    print(f"Wrote 5 files to {out}/ from {len(carrier_files)} carrier source(s): {sorted(carrier_files)}")
+    print(f"Wrote 6 files to {out}/ from {len(carrier_files)} carrier source(s): {sorted(carrier_files)}")
 
 
 if __name__ == "__main__":

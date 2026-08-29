@@ -188,6 +188,61 @@
 
   var badgeRegistry = []; // { el, code, framework, covering: [source,...] }
 
+  // ---------- Crosswalk: hand-built code-to-code comparisons between two frameworks ----------
+  //
+  // Separate from Coverage (which joins a framework's own catalog against content
+  // carriers) -- this joins two *catalogs* against each other, for the "compare
+  // these standards' actual wording" feature in each badge's tooltip. Populated
+  // once at boot from manifest.crosswalks; a framework/code with no row here just
+  // renders no cross-reference, same as an unmapped carrier renders "Unassigned".
+  var crosswalkIndex = {}; // "<framework> <code>" -> [{framework, code, strength, note}, ...]
+  var catalogEntryByCode = {}; // framework -> code -> catalog standard entry (for the compare-text expansion)
+  var FRAMEWORK_LABELS = { castandards: 'CA', csta2017: 'CSTA 2017' };
+
+  function frameworkLabel(framework) {
+    return FRAMEWORK_LABELS[framework] || framework;
+  }
+
+  function buildCrosswalkIndex(crosswalkResults) {
+    var index = {};
+    function add(framework, code, entry) {
+      var key = framework + ' ' + code;
+      (index[key] = index[key] || []).push(entry);
+    }
+    crosswalkResults.forEach(function (pair) {
+      var meta = pair[0], data = pair[1];
+      var a = meta.between[0], b = meta.between[1];
+      (data.crosswalk || []).forEach(function (row) {
+        add(a, row[a], { framework: b, code: row[b], strength: row.strength, note: row.note });
+        add(b, row[b], { framework: a, code: row[a], strength: row.strength, note: row.note });
+      });
+    });
+    return index;
+  }
+
+  function lookupCrossRefs(framework, code) {
+    return crosswalkIndex[framework + ' ' + code] || [];
+  }
+
+  function crosswalkHtml(refs) {
+    if (!refs.length) return '';
+    return '<div class="tt-crosswalk">' + refs.map(function (r) {
+      var other = (catalogEntryByCode[r.framework] || {})[r.code];
+      var detail = other
+        ? '<div class="tt-xref-code">' + esc(r.code) + (other.strand_name ? ' · ' + esc(other.strand_name) : '') + '</div>' +
+          '<div class="tt-xref-text">' + esc(other.paraphrase) + '</div>' +
+          (r.note ? '<div class="tt-xref-note">' + esc(r.note) + '</div>' : '')
+        : esc(r.code);
+      return (
+        '<button type="button" class="tt-xref-toggle" aria-expanded="false">' +
+        '<span class="tt-xref-chevron">▸</span> ↔ ' + esc(frameworkLabel(r.framework)) + ' ' + esc(r.code) +
+        ' <span class="tt-xref-strength">(' + esc(r.strength) + ')</span>' +
+        '</button>' +
+        '<div class="tt-xref-detail" hidden>' + detail + '</div>'
+      );
+    }).join('') + '</div>';
+  }
+
   // A sub-type accent (a faint border/shadow tint on each badge, showing which
   // Big Idea/Strand/Concept it belongs to) only reads as information, not noise,
   // when there are few enough groups to keep every hue clearly distinct at a
@@ -215,6 +270,7 @@
       '<div class="cov-tooltip" role="dialog">' +
       '<div class="tt-code">' + heading + '</div>' +
       '<div class="tt-paraphrase">' + esc(paraphrase) + '</div>' +
+      crosswalkHtml(lookupCrossRefs(framework, code)) +
       '<div class="tt-source"></div>' +
       '</div>' +
       '</div>'
@@ -252,7 +308,11 @@
     }).join('\n');
   }
 
-  function renderCastandardsPanel(catalog, gradeBand) {
+  // Shared by castandards.json and csta2017.json -- both are a flat
+  // strand/grade_band-tagged standards list (CS/NI/DA/AP/IC), just from
+  // different frameworks, so the same grouping logic renders either one.
+  function renderCastandardsPanel(catalog, gradeBand, framework) {
+    framework = framework || 'castandards';
     var strandNames = {};
     var byStrand = {};
     catalog.standards.forEach(function (s) {
@@ -266,7 +326,7 @@
     // accent color in both the 6-8 and 9-12 panels.
     return STRAND_ORDER.filter(function (s) { return byStrand[s]; }).map(function (strand) {
       var hue = groupHue(STRAND_ORDER.indexOf(strand), STRAND_ORDER.length);
-      return renderGroupGrid(strand + ' · ' + strandNames[strand], byStrand[strand], 'castandards', hue);
+      return renderGroupGrid(strand + ' · ' + strandNames[strand], byStrand[strand], framework, hue);
     }).join('\n');
   }
 
@@ -380,6 +440,23 @@
     });
   }
 
+  // A cross-reference chevron expands in place, inside the same tooltip, rather
+  // than opening a nested floating tooltip -- so comparing the two standards'
+  // actual wording never needs more than one thing open at once. stopPropagation
+  // keeps this click from reaching the document-level listener above that closes
+  // the badge's tooltip on any outside click.
+  function wireCrossRefToggles() {
+    document.querySelectorAll('.tt-xref-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!expanded));
+        btn.querySelector('.tt-xref-chevron').textContent = expanded ? '▸' : '▾';
+        btn.nextElementSibling.hidden = expanded;
+      });
+    });
+  }
+
   // ---------- Sidebar: one checkbox per manifest source, all checked by default ----------
 
   function renderSourcePicker(manifest, carrierFiles, onChange) {
@@ -452,12 +529,23 @@
     var catalogFetches = manifest.catalog.map(function (name) {
       return fetchJSON(DATA_BASE + 'catalog/' + name + '.json').then(function (data) { return [name, data]; });
     });
+    var crosswalkFetches = (manifest.crosswalks || []).map(function (c) {
+      return fetchJSON(DATA_BASE + 'crosswalk/' + c.file).then(function (data) { return [c, data]; });
+    });
 
-    return Promise.all([Promise.all(carrierFetches), Promise.all(catalogFetches)]).then(function (results) {
+    return Promise.all([Promise.all(carrierFetches), Promise.all(catalogFetches), Promise.all(crosswalkFetches)]).then(function (results) {
       var carrierFiles = {};
       results[0].forEach(function (pair) { carrierFiles[pair[0]] = pair[1]; });
       var catalogs = {};
       results[1].forEach(function (pair) { catalogs[pair[0]] = pair[1]; });
+      crosswalkIndex = buildCrosswalkIndex(results[2]);
+      manifest.catalog.forEach(function (fw) {
+        if (catalogs[fw] && Array.isArray(catalogs[fw].standards)) {
+          var byCode = {};
+          catalogs[fw].standards.forEach(function (s) { byCode[s.code] = s; });
+          catalogEntryByCode[fw] = byCode;
+        }
+      });
 
       injectHueStyle(manifest);
       renderSourcePicker(manifest, carrierFiles, handleToggle);
@@ -467,12 +555,14 @@
 
       var panels = [
         ['AP Computer Science Principles', renderApcspPanel(catalogs.apcsp)],
-        ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12')],
+        ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12', 'castandards')],
+        ['CSTA 2017 (Grades 9-12)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017')],
         ['CSTA 2026', renderCsta2026Panel(catalogs.csta2026)],
         ['California CTE (ICT)', renderCaIctPanel(catalogs['ca-ict-anchor'])],
-        // Last, deliberately: this is the only middle-school-level panel among
-        // otherwise all-high-school frameworks.
-        ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8')],
+        // Last, deliberately: these two are the only middle-school-level panels
+        // among otherwise all-high-school frameworks.
+        ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8', 'castandards')],
+        ['CSTA 2017 (Grades 6-8)', renderCastandardsPanel(catalogs.csta2017, '6-8', 'csta2017')],
       ];
       // Each panel is a native <details>, open by default -- collapsing one
       // shrinks it to just its title bar (the chevron before the heading),
@@ -497,6 +587,7 @@
       handleToggle(); // initial paint, all sources checked
 
       wireBadgeInteractions(coverageByFramework, checkedSourceSet);
+      wireCrossRefToggles();
     });
   }).catch(function (err) {
     document.getElementById('panels').innerHTML =

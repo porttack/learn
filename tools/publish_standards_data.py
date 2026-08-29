@@ -17,7 +17,15 @@ import json
 import shutil
 from pathlib import Path
 
-CATALOG_FILES = ["apcsp", "castandards", "csta2026", "ca-ict-anchor"]
+CATALOG_FILES = ["apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor"]
+
+# Pairs of catalogs with a hand-built crosswalk file (see _standards/README.md).
+# "between" names the two frameworks in the order the crosswalk file's own row
+# keys use, so the client can build a bidirectional lookup without guessing
+# which key is which.
+CROSSWALKS = [
+    {"between": ["castandards", "csta2017"], "file": "castandards-csta2017.json"},
+]
 
 # Validated this session: node scripts/validate_palette.js "<hexes>" --mode light/dark,
 # both PASS every hard gate on the *adjacent* pairlist (worst adjacent CVD ~9 light /
@@ -77,9 +85,13 @@ def main():
     out = Path(args.out)
     (out / "catalog").mkdir(parents=True, exist_ok=True)
     (out / "carriers").mkdir(parents=True, exist_ok=True)
+    (out / "crosswalk").mkdir(parents=True, exist_ok=True)
 
     for name in CATALOG_FILES:
         shutil.copy(catalog_dir / f"{name}.json", out / "catalog" / f"{name}.json")
+
+    for crosswalk in CROSSWALKS:
+        shutil.copy(catalog_dir / f"crosswalk-{crosswalk['file']}", out / "crosswalk" / crosswalk["file"])
 
     manifest_sources = []
     for slot, source in enumerate(SOURCE_ORDER, start=1):
@@ -101,9 +113,12 @@ def main():
             }
         )
 
-    manifest = {"catalog": CATALOG_FILES, "sources": manifest_sources}
+    manifest = {"catalog": CATALOG_FILES, "sources": manifest_sources, "crosswalks": CROSSWALKS}
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n")
-    print(f"Published {len(CATALOG_FILES)} catalog file(s) and {len(manifest_sources)} carrier file(s) to {out}/")
+    print(
+        f"Published {len(CATALOG_FILES)} catalog file(s), {len(manifest_sources)} carrier file(s), "
+        f"and {len(CROSSWALKS)} crosswalk file(s) to {out}/"
+    )
 
 
 if __name__ == "__main__":

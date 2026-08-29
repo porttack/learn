@@ -1,0 +1,355 @@
+{
+ "meta": {
+  "built": "2026-08-29",
+  "method": "Every row was built by reading castandards.json's paraphrase against csta2017.json's paraphrase (itself written straight from CSTA's own text, never from CA's) side by side -- not by matching code numbers, which turn out not to line up reliably once CA's 9-12 band merges CSTA's separate Level 3A and 3B. A CA code can appear more than once when it genuinely compresses more than one CSTA standard into a single statement; a CSTA code with no row here has no honest CA counterpart (most of Level 3B falls in that category, since CA's core 9-12 set only draws from Level 3A's AP strand and a handful of 3B's other standards). Consumed by assets/js/standards-coverage.js to drive the coverage map's cross-framework compare-text feature.",
+  "strength_definitions": {
+   "strong": "same claim, close enough in wording and scope that the two are teaching the same thing",
+   "partial": "same general topic, but one side's phrasing adds, drops, or reframes something the other doesn't say",
+   "related": "adjacent territory -- worth surfacing, but close reading shows they are not actually the same standard"
+  }
+ },
+ "crosswalk": [
+  {
+   "castandards": "6-8.CS.1",
+   "csta2017": "2-CS-01",
+   "strength": "strong",
+   "note": "Same standard: recommending device-design improvements from watching how users interact with it."
+  },
+  {
+   "castandards": "6-8.CS.2",
+   "csta2017": "2-CS-02",
+   "strength": "strong",
+   "note": "Same standard: combining hardware and software components to collect and exchange data."
+  },
+  {
+   "castandards": "6-8.CS.3",
+   "csta2017": "2-CS-03",
+   "strength": "strong",
+   "note": "Same standard, including CSTA's own point that a problem may be in a connected device rather than the device itself."
+  },
+  {
+   "castandards": "6-8.NI.4",
+   "csta2017": "2-NI-04",
+   "strength": "strong",
+   "note": "Same standard: modeling the role of protocols in transmitting data across a network."
+  },
+  {
+   "castandards": "6-8.NI.5",
+   "csta2017": "2-NI-05",
+   "strength": "partial",
+   "note": "CA's paraphrase frames this around choosing a countermeasure for a given threat. CSTA's actual standard is the more descriptive ask of explaining how physical and digital security measures protect information, without yet requiring students to weigh threats against each other."
+  },
+  {
+   "castandards": "6-8.NI.6",
+   "csta2017": "2-NI-06",
+   "strength": "strong",
+   "note": "Same standard: combining multiple encryption methods to model secure transmission."
+  },
+  {
+   "castandards": "6-8.DA.7",
+   "csta2017": "2-DA-07",
+   "strength": "strong",
+   "note": "Same standard: representing the same data with multiple encoding schemes."
+  },
+  {
+   "castandards": "6-8.DA.8",
+   "csta2017": "2-DA-08",
+   "strength": "strong",
+   "note": "Same standard: transforming collected data to make it more useful and reliable."
+  },
+  {
+   "castandards": "6-8.DA.9",
+   "csta2017": "2-DA-09",
+   "strength": "partial",
+   "note": "CA's paraphrase leans on a change-one-variable-at-a-time framing. CSTA's actual standard is about refining a model against the data it generated, without that controlled-variable emphasis specifically."
+  },
+  {
+   "castandards": "6-8.AP.10",
+   "csta2017": "2-AP-10",
+   "strength": "strong",
+   "note": "Same standard: using flowcharts or pseudocode to work out an algorithm before writing real code."
+  },
+  {
+   "castandards": "6-8.AP.11",
+   "csta2017": "2-AP-11",
+   "strength": "strong",
+   "note": "Same standard: naming variables clearly enough that the operations on them make sense."
+  },
+  {
+   "castandards": "6-8.AP.12",
+   "csta2017": "2-AP-12",
+   "strength": "strong",
+   "note": "Same standard: combining nested loops and compound conditionals, developed iteratively."
+  },
+  {
+   "castandards": "6-8.AP.13",
+   "csta2017": "2-AP-13",
+   "strength": "strong",
+   "note": "Same standard: decomposing a problem into subproblems to make a program easier to build and review."
+  },
+  {
+   "castandards": "6-8.AP.14",
+   "csta2017": "2-AP-14",
+   "strength": "strong",
+   "note": "Same standard: procedures with parameters, reusable across inputs."
+  },
+  {
+   "castandards": "6-8.AP.15",
+   "csta2017": "2-AP-15",
+   "strength": "strong",
+   "note": "Same standard, close to verbatim: seeking and incorporating feedback from teammates and users."
+  },
+  {
+   "castandards": "6-8.AP.16",
+   "csta2017": "2-AP-16",
+   "strength": "strong",
+   "note": "Same standard: reusing existing code, media, or libraries with attribution."
+  },
+  {
+   "castandards": "6-8.AP.17",
+   "csta2017": "2-AP-17",
+   "strength": "strong",
+   "note": "Same standard: testing with a deliberate range of test cases, not just the expected one."
+  },
+  {
+   "castandards": "6-8.AP.18",
+   "csta2017": "2-AP-18",
+   "strength": "strong",
+   "note": "Same standard: distributing tasks and keeping a shared timeline on a team project."
+  },
+  {
+   "castandards": "6-8.AP.19",
+   "csta2017": "2-AP-19",
+   "strength": "strong",
+   "note": "Same standard: documenting a program so someone else can follow, test, and debug it."
+  },
+  {
+   "castandards": "6-8.IC.20",
+   "csta2017": "2-IC-20",
+   "strength": "strong",
+   "note": "Same standard: weighing the tradeoffs of a computing technology's effect on daily life and careers."
+  },
+  {
+   "castandards": "6-8.IC.21",
+   "csta2017": "2-IC-21",
+   "strength": "strong",
+   "note": "Same standard: discussing bias and accessibility problems in existing technology's design."
+  },
+  {
+   "castandards": "6-8.IC.22",
+   "csta2017": "2-IC-22",
+   "strength": "strong",
+   "note": "Same standard: collaborating with many contributors, e.g. through crowdsourcing, on a computational artifact."
+  },
+  {
+   "castandards": "6-8.IC.24",
+   "csta2017": "2-IC-23",
+   "strength": "strong",
+   "note": "Numbering shifts here: CA's IC.24 (public-vs-private-information tradeoff) is CSTA's 2-IC-23. CA's own IC.23 slot went to an added licensing standard with no Level 2 counterpart -- see that entry's note in castandards.json, and its absence from this crosswalk."
+  },
+  {
+   "castandards": "9-12.CS.1",
+   "csta2017": "3A-CS-01",
+   "strength": "strong",
+   "note": "Same standard: abstractions hiding a computing system's implementation details inside an everyday object."
+  },
+  {
+   "castandards": "9-12.CS.2",
+   "csta2017": "3A-CS-02",
+   "strength": "strong",
+   "note": "Same standard: application software, system software, and hardware as interacting layers of abstraction."
+  },
+  {
+   "castandards": "9-12.CS.3",
+   "csta2017": "3A-CS-03",
+   "strength": "strong",
+   "note": "Same standard: writing down a systematic troubleshooting process so someone else can use it."
+  },
+  {
+   "castandards": "9-12.NI.4",
+   "csta2017": "3B-NI-03",
+   "strength": "strong",
+   "note": "CA's NI.4 (organizational performance demands: latency, bandwidth, throughput) is actually the Level 3B standard on network-functionality issues (bandwidth, load, delay, topology), not a Level 3A one -- CA folded a Level 3B standard into a lower-numbered slot when it merged 3A and 3B into one 9-12 band."
+  },
+  {
+   "castandards": "9-12.NI.5",
+   "csta2017": "3A-NI-04",
+   "strength": "strong",
+   "note": "CA's NI.5 (address lookup and routing letting the internet scale and stay reliable) is CSTA's 3A-NI-04 (routers, switches, servers, topology, addressing) -- the numbers are effectively swapped relative to NI.4/3B-NI-03 above, an artifact of merging 3A and 3B into one band."
+  },
+  {
+   "castandards": "9-12.NI.6",
+   "csta2017": "3A-NI-06",
+   "strength": "partial",
+   "note": "CA compresses three CSTA cybersecurity standards into one general \"different threats, different defenses, real tradeoff\" statement: recommending measures by efficiency/feasibility/ethics (this one, 3A-NI-06), comparing usability-vs-security tradeoffs (3A-NI-07), and explaining tradeoffs when implementing a recommendation (3A-NI-08)."
+  },
+  {
+   "castandards": "9-12.NI.6",
+   "csta2017": "3A-NI-07",
+   "strength": "partial",
+   "note": "See the note on 3A-NI-06 -- CA's NI.6 also covers this usability-vs-security-tradeoffs standard."
+  },
+  {
+   "castandards": "9-12.NI.6",
+   "csta2017": "3A-NI-08",
+   "strength": "partial",
+   "note": "See the note on 3A-NI-06 -- CA's NI.6 also covers this tradeoffs-of-implementation standard."
+  },
+  {
+   "castandards": "9-12.NI.7",
+   "csta2017": "3A-NI-05",
+   "strength": "related",
+   "note": "CA's NI.7 is specifically about symmetric-vs-asymmetric encryption tradeoffs, a claim CSTA's own 9-12 standards never actually state (public-key encryption appears only as a Level 2/6-8 example). The closest CSTA standard in the same Cybersecurity subconcept is 3A-NI-05, on how malware and other attacks affect sensitive data, but it is not the same claim."
+  },
+  {
+   "castandards": "9-12.DA.8",
+   "csta2017": "3A-DA-09",
+   "strength": "strong",
+   "note": "Same standard: translating a real-world thing between different bit representations."
+  },
+  {
+   "castandards": "9-12.DA.9",
+   "csta2017": "3A-DA-10",
+   "strength": "strong",
+   "note": "Same standard, down to the same tradeoff list: cost, speed, reliability, accessibility, privacy, integrity."
+  },
+  {
+   "castandards": "9-12.DA.10",
+   "csta2017": "3A-DA-11",
+   "strength": "partial",
+   "note": "CA frames this around a visualization being a design choice that shapes what people take away from it -- a persuasion/interpretation emphasis. CSTA's 3A-DA-11 frames the same activity around using software tools to help others understand a real-world phenomenon -- a tool-use emphasis."
+  },
+  {
+   "castandards": "9-12.DA.11",
+   "csta2017": "3A-DA-12",
+   "strength": "partial",
+   "note": "CA's DA.11 (checking a model against real observations and adjusting it) matches 3A-DA-12's own clarifying text about validating a model against real-world data, but CSTA's 3B-DA-07 (evaluating a model's or simulation's ability to test a hypothesis) covers closely related territory that CA doesn't index separately."
+  },
+  {
+   "castandards": "9-12.AP.12",
+   "csta2017": "3A-AP-13",
+   "strength": "partial",
+   "note": "CA's AP.12 frames this as combining a known algorithm with one you design yourself. CSTA's 3A-AP-13 is about building prototypes from prior knowledge and personal interest -- related, but CA adds a \"combine known + new\" framing CSTA doesn't state."
+  },
+  {
+   "castandards": "9-12.AP.13",
+   "csta2017": "3A-AP-14",
+   "strength": "strong",
+   "note": "Same standard: lists replacing a pile of separately named variables."
+  },
+  {
+   "castandards": "9-12.AP.14",
+   "csta2017": "3A-AP-15",
+   "strength": "strong",
+   "note": "Same standard: justifying a control-structure choice on implementation, readability, and performance tradeoffs."
+  },
+  {
+   "castandards": "9-12.AP.15",
+   "csta2017": "3A-AP-16",
+   "strength": "strong",
+   "note": "Same standard: events initiating instructions in an iteratively developed artifact."
+  },
+  {
+   "castandards": "9-12.AP.16",
+   "csta2017": "3A-AP-17",
+   "strength": "strong",
+   "note": "Same standard: decomposing a problem into procedures, modules, or objects."
+  },
+  {
+   "castandards": "9-12.AP.17",
+   "csta2017": "3A-AP-18",
+   "strength": "strong",
+   "note": "Same standard: an artifact built from procedures, data-plus-procedures, or interrelated programs."
+  },
+  {
+   "castandards": "9-12.AP.18",
+   "csta2017": "3A-AP-19",
+   "strength": "strong",
+   "note": "Same standard, close to verbatim: systematically designing for broad audiences using their feedback."
+  },
+  {
+   "castandards": "9-12.AP.19",
+   "csta2017": "3A-AP-20",
+   "strength": "strong",
+   "note": "Same standard: evaluating licenses that restrict use of a library or other resource."
+  },
+  {
+   "castandards": "9-12.AP.20",
+   "csta2017": "3A-AP-21",
+   "strength": "strong",
+   "note": "Same standard, with CA adding \"performance\" to the list of what testing improves; CSTA's own wording names usability and accessibility only."
+  },
+  {
+   "castandards": "9-12.AP.21",
+   "csta2017": "3A-AP-22",
+   "strength": "strong",
+   "note": "Same standard: designing in team roles using collaborative tools."
+  },
+  {
+   "castandards": "9-12.AP.22",
+   "csta2017": "3A-AP-23",
+   "strength": "strong",
+   "note": "Same standard: documenting design decisions in whatever form fits, for a complex program."
+  },
+  {
+   "castandards": "9-12.IC.23",
+   "csta2017": "3A-IC-24",
+   "strength": "strong",
+   "note": "CA drops \"ethical\" from CSTA's list of practices computing impacts, otherwise the same standard."
+  },
+  {
+   "castandards": "9-12.IC.24",
+   "csta2017": "3A-IC-25",
+   "strength": "strong",
+   "note": "Same standard: testing and refining an artifact to reduce bias and equity deficits."
+  },
+  {
+   "castandards": "9-12.IC.25",
+   "csta2017": "3A-IC-26",
+   "strength": "strong",
+   "note": "Same standard: one algorithm applying to problems across more than one discipline."
+  },
+  {
+   "castandards": "9-12.IC.26",
+   "csta2017": "3B-IC-25",
+   "strength": "related",
+   "note": "CA's IC.26 (\"critically examine how new technologies reshape social, economic, and political structures\") doesn't match any single CSTA standard cleanly -- it reads as a blend of 3B-IC-25 (evaluate an artifact's net benefit and harm to society), 3B-IC-26 (evaluate equity, access, and influence in the global distribution of computing resources), and 3B-IC-27 (predict how computing innovations might evolve), none of which CA otherwise indexes."
+  },
+  {
+   "castandards": "9-12.IC.26",
+   "csta2017": "3B-IC-26",
+   "strength": "related",
+   "note": "See the note on 3B-IC-25 -- CA's IC.26 also gestures at this equity/access/influence standard."
+  },
+  {
+   "castandards": "9-12.IC.26",
+   "csta2017": "3B-IC-27",
+   "strength": "related",
+   "note": "See the note on 3B-IC-25 -- CA's IC.26 also gestures at this predict-how-innovations-evolve standard."
+  },
+  {
+   "castandards": "9-12.IC.27",
+   "csta2017": "3A-IC-27",
+   "strength": "strong",
+   "note": "Same standard, close to verbatim, and coincidentally the same number: collaboration tools connecting people across cultures and career fields."
+  },
+  {
+   "castandards": "9-12.IC.28",
+   "csta2017": "3A-IC-28",
+   "strength": "strong",
+   "note": "Same standard, same number: intellectual property law's beneficial and harmful effects on innovation."
+  },
+  {
+   "castandards": "9-12.IC.29",
+   "csta2017": "3A-IC-29",
+   "strength": "strong",
+   "note": "Same standard, same number: privacy concerns from data collected automatically, without users noticing."
+  },
+  {
+   "castandards": "9-12.IC.30",
+   "csta2017": "3A-IC-30",
+   "strength": "strong",
+   "note": "Same standard, same number: evaluating privacy's social and economic implications in a safety/law/ethics context."
+  }
+ ]
+}

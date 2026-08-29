@@ -1,0 +1,739 @@
+{
+ "meta": {
+  "source": "CSTA K-12 Computer Science Standards, Revised 2017 (Computer Science Teachers Association), itself licensed CC BY-NC-SA 4.0",
+  "extracted": "2026-08-29",
+  "grade_band_covered": "6-8, 9-12",
+  "shape_note": "Covers Level 2 (grades 6-8, 23 standards: CS.01-03, NI.04-06, DA.07-09, AP.10-19, IC.20-23) and, merged into a single 9-12 band, Level 3A (grades 9-10, 30 standards: CS.01-03, NI.04-08, DA.09-12, AP.13-23, IC.24-30) plus Level 3B (grades 11-12, 28 standards: CS.01-02, NI.03-04, DA.05-07, AP.08-24, IC.25-28). Per CSTA's own framing, Levels 1A/1B/2/3A are 'the computer science standards for ALL students'; Level 3B is 'intended for students who wish to pursue the study of computer science in high school beyond what is required for all students (specialty or elective courses)' -- carried here with core:false so that distinction survives the 3A/3B merge. Levels 1A (K-2) and 1B (3-5) are out of scope for this project. Each entry's code, level, and strand/subconcept are the framework's own; paraphrase is original, written directly from CSTA's text -- never copied verbatim, and never reused from castandards.json's paraphrases even where the underlying standard is the same, since the point of indexing both frameworks is to let a reader compare their actual wording. See crosswalk-castandards-csta2017.json for that comparison, built by reading each CA 9-12/6-8 standard against this catalog's text: most of California's core set matches a CSTA standard closely, but a handful diverge in emphasis or don't correspond to any single CSTA standard -- notably CA's 6-8.IC.23 (software licensing) has no Level 2 counterpart at all, and CA's core 9-12 AP strand draws entirely from Level 3A, leaving all seventeen of Level 3B's AP standards (AI, classic algorithms, data structures, recursion) unindexed on the CA side."
+ },
+ "standards": [
+  {
+   "code": "2-CS-01",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Watching how people actually use a device, like a laptop or a controller you design yourself, is what turns \"this feels clunky\" into a specific, arguable improvement."
+  },
+  {
+   "code": "2-CS-02",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A project that collects and exchanges data needs hardware and software chosen together, weighing things like cost, size, speed, and how the pieces will actually connect."
+  },
+  {
+   "code": "2-CS-03",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A broken device might be failing because of something connected to it, not the device itself, so troubleshooting needs a structured process, not a guess."
+  },
+  {
+   "code": "2-NI-04",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Protocols are the rules that decide how a message actually gets across a network quickly, correctly, and with errors handled, and modeling that role is different from just naming the protocol."
+  },
+  {
+   "code": "2-NI-05",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Keeping electronic information safe takes both physical safeguards, like locked doors, and digital ones, like firewalls and HTTPS, and explaining how each actually protects the data is the point."
+  },
+  {
+   "code": "2-NI-06",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Trying out more than one encryption method yourself, from a simple letter-substitution cipher up to modeling public-key encryption, is how the idea of \"securing a message\" stops being abstract."
+  },
+  {
+   "code": "2-DA-07",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "The exact same piece of data, like a color, can be written down as binary, as an RGB value, as a hex code, or in plain words, and switching between those representations is a skill in itself."
+  },
+  {
+   "code": "2-DA-08",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Data collected with a computational tool is rarely ready to use as-is; cleaning it up, like removing irrelevant responses from a survey, is what makes it actually useful and reliable."
+  },
+  {
+   "code": "2-DA-09",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A computational model gets better by comparing what it predicted against what actually happened, then adjusting the model based on that gap."
+  },
+  {
+   "code": "2-AP-10",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A problem too complex to solve on the spot can still be organized into an algorithm using a flowchart or pseudocode, even before any real code gets written."
+  },
+  {
+   "code": "2-AP-11",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A variable is a named container whose contents can change, and naming it clearly is what makes the operations you perform on it make sense later."
+  },
+  {
+   "code": "2-AP-12",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Nesting loops inside each other, or combining conditions with AND/OR/NOT, lets a program handle situations a single loop or single condition never could, and getting there takes iteration, not one pass."
+  },
+  {
+   "code": "2-AP-13",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Breaking a problem into subproblems, and those into still smaller parts, is what lets a team, or just one person, focus on one piece of a program at a time."
+  },
+  {
+   "code": "2-AP-14",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A procedure that repeats the same instructions can be generalized with a parameter, so one instruction like \"drawCircle\" can produce circles of any size instead of just one."
+  },
+  {
+   "code": "2-AP-15",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A program only ends up meeting user needs if you actually go get feedback from teammates and users along the way and let it change your design."
+  },
+  {
+   "code": "2-AP-16",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Building on someone else's code, image, or library is a normal part of making something more interesting, as long as you credit where each piece came from."
+  },
+  {
+   "code": "2-AP-17",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Testing a program well means deliberately trying inputs you expect to break it, like zero or a negative number, not just the input you expect to work."
+  },
+  {
+   "code": "2-AP-18",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A team project runs on assigned roles and a shared timeline, not just everyone quietly working on whatever part they feel like."
+  },
+  {
+   "code": "2-AP-19",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Documentation, like a project overview or comments in the code, is what lets someone else actually follow, test, and debug a program you wrote."
+  },
+  {
+   "code": "2-IC-20",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A new computing technology, like a driverless car, is never purely good or purely bad for daily life and careers, and naming the actual tradeoff is the point."
+  },
+  {
+   "code": "2-IC-21",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "A technology tested mostly on one kind of user, like facial recognition trained on lighter skin tones, can end up biased or inaccessible in ways worth discussing directly, not glossing over."
+  },
+  {
+   "code": "2-IC-22",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Gathering ideas or content from a large group, whether that's a classroom or an online community, is a real strategy for building something, not a shortcut around real collaboration."
+  },
+  {
+   "code": "2-IC-23",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "6-8",
+   "level": "2",
+   "core": true,
+   "paraphrase": "Sharing information publicly can build an audience or a reputation, but it also opens the door to the kind of personal information that makes social engineering attacks work, and weighing that tradeoff is the actual skill."
+  },
+  {
+   "code": "3A-CS-01",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Devices you use every day, like a car stereo or a medical monitor, hide the implementation details behind a simpler interface, and you can reason about one without needing to understand the other."
+  },
+  {
+   "code": "3A-CS-02",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "A computer's software stacks in layers, from the app you're using down through the operating system to the physical hardware, and each layer only needs to talk to the ones right next to it."
+  },
+  {
+   "code": "3A-CS-03",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Troubleshooting a hard problem is itself a skill worth writing down, so someone else can follow the same systematic process instead of guessing."
+  },
+  {
+   "code": "3B-CS-01",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "An operating system juggles several distinct jobs at once, like memory management, storage, running processes, and access control, and it helps to be able to name which job is which."
+  },
+  {
+   "code": "3B-CS-02",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Logic, input, and output aren't abstract ideas, they're implemented in real hardware components like logic gates and I/O pins, and you can trace how."
+  },
+  {
+   "code": "3A-NI-04",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "How well a network scales and holds up depends on how its routers, switches, servers, layout, and addressing all work together, not any one piece alone."
+  },
+  {
+   "code": "3A-NI-05",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Real attacks like ransomware or phishing show concretely how sensitive data can be exposed or destroyed, which is why studying actual incidents teaches more than an abstract warning."
+  },
+  {
+   "code": "3A-NI-06",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Choosing a security measure for a given situation means weighing more than just how well it works -- its efficiency, feasibility, and ethical impact matter too."
+  },
+  {
+   "code": "3A-NI-07",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Tighter security almost always costs something in usability, and picking a security measure means being honest about that tradeoff."
+  },
+  {
+   "code": "3A-NI-08",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Every cybersecurity recommendation trades something away, and justifying a choice means being able to explain that tradeoff to whoever has to live with it."
+  },
+  {
+   "code": "3B-NI-03",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "A network's real-world performance comes down to concrete factors like bandwidth, load, delay, and topology, and a network simulator is a reasonable way to see how each one bites."
+  },
+  {
+   "code": "3B-NI-04",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Developers protect a system from unauthorized access with several different tools working together -- encryption, authentication, secure coding, key management -- and each has its own strengths."
+  },
+  {
+   "code": "3A-DA-09",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "The same real-world thing, a letter, a number, a color, can be represented in more than one bit-level encoding, and you should be able to convert between them."
+  },
+  {
+   "code": "3A-DA-10",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Where and how you store data, like locally versus in the cloud, involves real tradeoffs in cost, speed, and privacy, not just a technical preference."
+  },
+  {
+   "code": "3A-DA-11",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "A good interactive visualization, built with the right software tool, can make a real-world pattern clear to someone who'd never see it in a raw data table."
+  },
+  {
+   "code": "3A-DA-12",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "A computational model built from real data can capture how its pieces actually relate to each other, then be tested against more data to see if it holds up."
+  },
+  {
+   "code": "3B-DA-05",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "The right data analysis tool can surface a real pattern, like a trend in social media activity or shopping behavior, that's invisible in the raw numbers."
+  },
+  {
+   "code": "3B-DA-06",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Which data collection tool or technique you choose should be driven by the claim you're trying to support, not picked out of convenience."
+  },
+  {
+   "code": "3B-DA-07",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "A model or simulation is only useful for testing a hypothesis if you can actually judge how well it does that job, which is its own skill."
+  },
+  {
+   "code": "3A-AP-13",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Building a prototype around a problem that actually interests you is a legitimate way to practice applying an algorithm, not just a classroom exercise."
+  },
+  {
+   "code": "3A-AP-14",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "When several near-identical variables start to pile up, a list lets you generalize the pattern instead of repeating nearly the same code for each one."
+  },
+  {
+   "code": "3A-AP-15",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Picking one control structure over another, like a loop instead of recursion, is a real design decision with tradeoffs in readability and performance that you should be able to defend."
+  },
+  {
+   "code": "3A-AP-16",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "An event, like a button press or a location change, can trigger a procedure, which is how real apps built for a practical purpose or a social issue actually respond to their users."
+  },
+  {
+   "code": "3A-AP-17",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Breaking a hard problem down systematically, into procedures, modules, or objects, is what makes it possible to reuse pieces that already exist instead of solving everything from scratch."
+  },
+  {
+   "code": "3A-AP-18",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "A complex artifact is usually a system of smaller interacting pieces, whether that's procedures inside one program or several programs that work together, each with its own role."
+  },
+  {
+   "code": "3A-AP-19",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Designing for a broad audience means building in a systematic way to actually collect feedback from a range of users, then revising based on what you hear."
+  },
+  {
+   "code": "3A-AP-20",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Before you build on someone else's library, its license is worth reading closely, since different licenses restrict what you're allowed to do with the result in different ways."
+  },
+  {
+   "code": "3A-AP-21",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Testing and refining a program isn't just about fixing bugs, it's also the process that makes it more usable and accessible to the people who'll actually use it."
+  },
+  {
+   "code": "3A-AP-22",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Building something as a team means taking on a specific role and using real collaborative tools, like shared code or shared documents, not just splitting up the work informally."
+  },
+  {
+   "code": "3A-AP-23",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "A complex program's design decisions need to be documented somehow, whether that's written notes, diagrams, a presentation, or a live demonstration, so the reasoning survives past the moment you made the choice."
+  },
+  {
+   "code": "3B-AP-08",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Artificial intelligence is already quietly running things like ad delivery, self-driving cars, and fraud detection, and it's worth being able to name where it shows up."
+  },
+  {
+   "code": "3B-AP-09",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Building even a simple AI algorithm, enough to play tic-tac-toe or guess a number, is a concrete way to understand what \"artificial intelligence\" actually means underneath the term."
+  },
+  {
+   "code": "3B-AP-10",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Classic algorithms like sorting and searching aren't just theory, adapting one to fit your actual problem is a normal, practical move."
+  },
+  {
+   "code": "3B-AP-11",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Comparing two algorithms for the same job means weighing all three of efficiency, correctness, and clarity, not just whichever one runs first."
+  },
+  {
+   "code": "3B-AP-12",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Fundamental data structures, strings, lists, stacks, queues, each fit some problems better than others, and choosing between them is a real design decision."
+  },
+  {
+   "code": "3B-AP-13",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Tracing exactly how a recursive algorithm calls itself and unwinds is what actually makes recursion click, more than just reading the definition."
+  },
+  {
+   "code": "3B-AP-14",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "At this level you're expected to build your own components, procedures, modules, or objects, rather than only using ones handed to you."
+  },
+  {
+   "code": "3B-AP-15",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "A large, messy problem usually contains a smaller generalizable pattern, and finding it is what makes the problem solvable at all."
+  },
+  {
+   "code": "3B-AP-16",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Reaching for an existing library or API instead of rebuilding it yourself is a normal, expected way to solve a problem, not a shortcut to avoid."
+  },
+  {
+   "code": "3B-AP-17",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Building software for a real audience benefits from following an actual life cycle process, like agile, spiral, or waterfall, rather than just starting to code."
+  },
+  {
+   "code": "3B-AP-18",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Common weaknesses like missing bounds checks or weak input validation are exactly the kind of thing that turns an ordinary program into a compromised one."
+  },
+  {
+   "code": "3B-AP-19",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "The same program idea often needs real changes to run correctly across different platforms, like desktop, web, and mobile."
+  },
+  {
+   "code": "3B-AP-20",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "A group software project runs on real tooling, version control, an IDE, and documented code, not just splitting up files and hoping they merge."
+  },
+  {
+   "code": "3B-AP-21",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Verifying a program against its own design spec means writing your own deliberate series of test cases, not just running it once and eyeballing the result."
+  },
+  {
+   "code": "3B-AP-22",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Adding a feature to existing code can quietly break something else that depended on the old behavior, and that unintended consequence is worth discussing, not just the intended one."
+  },
+  {
+   "code": "3B-AP-23",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "A code review is where qualities like correctness, readability, and scalability actually get evaluated, not just assumed because the program runs."
+  },
+  {
+   "code": "3B-AP-24",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Different programming languages, block-based versus text, high-level versus low-level, genuinely suit different kinds of problems, and that's a real basis for choosing one."
+  },
+  {
+   "code": "3A-IC-24",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Computing doesn't just change what's technically possible, it reshapes personal, ethical, social, economic, and cultural practices, and those effects are worth evaluating directly."
+  },
+  {
+   "code": "3A-IC-25",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "An artifact can carry bias or leave some users out without anyone intending it, which is why testing specifically for that and refining the design is its own step."
+  },
+  {
+   "code": "3A-IC-26",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "The same algorithm can often solve problems in more than one field, and showing that connection is part of understanding what the algorithm actually does."
+  },
+  {
+   "code": "3A-IC-27",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "The right collaboration tools can connect a project team across cultures and career fields that would otherwise never cross paths."
+  },
+  {
+   "code": "3A-IC-28",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Intellectual property law cuts both ways: it can protect a creator's incentive to innovate, and it can also be used to block others from building on that work."
+  },
+  {
+   "code": "3A-IC-29",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "A lot of data gets collected automatically, without a user ever noticing, which raises privacy concerns that are easy to miss if you only think about the data you knowingly hand over."
+  },
+  {
+   "code": "3A-IC-30",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3A",
+   "core": true,
+   "paraphrase": "Privacy isn't just a personal preference, it has social and economic consequences that show up in debates over safety, law, and ethics."
+  },
+  {
+   "code": "3B-IC-25",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Building something isn't neutral, and evaluating it for both its benefits and its potential harms to society is part of finishing the job."
+  },
+  {
+   "code": "3B-IC-26",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Who actually gets access to computing resources worldwide is shaped by equity and influence, not just availability, and that unevenness has real consequences."
+  },
+  {
+   "code": "3B-IC-27",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Looking at how computing has already reshaped a field, like healthcare or entertainment, is a reasonable basis for predicting where it goes next."
+  },
+  {
+   "code": "3B-IC-28",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12",
+   "level": "3B",
+   "core": false,
+   "paraphrase": "Laws and regulations around software aren't settled facts, they're genuinely debatable, and forming a position on one is part of understanding it."
+  }
+ ]
+}
