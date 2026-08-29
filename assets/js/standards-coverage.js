@@ -470,6 +470,27 @@
     });
   }
 
+  // ---------- Recommendations: one-click "set up the picker for this class" ----------
+  //
+  // Each button names the exact set of sources to check (everything else gets
+  // unchecked -- "turn on X only") and a view preset id matching one of the
+  // view-toggle-btn elements' data-view (wired in wirePanelActions above), so
+  // clicking a recommendation both narrows the sources sidebar and switches to
+  // the matching panel view in one action.
+  function wireRecommendations(handleToggle) {
+    document.querySelectorAll('.reco-link').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var wanted = (btn.getAttribute('data-sources') || '').split(',').filter(Boolean);
+        document.querySelectorAll('#source-list input[type=checkbox]').forEach(function (cb) {
+          cb.checked = wanted.indexOf(cb.getAttribute('data-source')) !== -1;
+        });
+        handleToggle();
+        var viewBtn = document.getElementById('view-show-' + btn.getAttribute('data-view'));
+        if (viewBtn) viewBtn.click();
+      });
+    });
+  }
+
   // ---------- Detail panel (click-to-open), built lazily from current checkbox state ----------
 
   function wireBadgeInteractions(coverageByFramework, getCheckedSources) {
@@ -668,6 +689,7 @@
 
       wireBadgeInteractions(coverageByFramework, checkedSourceSet);
       wireCrossRefToggles();
+      wireRecommendations(handleToggle);
     });
   }).catch(function (err) {
     document.getElementById('panels').innerHTML =

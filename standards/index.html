@@ -95,6 +95,16 @@ noscript p {
 }
 .cov-refs-nav { font-size: .85rem; color: var(--muted); margin: 1.2rem 0 0; line-height: 1.6; }
 .cov-refs-nav a { color: var(--accent); }
+.cov-recommendations { margin: 1.4rem 0 0; font-size: .85rem; }
+.cov-recommendations ul { list-style: none; margin: 0; padding: 0; }
+.cov-recommendations li { margin: .3rem 0; }
+.reco-link {
+  background: none; border: none; padding: 0; color: var(--accent); text-decoration: underline;
+  font: inherit; text-align: left; cursor: pointer;
+}
+.reco-link:hover { color: var(--fg); }
+.reco-link:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.reco-disabled { color: var(--muted); }
 .panel-actions { margin: 0 0 1.2rem; font-size: .85rem; display: flex; gap: .4rem; flex-wrap: wrap; }
 .view-toggle-btn {
   background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
@@ -208,6 +218,16 @@ noscript p {
 </details>
 <div class="cov-refs-nav">
 <a href="alignment/">Coverage detail</a>
+</div>
+<div class="cov-recommendations">
+<h2>Recommendations</h2>
+<ul>
+<li><button type="button" class="reco-link" data-sources="cmu_cs0" data-view="ca-ms">MS1</button></li>
+<li><button type="button" class="reco-link" data-sources="cmu_cs1" data-view="ca">MS2</button></li>
+<li><button type="button" class="reco-link" data-sources="cmu_cs1" data-view="ca">HS Exploring</button></li>
+<li><button type="button" class="reco-link" data-sources="working_in_python,little_brother,cs50ap,cs50p" data-view="ca-hs">HS AP CSP</button></li>
+<li><span class="reco-disabled">HS Robotics</span></li>
+</ul>
 </div>
 </aside>
 <div id="panel-resizer" class="panel-resizer"></div>
