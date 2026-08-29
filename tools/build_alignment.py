@@ -102,6 +102,8 @@ ul.ek-list li {
   background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
   padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
 }
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
 .practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
 .practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
 .practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
@@ -266,6 +268,15 @@ class Coverage:
             else:
                 parts.append("Covered, no locator on record" if self.scoped else f"Covered by {title}, no locator on record")
         return "; ".join(parts)
+
+    def coverage_summary(self, code):
+        """(covering: list[str], total: int) -- of every source this Coverage was
+        built from (self.source_meta), which ones actually cover `code`. Same
+        covered/not-covered predicate carrier_html already applies: an entry counts
+        as covering unless it's checked=true with empty locators (an explicit
+        acknowledged gap, not silence)."""
+        covering = [source for source, entry in self.get(code) if not (entry.get("checked") and not entry.get("locators"))]
+        return covering, len(self.source_meta)
 
     def notes(self, code):
         return [
@@ -487,9 +498,15 @@ paraphrases, not the CDE's text; only codes are reproduced as-is."""
 
 
 def page(title, toc_html, body_html, provenance_html):
-    return f"""<title>{esc(title)}</title>
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{esc(title)}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>{CSS}</style>
+</head>
+<body>
 <div class="layout">
 <nav class="toc" aria-label="Table of contents">
 {toc_html}
@@ -503,6 +520,8 @@ def page(title, toc_html, body_html, provenance_html):
 </main>
 </div>
 <script>{SEARCH_JS}</script>
+</body>
+</html>
 """
 
 
