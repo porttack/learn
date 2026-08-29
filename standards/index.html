@@ -28,6 +28,13 @@ aside#source-picker {
   padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
 }
 aside#source-picker h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 0 0 .6rem; }
+#source-details summary {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted);
+  cursor: pointer; list-style: none; margin: 0 0 .6rem;
+}
+#source-details summary::-webkit-details-marker { display: none; }
+#source-details summary::before { content: "▸ "; }
+#source-details[open] summary::before { content: "▾ "; }
 .source-picker-actions { margin: 0 0 .6rem; font-size: .8rem; }
 .source-picker-actions button {
   background: none; border: none; padding: 0; color: var(--accent); text-decoration: underline;
@@ -46,6 +53,14 @@ a.source-title.source-link { color: var(--accent); text-decoration: underline; }
 a.source-title.source-link:hover { text-decoration-thickness: 2px; }
 main#coverage-content { flex: 1 1 auto; min-width: 0; height: 100vh; overflow-y: auto; padding: 1.5rem 2rem 6rem; }
 h1 { margin-top: 0; }
+@media (max-width: 780px) {
+  .layout { flex-direction: column; max-width: 100%; }
+  aside#source-picker {
+    position: static; height: auto; overflow: visible; flex: 1 1 auto;
+    width: 100%; border-right: none; border-bottom: 1px solid var(--border);
+  }
+  main#coverage-content { height: auto; overflow: visible; padding: 1.25rem 1rem 4rem; }
+}
 footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
 noscript p {
   border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
@@ -114,11 +129,13 @@ noscript p {
 <body>
 <div class="layout">
 <aside id="source-picker">
-<h2>Sources</h2>
+<details id="source-details" open>
+<summary>Sources</summary>
 <div class="source-picker-actions">
 <button type="button" id="source-select-all">All</button><span class="sep">&middot;</span><button type="button" id="source-select-none">None</button>
 </div>
 <div id="source-list">Loading&hellip;</div>
+</details>
 <div class="cov-refs-nav">
 Standards reference:<br>
 <a href="apcsp-standards-reference.html">AP CSP</a> &middot;

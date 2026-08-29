@@ -23,6 +23,19 @@
   var STRAND_ORDER = ['CS', 'NI', 'DA', 'AP', 'IC'];
   var CHAP_REF_RE = /\bchap(\d{2})([a-z]?)\b/g;
 
+  // The sources panel is a <details>, open by default in the markup (so it
+  // renders expanded with JS disabled or before this runs). On a narrow
+  // screen it starts collapsed instead -- a fixed-width sidebar reads fine on
+  // desktop but a full checkbox list shoving the actual content off-screen on
+  // a phone is the opposite of useful. Only sets the *initial* state; a
+  // reader can still open/close it by hand afterward regardless of width.
+  (function collapseSourcesOnNarrowScreens() {
+    var details = document.getElementById('source-details');
+    if (details && window.matchMedia('(max-width: 780px)').matches) {
+      details.removeAttribute('open');
+    }
+  })();
+
   function esc(s) {
     if (s === null || s === undefined) return '';
     return String(s)
