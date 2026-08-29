@@ -620,27 +620,39 @@
 
       // Third element is this panel's data-panel-category, consumed by
       // VIEW_PRESETS in wirePanelActions() to decide what Open all / Close
-      // all / Show CA* leave open.
+      // all / Show CA* leave open. Fourth is the standalone reference page for
+      // that framework (same ones linked from the sources sidebar's "Standards
+      // reference" list) -- California's two grade bands and CSTA 2017's two
+      // grade bands each come from one combined catalog, so both panels for a
+      // framework point at that framework's single reference page.
       var panels = [
-        ['AP Computer Science Principles', renderApcspPanel(catalogs.apcsp), 'ap'],
-        ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12', 'castandards'), 'ca-hs'],
-        ['CSTA 2017 (Grades 9-12)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017'), 'csta'],
-        ['CSTA 2026', renderCsta2026Panel(catalogs.csta2026), 'csta'],
-        ['California CTE (ICT)', renderCaIctPanel(catalogs['ca-ict-anchor']), 'ca-ict'],
+        ['AP Computer Science Principles', renderApcspPanel(catalogs.apcsp), 'ap', 'apcsp-standards-reference.html'],
+        ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12', 'castandards'), 'ca-hs', 'ca-cs-standards-reference.html'],
+        ['CSTA 2017 (Grades 9-12)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017'), 'csta', 'csta2017-standards-reference.html'],
+        ['CSTA 2026', renderCsta2026Panel(catalogs.csta2026), 'csta', 'csta2026-standards-reference.html'],
+        ['California CTE (ICT)', renderCaIctPanel(catalogs['ca-ict-anchor']), 'ca-ict', 'ca-ict-anchor-standards-reference.html'],
         // Last, deliberately: these two are the only middle-school-level panels
         // among otherwise all-high-school frameworks.
-        ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8', 'castandards'), 'ca-ms'],
-        ['CSTA 2017 (Grades 6-8)', renderCastandardsPanel(catalogs.csta2017, '6-8', 'csta2017'), 'csta'],
+        ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8', 'castandards'), 'ca-ms', 'ca-cs-standards-reference.html'],
+        ['CSTA 2017 (Grades 6-8)', renderCastandardsPanel(catalogs.csta2017, '6-8', 'csta2017'), 'csta', 'csta2017-standards-reference.html'],
       ];
       // Each panel is a native <details>, open by default -- collapsing one
       // shrinks it to just its title bar (the chevron before the heading),
       // no custom JS toggle logic needed, same mechanism as the sources
-      // sidebar. <summary> may contain a single heading element per spec.
+      // sidebar. <summary> may contain a single heading element per spec, so
+      // the reference link goes inside that heading rather than beside it.
       document.getElementById('panels').innerHTML = panels
         .map(function (p) {
-          return '<div class="cov-panel" data-panel-category="' + esc(p[2]) + '"><details open><summary><h2>' + esc(p[0]) + '</h2></summary>' + p[1] + '</details></div>';
+          var heading = '<h2><a class="panel-ref-link" href="' + esc(p[3]) + '">' + esc(p[0]) + '</a></h2>';
+          return '<div class="cov-panel" data-panel-category="' + esc(p[2]) + '"><details open><summary>' + heading + '</summary>' + p[1] + '</details></div>';
         })
         .join('\n');
+      // Without this, a click on the link bubbles up to <summary> and also
+      // toggles the panel open/closed -- the same fix already applied to the
+      // sidebar's source-title links, needed here for the same reason.
+      document.querySelectorAll('.panel-ref-link').forEach(function (a) {
+        a.addEventListener('click', function (e) { e.stopPropagation(); });
+      });
       wirePanelActions();
 
       badgeRegistry = Array.prototype.slice.call(document.querySelectorAll('.cov-badge')).map(function (el) {
