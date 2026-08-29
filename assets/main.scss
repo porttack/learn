@@ -115,11 +115,16 @@ figure {
 
   @media (max-width: 430px) {
     flex-direction: column;
+    align-items: center;
 
     img {
       flex: none;
       width: 100%;
       height: 160px;
+    }
+
+    .pathfinder-canvas-wrap {
+      margin: 0 auto;
     }
   }
 }

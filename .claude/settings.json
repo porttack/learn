@@ -20,7 +20,12 @@
       "WebFetch(domain:playfulinvention.com)",
       "WebFetch(domain:www.playfulinvention.com)",
       "Bash(cd /Users/ebrown/src/working-in-python && grep -n \"@default\\(\\\\\"lite_dir\\\\\"\\)\" -A5 .venv/lib/python3.11/site-packages/jupyterlite_core/config.py)",
-      "Read(//Users/ebrown/src/working-in-python/**)"
+      "Read(//Users/ebrown/src/working-in-python/**)",
+      "WebFetch(domain:cs50.harvard.edu)",
+      "Bash(curl -sI \"https://cs50.harvard.edu/ap/2025/curriculum/x/psets/6/mario/less/pyramid.png\")",
+      "Bash(curl -sL \"https://docs.cs50.net/2019/ap/problems/sentimental/caesar/caesar.html\" -o /private/tmp/claude-502/-Users-ebrown-src-learn/a69234b0-7b40-4748-a51d-9d4df5a71eb5/scratchpad/caesar.html)",
+      "WebFetch(domain:docs.cs50.net)",
+      "WebFetch(domain:python.porttack.com)"
     ],
     "deny": [
       "Bash(sudo *)",
@@ -52,7 +57,8 @@
     ],
     "defaultMode": "acceptEdits",
     "additionalDirectories": [
-      "/Users/ebrown/src/working-in-python"
+      "/Users/ebrown/src/working-in-python",
+      "/Users/ebrown/src/porttack-cs50/py/palindromes"
     ]
   }
 }
