@@ -36,6 +36,41 @@
     }
   })();
 
+  // Drag-to-resize the sources sidebar, desktop only (the resizer itself is
+  // display:none under the mobile breakpoint, where the layout stacks
+  // instead of sitting side by side -- a column width has nothing to mean
+  // there). Sets flex-basis directly on the aside; that inline value beats
+  // the stylesheet's own flex shorthand for just that one longhand, so no
+  // other layout rule needs to change. Session-only, not persisted.
+  (function wirePanelResizer() {
+    var resizer = document.getElementById('panel-resizer');
+    var aside = document.getElementById('source-picker');
+    if (!resizer || !aside) return;
+    var MIN_WIDTH = 180;
+    var MAX_WIDTH = 560;
+    var dragging = false;
+
+    resizer.addEventListener('mousedown', function (e) {
+      if (window.matchMedia('(max-width: 780px)').matches) return;
+      dragging = true;
+      resizer.classList.add('is-dragging');
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+    document.addEventListener('mousemove', function (e) {
+      if (!dragging) return;
+      var layoutLeft = document.querySelector('.layout').getBoundingClientRect().left;
+      var width = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, e.clientX - layoutLeft));
+      aside.style.flexBasis = width + 'px';
+    });
+    document.addEventListener('mouseup', function () {
+      if (!dragging) return;
+      dragging = false;
+      resizer.classList.remove('is-dragging');
+      document.body.style.userSelect = '';
+    });
+  })();
+
   function esc(s) {
     if (s === null || s === undefined) return '';
     return String(s)
@@ -293,6 +328,23 @@
     });
   }
 
+  // ---------- Open all / close all, for the panel-level <details> ----------
+
+  function wirePanelActions() {
+    var expandBtn = document.getElementById('panels-expand-all');
+    var collapseBtn = document.getElementById('panels-collapse-all');
+    if (expandBtn) {
+      expandBtn.addEventListener('click', function () {
+        document.querySelectorAll('.cov-panel > details').forEach(function (d) { d.setAttribute('open', ''); });
+      });
+    }
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', function () {
+        document.querySelectorAll('.cov-panel > details').forEach(function (d) { d.removeAttribute('open'); });
+      });
+    }
+  }
+
   // ---------- Detail panel (click-to-open), built lazily from current checkbox state ----------
 
   function wireBadgeInteractions(coverageByFramework, getCheckedSources) {
@@ -422,9 +474,16 @@
         // otherwise all-high-school frameworks.
         ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8')],
       ];
+      // Each panel is a native <details>, open by default -- collapsing one
+      // shrinks it to just its title bar (the chevron before the heading),
+      // no custom JS toggle logic needed, same mechanism as the sources
+      // sidebar. <summary> may contain a single heading element per spec.
       document.getElementById('panels').innerHTML = panels
-        .map(function (p) { return '<div class="cov-panel"><h2>' + esc(p[0]) + '</h2>' + p[1] + '</div>'; })
+        .map(function (p) {
+          return '<div class="cov-panel"><details open><summary><h2>' + esc(p[0]) + '</h2></summary>' + p[1] + '</details></div>';
+        })
         .join('\n');
+      wirePanelActions();
 
       badgeRegistry = Array.prototype.slice.call(document.querySelectorAll('.cov-badge')).map(function (el) {
         var framework = el.getAttribute('data-framework');
