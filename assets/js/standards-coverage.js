@@ -558,11 +558,23 @@
     });
   }
 
-  // ---------- Sidebar: one checkbox per manifest source, all checked by default ----------
+  // ---------- Sidebar: one checkbox per manifest source, grouped by how central it is ----------
+  //
+  // "Primary" carriers actively drive this teacher's lesson choices; "Secondary"
+  // ones are occasional/supplemental. That's an editorial judgment about
+  // current usage, not a fact recorded on the carrier files themselves, so
+  // it's a fixed lookup here rather than manifest/carrier metadata.
+  var SOURCE_GROUPS = [
+    { label: 'Primary', slugs: ['cmu_cs0', 'cmu_cs1', 'cmu_csp', 'codeorg_apcsp', 'cs50ap', 'cs50ap_extended', 'cs50p', 'codehs_corgi'] },
+    { label: 'Secondary', slugs: ['working_in_python', 'little_brother'] }
+  ];
 
   function renderSourcePicker(manifest, carrierFiles, onChange) {
     var list = document.getElementById('source-list');
-    list.innerHTML = manifest.sources.map(function (s) {
+    var bySlug = {};
+    manifest.sources.forEach(function (s) { bySlug[s.slug] = s; });
+
+    function rowHtml(s) {
       var label = esc(s.abbrev) + ': ' + esc(s.title);
       var baseUrl = (carrierFiles[s.slug] || {}).meta && carrierFiles[s.slug].meta.base_url;
       var titleHtml = baseUrl
@@ -575,7 +587,28 @@
         titleHtml +
         '</label>'
       );
+    }
+
+    var groups = SOURCE_GROUPS.map(function (g) {
+      return { label: g.label, sources: g.slugs.map(function (slug) { return bySlug[slug]; }).filter(Boolean) };
+    });
+    // A manifest source that isn't in either group above still needs somewhere
+    // to render, or adding a new carrier silently stops offering a way to
+    // toggle it off -- rather than assume every future addition remembers to
+    // update SOURCE_GROUPS too, anything left over gets its own group.
+    var grouped = {};
+    SOURCE_GROUPS.forEach(function (g) { g.slugs.forEach(function (slug) { grouped[slug] = true; }); });
+    var leftover = manifest.sources.filter(function (s) { return !grouped[s.slug]; });
+    if (leftover.length) groups.push({ label: 'Other', sources: leftover });
+
+    list.innerHTML = groups.map(function (g) {
+      return (
+        '<details class="source-group"><summary>' + esc(g.label) + '</summary>' +
+        g.sources.map(rowHtml).join('\n') +
+        '</details>'
+      );
     }).join('\n');
+
     var checkboxes = list.querySelectorAll('input[type=checkbox]');
     checkboxes.forEach(function (cb) {
       cb.addEventListener('change', onChange);
