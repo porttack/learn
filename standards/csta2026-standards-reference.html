@@ -1,3 +1,7 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
 <title>CSTA 2026 Standards Reference</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -71,6 +75,8 @@ ul.ek-list li {
   background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
   padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
 }
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
 .practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
 .practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
 .practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
@@ -78,6 +84,8 @@ ul.ek-list li {
 footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
 :target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
 </style>
+</head>
+<body>
 <div class="layout">
 <nav class="toc" aria-label="Table of contents">
 <h2><a href="#AlgorithmsDesign">Algorithms &amp; Design</a></h2><ul>
@@ -150,7 +158,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-ALG-PS-01">#</a><span class="code-badge">HS-ALG-PS-01</span></h3>
 <p class="paraphrase">Solving a problem well often means choosing the right data structure to go with the algorithm, not just writing steps in isolation.</p>
 <p class="note">The focus is picking and using structures a language already provides (like a list or a class) to support the plan, not implementing custom structures from scratch -- a leaderboard built on a list plus a sort is the kind of example this covers.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/5/?readonly">Unit 5 (Week 5: Data Structures)</a></p>
+<p class="note">Choosing the right data structure -- queue, stack, linked list, tree, hash table -- for a job is the whole week.</p>
 </div>
 <div class="topic" id="T-HS-ALG-PS-02">
 <h3><a class="anchor-link" href="#T-HS-ALG-PS-02">#</a><span class="code-badge">HS-ALG-PS-02</span></h3>
@@ -163,7 +172,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-ALG-PS-03">#</a><span class="code-badge">HS-ALG-PS-03</span></h3>
 <p class="paraphrase">Comparing two algorithms for the same job means checking more than just whether they work -- how fast they run and how easy they are to read matter too.</p>
 <p class="note">Comparisons can be informal or based on test runs rather than a formal proof of running time.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/3/?readonly">Unit 3 (Week 3: Algorithms (searching, sorting, asymptotic notation, recursion))</a></p>
+<p class="note">Asymptotic Notation is comparing algorithms by more than whether they're correct.</p>
 </div>
 <div class="topic" id="T-HS-ALG-PS-04">
 <h3><a class="anchor-link" href="#T-HS-ALG-PS-04">#</a><span class="code-badge">HS-ALG-PS-04</span></h3>
@@ -288,7 +298,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-DAT-DC-22">#</a><span class="code-badge">HS-DAT-DC-22</span></h3>
 <p class="paraphrase">A data dictionary spells out, for every column in a dataset, its name, its type, and the values it's allowed to hold -- plus how columns depend on each other, like a skipped survey question leaving a related answer blank.</p>
 <p class="note">Documenting an existing dataset this way is the task; building the dataset, or handling huge or specialized data, is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/7/?readonly">Unit 7 (Week 7: SQL)</a></p>
+<p class="note">SQL's Types and Constraints, applied per column, are a data dictionary made explicit and enforced by the database itself.</p>
 </div>
 <div class="topic" id="T-HS-DAT-DC-23">
 <h3><a class="anchor-link" href="#T-HS-DAT-DC-23">#</a><span class="code-badge">HS-DAT-DC-23</span></h3>
@@ -336,14 +347,16 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-PRO-PD-12">#</a><span class="code-badge">HS-PRO-PD-12</span></h3>
 <p class="paraphrase">Splitting a program into distinct, well-organized pieces -- functions, imported libraries, or objects -- makes the result easier to read and easier to reuse.</p>
 <p class="note">Straightforward decomposition is the target; elaborate design patterns or deep class hierarchies aren't expected.</p>
-<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></p>
+<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/6/?readonly">Unit 6 (Week 6: Python)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></p>
+<p class="note">Functions, named in both weeks, are splitting a program into well-organized pieces.</p>
 <p class="note">Chapter 3's function definitions -- especially building print_verse out of first_two_lines/last_three_lines/repeat -- directly match splitting a program into reusable, readable pieces. Chapter 4's encapsulation/generalization/refactoring sequence (square → polygon → polyline, then circle → arc → polyline) is a stronger instance of the same standard. Chapter 7's uses_none = not uses_any(...) and the exercises deriving uses_all from uses_only/uses_any (instead of a new loop) extend it again.</p>
 </div>
 <div class="topic" id="T-HS-PRO-PD-13">
 <h3><a class="anchor-link" href="#T-HS-PRO-PD-13">#</a><span class="code-badge">HS-PRO-PD-13</span></h3>
 <p class="paraphrase">Good program development leans on outside resources -- reference docs, existing libraries, simple APIs, and the features built into a development environment -- rather than reinventing everything from scratch.</p>
 <p class="note">Using these resources well is the goal, not building new ones.</p>
-<p class="meta">Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="note">Manual Pages, a named week-1 topic, are exactly the reference documentation this standard describes leaning on.</p>
 <p class="note">Chapter 2's `import math` and its use of math.pi/math.sqrt/math.pow is this book's first real use of an existing library. Chapter 4 (jupyturtle), Chapter 7 (`from doctest import run_docstring_examples`), and Chapter 8 (`re`) are secondary instances of the same pattern -- genuine but not new information each time, so headers only. The rest of this standard -- API docs, IDE features -- isn't addressed anywhere.</p>
 </div>
 <div class="topic" id="T-HS-PRO-PD-14">
@@ -390,7 +403,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-PRO-VD-16">#</a><span class="code-badge">HS-PRO-VD-16</span></h3>
 <p class="paraphrase">Choosing the right structure -- a list, a dictionary -- to hold a program's data is what makes storing, retrieving, and changing that data manageable.</p>
 <p class="note">Common built-in structures are the scope here; things like linked lists, trees, and graphs are not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/5/?readonly">Unit 5 (Week 5: Data Structures)</a></p>
+<p class="note">Arrays (week 2) and the named data structures (week 5) are choosing the right structure to hold a program's data.</p>
 </div>
 </section>
 <section class="big-idea" id="SystemsSecurity"><h2>Systems &amp; Security</h2>
@@ -425,13 +439,15 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-SYS-NT-34">#</a><span class="code-badge">HS-SYS-NT-34</span></h3>
 <p class="paraphrase">A network diagram shows both the physical pieces -- servers, routers, devices -- and the software running on them, and how all of it connects to get work done.</p>
 <p class="note">Drawing the diagram is the task, not physically building the network.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/8/?readonly">Unit 8 (Week 8: HTML, CSS, JavaScript)</a></p>
+<p class="note">Routers, TCP/IP, and DNS are the named physical/logical pieces a network diagram would show.</p>
 </div>
 <div class="topic" id="T-HS-SYS-NT-35">
 <h3><a class="anchor-link" href="#T-HS-SYS-NT-35">#</a><span class="code-badge">HS-SYS-NT-35</span></h3>
 <p class="paraphrase">The internet is really a network stitched together out of many smaller networks, with its own layered structure, hardware like routers, and protocols like TCP/IP tying it together -- which sets it apart from something like a single classroom network.</p>
 <p class="note">A high-level, conceptual grasp is the goal, not configuring real equipment or analyzing network traffic.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/8/?readonly">Unit 8 (Week 8: HTML, CSS, JavaScript)</a></p>
+<p class="note">The week frames the internet as networks cooperating (Routers, TCP/IP, DNS) rather than one single network.</p>
 </div>
 <div class="subconcept-heading">Security</div>
 <div class="topic" id="T-HS-SYS-SE-31">
@@ -450,7 +466,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-SYS-SE-33">#</a><span class="code-badge">HS-SYS-SE-33</span></h3>
 <p class="paraphrase">Given a described security weakness, proposing a fix means naming the vulnerability, what could go wrong because of it, and concrete steps -- technical and non-technical -- to close the gap.</p>
 <p class="note">Proposing the fix is the task; actually building it is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/7/?readonly">Unit 7 (Week 7: SQL)</a></p>
+<p class="note">SQL Injection Attacks, paired with its standard defense (parameterized queries), is 'given a weakness, propose a fix.'</p>
 </div>
 </section>
 <footer>Generated by build_alignment.py. Not an official framework document.</footer>
@@ -490,3 +507,5 @@ reproduced as-is.</div>
   });
 })();
 </script>
+</body>
+</html>

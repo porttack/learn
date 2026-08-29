@@ -63,10 +63,11 @@
     <a href="https://python.porttack.com">python.porttack.com</a>.
 
 - id: standards
-  title: "Standards Reference"
+  title: "Standards"
   url: /standards/
   status: in-progress
   blurb: >-
-    Cross-source lookup for AP CSP, California 9-12 CS, CSTA 2026, and CA
-    CTE (ICT) standards, plus a reverse map showing which book chapter, unit
-    plan, or lesson carries each code. Not sequenced lessons, a reference.
+    A visual coverage map across every course and curriculum reviewed here,
+    against AP CSP, California 9-12 CS, CSTA 2026, and CA CTE (ICT)
+    standards — plus reference pages for each framework and a full
+    reverse-map report of which content carries which code.

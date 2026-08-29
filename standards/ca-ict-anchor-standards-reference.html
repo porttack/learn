@@ -1,3 +1,7 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
 <title>CA ICT &amp; Anchor Standards Reference</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -71,6 +75,8 @@ ul.ek-list li {
   background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
   padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
 }
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
 .practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
 .practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
 .practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
@@ -78,6 +84,8 @@ ul.ek-list li {
 footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
 :target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
 </style>
+</head>
+<body>
 <div class="layout">
 <nav class="toc" aria-label="Table of contents">
 <h2><a href="#anchors">Anchor Standards</a></h2><ul>
@@ -237,21 +245,26 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <div class="item-note">Chapter 7's has_e build-up (inline loop, then encapsulated, then a boolean return, then parameterized) and the incremental construction of uses_any mirror this standard's start-rough-and-refine framing -- the same pattern as AP's 3.9 Developing Algorithms, from the Anchor-standard side.</div>
 </li>
 <li id="T-5.8"><a class="anchor-link" href="#T-5.8">#</a><span class="code-badge">5.8</span> Algorithms are a tool for solving problems, not just an abstract concept.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/0/?readonly">Unit 0 (Week 0: Scratch -- everything but data representation (computational thinking, abstraction, algorithms, pseudocode, Scratch constructs))</a></div>
+<div class="item-note">Algorithms and Pseudocode, named week-0 topics, introduce algorithms as a general problem-solving tool before any specific language.</div>
 </li>
 <li id="T-5.9"><a class="anchor-link" href="#T-5.9">#</a><span class="code-badge">5.9</span> A large problem becomes tractable once it's broken into smaller components.
-<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a></div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/6/?readonly">Unit 6 (Week 6: Python)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a></div>
+<div class="item-note">Functions, named in both weeks, are breaking a large problem into smaller components.</div>
 <div class="item-note">Chapter 3's 'Why functions?' section explicitly frames functions as a way to divide a big program into smaller, debuggable, reusable pieces -- a direct match. Chapter 4's development plan is a literal, numbered decomposition procedure. Chapter 5's recursive decomposition (countdown, the Sierpinski exercise splitting a triangle of degree n into three of degree n-1) is a purer instance of the same idea.</div>
 </li>
 <li id="T-5.10"><a class="anchor-link" href="#T-5.10">#</a><span class="code-badge">5.10</span> Layers of abstraction let you work with a system without tracking every detail underneath it.
-<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a></div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/0/?readonly">Unit 0 (Week 0: Scratch -- everything but data representation (computational thinking, abstraction, algorithms, pseudocode, Scratch constructs))</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/5/?readonly">Unit 5 (Week 5: Data Structures)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a></div>
+<div class="item-note">Abstraction is a named week-0 topic; the Source Code/Compiler/Machine Code pipeline (week 1) and Abstract Data Types (week 5) are both layers that let you work with a system without tracking every detail underneath.</div>
 <div class="item-note">Calling repeat/print_twice without re-deriving what's inside them is a first, light instance of working through a layer of abstraction -- headers only, since the book doesn't use the word 'abstraction' this early and the connection is implicit. Chapter 4's interface/implementation split (two different circle implementations sharing one interface) makes the concept explicit for the first time. Chapter 6's leap of faith -- trusting a function's return value without re-examining its body -- is the clearest, most direct treatment of abstraction in the book so far.</div>
 </li>
 <li id="T-5.11"><a class="anchor-link" href="#T-5.11">#</a><span class="code-badge">5.11</span> Numbers can be represented in more than one base system, including binary and hexadecimal.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/0/?readonly">Unit 0 (Week 0: Scratch -- data representation only (unary, binary, decimal, ASCII, Unicode, RGB))</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/4/?readonly">Unit 4 (Week 4: Memory -- data representation only (hexadecimal, images, file I/O))</a></div>
+<div class="item-note">Base conversion -- unary/binary/decimal (week 0), hexadecimal (week 4) -- is this anchor standard by name.</div>
 </li>
 <li id="T-5.12"><a class="anchor-link" href="#T-5.12">#</a><span class="code-badge">5.12</span> Boolean logic underlies both decision-making and searching in computing.
-<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/3/?readonly">Unit 3 (Week 3: Algorithms (searching, sorting, asymptotic notation, recursion))</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-note">Binary Search depends on the Boolean comparison at each step (higher/lower/found).</div>
 <div class="item-note">Chapter 5's boolean expressions and logical operators feed directly into its if statements -- boolean logic driving decision-making is the chapter's structure, not just present in it. Chapter 7's has_e/uses_any (booleans built from in/or) driving linear search, and Chapter 8's re.search result tested against None, are the searching half of the same standard -- the single best new match found in either chapter.</div>
 </li>
 </ul>
@@ -407,13 +420,15 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <div class="item-meta">Unassigned</div>
 </li>
 <li id="T-10.6"><a class="anchor-link" href="#T-10.6">#</a><span class="code-badge">10.6</span> Different kinds of information -- text, images, sound, video -- take up different amounts of data, and media formats vary in capacity.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/0/?readonly">Unit 0 (Week 0: Scratch -- data representation only (unary, binary, decimal, ASCII, Unicode, RGB))</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/4/?readonly">Unit 4 (Week 4: Memory -- data representation only (hexadecimal, images, file I/O))</a></div>
+<div class="item-note">RGB (week 0) and Images/file I/O (week 4) are concrete cases of different media taking different amounts of data to represent.</div>
 </li>
 <li id="T-10.7"><a class="anchor-link" href="#T-10.7">#</a><span class="code-badge">10.7</span> Metric prefixes like kilo, mega, giga, and tera describe scale throughout computing.
 <div class="item-meta">Unassigned</div>
 </li>
 <li id="T-10.8"><a class="anchor-link" href="#T-10.8">#</a><span class="code-badge">10.8</span> Security in computing rests on concepts like authorization, access rights, and encryption.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a></div>
+<div class="item-note">Cryptography, a named week-2 topic, is this standard's own 'encryption' concept.</div>
 </li>
 <li id="T-10.9"><a class="anchor-link" href="#T-10.9">#</a><span class="code-badge">10.9</span> Industry-standard software -- word processors, spreadsheets, databases, multimedia tools -- are common working tools.
 <div class="item-meta">Unassigned</div>
@@ -528,34 +543,40 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <p class="meta">Unassigned</p>
 <ul class="ek-list">
 <li id="T-C4.1"><a class="anchor-link" href="#T-C4.1">#</a><span class="code-badge">C4.1</span> Programming languages range from low-level, close to the hardware, to high-level and web-based.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/6/?readonly">Unit 6 (Week 6: Python)</a></div>
+<div class="item-note">C (week 1) and Python (week 6) are named, back-to-back, as this teacher's own low-level-to-high-level range.</div>
 </li>
 <li id="T-C4.2"><a class="anchor-link" href="#T-C4.2">#</a><span class="code-badge">C4.2</span> Programming languages and protocols interact -- client-side code, server-side code, and a query language reaching into a database are all pieces of the same system.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/8/?readonly">Unit 8 (Week 8: HTML, CSS, JavaScript)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/9/?readonly">Unit 9 (Week 9: Flask)</a></div>
+<div class="item-note">JavaScript (client-side), Flask (server-side), and SQL (query language) interacting is this standard's own example, and is literally how weeks 7-9 fit together.</div>
 </li>
 <li id="T-C4.3"><a class="anchor-link" href="#T-C4.3">#</a><span class="code-badge">C4.3</span> Software gets built inside some kind of environment -- a simple content editor on one end, a full-featured IDE on the other.
 <div class="item-meta">Unassigned</div>
 </li>
 <li id="T-C4.4"><a class="anchor-link" href="#T-C4.4">#</a><span class="code-badge">C4.4</span> Data has types, and those types get encoded in specific ways.
-<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap01.html?readonly">Chapter 1 (Welcome)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a></div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap01.html?readonly">Chapter 1 (Welcome)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a></div>
+<div class="item-note">Types is a named week-1 topic; Integer Overflow and Floating-Point Imprecision are what it means for a type to have a specific encoding with real limits.</div>
 <div class="item-note">Chapter 1 introduces int, float, and str as distinct types with different encodings, and the type() function to check them -- a direct match. Chapter 6's Checking types section (isinstance, a type-guarded factorial) extends it with a second, applied instance -- checking a type at runtime, not just naming types.</div>
 </li>
 <li id="T-C4.5"><a class="anchor-link" href="#T-C4.5">#</a><span class="code-badge">C4.5</span> Programming paradigms differ -- procedural, object-oriented, event-driven, multithreaded -- and each shapes how code gets structured.
 <div class="item-meta">Unassigned</div>
 </li>
 <li id="T-C4.6"><a class="anchor-link" href="#T-C4.6">#</a><span class="code-badge">C4.6</span> Every programming language has its own syntax, and using it correctly matters.
-<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap01.html?readonly">Chapter 1 (Welcome)</a>, <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a></div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap01.html?readonly">Chapter 1 (Welcome)</a>, <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a></div>
+<div class="item-note">Syntax Highlighting, a named week-1 topic (in VS Code), foregrounds that C has its own syntax to use correctly.</div>
 <div class="item-note">Chapter 1 introduces syntax errors (missing parentheses, illegal quote marks); Chapter 2's Debugging section explicitly names 'syntax error' as one of three error kinds. Both are about a language's own syntax rules, matching this standard directly.</div>
 </li>
 <li id="T-C4.7"><a class="anchor-link" href="#T-C4.7">#</a><span class="code-badge">C4.7</span> Data structures, arrays, objects, files, and databases are all ways of organizing a program's data.
-<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/5/?readonly">Unit 5 (Week 5: Data Structures)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-note">Arrays (week 2) and the named data structures (week 5) are this standard's own list of ways to organize a program's data.</div>
 <div class="item-note">Chapter 8's Writing files section (open, read mode vs 'w' mode, close) is a direct match for this standard's 'files' item.</div>
 </li>
 <li id="T-C4.8"><a class="anchor-link" href="#T-C4.8">#</a><span class="code-badge">C4.8</span> Object-oriented programming brings its own vocabulary: objects, properties, methods, inheritance.
 <div class="item-meta">Unassigned</div>
 </li>
 <li id="T-C4.9"><a class="anchor-link" href="#T-C4.9">#</a><span class="code-badge">C4.9</span> A working program leans on a shared toolkit of constructs -- branches and loops, reusable procedures and functions that take parameters, variables to hold state, ways to recover from errors, and sometimes a function that calls itself.
-<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/1/?readonly">Unit 1 (Week 1: C)</a>, <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/6/?readonly">Unit 6 (Week 6: Python)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-note">Conditionals, Loops, and Functions -- named in both weeks -- are the shared toolkit this standard describes.</div>
 <div class="item-note">Chapter 2 introduces variables; Chapter 3 introduces functions, parameters, and the for loop, plus error handling via %%expect. Chapter 4 adds keyword arguments and more parameter work than chapters 2-3 combined. Chapter 5 adds branches (conditionals) and Chapter 6 adds recursion -- 'sometimes a function that calls itself' is this standard's own closing phrase, and Chapter 6's factorial/fibonacci are exactly that. Chapter 7 reinforces variables-holding-state (Updating variables) and a second error-recovery demo. Chapter 8 adds branch-on-condition file-reading loops and TypeError/IndexError recovery. By chapter 8 this standard's full construct list is covered.</div>
 </li>
 <li id="T-C4.10"><a class="anchor-link" href="#T-C4.10">#</a><span class="code-badge">C4.10</span> Different queueing, sorting, and searching algorithms trade off differently against each other.
@@ -583,14 +604,16 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <div class="item-meta">Unassigned</div>
 </li>
 <li id="T-C5.4"><a class="anchor-link" href="#T-C5.4">#</a><span class="code-badge">C5.4</span> Testing is a distinct step applied to both software and the broader project.
-<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></div>
+<div class="item-note">Debugging, a named week-2 topic with two dedicated Shorts, is testing applied as its own distinct step.</div>
 <div class="item-note">Chapter 7's Doctest section -- docstring-embedded tests, a dedicated pass/fail vocabulary, and a runner function built for the purpose -- is close to a literal match for testing as its own distinct development step.</div>
 </li>
 <li id="T-C5.5"><a class="anchor-link" href="#T-C5.5">#</a><span class="code-badge">C5.5</span> A finished result gets evaluated against what it was originally required to do.
 <div class="item-meta">Unassigned</div>
 </li>
 <li id="T-C5.6"><a class="anchor-link" href="#T-C5.6">#</a><span class="code-badge">C5.6</span> Debugging is part of quality assurance, not separate from it.
-<div class="item-meta">Covered by Working in Python: <a href="https://python.porttack.com/chap01.html?readonly">Chapter 1 (Welcome)</a>, <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-meta">Covered by CS50 AP -- extended (weeks 0-6 remainder): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/2/?readonly">Unit 2 (Week 2: Arrays)</a>; Covered by Working in Python: <a href="https://python.porttack.com/chap01.html?readonly">Chapter 1 (Welcome)</a>, <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></div>
+<div class="item-note">Same claim as C5.4 -- debugging named directly, not folded into 'writing code.'</div>
 <div class="item-note">Every chapter's Debugging section -- same pattern as AP CRD-1.4/CRD-2.I, already the carrier for AP topic 1.4 in every chapter. Headers only throughout; no single chapter's Debugging section is more chapter-specific than any other's.</div>
 </li>
 </ul>
@@ -629,7 +652,8 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <p class="meta">Unassigned</p>
 <ul class="ek-list">
 <li id="T-C7.1"><a class="anchor-link" href="#T-C7.1">#</a><span class="code-badge">C7.1</span> Web hosting and related services need both server hardware and the right software.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/8/?readonly">Unit 8 (Week 8: HTML, CSS, JavaScript)</a></div>
+<div class="item-note">The week-8 internet primer (routers, servers, DNS) is the hardware-and-software-together claim this standard makes.</div>
 </li>
 <li id="T-C7.2"><a class="anchor-link" href="#T-C7.2">#</a><span class="code-badge">C7.2</span> Getting content live online means registering a domain name and arranging both hosting and email for it.
 <div class="item-meta">Unassigned</div>
@@ -641,7 +665,8 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <div class="item-meta">Unassigned</div>
 </li>
 <li id="T-C7.5"><a class="anchor-link" href="#T-C7.5">#</a><span class="code-badge">C7.5</span> A website, an online business, or a personal e-portfolio is meant to actually go live, not just stay a plan.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/9/?readonly">Unit 9 (Week 9: Flask)</a></div>
+<div class="item-note">Flask, with Route and Sessions, is the point where a project becomes an actually-served application rather than a local script.</div>
 </li>
 <li id="T-C7.6"><a class="anchor-link" href="#T-C7.6">#</a><span class="code-badge">C7.6</span> Delivering and retrieving online content quickly is its own optimization problem.
 <div class="item-meta">Unassigned</div>
@@ -654,10 +679,12 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <p class="meta">Unassigned</p>
 <ul class="ek-list">
 <li id="T-C8.1"><a class="anchor-link" href="#T-C8.1">#</a><span class="code-badge">C8.1</span> Databases play a critical role in how modern organizations actually function.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/7/?readonly">Unit 7 (Week 7: SQL)</a></div>
+<div class="item-note">SQL is a full week on its own -- databases get more instructional weight here than anywhere else in this teacher's courses.</div>
 </li>
 <li id="T-C8.2"><a class="anchor-link" href="#T-C8.2">#</a><span class="code-badge">C8.2</span> Databases are built from basic structures: fields, records, tables, and views.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/7/?readonly">Unit 7 (Week 7: SQL)</a></div>
+<div class="item-note">Tables (a named topic) are exactly this standard's 'fields, records, tables, and views.'</div>
 </li>
 <li id="T-C8.3"><a class="anchor-link" href="#T-C8.3">#</a><span class="code-badge">C8.3</span> Tables relate to each other in specific ways -- one-to-one, one-to-many, many-to-many -- established through primary keys, foreign keys, and indexes.
 <div class="item-meta">Unassigned</div>
@@ -666,7 +693,8 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <div class="item-meta">Unassigned</div>
 </li>
 <li id="T-C8.5"><a class="anchor-link" href="#T-C8.5">#</a><span class="code-badge">C8.5</span> Queries are the tool for extracting and manipulating data, whether selecting it or acting on it.
-<div class="item-meta">Unassigned</div>
+<div class="item-meta">Covered by CS50 AP -- taught subset (weeks 0, 3, 4, 7-9): <a href="https://cs50.harvard.edu/ap/2025/curriculum/x/weeks/7/?readonly">Unit 7 (Week 7: SQL)</a></div>
+<div class="item-note">SQL's own Statements and Keywords/Functions are how a database gets queried and manipulated.</div>
 </li>
 <li id="T-C8.6"><a class="anchor-link" href="#T-C8.6">#</a><span class="code-badge">C8.6</span> A well-normalized database follows an appropriate schema.
 <div class="item-meta">Unassigned</div>
@@ -757,3 +785,5 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
   });
 })();
 </script>
+</body>
+</html>

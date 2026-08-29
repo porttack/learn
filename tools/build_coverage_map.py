@@ -61,9 +61,17 @@ HUES = [
 # slot were separated from another real source's slot by an unused reserved slot, a
 # combined view showing just the real sources would render two colors adjacent that
 # were never validated as a pair. Keeping real sources contiguous at the front avoids
-# that: slots 1-4 (blue/orange/aqua/yellow) were validated together this session, so
-# any subset of today's four sources is safe in any combination.
-SOURCE_ORDER = ["working_in_python", "little_brother", "cmu_cs1", "codehs_corgi", "cs50psets"]
+# that: slots 1-6 (blue/orange/aqua/yellow/magenta/green) were validated together, so
+# any subset of today's six sources is safe in any combination.
+SOURCE_ORDER = [
+    "working_in_python",
+    "little_brother",
+    "cmu_cs1",
+    "codehs_corgi",
+    "cs50ap",
+    "cs50ap_extended",
+    "cs50psets",
+]
 SOURCE_HUE_SLOT = {source: i + 1 for i, source in enumerate(SOURCE_ORDER)}
 
 COVERAGE_CSS = (
@@ -101,6 +109,8 @@ COVERAGE_CSS = (
 .cov-tooltip .tt-paraphrase { margin: .4em 0; color: var(--fg); }
 .cov-tooltip .tt-source { margin: .3em 0 0; color: var(--muted); }
 .cov-anchor-block { opacity: .6; font-size: .92em; }
+.cov-refs-nav { font-size: .85rem; color: var(--muted); margin: -.3rem 0 1.2rem; }
+.cov-refs-nav a { color: var(--accent); }
 """
 )
 
@@ -194,7 +204,8 @@ def render_apcsp_panel(catalog, cov):
         by_bi.setdefault(t["big_idea"], []).append((t["code"], t["code"], t["title"], t["paraphrase"]))
     body = []
     for bid in order:
-        label = f'Big Idea {big_ideas[bid]["number"]}: {big_ideas[bid]["name"]}'
+        bi = big_ideas[bid]
+        label = f'Big Idea {bi["number"]}: {bi["name"]} ({bi["mcq_weight_low"]}–{bi["mcq_weight_high"]}%)'
         body.append(render_group_grid(label, by_bi.get(bid, []), cov))
     # Computational Thinking Practices deliberately omitted: never reverse-mapped in
     # this data, and too broad/cross-cutting to be a meaningful coverage question here.
@@ -280,7 +291,17 @@ def hue_css_vars():
     return "\n".join(lines)
 
 
-def page(title, sources_label, panels, carrier_files):
+REFERENCE_PAGES_NAV = """<div class="cov-refs-nav">
+Standards reference:
+<a href="apcsp-standards-reference.html">AP CSP</a> ·
+<a href="ca-cs-standards-reference.html">California 9-12</a> ·
+<a href="csta2026-standards-reference.html">CSTA 2026</a> ·
+<a href="ca-ict-anchor-standards-reference.html">CA ICT</a> ·
+<a href="alignment/">coverage detail</a>
+</div>"""
+
+
+def page(title, sources_label, panels, carrier_files, refs_nav=""):
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -296,6 +317,7 @@ def page(title, sources_label, panels, carrier_files):
 <div class="layout" style="display:block; max-width:1100px;">
 <main style="padding: 1.5rem 2rem 6rem;">
 <h1>{esc(title)}</h1>
+{refs_nav}
 <div class="provenance">
   <strong>What this is.</strong> Which of {esc(sources_label)} covers each standard,
   one badge per standard. A gray badge is covered by something; a white badge is not
@@ -321,6 +343,8 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--source", action="append", required=True)
     ap.add_argument("--title", default="Standards Coverage Map")
+    ap.add_argument("--filename", default="coverage-map.html", help="Output filename -- use index.html when this is meant to be a section's landing page.")
+    ap.add_argument("--with-refs-nav", action="store_true", help="Include a nav row linking to the sibling reference pages (apcsp-standards-reference.html etc.) -- only meaningful when those files are co-located in --out.")
     args = ap.parse_args()
 
     out = Path(args.out)
@@ -344,9 +368,10 @@ def main():
         ("California 6-8 Computer Science", render_castandards_panel(catalogs["castandards"], covs["castandards"], "6-8")),
     ]
 
-    html = page(args.title, sources_label, panels, carrier_files)
-    (out / "coverage-map.html").write_text(html)
-    print(f"Wrote coverage-map.html to {out}/ combining {len(carrier_files)} source(s): {sorted(carrier_files)}")
+    refs_nav = REFERENCE_PAGES_NAV if args.with_refs_nav else ""
+    html = page(args.title, sources_label, panels, carrier_files, refs_nav)
+    (out / args.filename).write_text(html)
+    print(f"Wrote {args.filename} to {out}/ combining {len(carrier_files)} source(s): {sorted(carrier_files)}")
 
 
 if __name__ == "__main__":
