@@ -1,0 +1,120 @@
+{
+ "meta": {
+  "title": "Bootstrap:Data Science — Hour of Data",
+  "base_url": "https://www.bootstrapworld.org/materials/fall2026/en-us/lessons/hoc-data/index.shtml",
+  "locator_kind": "part",
+  "locator_url_template": null,
+  "source": "hour_of_data",
+  "locator_titles": {
+   "1": "Wildlife Crossings Save Lives!",
+   "2": "Introducing the Dataset: Animal-Vehicle Collisions in Vermont — Notice and Wonder",
+   "3": "Introducing the Pyret Programming Environment — Bar Chart / Pie Chart",
+   "4": "Scatter Plots, Outliers & Human Error",
+   "5": "More Pie Charts & Bar Charts",
+   "6": "Comparing Subsets / Making Predictions Using Proportional Reasoning",
+   "7": "Patterns in the Code — More Subsets & Pie Charts via Filtering",
+   "8": "Analyzing Scatter Plots Using Rate of Change",
+   "9": "Data-Informed Decision Making",
+   "10": "Beyond the Dataset — Making Connections"
+  },
+  "caveat": "Audited against Bootstrap's own 23-screen Teacher Guide PDF (screen-by-screen script, real Pyret code snippets, and answer keys for every screen), not against the live interactive Desmos app itself -- the guide is a real primary source, not inference from the public lesson-description page. Confirmed real code includes: `collisions-table.filter(is-deer)` with `fun is-deer(r): r[\"animals\"] == \"Deer\" end` (Part 7), and `fun year-dot(r): if r[\"year\"] == 2004: star(2, \"solid\", \"turquoise\") else if r[\"year\"] == 2005: star(6, \"solid\", \"orange\") end end` (Part 8's Coding Challenge). Entries below marked 'Coding Challenge only' are reached only by students who do the optional star-challenge track -- Bootstrap's own guide tells teachers 'you may only encourage some students to try them,' so don't assume universal coverage for those. Bootstrap's own tags for this lesson (from their site's internal dictionaries.js, not a published standards page) are almost entirely CCSS-Math (6.RP.A.3, 7.RP.A.3, 7.SP.A.1, 7.SP.B, HSS.ID.B.6, HSS.IC.B) and NGSS science practices, plus one CSTA 2017 code (1B-DA-07, tagged at the 3-5 band) and one K12CS code (6-8 Computing Systems.Devices) -- Bootstrap positions this as a math/data-literacy lesson that happens to teach through code, not as a CS-standards lesson. The entries below are this project's own read against apcsp/castandards. CSTA 2017/2026 and CA-ICT crosswalks were not attempted this pass.",
+  "abbrev": "HoData"
+ },
+ "coverage": {
+  "apcsp": {
+   "2.3": {
+    "locators": [
+     2,
+     4,
+     5,
+     6,
+     9
+    ],
+    "note": "Part 2's Notice-and-Wonder on the raw Vermont spreadsheet, Part 4's outlier/human-error reasoning, Part 5's real breakdown (Deer 436, Bird 82, Fox 71, Coyote 67, Beaver 59, Moose 32, Bear 14, Turtle 10, Bobcat 6, Squirrel 4), Part 6's cross-highway comparison, and Part 9's final recommendation all turn a messy real dataset into actual information."
+   },
+   "2.4": {
+    "locators": [
+     6,
+     7
+    ],
+    "note": "Part 6 and Part 7 both build new tables from the base dataset via `.filter()` (by route/highway, then by animal type) -- using a program to do with the data what would be impractical by hand."
+   },
+   "3.2": {
+    "locators": [
+     3,
+     6,
+     7
+    ],
+    "note": "The whole activity runs on one `collisions-table` (a Pyret table), queried throughout by row access (`r[\"animals\"]`, `r[\"year\"]`, `r[\"route\"]`) and `.filter()` -- grouping each collision record's related values under one name and treating the collection as a single thing."
+   },
+   "3.6": {
+    "locators": [
+     8
+    ],
+    "note": "Coding Challenge only. Part 8's optional challenge has students write `year-dot`, an if/else-if function choosing a point's shape/color by year (`if r[\"year\"] == 2004: ... else if r[\"year\"] == 2005: ... end`). Only reached by students who attempt the star-challenge track."
+   },
+   "3.9": {
+    "locators": [
+     7
+    ],
+    "note": "Coding Challenge only. Part 7 has students write a predicate function (`is-deer`) from scratch, following the pattern of ones already shown, then plug it into `.filter()` -- incremental algorithm development, not just running provided code."
+   },
+   "3.12": {
+    "locators": [
+     7
+    ],
+    "note": "Coding Challenge only. Students pass their own `is-deer` function into `collisions-table.filter(is-deer)` -- calling a procedure they just wrote and getting a table back."
+   },
+   "3.13": {
+    "locators": [
+     7,
+     8
+    ],
+    "note": "Coding Challenge only. `is-deer` and `year-dot` are both student-written functions with a parameter (`r`) general enough to be reused across rows, matching the pattern of the pre-written functions around them."
+   }
+  },
+  "castandards": {
+   "9-12.DA.10": {
+    "locators": [
+     3,
+     5,
+     6,
+     7,
+     8
+    ],
+    "note": "Parts 3/5/7 move through bar, pie, and filtered-subset charts of the same dataset. Part 6's Teacher Moves note is the standard almost verbatim as a real gotcha, not just theory: 'a blue wedge does not necessarily represent the same animal in both charts' -- students are explicitly warned that the same visualization choice can mislead across two pie charts built from different subsets."
+   },
+   "9-12.DA.11": {
+    "locators": [
+     4
+    ],
+    "note": "Part 4's exact reasoning (screen 11 of the Teacher Guide) checks a model against real observations and catches the mismatch: 'both days and collisions are recorded in order from the start of the data collection period. If the deer hit on day 371 is collision number 657, it doesn't make sense that a deer hit 4 days earlier would be collision number 901' -- validating an assumption about the dataset's structure against what the data actually shows, and using the contradiction to identify a human-error outlier."
+   },
+   "6-8.DA.7": {
+    "locators": [
+     3,
+     5,
+     6,
+     7,
+     8
+    ],
+    "note": "Same representation-choice argument as 9-12.DA.10 above, at the MS band -- same parts of the activity, since it's one lesson used at both levels with different scaffolding (Bootstrap's own note: MS needs guidance, HS can work independently)."
+   },
+   "6-8.DA.8": {
+    "locators": [
+     2,
+     4,
+     7
+    ],
+    "note": "Notice-and-Wonder (Part 2), the outlier/human-error catch (Part 4), and filtering by route or animal (Part 7) are all raw data being transformed before it's useful -- this standard's own scope."
+   },
+   "6-8.DA.9": {
+    "locators": [
+     6,
+     8
+    ],
+    "note": "Part 6 compares raccoon-collision rates between I-89 and I-91 (changing which subset, observing the effect), and Part 8 compares 2004 vs 2005 collision rates by slope -- both change one variable and observe the effect on the same dataset."
+   }
+  }
+ }
+}

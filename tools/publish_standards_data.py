@@ -73,8 +73,18 @@ HUES = [
     ("#a15c2e", "#c9803f"),  # 11 brown
     ("#1c83ab", "#2993c1"),  # 12 teal
     ("#892b7b", "#a6438b"),  # 13 plum
+    ("#b8860b", "#b8860b"),  # 14 gold
 ]
 
+# Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
+# pair needed checking, since hour_of_data is appended at the end of
+# SOURCE_ORDER (every other pair's order is unchanged): node
+# scripts/validate_palette.js "#892b7b,#b8860b" --mode light and
+# "#a6438b,#b8860b" --mode dark both PASS (worst adjacent CVD ~27.6 light /
+# ~21.2 dark), plus a full 14-slot run in both modes to confirm no other pair
+# regressed -- both PASS (light mode's pre-existing contrast WARN on slots
+# 3/4/5/10 is unchanged, not something this addition introduced).
+#
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
 # intentionally omitted -- excluded from this admin-facing view by direction,
@@ -86,10 +96,10 @@ HUES = [
 # slot were separated from another real source's slot by an unused reserved slot, a
 # combined view showing just the real sources would render two colors adjacent that
 # were never validated as a pair. Keeping real sources contiguous at the front avoids
-# that: all 10 slots were validated together, so any subset of today's ten sources is
+# that: all 14 slots were validated together, so any subset of today's fourteen sources is
 # safe in any combination. cs50psets has no carrier file and is skipped below
 # (harmless to leave it here, past the end of HUES) -- when it becomes real, HUES
-# needs a 14th color and a fresh validation pass, same as every slot addition before it.
+# needs a 15th color and a fresh validation pass, same as every slot addition before it.
 SOURCE_ORDER = [
     "working_in_python",
     "little_brother",
@@ -104,6 +114,7 @@ SOURCE_ORDER = [
     "codeorg_csd_1_2",
     "codeorg_csd_3a",
     "codeorg_csd_3b",
+    "hour_of_data",
     "cs50psets",
 ]
 

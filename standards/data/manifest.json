@@ -110,6 +110,14 @@
    "abbrev": "CO-CSD3b",
    "hue_light": "#892b7b",
    "hue_dark": "#a6438b"
+  },
+  {
+   "slug": "hour_of_data",
+   "file": "hour-of-data.json",
+   "title": "Bootstrap:Data Science \u2014 Hour of Data",
+   "abbrev": "HoData",
+   "hue_light": "#b8860b",
+   "hue_dark": "#b8860b"
   }
  ],
  "crosswalks": [
