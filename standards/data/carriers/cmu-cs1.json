@@ -6,82 +6,85 @@
   "locator_url_template": null,
   "source": "cmu_cs1",
   "locator_titles": {
-   "1": "Creating Drawings",
-   "2": "Functions, Mouse Events, Properties",
-   "3": "Mouse Motion, Conditionals, Helper Functions",
-   "4": "More Conditionals, Key Events, Methods",
-   "5": "Complex Conditionals, More Key Events",
-   "6": "Groups, Step Events, Motion",
-   "7": "New Shapes, Local Variables, For Loops",
-   "8": "Math Functions, Random, Nested Loops",
-   "9": "Types, Strings, While Loops",
-   "10": "Lists and Return Values",
+   "1.1": "Basics",
+   "1.2": "Colors",
+   "1.3": "Shapes",
+   "1.4": "Unit 1 Exercises",
+   "2.1": "Functions",
+   "2.2": "Mouse Events",
+   "2.3": "Properties",
+   "2.4": "Unit 2 Exercises",
+   "3.1": "Mouse Motion Events",
+   "3.2": "Conditionals (if Statements)",
+   "3.3": "Helper Functions",
+   "3.4": "Unit 3 Exercises",
+   "4.1": "More Conditionals (if-elif-else Statements)",
+   "4.2": "Key Events",
+   "4.3": "Methods",
+   "4.4": "Unit 4 Exercises",
+   "5.1": "Complex Conditionals",
+   "5.2": "More Key Events",
+   "5.3": "Unit 5 Exercises",
+   "6.1": "Groups",
+   "6.2": "Group Methods",
+   "6.3": "Step Events and Motion",
+   "6.4": "Unit 6 Exercises",
+   "7.1": "New Shapes",
+   "7.2": "Local Variables",
+   "7.3": "For Loops",
+   "7.4": "Unit 7 Exercises",
+   "8": "Math Functions, Random Values, and Nested Loops",
+   "8.1": "Math Functions",
+   "8.2": "Random Values",
+   "8.3": "Nested For Loops",
+   "8.4": "Unit 8 Exercises",
+   "9.1": "Types and Input (Unit 9 is optional)",
+   "9.2": "Strings (Unit 9 is optional)",
+   "9.3": "String Methods (Unit 9 is optional)",
+   "9.4": "While Loops (Unit 9 is optional)",
+   "9.5": "Unit 9 Exercises (Unit 9 is optional)",
+   "10.1": "Lists",
+   "10.2": "List Methods",
+   "10.3": "Return Values",
+   "10.4": "Unit 10 Exercises",
    "11": "2D Lists and Board Games",
-   "12": "Final Project",
+   "11.1": "2D Lists",
+   "11.2": "Writing Board Games",
+   "12.1": "Final Project",
    "creative-task": "Creative Task (every unit, 1-10)",
    "collaborative": "Collaborative task (every unit)"
   },
-  "caveat": "Mapped from the teacher's own unit-by-unit scope-and-sequence analysis (porttack.com, \"CodeHS vs CMU\", Appendix C), not from CMU's official standards document -- that document omits AP.14, which this mapping argues (with evidence from the Creative Task's own design step) is actually taught.",
+  "caveat": "Five different provenance tiers, kept distinct in the coverage below since they carry very different confidence. (1) California 9-12: CMU's own claim, from the state-specific alignment document CS1's course description links under 'Standard Alignment' ('For state specific computer science education standard alignment visit here'). (2) CSTA 2017, grades 9-10 (3A): mostly CMU's own claim too, from the CSTA alignment table printed directly in CS1's course description PDF (CMU CS Academy, 'CS1: Introduction to Programming -- Course Description and Standard Alignment,' last updated 6/5/23) -- except 3A-AP-18, which that table omits but which CMU's own California document's 9-12.AP.17 claim crosswalks to (a real inconsistency between CMU's two documents, carried here on the strength of the California claim), and 3A-AP-15, which neither CMU document claims and which is this carrier's own addition, mirroring the 9-12.AP.14 argument below: units 3 through 9 are conditionals and loops almost without interruption, and the Creative Task's own design step has students justify which they chose -- the standard's own language. (3) California 6-8, CSTA 2017 Level 2, CSTA 2026 (both Middle School and High School bands), and California CTE (ICT): none of these appear in either CMU document -- CS1 targets '8th or 9th grade with algebra readiness' by CMU's own description, so the 6-8 band is a defensible reach, and CSTA 2026 postdates both CMU documents, which still cite CSTA 2017 throughout. All of these are this carrier's own content-based inference, kept sparse, and every note below says so. Locators throughout are sub-lesson (e.g. '3.2'), from CMU's own 'CS1 Scope and Sequence with Pacing Guide + Example Exercises' (last updated 3/15/23); Unit 9 (Types, Strings, and While Loops) is marked optional in that guide, and its own locator titles say so.",
   "abbrev": "CS1"
  },
  "coverage": {
   "castandards": {
    "9-12.AP.12": {
-    "locators": [
-     8,
-     11
-    ],
-    "note": "Math/random/nested loops (unit 8) and 2D lists/board-game logic (unit 11) both involve choosing and adapting existing algorithms."
+    "locators": [8, 11],
+    "note": "Math functions, random values, and nested loops (unit 8) and 2D lists and board-game logic (unit 11) both involve choosing and adapting existing algorithms rather than inventing from scratch."
    },
    "9-12.AP.13": {
-    "locators": [
-     10,
-     11
-    ],
-    "note": "Lists and 2D lists are core, assessed content (units 10-11), not an optional add-on."
+    "locators": ["10.1", "10.2", "11.1"],
+    "note": "Lists (10.1), list methods (10.2), and 2D lists (11.1) replace repeated simple variables with a single generalized collection -- core, assessed content, not an optional add-on."
    },
    "9-12.AP.14": {
-    "locators": [
-     3,
-     4,
-     5,
-     7,
-     8,
-     9,
-     "creative-task"
-    ],
-    "note": "Woven through every conditionals/loop unit (3-5, 7-9) and made explicit in the Creative Task's own design step, which has students list the concepts they plan to use and justify why -- the standard's own language, 'justify the selection.' Not in CMU's own official standards document; the teacher's own classroom analysis argues it should be."
+    "locators": ["3.2", "4.1", "5.1", "7.3", "8.3", "9.4", "creative-task"],
+    "note": "Woven through every conditionals/loop lesson -- if statements (3.2), if-elif-else (4.1), complex conditionals (5.1), for loops (7.3), nested for loops (8.3), and while loops (9.4, in the optional Unit 9) -- and made explicit in the Creative Task's own design step, which has students list the concepts they plan to use and justify why -- the standard's own language, 'justify the selection.' Not in CMU's own official standards document; the teacher's own classroom analysis argues it should be."
    },
    "9-12.AP.15": {
-    "locators": [
-     2,
-     3,
-     4,
-     5,
-     6,
-     12
-    ],
-    "note": "Iterative development through events (mouse, key, step) recurs across units 2-6 and the final project (unit 12)."
+    "locators": ["2.2", "3.1", "4.2", "5.2", "6.3", "12.1"],
+    "note": "Iterative development through events recurs across mouse events (2.2), mouse motion (3.1), key events (4.2 and 5.2), step events and motion (6.3), and the final project (12.1)."
    },
    "9-12.AP.16": {
-    "locators": [
-     3
-    ],
-    "note": "Helper functions, introduced in unit 3, are decomposition into subproblems."
+    "locators": ["3.3"],
+    "note": "Helper functions (3.3), introduced right where students first need to break a bigger drawing problem into named pieces, is decomposition into subproblems."
    },
    "9-12.AP.17": {
-    "locators": [
-     2,
-     4,
-     7,
-     10
-    ],
-    "note": "Modular design via functions, methods, and library calls across units 2, 4, 7, and 10."
+    "locators": ["2.1", "4.3", "7.1", "10.3"],
+    "note": "Modular design via functions (2.1), methods (4.3), the New Shapes library (7.1), and functions that return values (10.3)."
    },
    "9-12.AP.18": {
-    "locators": [
-     "creative-task"
-    ],
+    "locators": ["creative-task"],
     "note": "Design-for-audience is the Creative Task's rubric, but the rubric itself does not require a feedback step -- CMU claims the standard on the task's design intent; whether it's actually met depends on the teacher building a feedback step in. In this teacher's own classroom it is."
    },
    "9-12.AP.19": {
@@ -90,22 +93,183 @@
     "note": "Not taught in CS1 -- software license limitations are deliberately deferred to AP CS Principles, where this teacher covers it directly with his own materials."
    },
    "9-12.AP.20": {
-    "locators": [
-     "creative-task"
-    ],
-    "note": "The Creative Task's build-reflect-revise cycle runs ten times a year."
+    "locators": ["creative-task"],
+    "note": "The Creative Task's build-reflect-revise cycle runs ten times a year (units 1-10)."
    },
    "9-12.AP.21": {
-    "locators": [
-     "collaborative"
-    ],
+    "locators": ["collaborative"],
     "note": "Real-time shared-editor pair programming is built into every unit, not a capstone."
    },
    "9-12.AP.22": {
-    "locators": [
-     "creative-task"
-    ],
+    "locators": ["creative-task"],
     "note": "The Creative Task requires describing the program and reflecting on what changed and why -- documentation of design decisions, ten times a year."
+   },
+   "6-8.AP.11": {
+    "locators": ["7.2"],
+    "note": "This carrier's own inference, since neither CMU document maps CS1 to the 6-8 band: local variables (7.2) is where naming a variable well starts to matter for reading the code back, the standard's own concern."
+   },
+   "6-8.AP.12": {
+    "locators": ["3.2", "4.1", "5.1", "7.3", "8.3"],
+    "note": "This carrier's own inference: conditionals (3.2), if-elif-else (4.1), compound and nested conditionals (5.1), for loops (7.3), and nested for loops (8.3) are exactly the combined-control-structures, built-up-iteratively territory this standard names."
+   },
+   "6-8.AP.13": {
+    "locators": ["3.3"],
+    "note": "This carrier's own inference: helper functions (3.3) is decomposition into subproblems, the same evidence as 9-12.AP.16 above."
+   },
+   "6-8.AP.14": {
+    "locators": ["2.1", "3.3", "4.3"],
+    "note": "This carrier's own inference: functions (2.1), helper functions (3.3), and methods (4.3) are all reusable procedures parameterized for different inputs."
+   },
+   "6-8.AP.15": {
+    "locators": ["creative-task"],
+    "note": "This carrier's own inference, same caveat as 9-12.AP.18 above: the Creative Task's design step invites feedback, but the rubric doesn't require it. Whether this standard is actually met depends on the teacher building a feedback step in. In this teacher's own classroom it is."
+   },
+   "6-8.AP.18": {
+    "locators": ["collaborative"],
+    "note": "This carrier's own inference: the collaborative task's real-time shared-editor pair programming is team roles and shared tools, the same evidence as 9-12.AP.21 above, at a lighter grain."
+   },
+   "6-8.AP.19": {
+    "locators": ["creative-task"],
+    "note": "This carrier's own inference: the Creative Task's describe-and-reflect step is documentation that lets someone else follow what was built and why, the same evidence as 9-12.AP.22 above."
+   },
+   "6-8.DA.7": {
+    "locators": ["9.1", "9.2"],
+    "note": "This carrier's own inference, and Unit 9 is marked optional in CMU's own pacing guide: types and input (9.1) and strings (9.2) are where the same value can be represented as an int, a float, or a string, and the choice changes what you can do with it."
+   }
+  },
+  "csta2017": {
+   "3A-AP-13": {
+    "locators": [8, 11],
+    "note": "CMU's own claim, from the CSTA alignment table in CS1's course description PDF. Same evidence as 9-12.AP.12 above, via the castandards-csta2017 crosswalk (strength: partial)."
+   },
+   "3A-AP-14": {
+    "locators": ["10.1", "10.2", "11.1"],
+    "note": "CMU's own claim, from the CSTA alignment table in CS1's course description PDF. Same evidence as 9-12.AP.13 above (crosswalk strength: strong)."
+   },
+   "3A-AP-15": {
+    "locators": ["3.2", "4.1", "5.1", "7.3", "8.3", "9.4", "creative-task"],
+    "note": "Not claimed in either of CMU's own documents. Same evidence and argument as 9-12.AP.14 above -- this teacher's own classroom analysis, not CMU's claim."
+   },
+   "3A-AP-16": {
+    "locators": ["2.2", "3.1", "4.2", "5.2", "6.3", "12.1"],
+    "note": "CMU's own claim, from the CSTA alignment table in CS1's course description PDF. Same evidence as 9-12.AP.15 above (crosswalk strength: strong)."
+   },
+   "3A-AP-17": {
+    "locators": ["3.3"],
+    "note": "CMU's own claim, from the CSTA alignment table in CS1's course description PDF. Same evidence as 9-12.AP.16 above (crosswalk strength: strong)."
+   },
+   "3A-AP-18": {
+    "locators": ["2.1", "4.3", "7.1", "10.3"],
+    "note": "Not in CMU's own CSTA alignment table, but CMU's separate California-specific document claims 9-12.AP.17 (modular design), which crosswalks strongly to this code -- a real inconsistency between CMU's two published documents, carried here on the strength of the California claim. Same evidence as 9-12.AP.17 above."
+   },
+   "3A-AP-19": {
+    "locators": ["creative-task"],
+    "note": "CMU's own claim, from the CSTA alignment table in CS1's course description PDF. Same evidence as 9-12.AP.18 above (crosswalk strength: strong), with the same feedback-step caveat."
+   },
+   "3A-AP-20": {
+    "locators": [],
+    "checked": true,
+    "note": "Not taught in CS1, same as 9-12.AP.19 above -- software license limitations are deferred to AP CS Principles."
+   },
+   "3A-AP-21": {
+    "locators": ["creative-task"],
+    "note": "CMU's own claim, from the CSTA alignment table in CS1's course description PDF. Same evidence as 9-12.AP.20 above (crosswalk strength: strong)."
+   },
+   "3A-AP-22": {
+    "locators": ["collaborative"],
+    "note": "CMU's own claim, from the CSTA alignment table in CS1's course description PDF. Same evidence as 9-12.AP.21 above (crosswalk strength: strong)."
+   },
+   "3A-AP-23": {
+    "locators": ["creative-task"],
+    "note": "CMU's own claim, from the CSTA alignment table in CS1's course description PDF. Same evidence as 9-12.AP.22 above (crosswalk strength: strong)."
+   },
+   "2-AP-11": {
+    "locators": ["7.2"],
+    "note": "This carrier's own inference, mirroring 6-8.AP.11 above (crosswalk strength: strong)."
+   },
+   "2-AP-12": {
+    "locators": ["3.2", "4.1", "5.1", "7.3", "8.3"],
+    "note": "This carrier's own inference, mirroring 6-8.AP.12 above (crosswalk strength: strong)."
+   },
+   "2-AP-13": {
+    "locators": ["3.3"],
+    "note": "This carrier's own inference, mirroring 6-8.AP.13 above (crosswalk strength: strong)."
+   },
+   "2-AP-14": {
+    "locators": ["2.1", "3.3", "4.3"],
+    "note": "This carrier's own inference, mirroring 6-8.AP.14 above (crosswalk strength: strong)."
+   },
+   "2-AP-15": {
+    "locators": ["creative-task"],
+    "note": "This carrier's own inference, mirroring 6-8.AP.15 above (crosswalk strength: strong), same feedback-step caveat."
+   },
+   "2-AP-18": {
+    "locators": ["collaborative"],
+    "note": "This carrier's own inference, mirroring 6-8.AP.18 above (crosswalk strength: strong)."
+   },
+   "2-AP-19": {
+    "locators": ["creative-task"],
+    "note": "This carrier's own inference, mirroring 6-8.AP.19 above (crosswalk strength: strong)."
+   },
+   "2-DA-07": {
+    "locators": ["9.1", "9.2"],
+    "note": "This carrier's own inference, mirroring 6-8.DA.7 above (crosswalk strength: strong); Unit 9 is optional in CMU's own pacing guide."
+   }
+  },
+  "csta2026": {
+   "HS-ALG-PS-02": {
+    "locators": ["3.3", "4.3"],
+    "note": "This carrier's own inference -- no CMU source exists, since the 2026 revision postdates CMU's documents: helper functions (3.3) and methods (4.3) are exactly wrapping-repeated-steps-in-a-function territory."
+   },
+   "HS-ALG-PS-04": {
+    "locators": ["8.2"],
+    "note": "This carrier's own inference: random values (8.2) is where a program's behavior stops being deterministic, this standard's own distinction."
+   },
+   "HS-PRO-PD-12": {
+    "locators": ["2.1", "4.3", "6.1"],
+    "note": "This carrier's own inference: functions (2.1), methods (4.3), and groups (6.1, CMU's own object-like container for shapes) are all organizing a program into distinct, reusable pieces."
+   },
+   "HS-PRO-VD-16": {
+    "locators": ["10.1", "11.1"],
+    "note": "This carrier's own inference: lists (10.1) and 2D lists (11.1) are the course's own answer to choosing a structure for a program's data."
+   },
+   "HS-PRO-TR-19": {
+    "locators": ["creative-task"],
+    "note": "This carrier's own inference: the Creative Task's reflect step, which asks what was hard and how the design changed, is checking a program against its own original plan."
+   },
+   "HS-PRO-TR-20": {
+    "locators": ["creative-task"],
+    "note": "This carrier's own inference: the Creative Task's build-reflect-revise cycle is feedback actually changing the program, ten times a year."
+   },
+   "MS-PRO-PD-12": {
+    "locators": ["2.1", "4.3", "6.1"],
+    "note": "This carrier's own inference, mirroring HS-PRO-PD-12 above."
+   },
+   "MS-PRO-PD-15": {
+    "locators": ["collaborative"],
+    "note": "This carrier's own inference: the collaborative task's real-time shared-editor pair programming is exactly this standard's planning-together, feedback, and shared-tools territory."
+   },
+   "MS-PRO-VD-16": {
+    "locators": ["9.1", "9.2"],
+    "note": "This carrier's own inference, and Unit 9 is optional in CMU's own pacing guide: types and input (9.1) and strings (9.2) is a program storing and updating more than one kind of data in variables."
+   },
+   "MS-PRO-TR-19": {
+    "locators": ["creative-task", "collaborative"],
+    "note": "This carrier's own inference: the Creative Task's reflect-and-write-down-what-changed step, together with the collaborative task's paired work, cover this standard's testing-and-write-up territory."
+   },
+   "MS-PRO-TR-20": {
+    "locators": ["creative-task"],
+    "note": "This carrier's own inference, mirroring HS-PRO-TR-20 above."
+   }
+  },
+  "ca-ict-anchor": {
+   "C4.9": {
+    "locators": ["2.1", "3.2", "7.3"],
+    "note": "This carrier's own inference: functions (2.1), conditionals (3.2), and for loops (7.3) are the branches-loops-procedures-with-parameters-and-variables toolkit this standard names, taught across nearly the whole course."
+   },
+   "5.9": {
+    "locators": ["3.3"],
+    "note": "This carrier's own inference: helper functions (3.3) is the same decomposition evidence as 9-12.AP.16 and 6-8.AP.13 above."
    }
   }
  }
