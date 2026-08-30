@@ -485,17 +485,28 @@
   // -- right-click "Copy Link", drop it in an email, and opening it lands on
   // this same picker state (see applyParamsFromLocation, called at boot).
   // Where the view id matches one of the five view-toggle-btn elements'
-  // data-view, applying it presses that button same as a manual click would;
-  // some classes need a panel combination none of those five buttons cover
-  // (e.g. CA 9-12 + ICT only, with no AP and no CA 6-8), so those ids exist
-  // only in VIEW_PRESETS and are applied directly via panelActions, leaving
-  // no view-toggle-btn pressed.
+  // data-view (all five now id="view-show-<id>", including the two that
+  // read "Open all"/"Close all" rather than "Show ..."), applying it presses
+  // that button same as a manual click would; some classes need a panel
+  // combination none of those five buttons cover (e.g. CA 9-12 + ICT only,
+  // with no AP and no CA 6-8), so those ids exist only in VIEW_PRESETS and
+  // are applied directly via panelActions, leaving no view-toggle-btn
+  // pressed.
+  //
+  // sourcesCsv is optional: omitting it (as opposed to passing an empty
+  // string) leaves the current source-checkbox selection untouched, so a
+  // link can carry just ?view=open-all to set the panel view alone -- e.g.
+  // for someone who already has their own sources picked and just wants a
+  // different set of panels open -- without also forcing "only these
+  // sources" the way a full recommendation link does.
   function applyRecommendation(sourcesCsv, view, handleToggle, panelActions) {
-    var wanted = (sourcesCsv || '').split(',').filter(Boolean);
-    document.querySelectorAll('#source-list input[type=checkbox]').forEach(function (cb) {
-      cb.checked = wanted.indexOf(cb.getAttribute('data-source')) !== -1;
-    });
-    handleToggle();
+    if (sourcesCsv != null) {
+      var wanted = sourcesCsv.split(',').filter(Boolean);
+      document.querySelectorAll('#source-list input[type=checkbox]').forEach(function (cb) {
+        cb.checked = wanted.indexOf(cb.getAttribute('data-source')) !== -1;
+      });
+      handleToggle();
+    }
     var viewBtn = view && document.getElementById('view-show-' + view);
     if (viewBtn) {
       viewBtn.click();
@@ -521,8 +532,14 @@
 
   // Reproduces a recommendation link's state from the URL that loaded this
   // page (?sources=slug,slug&view=id), so a link pasted into an email lands
-  // on the same picker state a click on the sidebar would have. Absent or
-  // unrecognized params leave the just-applied default (ca-hs) view alone.
+  // on the same picker state a click on the sidebar would have. Either
+  // param may be given alone: ?view=open-all sets just the panel view
+  // preset (open-all/close-all/ca/ca-hs/ca-ms/ca-cs/ca-hs-ict -- the same
+  // ids VIEW_PRESETS above and the five view-toggle-btn buttons use)
+  // without touching source selection, and ?sources=... alone sets just
+  // the checked sources without touching whatever view is already showing.
+  // Absent or unrecognized params leave the just-applied default (ca-hs)
+  // view alone.
   function applyParamsFromLocation(handleToggle, panelActions) {
     var params = new URLSearchParams(window.location.search);
     var sourcesCsv = params.get('sources');
