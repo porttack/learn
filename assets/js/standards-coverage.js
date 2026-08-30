@@ -697,13 +697,16 @@
       var panels = [
         ['AP Computer Science Principles', renderApcspPanel(catalogs.apcsp), 'ap', 'apcsp-standards-reference.html'],
         ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12', 'castandards'), 'ca-hs', 'ca-cs-standards-reference.html'],
-        ['CSTA 2017 (Grades 9-12)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017'), 'csta', 'csta2017-standards-reference.html'],
-        ['CSTA 2026', renderCsta2026Panel(catalogs.csta2026), 'csta', 'csta2026-standards-reference.html'],
+        // "(national standard)" on all three CSTA panels: admins reviewing
+        // this page know CA's own standards on sight, but not why CSTA is
+        // here at all -- this is the one-word answer to that question.
+        ['CSTA 2017 (Grades 9-12) (national standard)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017'), 'csta', 'csta2017-standards-reference.html'],
+        ['CSTA 2026 (national standard)', renderCsta2026Panel(catalogs.csta2026), 'csta', 'csta2026-standards-reference.html'],
         ['California CTE (ICT)', renderCaIctPanel(catalogs['ca-ict-anchor']), 'ca-ict', 'ca-ict-anchor-standards-reference.html'],
         // Last, deliberately: these two are the only middle-school-level panels
         // among otherwise all-high-school frameworks.
         ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8', 'castandards'), 'ca-ms', 'ca-cs-standards-reference.html'],
-        ['CSTA 2017 (Grades 6-8)', renderCastandardsPanel(catalogs.csta2017, '6-8', 'csta2017'), 'csta', 'csta2017-standards-reference.html'],
+        ['CSTA 2017 (Grades 6-8) (national standard)', renderCastandardsPanel(catalogs.csta2017, '6-8', 'csta2017'), 'csta', 'csta2017-standards-reference.html'],
       ];
       // Each panel is a native <details>, open by default -- collapsing one
       // shrinks it to just its title bar (the chevron before the heading),
