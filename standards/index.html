@@ -123,6 +123,8 @@ noscript p {
 .reco-link:hover { color: var(--fg); }
 .reco-link:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 .reco-disabled { color: var(--muted); }
+.reco-cite { color: var(--muted); font-size: .92em; }
+.reco-cite a { color: var(--accent); }
 .panel-actions { margin: 0 0 1.2rem; font-size: .85rem; display: flex; gap: .4rem; flex-wrap: wrap; }
 .view-toggle-btn {
   background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
@@ -240,9 +242,9 @@ noscript p {
 <div class="cov-recommendations">
 <h2>Recommendations</h2>
 <ul>
-<li><button type="button" class="reco-link" data-sources="cmu_cs0" data-view="ca-ms">MS1</button></li>
-<li><button type="button" class="reco-link" data-sources="cmu_cs1" data-view="ca-cs">MS2</button></li>
-<li><button type="button" class="reco-link" data-sources="cmu_cs1,little_brother" data-view="ca-hs-ict">HS Exploring</button></li>
+<li><button type="button" class="reco-link" data-sources="cmu_cs0" data-view="ca-ms">MS1</button> <span class="reco-cite">(<a href="https://academy.cs.cmu.edu/course-info#:~:text=EXPLORE%20THE%204%20UNITS" target="_blank" rel="noopener">CMU CS0</a>)</span></li>
+<li><button type="button" class="reco-link" data-sources="cmu_cs1" data-view="ca-cs">MS2</button> <span class="reco-cite">(<a href="https://academy.cs.cmu.edu/course-info" target="_blank" rel="noopener">CMU CS1</a>)</span></li>
+<li><button type="button" class="reco-link" data-sources="cmu_cs1,little_brother" data-view="ca-hs-ict">HS Exploring</button> <span class="reco-cite">(<a href="https://academy.cs.cmu.edu/course-info" target="_blank" rel="noopener">CMU CS1</a>, <a href="https://porttack.com/2026/06/14/little-brother.html" target="_blank" rel="noopener">Little Brother</a>)</span></li>
 <li><button type="button" class="reco-link" data-sources="working_in_python,little_brother,cs50ap,cs50p" data-view="ca-hs">HS AP CSP</button></li>
 <li><span class="reco-disabled">HS Robotics</span></li>
 </ul>
