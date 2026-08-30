@@ -566,7 +566,7 @@
   // it's a fixed lookup here rather than manifest/carrier metadata.
   var SOURCE_GROUPS = [
     { label: 'Primary', slugs: ['cmu_cs0', 'cmu_cs1', 'cmu_csp', 'codeorg_apcsp', 'cs50ap', 'cs50ap_extended', 'cs50p', 'codehs_corgi'] },
-    { label: 'Secondary', slugs: ['working_in_python', 'little_brother'] }
+    { label: 'Secondary', slugs: ['working_in_python', 'little_brother', 'codeorg_csd_1_2', 'codeorg_csd_3a', 'codeorg_csd_3b'] }
   ];
 
   function renderSourcePicker(manifest, carrierFiles, onChange) {

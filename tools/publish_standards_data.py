@@ -39,6 +39,26 @@ CROSSWALKS = [
 # "<all 10 hexes>" --mode light, then --mode dark) -- both PASS, worst adjacent CVD
 # unchanged from the 8-slot baseline (new pairs are #e34948/#e66767 (8, red) vs
 # #288cbd/#0f7bd7 (9, cyan), and #288cbd/#0f7bd7 vs #8ca50d/#5c7000 (10, olive)).
+#
+# Slot 11 (brown) added 2026-08-29 alongside codeorg_csd (a single, since-split
+# source): validated the adjacent pair against slot 10 (node
+# scripts/validate_palette.js "#8ca50d,#a15c2e" --mode light;
+# "#5c7000,#c9803f" --mode dark) -- both PASS, worst adjacent CVD 13.7 light /
+# 10.3 dark, plus a full 11-slot run in both modes to confirm no other pair
+# regressed.
+#
+# Slots 12-13 (teal, plum) added 2026-08-30 when codeorg_csd was split into
+# three sibling sources (codeorg_csd_1_2, codeorg_csd_3a, codeorg_csd_3b) so
+# each could be toggled independently -- three sources now need three slots
+# where one sufficed before. Searched candidate hues in OKLCH space via the
+# dataviz skill's validate() export directly (brute-force random HSL samples
+# in a target hue bucket, kept only ones passing the adjacent check against
+# their predecessor), landing on teal (vs slot 11 brown) and plum (vs slot 12
+# teal) since neither hue family was in use yet. Re-ran the full 13-slot
+# adjacent check in both modes afterward -- both PASS, worst adjacent CVD
+# unchanged from the 11-slot baseline (new pairs are #a15c2e/#c9803f (11,
+# brown) vs #1c83ab/#2993c1 (12, teal), and #1c83ab/#2993c1 vs #892b7b/#a6438b
+# (13, plum)).
 HUES = [
     ("#2a78d6", "#3987e5"),  # 1 blue
     ("#eb6834", "#d95926"),  # 2 orange
@@ -50,6 +70,9 @@ HUES = [
     ("#e34948", "#e66767"),  # 8 red
     ("#288cbd", "#0f7bd7"),  # 9 cyan
     ("#8ca50d", "#5c7000"),  # 10 olive
+    ("#a15c2e", "#c9803f"),  # 11 brown
+    ("#1c83ab", "#2993c1"),  # 12 teal
+    ("#892b7b", "#a6438b"),  # 13 plum
 ]
 
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
@@ -66,7 +89,7 @@ HUES = [
 # that: all 10 slots were validated together, so any subset of today's ten sources is
 # safe in any combination. cs50psets has no carrier file and is skipped below
 # (harmless to leave it here, past the end of HUES) -- when it becomes real, HUES
-# needs an 11th color and a fresh validation pass, same as every slot addition before it.
+# needs a 14th color and a fresh validation pass, same as every slot addition before it.
 SOURCE_ORDER = [
     "working_in_python",
     "little_brother",
@@ -78,6 +101,9 @@ SOURCE_ORDER = [
     "cmu_cs0",
     "cmu_csp",
     "codeorg_apcsp",
+    "codeorg_csd_1_2",
+    "codeorg_csd_3a",
+    "codeorg_csd_3b",
     "cs50psets",
 ]
 

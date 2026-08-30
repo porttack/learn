@@ -86,6 +86,30 @@
    "abbrev": "CO-CSP",
    "hue_light": "#8ca50d",
    "hue_dark": "#5c7000"
+  },
+  {
+   "slug": "codeorg_csd_1_2",
+   "file": "codeorg-csd-1-2.json",
+   "title": "Code.org's CS Discoveries (Units 1-2)",
+   "abbrev": "CO-CSD1-2",
+   "hue_light": "#a15c2e",
+   "hue_dark": "#c9803f"
+  },
+  {
+   "slug": "codeorg_csd_3a",
+   "file": "codeorg-csd-3a.json",
+   "title": "Code.org's CS Discoveries (Unit 3a: Music Lab)",
+   "abbrev": "CO-CSD3a",
+   "hue_light": "#1c83ab",
+   "hue_dark": "#2993c1"
+  },
+  {
+   "slug": "codeorg_csd_3b",
+   "file": "codeorg-csd-3b.json",
+   "title": "Code.org's CS Discoveries (Unit 3b: Animations & Games)",
+   "abbrev": "CO-CSD3b",
+   "hue_light": "#892b7b",
+   "hue_dark": "#a6438b"
   }
  ],
  "crosswalks": [
