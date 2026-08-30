@@ -693,20 +693,21 @@
       // that framework (same ones linked from the sources sidebar's "Standards
       // reference" list) -- California's two grade bands and CSTA 2017's two
       // grade bands each come from one combined catalog, so both panels for a
-      // framework point at that framework's single reference page.
+      // framework point at that framework's single reference page. Fifth,
+      // where present, is a plain-text annotation shown after the link (not
+      // part of it) -- either the standard's publication year, or for CSTA
+      // "national standard", the one-word answer to why an admin unfamiliar
+      // with CSTA sees it on this page at all.
       var panels = [
-        ['AP Computer Science Principles', renderApcspPanel(catalogs.apcsp), 'ap', 'apcsp-standards-reference.html'],
-        ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12', 'castandards'), 'ca-hs', 'ca-cs-standards-reference.html'],
-        // "(national standard)" on all three CSTA panels: admins reviewing
-        // this page know CA's own standards on sight, but not why CSTA is
-        // here at all -- this is the one-word answer to that question.
-        ['CSTA 2017 (Grades 9-12) (national standard)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017'), 'csta', 'csta2017-standards-reference.html'],
-        ['CSTA 2026 (national standard)', renderCsta2026Panel(catalogs.csta2026), 'csta', 'csta2026-standards-reference.html'],
-        ['California CTE (ICT)', renderCaIctPanel(catalogs['ca-ict-anchor']), 'ca-ict', 'ca-ict-anchor-standards-reference.html'],
+        ['AP Computer Science Principles', renderApcspPanel(catalogs.apcsp), 'ap', 'apcsp-standards-reference.html', '2023'],
+        ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12', 'castandards'), 'ca-hs', 'ca-cs-standards-reference.html', '2018'],
+        ['CSTA 2017 (Grades 9-12)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017'), 'csta', 'csta2017-standards-reference.html', 'national standard'],
+        ['CSTA 2026', renderCsta2026Panel(catalogs.csta2026), 'csta', 'csta2026-standards-reference.html', 'national standard'],
+        ['California CTE (ICT)', renderCaIctPanel(catalogs['ca-ict-anchor']), 'ca-ict', 'ca-ict-anchor-standards-reference.html', '2013'],
         // Last, deliberately: these two are the only middle-school-level panels
         // among otherwise all-high-school frameworks.
-        ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8', 'castandards'), 'ca-ms', 'ca-cs-standards-reference.html'],
-        ['CSTA 2017 (Grades 6-8) (national standard)', renderCastandardsPanel(catalogs.csta2017, '6-8', 'csta2017'), 'csta', 'csta2017-standards-reference.html'],
+        ['California 6-8 Computer Science', renderCastandardsPanel(catalogs.castandards, '6-8', 'castandards'), 'ca-ms', 'ca-cs-standards-reference.html', '2018'],
+        ['CSTA 2017 (Grades 6-8)', renderCastandardsPanel(catalogs.csta2017, '6-8', 'csta2017'), 'csta', 'csta2017-standards-reference.html', 'national standard'],
       ];
       // Each panel is a native <details>, open by default -- collapsing one
       // shrinks it to just its title bar (the chevron before the heading),
@@ -715,7 +716,8 @@
       // the reference link goes inside that heading rather than beside it.
       document.getElementById('panels').innerHTML = panels
         .map(function (p) {
-          var heading = '<h2><a class="panel-ref-link" href="' + esc(p[3]) + '">' + esc(p[0]) + '</a></h2>';
+          var annotation = p[4] ? ' <span class="panel-annotation">(' + esc(p[4]) + ')</span>' : '';
+          var heading = '<h2><a class="panel-ref-link" href="' + esc(p[3]) + '">' + esc(p[0]) + '</a>' + annotation + '</h2>';
           return '<div class="cov-panel" data-panel-category="' + esc(p[2]) + '"><details open><summary>' + heading + '</summary>' + p[1] + '</details></div>';
         })
         .join('\n');
