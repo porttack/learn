@@ -338,6 +338,14 @@
     }).join('\n');
   }
 
+  // A code's prefix (before the first hyphen) is its level/tier: MS/HS for
+  // the core Middle School/High School bands, S1/S2 for the two elective
+  // Specialty tiers. Concept names are shared across tiers (e.g. "Physical
+  // Computing" holds both S1-PHY-* and S2-PHY-* codes), so without an
+  // explicit sub-grouping a reader has nothing but the badge's own code
+  // text to tell two similar-looking entries apart.
+  var LEVEL_LABELS = { MS: 'Middle School', HS: 'High School', S1: 'Specialty I', S2: 'Specialty II' };
+
   function renderCsta2026Panel(catalog) {
     var order = [];
     var byConcept = {};
@@ -347,7 +355,28 @@
       (byConcept[s.concept] = byConcept[s.concept] || []).push({ code: s.code, displayCode: display, title: null, paraphrase: s.paraphrase });
     });
     return order.map(function (concept, i) {
-      return renderGroupGrid(concept, byConcept[concept], 'csta2026', groupHue(i, order.length));
+      var entries = byConcept[concept];
+      var hue = groupHue(i, order.length);
+      var tierOrder = [];
+      var byTier = {};
+      entries.forEach(function (e) {
+        var prefix = e.code.split('-')[0];
+        var tier = LEVEL_LABELS[prefix] || prefix;
+        if (!byTier[tier]) tierOrder.push(tier);
+        (byTier[tier] = byTier[tier] || []).push(e);
+      });
+      if (tierOrder.length <= 1) {
+        return renderGroupGrid(concept, entries, 'csta2026', hue);
+      }
+      var badges = tierOrder.map(function (tier) {
+        return (
+          '<div class="cov-subgroup"><h4>' + esc(tier) + '</h4>' +
+          '<div class="cov-grid">' + byTier[tier].map(function (e) {
+            return badgeHtml('csta2026', e.code, e.displayCode, e.title, e.paraphrase, hue);
+          }).join('\n') + '</div></div>'
+        );
+      }).join('\n');
+      return '<div class="cov-group"><div class="cov-group-title">' + esc(concept) + '</div>' + badges + '</div>';
     }).join('\n');
   }
 
@@ -737,6 +766,7 @@
       var panels = [
         ['AP Computer Science Principles', renderApcspPanel(catalogs.apcsp), 'ap', 'apcsp-standards-reference.html', '2023'],
         ['California 9-12 Computer Science', renderCastandardsPanel(catalogs.castandards, '9-12', 'castandards'), 'ca-hs', 'ca-cs-standards-reference.html', '2018'],
+        ['California 9-12 Specialty', renderCastandardsPanel(catalogs.castandards, '9-12 Specialty', 'castandards'), 'ca-hs', 'ca-cs-standards-reference.html', '2018, non-core'],
         ['CSTA 2017 (Grades 9-12)', renderCastandardsPanel(catalogs.csta2017, '9-12', 'csta2017'), 'csta', 'csta2017-standards-reference.html', 'national standard'],
         ['CSTA 2026', renderCsta2026Panel(catalogs.csta2026), 'csta', 'csta2026-standards-reference.html', 'national standard'],
         ['California CTE (ICT)', renderCaIctPanel(catalogs['ca-ict-anchor']), 'ca-ict', 'ca-ict-anchor-standards-reference.html', '2013'],

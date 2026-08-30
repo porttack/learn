@@ -3,8 +3,8 @@
   "source": "California K-12 Computer Science Standards (California Department of Education), reissued with framework alignment updates through Nov. 2023",
   "extracted": "2026-07-30",
   "source_pages": 270,
-  "grade_band_covered": "6-8, 9-12",
-  "shape_note": "Extraction matches the expected shape exactly: five strands, thirty core 9-12 standards (CS.1-3, NI.4-7, DA.8-11, AP.12-22, IC.23-30). A separate '9-12 Specialty' set (9-12S.*, e.g. 9-12S.CS.1) exists in the same document for a more advanced/specialized pathway; it is a different, non-core standard set and is not indexed here. Extended 2026-08-28 with the 6-8 band (24 standards: CS.1-3, NI.4-6, DA.7-9, AP.10-19, IC.20-24), extracted from the teacher's own CA CS Standards 3-12 spreadsheet (working-in-python/scratch/standards-source/, gitignored). No 3-5 or 9-12 Specialty entries are indexed -- out of scope for this pass."
+  "grade_band_covered": "6-8, 9-12, 9-12 Specialty",
+  "shape_note": "Extraction matches the expected shape exactly: five strands, thirty core 9-12 standards (CS.1-3, NI.4-7, DA.8-11, AP.12-22, IC.23-30). Extended 2026-08-28 with the 6-8 band (24 standards: CS.1-3, NI.4-6, DA.7-9, AP.10-19, IC.20-24), extracted from the teacher's own CA CS Standards 3-12 spreadsheet (working-in-python/scratch/standards-source/, gitignored). Extended again 2026-08-29 with the '9-12 Specialty' set (30 standards: CS.1-2, NI.3-6, DA.7-9, AP.10-26, IC.27-30), marked core: False -- a separate, more advanced/specialized pathway defined in the same CDE document, not a deeper version of the core 9-12 standards. No 3-5 entries are indexed -- out of scope for this pass."
  },
  "standards": [
   {
@@ -439,6 +439,246 @@
    "grade_band": "9-12",
    "core": true,
    "paraphrase": "Privacy laws and ethics differ across places and contexts, and evaluating a policy means weighing its social and economic tradeoffs."
+  },
+  {
+   "code": "9-12S.AP.10",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "AI already sits inside plenty of everyday software and physical systems -- research one and explain how it's actually doing its job there."
+  },
+  {
+   "code": "9-12S.AP.11",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Building a small AI-driven program that handles a simple task a living thing would normally do -- like navigating toward a goal -- is different from implementing AI theory from scratch."
+  },
+  {
+   "code": "9-12S.AP.12",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Writing a real search or sort into a program to organize or retrieve data matters more here than choosing the fastest algorithm."
+  },
+  {
+   "code": "9-12S.AP.13",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "The same task written two different ways can run at very different speeds, and naming that difference with a time class -- linear, quadratic, log n -- makes the comparison concrete."
+  },
+  {
+   "code": "9-12S.AP.14",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Different data structures trade off differently for the same basic operations -- inserting, deleting, modifying -- and picking one over another is a real design decision, not a formality."
+  },
+  {
+   "code": "9-12S.AP.15",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Tracing how a recursive algorithm actually resolves means following the chain of calls down to a base case and back up again, not just trusting that it works."
+  },
+  {
+   "code": "9-12S.AP.16",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "A big, real-world problem usually decomposes into smaller pieces that already have a solution -- reusable code or a known procedure -- if you can spot the pattern."
+  },
+  {
+   "code": "9-12S.AP.17",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "A problem substantial enough to need decomposing is also substantial enough to justify building it from your own procedures, modules, or objects instead of one long script."
+  },
+  {
+   "code": "9-12S.AP.18",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Pulling in a well-tested library or API instead of reimplementing its functionality is what code reuse actually looks like in practice."
+  },
+  {
+   "code": "9-12S.AP.19",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Planning software for people beyond yourself means following an actual development-lifecycle process, not just writing until it works."
+  },
+  {
+   "code": "9-12S.AP.20",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "The same solution often needs to exist on more than one platform -- desktop, web, mobile -- and building it for more than one is the point here."
+  },
+  {
+   "code": "9-12S.AP.21",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Reading someone else's code well enough to spot a security hole, show how a specific input would exploit it, and then close it is the actual skill."
+  },
+  {
+   "code": "9-12S.AP.22",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "A meaningful set of test cases covers ordinary behavior and the edge cases at the boundary, not just the input you expect to work."
+  },
+  {
+   "code": "9-12S.AP.23",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Adding functionality to existing code means also tracking down what that change might break elsewhere, intended or not."
+  },
+  {
+   "code": "9-12S.AP.24",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "A code review means walking someone through your own code, and following along with real questions when someone else walks through theirs."
+  },
+  {
+   "code": "9-12S.AP.25",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Building software as a group means actually using the tools that make group development work -- version control, a real IDE, documentation practices -- not just splitting up files."
+  },
+  {
+   "code": "9-12S.AP.26",
+   "strand": "AP",
+   "strand_name": "Algorithms & Programming",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Different programming languages fit different problems better, and being able to say why a specific language suits a specific task is the actual comparison."
+  },
+  {
+   "code": "9-12S.CS.1",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "A processor's logic gates -- AND, OR, NOT -- combine into higher-level circuits like adders, and that's the literal hardware carrying out a program's instructions."
+  },
+  {
+   "code": "9-12S.CS.2",
+   "strand": "CS",
+   "strand_name": "Computing Systems",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "An operating system's separate jobs -- managing memory, storage, running processes, controlling access -- can each be named and told apart."
+  },
+  {
+   "code": "9-12S.DA.7",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Which data-collection tool you pick, and how carefully you use it, determines whether the data you end up with can actually support a real conclusion."
+  },
+  {
+   "code": "9-12S.DA.8",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Software tools for analyzing, summarizing, and visualizing a genuinely large dataset are what make patterns in complex, real-world systems visible at all."
+  },
+  {
+   "code": "9-12S.DA.9",
+   "strand": "DA",
+   "strand_name": "Data & Analysis",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "A model or simulation is only useful for refining a hypothesis once you've judged how accurately it actually represents the system it's standing in for."
+  },
+  {
+   "code": "9-12S.IC.27",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Judging a computational artifact means naming both who it actually helps and who it actually harms, and proposing something concrete to fix the harm."
+  },
+  {
+   "code": "9-12S.IC.28",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "A technology that already reshaped some part of culture is still moving, and describing where it goes next -- and what that costs or brings -- is the forecast being asked for."
+  },
+  {
+   "code": "9-12S.IC.29",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Access to computing resources isn't handed out evenly, and naming who actually benefits versus who's left out is the equity question here."
+  },
+  {
+   "code": "9-12S.IC.30",
+   "strand": "IC",
+   "strand_name": "Impacts of Computing",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Real laws and regulations -- net neutrality is the classic case -- shape what software even gets built, and arguing both sides of that is the point."
+  },
+  {
+   "code": "9-12S.NI.3",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "A network's addressing scheme and its mix of routers, switches, and servers together determine how well it scales and how reliably traffic actually arrives."
+  },
+  {
+   "code": "9-12S.NI.4",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "The internet scales and keeps growing because of design choices baked into it from the start -- redundancy, open standards, and pushing key functions out to the endpoints rather than the middle of the network."
+  },
+  {
+   "code": "9-12S.NI.5",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Defending against a security threat means weighing real tradeoffs, like a password policy that's easier to use against the cost of it being easier to break."
+  },
+  {
+   "code": "9-12S.NI.6",
+   "strand": "NI",
+   "strand_name": "Networks & the Internet",
+   "grade_band": "9-12 Specialty",
+   "core": false,
+   "paraphrase": "Cryptography, plus the certificate authorities that vouch for who owns an encryption key, is what actually secures a connection across the open internet."
   }
  ]
 }

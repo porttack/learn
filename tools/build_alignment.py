@@ -87,6 +87,7 @@ section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid va
 section.big-idea > h2 { font-size: 1.5rem; }
 .carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
 .subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
 .topic {
   background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
   padding: 1rem 1.25rem; margin: 1.25rem 0;
@@ -378,18 +379,34 @@ def render_castandards(catalog, cov, scope_label):
     for strand in sorted(by_strand):
         body.append(f'<section class="big-idea" id="{strand}">')
         body.append(f'<h2><a class="anchor-link" href="#{strand}">#</a><span class="code-badge">{strand}</span> {esc(strand_names[strand])}</h2>')
+        # A strand (e.g. "AP") spans multiple grade bands -- 6-8, 9-12, and the
+        # separate non-core "9-12 Specialty" pathway -- with the same strand
+        # name in each, so grouping strictly by grade_band within the strand
+        # is what actually tells them apart, rather than leaving that to a
+        # code prefix easy to skim past.
+        by_band = {}
+        band_order = []
         for s in by_strand[strand]:
-            body.append(f'<div class="topic" id="S-{s["code"]}">')
-            body.append(f'<h3><a class="anchor-link" href="#S-{s["code"]}">#</a><span class="code-badge">{s["code"]}</span></h3>')
-            body.append(f'<p class="paraphrase">{esc(s["paraphrase"])}</p>')
-            if s.get("scope_note"):
-                body.append(f'<p class="note">{esc(s["scope_note"])}</p>')
-            line = cov.carrier_html(s["code"])
-            if line:
-                body.append(f'<p class="meta">{line}</p>')
-            for note in cov.notes(s["code"]):
-                body.append(f'<p class="note">{esc(note)}</p>')
-            body.append("</div>")
+            band = s.get("grade_band", "")
+            if band not in by_band:
+                band_order.append(band)
+            by_band.setdefault(band, []).append(s)
+        show_band = len(band_order) > 1
+        for band in band_order:
+            if show_band:
+                body.append(f'<div class="tier-heading">{esc(band)}</div>')
+            for s in by_band[band]:
+                body.append(f'<div class="topic" id="S-{s["code"]}">')
+                body.append(f'<h3><a class="anchor-link" href="#S-{s["code"]}">#</a><span class="code-badge">{s["code"]}</span></h3>')
+                body.append(f'<p class="paraphrase">{esc(s["paraphrase"])}</p>')
+                if s.get("scope_note"):
+                    body.append(f'<p class="note">{esc(s["scope_note"])}</p>')
+                line = cov.carrier_html(s["code"])
+                if line:
+                    body.append(f'<p class="meta">{line}</p>')
+                for note in cov.notes(s["code"]):
+                    body.append(f'<p class="note">{esc(note)}</p>')
+                body.append("</div>")
         body.append("</section>")
 
     provenance = """<strong>What this is.</strong> A locally built index of California's 9-12 Computer
@@ -449,6 +466,17 @@ single CA standard."""
 
 # ---------- CSTA 2026 ----------
 
+# A standard's code prefix (before the first hyphen) is its level/tier:
+# MS/HS for the core Middle School/High School bands, S1/S2 for the two
+# elective Specialty tiers. A concept or subconcept name is shared across
+# tiers (e.g. "Algorithmic Problem Solving" holds both MS-* and HS-* codes;
+# a Specialty subconcept like "Hardware & Circuit Design" holds both S1-*
+# and S2-* codes), so the tier itself has to be rendered explicitly -- a
+# reader skimming a grid of similar-looking codes shouldn't have to parse
+# the badge prefix by hand to tell them apart.
+LEVEL_LABELS = {"MS": "Middle School", "HS": "High School", "S1": "Specialty I", "S2": "Specialty II"}
+
+
 def render_csta2026(catalog, cov, scope_label):
     by_concept = {}
     for s in catalog["standards"]:
@@ -472,19 +500,38 @@ def render_csta2026(catalog, cov, scope_label):
         for sub in sorted(by_sub):
             if sub:
                 body.append(f'<div class="subconcept-heading">{esc(sub)}</div>')
+            by_tier = {}
+            tier_order = []
             for s in by_sub[sub]:
-                body.append(f'<div class="topic" id="T-{s["code"]}">')
-                body.append(f'<h3><a class="anchor-link" href="#T-{s["code"]}">#</a><span class="code-badge">{s["code"]}</span></h3>')
-                body.append(f'<p class="paraphrase">{esc(s["paraphrase"])}</p>')
-                if s.get("scope_note"):
-                    body.append(f'<p class="note">{esc(s["scope_note"])}</p>')
-                line = cov.carrier_html(s["code"])
-                if line:
-                    body.append(f'<p class="meta">{line}</p>')
-                for note in cov.notes(s["code"]):
-                    body.append(f'<p class="note">{esc(note)}</p>')
-                body.append("</div>")
+                tier = LEVEL_LABELS.get(s["code"].split("-")[0], s["code"].split("-")[0])
+                if tier not in by_tier:
+                    tier_order.append(tier)
+                by_tier.setdefault(tier, []).append(s)
+            show_tier = len(tier_order) > 1
+            for tier in tier_order:
+                if show_tier:
+                    body.append(f'<div class="tier-heading">{esc(tier)}</div>')
+                for s in by_tier[tier]:
+                    body.append(f'<div class="topic" id="T-{s["code"]}">')
+                    body.append(f'<h3><a class="anchor-link" href="#T-{s["code"]}">#</a><span class="code-badge">{s["code"]}</span></h3>')
+                    body.append(f'<p class="paraphrase">{esc(s["paraphrase"])}</p>')
+                    if s.get("scope_note"):
+                        body.append(f'<p class="note">{esc(s["scope_note"])}</p>')
+                    line = cov.carrier_html(s["code"])
+                    if line:
+                        body.append(f'<p class="meta">{line}</p>')
+                    for note in cov.notes(s["code"]):
+                        body.append(f'<p class="note">{esc(note)}</p>')
+                    body.append("</div>")
         body.append("</section>")
+
+    provenance = """<strong>What this is.</strong> A locally built index of the CSTA 2026 K-12 Computer
+Science Standards (high-school level), for linking from standards-alignment work.
+<strong>What this is not.</strong> Original paraphrases, not CSTA's text; only codes are
+reproduced as-is."""
+    if scope_label:
+        provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
+    return page("CSTA 2026 Standards Reference", "\n".join(toc), "\n".join(body), provenance)
 
     provenance = """<strong>What this is.</strong> A locally built index of the CSTA 2026 K-12 Computer
 Science Standards (high-school level), for linking from standards-alignment work.

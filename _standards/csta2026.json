@@ -1,9 +1,9 @@
 {
  "meta": {
   "source": "CSTA K-12 Computer Science Standards, 2026 revision",
-  "extracted": "2026-08-08 (High School); 2026-08-29 (Middle School)",
-  "level_covered": "Middle School and High School",
-  "shape_note": "Extraction covers the 45 core 'Middle School' (grades 6-8) standards and the 46 core 'High School' standards, across the same 5 concepts (Algorithms & Design, Programming, Data & Analysis, Systems & Security, Computing & Society) at each level -- the two bands share concept/subconcept names but are distinct standards, not the same code repeated. The CSTA 2026 revision also defines an Elementary band (PK-5, more granular, one standard set per grade) and two elective High School specialization tiers, 'Specialty I' (73 standards) and 'Specialty II' (62 standards), covering Data Science, Cybersecurity, Artificial Intelligence, Game Development, Software Development, Physical Computing, and X+CS -- none of that is indexed here yet, mirroring how castandards.json excludes the CA framework's '9-12 Specialty' set."
+  "extracted": "2026-08-08 (High School); 2026-08-29 (Middle School; High School Specialty I/II)",
+  "level_covered": "Middle School, High School, and High School Specialty I/II",
+  "shape_note": "Extraction covers the 45 core 'Middle School' (grades 6-8) standards and the 46 core 'High School' standards, across the same 5 concepts (Algorithms & Design, Programming, Data & Analysis, Systems & Security, Computing & Society) at each level -- the two bands share concept/subconcept names but are distinct standards, not the same code repeated. Extended 2026-08-29 with all 135 High School Specialty standards across both elective tiers: Specialty I (73 standards, codes S1-<AREA>-<SUB>-##) and Specialty II (62 standards, codes S2-<AREA>-<SUB>-##), covering seven specialty areas -- Artificial Intelligence (AIN), Cybersecurity (CYB), Data Science (DSC), Game Development (GMD), Physical Computing (PHY), Software Development (SWD), and X+CS (XCS, Specialty I only -- the official standard defines no Specialty II tier for this area). Extracted directly from the official 218-page 2026 CSTA PK-12 Computer Science Standards PDF (csteachers.org); every 'concept' field for a specialty entry is the specialty area's full name and every 'subconcept' is the area's official subconcept name (e.g. 'Hardware & Circuit Design' for PHY's HC codes), per the standard's own naming-convention table. The CSTA 2026 revision also defines an Elementary band (PK-5, more granular, one standard set per grade) -- that is still not indexed here, mirroring how castandards.json excludes the CA framework's '9-12 Specialty' set."
  },
  "standards": [
   {
@@ -1358,6 +1358,2024 @@
    "dispositions": [
     "Reflectiveness",
     "Sense of Belonging"
+   ]
+  },
+  {
+   "code": "S1-AIN-DD-01",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Design & Development",
+   "paraphrase": "Distinguishing generative AI (making new content, like a chatbot or image creator) from discriminative AI (sorting or labeling existing content, like an image classifier) is about seeing which real-world problems each is actually suited to.",
+   "scope_note": "Comparing categories of AI systems and their applications is the task; judging how well a system performs, or building or training one, is not expected.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-AIN-DD-02",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Design & Development",
+   "paraphrase": "Reworking what data a model trains on -- adding examples of an underrepresented group to a facial-recognition dataset -- can visibly change how fair or accurate its output is, without touching the model itself.",
+   "scope_note": "Making simple, iterative changes to training data and keeping what improves results is the scope; the math behind fairness metrics is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-AIN-DD-03",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Design & Development",
+   "paraphrase": "A pretrained model -- an image classifier pulled from a library -- can be wired into a simple app that takes a photo upload and hands back a prediction, without writing the model itself.",
+   "scope_note": "Integrating an existing model into a working application is the task; training a model from raw data or building production-grade software is not.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-AIN-DD-04",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Design & Development",
+   "paraphrase": "The shape data comes in -- a table, a graph, an image, a sequence of text -- limits which kinds of algorithms can actually be applied to it.",
+   "scope_note": "Comparing given representation types and naming which algorithms fit is the scope; inventing new representations or proving the limits mathematically is not expected.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-AIN-DD-05",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Design & Development",
+   "paraphrase": "Choosing AI over a simpler, rule-based approach for a real problem -- like sorting defective parts by photo versus checking pixel color ranges -- should hinge on things like data availability, interpretability, and computing resources, not a default assumption that AI is better.",
+   "scope_note": "Weighing the tradeoffs between an AI and a non-AI approach is the task; building either solution, or producing detailed cost estimates, is not expected.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-AIN-DS-06",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Data Science for AI",
+   "paraphrase": "Tracing a single number as it moves through one neuron -- multiplied by a weight, shifted by a bias, squeezed through an activation function -- is how a neural network's layers actually transform an input into an output.",
+   "scope_note": "Conceptually tracing and diagramming that flow is the expectation; implementing a network or deriving the math behind backpropagation is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-AIN-DS-07",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Data Science for AI",
+   "paraphrase": "Getting a raw dataset ready for a model -- pulling it from a CSV or API, fixing missing values, converting fields into machine-readable form, splitting it into training and testing sets -- is hands-on prep work, not an afterthought.",
+   "scope_note": "Working through this pipeline on a manageable dataset with existing tools is the scope; large-scale or distributed data infrastructure and building preprocessing algorithms from scratch are not expected.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-AIN-HR-08",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Human Responsibility",
+   "paraphrase": "Designing a safe AI workflow -- like a medical AI that only recommends a diagnosis while a doctor still makes the final, auditable call -- means building in a real human checkpoint, not just a privacy disclaimer.",
+   "scope_note": "Planning practical safeguards for a given scenario is the task; formally proving an AI system is safe is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-AIN-HR-09",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Human Responsibility",
+   "paraphrase": "Comparing how a model performs across different groups of people -- and being willing to turn that same lens on a system students built themselves, not just ones made by others -- is how bias baked into training data or design surfaces.",
+   "scope_note": "Investigating bias with available metrics on accessible systems, including their own, is the scope; inventing new bias-detection methods or reaching into proprietary industry models and data is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-AIN-HR-10",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Human Responsibility",
+   "paraphrase": "Training and running AI costs real energy and water, and those costs, along with the e-waste they generate, tend to land harder on some communities and regions than others.",
+   "scope_note": "Comparing known impacts, like a large model's emissions against a small model running on a local device, is the task; a full life-cycle hardware assessment is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-AIN-PP-11",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Professional Practice",
+   "paraphrase": "An off-the-shelf AI agent -- a web-search bot, a customer-support bot -- can be dropped into an application to handle a specific task without anyone building the agent from scratch.",
+   "scope_note": "Using an existing agent template to accomplish a task is the scope; designing or training a new agent is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S1-AIN-PP-12",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Professional Practice",
+   "paraphrase": "The same AI tool -- a voice assistant, a recommendation feed -- can behave noticeably differently depending on a user's accent, language, or background, and tracing that back to training data or design choices is the analysis.",
+   "scope_note": "Explaining observed differences in outputs across users is the scope; designing formal user-experience studies or building adaptive personalization systems is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-AIN-PP-13",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Whether it's fair for a company to train a model on copyrighted art or scraped personal data without asking first is a real, debatable tension between creators' rights and how AI models actually get built.",
+   "scope_note": "Debating the practice with general arguments about fair use and consent is the task; citing specific legislation or case law is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-AIN-PP-14",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Professional Practice",
+   "paraphrase": "The ethical worries around AI have shifted over time -- from fictional guardrails like Asimov's Three Laws and bugs in rule-based systems, to today's concerns about bias and transparency -- and spotting that shift, plus guessing what comes next, is the point.",
+   "scope_note": "Comparing past and present concerns and speculating informally about the future is the scope; researching AI's development trajectory in depth or rigorously defining consciousness is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 3. Communicate effectively about computing."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-AIN-DD-01",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Design & Development",
+   "paraphrase": "Problems without labeled answers -- grouping customers, spotting anomalies, finding hidden patterns in a big dataset -- are exactly where unsupervised learning fits, and recognizing that fit is the skill.",
+   "scope_note": "Matching problem characteristics to unsupervised learning is the task; implementing the algorithms or proving their mathematical convergence is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-AIN-DD-02",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Design & Development",
+   "paraphrase": "Actually reaching into an existing model's controls -- how deep a decision tree grows, how a generative system samples -- and tuning them for a specific problem is optimization, not just picking a preset tool.",
+   "scope_note": "Hands-on tuning of an existing algorithm's parameters or structure is the scope; building an algorithm from scratch or using advanced automated tuning methods is not expected.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-AIN-DD-03",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Design & Development",
+   "paraphrase": "Building something like a home-price predictor means choosing a more sophisticated model -- a random forest, a neural network -- preparing labeled data for it, training it, and wiring the result into an app that takes input and returns a prediction.",
+   "scope_note": "Working end-to-end with a more advanced but standard model type is the scope; designing or implementing deep learning architectures is not expected.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-AIN-DS-04",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Data Science for AI",
+   "paraphrase": "Checking a dataset's metadata -- when it was collected, what demographics it covers -- can reveal a gap that should change which model gets picked or where it's allowed to be deployed.",
+   "scope_note": "Critiquing a data pipeline to justify a model or deployment decision is the task; designing algorithmic fairness metrics is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-AIN-DS-05",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Data Science for AI",
+   "paraphrase": "Getting a mixed dataset ready for a specific algorithm -- scaling numeric columns, one-hot encoding categorical ones -- is what makes it actually usable by something like a nearest-neighbor classifier.",
+   "scope_note": "Applying standard transformation techniques for a target algorithm is the scope; implementing dimensionality reduction techniques is not expected.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-AIN-HR-06",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Human Responsibility",
+   "paraphrase": "Writing a policy that forces high-risk AI uses -- hiring, criminal justice -- to disclose their training data, model type, and bias testing is really about balancing openness against competing interests like privacy and innovation.",
+   "scope_note": "Drafting and justifying a specific, reasoned policy is the task; citing real statutes or building the technical infrastructure to support it is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Creativity"
+   ]
+  },
+  {
+   "code": "S2-AIN-HR-07",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Human Responsibility",
+   "paraphrase": "Optimizing a model for one measure -- like high recall on a loan-approval model -- can create real fairness problems along a different measure, like precision, and seeing that tension is the point.",
+   "scope_note": "Reasoning through the tradeoffs in a described scenario is the scope; writing code or calculating the metrics is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-AIN-PP-08",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Building a working AI agent means giving it a clear goal, deciding what information it can draw on, defining how it responds and acts, then testing it against realistic prompts to refine it.",
+   "scope_note": "Building and optimizing with an accessible tool is the scope; building a custom underlying model is not expected.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-AIN-PP-09",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Professional Practice",
+   "paraphrase": "The same AI results -- an F1-score, a bias finding -- need to be reframed differently depending on the audience, like a school board that cares about cost and a community group that cares about fairness and appeals.",
+   "scope_note": "Translating technical results for specific named audiences is the task; producing publication-quality media or running a real communications campaign is not expected.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-AIN-PP-10",
+   "concept": "Artificial Intelligence",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Comparing how the EU's AI Act treats \"high-risk\" systems against a looser US approach is a way to argue the real tradeoff between faster innovation and stronger human protections.",
+   "scope_note": "Debating regulatory philosophies and their practical effects is the scope; reading the actual legislative text is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 3. Communicate effectively about computing."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-ND-01",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Theory & Design",
+   "paraphrase": "The same service often comes in an insecure and a secure flavor -- HTTP and HTTPS, Telnet and SSH -- and knowing which one a situation calls for means weighing the risk of plaintext against the cost of encrypting.",
+   "scope_note": "Comparing protocol pairs and reasoning about exposure in simulations or case studies is the scope; actually attacking a live network or configuring real infrastructure is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-CYB-ND-02",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Theory & Design",
+   "paraphrase": "The OSI model is a way to trace a piece of data's journey across a network and see which layer is doing which job, including where encryption or authentication kicks in.",
+   "scope_note": "Using the layers as a reasoning tool for how data moves and where security lives is the goal; reciting all seven layers from memory or matching every protocol to its exact layer is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-CYB-ND-03",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Theory & Design",
+   "paraphrase": "Real networks rarely fit one clean label -- they blend topologies, run several protocols at once, and mix IPv4 with IPv6 -- so describing a network means capturing that mixture rather than forcing it into a single box.",
+   "scope_note": "Describing how addressing and topology actually work together in practice is expected; sorting networks into old-style address classes or designing a production addressing scheme is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-ND-04",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Theory & Design",
+   "paraphrase": "Sizing up a security risk means naming the threat, the weakness it exploits, and what could realistically happen if it's used -- including newer wrinkles like phishing that's been automated with AI.",
+   "scope_note": "Reasoning through case studies or simulated scenarios with a simple likelihood-and-impact lens is the point; running real penetration tests or touching live hardware is not.",
+   "practices": [
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-NO-05",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Operations",
+   "paraphrase": "Tools like ping or traceroute -- or their simulated equivalents -- can turn a vague 'the network is broken' into evidence about which layer is failing and whether the cause looks routine or suspicious.",
+   "scope_note": "Interpreting diagnostic output and connecting it to a layer is the scope; scripting your own diagnostics, monitoring live traffic, or actually fixing the problem is not.",
+   "practices": [
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S1-CYB-NO-06",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Operations",
+   "paraphrase": "Logs exist so someone can look back and notice trouble -- a string of failed logins, a process that shouldn't be running -- and reading them well means spotting the warning sign and suggesting a reasonable response, not just running the command.",
+   "scope_note": "Working from instructor-provided logs or screenshots, or read-only tools in a sandbox, is expected; scanning real networks, cracking passwords, or building exploits is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S1-CYB-TS-07",
+   "concept": "Cybersecurity",
+   "subconcept": "Threats & Security Measures",
+   "paraphrase": "Spoofing, interception, and denial-of-service attacks each ride on a specific weakness in how networks normally behave, and untangling threat from vulnerability from exploit from impact is what makes the concept usable rather than just a vocabulary list.",
+   "scope_note": "Classifying and explaining example attacks conceptually is the expectation; actually carrying one out or using real offensive tools is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-TS-08",
+   "concept": "Cybersecurity",
+   "subconcept": "Threats & Security Measures",
+   "paraphrase": "Running a threat like ransomware through the CIA triad -- confidentiality, integrity, availability -- plus where the data sits and what kind of control would help, turns a scary headline into a structured analysis.",
+   "scope_note": "This is a classification and reasoning exercise on named example threats; designing an actual security system or picking specific vendor products is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-TS-09",
+   "concept": "Cybersecurity",
+   "subconcept": "Threats & Security Measures",
+   "paraphrase": "Encryption isn't free -- it costs processing time and key-management effort -- so deciding whether a situation needs it, and whether symmetric or asymmetric fits better, is a trade-off call, not an automatic yes.",
+   "scope_note": "Reasoning about when and why to encrypt using trusted, existing algorithms is the target; implementing a cipher or analyzing the math behind how hard it is to break is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-TS-10",
+   "concept": "Cybersecurity",
+   "subconcept": "Threats & Security Measures",
+   "paraphrase": "No single lock keeps everything safe -- firewalls, input validation, device updates, and a locked door each catch a different failure, and layering preventive, detective, and corrective controls together is what defense-in-depth means.",
+   "scope_note": "Evaluating and categorizing controls across domains, including their usability and cost trade-offs, is expected; configuring a real security tool or choosing specific commercial products is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-CP-11",
+   "concept": "Cybersecurity",
+   "subconcept": "Cybersecurity Policies",
+   "paraphrase": "Cybersecurity policy exists because technical controls alone don't stop people from doing risky things -- rules like acceptable-use or password policies translate legal and ethical expectations into behavior an organization can actually enforce.",
+   "scope_note": "Explaining why policies exist and naming common categories is the target; writing an actual policy or judging a real organization's legal compliance is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-CP-12",
+   "concept": "Cybersecurity",
+   "subconcept": "Cybersecurity Policies",
+   "paraphrase": "A good policy spells out who it covers, what's allowed, who enforces it, and what happens when someone breaks it -- and those pieces working together are what actually shapes how people behave.",
+   "scope_note": "Explaining what makes a policy's structure effective is the scope; drafting a complete organizational policy or assessing legal compliance is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-PP-13",
+   "concept": "Cybersecurity",
+   "subconcept": "Professional Practice",
+   "paraphrase": "A security decision -- like letting an automated system respond on its own versus keeping a human in the loop -- trades off speed and consistency against judgment and accountability, and that trade-off has real consequences for the people affected.",
+   "scope_note": "Analyzing and ethically weighing a described scenario is the point; building the automated system or deploying it for real is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-PP-14",
+   "concept": "Cybersecurity",
+   "subconcept": "Professional Practice",
+   "paraphrase": "A phishing email or a pretexting phone call works by pulling on urgency, authority, or trust rather than by breaking any code, and naming which lever it's pulling is how you see through it.",
+   "scope_note": "Recognizing and explaining the manipulation in existing examples is the goal; writing new phishing content or running a social engineering attempt on real people is not.",
+   "practices": [
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-CYB-PP-15",
+   "concept": "Cybersecurity",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Explaining a vulnerability to an executive takes different words than explaining it to another technician, and picking the right level of detail and the right next steps for the audience is the actual skill.",
+   "scope_note": "Practicing that translation for a hypothetical audience is the task; briefing a real external stakeholder, or leaning on AI-generated text to do the writing, is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-CYB-ND-01",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Theory & Design",
+   "paraphrase": "A router or a host firewall does nothing for security until it's actually configured -- setting up a VPN tunnel, an access control list, or a firewall rule is what turns hardware and software into a layer of defense.",
+   "scope_note": "Configuring these features in a simulated or virtual lab is the expectation; physically wiring hardware or touching a network carrying real production traffic is not.",
+   "practices": [
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-CYB-ND-02",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Theory & Design",
+   "paraphrase": "Designing a secure network means more than picking parts -- it means deciding what counts as suspicious activity, where to put monitoring, and what an automated response like blocking or isolating traffic should look like.",
+   "scope_note": "Scaffolded design exercises that reason through choices and trade-offs are the target; building a fully automated security operations center or tuning real AI models is not.",
+   "practices": [
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-CYB-ND-03",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Theory & Design",
+   "paraphrase": "A star topology and a mesh topology fail differently -- one has an obvious single point of failure, the other trades that away for more complexity -- and picking mitigations like redundancy or segmentation depends on knowing which risk is inherent to the shape versus fixable by design.",
+   "scope_note": "Assessing topologies through diagrams, simulations, or case studies is expected; configuring or testing designs on an actual enterprise network is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-CYB-NO-04",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Operations",
+   "paraphrase": "Spotting an attack in traffic data starts with knowing what normal looks like -- typical protocols, typical destinations -- so a spike or an odd new connection stands out as a possible scan or exfiltration attempt.",
+   "scope_note": "Reasoning from provided datasets or visualizations, including how AI tools like anomaly detection assist that reasoning, is the scope; building machine learning models or running live threat hunting is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-CYB-NO-05",
+   "concept": "Cybersecurity",
+   "subconcept": "Network Operations",
+   "paraphrase": "Automating a routine security task, like filtering logs, only helps if it's done safely -- validating input, handling errors, and never hard-coding a password into the script.",
+   "scope_note": "Writing or reviewing simple scripts for secure practice is expected; building production-grade automation pipelines or treating any scripting language as inherently secure is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-CYB-TS-06",
+   "concept": "Cybersecurity",
+   "subconcept": "Threats & Security Measures",
+   "paraphrase": "Requiring a second factor like a phone app is more secure, but it can also lock out a student without a smartphone -- designing access control means weighing that kind of trade-off, not just picking the strongest option.",
+   "scope_note": "Designing and evaluating authentication and authorization schemes conceptually is the target; building a real biometric system or administering production identity infrastructure is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-CYB-TS-07",
+   "concept": "Cybersecurity",
+   "subconcept": "Threats & Security Measures",
+   "paraphrase": "Not every risk gets fixed -- an organization can accept it, avoid the risky activity entirely, transfer it through insurance, or mitigate it with controls, and choosing among those four responses depends on likelihood, impact, and how real users will actually behave around the fix.",
+   "scope_note": "Justifying a strategy for a given scenario is the scope; running formal statistical risk calculations or using professional risk-assessment tools is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-CYB-TS-08",
+   "concept": "Cybersecurity",
+   "subconcept": "Threats & Security Measures",
+   "paraphrase": "Responding to a breach follows a lifecycle -- prepare, detect, contain, eradicate, recover, review -- and applying those phases to a real-world scenario means walking through what each one would actually require.",
+   "scope_note": "Examining or adapting a simplified incident response plan for a scenario is expected; operating a live security operations center or managing an actual incident is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-CYB-CP-09",
+   "concept": "Cybersecurity",
+   "subconcept": "Cybersecurity Policies",
+   "paraphrase": "Some regulations dictate exact controls to install, while others just set an outcome and leave the method open -- debating which style serves an organization's security and its users' rights better is the real question here.",
+   "scope_note": "Debating how regulatory approaches shape practice and trade-offs is the target; interpreting actual legal text or drafting regulatory guidance is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-CYB-PP-10",
+   "concept": "Cybersecurity",
+   "subconcept": "Professional Practice",
+   "paraphrase": "AI in cybersecurity cuts both ways -- the same pattern-detection techniques that flag an intrusion can also help an attacker automate one, so a professional has to weigh that dual use rather than treat AI as simply defensive.",
+   "scope_note": "Comparing the benefits, risks, and responsibilities around AI use in security is the scope; building, training, or deploying an actual AI model for security work is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-CYB-PP-11",
+   "concept": "Cybersecurity",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Finding a vulnerability is only half the job -- responsible disclosure is about reporting it through the right channel and timeline so it gets fixed instead of exploited, and bug bounty programs are one structure built for that.",
+   "scope_note": "Examining how coordinated disclosure and bug bounty programs are supposed to work, and how they can fail, is expected; actually finding a vulnerability on live systems or filing a real report is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-CYB-PP-12",
+   "concept": "Cybersecurity",
+   "subconcept": "Professional Practice",
+   "paraphrase": "A security decision that isn't written down might as well not have happened -- an incident response playbook or a decision log is what lets a team coordinate and lets someone later verify why a call was made.",
+   "scope_note": "Producing documentation artifacts for a scenario is the goal; maintaining documentation for a real, live security operation is not.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S1-DSC-CC-01",
+   "concept": "Data Science",
+   "subconcept": "Creation & Curation",
+   "paraphrase": "Turning a flat table of numbers into a first understanding -- summary stats, a histogram, a scatter plot -- and letting what you find point to what to check next.",
+   "scope_note": "The data here is flat and numeric; nested or hierarchical formats and anything past basic summary statistics are out of scope.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Creativity"
+   ]
+  },
+  {
+   "code": "S1-DSC-CC-02",
+   "concept": "Data Science",
+   "subconcept": "Creation & Curation",
+   "paraphrase": "Before analyzing someone else's dataset, reading its readme or data dictionary like a detective -- where it came from, what each column means, what might be skewing it -- so the analysis that follows is grounded.",
+   "scope_note": "Reading and reasoning about metadata that already exists is the task; datasets with no metadata at all, or auditing whether the metadata matches the data, aren't expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-DSC-CC-03",
+   "concept": "Data Science",
+   "subconcept": "Creation & Curation",
+   "paraphrase": "Writing code with existing data libraries to get a dataset ready for analysis -- filtering rows, grouping and summarizing, reshaping, joining tables -- rather than analyzing it as-is.",
+   "scope_note": "Using existing libraries on a laptop-sized dataset is the scope; building your own data-manipulation tools or handling datasets too large for a personal device is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S1-DSC-AM-04",
+   "concept": "Data Science",
+   "subconcept": "Analysis & Modeling Techniques",
+   "paraphrase": "Matching the chart or statistic to the kind of data -- bar charts and frequency tables for categories, histograms and scatter plots for numbers -- with an eye on who will actually be reading it.",
+   "scope_note": "Choosing and applying descriptive techniques is the point; inferential tests like chi-squared or t-tests, and modeling approaches like regression, are out of scope.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-DSC-AM-05",
+   "concept": "Data Science",
+   "subconcept": "Analysis & Modeling Techniques",
+   "paraphrase": "Noticing which variables have holes in them, how much is missing, and whether the gaps cluster around particular rows, because how you handle that missing data can quietly change or bias your results.",
+   "scope_note": "Observing patterns in missing data and discussing their effects is expected; formally classifying the missingness mechanism or implementing advanced imputation methods is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-DSC-AM-06",
+   "concept": "Data Science",
+   "subconcept": "Analysis & Modeling Techniques",
+   "paraphrase": "Cleaning, aggregating, and charting a structured dataset with code -- say, computing and visualizing decade-long climate trends by continent -- rather than eyeballing a spreadsheet.",
+   "scope_note": "Working with a dataset that fits on a personal device using existing libraries is the scope; distributed computing or building analysis tools from scratch is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S1-DSC-MI-07",
+   "concept": "Data Science",
+   "subconcept": "Model Interpretation & Reasoning",
+   "paraphrase": "Reading someone else's chart or summary stats and explaining, in plain terms, what the pattern means for the original question, plus what limitations or alternative explanations might complicate that story.",
+   "scope_note": "Interpreting an existing analysis is the task; producing the statistics or visualizations yourself, or running formal hypothesis tests, is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-DSC-MI-08",
+   "concept": "Data Science",
+   "subconcept": "Model Interpretation & Reasoning",
+   "paraphrase": "Arguing for the right kind of model given the problem -- logistic regression for a yes/no outcome instead of linear regression for a number -- and why picking wrong could actually hurt the people it affects.",
+   "scope_note": "Explaining why one model type fits the problem is the task; building the model or statistically comparing model fit is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-DSC-MI-09",
+   "concept": "Data Science",
+   "subconcept": "Model Interpretation & Reasoning",
+   "paraphrase": "Watching how a model's predictions wobble when you add or remove rows -- a lot for a tiny dataset, barely at all for a big one -- to build intuition for why more data tends to mean a more stable model.",
+   "scope_note": "Observing and describing this effect is expected; calculating formal statistical measures of variance or its mathematical relationship to sample size is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-DSC-VZ-10",
+   "concept": "Data Science",
+   "subconcept": "Visualization",
+   "paraphrase": "Designing the same finding two different ways depending on who's looking -- a plain bar chart for a general audience, something denser like error bars or a density plot for a data-savvy one.",
+   "scope_note": "Designing single, static charts thoughtfully for an audience is the scope; building interactive dashboards or user-testing the design is not.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-DSC-VZ-11",
+   "concept": "Data Science",
+   "subconcept": "Visualization",
+   "paraphrase": "Recognizing the unwritten rules a chart is supposed to follow -- axes that increase upward, colors that mean what they should -- and explaining how breaking one, like flipping the Y-axis, distorts what a reader takes away.",
+   "scope_note": "Basic static charts are the scope; 3D, interactive, log-scale, or more advanced chart types like network graphs aren't expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 3. Communicate effectively about computing."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-DSC-PP-12",
+   "concept": "Data Science",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Building privacy, transparency, and accountability into an actual project -- like anonymizing a social media dataset and writing a public statement about what was collected and why -- rather than treating ethics as an afterthought.",
+   "scope_note": "Applying these principles in practice is the task; reading formal privacy law or quantifying bias with statistics is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-DSC-PP-13",
+   "concept": "Data Science",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Looking at who a dataset represents well and who it leaves out -- like checking a facial recognition set for skin tone and gender balance -- and proposing how to make the collection more equitable.",
+   "scope_note": "Reasoning qualitatively about representation and proposing fixes is the scope; using statistical tests to quantify representation or writing bias-mitigation algorithms is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-DSC-PP-14",
+   "concept": "Data Science",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Writing up the same analysis twice for two very different readers -- a public presentation on community health findings versus a technical report other data scientists could reproduce.",
+   "scope_note": "Producing documentation and communication with guidance is expected; polished, publication-quality writing or a formal public presentation isn't required.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-DSC-CC-01",
+   "concept": "Data Science",
+   "subconcept": "Creation & Curation",
+   "paraphrase": "Digging into nested data -- a JSON API response where each song has an artist object with its own fields -- to pull out the values needed for a summary stat or a chart.",
+   "scope_note": "Navigating one level of nesting is the scope; deeply nested or graph-structured data is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-DSC-CC-02",
+   "concept": "Data Science",
+   "subconcept": "Creation & Curation",
+   "paraphrase": "Keeping a running record of a dataset's whole life story -- where it came from, when, and every cleaning or reshaping step taken -- built up as you go rather than reconstructed afterward, so someone else could redo the work.",
+   "scope_note": "Writing clear documentation as part of the process is expected; using formal version control or coordinating documentation across a team isn't.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-DSC-CC-03",
+   "concept": "Data Science",
+   "subconcept": "Creation & Curation",
+   "paraphrase": "Pulling data from two unrelated places -- a live stock API and a historical file -- and stitching them together on a shared key like ticker and date, checking the merge actually worked before analyzing further.",
+   "scope_note": "Using existing libraries to combine structured sources is the scope; fuzzy matching, unstructured data like images or raw text, or writing your own API client from scratch is not.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-DSC-CC-04",
+   "concept": "Data Science",
+   "subconcept": "Creation & Curation",
+   "paraphrase": "Weighing a project's goal against what's actually feasible -- a public air-quality API versus buying a sensor versus an existing government dataset -- and picking a collection strategy that fits your tools and skills.",
+   "scope_note": "Reasoning through the tradeoffs of a single, feasible data source is the scope; building custom collection tools or juggling multiple large or disparate sources is not.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-DSC-AM-05",
+   "concept": "Data Science",
+   "subconcept": "Analysis & Modeling Techniques",
+   "paraphrase": "Fitting a simple model -- linear regression, a decision tree -- to a dataset and using its output to say which inputs actually drive the prediction, like which factors most affect a runner's race time.",
+   "scope_note": "Applying and interpreting an existing simple model is the scope; implementing the algorithm from scratch or using advanced techniques like neural networks is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-DSC-AM-06",
+   "concept": "Data Science",
+   "subconcept": "Analysis & Modeling Techniques",
+   "paraphrase": "Trying more than one fix for missing data -- dropping incomplete rows versus filling them in with the mean -- and comparing how each choice changes the resulting statistics or charts before deciding which to use.",
+   "scope_note": "Comparing the observed effects of different strategies is expected; implementing advanced imputation algorithms or running statistical quality tests on the strategies is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-DSC-AM-07",
+   "concept": "Data Science",
+   "subconcept": "Analysis & Modeling Techniques",
+   "paraphrase": "Making sense of data that isn't a tidy spreadsheet -- counting word frequencies across a pile of text documents, or reducing an image dataset's huge pixel count down to something visualizable.",
+   "scope_note": "Applying basic techniques to unstructured or high-dimensional data is the scope; building models for tasks like natural language processing or image recognition is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-DSC-MI-08",
+   "concept": "Data Science",
+   "subconcept": "Model Interpretation & Reasoning",
+   "paraphrase": "Judging whether a model is actually good using standard numbers -- accuracy for a classifier, R-squared for a regression -- and weighing whether a fancier model's gain in fit is worth its extra cost.",
+   "scope_note": "Using existing library functions to compute and interpret metrics is the scope; deriving the metrics' math or doing formal algorithmic complexity analysis is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-DSC-MI-09",
+   "concept": "Data Science",
+   "subconcept": "Model Interpretation & Reasoning",
+   "paraphrase": "Weighing a transparent but slightly less accurate model against a black-box one that scores higher -- like a logistic regression educators can explain versus a neural network they can't -- and arguing which fits the situation better.",
+   "scope_note": "Reasoning about these trade-offs is the task; training the models yourself or proving mathematically why the trade-off exists is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-DSC-MI-10",
+   "concept": "Data Science",
+   "subconcept": "Model Interpretation & Reasoning",
+   "paraphrase": "Rerunning a model after adding a new variable -- like neighborhood price alongside square footage -- to see how it shifts accuracy or changes which variable the model leans on most.",
+   "scope_note": "Observing these effects empirically is the scope; calculating formal multicollinearity measures or explaining the underlying math is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-DSC-VZ-11",
+   "concept": "Data Science",
+   "subconcept": "Visualization",
+   "paraphrase": "Building a chart carefully enough that its scales, axes, and colors show the data honestly -- like giving SAT and ACT scores their own appropriately-ranged axes instead of forcing them onto one scale -- while keeping it readable for colorblind viewers too.",
+   "scope_note": "Deliberate, accessible design of a static chart is the scope; formal user testing or building interactive dashboards is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-DSC-VZ-12",
+   "concept": "Data Science",
+   "subconcept": "Visualization",
+   "paraphrase": "Picking apart a chart from a news story or social post -- a truncated axis, a cherry-picked date range -- to explain how the design choice exaggerates a trend and what that could lead people to believe.",
+   "scope_note": "Critiquing an existing visualization's design and its effect on viewers is the scope; verifying the underlying data's authenticity or judging whether the deception was intentional is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-DSC-PP-13",
+   "concept": "Data Science",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Tracing potential harm through an entire project's pipeline -- from what data got collected to what a model predicts -- and pushing for fairer, more transparent decisions at each stage.",
+   "scope_note": "Reasoning about fairness and transparency in a real project is the scope; interpreting specific privacy laws or running statistical fairness tests is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-DSC-PP-14",
+   "concept": "Data Science",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Judging whether an app's privacy policy and permissions actually protect users -- like questioning unnecessary location tracking -- and proposing safeguards that would do better.",
+   "scope_note": "Evaluating existing protective measures and suggesting alternatives is the scope; implementing encryption or building consent-management software is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-DSC-PP-15",
+   "concept": "Data Science",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Reshaping the same findings into two very different deliverables -- a policy-focused slide deck for a city council and a full technical report with reproducible code for other analysts.",
+   "scope_note": "Producing audience-appropriate communication with structure and guidance is expected; publication-quality writing, custom infographics, or a formal public presentation is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-GMD-DD-01",
+   "concept": "Game Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Breaking a simple game down into its parts -- who plays, what moves are legal, how the rules change the game's state, and what ends it -- and capturing that structure in a diagram, flowchart, or rule table, the way you might map out a card game's turn order and win conditions.",
+   "scope_note": "The work is analyzing and diagramming games simple enough to map by hand; games with heavy randomness, real-time action, or sprawling rule sets that would require actually building them are out of scope.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-GMD-DD-02",
+   "concept": "Game Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Sketching a game's story and player choices scene by scene -- rough drawings and notes showing key moments, decision points, and how the game reacts -- so a teammate can see the shape of the experience before any of it is built.",
+   "scope_note": "Simple, low-fidelity sketches that communicate structure and interactivity are enough; polished art and mapping out every possible branch aren't expected.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Creativity"
+   ]
+  },
+  {
+   "code": "S1-GMD-DD-03",
+   "concept": "Game Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Wiring together the pieces that make a game actually playable -- input that does something, code that reacts to it, and rules that decide when you win or lose -- so the separate functions add up to one coherent play experience rather than sitting as disconnected demos.",
+   "scope_note": "A working, connected set of input, response, and outcome logic is the target; a finished, commercial-quality game with polished visuals or advanced UI is not.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-GMD-DD-04",
+   "concept": "Game Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Taking logic that already controls something in a game -- an enemy, a moving hazard, a scoring system -- and making it more capable by adding or combining conditions, then checking that the change actually makes the behavior better or more interesting.",
+   "scope_note": "Editing and testing conditional logic that already exists is the task; designing true AI, machine learning, or judging an algorithm's efficiency is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-GMD-PX-05",
+   "concept": "Game Development",
+   "subconcept": "Player Experience",
+   "paraphrase": "Designing a game's screen and controls so they're readable, consistent, and pleasant to look at, while also building in at least one real accommodation for players who need it -- larger text, remappable keys, that kind of thing.",
+   "scope_note": "Applying a handful of concrete design and accessibility criteria is the expectation; meeting formal accessibility standards or running a professional usability audit is not.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-GMD-PX-06",
+   "concept": "Game Development",
+   "subconcept": "Player Experience",
+   "paraphrase": "Watching a couple of real people try to play the game, noting where they get confused or stuck, and using those observations to make specific, small fixes to the design.",
+   "scope_note": "A handful of observed playtesters and a short list of friction points is sufficient evidence; formal studies, large samples, or statistical analysis aren't expected.",
+   "practices": [
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-GMD-AR-07",
+   "concept": "Game Development",
+   "subconcept": "Architecture",
+   "paraphrase": "Connecting the dots between what's happening inside a computer -- its processor, graphics chip, memory, network -- and what a player actually notices, like a laggy frame rate or slow response to a button press.",
+   "scope_note": "A conceptual understanding of how hardware affects gameplay is the goal; comparing specific devices or digging into hardware specs and internals is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-GMD-PP-08",
+   "concept": "Game Development",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Working out which license fits a game project, giving proper credit for any borrowed assets or code, and being able to say how those choices respect the people who made the original work.",
+   "scope_note": "Choosing and applying a license and giving attribution is the scope; interpreting copyright law like a lawyer is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Inclusive Collaboration: 3. Communicate effectively about computing."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-GMD-PP-09",
+   "concept": "Game Development",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Building a game as part of a team -- splitting up tasks, using shared tools to track who's doing what, and talking honestly about whose voices and experiences the game does or doesn't represent.",
+   "scope_note": "Practicing team communication and reflecting on representation through discussion is the expectation; a teacher assigning team makeup or the class resolving deep social conflicts is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Inclusive Collaboration: 4. Manage computing projects."
+   ],
+   "dispositions": [
+    "Sense of Belonging",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-GMD-DD-01",
+   "concept": "Game Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Choosing at least two responsible-design moves -- something like adjustable difficulty for accessibility and a rule against addictive reward loops -- and explaining how each one actually shapes how players behave or feel, not just tacking them on afterward.",
+   "scope_note": "Justifying a couple of chosen design decisions baked into the gameplay is the task; covering every responsible-design category or running formal user research is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-GMD-DD-02",
+   "concept": "Game Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Writing the logic that switches a character between premade animations -- idle to running to attacking -- based on what's happening in the game, so the visuals track the action.",
+   "scope_note": "Triggering and transitioning between existing animation states with code is the point; creating original animations or applying artistic animation principles is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-GMD-DD-03",
+   "concept": "Game Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Giving a non-player character a small set of behaviors -- patrol, chase, retreat -- and clear if/then rules for switching between them, like fleeing once health drops below a threshold.",
+   "scope_note": "Rule-based state and transition logic is what's expected; machine learning, pathfinding optimization, or any behavior that adapts from player data is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-GMD-PX-04",
+   "concept": "Game Development",
+   "subconcept": "Player Experience",
+   "paraphrase": "Judging how well a game keeps players absorbed by looking at concrete factors -- consistent rules, quick feedback, clear goals -- and considering how the choice of controller, keyboard, or motion input changes how comfortable and accurate play feels.",
+   "scope_note": "Reasoning from gameplay evidence and playtesting observations about a couple of immersion factors is the scope; formal UX research or trying out every possible input device is not.",
+   "practices": [
+    "Computational Thinking: 9. Test and refine computing technologies.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-GMD-PX-05",
+   "concept": "Game Development",
+   "subconcept": "Player Experience",
+   "paraphrase": "Comparing two versions of a game that differ in one deliberate way -- say, two different control schemes -- and using what players actually did, like completion counts or where they got stuck, to argue which version works better.",
+   "scope_note": "Comparing two intentionally different versions with simple observed evidence is the task; running a formal A/B test or applying statistics is not.",
+   "practices": [
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-GMD-AR-06",
+   "concept": "Game Development",
+   "subconcept": "Architecture",
+   "paraphrase": "Looking at how a game's systems are organized -- keeping input handling separate from gameplay logic, say -- and reasoning about how that organization makes the game easier to extend, faster to run, or more likely to break.",
+   "scope_note": "Analyzing and explaining architectural trade-offs is the expectation; actually implementing the improvements or benchmarking performance is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-GMD-PP-07",
+   "concept": "Game Development",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Picking a focused set of ethical concerns -- like making sure the game doesn't exploit players' data or exclude certain players -- and being able to point to specific design decisions in a prototype that address them.",
+   "scope_note": "A partial build or prototype with a written explanation of a few ethical choices is enough; a fully polished game or a comprehensive ethics review covering every domain is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 4. Manage computing projects."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Creativity"
+   ]
+  },
+  {
+   "code": "S2-GMD-PP-08",
+   "concept": "Game Development",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Carrying your assigned role on a game team while still pitching in outside your specialty when the team needs it -- a programmer sketching art ideas with a teammate, for instance -- and working through disagreements instead of around them.",
+   "scope_note": "Practicing role management and flexible collaboration is what's graded; using formal project-management methods or achieving a perfectly smooth team dynamic is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Sense of Belonging"
+   ]
+  },
+  {
+   "code": "S1-PHY-HC-01",
+   "concept": "Physical Computing",
+   "subconcept": "Hardware & Circuit Design",
+   "paraphrase": "You build a working circuit from a schematic -- a microcontroller, a resistor, an LED is the classic starter -- and when the LED doesn't light, a multimeter and a look at the wiring is how you find the loose connection or backwards part.",
+   "scope_note": "Building and debugging a single-microcontroller circuit from a diagram is the scope; circuits with multiple integrated chips, or laying out and etching a custom PCB, are not expected.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-PHY-IO-02",
+   "concept": "Physical Computing",
+   "subconcept": "Inputs & Outputs",
+   "paraphrase": "Picking a sensor and an output that fit the job -- a light sensor driving an LED, a button triggering a buzzer or a short motion -- and wiring and coding them so the system actually reacts to something happening in the real world.",
+   "scope_note": "A handful of everyday sensors and outputs on a hobbyist board is the scope; large component counts, industrial-grade hardware, or anything mission-critical are not expected.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Creativity"
+   ]
+  },
+  {
+   "code": "S1-PHY-DD-03",
+   "concept": "Physical Computing",
+   "subconcept": "Design & Development",
+   "paraphrase": "Writing code that visibly drives what a physical device does -- reading a sensor, firing an output, switching between states -- and revising it across several rounds once you see how it actually behaves.",
+   "scope_note": "Repeated write-test-revise cycles in whatever environment fits, block-based through text, are the scope; fabricating hardware or working in a professional embedded toolchain is not expected.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-PHY-CI-04",
+   "concept": "Physical Computing",
+   "subconcept": "Connectivity & Internet of Things",
+   "paraphrase": "Getting one device to wirelessly hand off sensor readings to a neighboring device or a gateway, and then actually doing something with that data once it arrives -- logging it, charting it, letting it flip a switch -- rather than just proving the link works.",
+   "scope_note": "Short-range, device-to-device or device-to-gateway transmission with a real downstream use for the data is the scope; setting up cloud services, managing servers, or inventing a custom protocol is not.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S1-PHY-CI-05",
+   "concept": "Physical Computing",
+   "subconcept": "Connectivity & Internet of Things",
+   "paraphrase": "Linking two or more physical devices so they share data or actions, picking a communication method -- serial, Bluetooth, Wi-Fi, a low-power radio link -- and weighing what it costs you in range, message size, delay, or battery life.",
+   "scope_note": "Comparing and choosing among available communication options for a small multi-device setup is the scope; designing networking infrastructure or deploying it at scale is not.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-PHY-PP-06",
+   "concept": "Physical Computing",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Running a physical computing build through real version control -- separate branches for, say, the sensor code and the display code, commits with messages that actually explain the change, and merging everyone's work back together, conflicts and all.",
+   "scope_note": "Everyday branch-commit-merge collaboration, including untangling a simple conflict, is the scope; hosting your own repository server or using advanced moves like rebasing or cherry-picking is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-PHY-PP-07",
+   "concept": "Physical Computing",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Looking at one specific physical computing build and asking who it actually helps or leaves out, tying the answer to concrete design choices -- a switch placed out of reach, a part that wears out fast -- rather than speaking in generalities.",
+   "scope_note": "A grounded evaluation of a single real project against one or two concerns like accessibility or safety is the scope; sweeping global-impact studies or formal policy analysis are not required, though they're fine as a reach extension.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-PHY-PP-08",
+   "concept": "Physical Computing",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Thinking through what someone could do if they got their hands on your device -- pull data off it, tamper with it, impersonate it -- and matching that against real defenses like a PIN pad, encrypting what it sends, or a case that resists prying.",
+   "scope_note": "Reasoning about physical-access threats and matching defenses is the scope; running an actual penetration test or a formal security audit is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-PHY-HC-01",
+   "concept": "Physical Computing",
+   "subconcept": "Hardware & Circuit Design",
+   "paraphrase": "Using CAD software to lay out and simulate a build that mixes moving mechanical parts -- motors, linkages, a frame -- with the electronics that drive them, and refining the model before anything gets built, the way you'd rough out a robotic arm's structure digitally first.",
+   "scope_note": "Modeling and iterating a multi-part electromechanical design inside CAD is the scope; deep electronics theory or industrial automation practice is not expected.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-PHY-IO-02",
+   "concept": "Physical Computing",
+   "subconcept": "Inputs & Outputs",
+   "paraphrase": "Building a system where a sensor's reading actually steers an output toward a target -- a fan that speeds up as a room gets warmer -- and choosing which sensor to use by weighing accuracy, response time, and cost against each other.",
+   "scope_note": "The feedback loop can be conceptual, simulated, or partly built depending on the setup; a fully optimized, precision, or industrial-grade control system is not expected.",
+   "practices": [
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-PHY-DD-03",
+   "concept": "Physical Computing",
+   "subconcept": "Design & Development",
+   "paraphrase": "Building the software side that makes a physical device more useful to a person -- a settings screen, a live readout, an app that reacts to what the device is sensing -- with real thought put into how someone actually interacts with it.",
+   "scope_note": "A purposeful, user-facing extension of an existing device's function is the scope; fully autonomous behavior or a professional-grade embedded software pipeline is not.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-PHY-CI-04",
+   "concept": "Physical Computing",
+   "subconcept": "Connectivity & Internet of Things",
+   "paraphrase": "Building a system where data moves between physical devices well enough to actually monitor or control something remotely, then defending the communication choice -- local versus longer-range -- by its tradeoffs in reach, delay, or battery use.",
+   "scope_note": "The system can be conceptual, simulated, or actually built; running an enterprise-scale IoT platform or maintaining persistent cloud infrastructure is not expected.",
+   "practices": [
+    "Computational Thinking: 9. Test and refine computing technologies.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-PHY-CI-05",
+   "concept": "Physical Computing",
+   "subconcept": "Connectivity & Internet of Things",
+   "paraphrase": "Pulling data together from several physical devices through a central point -- a single-board computer or a coordinating script -- sketching out a simple message format for how they talk, and connecting that setup to real security concerns.",
+   "scope_note": "A small, simulated-or-built network with a basic protocol and security reasoning is the scope; cloud servers, advanced cryptography, or enterprise-grade security configuration are not required.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-PHY-PP-06",
+   "concept": "Physical Computing",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Running a physical computing build the way a small engineering team would -- a Kanban board tracking tasks like prototyping, wiring, and testing, regular standups, and responsibilities and conflicts handled fairly across the team.",
+   "scope_note": "Classroom-scale use of a real methodology like agile is the scope; professional project-management software or leading a multi-team effort with outside stakeholders is not.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S2-PHY-PP-07",
+   "concept": "Physical Computing",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Grounding a judgment about a physical computing project's effect on people in some actual small-scale research -- a survey, a few interviews -- and narrowing the case to one or two concerns like accessibility or sustainability plus a practical constraint like cost.",
+   "scope_note": "A locally-grounded evaluation tied to your own project and a small amount of real research is the scope; formal sociological studies or global policy analysis are not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-PHY-PP-08",
+   "concept": "Physical Computing",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Carrying a physical computing project through the full engineering design cycle -- sketches, a written plan, testing notes, reflection -- and showing, on paper, where a diverse user's actual needs changed a design decision.",
+   "scope_note": "Documenting the design process and how user needs shaped it is the scope; following a formal project-management framework or using a professional version control system is not required here.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Sense of Belonging"
+   ]
+  },
+  {
+   "code": "S1-SWD-DD-01",
+   "concept": "Software Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Picking the right built-in linear structure -- a stack for undo history, a queue for a print line, a dynamic array for a growing list of readings -- is what makes storing and retrieving data efficient for a given problem.",
+   "scope_note": "Using library-provided linear structures and their methods is the expectation; implementing a data structure's internals or moving on to dictionaries, trees, graphs, or heaps is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S1-SWD-DD-02",
+   "concept": "Software Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "As a program grows, structuring it around abstraction -- separating what a piece does from how it's built underneath -- is what keeps adding features from turning into a rewrite.",
+   "scope_note": "Making deliberate structural and abstraction choices for a single-machine application is the scope; distributed infrastructure and formal complexity analysis or performance tuning are not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-SWD-DD-03",
+   "concept": "Software Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "An IDE's everyday tools -- autocomplete and error highlighting while typing, breakpoints and variable inspection while debugging, built-in commits while collaborating -- are what make day-to-day coding faster and more reliable.",
+   "scope_note": "Using these built-in IDE features fluently is the expectation; understanding how they work internally or building custom build configurations is not.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-SWD-UX-04",
+   "concept": "Software Development",
+   "subconcept": "User Experience",
+   "paraphrase": "Running an interface through an accessibility or design-critique tool and using what it flags -- weak contrast, cramped spacing -- is how a design gets refined rather than just judged by eye.",
+   "scope_note": "Evaluating and refining an existing interface with established tools and principles is the task; creating original graphics or a full design system is not.",
+   "practices": [
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-SWD-UX-05",
+   "concept": "Software Development",
+   "subconcept": "User Experience",
+   "paraphrase": "Running software through a structured heuristic review -- checking it against known usability and accessibility criteria -- surfaces where it fails users who differ in ability, language, or background.",
+   "scope_note": "Evaluating against established criteria and guidelines drives the design decisions here; actually testing with real users or inventing new accessibility solutions beyond existing guidelines is not expected.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Reflectiveness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-SWD-TR-06",
+   "concept": "Software Development",
+   "subconcept": "Testing & Refining",
+   "paraphrase": "An AI-assisted IDE feature can summarize what an unfamiliar function does or flag a likely bug, turning an unreadable stretch of legacy code into something a student can act on.",
+   "scope_note": "Using existing AI-assisted IDE features for comprehension and debugging is the point; configuring or fine-tuning the underlying model, or wiring in outside AI tools, is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-SWD-TR-07",
+   "concept": "Software Development",
+   "subconcept": "Testing & Refining",
+   "paraphrase": "A solid test plan doesn't just check that a program works on normal input -- it deliberately tries edge cases, bad input, and unusual user behavior across the whole project.",
+   "scope_note": "Systematically writing and applying test cases, including AI-suggested ones, to a multi-function project is the scope; building automated testing frameworks, running large-scale QA, or security or penetration testing is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-SWD-PP-08",
+   "concept": "Software Development",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Building software as a team means using version control for real -- branches, pull requests, resolved conflicts -- while actively pulling in teammates' different perspectives on design, usability, and ethics, plus giving proper credit for reused code and media.",
+   "scope_note": "Working within a classroom-scale team repository is the expectation; administering version control infrastructure or connecting it to automated deployment pipelines is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 2. Respect others' rights and dignity when creating computing technologies.",
+    "Inclusive Collaboration: 5. Act responsibly in computing collaborations."
+   ],
+   "dispositions": [
+    "Sense of Belonging",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-SWD-DD-01",
+   "concept": "Software Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Choosing between a dictionary, tree, graph, or heap -- and being able to say in practical terms which is faster or lighter for a given job, like looking up a record versus finding a shortest path -- is the next step up from linear structures.",
+   "scope_note": "Selecting and applying built-in implementations with a plain-language efficiency comparison is expected; implementing the structures from scratch or using Big O notation is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-SWD-DD-02",
+   "concept": "Software Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Sketching out a few different user personas and mapping their journey through a product -- where they'd get stuck, what they'd need -- gives design decisions something concrete to point back to.",
+   "scope_note": "Creating personas and journey maps to justify design choices is the task; validating those personas with market research or shipping a fully working application is not.",
+   "practices": [
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions.",
+    "Human-Centered Design: 12. Design computing technologies that empower and inform users."
+   ],
+   "dispositions": [
+    "Creativity",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-SWD-DD-03",
+   "concept": "Software Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Building a project in visible rounds -- plan, build, test, review, write down why -- one added feature at a time, is what iterative development looks like in practice.",
+   "scope_note": "Structuring work into documented iterative cycles is the expectation; adopting a named formal methodology like Agile or Scrum with its specific ceremonies is not.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Human-Centered Design: 11. Use iterative design processes."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-SWD-DD-04",
+   "concept": "Software Development",
+   "subconcept": "Design & Development",
+   "paraphrase": "Speeding up a slow algorithm -- swapping linear search for binary search on sorted data, say -- means recognizing which data structure or divide-and-conquer strategy would fit better, then measuring the improvement.",
+   "scope_note": "Improving an existing algorithm using known data structures and paradigms is the scope; inventing new algorithmic paradigms is not.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-SWD-UX-05",
+   "concept": "Software Development",
+   "subconcept": "User Experience",
+   "paraphrase": "Watching real people struggle or succeed with an interface, and writing up what specifically went wrong, turns a vague sense that 'it's confusing' into usable feedback.",
+   "scope_note": "Conducting and documenting a peer- or classroom-scale usability evaluation is the expectation; formal research ethics approval, outside participants, specialized eye-tracking tools, or statistics beyond simple averages are not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S2-SWD-UX-06",
+   "concept": "Software Development",
+   "subconcept": "User Experience",
+   "paraphrase": "An interface that reflows sensibly from phone to desktop, and stays usable for people with different needs, is the product of actually applying UI design principles rather than just picking colors.",
+   "scope_note": "Building one working responsive, accessible interface is the goal; supporting every possible device and operating system or mastering a responsive design framework is not.",
+   "practices": [
+    "Computational Thinking: 8. Create computing technologies.",
+    "Human-Centered Design: 10. Understand and involve diverse users in design decisions."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Creativity"
+   ]
+  },
+  {
+   "code": "S2-SWD-TR-07",
+   "concept": "Software Development",
+   "subconcept": "Testing & Refining",
+   "paraphrase": "On a bigger, multi-file project, the IDE's AI-assisted testing and refinement features -- generating a starter test suite, suggesting a faster rewrite of a slow loop -- speed up work a student then has to review and judge, not just accept.",
+   "scope_note": "Using and critically evaluating IDE-integrated testing and optimization tools on a high-school-scale project is expected; deep performance profiling, hardware-level analysis, or enterprise-scale statistical test reporting is not.",
+   "practices": [
+    "Inclusive Collaboration: 4. Manage computing projects.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Persistence"
+   ]
+  },
+  {
+   "code": "S2-SWD-TR-08",
+   "concept": "Software Development",
+   "subconcept": "Testing & Refining",
+   "paraphrase": "Tracking down a bug in a project with multiple files and outside libraries means using a real debugging method -- narrowing the search in half, tracing how a value changes across functions -- not just guessing and rereading code.",
+   "scope_note": "Applying formal debugging methods and advanced IDE debugger features to logical errors in a multi-file project is the scope; operating-system-level debugging like assembly or memory-register analysis is not.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 9. Test and refine computing technologies."
+   ],
+   "dispositions": [
+    "Persistence",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S2-SWD-PP-09",
+   "concept": "Software Development",
+   "subconcept": "Professional Practice",
+   "paraphrase": "Running a project with a real process like Scrum or Kanban only counts if equity concerns -- accessibility, bias -- are treated as requirements that can push back a deadline or force a rewrite, not nice-to-haves.",
+   "scope_note": "Applying an industry-standard process and project-management tools to a classroom-scale project, with ethical tradeoffs explicitly justified, is the expectation; managing project budgets, using enterprise project-management software, or handling stakeholders outside the classroom is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Inclusive Collaboration: 4. Manage computing projects."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
+   ]
+  },
+  {
+   "code": "S1-XCS-XC-01",
+   "concept": "X+CS",
+   "subconcept": "Cross-Disciplinary Computing",
+   "paraphrase": "A core CS idea -- data representation, algorithmic thinking, abstraction -- can explain why a technique works in another subject entirely, like how turning text into word counts lets a literature class detect an author's style patterns that close reading alone would miss.",
+   "scope_note": "Explaining the conceptual connection between the CS idea and the other field is the goal; actually building a working computational model to solve an advanced problem in that field is not expected.",
+   "practices": [
+    "Inclusive Collaboration: 3. Communicate effectively about computing.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Creativity"
+   ]
+  },
+  {
+   "code": "S1-XCS-XC-02",
+   "concept": "X+CS",
+   "subconcept": "Cross-Disciplinary Computing",
+   "paraphrase": "Computational thinking -- breaking a problem into parts, spotting the variables that matter, sketching out the steps -- can be aimed at a problem that's native to another subject, like laying out on paper how a biology student would track a shrinking prey population over several generations.",
+   "scope_note": "Designing and documenting the approach as pseudocode or a flowchart is the expectation; actually coding, running, and refining a working solution is not.",
+   "practices": [
+    "Computational Thinking: 7. Develop and use abstractions.",
+    "Computational Thinking: 8. Create computing technologies."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-XCS-XC-03",
+   "concept": "X+CS",
+   "subconcept": "Cross-Disciplinary Computing",
+   "paraphrase": "A real computing tool borrowed by another field, such as a machine learning system trained on labeled scans to flag tumors in medical imaging, can be picked apart to show the computing concept underneath it and the concrete difference it made in that field.",
+   "scope_note": "Explaining how the technology works and what changed because of it is the scope; rebuilding the technology from scratch or tracing its full societal and policy fallout is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Resourcefulness"
+   ]
+  },
+  {
+   "code": "S1-XCS-XC-04",
+   "concept": "X+CS",
+   "subconcept": "Cross-Disciplinary Computing",
+   "paraphrase": "Ordinary data moves -- sorting, filtering, grouping, calculating a new column -- can turn a messy, real dataset from another subject into something that reveals a pattern, like turning raw county voting records into a picture of turnout by district.",
+   "scope_note": "Applying existing computational methods to a dataset that runs fine on a personal laptop is the task; inventing new algorithms or handling data too large for ordinary hardware is not expected.",
+   "practices": [
+    "Computational Thinking: 6. Define computational problems.",
+    "Computational Thinking: 7. Develop and use abstractions."
+   ],
+   "dispositions": [
+    "Resourcefulness",
+    "Critical Thinking"
+   ]
+  },
+  {
+   "code": "S1-XCS-XC-05",
+   "concept": "X+CS",
+   "subconcept": "Cross-Disciplinary Computing",
+   "paraphrase": "Judging whether an algorithm actually serves another discipline well means choosing the right yardsticks for it -- how accurate it is, how it holds up as the problem grows, how well it fits real-world constraints -- like checking a mapping app's routing not just for the shortest path but for whether it respects road closures or wheelchair access.",
+   "scope_note": "Choosing metrics and reasoning in plain terms about accuracy-versus-efficiency trade-offs is the expectation; formally deriving algorithmic complexity with Big O notation is not.",
+   "practices": [
+    "Ethics & Social Responsibility: 1. Use computing for positive social impact.",
+    "Computational Thinking: 6. Define computational problems."
+   ],
+   "dispositions": [
+    "Critical Thinking",
+    "Reflectiveness"
    ]
   }
  ]
