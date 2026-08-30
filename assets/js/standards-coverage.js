@@ -479,31 +479,56 @@
 
   // ---------- Recommendations: one-click "set up the picker for this class" ----------
   //
-  // Each button names the exact set of sources to check (everything else gets
-  // unchecked -- "turn on X only") and a view preset id. Where that id matches
-  // one of the five view-toggle-btn elements' data-view, clicking it presses
-  // that button same as a manual click would; some classes need a panel
-  // combination none of those five buttons cover (e.g. CA 9-12 + ICT only,
-  // with no AP and no CA 6-8), so those ids exist only in VIEW_PRESETS and are
-  // applied directly via panelActions, leaving no view-toggle-btn pressed.
+  // Each link names the exact set of sources to check (everything else gets
+  // unchecked -- "turn on X only") and a view preset id, both mirrored into
+  // its own href (?sources=...&view=...) so the link is a real, copyable URL
+  // -- right-click "Copy Link", drop it in an email, and opening it lands on
+  // this same picker state (see applyParamsFromLocation, called at boot).
+  // Where the view id matches one of the five view-toggle-btn elements'
+  // data-view, applying it presses that button same as a manual click would;
+  // some classes need a panel combination none of those five buttons cover
+  // (e.g. CA 9-12 + ICT only, with no AP and no CA 6-8), so those ids exist
+  // only in VIEW_PRESETS and are applied directly via panelActions, leaving
+  // no view-toggle-btn pressed.
+  function applyRecommendation(sourcesCsv, view, handleToggle, panelActions) {
+    var wanted = (sourcesCsv || '').split(',').filter(Boolean);
+    document.querySelectorAll('#source-list input[type=checkbox]').forEach(function (cb) {
+      cb.checked = wanted.indexOf(cb.getAttribute('data-source')) !== -1;
+    });
+    handleToggle();
+    var viewBtn = view && document.getElementById('view-show-' + view);
+    if (viewBtn) {
+      viewBtn.click();
+    } else if (view) {
+      panelActions.applyView(view);
+      panelActions.clearActive();
+    }
+  }
+
   function wireRecommendations(handleToggle, panelActions) {
-    document.querySelectorAll('.reco-link').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var wanted = (btn.getAttribute('data-sources') || '').split(',').filter(Boolean);
-        document.querySelectorAll('#source-list input[type=checkbox]').forEach(function (cb) {
-          cb.checked = wanted.indexOf(cb.getAttribute('data-source')) !== -1;
-        });
-        handleToggle();
-        var view = btn.getAttribute('data-view');
-        var viewBtn = document.getElementById('view-show-' + view);
-        if (viewBtn) {
-          viewBtn.click();
-        } else {
-          panelActions.applyView(view);
-          panelActions.clearActive();
-        }
+    document.querySelectorAll('.reco-link').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        var sourcesCsv = link.getAttribute('data-sources');
+        var view = link.getAttribute('data-view');
+        applyRecommendation(sourcesCsv, view, handleToggle, panelActions);
+        // Syncs the address bar to this link's own href so "copy from the
+        // URL bar" works too, not just right-clicking the sidebar link.
+        history.replaceState(null, '', link.getAttribute('href'));
       });
     });
+  }
+
+  // Reproduces a recommendation link's state from the URL that loaded this
+  // page (?sources=slug,slug&view=id), so a link pasted into an email lands
+  // on the same picker state a click on the sidebar would have. Absent or
+  // unrecognized params leave the just-applied default (ca-hs) view alone.
+  function applyParamsFromLocation(handleToggle, panelActions) {
+    var params = new URLSearchParams(window.location.search);
+    var sourcesCsv = params.get('sources');
+    var view = params.get('view');
+    if (!sourcesCsv && !view) return;
+    applyRecommendation(sourcesCsv, view, handleToggle, panelActions);
   }
 
   // ---------- Detail panel (click-to-open), built lazily from current checkbox state ----------
@@ -743,6 +768,7 @@
       wireBadgeInteractions(coverageByFramework, checkedSourceSet);
       wireCrossRefToggles();
       wireRecommendations(handleToggle, panelActions);
+      applyParamsFromLocation(handleToggle, panelActions);
     });
   }).catch(function (err) {
     document.getElementById('panels').innerHTML =
