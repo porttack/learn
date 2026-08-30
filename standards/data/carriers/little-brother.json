@@ -2,77 +2,262 @@
  "meta": {
   "title": "Little Brother (a book by Cory Doctorow)",
   "base_url": "https://porttack.com/2026/06/14/little-brother.html",
-  "locator_kind": "unit",
+  "locator_kind": "chapter",
   "locator_url_template": null,
   "source": "little_brother",
+  "locator_titles": {
+   "intro": "Introduction",
+   "1": "Surveillance, ARGs, and Cutting Class",
+   "2": "Frying an Arphid, Pranking Charles",
+   "3": "The Bay Bridge Bombing",
+   "4": "Detained and Interrogated by DHS",
+   "5": "A Reunion, Missing One Friend",
+   "6": "Building Xnet, Learning Crypto",
+   "7": "Hiding in Plain Ciphertext",
+   "8": "The Paradox of the False Positive",
+   "9": "Suspicion Spreads, Even to Dad",
+   "10": "A Beach Key-Signing Party",
+   "11": "Growing the Web of Trust",
+   "12": "Debating Revolution, Planning a Party",
+   "13": "A Secret Comes Out",
+   "14": "The General Smears the Park Protest",
+   "15": "Planning a Press Conference",
+   "16": "A Confession to His Parents",
+   "17": "Barbara Stratford and the Crypto Wars",
+   "18": "On the Run, Remembering LARPing",
+   "19": "The VampMob Decoy Plan",
+   "20": "Masha, the Chase, and the Evidence",
+   "21": "Treasure Island",
+   "epilogue": "Epilogue"
+  },
+  "caveat": "This carrier was a bare stub until this pass -- every entry had empty locators and no note at all, since the file's first commit. This is the first time anyone actually checked these claims against the book's own text (tmp/lb.txt, converted from the CC BY-NC-SA-licensed full text). Several corrections came out of that: 9-12.NI.4 (network performance for organizations) is dropped in favor of 9-12.NI.5 (internet design/addressing/scale), which is what Xnet's mesh distribution and Chapter 17's DNS tunneling actually demonstrate -- the teacher's own blog post cites NI.4 for this material, but the catalog's own paraphrase makes NI.5 the real match. 9-12.IC.25 and IC.27 are dropped as unsupported by either the blog or the text. 9-12.IC.26 is added even though the blog's table doesn't cite it, since a security state reshaping civil society is arguably the book's central theme. Locators were derived from a direct read of the book text, not just the blog post, and correct at least one real error in the blog's own chapter attribution (the cleartext/ciphertext-ratio 'make everyone abnormal' idea is Chapter 7, not Chapter 8 as the blog has it -- Chapter 8 is the Bayesian 'paradox of the false positive' scene). CSTA 2017's HS block includes 3B-IC-25, a Level 3B (elective/specialty, not core) code reached only via a 'related'-strength crosswalk row that itself says CA's IC.26 is a blend match with no single clean CSTA target -- a lower-confidence tier than the mostly-3A, core, strong-crosswalk claims elsewhere in that block. CA CTE (ICT) is cited via Anchor Standards only, not Pathway C -- unlike a programming course, this book has essentially no software-construction content for Pathway C to describe, but its ethics/legal, communications, and problem-solving anchor standards are a genuinely strong fit, not a generic fallback. Middle-school codes (California 6-8, CSTA 2017 Level 2, CSTA 2026 MS) are this carrier's own inference on the CS-concept content alone; this file says nothing about whether the book's mature content (a DHS interrogation, an explicit waterboarding reference) is appropriate for that age group, which is a separate, teacher's-own judgment call.",
   "abbrev": "LB"
  },
  "coverage": {
   "apcsp": {
    "4.1": {
-    "locators": []
+    "locators": [6, 17],
+    "note": "Chapter 6 has Xnet riding both sneakernetted discs and neighbors' open internet connections; Chapter 17 has anonymous video tunneled over DNS -- both are the internet moving data across a shared network of devices that isn't fully trusted."
    },
    "4.2": {
-    "locators": []
-   },
-   "4.3": {
-    "locators": []
+    "locators": [6, 9],
+    "note": "Xnet keeps functioning as the DHS compromises and turns individual nodes (Chapter 9) -- a system built from parts that can't all be trusted staying reliable anyway, the same territory as this standard."
    },
    "5.1": {
-    "locators": []
-   },
-   "5.2": {
-    "locators": []
+    "locators": ["intro", 1, "epilogue"],
+    "note": "The dual-use framing bookends the novel: the Introduction's own account of computers as both liberating and surveilling, Chapter 1's arphid/gait-recognition tech introduced as normal infrastructure, and the Epilogue's reckoning with what was built and what it cost."
    },
    "5.3": {
-    "locators": []
+    "locators": [8],
+    "note": "The 'paradox of the false positive' is Bayesian statistics applied directly to why a surveillance system misfires on innocent people at scale -- almost the standard's own definition, dramatized."
    },
    "5.4": {
-    "locators": []
+    "locators": [6],
+    "note": "Xnet grows the way this standard describes: many people each contributing a small piece (burning and handing out a few discs, later relaying a few packets) solves a problem -- staying in contact under surveillance -- that no small group could manage alone."
    },
    "5.5": {
-    "locators": []
+    "locators": ["intro", 17],
+    "note": "The book's own Creative Commons license, printed in the Introduction, is a real license to read rather than a licensing lecture; Chapter 17 pairs with a 'Crypto Wars' lesson on export-control law criminalizing math itself."
    },
    "5.6": {
-    "locators": []
+    "locators": [1, 6, 7, 8, 10],
+    "note": "Arphid tracking (1) through the full crypto cluster -- Xnet's crypto primer (6), traffic analysis (7), the false-positive statistics behind mass surveillance (8), and the key-signing party (10) -- is personal data, authentication, and encryption end to end."
    }
   },
   "castandards": {
-   "9-12.NI.4": {
-    "locators": []
-   },
    "9-12.NI.5": {
-    "locators": []
+    "locators": [6, 17],
+    "note": "Xnet's mesh distribution over sneakernet and borrowed internet connections (6), and DNS tunneling as a way around normal routing (17), are the internet's own addressing and routing being bent without breaking."
    },
    "9-12.NI.6": {
-    "locators": []
+    "locators": [6, 7, 8, 9, 10, 17],
+    "note": "The whole crypto-and-countermeasures arc, from the first ParanoidXbox/ParanoidLinux defenses (6) through the DHS's exploits against them (9) to the Crypto Wars material (17), is choosing between security threats and defenses as a real tradeoff, not a solved problem."
    },
    "9-12.NI.7": {
-    "locators": []
+    "locators": [6, 10],
+    "note": "Chapter 6's prime-factorization explanation of public-key crypto and Chapter 10's formal definition of a private key are cryptographic techniques for protecting data in transit, including the asymmetric case CA's own paraphrase calls out."
    },
    "9-12.IC.23": {
-    "locators": []
+    "locators": ["intro", "epilogue"],
+    "note": "The Introduction's account of computers as both liberating and surveilling, and the Epilogue's reckoning with the fallout, are computing changing social and cultural practice, not always for the better -- the novel's frame from both ends."
    },
    "9-12.IC.24": {
-    "locators": []
-   },
-   "9-12.IC.25": {
-    "locators": []
+    "locators": [8],
+    "note": "The false-positive scene is bias built into a computing artifact (a surveillance/pattern-matching system) that its designers didn't have to intend for it to misfire on innocent people at scale."
    },
    "9-12.IC.26": {
-    "locators": []
-   },
-   "9-12.IC.27": {
-    "locators": []
+    "locators": ["intro", 4, 5, 20, "epilogue"],
+    "note": "Not in the teacher's own blog table, but arguably the book's central theme: a DHS-style security state reshaping social and political structure after a crisis (the Introduction and chapters 4-5's detention), paid off in Chapter 20's interrogation and the Epilogue's accountability reckoning."
    },
    "9-12.IC.28": {
-    "locators": []
+    "locators": ["intro"],
+    "note": "The book's own Creative Commons license, printed in full in the Introduction, is intellectual property law read directly rather than summarized -- both what it protects and what it lets other people build on."
    },
    "9-12.IC.29": {
-    "locators": []
+    "locators": [1, 13],
+    "note": "Arphid tracking (1) and a camera's individually identifiable 'noise signature' (13) are both data collected automatically, without the person it describes ever opting in."
    },
    "9-12.IC.30": {
-    "locators": []
+    "locators": [20, "epilogue"],
+    "note": "Chapter 20's interrogation (including an explicit waterboarding reference) and the Epilogue's policy reckoning are privacy and civil liberties weighed against safety and law, in exactly the contested, context-dependent way this standard names."
+   },
+   "6-8.NI.4": {
+    "locators": [6, 17],
+    "note": "This carrier's own inference, mirroring 9-12.NI.5 above: Xnet's mesh (6) and DNS tunneling (17) are messages getting where they're going across a network that wasn't built to carry them that way."
+   },
+   "6-8.NI.5": {
+    "locators": [6, 7, 8, 9, 10, 17],
+    "note": "This carrier's own inference, mirroring 9-12.NI.6 above: the same crypto-and-countermeasures arc, at the lighter 'different threats call for different countermeasures' framing this 6-8 standard uses."
+   },
+   "6-8.NI.6": {
+    "locators": [6, 10],
+    "note": "This carrier's own inference, mirroring 9-12.NI.7 above: sending information securely in the book always takes more than one protective method working together -- crypto plus anonymity plus the web of trust, not any single fix."
+   },
+   "6-8.IC.20": {
+    "locators": ["intro", 4, 5, 20, "epilogue"],
+    "note": "This carrier's own inference, mirroring 9-12.IC.23/26 above, at the lighter 'tradeoffs worth weighing' framing this 6-8 standard uses."
+   },
+   "6-8.IC.21": {
+    "locators": [8],
+    "note": "This carrier's own inference, mirroring 9-12.IC.24 above: the false-positive scene is an existing technology's bias made explicit and examined directly."
+   },
+   "6-8.IC.23": {
+    "locators": ["intro"],
+    "note": "This carrier's own inference, mirroring 9-12.IC.28 above: the book's own printed Creative Commons license is a license as a real tradeoff between a creator's rights and what others can do with the work."
+   },
+   "6-8.IC.24": {
+    "locators": [1, 13, 20],
+    "note": "This carrier's own inference, mirroring 9-12.IC.29/30 above: arphid and camera tracking (1, 13) and the interrogation scene (20) are public-versus-private-and-secure information as a real, competing-goods tradeoff, not an abstract one."
+   }
+  },
+  "csta2017": {
+   "3A-NI-04": {
+    "locators": [6, 17],
+    "note": "Same evidence as 9-12.NI.5 above, via the castandards-csta2017 crosswalk (strength: strong)."
+   },
+   "3A-NI-05": {
+    "locators": [6, 10],
+    "note": "Same evidence as 9-12.NI.7 above (crosswalk strength: related)."
+   },
+   "3A-NI-07": {
+    "locators": [6, 7],
+    "note": "Same evidence as 9-12.NI.6 above (crosswalk strength: partial) -- the usability-cost side of a security tradeoff specifically: encrypting more traffic protects you but makes normal use slower and more conspicuous, Chapter 7's own point."
+   },
+   "3A-NI-08": {
+    "locators": [9],
+    "note": "Same evidence as 9-12.NI.6 above (crosswalk strength: partial) -- justifying a security tradeoff to the people who have to live with it, which is exactly the position Xnet's operators are in once the DHS starts turning nodes (Chapter 9)."
+   },
+   "3A-IC-24": {
+    "locators": ["intro", "epilogue"],
+    "note": "Same evidence as 9-12.IC.23 above (crosswalk strength: strong)."
+   },
+   "3A-IC-25": {
+    "locators": [8],
+    "note": "Same evidence as 9-12.IC.24 above (crosswalk strength: strong)."
+   },
+   "3B-IC-25": {
+    "locators": ["intro", 4, 5, 20, "epilogue"],
+    "note": "Same evidence as 9-12.IC.26 above, but at a lower confidence tier: this is a Level 3B (elective/specialty, non-core) code, and the crosswalk's own note says CA's IC.26 is a blend match with no single clean CSTA target -- carried here as the closest of the three related codes it names (evaluating a built system's net benefit and harm to society)."
+   },
+   "3A-IC-28": {
+    "locators": ["intro"],
+    "note": "Same evidence as 9-12.IC.28 above (crosswalk strength: strong)."
+   },
+   "3A-IC-29": {
+    "locators": [1, 13],
+    "note": "Same evidence as 9-12.IC.29 above (crosswalk strength: strong)."
+   },
+   "3A-IC-30": {
+    "locators": [20, "epilogue"],
+    "note": "Same evidence as 9-12.IC.30 above (crosswalk strength: strong)."
+   },
+   "2-NI-04": {
+    "locators": [6, 17],
+    "note": "This carrier's own inference, mirroring 6-8.NI.4 above (crosswalk strength: strong)."
+   },
+   "2-NI-05": {
+    "locators": [6, 7, 8, 9, 10, 17],
+    "note": "This carrier's own inference, mirroring 6-8.NI.5 above (crosswalk strength: partial)."
+   },
+   "2-NI-06": {
+    "locators": [6, 10],
+    "note": "This carrier's own inference, mirroring 6-8.NI.6 above (crosswalk strength: strong)."
+   },
+   "2-IC-20": {
+    "locators": ["intro", 4, 5, 20, "epilogue"],
+    "note": "This carrier's own inference, mirroring 6-8.IC.20 above (crosswalk strength: strong)."
+   },
+   "2-IC-21": {
+    "locators": [8],
+    "note": "This carrier's own inference, mirroring 6-8.IC.21 above (crosswalk strength: strong)."
+   },
+   "2-IC-23": {
+    "locators": [1, 13, 20],
+    "note": "This carrier's own inference, mirroring 6-8.IC.24 above -- the crosswalk maps 6-8.IC.24 to this code, not to a '2-IC-24' that doesn't exist at Level 2 (crosswalk strength: strong). Level 2 has no separate code for the licensing-tradeoff territory of 6-8.IC.23, so that claim has no CSTA 2017 middle-school mirror here."
+   }
+  },
+  "csta2026": {
+   "HS-SYS-NT-35": {
+    "locators": [6, 17],
+    "note": "This carrier's own inference -- no official source exists for the 2026 revision: Xnet's mesh and Chapter 17's DNS tunneling are the internet's own layered, many-networks structure being used off-label."
+   },
+   "HS-SYS-SE-31": {
+    "locators": [7],
+    "note": "This carrier's own inference: Chapter 7's cleartext-to-ciphertext ratio problem is a security measure (universal encryption) costing something (looking suspicious) to gain something (cover) -- the tradeoff this standard names."
+   },
+   "HS-SYS-SE-33": {
+    "locators": [9],
+    "note": "This carrier's own inference: the DHS's exploits against ParanoidLinux, and Xnet's response, is naming a vulnerability and proposing concrete technical and non-technical steps to close it."
+   },
+   "HS-SOC-HI-39": {
+    "locators": [20, "epilogue"],
+    "note": "This carrier's own inference: the Epilogue's reckoning with the DHS's post-crisis surveillance powers is exactly this standard's explain-the-reasoning-behind-a-privacy-rule territory."
+   },
+   "HS-SOC-HU-43": {
+    "locators": [8],
+    "note": "This carrier's own inference: the false-positive scene is explicitly about the human choices behind a surveillance system's data and algorithm, not the technology acting alone."
+   },
+   "HS-DAT-IM-28": {
+    "locators": ["epilogue"],
+    "note": "This carrier's own inference: the Epilogue's reckoning with what should change afterward is arguing whether an existing privacy policy actually works, and what would work better."
+   },
+   "MS-SYS-NT-35": {
+    "locators": [6, 17],
+    "note": "This carrier's own inference, mirroring HS-SYS-NT-35 above."
+   },
+   "MS-DAT-IM-28": {
+    "locators": ["epilogue"],
+    "note": "This carrier's own inference, mirroring HS-DAT-IM-28 above."
+   },
+   "MS-SOC-HI-39": {
+    "locators": [20, "epilogue"],
+    "note": "This carrier's own inference, mirroring HS-SOC-HI-39 above."
+   },
+   "MS-SOC-HU-43": {
+    "locators": [8],
+    "note": "This carrier's own inference, mirroring HS-SOC-HU-43 above."
+   }
+  },
+  "ca-ict-anchor": {
+   "2.6": {
+    "locators": [6, 7, 8, 9, 10],
+    "note": "Xnet's whole operational-security culture -- encrypting, staying anonymous, vetting who to trust -- is using digital communication tools safely, legally, and responsibly under real pressure, not as a classroom exercise."
+   },
+   "5.5": {
+    "locators": [8],
+    "note": "The false-positive scene is Marcus tracking a surveillance system's actual failure mode to its mathematical source, a structured argument rather than a hunch."
+   },
+   "5.12": {
+    "locators": [8],
+    "note": "The single cleanest match in this file: the paradox of the false positive is Boolean-logic-style search and decision-making (does this trait mean 'terrorist,' yes or no, applied to millions of people) taken apart in the book's own words."
+   },
+   "8.6": {
+    "locators": ["intro"],
+    "note": "The book's own Creative Commons license, printed in full in the Introduction, is copyright and intellectual property law applied directly, including how to cite and reuse the work."
+   },
+   "8.8": {
+    "locators": ["intro", "epilogue"],
+    "note": "The whole novel is wider technology adoption's own legal and ethical problems -- hacking, government overreach, privacy breaches -- bookended by the Introduction's framing and the Epilogue's reckoning. Cited here directly rather than de-emphasized as too generic, since unlike a programming-course carrier, this book has no Pathway C content to prefer instead."
    }
   }
  }
