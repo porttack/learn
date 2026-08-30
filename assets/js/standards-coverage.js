@@ -23,18 +23,11 @@
   var STRAND_ORDER = ['CS', 'NI', 'DA', 'AP', 'IC'];
   var CHAP_REF_RE = /\bchap(\d{2})([a-z]?)\b/g;
 
-  // The sources panel is a <details>, open by default in the markup (so it
-  // renders expanded with JS disabled or before this runs). On a narrow
-  // screen it starts collapsed instead -- a fixed-width sidebar reads fine on
-  // desktop but a full checkbox list shoving the actual content off-screen on
-  // a phone is the opposite of useful. Only sets the *initial* state; a
-  // reader can still open/close it by hand afterward regardless of width.
-  (function collapseSourcesOnNarrowScreens() {
-    var details = document.getElementById('source-details');
-    if (details && window.matchMedia('(max-width: 780px)').matches) {
-      details.removeAttribute('open');
-    }
-  })();
+  // The sources panel is a <details>, closed by default in the markup --
+  // for now, an admin skimming this page doesn't need the raw source list
+  // (with its Primary/Secondary sub-groups) inviting a click before they've
+  // even looked at coverage. A reader can still open it by hand regardless
+  // of screen width; this only sets the *initial* state.
 
   // Drag-to-resize the sources sidebar, desktop only (the resizer itself is
   // display:none under the mobile breakpoint, where the layout stacks
@@ -459,10 +452,11 @@
       });
     });
 
-    // Default view on first load: admins mainly look at the high-school-facing
-    // CA panels, so start there rather than everything wide open.
-    var defaultBtn = document.getElementById('view-show-ca-hs');
-    if (defaultBtn) { applyView('ca-hs'); setActive(defaultBtn); }
+    // Default view on first load: admins mainly care about California
+    // compliance across both grade bands, so start there rather than
+    // everything wide open.
+    var defaultBtn = document.getElementById('view-show-ca');
+    if (defaultBtn) { applyView('ca'); setActive(defaultBtn); }
 
     // A manual open/close on any one panel no longer matches a named preset --
     // clear the pressed button so the group doesn't keep claiming a state that
@@ -538,7 +532,7 @@
   // ids VIEW_PRESETS above and the five view-toggle-btn buttons use)
   // without touching source selection, and ?sources=... alone sets just
   // the checked sources without touching whatever view is already showing.
-  // Absent or unrecognized params leave the just-applied default (ca-hs)
+  // Absent or unrecognized params leave the just-applied default (ca)
   // view alone.
   function applyParamsFromLocation(handleToggle, panelActions) {
     var params = new URLSearchParams(window.location.search);
