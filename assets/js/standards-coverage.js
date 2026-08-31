@@ -607,13 +607,18 @@
   function renderReportMode(slug, carrierFiles, catalogs, manifestBySlug) {
     document.body.classList.add('cov-report-mode');
     var meta = manifestBySlug[slug] || {};
+    // ?view=<preset> scopes which sections start open, same VIEW_PRESETS ids
+    // as the badge grid (e.g. &view=ca-cs or &view=ap-only) -- so a link can
+    // be "just this source's CA coverage" or "...AP coverage" instead of
+    // always opening the whole report. Defaults to fully expanded.
+    var view = new URLSearchParams(window.location.search).get('view') || 'open-all';
 
     var titleEl = document.querySelector('.page-header h1');
     if (titleEl) titleEl.textContent = (meta.title || slug) + ' — Standards Report';
     var homeLink = document.querySelector('.page-header .home-link');
     if (homeLink) {
       homeLink.textContent = '← Back to Standards Coverage';
-      homeLink.setAttribute('href', '?only=' + encodeURIComponent(slug) + '&view=open-all');
+      homeLink.setAttribute('href', '?only=' + encodeURIComponent(slug) + '&view=' + encodeURIComponent(view));
     }
 
     var actionsRow = document.querySelector('.panel-actions');
@@ -637,7 +642,7 @@
     });
 
     var panelActions = wirePanelActions();
-    panelActions.applyView('open-all'); // a single source's own report is usually short -- start expanded, not narrowed to "Show CA"
+    panelActions.applyView(view); // defaults to open-all -- a single source's own report is usually short, no need to narrow it the way "Show CA" narrows the full cross-source catalog
     panelActions.clearActive();
 
     // Printing a collapsed <details> prints nothing inside it, even with
@@ -702,7 +707,11 @@
     // recommendation link (see wireRecommendations) for a class whose
     // relevant panels don't match one of the five buttons above.
     'ca-cs': ['ca-hs', 'ca-ms'],
-    'ca-hs-ict': ['ca-hs', 'ca-ict']
+    'ca-hs-ict': ['ca-hs', 'ca-ict'],
+    // Same idea, one framework alone -- e.g. a blog post's own "AP CSP
+    // coverage" section linking to just the AP panel, scoped to one source
+    // via ?only=<slug>&view=ap-only.
+    'ap-only': ['ap']
   };
 
   function wirePanelActions() {
@@ -837,7 +846,8 @@
   // "Hide standards not covered" checkbox in the banner is the opt-in for
   // that narrower view.
   function applyOnlyParam(manifest, manifestBySlug, handleToggle, panelActions, hasReport) {
-    var raw = new URLSearchParams(window.location.search).get('only');
+    var params = new URLSearchParams(window.location.search);
+    var raw = params.get('only');
     if (!raw) return;
     var slug = resolveSourceSlug(raw, manifest);
     var banner = document.getElementById('only-banner');
@@ -847,9 +857,14 @@
       banner.hidden = false;
       return;
     }
-    applyRecommendation(slug, 'open-all', handleToggle, panelActions);
+    // ?view=<preset> scopes which panels start open (e.g. &view=ca-cs or
+    // &view=ap-only, same VIEW_PRESETS ids the badge grid always used) --
+    // still highlights this source across the whole catalog either way,
+    // just narrows what's open by default. Defaults to every panel open.
+    var view = params.get('view') || 'open-all';
+    applyRecommendation(slug, view, handleToggle, panelActions);
     var title = (manifestBySlug[slug] || {}).title || slug;
-    var reportLink = hasReport(slug) ? ' <a href="?report=' + esc(slug) + '">View report</a>' : '';
+    var reportLink = hasReport(slug) ? ' <a href="?report=' + esc(slug) + (params.get('view') ? '&view=' + esc(params.get('view')) : '') + '">View report</a>' : '';
     banner.innerHTML =
       'Showing standards covered by <strong>' + esc(title) + '</strong>. ' +
       '<a href="' + esc(window.location.pathname) + '">Show all standards</a>' + reportLink +
