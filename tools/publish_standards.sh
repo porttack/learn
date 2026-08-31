@@ -24,12 +24,6 @@ python3 "$ROOT/tools/build_alignment.py" --catalog "$ROOT/_standards" --carriers
 
 cp "$TMP"/*.html "$ROOT/standards/"
 
-# One printable per-source report per carrier (standards/reports/<slug>.html) --
-# regenerated wholesale each run, same as the reference pages above, so a
-# carrier that's removed doesn't leave a stale report behind.
-rm -rf "$ROOT/standards/reports"
-cp -r "$TMP/reports" "$ROOT/standards/reports"
-
 {
   echo "---"
   echo "layout: default"

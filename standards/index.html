@@ -96,19 +96,60 @@ a.source-only-link, a.source-report-link {
 a.source-only-link:hover, a.source-only-link:focus-visible,
 a.source-report-link:hover, a.source-report-link:focus-visible { color: var(--fg); border-color: var(--muted); }
 
-/* ---------- Focus mode (?only=<source-slug>): collapse the full catalog
-   down to just what one source covers -- for a link embedded in that
-   source's own page. See applyOnlyMode() in standards-coverage.js. ---------- */
+/* ---------- Focus mode (?only=<source-slug-or-abbrev>): highlights one
+   source's coverage across the full catalog -- nothing hidden by default,
+   see applyOnlyParam() in standards-coverage.js. The banner's own checkbox
+   is the opt-in for the narrower "hide what it doesn't cover" view. ---------- */
 #only-banner {
   background: color-mix(in oklch, var(--accent) 12%, var(--bg));
   border: 1px solid var(--accent); border-radius: 8px;
   padding: .6em .9em; margin: 0 0 1rem; font-size: .92rem;
 }
 #only-banner a { color: var(--accent); font-weight: 600; }
-body.cov-only-mode .cov-badge:not(.has-coverage) { display: none; }
-body.cov-only-mode .cov-panel:not(:has(.cov-badge.has-coverage)),
-body.cov-only-mode .cov-group:not(:has(.cov-badge.has-coverage)),
-body.cov-only-mode .cov-subgroup:not(:has(.cov-badge.has-coverage)) { display: none; }
+.only-hide-toggle { margin-left: .3em; font-weight: normal; color: var(--fg); white-space: nowrap; }
+.only-hide-toggle input { margin-right: .3em; }
+body.cov-only-hide .cov-badge:not(.has-coverage) { display: none; }
+body.cov-only-hide .cov-panel:not(:has(.cov-badge.has-coverage)),
+body.cov-only-hide .cov-group:not(:has(.cov-badge.has-coverage)),
+body.cov-only-hide .cov-subgroup:not(:has(.cov-badge.has-coverage)) { display: none; }
+
+/* ---------- Report mode (?report=<source-slug-or-abbrev>): replaces the
+   badge grid with a hierarchical, printable "everything this source covers"
+   document -- see renderReportMode()/buildSourceReportHtml() in
+   standards-coverage.js. Reuses .cov-panel's own <details> so Open all/
+   Close all/Show CA* keep working unchanged; only these report-specific
+   pieces (cards, %-tags, the empty-subsection note) are new. ---------- */
+body.cov-report-mode aside#source-picker,
+body.cov-report-mode #panel-resizer { display: none; }
+body.cov-report-mode main#coverage-content { max-width: 900px; margin: 0 auto; }
+.pct-tag { font-size: .78em; font-weight: normal; color: var(--muted); white-space: nowrap; }
+.report-subsection { margin: .6rem 0 .6rem 1rem; }
+.report-subsection summary { cursor: pointer; font-weight: 600; padding: .3rem 0; }
+.report-empty { color: var(--muted); font-size: .88rem; margin: .2rem 0 .6rem 1rem; }
+.print-report-btn { margin-left: auto; }
+.topic {
+  background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: .9rem 1.15rem; margin: .8rem 0 .8rem 1rem;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1rem; display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .84rem; color: var(--muted); margin: .2rem 0 .5rem; }
+.topic .note { font-size: .86rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.anchor-link { color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal; opacity: .5; }
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+@media print {
+  body.cov-report-mode .panel-actions, body.cov-report-mode .page-header .home-link { display: none; }
+  body.cov-report-mode main#coverage-content { height: auto; overflow: visible; max-width: none; }
+  .topic { break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+  a[href^="http"]:after { content: " (" attr(href) ")"; font-size: .8em; color: var(--muted); }
+  a[href^="#"]:after { content: ""; }
+}
 main#coverage-content { flex: 1 1 auto; min-width: 0; height: 100vh; overflow-y: auto; padding: 1.5rem 2rem 6rem; }
 h1 { margin-top: 0; }
 .page-header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }

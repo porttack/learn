@@ -87,6 +87,38 @@
     });
   }
 
+  // ---------- Locator rendering: shared by makeCoverage (many sources, keyed
+  // by slug) and the per-source report (just the one carrier's own meta) ----------
+
+  function locatorUrlFor(meta, locator, anchorSlug) {
+    var template = meta.locator_url_template;
+    if (!template) return null;
+    var padded = String(locator);
+    if (meta.locator_kind === 'chapter') {
+      var m = /^(\d+)([a-zA-Z]*)$/.exec(String(locator));
+      if (m) padded = ('00' + m[1]).slice(-2) + m[2];
+    }
+    var url = template.replace('{base_url}', meta.base_url || '').replace('{locator}', padded);
+    url += anchorSlug ? '?readonly#' + anchorSlug : '?readonly';
+    return url;
+  }
+
+  function locatorClauseFor(meta, locator, anchor) {
+    var interludeLetter = (meta.interlude_letters || {})[String(locator)];
+    var text;
+    if (interludeLetter) {
+      text = 'Interlude ' + interludeLetter;
+    } else {
+      text = (meta.locator_kind === 'chapter' ? 'Chapter ' : 'Unit ') + locator;
+    }
+    var sectionTitle = anchor && anchor.title;
+    var chapterTitle = (meta.locator_titles || {})[String(locator)];
+    if (sectionTitle) text += ' – ' + sectionTitle;
+    else if (chapterTitle) text += ' (' + chapterTitle + ')';
+    var url = locatorUrlFor(meta, locator, anchor && anchor.slug);
+    return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
+  }
+
   // ---------- Coverage: one instance per framework, joins catalog codes against carriers ----------
 
   function makeCoverage(carrierFiles, framework) {
@@ -104,35 +136,8 @@
       return byCode[code] || [];
     }
 
-    function locatorUrl(source, locator, anchorSlug) {
-      var meta = sourceMeta[source] || {};
-      var template = meta.locator_url_template;
-      if (!template) return null;
-      var padded = String(locator);
-      if (meta.locator_kind === 'chapter') {
-        var m = /^(\d+)([a-zA-Z]*)$/.exec(String(locator));
-        if (m) padded = ('00' + m[1]).slice(-2) + m[2];
-      }
-      var url = template.replace('{base_url}', meta.base_url || '').replace('{locator}', padded);
-      url += anchorSlug ? '?readonly#' + anchorSlug : '?readonly';
-      return url;
-    }
-
     function locatorClause(source, locator, anchor) {
-      var meta = sourceMeta[source] || {};
-      var interludeLetter = (meta.interlude_letters || {})[String(locator)];
-      var text;
-      if (interludeLetter) {
-        text = 'Interlude ' + interludeLetter;
-      } else {
-        text = (meta.locator_kind === 'chapter' ? 'Chapter ' : 'Unit ') + locator;
-      }
-      var sectionTitle = anchor && anchor.title;
-      var chapterTitle = (meta.locator_titles || {})[String(locator)];
-      if (sectionTitle) text += ' – ' + sectionTitle;
-      else if (chapterTitle) text += ' (' + chapterTitle + ')';
-      var url = locatorUrl(source, locator, anchor && anchor.slug);
-      return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
+      return locatorClauseFor(sourceMeta[source] || {}, locator, anchor);
     }
 
     // Not (checked:true with no locators) -- an acknowledged, explicit gap is
@@ -412,6 +417,243 @@
     return body.join('\n');
   }
 
+  // ---------- Per-source report: everything one carrier covers, rendered
+  // live from the same fetched catalogs/carrierFiles as the badge grid above
+  // -- no separate build step, no pre-generated file to go stale. Same
+  // .cov-panel/data-panel-category/<details> shape as the panels above, so
+  // wirePanelActions() (Open all/Close all/Show CA*) drives this exactly the
+  // same way with no code of its own. Unlike the grid, only codes this
+  // source actually covers get a card; the %-covered figure on each
+  // section/subsection heading is what tells you the rest of the shape
+  // (including the parts it covers nothing in) without listing every
+  // uncovered code as an empty placeholder. ----------
+
+  function isCoveringEntry(entry) {
+    return !(entry.checked && !(entry.locators || []).length);
+  }
+
+  function pctLabel(covered, total) {
+    if (!total) return '0/0';
+    return covered + '/' + total + ' (' + Math.round((covered / total) * 100) + '%)';
+  }
+
+  function slugify(s) {
+    return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  }
+
+  // A source's ?only=/?report= value may be its slug or its abbrev
+  // (case-insensitive) -- e.g. "LB" for little_brother -- so a hand-typed or
+  // hand-embedded link doesn't have to get the internal slug exactly right.
+  function resolveSourceSlug(raw, manifest) {
+    if (!raw) return null;
+    var lower = raw.toLowerCase();
+    var byAbbrev = null;
+    for (var i = 0; i < manifest.sources.length; i++) {
+      var s = manifest.sources[i];
+      if (s.slug === raw) return s.slug;
+      if (!byAbbrev && s.abbrev && s.abbrev.toLowerCase() === lower) byAbbrev = s.slug;
+    }
+    return byAbbrev;
+  }
+
+  function reportCard(anchorPrefix, item, entry, meta) {
+    var anchor = anchorPrefix + '-' + item.code;
+    var titleBit = item.title ? ' ' + esc(item.title) : '';
+    var scopeNote = item.scopeNote ? '<p class="note">' + esc(item.scopeNote) + '</p>' : '';
+    var locs = entry.locators || [];
+    var anchors = entry.anchors || {};
+    var clause = locs.length
+      ? locs.map(function (loc) { return locatorClauseFor(meta, loc, anchors[String(loc)]); }).join(', ')
+      : 'Covered, no locator on record';
+    if (entry.strength && entry.strength !== 'strong') {
+      clause += ' <span class="tt-source-strength">(' + esc(entry.strength) + ')</span>';
+    }
+    var note = entry.note
+      ? '<p class="note">' + esc(humanizeChapterRefs(entry.note, meta.interlude_letters)) + '</p>'
+      : '';
+    return (
+      '<div class="topic" id="' + esc(anchor) + '">' +
+      '<h3><a class="anchor-link" href="#' + esc(anchor) + '">#</a><span class="code-badge">' + esc(item.code) + '</span>' + titleBit + '</h3>' +
+      '<p class="paraphrase">' + esc(item.paraphrase) + '</p>' +
+      scopeNote +
+      '<p class="meta">' + clause + '</p>' +
+      note +
+      '</div>'
+    );
+  }
+
+  function reportSubsection(id, heading, items, coveredDict, anchorPrefix, meta) {
+    var covered = 0;
+    var cards = [];
+    items.forEach(function (item) {
+      var entry = coveredDict[item.code];
+      if (!entry || !isCoveringEntry(entry)) return;
+      covered++;
+      cards.push(reportCard(anchorPrefix, item, entry, meta));
+    });
+    var total = items.length;
+    return {
+      total: total,
+      covered: covered,
+      html:
+        '<details class="report-subsection" id="' + esc(slugify(id)) + '"' + (covered > 0 ? ' open' : '') + '>' +
+        '<summary>' + esc(heading) + ' <span class="pct-tag">' + pctLabel(covered, total) + '</span></summary>' +
+        (cards.length ? cards.join('') : '<p class="report-empty">Nothing recorded here.</p>') +
+        '</details>'
+    };
+  }
+
+  function reportSection(category, heading, refHref, subsections) {
+    var totalAll = 0, coveredAll = 0;
+    subsections.forEach(function (s) { totalAll += s.total; coveredAll += s.covered; });
+    var headingHtml =
+      '<h2><a class="panel-ref-link" href="' + esc(refHref) + '">' + esc(heading) + '</a> ' +
+      '<span class="pct-tag">' + pctLabel(coveredAll, totalAll) + '</span></h2>';
+    return (
+      '<div class="cov-panel" data-panel-category="' + esc(category) + '">' +
+      '<details open><summary>' + headingHtml + '</summary>' +
+      subsections.map(function (s) { return s.html; }).join('\n') +
+      '</details></div>'
+    );
+  }
+
+  function reportApcspSection(catalog, coveredDict, meta) {
+    var bigIdeas = {};
+    catalog.big_ideas.forEach(function (b) { bigIdeas[b.id] = b; });
+    var order = catalog.big_ideas.slice().sort(function (a, b) { return a.number - b.number; }).map(function (b) { return b.id; });
+    var byBigIdea = {};
+    catalog.topics.forEach(function (t) { (byBigIdea[t.big_idea] = byBigIdea[t.big_idea] || []).push(t); });
+    var subs = order.map(function (bid) {
+      var bi = bigIdeas[bid];
+      var items = (byBigIdea[bid] || []).map(function (t) {
+        return { code: t.code, title: t.title, paraphrase: t.paraphrase, scopeNote: null };
+      });
+      return reportSubsection('rep-apcsp-' + bi.id, 'Big Idea ' + bi.number + ': ' + bi.name, items, coveredDict, 'T', meta);
+    });
+    return reportSection('ap', 'AP Computer Science Principles', 'apcsp-standards-reference.html', subs);
+  }
+
+  // Shared by castandards.json and csta2017.json, same as renderCastandardsPanel
+  // above -- both are a flat strand/grade_band-tagged standards list.
+  function reportStrandSection(catalog, gradeBand, coveredDict, meta, heading, refHref, category, anchorPrefix) {
+    var byStrand = {};
+    var strandNames = {};
+    catalog.standards.forEach(function (s) {
+      if (s.grade_band !== gradeBand) return;
+      strandNames[s.strand] = s.strand_name;
+      (byStrand[s.strand] = byStrand[s.strand] || []).push(s);
+    });
+    var subs = STRAND_ORDER.filter(function (s) { return byStrand[s]; }).map(function (strand) {
+      var items = byStrand[strand].map(function (s) {
+        return { code: s.code, title: null, paraphrase: s.paraphrase, scopeNote: s.scope_note || null };
+      });
+      return reportSubsection('rep-' + refHref + '-' + gradeBand + '-' + strand, strand + ' · ' + strandNames[strand], items, coveredDict, anchorPrefix, meta);
+    });
+    return reportSection(category, heading, refHref, subs);
+  }
+
+  function reportCsta2026Section(catalog, coveredDict, meta) {
+    var order = [];
+    var byConcept = {};
+    catalog.standards.forEach(function (s) {
+      if (!byConcept[s.concept]) order.push(s.concept);
+      (byConcept[s.concept] = byConcept[s.concept] || []).push(s);
+    });
+    var subs = order.map(function (concept) {
+      var items = byConcept[concept].map(function (s) {
+        return { code: s.code, title: null, paraphrase: s.paraphrase, scopeNote: s.scope_note || null };
+      });
+      return reportSubsection('rep-csta2026-' + concept, concept, items, coveredDict, 'T', meta);
+    });
+    return reportSection('csta', 'CSTA 2026', 'csta2026-standards-reference.html', subs);
+  }
+
+  function reportCaIctSection(catalog, coveredDict, meta) {
+    function flatten(groups) {
+      var items = [];
+      groups.forEach(function (g) {
+        items.push({ code: g.code, title: g.name, paraphrase: g.paraphrase, scopeNote: null });
+        (g.items || []).forEach(function (item) {
+          items.push({ code: item.code, title: null, paraphrase: item.paraphrase, scopeNote: null });
+        });
+      });
+      return items;
+    }
+    var subs = [
+      reportSubsection('rep-ca-ict-anchor', 'Anchor Standards (cross-sector)', flatten(catalog.anchor_standards), coveredDict, 'T', meta),
+      reportSubsection('rep-ca-ict-pathwayc', 'Pathway C: ' + catalog.pathway.name, flatten(catalog.pathway.standards), coveredDict, 'T', meta)
+    ];
+    return reportSection('ca-ict', 'California CTE (ICT)', 'ca-ict-anchor-standards-reference.html', subs);
+  }
+
+  function buildSourceReportHtml(slug, carrierFiles, catalogs) {
+    var carrier = carrierFiles[slug] || {};
+    var meta = carrier.meta || {};
+    var coverage = carrier.coverage || {};
+    function covered(fw) { return coverage[fw] || {}; }
+
+    return [
+      reportApcspSection(catalogs.apcsp, covered('apcsp'), meta),
+      reportStrandSection(catalogs.castandards, '9-12', covered('castandards'), meta, 'California 9-12 Computer Science', 'ca-cs-standards-reference.html', 'ca-hs', 'S'),
+      reportStrandSection(catalogs.castandards, '9-12 Specialty', covered('castandards'), meta, 'California 9-12 Specialty', 'ca-cs-standards-reference.html', 'ca-hs', 'S'),
+      reportStrandSection(catalogs.csta2017, '9-12', covered('csta2017'), meta, 'CSTA 2017 (Grades 9-12)', 'csta2017-standards-reference.html', 'csta', 'S'),
+      reportCsta2026Section(catalogs.csta2026, covered('csta2026'), meta),
+      reportCaIctSection(catalogs['ca-ict-anchor'], covered('ca-ict-anchor'), meta),
+      reportStrandSection(catalogs.castandards, '6-8', covered('castandards'), meta, 'California 6-8 Computer Science', 'ca-cs-standards-reference.html', 'ca-ms', 'S'),
+      reportStrandSection(catalogs.csta2017, '6-8', covered('csta2017'), meta, 'CSTA 2017 (Grades 6-8)', 'csta2017-standards-reference.html', 'csta', 'S')
+    ].join('\n');
+  }
+
+  function renderReportMode(slug, carrierFiles, catalogs, manifestBySlug) {
+    document.body.classList.add('cov-report-mode');
+    var meta = manifestBySlug[slug] || {};
+
+    var titleEl = document.querySelector('.page-header h1');
+    if (titleEl) titleEl.textContent = (meta.title || slug) + ' — Standards Report';
+    var homeLink = document.querySelector('.page-header .home-link');
+    if (homeLink) {
+      homeLink.textContent = '← Back to Standards Coverage';
+      homeLink.setAttribute('href', '?only=' + encodeURIComponent(slug) + '&view=open-all');
+    }
+
+    var actionsRow = document.querySelector('.panel-actions');
+    if (actionsRow) {
+      var printBtn = document.createElement('button');
+      printBtn.type = 'button';
+      printBtn.className = 'view-toggle-btn print-report-btn';
+      printBtn.textContent = 'Print this report';
+      printBtn.addEventListener('click', function () { window.print(); });
+      actionsRow.appendChild(printBtn);
+    }
+
+    document.getElementById('panels').innerHTML = buildSourceReportHtml(slug, carrierFiles, catalogs);
+
+    // Without this, a click on a section's framework-reference link bubbles
+    // up to <summary> and also toggles that section closed -- same fix as
+    // the badge grid's own panel-ref-link wiring, needed again here since
+    // report mode builds its own separate set of these links.
+    document.querySelectorAll('.panel-ref-link').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.stopPropagation(); });
+    });
+
+    var panelActions = wirePanelActions();
+    panelActions.applyView('open-all'); // a single source's own report is usually short -- start expanded, not narrowed to "Show CA"
+    panelActions.clearActive();
+
+    // Printing a collapsed <details> prints nothing inside it, even with
+    // print CSS -- force every one open just for the print, then restore
+    // whatever the reader actually had open or closed afterward.
+    var reopened = [];
+    window.addEventListener('beforeprint', function () {
+      reopened = Array.prototype.slice.call(document.querySelectorAll('#panels details:not([open])'));
+      reopened.forEach(function (d) { d.setAttribute('open', ''); });
+    });
+    window.addEventListener('afterprint', function () {
+      reopened.forEach(function (d) { d.removeAttribute('open'); });
+      reopened = [];
+    });
+  }
+
   // ---------- Reactivity: bars + has-coverage state, recomputed on every toggle ----------
 
   function barHtml(source, manifestBySlug, strength) {
@@ -577,41 +819,45 @@
     var params = new URLSearchParams(window.location.search);
     var sourcesCsv = params.get('sources');
     var view = params.get('view');
-    // ?only=<slug> is sugar for "just this one source, every panel open" --
-    // see applyOnlyMode below for the part that also hides what it doesn't
-    // cover. Explicit ?sources=/?view= still win if given alongside it.
-    var only = params.get('only');
-    if (only && !sourcesCsv) sourcesCsv = only;
-    if (only && !view) view = 'open-all';
     if (!sourcesCsv && !view) return;
     applyRecommendation(sourcesCsv, view, handleToggle, panelActions);
   }
 
-  // ---------- Focus mode: ?only=<source-slug> hides every standard that
-  // source doesn't cover, on top of the picker state applyParamsFromLocation
-  // just set up. Point is a link that's easy to hand-embed in that source's
-  // own page (e.g. the Little Brother post linking back to
-  // /standards/?only=little_brother) and lands on a clean "everything this
-  // covers" list -- not the full ~284-badge catalog with one source merely
-  // highlighted, which is what ?sources= alone gives you. Deliberately a
-  // separate param rather than overloading ?sources=, since ?sources= can
-  // legitimately hold several slugs for comparison and this always means
-  // exactly one, always hiding the rest.
-  function applyOnlyMode(manifestBySlug, hasReport) {
-    var slug = new URLSearchParams(window.location.search).get('only');
-    if (!slug) return;
-    document.body.classList.add('cov-only-mode');
+  // ---------- Focus mode: ?only=<source-slug-or-abbrev> selects just that
+  // one source and opens every panel -- a link that's easy to hand-embed in
+  // that source's own page (e.g. the Little Brother post linking back to
+  // /standards/?only=little_brother, or ?only=LB using its abbrev). Unlike
+  // ?sources=, which can legitimately hold several slugs for comparison and
+  // never claims to mean "just one," this always means exactly one source,
+  // and always shows the *whole* catalog with that source highlighted --
+  // nothing is hidden by default (an earlier version of this hid every
+  // uncovered standard outright, which reads as "here's the shape of this
+  // source" when what most readers actually want first is "here's the whole
+  // landscape, with this source's coverage highlighted on it"). The
+  // "Hide standards not covered" checkbox in the banner is the opt-in for
+  // that narrower view.
+  function applyOnlyParam(manifest, manifestBySlug, handleToggle, panelActions, hasReport) {
+    var raw = new URLSearchParams(window.location.search).get('only');
+    if (!raw) return;
+    var slug = resolveSourceSlug(raw, manifest);
     var banner = document.getElementById('only-banner');
     if (!banner) return;
-    var meta = manifestBySlug[slug];
-    var title = meta ? meta.title : slug;
-    var reportLink = hasReport && hasReport(slug)
-      ? ' <a href="reports/' + esc(slug) + '.html">Printable report</a>'
-      : '';
+    if (!slug) {
+      banner.innerHTML = 'Unknown source “' + esc(raw) + '”. <a href="' + esc(window.location.pathname) + '">Show all standards</a>';
+      banner.hidden = false;
+      return;
+    }
+    applyRecommendation(slug, 'open-all', handleToggle, panelActions);
+    var title = (manifestBySlug[slug] || {}).title || slug;
+    var reportLink = hasReport(slug) ? ' <a href="?report=' + esc(slug) + '">View report</a>' : '';
     banner.innerHTML =
-      'Showing only standards covered by <strong>' + esc(title) + '</strong>. ' +
-      '<a href="' + esc(window.location.pathname) + '">Show all standards</a>' + reportLink;
+      'Showing standards covered by <strong>' + esc(title) + '</strong>. ' +
+      '<a href="' + esc(window.location.pathname) + '">Show all standards</a>' + reportLink +
+      ' <label class="only-hide-toggle"><input type="checkbox" id="only-hide-uncovered"> Hide standards not covered</label>';
     banner.hidden = false;
+    document.getElementById('only-hide-uncovered').addEventListener('change', function (e) {
+      document.body.classList.toggle('cov-only-hide', e.target.checked);
+    });
   }
 
   // ---------- Detail panel (click-to-open), built lazily from current checkbox state ----------
@@ -677,10 +923,9 @@
     { label: 'Secondary', slugs: ['working_in_python', 'little_brother', 'codeorg_csd_1_2', 'codeorg_csd_3a', 'codeorg_csd_3b'] }
   ];
 
-  // build_alignment.py skips writing a reports/<slug>.html for a carrier
-  // with zero coverage (nothing to print) -- shared by the sidebar's
-  // per-source "report" link and the #only-banner's, so neither ever
-  // points at a file that was never generated.
+  // A report is pointless for a carrier that covers nothing (an empty/stub
+  // file) -- shared by the sidebar's per-source "report" link and the
+  // #only-banner's, so neither offers a report with nothing in it.
   function sourceHasCoverage(carrierFiles, slug) {
     var coverage = (carrierFiles[slug] || {}).coverage || {};
     return Object.keys(coverage).some(function (fw) { return Object.keys(coverage[fw] || {}).length > 0; });
@@ -700,13 +945,13 @@
       // A real, copyable link (not a click-intercepted one like the .reco-link
       // sidebar shortcuts) -- meant to be right-clicked and pasted into that
       // source's own page, so it needs a plain href a reader can grab, not
-      // just an in-page behavior. See applyOnlyMode()/#only-banner for what
+      // just an in-page behavior. See applyOnlyParam()/#only-banner for what
       // opening it actually does.
       var onlyHtml =
         '<a class="source-only-link" href="?only=' + esc(s.slug) + '&view=open-all" ' +
         'title="Link to just ' + esc(s.title) + '’s standards">only ↗</a>';
       var reportHtml = sourceHasCoverage(carrierFiles, s.slug)
-        ? '<a class="source-report-link" href="reports/' + esc(s.slug) + '.html" ' +
+        ? '<a class="source-report-link" href="?report=' + esc(s.slug) + '" ' +
           'title="Printable report of everything ' + esc(s.title) + ' covers">report ↗</a>'
         : '';
       return (
@@ -811,6 +1056,16 @@
       });
 
       injectHueStyle(manifest);
+
+      // ?report=<slug-or-abbrev> replaces the badge grid entirely with the
+      // per-source report (see renderReportMode above) -- checked before any
+      // of the grid's own setup runs, since none of it is needed in this mode.
+      var reportSlug = resolveSourceSlug(new URLSearchParams(window.location.search).get('report'), manifest);
+      if (reportSlug && carrierFiles[reportSlug]) {
+        renderReportMode(reportSlug, carrierFiles, catalogs, manifestBySlug);
+        return;
+      }
+
       renderSourcePicker(manifest, carrierFiles, handleToggle);
 
       var coverageByFramework = {};
@@ -874,7 +1129,7 @@
       wireCrossRefToggles();
       wireRecommendations(handleToggle, panelActions);
       applyParamsFromLocation(handleToggle, panelActions);
-      applyOnlyMode(manifestBySlug, function (slug) { return sourceHasCoverage(carrierFiles, slug); });
+      applyOnlyParam(manifest, manifestBySlug, handleToggle, panelActions, function (slug) { return sourceHasCoverage(carrierFiles, slug); });
     });
   }).catch(function (err) {
     document.getElementById('panels').innerHTML =
