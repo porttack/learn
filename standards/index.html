@@ -89,6 +89,25 @@ aside#source-picker h2 { font-size: 0.75rem; text-transform: uppercase; letter-s
 .source-row .source-title { flex: 1 1 auto; }
 a.source-title.source-link { color: var(--accent); text-decoration: underline; }
 a.source-title.source-link:hover { text-decoration-thickness: 2px; }
+a.source-only-link {
+  flex: 0 0 auto; font-size: .78em; color: var(--muted); text-decoration: none;
+  border: 1px solid var(--border); border-radius: 5px; padding: .05em .4em;
+}
+a.source-only-link:hover, a.source-only-link:focus-visible { color: var(--fg); border-color: var(--muted); }
+
+/* ---------- Focus mode (?only=<source-slug>): collapse the full catalog
+   down to just what one source covers -- for a link embedded in that
+   source's own page. See applyOnlyMode() in standards-coverage.js. ---------- */
+#only-banner {
+  background: color-mix(in oklch, var(--accent) 12%, var(--bg));
+  border: 1px solid var(--accent); border-radius: 8px;
+  padding: .6em .9em; margin: 0 0 1rem; font-size: .92rem;
+}
+#only-banner a { color: var(--accent); font-weight: 600; }
+body.cov-only-mode .cov-badge:not(.has-coverage) { display: none; }
+body.cov-only-mode .cov-panel:not(:has(.cov-badge.has-coverage)),
+body.cov-only-mode .cov-group:not(:has(.cov-badge.has-coverage)),
+body.cov-only-mode .cov-subgroup:not(:has(.cov-badge.has-coverage)) { display: none; }
 main#coverage-content { flex: 1 1 auto; min-width: 0; height: 100vh; overflow-y: auto; padding: 1.5rem 2rem 6rem; }
 h1 { margin-top: 0; }
 .page-header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
@@ -267,6 +286,7 @@ noscript p {
 <h1>Standards Coverage</h1>
 <a href="/" class="home-link">&larr; Home</a>
 </div>
+<div id="only-banner" hidden></div>
 <div class="panel-actions" role="group" aria-label="Which standards panels to show">
 <button type="button" class="view-toggle-btn" id="view-show-open-all" data-view="open-all" aria-pressed="false">Open all</button>
 <button type="button" class="view-toggle-btn" id="view-show-close-all" data-view="close-all" aria-pressed="false">Close all</button>

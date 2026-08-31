@@ -577,8 +577,38 @@
     var params = new URLSearchParams(window.location.search);
     var sourcesCsv = params.get('sources');
     var view = params.get('view');
+    // ?only=<slug> is sugar for "just this one source, every panel open" --
+    // see applyOnlyMode below for the part that also hides what it doesn't
+    // cover. Explicit ?sources=/?view= still win if given alongside it.
+    var only = params.get('only');
+    if (only && !sourcesCsv) sourcesCsv = only;
+    if (only && !view) view = 'open-all';
     if (!sourcesCsv && !view) return;
     applyRecommendation(sourcesCsv, view, handleToggle, panelActions);
+  }
+
+  // ---------- Focus mode: ?only=<source-slug> hides every standard that
+  // source doesn't cover, on top of the picker state applyParamsFromLocation
+  // just set up. Point is a link that's easy to hand-embed in that source's
+  // own page (e.g. the Little Brother post linking back to
+  // /standards/?only=little_brother) and lands on a clean "everything this
+  // covers" list -- not the full ~284-badge catalog with one source merely
+  // highlighted, which is what ?sources= alone gives you. Deliberately a
+  // separate param rather than overloading ?sources=, since ?sources= can
+  // legitimately hold several slugs for comparison and this always means
+  // exactly one, always hiding the rest.
+  function applyOnlyMode(manifestBySlug) {
+    var slug = new URLSearchParams(window.location.search).get('only');
+    if (!slug) return;
+    document.body.classList.add('cov-only-mode');
+    var banner = document.getElementById('only-banner');
+    if (!banner) return;
+    var meta = manifestBySlug[slug];
+    var title = meta ? meta.title : slug;
+    banner.innerHTML =
+      'Showing only standards covered by <strong>' + esc(title) + '</strong>. ' +
+      '<a href="' + esc(window.location.pathname) + '">Show all standards</a>';
+    banner.hidden = false;
   }
 
   // ---------- Detail panel (click-to-open), built lazily from current checkbox state ----------
@@ -655,11 +685,19 @@
       var titleHtml = baseUrl
         ? '<a class="source-title source-link" href="' + esc(baseUrl) + '" target="_blank" rel="noopener">' + label + '</a>'
         : '<span class="source-title">' + label + '</span>';
+      // A real, copyable link (not a click-intercepted one like the .reco-link
+      // sidebar shortcuts) -- meant to be right-clicked and pasted into that
+      // source's own page, so it needs a plain href a reader can grab, not
+      // just an in-page behavior. See applyOnlyMode()/#only-banner for what
+      // opening it actually does.
+      var onlyHtml =
+        '<a class="source-only-link" href="?only=' + esc(s.slug) + '&view=open-all" ' +
+        'title="Link to just ' + esc(s.title) + '’s standards">only ↗</a>';
       return (
         '<label class="source-row">' +
         '<input type="checkbox" checked class="source-checkbox" data-source="' + esc(s.slug) +
         '" style="--swatch-color:var(--hue-' + esc(s.slug) + ')">' +
-        titleHtml +
+        titleHtml + onlyHtml +
         '</label>'
       );
     }
@@ -691,7 +729,7 @@
     // Without this, a click on the link bubbles up to the <label> and also
     // toggles the checkbox -- native label-forwarding behavior on a click that
     // already did something (navigate), not what a reader clicking a link wants.
-    list.querySelectorAll('a.source-link').forEach(function (a) {
+    list.querySelectorAll('a.source-link, a.source-only-link').forEach(function (a) {
       a.addEventListener('click', function (e) { e.stopPropagation(); });
     });
 
@@ -820,6 +858,7 @@
       wireCrossRefToggles();
       wireRecommendations(handleToggle, panelActions);
       applyParamsFromLocation(handleToggle, panelActions);
+      applyOnlyMode(manifestBySlug);
     });
   }).catch(function (err) {
     document.getElementById('panels').innerHTML =
