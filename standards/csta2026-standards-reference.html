@@ -584,7 +584,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-AIN-HR-08">#</a><span class="code-badge">S1-AIN-HR-08</span></h3>
 <p class="paraphrase">Designing a safe AI workflow -- like a medical AI that only recommends a diagnosis while a doctor still makes the final, auditable call -- means building in a real human checkpoint, not just a privacy disclaimer.</p>
 <p class="note">Planning practical safeguards for a given scenario is the task; formally proving an AI system is safe is not expected.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 7 (Hiding in Plain Ciphertext), Chapter 8 (The Paradox of the False Positive) (partial)</p>
+<p class="note">Dad's own words describe the checkpoint this standard wants: a computer sorts and flags, 'but I don't think that a computer should be telling the police whom to arrest, just helping them sort through the haystack' (7). Chapter 8's paradox of the false positive is the book's cautionary demonstration of what an automated system without that human, auditable checkpoint actually does to two hundred thousand innocent people.</p>
 </div>
 <div class="topic" id="T-S1-AIN-HR-09">
 <h3><a class="anchor-link" href="#T-S1-AIN-HR-09">#</a><span class="code-badge">S1-AIN-HR-09</span></h3>
@@ -790,7 +791,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-CYB-CP-12">#</a><span class="code-badge">S1-CYB-CP-12</span></h3>
 <p class="paraphrase">A good policy spells out who it covers, what's allowed, who enforces it, and what happens when someone breaks it -- and those pieces working together are what actually shapes how people behave.</p>
 <p class="note">Explaining what makes a policy's structure effective is the scope; drafting a complete organizational policy or assessing legal compliance is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 6 (Building Xnet, Learning Crypto) (related)</p>
+<p class="note">A minor, satirical example, but a real one: the ParanoidXbox gaming network's Terms of Service spells out who it covers (players), what's allowed (no cussing, no flirting, no 'masked language' about sexuality), who enforces it (paid monitors), and the consequence (getting reported) -- the standard's own four pieces, just not a serious in-depth treatment.</p>
 </div>
 <div class="tier-heading">Specialty II</div>
 <div class="topic" id="T-S2-CYB-CP-09">
@@ -818,7 +820,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S2-CYB-NO-04">#</a><span class="code-badge">S2-CYB-NO-04</span></h3>
 <p class="paraphrase">Spotting an attack in traffic data starts with knowing what normal looks like -- typical protocols, typical destinations -- so a spike or an odd new connection stands out as a possible scan or exfiltration attempt.</p>
 <p class="note">Reasoning from provided datasets or visualizations, including how AI tools like anomaly detection assist that reasoning, is the scope; building machine learning models or running live threat hunting is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 7 (Hiding in Plain Ciphertext), Chapter 8 (The Paradox of the False Positive), Chapter 9 (Suspicion Spreads, Even to Dad)</p>
+<p class="note">Marcus's dad lays out anomaly detection almost verbatim: 'you ask the computer to create a profile of an average record... and find out which records are furthest away from average' (7), which is exactly how the BART Fast Pass flags Marcus's 'nonstandard ride profile' and how FasTrak readers build travel baselines to catch deviations (8). Chapter 9's DHS budget request cites a 'spike in underground chatter' as its own justification for more analysts -- the same baseline-then-flag logic, from the surveillance side.</p>
 </div>
 <div class="topic" id="T-S2-CYB-NO-05">
 <h3><a class="anchor-link" href="#T-S2-CYB-NO-05">#</a><span class="code-badge">S2-CYB-NO-05</span></h3>
@@ -844,7 +847,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-CYB-ND-03">#</a><span class="code-badge">S1-CYB-ND-03</span></h3>
 <p class="paraphrase">Real networks rarely fit one clean label -- they blend topologies, run several protocols at once, and mix IPv4 with IPv6 -- so describing a network means capturing that mixture rather than forcing it into a single box.</p>
 <p class="note">Describing how addressing and topology actually work together in practice is expected; sorting networks into old-style address classes or designing a production addressing scheme is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 6 (Building Xnet, Learning Crypto), Chapter 17 (Barbara Stratford and the Crypto Wars)</p>
+<p class="note">Xnet is a genuinely hybrid network -- Xbox-to-Xbox wireless mesh, hopping onto neighbors' open home WiFi, and the regular Internet backbone (6), plus DNS repurposed as a video-tunneling protocol layered on top of the whole thing (17). No single topology or protocol label covers what it actually does.</p>
 </div>
 <div class="topic" id="T-S1-CYB-ND-04">
 <h3><a class="anchor-link" href="#T-S1-CYB-ND-04">#</a><span class="code-badge">S1-CYB-ND-04</span></h3>
@@ -857,7 +861,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S2-CYB-ND-01">#</a><span class="code-badge">S2-CYB-ND-01</span></h3>
 <p class="paraphrase">A router or a host firewall does nothing for security until it's actually configured -- setting up a VPN tunnel, an access control list, or a firewall rule is what turns hardware and software into a layer of defense.</p>
 <p class="note">Configuring these features in a simulated or virtual lab is the expectation; physically wiring hardware or touching a network carrying real production traffic is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Little Brother (a book by Cory Doctorow)</p>
+<p class="note">Checked and genuinely absent -- Marcus and Jolu use crypto and mesh networking constantly, but always through existing tools (ParanoidLinux, Xbox wireless, indienet's crypto library), never by hand-configuring a firewall rule, ACL, or VPN tunnel themselves. The book's security content is conceptual and social, not hands-on network administration.</p>
 </div>
 <div class="topic" id="T-S2-CYB-ND-02">
 <h3><a class="anchor-link" href="#T-S2-CYB-ND-02">#</a><span class="code-badge">S2-CYB-ND-02</span></h3>
@@ -869,7 +874,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S2-CYB-ND-03">#</a><span class="code-badge">S2-CYB-ND-03</span></h3>
 <p class="paraphrase">A star topology and a mesh topology fail differently -- one has an obvious single point of failure, the other trades that away for more complexity -- and picking mitigations like redundancy or segmentation depends on knowing which risk is inherent to the shape versus fixable by design.</p>
 <p class="note">Assessing topologies through diagrams, simulations, or case studies is expected; configuring or testing designs on an actual enterprise network is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 6 (Building Xnet, Learning Crypto), Chapter 17 (Barbara Stratford and the Crypto Wars)</p>
+<p class="note">Xnet is deliberately mesh, not star -- no single node's capture by the DHS brings the whole network down (6), the direct opposite of the DHS's own centralized surveillance dragnet. Chapter 17's explanation of DNS -- once a single HOSTS file on one machine, now millions of redundant, cross-talking servers -- makes the same star-versus-mesh failure-mode point about the Internet itself.</p>
 </div>
 <div class="subconcept-heading">Professional Practice</div>
 <div class="tier-heading">Specialty I</div>
@@ -877,13 +883,15 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-CYB-PP-13">#</a><span class="code-badge">S1-CYB-PP-13</span></h3>
 <p class="paraphrase">A security decision -- like letting an automated system respond on its own versus keeping a human in the loop -- trades off speed and consistency against judgment and accountability, and that trade-off has real consequences for the people affected.</p>
 <p class="note">Analyzing and ethically weighing a described scenario is the point; building the automated system or deploying it for real is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 7 (Hiding in Plain Ciphertext), Chapter 8 (The Paradox of the False Positive)</p>
+<p class="note">Marcus's dad draws this exact line at the breakfast table: 'I don't think that a computer should be telling the police whom to arrest, just helping them sort through the haystack to find a needle' (7). Chapter 8's paradox of the false positive is the book's demonstration of what happens when that human-judgment checkpoint is skipped and a 99-percent-accurate automated system is trusted to do the whole job.</p>
 </div>
 <div class="topic" id="T-S1-CYB-PP-14">
 <h3><a class="anchor-link" href="#T-S1-CYB-PP-14">#</a><span class="code-badge">S1-CYB-PP-14</span></h3>
 <p class="paraphrase">A phishing email or a pretexting phone call works by pulling on urgency, authority, or trust rather than by breaking any code, and naming which lever it's pulling is how you see through it.</p>
 <p class="note">Recognizing and explaining the manipulation in existing examples is the goal; writing new phishing content or running a social engineering attempt on real people is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 4 (Detained and Interrogated by DHS), Chapter 10 (A Beach Key-Signing Party), Chapter 17 (Barbara Stratford and the Crypto Wars)</p>
+<p class="note">Severe Haircut Woman's interrogation runs on exactly this: authority ('this is about your security'), manufactured urgency (a thirty-second countdown), and false trust ('we're on your side') to get Marcus to say his password aloud (4). Chapter 10 uses the term outright, when Marcus warns the key-signing party that DHS plants 'use social engineering hacks to try to get us to reveal ourselves.' Chapter 17's 'Manchurian Bloggers,' DHS agents running dozens of fake Xnet blogs each to steer the movement toward radicalism, is the same tactic run as an organized, large-scale operation rather than a one-on-one con.</p>
 </div>
 <div class="topic" id="T-S1-CYB-PP-15">
 <h3><a class="anchor-link" href="#T-S1-CYB-PP-15">#</a><span class="code-badge">S1-CYB-PP-15</span></h3>
@@ -902,7 +910,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S2-CYB-PP-11">#</a><span class="code-badge">S2-CYB-PP-11</span></h3>
 <p class="paraphrase">Finding a vulnerability is only half the job -- responsible disclosure is about reporting it through the right channel and timeline so it gets fixed instead of exploited, and bug bounty programs are one structure built for that.</p>
 <p class="note">Examining how coordinated disclosure and bug bounty programs are supposed to work, and how they can fail, is expected; actually finding a vulnerability on live systems or filing a real report is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 17 (Barbara Stratford and the Crypto Wars), Chapter epilogue (Epilogue), Chapter afterword (Afterword by Bruce Schneier)</p>
+<p class="note">Marcus doesn't just leak what he has -- he hands it to a specific trusted journalist, agrees she controls the timeline and gets to verify it before it goes to press, and accepts he's given up control of the story once it's in motion (17), then follows through with a public video once it's genuinely his to release (epilogue). Bruce Schneier's afterword makes the underlying cybersecurity principle explicit: 'someone else has to analyze the security... and when that happens, be sure to publish it' -- responsible disclosure, not sitting on a vulnerability or exploiting it quietly.</p>
 </div>
 <div class="topic" id="T-S2-CYB-PP-12">
 <h3><a class="anchor-link" href="#T-S2-CYB-PP-12">#</a><span class="code-badge">S2-CYB-PP-12</span></h3>
@@ -916,7 +925,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-CYB-TS-07">#</a><span class="code-badge">S1-CYB-TS-07</span></h3>
 <p class="paraphrase">Spoofing, interception, and denial-of-service attacks each ride on a specific weakness in how networks normally behave, and untangling threat from vulnerability from exploit from impact is what makes the concept usable rather than just a vocabulary list.</p>
 <p class="note">Classifying and explaining example attacks conceptually is the expectation; actually carrying one out or using real offensive tools is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 8 (The Paradox of the False Positive), Chapter 10 (A Beach Key-Signing Party)</p>
+<p class="note">Chapter 8's arphid cloner is a literal spoofing attack -- overwriting Fast Pass and FasTrak tags with other people's IDs to defeat an identification system. Chapter 10 names and explains the man-in-the-middle attack directly (a spy intercepting messages and substituting his own), including why widely-published public keys and the web of trust defeat it.</p>
 </div>
 <div class="topic" id="T-S1-CYB-TS-08">
 <h3><a class="anchor-link" href="#T-S1-CYB-TS-08">#</a><span class="code-badge">S1-CYB-TS-08</span></h3>
@@ -928,7 +938,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-CYB-TS-09">#</a><span class="code-badge">S1-CYB-TS-09</span></h3>
 <p class="paraphrase">Encryption isn't free -- it costs processing time and key-management effort -- so deciding whether a situation needs it, and whether symmetric or asymmetric fits better, is a trade-off call, not an automatic yes.</p>
 <p class="note">Reasoning about when and why to encrypt using trusted, existing algorithms is the target; implementing a cipher or analyzing the math behind how hard it is to break is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 6 (Building Xnet, Learning Crypto), Chapter 7 (Hiding in Plain Ciphertext)</p>
+<p class="note">Chapter 6 lays out the real cost side of encryption -- prime-factorization math, key management, the history of DES and Enigma. Chapter 7 turns that into an explicit tradeoff: encrypt everything and you're safe from casual snooping, but a 95-percent-ciphertext connection is itself a red flag to a traffic analyst -- Jolu's fix (indienet's bulk downloads pushing the cleartext/ciphertext ratio toward 50-50) is choosing a countermeasure with a real cost, not a free win.</p>
 </div>
 <div class="topic" id="T-S1-CYB-TS-10">
 <h3><a class="anchor-link" href="#T-S1-CYB-TS-10">#</a><span class="code-badge">S1-CYB-TS-10</span></h3>
@@ -1117,7 +1128,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S2-DSC-AM-07">#</a><span class="code-badge">S2-DSC-AM-07</span></h3>
 <p class="paraphrase">Making sense of data that isn't a tidy spreadsheet -- counting word frequencies across a pile of text documents, or reducing an image dataset's huge pixel count down to something visualizable.</p>
 <p class="note">Applying basic techniques to unstructured or high-dimensional data is the scope; building models for tasks like natural language processing or image recognition is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap12.html?readonly">Chapter 12 (Text Analysis and Generation)</a> (partial)</p>
+<p class="note">Chapter 12 counts word frequencies across the full text of a book (Robert Louis Stevenson) using a dictionary, plus bigram and Markov-chain frequency counts -- a direct instance of this standard's own example. Narrower than the standard's 'pile of documents' framing since it's one text, and the book never reduces image/pixel data as the standard's other example describes.</p>
 </div>
 <div class="subconcept-heading">Creation &amp; Curation</div>
 <div class="tier-heading">Specialty I</div>
@@ -1125,7 +1137,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-DSC-CC-01">#</a><span class="code-badge">S1-DSC-CC-01</span></h3>
 <p class="paraphrase">Turning a flat table of numbers into a first understanding -- summary stats, a histogram, a scatter plot -- and letting what you find point to what to check next.</p>
 <p class="note">The data here is flat and numeric; nested or hierarchical formats and anything past basic summary statistics are out of scope.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap, same evidence as this file's castandards 9-12.DA.10 entry: no charting library or visualization of any kind appears in chapters 1-13. Chapter 12's word-frequency and Markov work computes summary counts but never a histogram, scatter plot, or any other chart.</p>
 </div>
 <div class="topic" id="T-S1-DSC-CC-02">
 <h3><a class="anchor-link" href="#T-S1-DSC-CC-02">#</a><span class="code-badge">S1-DSC-CC-02</span></h3>
@@ -1659,19 +1672,22 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-SWD-DD-01">#</a><span class="code-badge">S1-SWD-DD-01</span></h3>
 <p class="paraphrase">Picking the right built-in linear structure -- a stack for undo history, a queue for a print line, a dynamic array for a growing list of readings -- is what makes storing and retrieving data efficient for a given problem.</p>
 <p class="note">Using library-provided linear structures and their methods is the expectation; implementing a data structure's internals or moving on to dictionaries, trees, graphs, or heaps is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap: Chapter 9 (Lists) never frames Python's list as one of several linear structures to choose between -- no stack, queue, or explicit dynamic-array vocabulary anywhere in chapters 1-13, and no discussion of which structure fits which job.</p>
 </div>
 <div class="topic" id="T-S1-SWD-DD-02">
 <h3><a class="anchor-link" href="#T-S1-SWD-DD-02">#</a><span class="code-badge">S1-SWD-DD-02</span></h3>
 <p class="paraphrase">As a program grows, structuring it around abstraction -- separating what a piece does from how it's built underneath -- is what keeps adding features from turning into a rewrite.</p>
 <p class="note">Making deliberate structural and abstraction choices for a single-machine application is the scope; distributed infrastructure and formal complexity analysis or performance tuning are not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a></p>
+<p class="note">Chapter 4's interface/implementation split (two circle implementations sharing one interface, arc/polyline built underneath) is a direct match for separating what a function does from how it's built underneath. Chapter 6's leap of faith -- trusting a return value without re-checking the body -- extends the same idea. Same evidence as this file's ca-ict-anchor 5.10 entry.</p>
 </div>
 <div class="topic" id="T-S1-SWD-DD-03">
 <h3><a class="anchor-link" href="#T-S1-SWD-DD-03">#</a><span class="code-badge">S1-SWD-DD-03</span></h3>
 <p class="paraphrase">An IDE's everyday tools -- autocomplete and error highlighting while typing, breakpoints and variable inspection while debugging, built-in commits while collaborating -- are what make day-to-day coding faster and more reliable.</p>
 <p class="note">Using these built-in IDE features fluently is the expectation; understanding how they work internally or building custom build configurations is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap: this is a Jupyter-notebook course, not an IDE-based one. No autocomplete, breakpoints, variable inspectors, or built-in commit tooling anywhere -- debugging is taught through print statements, doctest, and hand-tracing instead (see every chapter's Debugging section).</p>
 </div>
 <div class="tier-heading">Specialty II</div>
 <div class="topic" id="T-S2-SWD-DD-01">
@@ -1696,7 +1712,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S2-SWD-DD-04">#</a><span class="code-badge">S2-SWD-DD-04</span></h3>
 <p class="paraphrase">Speeding up a slow algorithm -- swapping linear search for binary search on sorted data, say -- means recognizing which data structure or divide-and-conquer strategy would fit better, then measuring the improvement.</p>
 <p class="note">Improving an existing algorithm using known data structures and paradigms is the scope; inventing new algorithmic paradigms is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap: Chapter 7 builds only a linear search (has_e/uses_any); the book never implements or mentions binary search, and never measures or compares algorithm speed. Confirmed by scanning chapters 1-13 for 'binary search', 'bisect', and any complexity notation -- zero hits.</p>
 </div>
 <div class="subconcept-heading">Professional Practice</div>
 <div class="tier-heading">Specialty I</div>
@@ -1704,7 +1721,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-SWD-PP-08">#</a><span class="code-badge">S1-SWD-PP-08</span></h3>
 <p class="paraphrase">Building software as a team means using version control for real -- branches, pull requests, resolved conflicts -- while actively pulling in teammates' different perspectives on design, usability, and ethics, plus giving proper credit for reused code and media.</p>
 <p class="note">Working within a classroom-scale team repository is the expectation; administering version control infrastructure or connecting it to automated deployment pipelines is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap: the book is written for solo, individual work throughout chapters 1-13. No version control, branches, pull requests, or team-based development anywhere -- 'github.com/porttack/working-in-python' appears only as the book's own hosting link, never as a taught skill.</p>
 </div>
 <div class="tier-heading">Specialty II</div>
 <div class="topic" id="T-S2-SWD-PP-09">
@@ -1719,13 +1737,15 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-SWD-TR-06">#</a><span class="code-badge">S1-SWD-TR-06</span></h3>
 <p class="paraphrase">An AI-assisted IDE feature can summarize what an unfamiliar function does or flag a likely bug, turning an unreadable stretch of legacy code into something a student can act on.</p>
 <p class="note">Using existing AI-assisted IDE features for comprehension and debugging is the point; configuring or fine-tuning the underlying model, or wiring in outside AI tools, is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Close but not a real match: chapters 9-13 each have an 'Ask a virtual assistant' section suggesting prompts a student could use, including Chapter 12's 'copy add_bigram into a virtual assistant and ask can you rewrite this using setdefault.' But this is a standalone chatbot workflow, not the IDE-integrated feature summarizing or flagging bugs in legacy code that this standard actually names.</p>
 </div>
 <div class="topic" id="T-S1-SWD-TR-07">
 <h3><a class="anchor-link" href="#T-S1-SWD-TR-07">#</a><span class="code-badge">S1-SWD-TR-07</span></h3>
 <p class="paraphrase">A solid test plan doesn't just check that a program works on normal input -- it deliberately tries edge cases, bad input, and unusual user behavior across the whole project.</p>
 <p class="note">Systematically writing and applying test cases, including AI-suggested ones, to a multi-function project is the scope; building automated testing frameworks, running large-scale QA, or security or penetration testing is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap06b.html?readonly">Interlude A (Docstrings and Doctests)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></p>
+<p class="note">Interlude A's Choosing test cases section names exactly this standard's three kinds -- typical, boundary, edge -- with a worked table for is_even and the observation that boundary/edge cases are the ones students skip and where the bugs live. Chapter 7's doctest work is the same practice applied to has_e/uses_any.</p>
 </div>
 <div class="tier-heading">Specialty II</div>
 <div class="topic" id="T-S2-SWD-TR-07">

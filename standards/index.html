@@ -199,6 +199,12 @@ noscript p {
   padding: 0 .4em; border-left: 3px solid; border-radius: 2px;
   background: var(--code-bg); color: var(--fg); text-align: left;
 }
+/* A "strong" match (the default -- most entries predate the strength field
+   and are unmarked, same as "strong") gets a solid full-opacity bar. Weaker
+   matches fade and switch to a non-solid border so a skim of the grid
+   already shows "this is thinner" without opening the tooltip. */
+.cov-bar[data-strength="partial"] { opacity: .72; border-left-style: dashed; }
+.cov-bar[data-strength="related"] { opacity: .5; border-left-style: dotted; border-left-width: 6px; padding-left: .25em; }
 .cov-tooltip {
   display: none; position: absolute; top: 100%; left: 0; z-index: 10; margin-top: .35rem;
   background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
@@ -210,6 +216,7 @@ noscript p {
 .cov-tooltip .tt-paraphrase { margin: .4em 0; color: var(--fg); }
 .cov-tooltip .tt-source { margin: .3em 0 0; color: var(--muted); }
 .cov-tooltip .tt-source-note { font-style: italic; margin: 0 0 .3em; }
+.tt-source-strength { color: var(--muted); font-weight: 400; }
 .cov-anchor-block { opacity: .6; font-size: .92em; }
 /* Cross-framework compare: a chevron per matched standard in the other
    framework, expanding in place (not a nested floating tooltip) to show that

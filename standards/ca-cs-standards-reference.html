@@ -409,47 +409,56 @@ are reproduced as-is.</div>
 <div class="topic" id="S-9-12S.AP.12">
 <h3><a class="anchor-link" href="#S-9-12S.AP.12">#</a><span class="code-badge">9-12S.AP.12</span></h3>
 <p class="paraphrase">Writing a real search or sort into a program to organize or retrieve data matters more here than choosing the fastest algorithm.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap09.html?readonly">Chapter 9 (Lists)</a></p>
+<p class="note">Same evidence as this file's core 9-12.AP.12 entry: Chapter 7 builds a linear-search algorithm from scratch and Chapter 9 uses the built-in sorted -- writing a real search and using an existing sort, exactly this standard's emphasis.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.13">
 <h3><a class="anchor-link" href="#S-9-12S.AP.13">#</a><span class="code-badge">9-12S.AP.13</span></h3>
 <p class="paraphrase">The same task written two different ways can run at very different speeds, and naming that difference with a time class -- linear, quadratic, log n -- makes the comparison concrete.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap: the book never names a formal complexity class. Chapter 10's fibonacci section shows the naive recursive version getting slower as n grows and fixes it with memoization (fibonacci_memo), and Chapter 10 also prefers a dictionary over a list specifically because lookup is faster -- both are informal, hands-on brushes with efficiency, but 'linear', 'quadratic', and 'log n' never appear anywhere in chapters 1-13.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.14">
 <h3><a class="anchor-link" href="#S-9-12S.AP.14">#</a><span class="code-badge">9-12S.AP.14</span></h3>
 <p class="paraphrase">Different data structures trade off differently for the same basic operations -- inserting, deleting, modifying -- and picking one over another is a real design decision, not a formality.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap10.html?readonly">Chapter 10 (Dictionaries)</a> (partial)</p>
+<p class="note">Chapter 10 switches from a list to a dictionary specifically because dictionary lookup is faster than scanning a list with in -- a genuine data-structure trade-off. Narrower than the standard's own examples (insert/delete/modify): the book's comparison is about lookup speed only, not those three operations.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.15">
 <h3><a class="anchor-link" href="#S-9-12S.AP.15">#</a><span class="code-badge">9-12S.AP.15</span></h3>
 <p class="paraphrase">Tracing how a recursive algorithm actually resolves means following the chain of calls down to a base case and back up again, not just trusting that it works.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap10.html?readonly">Chapter 10 (Dictionaries)</a></p>
+<p class="note">Chapter 5's stack diagrams for recursive functions and Chapter 6's factorial/fibonacci trace a call chain down to its base case and back -- exactly this standard's own framing. Chapter 10's fibonacci call graph (visualizing repeated calls for fibonacci(4)) is the same tracing done as a diagram instead of a stack of frames.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.16">
 <h3><a class="anchor-link" href="#S-9-12S.AP.16">#</a><span class="code-badge">9-12S.AP.16</span></h3>
 <p class="paraphrase">A big, real-world problem usually decomposes into smaller pieces that already have a solution -- reusable code or a known procedure -- if you can spot the pattern.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a> (partial)</p>
+<p class="note">Chapter 7's uses_all, built by reusing uses_any/uses_only instead of writing a new loop, and Chapter 4's arc built by generalizing the existing polygon-derived circle, are both instances of spotting that a subproblem already has a solution close at hand -- this standard's own framing, distinct from AP.17's 'write your own procedures' and AP.18's 'reach for a library.'</p>
 </div>
 <div class="topic" id="S-9-12S.AP.17">
 <h3><a class="anchor-link" href="#S-9-12S.AP.17">#</a><span class="code-badge">9-12S.AP.17</span></h3>
 <p class="paraphrase">A problem substantial enough to need decomposing is also substantial enough to justify building it from your own procedures, modules, or objects instead of one long script.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a></p>
+<p class="note">Chapter 3's print_verse built from first_two_lines/last_three_lines/repeat, and Chapter 4's square/polygon/circle/arc/polyline chain, are the book's clearest instances of decomposing a substantial problem into its own procedures instead of one long script.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.18">
 <h3><a class="anchor-link" href="#S-9-12S.AP.18">#</a><span class="code-badge">9-12S.AP.18</span></h3>
 <p class="paraphrase">Pulling in a well-tested library or API instead of reimplementing its functionality is what code reuse actually looks like in practice.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap02.html?readonly">Chapter 2 (Variables and Statements)</a>, <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="note">Same evidence as this file's core 9-12.AP.17 and csta2026 HS-PRO-PD-13 entries: Chapter 2's import math, Chapter 4's jupyturtle, and Chapter 8's re are all cases of reaching for an existing, well-tested library instead of reimplementing its functionality.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.19">
 <h3><a class="anchor-link" href="#S-9-12S.AP.19">#</a><span class="code-badge">9-12S.AP.19</span></h3>
 <p class="paraphrase">Planning software for people beyond yourself means following an actual development-lifecycle process, not just writing until it works.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap04.html?readonly">Chapter 4 (Functions and Interfaces)</a> (partial)</p>
+<p class="note">Chapter 4's development plan (problem statement, examples, template, draft, test) is a real, structured process, not writing until it works. Same caveat as this file's core 9-12.AP.18 gap: it's a solo, technical process that never involves feedback from users beyond the student, so the 'planning software for people beyond yourself' half of this standard is thinner than the process half.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.20">
 <h3><a class="anchor-link" href="#S-9-12S.AP.20">#</a><span class="code-badge">9-12S.AP.20</span></h3>
 <p class="paraphrase">The same solution often needs to exist on more than one platform -- desktop, web, mobile -- and building it for more than one is the point here.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap: every example in this book runs in one place, the Jupyter/JupyterLite environment. Chapters 1-13 never ask a student to target more than one platform, and there's no desktop/web/mobile comparison anywhere.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.21">
 <h3><a class="anchor-link" href="#S-9-12S.AP.21">#</a><span class="code-badge">9-12S.AP.21</span></h3>
@@ -459,12 +468,14 @@ are reproduced as-is.</div>
 <div class="topic" id="S-9-12S.AP.22">
 <h3><a class="anchor-link" href="#S-9-12S.AP.22">#</a><span class="code-badge">9-12S.AP.22</span></h3>
 <p class="paraphrase">A meaningful set of test cases covers ordinary behavior and the edge cases at the boundary, not just the input you expect to work.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap06b.html?readonly">Interlude A (Docstrings and Doctests)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a></p>
+<p class="note">Same evidence as this file's new csta2026 S1-SWD-TR-07 entry: Interlude A's Choosing test cases table (typical, boundary, edge) is close to a literal match for 'ordinary behavior and the edge cases at the boundary.'</p>
 </div>
 <div class="topic" id="S-9-12S.AP.23">
 <h3><a class="anchor-link" href="#S-9-12S.AP.23">#</a><span class="code-badge">9-12S.AP.23</span></h3>
 <p class="paraphrase">Adding functionality to existing code means also tracking down what that change might break elsewhere, intended or not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap: Chapter 4's refactoring (circle built on polygon, then generalized into arc and polyline) and Interlude A/Chapter 7's doctest work are the book's two closest threads, but they're never connected -- the book doesn't frame 'does this change break something that used to work' as its own concern.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.24">
 <h3><a class="anchor-link" href="#S-9-12S.AP.24">#</a><span class="code-badge">9-12S.AP.24</span></h3>
@@ -474,7 +485,8 @@ are reproduced as-is.</div>
 <div class="topic" id="S-9-12S.AP.25">
 <h3><a class="anchor-link" href="#S-9-12S.AP.25">#</a><span class="code-badge">9-12S.AP.25</span></h3>
 <p class="paraphrase">Building software as a group means actually using the tools that make group development work -- version control, a real IDE, documentation practices -- not just splitting up files.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap, same evidence as this file's new csta2026 S1-SWD-PP-08 entry: no version control, shared IDE workflow, or team documentation practice anywhere -- the book is written for solo work throughout chapters 1-13.</p>
 </div>
 <div class="topic" id="S-9-12S.AP.26">
 <h3><a class="anchor-link" href="#S-9-12S.AP.26">#</a><span class="code-badge">9-12S.AP.26</span></h3>
@@ -530,12 +542,14 @@ are reproduced as-is.</div>
 <div class="topic" id="S-9-12S.CS.1">
 <h3><a class="anchor-link" href="#S-9-12S.CS.1">#</a><span class="code-badge">9-12S.CS.1</span></h3>
 <p class="paraphrase">A processor's logic gates -- AND, OR, NOT -- combine into higher-level circuits like adders, and that's the literal hardware carrying out a program's instructions.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Not covered. Same status as this file's core 9-12.CS.1 entry -- a hardware/systems topic with no carrier anywhere in the book.</p>
 </div>
 <div class="topic" id="S-9-12S.CS.2">
 <h3><a class="anchor-link" href="#S-9-12S.CS.2">#</a><span class="code-badge">9-12S.CS.2</span></h3>
 <p class="paraphrase">An operating system's separate jobs -- managing memory, storage, running processes, controlling access -- can each be named and told apart.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Not covered. Chapter 13's os module (listdir, path operations, walking directories) is the book's only brush with the operating system, and it's filesystem-only -- memory management, process management, and access control, the standard's other named jobs, never come up.</p>
 </div>
 </section>
 <section class="big-idea" id="DA">
@@ -604,12 +618,15 @@ are reproduced as-is.</div>
 <div class="topic" id="S-9-12S.DA.8">
 <h3><a class="anchor-link" href="#S-9-12S.DA.8">#</a><span class="code-badge">9-12S.DA.8</span></h3>
 <p class="paraphrase">Software tools for analyzing, summarizing, and visualizing a genuinely large dataset are what make patterns in complex, real-world systems visible at all.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">Real gap, same evidence as this file's core 9-12.DA.10 entry: Chapter 12 genuinely analyzes and summarizes a large real text dataset (word and bigram frequencies across a whole book), but the standard asks for analyzing, summarizing, AND visualizing together, and there's no charting anywhere in chapters 1-13.</p>
 </div>
 <div class="topic" id="S-9-12S.DA.9">
 <h3><a class="anchor-link" href="#S-9-12S.DA.9">#</a><span class="code-badge">9-12S.DA.9</span></h3>
 <p class="paraphrase">A model or simulation is only useful for refining a hypothesis once you've judged how accurately it actually represents the system it's standing in for.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 7 (Hiding in Plain Ciphertext), Chapter 8 (The Paradox of the False Positive); Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">The whole paradox-of-the-false-positive sequence is judging a model's accuracy against the real system it claims to represent -- a 99-percent-accurate test still produces 200,000 false flags to catch 10 real terrorists in a city of 20 million, because the test's accuracy doesn't come close to matching the rarity of what it's hunting for.</p>
+<p class="note">Not covered. Same status as this file's core 9-12.DA.11 entry: Chapter 12's Markov text model is a model of sorts, but the chapter never judges how accurately it represents anything or uses that judgment to refine a hypothesis.</p>
 </div>
 </section>
 <section class="big-idea" id="IC">
@@ -708,22 +725,26 @@ are reproduced as-is.</div>
 <div class="topic" id="S-9-12S.IC.27">
 <h3><a class="anchor-link" href="#S-9-12S.IC.27">#</a><span class="code-badge">9-12S.IC.27</span></h3>
 <p class="paraphrase">Judging a computational artifact means naming both who it actually helps and who it actually harms, and proposing something concrete to fix the harm.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 8 (The Paradox of the False Positive), Chapter 9 (Suspicion Spreads, Even to Dad), Chapter epilogue (Epilogue)</p>
+<p class="note">The false-positive math names who a badly-tuned computational artifact harms -- overwhelmingly innocent people, hundreds of thousands of them for every real terrorist caught (8) -- and Chapter 9 makes clear that harm isn't evenly spread (Jolu's point about who actually gets pulled over and searched). The Epilogue's fix isn't just 'stop the surveillance' -- it's concrete: state-level civilian oversight empowered to inspect and shut down DHS operations.</p>
 </div>
 <div class="topic" id="S-9-12S.IC.28">
 <h3><a class="anchor-link" href="#S-9-12S.IC.28">#</a><span class="code-badge">9-12S.IC.28</span></h3>
 <p class="paraphrase">A technology that already reshaped some part of culture is still moving, and describing where it goes next -- and what that costs or brings -- is the forecast being asked for.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter epilogue (Epilogue) (partial)</p>
+<p class="note">The Epilogue doesn't end with the DHS simply gone -- it ends with the Coalition of Voters for a Free America planning a new ARG timed to the election, arguing that the technology and tactics that beat the DHS keep moving into ordinary civic organizing. That forward-looking 'what's next, and what it costs or brings' is this standard's own territory.</p>
 </div>
 <div class="topic" id="S-9-12S.IC.29">
 <h3><a class="anchor-link" href="#S-9-12S.IC.29">#</a><span class="code-badge">9-12S.IC.29</span></h3>
 <p class="paraphrase">Access to computing resources isn't handed out evenly, and naming who actually benefits versus who's left out is the equity question here.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Not covered by Little Brother (a book by Cory Doctorow)</p>
+<p class="note">Checked and not a match -- easy to confuse with this carrier's own castandards 9-12.IC.29 entry (arphid and camera tracking), which is the core-tier code about data collected without consent. This specialty-tier code is a different concept, unequal access to computing resources, which the book doesn't take up as its own theme.</p>
 </div>
 <div class="topic" id="S-9-12S.IC.30">
 <h3><a class="anchor-link" href="#S-9-12S.IC.30">#</a><span class="code-badge">9-12S.IC.30</span></h3>
 <p class="paraphrase">Real laws and regulations -- net neutrality is the classic case -- shape what software even gets built, and arguing both sides of that is the point.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 6 (Building Xnet, Learning Crypto), Chapter 17 (Barbara Stratford and the Crypto Wars)</p>
+<p class="note">Two real-law examples, not a hypothetical: PATRIOT Act II's transaction-monitoring provisions are specific enough that the Turk stops taking debit cards over it (6), and Chapter 17's Crypto Wars history is a real law -- crypto classified as a munition, illegal to export -- that shaped what software Americans were allowed to write and publish, until a court fight overturned it. Both sides of the argument (security necessity versus overreach) get real airtime, as the standard asks for.</p>
 </div>
 </section>
 <section class="big-idea" id="NI">
@@ -783,22 +804,26 @@ are reproduced as-is.</div>
 <div class="topic" id="S-9-12S.NI.3">
 <h3><a class="anchor-link" href="#S-9-12S.NI.3">#</a><span class="code-badge">9-12S.NI.3</span></h3>
 <p class="paraphrase">A network's addressing scheme and its mix of routers, switches, and servers together determine how well it scales and how reliably traffic actually arrives.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 17 (Barbara Stratford and the Crypto Wars)</p>
+<p class="note">Chapter 17's DNS explainer walks through exactly this: how a name like pirateparty.org.se resolves to a number like 204.11.50.136, and how the shift from one central HOSTS file to millions of talking DNS servers is what let addressing keep scaling and stay reliable as the network grew.</p>
 </div>
 <div class="topic" id="S-9-12S.NI.4">
 <h3><a class="anchor-link" href="#S-9-12S.NI.4">#</a><span class="code-badge">9-12S.NI.4</span></h3>
 <p class="paraphrase">The internet scales and keeps growing because of design choices baked into it from the start -- redundancy, open standards, and pushing key functions out to the endpoints rather than the middle of the network.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 17 (Barbara Stratford and the Crypto Wars)</p>
+<p class="note">The same chapter makes the design-philosophy point directly: DNS used to be a single file that lived under one person's desk at USC, and moving to a distributed, redundant, open-standard system of servers that all talk to each other is why a single unplugged machine no longer takes down the whole internet's ability to find itself.</p>
 </div>
 <div class="topic" id="S-9-12S.NI.5">
 <h3><a class="anchor-link" href="#S-9-12S.NI.5">#</a><span class="code-badge">9-12S.NI.5</span></h3>
 <p class="paraphrase">Defending against a security threat means weighing real tradeoffs, like a password policy that's easier to use against the cost of it being easier to break.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 6 (Building Xnet, Learning Crypto), Chapter 7 (Hiding in Plain Ciphertext) (partial)</p>
+<p class="note">Not the standard's own password-policy example, but the same shape of tradeoff: Jolu spells it out plainly in Chapter 7 -- too much crypto in your traffic makes you stand out as a target, too little makes you easy to wiretap -- and Chapter 6 grounds why that crypto has a real cost (compute, key management) in the first place.</p>
 </div>
 <div class="topic" id="S-9-12S.NI.6">
 <h3><a class="anchor-link" href="#S-9-12S.NI.6">#</a><span class="code-badge">9-12S.NI.6</span></h3>
 <p class="paraphrase">Cryptography, plus the certificate authorities that vouch for who owns an encryption key, is what actually secures a connection across the open internet.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by Little Brother (a book by Cory Doctorow): Chapter 10 (A Beach Key-Signing Party), Chapter 11 (Growing the Web of Trust)</p>
+<p class="note">The web of trust that Chapter 10 explains and Chapter 11's key-signing party puts into practice is a real, working alternative to certificate authorities for exactly the problem this standard names -- vouching for who actually owns a given key -- built person-to-person instead of through a central authority.</p>
 </div>
 </section>
 <footer>Generated by build_alignment.py. Not an official framework document.</footer>

@@ -141,10 +141,14 @@
       return !(entry.checked && !(entry.locators || []).length);
     }
 
+    // {source, strength} rather than a bare source list -- strength (set only
+    // on some entries; see carriers/README.md) rides along so a badge's bars
+    // can be dimmed for a "partial"/"related" match instead of looking
+    // identical to a "strong" one.
     function allCovering(code) {
       return get(code)
         .filter(function (e) { return isCovering(e.entry); })
-        .map(function (e) { return e.source; });
+        .map(function (e) { return { source: e.source, strength: e.entry.strength || null }; });
     }
 
     // When no checked/visible source actually covers the code, fall back to
@@ -170,6 +174,9 @@
         var text;
         if (locs.length) {
           text = locs.map(function (loc) { return locatorClause(source, loc, anchors[String(loc)]); }).join(', ');
+          if (entry.strength && entry.strength !== 'strong') {
+            text += ' <span class="tt-source-strength">(' + esc(entry.strength) + ')</span>';
+          }
         } else if (entry.checked) {
           text = 'Not covered';
         } else {
@@ -407,11 +414,14 @@
 
   // ---------- Reactivity: bars + has-coverage state, recomputed on every toggle ----------
 
-  function barHtml(source, manifestBySlug) {
+  function barHtml(source, manifestBySlug, strength) {
     var m = manifestBySlug[source];
     if (!m) return '';
+    var strengthAttrs = strength && strength !== 'strong' ? ' data-strength="' + esc(strength) + '"' : '';
+    var title = strength && strength !== 'strong' ? m.title + ' (' + strength + ' match)' : m.title;
     return (
-      '<span class="cov-bar" style="border-left-color:var(--hue-' + esc(source) + ')" title="' + esc(m.title) + '">' +
+      '<span class="cov-bar" style="border-left-color:var(--hue-' + esc(source) + ')"' + strengthAttrs +
+      ' title="' + esc(title) + '">' +
       esc(m.abbrev) +
       '</span>'
     );
@@ -419,9 +429,9 @@
 
   function refreshBadges(checkedSources, manifestBySlug) {
     badgeRegistry.forEach(function (b) {
-      var visible = b.covering.filter(function (s) { return checkedSources.has(s); });
+      var visible = b.covering.filter(function (s) { return checkedSources.has(s.source); });
       b.el.classList.toggle('has-coverage', visible.length > 0);
-      b.el.querySelector('.cov-bars').innerHTML = visible.map(function (s) { return barHtml(s, manifestBySlug); }).join('');
+      b.el.querySelector('.cov-bars').innerHTML = visible.map(function (s) { return barHtml(s.source, manifestBySlug, s.strength); }).join('');
     });
   }
 

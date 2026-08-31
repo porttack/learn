@@ -261,6 +261,9 @@ class Coverage:
             title = esc(self.source_meta.get(source, {}).get("title", source))
             if locs:
                 clauses = ", ".join(self._locator_clause(source, loc, anchors.get(str(loc))) for loc in locs)
+                strength = entry.get("strength")
+                if strength and strength != "strong":
+                    clauses += f" ({esc(strength)})"
                 # In scoped (single-source) mode the source name is always the one
                 # source this run was given -- redundant on every line, so drop it.
                 # In the cross-source view, multiple sources are genuinely in play.

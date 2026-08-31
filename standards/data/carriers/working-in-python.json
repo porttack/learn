@@ -26,7 +26,15 @@
    "6b": "A",
    "7b": "B"
   },
-  "abbrev": "WIP"
+  "abbrev": "WIP",
+  "alignment_log": [
+   {
+    "date": "2026-08-31",
+    "by": "Claude Sonnet 5",
+    "scope": "CSTA 2026 Specialty I/II (SWD, DSC primary; CYB/AIN skimmed) and CA 9-12 Specialty, checked against chapters 1-13 plus interludes 6b/7b",
+    "note": "Added 3 csta2026 + 8 castandards covered entries (11 total) and 6 csta2026 + 8 castandards explicit gaps (14 total). CYB and AIN specialty areas were skimmed but yielded no genuine matches (a chap11 Caesar-cipher exercise and chap12's LLM-vs-Markov aside were considered and rejected as too tangential); nothing added for either. CA IC.27-30 (impact of computing) and NI.3-6 (networking) omitted outright as out of scope, consistent with this file's existing apcsp_big_ideas rollup routing impact-of-computing to little_brother instead. A same-day follow-up pass added `strength` ratings (strong/partial/related) to all 11 covered entries above, since a first read conflated real-but-partial coverage with full coverage -- see 9-12S.AP.14/16/19 and S2-DSC-AM-07, rated partial."
+   }
+  ]
  },
  "coverage": {
   "apcsp": {
@@ -272,6 +280,110 @@
      4
     ],
     "note": "chap04's docstrings and development-plan material carry the in-code documentation half. The graphics/presentation/demonstration forms of documentation this standard also names aren't part of the book."
+   },
+   "9-12S.AP.12": {
+    "locators": [
+     7,
+     9
+    ],
+    "strength": "strong",
+    "note": "Same evidence as this file's core 9-12.AP.12 entry: chap07 builds a linear-search algorithm from scratch and chap09 uses the built-in sorted -- writing a real search and using an existing sort, exactly this standard's emphasis."
+   },
+   "9-12S.AP.14": {
+    "locators": [
+     10
+    ],
+    "strength": "partial",
+    "note": "chap10 switches from a list to a dictionary specifically because dictionary lookup is faster than scanning a list with in -- a genuine data-structure trade-off. Narrower than the standard's own examples (insert/delete/modify): the book's comparison is about lookup speed only, not those three operations."
+   },
+   "9-12S.AP.15": {
+    "locators": [
+     5,
+     6,
+     10
+    ],
+    "strength": "strong",
+    "note": "chap05's stack diagrams for recursive functions and chap06's factorial/fibonacci trace a call chain down to its base case and back -- exactly this standard's own framing. chap10's fibonacci call graph (visualizing repeated calls for fibonacci(4)) is the same tracing done as a diagram instead of a stack of frames."
+   },
+   "9-12S.AP.16": {
+    "locators": [
+     4,
+     7
+    ],
+    "strength": "partial",
+    "note": "chap07's uses_all, built by reusing uses_any/uses_only instead of writing a new loop, and chap04's arc built by generalizing the existing polygon-derived circle, are both instances of spotting that a subproblem already has a solution close at hand -- this standard's own framing, distinct from AP.17's 'write your own procedures' and AP.18's 'reach for a library.'"
+   },
+   "9-12S.AP.17": {
+    "locators": [
+     3,
+     4
+    ],
+    "strength": "strong",
+    "note": "chap03's print_verse built from first_two_lines/last_three_lines/repeat, and chap04's square/polygon/circle/arc/polyline chain, are the book's clearest instances of decomposing a substantial problem into its own procedures instead of one long script."
+   },
+   "9-12S.AP.18": {
+    "locators": [
+     2,
+     4,
+     8
+    ],
+    "strength": "strong",
+    "note": "Same evidence as this file's core 9-12.AP.17 and csta2026 HS-PRO-PD-13 entries: chap02's import math, chap04's jupyturtle, and chap08's re are all cases of reaching for an existing, well-tested library instead of reimplementing its functionality."
+   },
+   "9-12S.AP.19": {
+    "locators": [
+     4
+    ],
+    "strength": "partial",
+    "note": "chap04's development plan (problem statement, examples, template, draft, test) is a real, structured process, not writing until it works. Same caveat as this file's core 9-12.AP.18 gap: it's a solo, technical process that never involves feedback from users beyond the student, so the 'planning software for people beyond yourself' half of this standard is thinner than the process half."
+   },
+   "9-12S.AP.22": {
+    "locators": [
+     "6b",
+     7
+    ],
+    "strength": "strong",
+    "note": "Same evidence as this file's new csta2026 S1-SWD-TR-07 entry: chap06b's Choosing test cases table (typical, boundary, edge) is close to a literal match for 'ordinary behavior and the edge cases at the boundary.'"
+   },
+   "9-12S.AP.13": {
+    "locators": [],
+    "note": "Real gap: the book never names a formal complexity class. chap10's fibonacci section shows the naive recursive version getting slower as n grows and fixes it with memoization (fibonacci_memo), and chap10 also prefers a dictionary over a list specifically because lookup is faster -- both are informal, hands-on brushes with efficiency, but 'linear', 'quadratic', and 'log n' never appear anywhere in chapters 1-13.",
+    "checked": true
+   },
+   "9-12S.AP.20": {
+    "locators": [],
+    "note": "Real gap: every example in this book runs in one place, the Jupyter/JupyterLite environment. Chapters 1-13 never ask a student to target more than one platform, and there's no desktop/web/mobile comparison anywhere.",
+    "checked": true
+   },
+   "9-12S.AP.23": {
+    "locators": [],
+    "note": "Real gap: chap04's refactoring (circle built on polygon, then generalized into arc and polyline) and chap06b/chap07's doctest work are the book's two closest threads, but they're never connected -- the book doesn't frame 'does this change break something that used to work' as its own concern.",
+    "checked": true
+   },
+   "9-12S.AP.25": {
+    "locators": [],
+    "note": "Real gap, same evidence as this file's new csta2026 S1-SWD-PP-08 entry: no version control, shared IDE workflow, or team documentation practice anywhere -- the book is written for solo work throughout chapters 1-13.",
+    "checked": true
+   },
+   "9-12S.CS.1": {
+    "locators": [],
+    "note": "Not covered. Same status as this file's core 9-12.CS.1 entry -- a hardware/systems topic with no carrier anywhere in the book.",
+    "checked": true
+   },
+   "9-12S.CS.2": {
+    "locators": [],
+    "note": "Not covered. chap13's os module (listdir, path operations, walking directories) is the book's only brush with the operating system, and it's filesystem-only -- memory management, process management, and access control, the standard's other named jobs, never come up.",
+    "checked": true
+   },
+   "9-12S.DA.8": {
+    "locators": [],
+    "note": "Real gap, same evidence as this file's core 9-12.DA.10 entry: chap12 genuinely analyzes and summarizes a large real text dataset (word and bigram frequencies across a whole book), but the standard asks for analyzing, summarizing, AND visualizing together, and there's no charting anywhere in chapters 1-13.",
+    "checked": true
+   },
+   "9-12S.DA.9": {
+    "locators": [],
+    "note": "Not covered. Same status as this file's core 9-12.DA.11 entry: chap12's Markov text model is a model of sorts, but the chapter never judges how accurately it represents anything or uses that judgment to refine a hypothesis.",
+    "checked": true
    }
   },
   "csta2026": {
@@ -316,6 +428,59 @@
      8
     ],
     "note": "chap08's is_special_line (stripping Gutenberg header/footer cruft) and re.sub-based British-to-American spelling normalization are direct instances of cleaning up messy text data with a pattern-matching tool -- close to a literal match for this standard's own scope note."
+   },
+   "S1-SWD-DD-02": {
+    "locators": [
+     4,
+     6
+    ],
+    "strength": "strong",
+    "note": "chap04's interface/implementation split (two circle implementations sharing one interface, arc/polyline built underneath) is a direct match for separating what a function does from how it's built underneath. chap06's leap of faith -- trusting a return value without re-checking the body -- extends the same idea. Same evidence as this file's ca-ict-anchor 5.10 entry."
+   },
+   "S1-SWD-TR-07": {
+    "locators": [
+     "6b",
+     7
+    ],
+    "strength": "strong",
+    "note": "chap06b's Choosing test cases section names exactly this standard's three kinds -- typical, boundary, edge -- with a worked table for is_even and the observation that boundary/edge cases are the ones students skip and where the bugs live. chap07's doctest work is the same practice applied to has_e/uses_any."
+   },
+   "S2-DSC-AM-07": {
+    "locators": [
+     12
+    ],
+    "strength": "partial",
+    "note": "chap12 counts word frequencies across the full text of a book (Robert Louis Stevenson) using a dictionary, plus bigram and Markov-chain frequency counts -- a direct instance of this standard's own example. Narrower than the standard's 'pile of documents' framing since it's one text, and the book never reduces image/pixel data as the standard's other example describes."
+   },
+   "S1-SWD-DD-01": {
+    "locators": [],
+    "note": "Real gap: chap09 (Lists) never frames Python's list as one of several linear structures to choose between -- no stack, queue, or explicit dynamic-array vocabulary anywhere in chapters 1-13, and no discussion of which structure fits which job.",
+    "checked": true
+   },
+   "S1-SWD-DD-03": {
+    "locators": [],
+    "note": "Real gap: this is a Jupyter-notebook course, not an IDE-based one. No autocomplete, breakpoints, variable inspectors, or built-in commit tooling anywhere -- debugging is taught through print statements, doctest, and hand-tracing instead (see every chapter's Debugging section).",
+    "checked": true
+   },
+   "S1-SWD-PP-08": {
+    "locators": [],
+    "note": "Real gap: the book is written for solo, individual work throughout chapters 1-13. No version control, branches, pull requests, or team-based development anywhere -- 'github.com/porttack/working-in-python' appears only as the book's own hosting link, never as a taught skill.",
+    "checked": true
+   },
+   "S1-SWD-TR-06": {
+    "locators": [],
+    "note": "Close but not a real match: chapters 9-13 each have an 'Ask a virtual assistant' section suggesting prompts a student could use, including chap12's 'copy add_bigram into a virtual assistant and ask can you rewrite this using setdefault.' But this is a standalone chatbot workflow, not the IDE-integrated feature summarizing or flagging bugs in legacy code that this standard actually names.",
+    "checked": true
+   },
+   "S2-SWD-DD-04": {
+    "locators": [],
+    "note": "Real gap: chap07 builds only a linear search (has_e/uses_any); the book never implements or mentions binary search, and never measures or compares algorithm speed. Confirmed by scanning chapters 1-13 for 'binary search', 'bisect', and any complexity notation -- zero hits.",
+    "checked": true
+   },
+   "S1-DSC-CC-01": {
+    "locators": [],
+    "note": "Real gap, same evidence as this file's castandards 9-12.DA.10 entry: no charting library or visualization of any kind appears in chapters 1-13. chap12's word-frequency and Markov work computes summary counts but never a histogram, scatter plot, or any other chart.",
+    "checked": true
    }
   },
   "ca-ict-anchor": {

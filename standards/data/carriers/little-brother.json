@@ -28,10 +28,19 @@
    "19": "The VampMob Decoy Plan",
    "20": "Masha, the Chase, and the Evidence",
    "21": "Treasure Island",
-   "epilogue": "Epilogue"
+   "epilogue": "Epilogue",
+   "afterword": "Afterword by Bruce Schneier"
   },
   "caveat": "This carrier was a bare stub until this pass -- every entry had empty locators and no note at all, since the file's first commit. This is the first time anyone actually checked these claims against the book's own text (tmp/lb.txt, converted from the CC BY-NC-SA-licensed full text). Several corrections came out of that: 9-12.NI.4 (network performance for organizations) is dropped in favor of 9-12.NI.5 (internet design/addressing/scale), which is what Xnet's mesh distribution and Chapter 17's DNS tunneling actually demonstrate -- the teacher's own blog post cites NI.4 for this material, but the catalog's own paraphrase makes NI.5 the real match. 9-12.IC.25 and IC.27 are dropped as unsupported by either the blog or the text. 9-12.IC.26 is added even though the blog's table doesn't cite it, since a security state reshaping civil society is arguably the book's central theme. Locators were derived from a direct read of the book text, not just the blog post, and correct at least one real error in the blog's own chapter attribution (the cleartext/ciphertext-ratio 'make everyone abnormal' idea is Chapter 7, not Chapter 8 as the blog has it -- Chapter 8 is the Bayesian 'paradox of the false positive' scene). CSTA 2017's HS block includes 3B-IC-25, a Level 3B (elective/specialty, not core) code reached only via a 'related'-strength crosswalk row that itself says CA's IC.26 is a blend match with no single clean CSTA target -- a lower-confidence tier than the mostly-3A, core, strong-crosswalk claims elsewhere in that block. CA CTE (ICT) is cited via Anchor Standards only, not Pathway C -- unlike a programming course, this book has essentially no software-construction content for Pathway C to describe, but its ethics/legal, communications, and problem-solving anchor standards are a genuinely strong fit, not a generic fallback. Middle-school codes (California 6-8, CSTA 2017 Level 2, CSTA 2026 MS) are this carrier's own inference on the CS-concept content alone; this file says nothing about whether the book's mature content (a DHS interrogation, an explicit waterboarding reference) is appropriate for that age group, which is a separate, teacher's-own judgment call.",
-  "abbrev": "LB"
+  "abbrev": "LB",
+  "alignment_log": [
+   {
+    "date": "2026-08-31",
+    "by": "Claude Sonnet 5",
+    "scope": "CSTA 2026 Specialty I/II (CYB primary -- every S1-CYB-*/S2-CYB-* code checked; AIN/DSC/GMD/PHY/SWD/XCS skimmed) and California 9-12 Specialty (all 30 codes, especially the NI.3-6 and IC.27-30 clusters), against the full book text (tmp/lb.txt).",
+    "note": "Added 10 csta2026 codes (9 covered, 1 explicit gap) and 9 castandards codes (8 covered, 1 explicit gap). CYB was confirmed as by far the strongest specialty area, as expected -- the book's crypto, mesh-networking, spoofing, traffic-analysis, and social-engineering content maps directly onto more than half the CYB code list. One AIN code (human-in-the-loop for automated systems) was a genuine, non-forced match. AIN/DSC/GMD/PHY/SWD/XCS otherwise yielded nothing real and were left unlisted rather than padded with gaps, per the carrier README. A same-day follow-up pass added `strength` ratings (strong/partial/related) to all 17 covered entries above, since a first read conflated real-but-partial coverage with full coverage -- see 9-12S.NI.5/IC.28 and S1-CYB-CP-12/S1-AIN-HR-08, rated partial or related rather than strong."
+   }
+  ]
  },
  "coverage": {
   "apcsp": {
@@ -128,6 +137,51 @@
    "6-8.IC.24": {
     "locators": [1, 13, 20],
     "note": "This carrier's own inference, mirroring 9-12.IC.29/30 above: arphid and camera tracking (1, 13) and the interrogation scene (20) are public-versus-private-and-secure information as a real, competing-goods tradeoff, not an abstract one."
+   },
+   "9-12S.NI.3": {
+    "locators": [17],
+    "strength": "strong",
+    "note": "Chapter 17's DNS explainer walks through exactly this: how a name like pirateparty.org.se resolves to a number like 204.11.50.136, and how the shift from one central HOSTS file to millions of talking DNS servers is what let addressing keep scaling and stay reliable as the network grew."
+   },
+   "9-12S.NI.4": {
+    "locators": [17],
+    "strength": "strong",
+    "note": "The same chapter makes the design-philosophy point directly: DNS used to be a single file that lived under one person's desk at USC, and moving to a distributed, redundant, open-standard system of servers that all talk to each other is why a single unplugged machine no longer takes down the whole internet's ability to find itself."
+   },
+   "9-12S.NI.5": {
+    "locators": [6, 7],
+    "strength": "partial",
+    "note": "Not the standard's own password-policy example, but the same shape of tradeoff: Jolu spells it out plainly in Chapter 7 -- too much crypto in your traffic makes you stand out as a target, too little makes you easy to wiretap -- and Chapter 6 grounds why that crypto has a real cost (compute, key management) in the first place."
+   },
+   "9-12S.NI.6": {
+    "locators": [10, 11],
+    "strength": "strong",
+    "note": "The web of trust that Chapter 10 explains and Chapter 11's key-signing party puts into practice is a real, working alternative to certificate authorities for exactly the problem this standard names -- vouching for who actually owns a given key -- built person-to-person instead of through a central authority."
+   },
+   "9-12S.IC.27": {
+    "locators": [8, 9, "epilogue"],
+    "strength": "strong",
+    "note": "The false-positive math names who a badly-tuned computational artifact harms -- overwhelmingly innocent people, hundreds of thousands of them for every real terrorist caught (8) -- and Chapter 9 makes clear that harm isn't evenly spread (Jolu's point about who actually gets pulled over and searched). The Epilogue's fix isn't just 'stop the surveillance' -- it's concrete: state-level civilian oversight empowered to inspect and shut down DHS operations."
+   },
+   "9-12S.IC.28": {
+    "locators": ["epilogue"],
+    "strength": "partial",
+    "note": "The Epilogue doesn't end with the DHS simply gone -- it ends with the Coalition of Voters for a Free America planning a new ARG timed to the election, arguing that the technology and tactics that beat the DHS keep moving into ordinary civic organizing. That forward-looking 'what's next, and what it costs or brings' is this standard's own territory."
+   },
+   "9-12S.IC.30": {
+    "locators": [6, 17],
+    "strength": "strong",
+    "note": "Two real-law examples, not a hypothetical: PATRIOT Act II's transaction-monitoring provisions are specific enough that the Turk stops taking debit cards over it (6), and Chapter 17's Crypto Wars history is a real law -- crypto classified as a munition, illegal to export -- that shaped what software Americans were allowed to write and publish, until a court fight overturned it. Both sides of the argument (security necessity versus overreach) get real airtime, as the standard asks for."
+   },
+   "9-12S.DA.9": {
+    "locators": [7, 8],
+    "strength": "strong",
+    "note": "The whole paradox-of-the-false-positive sequence is judging a model's accuracy against the real system it claims to represent -- a 99-percent-accurate test still produces 200,000 false flags to catch 10 real terrorists in a city of 20 million, because the test's accuracy doesn't come close to matching the rarity of what it's hunting for."
+   },
+   "9-12S.IC.29": {
+    "locators": [],
+    "checked": true,
+    "note": "Checked and not a match -- easy to confuse with this carrier's own castandards 9-12.IC.29 entry (arphid and camera tracking), which is the core-tier code about data collected without consent. This specialty-tier code is a different concept, unequal access to computing resources, which the book doesn't take up as its own theme."
    }
   },
   "csta2017": {
@@ -236,6 +290,61 @@
    "MS-SOC-HU-43": {
     "locators": [8],
     "note": "This carrier's own inference, mirroring HS-SOC-HU-43 above."
+   },
+   "S1-CYB-ND-03": {
+    "locators": [6, 17],
+    "strength": "strong",
+    "note": "Xnet is a genuinely hybrid network -- Xbox-to-Xbox wireless mesh, hopping onto neighbors' open home WiFi, and the regular Internet backbone (6), plus DNS repurposed as a video-tunneling protocol layered on top of the whole thing (17). No single topology or protocol label covers what it actually does."
+   },
+   "S2-CYB-ND-03": {
+    "locators": [6, 17],
+    "strength": "strong",
+    "note": "Xnet is deliberately mesh, not star -- no single node's capture by the DHS brings the whole network down (6), the direct opposite of the DHS's own centralized surveillance dragnet. Chapter 17's explanation of DNS -- once a single HOSTS file on one machine, now millions of redundant, cross-talking servers -- makes the same star-versus-mesh failure-mode point about the Internet itself."
+   },
+   "S2-CYB-NO-04": {
+    "locators": [7, 8, 9],
+    "strength": "strong",
+    "note": "Marcus's dad lays out anomaly detection almost verbatim: 'you ask the computer to create a profile of an average record... and find out which records are furthest away from average' (7), which is exactly how the BART Fast Pass flags Marcus's 'nonstandard ride profile' and how FasTrak readers build travel baselines to catch deviations (8). Chapter 9's DHS budget request cites a 'spike in underground chatter' as its own justification for more analysts -- the same baseline-then-flag logic, from the surveillance side."
+   },
+   "S1-CYB-TS-07": {
+    "locators": [8, 10],
+    "strength": "strong",
+    "note": "Chapter 8's arphid cloner is a literal spoofing attack -- overwriting Fast Pass and FasTrak tags with other people's IDs to defeat an identification system. Chapter 10 names and explains the man-in-the-middle attack directly (a spy intercepting messages and substituting his own), including why widely-published public keys and the web of trust defeat it."
+   },
+   "S1-CYB-TS-09": {
+    "locators": [6, 7],
+    "strength": "strong",
+    "note": "Chapter 6 lays out the real cost side of encryption -- prime-factorization math, key management, the history of DES and Enigma. Chapter 7 turns that into an explicit tradeoff: encrypt everything and you're safe from casual snooping, but a 95-percent-ciphertext connection is itself a red flag to a traffic analyst -- Jolu's fix (indienet's bulk downloads pushing the cleartext/ciphertext ratio toward 50-50) is choosing a countermeasure with a real cost, not a free win."
+   },
+   "S1-CYB-CP-12": {
+    "locators": [6],
+    "strength": "related",
+    "note": "A minor, satirical example, but a real one: the ParanoidXbox gaming network's Terms of Service spells out who it covers (players), what's allowed (no cussing, no flirting, no 'masked language' about sexuality), who enforces it (paid monitors), and the consequence (getting reported) -- the standard's own four pieces, just not a serious in-depth treatment."
+   },
+   "S1-CYB-PP-13": {
+    "locators": [7, 8],
+    "strength": "strong",
+    "note": "Marcus's dad draws this exact line at the breakfast table: 'I don't think that a computer should be telling the police whom to arrest, just helping them sort through the haystack to find a needle' (7). Chapter 8's paradox of the false positive is the book's demonstration of what happens when that human-judgment checkpoint is skipped and a 99-percent-accurate automated system is trusted to do the whole job."
+   },
+   "S1-CYB-PP-14": {
+    "locators": [4, 10, 17],
+    "strength": "strong",
+    "note": "Severe Haircut Woman's interrogation runs on exactly this: authority ('this is about your security'), manufactured urgency (a thirty-second countdown), and false trust ('we're on your side') to get Marcus to say his password aloud (4). Chapter 10 uses the term outright, when Marcus warns the key-signing party that DHS plants 'use social engineering hacks to try to get us to reveal ourselves.' Chapter 17's 'Manchurian Bloggers,' DHS agents running dozens of fake Xnet blogs each to steer the movement toward radicalism, is the same tactic run as an organized, large-scale operation rather than a one-on-one con."
+   },
+   "S2-CYB-PP-11": {
+    "locators": [17, "epilogue", "afterword"],
+    "strength": "strong",
+    "note": "Marcus doesn't just leak what he has -- he hands it to a specific trusted journalist, agrees she controls the timeline and gets to verify it before it goes to press, and accepts he's given up control of the story once it's in motion (17), then follows through with a public video once it's genuinely his to release (epilogue). Bruce Schneier's afterword makes the underlying cybersecurity principle explicit: 'someone else has to analyze the security... and when that happens, be sure to publish it' -- responsible disclosure, not sitting on a vulnerability or exploiting it quietly."
+   },
+   "S1-AIN-HR-08": {
+    "locators": [7, 8],
+    "strength": "partial",
+    "note": "Dad's own words describe the checkpoint this standard wants: a computer sorts and flags, 'but I don't think that a computer should be telling the police whom to arrest, just helping them sort through the haystack' (7). Chapter 8's paradox of the false positive is the book's cautionary demonstration of what an automated system without that human, auditable checkpoint actually does to two hundred thousand innocent people."
+   },
+   "S2-CYB-ND-01": {
+    "locators": [],
+    "checked": true,
+    "note": "Checked and genuinely absent -- Marcus and Jolu use crypto and mesh networking constantly, but always through existing tools (ParanoidLinux, Xbox wireless, indienet's crypto library), never by hand-configuring a firewall rule, ACL, or VPN tunnel themselves. The book's security content is conceptual and social, not hands-on network administration."
    }
   },
   "ca-ict-anchor": {
