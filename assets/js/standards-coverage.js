@@ -597,7 +597,7 @@
   // separate param rather than overloading ?sources=, since ?sources= can
   // legitimately hold several slugs for comparison and this always means
   // exactly one, always hiding the rest.
-  function applyOnlyMode(manifestBySlug) {
+  function applyOnlyMode(manifestBySlug, hasReport) {
     var slug = new URLSearchParams(window.location.search).get('only');
     if (!slug) return;
     document.body.classList.add('cov-only-mode');
@@ -605,9 +605,12 @@
     if (!banner) return;
     var meta = manifestBySlug[slug];
     var title = meta ? meta.title : slug;
+    var reportLink = hasReport && hasReport(slug)
+      ? ' <a href="reports/' + esc(slug) + '.html">Printable report</a>'
+      : '';
     banner.innerHTML =
       'Showing only standards covered by <strong>' + esc(title) + '</strong>. ' +
-      '<a href="' + esc(window.location.pathname) + '">Show all standards</a>';
+      '<a href="' + esc(window.location.pathname) + '">Show all standards</a>' + reportLink;
     banner.hidden = false;
   }
 
@@ -674,6 +677,15 @@
     { label: 'Secondary', slugs: ['working_in_python', 'little_brother', 'codeorg_csd_1_2', 'codeorg_csd_3a', 'codeorg_csd_3b'] }
   ];
 
+  // build_alignment.py skips writing a reports/<slug>.html for a carrier
+  // with zero coverage (nothing to print) -- shared by the sidebar's
+  // per-source "report" link and the #only-banner's, so neither ever
+  // points at a file that was never generated.
+  function sourceHasCoverage(carrierFiles, slug) {
+    var coverage = (carrierFiles[slug] || {}).coverage || {};
+    return Object.keys(coverage).some(function (fw) { return Object.keys(coverage[fw] || {}).length > 0; });
+  }
+
   function renderSourcePicker(manifest, carrierFiles, onChange) {
     var list = document.getElementById('source-list');
     var bySlug = {};
@@ -693,11 +705,15 @@
       var onlyHtml =
         '<a class="source-only-link" href="?only=' + esc(s.slug) + '&view=open-all" ' +
         'title="Link to just ' + esc(s.title) + '’s standards">only ↗</a>';
+      var reportHtml = sourceHasCoverage(carrierFiles, s.slug)
+        ? '<a class="source-report-link" href="reports/' + esc(s.slug) + '.html" ' +
+          'title="Printable report of everything ' + esc(s.title) + ' covers">report ↗</a>'
+        : '';
       return (
         '<label class="source-row">' +
         '<input type="checkbox" checked class="source-checkbox" data-source="' + esc(s.slug) +
         '" style="--swatch-color:var(--hue-' + esc(s.slug) + ')">' +
-        titleHtml + onlyHtml +
+        titleHtml + onlyHtml + reportHtml +
         '</label>'
       );
     }
@@ -729,7 +745,7 @@
     // Without this, a click on the link bubbles up to the <label> and also
     // toggles the checkbox -- native label-forwarding behavior on a click that
     // already did something (navigate), not what a reader clicking a link wants.
-    list.querySelectorAll('a.source-link, a.source-only-link').forEach(function (a) {
+    list.querySelectorAll('a.source-link, a.source-only-link, a.source-report-link').forEach(function (a) {
       a.addEventListener('click', function (e) { e.stopPropagation(); });
     });
 
@@ -858,7 +874,7 @@
       wireCrossRefToggles();
       wireRecommendations(handleToggle, panelActions);
       applyParamsFromLocation(handleToggle, panelActions);
-      applyOnlyMode(manifestBySlug);
+      applyOnlyMode(manifestBySlug, function (slug) { return sourceHasCoverage(carrierFiles, slug); });
     });
   }).catch(function (err) {
     document.getElementById('panels').innerHTML =

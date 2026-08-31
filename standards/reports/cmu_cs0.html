@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Carnegie Mellon's Exploring Programming with Python (Middle School) — Standards Alignment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+h1 { margin: 0 0 .2rem; }
+.subtitle { color: var(--muted); margin: 0 0 1.3rem; }
+.report-actions { display: flex; gap: 1.2rem; align-items: center; margin: 0 0 1.3rem; }
+.print-button {
+  font: inherit; font-size: .92rem; padding: .5rem 1rem; border-radius: 8px;
+  border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer;
+}
+.report-actions a { color: var(--accent); font-size: .92rem; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .8rem 1rem; font-size: .88rem; color: var(--muted); margin: 0 0 1.6rem;
+}
+.provenance strong { color: var(--fg); }
+h2 { margin: 2.2rem 0 .8rem; font-size: 1.3rem; }
+.summary-table { width: 100%; border-collapse: collapse; margin: 0 0 2rem; font-size: .92rem; }
+.summary-table th, .summary-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.summary-table th { color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .04em; }
+.summary-table a { text-decoration: none; }
+.fw-label { color: var(--muted); font-size: .82em; white-space: nowrap; }
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.anchor-link { color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal; opacity: .5; }
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.1rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.05rem; display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .84rem; color: var(--muted); margin: .2rem 0 .6rem; }
+.topic .note { font-size: .86rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.strength-tag { color: var(--muted); font-weight: normal; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+@media print {
+  .report-actions { display: none; }
+  main { max-width: none; padding: 0 .3in; }
+  .topic, tr { break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+  a[href^="http"]:after { content: " (" attr(href) ")"; font-size: .8em; color: var(--muted); }
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Carnegie Mellon's Exploring Programming with Python (Middle School) — Standards Alignment</h1>
+<p class="subtitle">12 standards across 1 framework</p>
+<div class="report-actions">
+<button class="print-button" onclick="window.print()">Print this page</button>
+<a href="../?only=cmu_cs0">&larr; Back to Standards Coverage</a>
+</div>
+<div class="provenance"><strong>What this is.</strong> Every standard Carnegie Mellon's Exploring Programming with Python (Middle School) is recorded as covering, generated from this project’s standards-alignment data (12 standards across 1 framework). <strong>Source.</strong> <a href="https://academy.cs.cmu.edu/course-info#:~:text=EXPLORE%20THE%204%20UNITS">https://academy.cs.cmu.edu/course-info#:~:text=EXPLORE%20THE%204%20UNITS</a></div>
+<h2 id="summary">Summary</h2><table class="summary-table"><thead><tr><th>Code</th><th>Framework</th><th>What it asks for</th></tr></thead><tbody><tr><td><a href="#S-6-8.AP.11"><span class="code-badge">6-8.AP.11</span></a></td><td class="fw-label">California 6-8 Computer Science</td><td>A variable's name should say what it holds, since that's what makes the operations performed on it make sense to someone reading the code.</td></tr><tr><td><a href="#S-6-8.AP.12"><span class="code-badge">6-8.AP.12</span></a></td><td class="fw-label">California 6-8 Computer Science</td><td>Real programs combine multiple control structures and compound conditions, and get built up iteratively rather than all at once.</td></tr><tr><td><a href="#S-6-8.AP.13"><span class="code-badge">6-8.AP.13</span></a></td><td class="fw-label">California 6-8 Computer Science</td><td>Breaking a problem into smaller subproblems makes it possible to design, build, and review a program piece by piece.</td></tr><tr><td><a href="#S-6-8.AP.15"><span class="code-badge">6-8.AP.15</span></a></td><td class="fw-label">California 6-8 Computer Science</td><td>A solution actually meets user needs only if you go get feedback from teammates and users and use it to refine the design.</td></tr><tr><td><a href="#S-6-8.AP.18"><span class="code-badge">6-8.AP.18</span></a></td><td class="fw-label">California 6-8 Computer Science</td><td>Building something as a team means splitting up tasks and keeping to a shared timeline, not just dividing the code.</td></tr><tr><td><a href="#S-6-8.DA.7"><span class="code-badge">6-8.DA.7</span></a></td><td class="fw-label">California 6-8 Computer Science</td><td>The same data can be represented in more than one way, and choosing a representation changes what's easy to see in it.</td></tr><tr><td><a href="#S-9-12.AP.12"><span class="code-badge">9-12.AP.12</span></a></td><td class="fw-label">California 9-12 Computer Science</td><td>Solving a computational problem often means combining an algorithm you already know with one you design yourself.</td></tr><tr><td><a href="#S-9-12.AP.13"><span class="code-badge">9-12.AP.13</span></a></td><td class="fw-label">California 9-12 Computer Science</td><td>Once a problem needs more than a handful of related values, a collection replaces a pile of separately named variables.</td></tr><tr><td><a href="#S-9-12.AP.15"><span class="code-badge">9-12.AP.15</span></a></td><td class="fw-label">California 9-12 Computer Science</td><td>A program built around events -- a button press, a timer -- responds to things happening rather than running start to finish in one line.</td></tr><tr><td><a href="#S-9-12.AP.17"><span class="code-badge">9-12.AP.17</span></a></td><td class="fw-label">California 9-12 Computer Science</td><td>A program built from separate, interacting pieces -- including code someone else wrote -- is organized by modular design.</td></tr><tr><td><a href="#S-9-12.AP.20"><span class="code-badge">9-12.AP.20</span></a></td><td class="fw-label">California 9-12 Computer Science</td><td>A program gets better through repeated rounds of testing and fixing, aimed at more than just correctness -- performance and ease of use matter too.</td></tr><tr><td><a href="#S-9-12.AP.22"><span class="code-badge">9-12.AP.22</span></a></td><td class="fw-label">California 9-12 Computer Science</td><td>As a program's design takes shape, writing the decisions down -- in whatever form fits -- is what makes the process legible to anyone else who looks at it later.</td></tr></tbody></table><section><h2>California Computer Science Standards</h2><div class="topic" id="S-6-8.AP.11"><h3><a class="anchor-link" href="#S-6-8.AP.11">#</a><span class="code-badge">6-8.AP.11</span> <span class="fw-label">California 6-8 Computer Science</span></h3><p class="paraphrase">A variable's name should say what it holds, since that's what makes the operations performed on it make sense to someone reading the code.</p><p class="meta">Covered in Unit 1 (Drawing with Shapes)</p><p class="note">Drawing with Shapes, an introductory graphics unit, is where a first course names variables for shape properties (position, size, color) -- inferred from the unit title alone, not a confirmed lesson breakdown.</p></div><div class="topic" id="S-6-8.AP.12"><h3><a class="anchor-link" href="#S-6-8.AP.12">#</a><span class="code-badge">6-8.AP.12</span> <span class="fw-label">California 6-8 Computer Science</span></h3><p class="paraphrase">Real programs combine multiple control structures and compound conditions, and get built up iteratively rather than all at once.</p><p class="meta">Covered in Unit 2 (Basic Animations), Unit 3 (Giving Programs Options), Unit 4 (Animating Lots of Shapes)</p><p class="note">Basic Animations (a repeating step mechanism), Giving Programs Options (the unit's own title names branching), and Animating Lots of Shapes (looping over many objects) are each control-structure content, built up across three units rather than introduced all at once. Inferred from unit titles.</p></div><div class="topic" id="S-6-8.AP.13"><h3><a class="anchor-link" href="#S-6-8.AP.13">#</a><span class="code-badge">6-8.AP.13</span> <span class="fw-label">California 6-8 Computer Science</span></h3><p class="paraphrase">Breaking a problem into smaller subproblems makes it possible to design, build, and review a program piece by piece.</p><p class="meta">Covered in Unit 4.1 (Unit 4, Lesson 1 (within Animating Lots of Shapes))</p><p class="note">Per the teacher's own knowledge of this lesson (not documented in CMU's own published materials): Unit 4's first lesson has students break the many-shapes problem into smaller subproblems before assembling the full animation.</p></div><div class="topic" id="S-6-8.AP.15"><h3><a class="anchor-link" href="#S-6-8.AP.15">#</a><span class="code-badge">6-8.AP.15</span> <span class="fw-label">California 6-8 Computer Science</span></h3><p class="paraphrase">A solution actually meets user needs only if you go get feedback from teammates and users and use it to refine the design.</p><p class="meta">Covered in Unit creative-task (Creative Tasks (every unit, 1-4))</p><p class="note">CMU's Creative Task feature (shared across its courses, including CS1) asks for a design intent statement, but its rubric doesn't itself require a feedback step -- whether this standard is actually met depends on the teacher building one in, same caveat cmu_cs1.json carries for the 9-12 equivalent (AP.18).</p></div><div class="topic" id="S-6-8.AP.18"><h3><a class="anchor-link" href="#S-6-8.AP.18">#</a><span class="code-badge">6-8.AP.18</span> <span class="fw-label">California 6-8 Computer Science</span></h3><p class="paraphrase">Building something as a team means splitting up tasks and keeping to a shared timeline, not just dividing the code.</p><p class="meta">Covered in Unit collaborative (Collaborative tasks)</p><p class="note">A stretch, by the teacher's own admission: CS0's collaborative tasks split work between partners, which is this standard's own team/role framing, though it's a lighter, shorter-form version of it than a full-length course's collaborative work would be.</p></div><div class="topic" id="S-6-8.DA.7"><h3><a class="anchor-link" href="#S-6-8.DA.7">#</a><span class="code-badge">6-8.DA.7</span> <span class="fw-label">California 6-8 Computer Science</span></h3><p class="paraphrase">The same data can be represented in more than one way, and choosing a representation changes what's easy to see in it.</p><p class="meta">Covered in Unit 1 (Drawing with Shapes)</p><p class="note">A shape's position, size, and color are all numeric properties -- the same drawn shape can be built from different property values, the representation choice this standard names. Inferred from the unit title.</p></div><div class="topic" id="S-9-12.AP.12"><h3><a class="anchor-link" href="#S-9-12.AP.12">#</a><span class="code-badge">9-12.AP.12</span> <span class="fw-label">California 9-12 Computer Science</span></h3><p class="paraphrase">Solving a computational problem often means combining an algorithm you already know with one you design yourself.</p><p class="meta">Covered, no locator on record</p><p class="note">CMU's own CA alignment doc, Subconcept Algorithms: 'Design algorithms to solve computational problems using a combination of original and existing algorithms.' Concept-level claim, not lesson-localized in that document.</p></div><div class="topic" id="S-9-12.AP.13"><h3><a class="anchor-link" href="#S-9-12.AP.13">#</a><span class="code-badge">9-12.AP.13</span> <span class="fw-label">California 9-12 Computer Science</span></h3><p class="paraphrase">Once a problem needs more than a handful of related values, a collection replaces a pile of separately named variables.</p><p class="meta">Covered, no locator on record</p><p class="note">CMU's own CA alignment doc, Subconcept Variables: 'Create more generalized computational solutions using collections instead of repeatedly using simple variables.'</p></div><div class="topic" id="S-9-12.AP.15"><h3><a class="anchor-link" href="#S-9-12.AP.15">#</a><span class="code-badge">9-12.AP.15</span> <span class="fw-label">California 9-12 Computer Science</span></h3><p class="paraphrase">A program built around events -- a button press, a timer -- responds to things happening rather than running start to finish in one line.</p><p class="meta">Covered, no locator on record</p><p class="note">CMU's own CA alignment doc, Subconcept Control: 'Iteratively design and develop computational artifacts... by using events to initiate instructions.'</p></div><div class="topic" id="S-9-12.AP.17"><h3><a class="anchor-link" href="#S-9-12.AP.17">#</a><span class="code-badge">9-12.AP.17</span> <span class="fw-label">California 9-12 Computer Science</span></h3><p class="paraphrase">A program built from separate, interacting pieces -- including code someone else wrote -- is organized by modular design.</p><p class="meta">Covered, no locator on record</p><p class="note">CMU's own CA alignment doc, Subconcept Modularity: 'Create computational artifacts using modular design.'</p></div><div class="topic" id="S-9-12.AP.20"><h3><a class="anchor-link" href="#S-9-12.AP.20">#</a><span class="code-badge">9-12.AP.20</span> <span class="fw-label">California 9-12 Computer Science</span></h3><p class="paraphrase">A program gets better through repeated rounds of testing and fixing, aimed at more than just correctness -- performance and ease of use matter too.</p><p class="meta">Covered, no locator on record</p><p class="note">CMU's own CA alignment doc, Subconcept Program Development: 'Iteratively evaluate and refine a computational artifact to enhance its performance, reliability, usability, and accessibility.'</p></div><div class="topic" id="S-9-12.AP.22"><h3><a class="anchor-link" href="#S-9-12.AP.22">#</a><span class="code-badge">9-12.AP.22</span> <span class="fw-label">California 9-12 Computer Science</span></h3><p class="paraphrase">As a program's design takes shape, writing the decisions down -- in whatever form fits -- is what makes the process legible to anyone else who looks at it later.</p><p class="meta">Covered, no locator on record</p><p class="note">CMU's own CA alignment doc: 'Document decisions made during the design process using text, graphics, presentations, and/or demonstrations in the development of complex programs.'</p></div></section>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</body>
+</html>

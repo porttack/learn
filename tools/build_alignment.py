@@ -20,6 +20,10 @@ Outputs, into --out:
   ca-ict-anchor-standards-reference.html
   standards-alignment.md   (by-locator, by-standard, and gap views, plus a
                              per-framework coverage summary)
+  reports/<source-slug>.html   (one per loaded carrier, skipped if it covers
+                                 nothing -- a short, printable "everything
+                                 this source covers" page: a summary table,
+                                 then full detail per standard)
 
 Anchor scheme (fixed, matches existing external links -- do not change):
   T-<code>  AP CSP topics, CSTA 2026, CA ICT
@@ -32,7 +36,10 @@ import json
 import re
 from pathlib import Path
 
-CSS = """
+# Shared by CSS (the big sidebar+search reference-page template) and
+# REPORT_CSS (the single-column, printable per-source report) so the two
+# page styles never drift into two different color palettes.
+ROOT_TOKENS = """
 :root {
   --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
   --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
@@ -46,7 +53,9 @@ CSS = """
   --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
 :root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
   --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
-* { box-sizing: border-box; }
+"""
+
+CSS = ROOT_TOKENS + """* { box-sizing: border-box; }
 body {
   margin: 0; background: var(--bg); color: var(--fg);
   font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
@@ -147,6 +156,92 @@ SEARCH_JS = """
     });
   });
 })();
+"""
+
+# A per-source report is a different document than CSS/page() above render --
+# those are big, sidebar-navigated reference copies of an entire framework,
+# built for on-screen browsing/searching. A report is short (only what one
+# source actually covers, typically a few dozen entries at most) and exists
+# to be printed and handed to someone, so it gets its own single-column
+# template: no sidebar, no search box (nothing to search past what's already
+# a skimmable page), a visible print button, and print rules tuned for a
+# stack of short cards rather than the reference pages' long browsing session.
+REPORT_CSS = ROOT_TOKENS + """* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+h1 { margin: 0 0 .2rem; }
+.subtitle { color: var(--muted); margin: 0 0 1.3rem; }
+.report-actions { display: flex; gap: 1.2rem; align-items: center; margin: 0 0 1.3rem; }
+.print-button {
+  font: inherit; font-size: .92rem; padding: .5rem 1rem; border-radius: 8px;
+  border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer;
+}
+.report-actions a { color: var(--accent); font-size: .92rem; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .8rem 1rem; font-size: .88rem; color: var(--muted); margin: 0 0 1.6rem;
+}
+.provenance strong { color: var(--fg); }
+h2 { margin: 2.2rem 0 .8rem; font-size: 1.3rem; }
+.summary-table { width: 100%; border-collapse: collapse; margin: 0 0 2rem; font-size: .92rem; }
+.summary-table th, .summary-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.summary-table th { color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .04em; }
+.summary-table a { text-decoration: none; }
+.fw-label { color: var(--muted); font-size: .82em; white-space: nowrap; }
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.anchor-link { color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal; opacity: .5; }
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.1rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.05rem; display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .84rem; color: var(--muted); margin: .2rem 0 .6rem; }
+.topic .note { font-size: .86rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.strength-tag { color: var(--muted); font-weight: normal; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+@media print {
+  .report-actions { display: none; }
+  main { max-width: none; padding: 0 .3in; }
+  .topic, tr { break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+  a[href^="http"]:after { content: " (" attr(href) ")"; font-size: .8em; color: var(--muted); }
+}
+"""
+
+
+def report_page(title, subtitle_html, body_html, provenance_html, back_href):
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{esc(title)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>{REPORT_CSS}</style>
+</head>
+<body>
+<main>
+<h1>{esc(title)}</h1>
+<p class="subtitle">{subtitle_html}</p>
+<div class="report-actions">
+<button class="print-button" onclick="window.print()">Print this page</button>
+<a href="{esc(back_href)}">&larr; Back to Standards Coverage</a>
+</div>
+<div class="provenance">{provenance_html}</div>
+{body_html}
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</body>
+</html>
 """
 
 
@@ -594,6 +689,174 @@ paraphrases, not the CDE's text; only codes are reproduced as-is."""
     return page("CA ICT & Anchor Standards Reference", "\n".join(toc), "\n".join(body), provenance)
 
 
+# ---------- Per-source report: everything one carrier covers, one page ----------
+#
+# The five render_* functions above each walk their own framework's full
+# catalog and annotate coverage in passing -- right for "here is everything
+# in AP CSP, and here's what carries which part of it." A report inverts
+# that: start from one carrier's own coverage dict, across all five
+# frameworks, and skip every code it doesn't touch. Meant to be linked from
+# (or embedded in) that source's own page -- see #only-banner and the
+# sidebar's "only" link in standards-coverage.js/standards/index.html for
+# the interactive-map equivalent of this same "just this one source" idea.
+
+FRAMEWORK_HEADINGS = {
+    "apcsp": "AP Computer Science Principles",
+    "castandards": "California Computer Science Standards",
+    "csta2026": "CSTA 2026",
+    "csta2017": "CSTA 2017",
+    "ca-ict-anchor": "California CTE (ICT)",
+}
+
+# Matches the fixed anchor scheme documented at the top of this file (T- for
+# AP CSP/CSTA 2026/CA ICT, S- for California 9-12/CSTA 2017) so a report's
+# anchors line up with the same code's anchor on that framework's own
+# reference page -- a link built from one transfers to the other unchanged.
+ANCHOR_PREFIX = {"apcsp": "T", "castandards": "S", "csta2026": "T", "csta2017": "S", "ca-ict-anchor": "T"}
+
+
+def build_catalog_index(catalogs):
+    """framework -> code -> {paraphrase, scope_note, title, label}, flattened
+    out of each framework's own nested catalog shape (topics/big ideas,
+    strand/grade-band standards, concept/tier standards, anchor+pathway
+    groups-with-items) so render_source_report can look up any covered code
+    by (framework, code) without re-deriving that shape itself. `label` is a
+    human-readable, code-specific framework name -- e.g. distinguishing
+    "CSTA 2026 (Specialty I)" from "CSTA 2026 (High School)", since both
+    share one catalog file and a bare framework name would blur them."""
+    index = {}
+
+    index["apcsp"] = {
+        t["code"]: {"paraphrase": t["paraphrase"], "scope_note": None, "title": t.get("title"),
+                     "label": FRAMEWORK_HEADINGS["apcsp"]}
+        for t in catalogs["apcsp"]["topics"]
+    }
+
+    castandards_idx = {}
+    for s in catalogs["castandards"]["standards"]:
+        band = s.get("grade_band", "")
+        castandards_idx[s["code"]] = {
+            "paraphrase": s["paraphrase"], "scope_note": s.get("scope_note"), "title": None,
+            "label": f"California {band} Computer Science",
+        }
+    index["castandards"] = castandards_idx
+
+    csta2017_idx = {}
+    for s in catalogs["csta2017"]["standards"]:
+        band = s.get("grade_band", "")
+        tail = ", Level 3B elective" if not s.get("core", True) else ""
+        csta2017_idx[s["code"]] = {
+            "paraphrase": s["paraphrase"], "scope_note": s.get("scope_note"), "title": None,
+            "label": f"CSTA 2017 ({band}{tail})",
+        }
+    index["csta2017"] = csta2017_idx
+
+    csta2026_idx = {}
+    for s in catalogs["csta2026"]["standards"]:
+        tier = LEVEL_LABELS.get(s["code"].split("-")[0], s["code"].split("-")[0])
+        csta2026_idx[s["code"]] = {
+            "paraphrase": s["paraphrase"], "scope_note": s.get("scope_note"), "title": None,
+            "label": f"CSTA 2026 ({tier})",
+        }
+    index["csta2026"] = csta2026_idx
+
+    ict_idx = {}
+    def add_ict_group(grp, label):
+        ict_idx[grp["code"]] = {"paraphrase": grp["paraphrase"], "scope_note": None, "title": grp["name"], "label": label}
+        for item in grp.get("items", []):
+            ict_idx[item["code"]] = {"paraphrase": item["paraphrase"], "scope_note": None, "title": None, "label": label}
+    for grp in catalogs["ca-ict-anchor"]["anchor_standards"]:
+        add_ict_group(grp, FRAMEWORK_HEADINGS["ca-ict-anchor"] + " — Anchor Standards")
+    pathway_name = catalogs["ca-ict-anchor"]["pathway"]["name"]
+    for grp in catalogs["ca-ict-anchor"]["pathway"]["standards"]:
+        add_ict_group(grp, f'{FRAMEWORK_HEADINGS["ca-ict-anchor"]} — Pathway C: {pathway_name}')
+    index["ca-ict-anchor"] = ict_idx
+
+    return index
+
+
+def render_source_report(slug, carrier, catalog_index):
+    """None if this carrier covers nothing (an empty/stub carrier file) --
+    callers should skip writing a file rather than publish a blank report."""
+    meta = carrier.get("meta", {})
+    title = meta.get("title", slug)
+
+    entries = []  # (framework, code, catalog_entry, coverage_entry, locator_html)
+    for fw in FRAMEWORK_HEADINGS:
+        cov_dict = carrier.get("coverage", {}).get(fw, {})
+        if not cov_dict:
+            continue
+        cov = Coverage({slug: carrier}, fw, scoped=True)
+        for code in sorted(cov_dict):
+            centry = cov_dict[code]
+            if centry.get("checked") and not centry.get("locators"):
+                continue  # an acknowledged gap, not coverage -- this report is only what it DOES cover
+            cat = catalog_index.get(fw, {}).get(code)
+            if not cat:
+                continue  # a code the carrier cites that isn't in the catalog shouldn't happen, but don't crash a report over it
+            entries.append((fw, code, cat, centry, cov.carrier_html(code)))
+
+    if not entries:
+        return None
+
+    def strength_tag(centry):
+        s = centry.get("strength")
+        return f' <span class="strength-tag">({esc(s)})</span>' if s and s != "strong" else ""
+
+    summary_rows = []
+    for fw, code, cat, centry, _locator_html in entries:
+        anchor = f"{ANCHOR_PREFIX[fw]}-{code}"
+        summary_rows.append(
+            f'<tr><td><a href="#{esc(anchor)}"><span class="code-badge">{esc(code)}</span></a></td>'
+            f'<td class="fw-label">{esc(cat["label"])}</td>'
+            f'<td>{esc(cat["paraphrase"])}{strength_tag(centry)}</td></tr>'
+        )
+    summary_html = (
+        '<h2 id="summary">Summary</h2>'
+        '<table class="summary-table"><thead><tr><th>Code</th><th>Framework</th><th>What it asks for</th></tr></thead>'
+        f'<tbody>{"".join(summary_rows)}</tbody></table>'
+    )
+
+    detail_parts = []
+    current_fw = None
+    for fw, code, cat, centry, locator_html in entries:
+        if fw != current_fw:
+            if current_fw is not None:
+                detail_parts.append("</section>")
+            detail_parts.append(f'<section><h2>{esc(FRAMEWORK_HEADINGS[fw])}</h2>')
+            current_fw = fw
+        anchor = f"{ANCHOR_PREFIX[fw]}-{code}"
+        title_bit = f" {esc(cat['title'])}" if cat.get("title") else ""
+        detail_parts.append(f'<div class="topic" id="{esc(anchor)}">')
+        detail_parts.append(
+            f'<h3><a class="anchor-link" href="#{esc(anchor)}">#</a><span class="code-badge">{esc(code)}</span>'
+            f'{title_bit} <span class="fw-label">{esc(cat["label"])}</span></h3>'
+        )
+        detail_parts.append(f'<p class="paraphrase">{esc(cat["paraphrase"])}</p>')
+        if cat.get("scope_note"):
+            detail_parts.append(f'<p class="note">{esc(cat["scope_note"])}</p>')
+        # locator_html (from Coverage.carrier_html) already appends "(partial)"/
+        # "(related)" itself when set -- unlike the summary table's row, which
+        # has no locator clause of its own to carry it, so strength_tag() is
+        # only needed there, not here too.
+        detail_parts.append(f'<p class="meta">{locator_html}</p>')
+        if centry.get("note"):
+            note = humanize_chapter_refs(centry["note"], meta.get("interlude_letters"))
+            detail_parts.append(f'<p class="note">{esc(note)}</p>')
+        detail_parts.append("</div>")
+    detail_parts.append("</section>")
+
+    frameworks_touched = len({fw for fw, *_ in entries})
+    subtitle = f"{len(entries)} standard{'s' if len(entries) != 1 else ''} across {frameworks_touched} framework{'s' if frameworks_touched != 1 else ''}"
+    base_url = meta.get("base_url")
+    provenance = f'<strong>What this is.</strong> Every standard {esc(title)} is recorded as covering, generated from this project’s standards-alignment data ({esc(subtitle)}).'
+    if base_url:
+        provenance += f' <strong>Source.</strong> <a href="{esc(base_url)}">{esc(base_url)}</a>'
+
+    body = summary_html + "".join(detail_parts)
+    return report_page(f"{title} — Standards Alignment", esc(subtitle), body, provenance, f"../?only={esc(slug)}")
+
+
 def page(title, toc_html, body_html, provenance_html):
     return f"""<!doctype html>
 <html lang="en">
@@ -700,7 +963,24 @@ def main():
     (out / "ca-ict-anchor-standards-reference.html").write_text(render_ca_ict(catalogs["ca-ict-anchor"], covs["ca-ict-anchor"], args.scope_label))
     (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))
 
+    # One printable report per loaded carrier -- same carrier_files this run
+    # already loaded (all of them unscoped, or just the --source ones when
+    # scoped), so a report never claims coverage from a source this run
+    # wasn't given. Skipped for a carrier with nothing covered (an empty/stub
+    # file) rather than publishing a blank page.
+    catalog_index = build_catalog_index(catalogs)
+    reports_dir = out / "reports"
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    report_slugs = []
+    for slug, carrier in carrier_files.items():
+        html = render_source_report(slug, carrier, catalog_index)
+        if html is None:
+            continue
+        (reports_dir / f"{slug}.html").write_text(html)
+        report_slugs.append(slug)
+
     print(f"Wrote 6 files to {out}/ from {len(carrier_files)} carrier source(s): {sorted(carrier_files)}")
+    print(f"Wrote {len(report_slugs)} per-source report(s) to {reports_dir}/: {sorted(report_slugs)}")
 
 
 if __name__ == "__main__":

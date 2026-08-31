@@ -89,11 +89,12 @@ aside#source-picker h2 { font-size: 0.75rem; text-transform: uppercase; letter-s
 .source-row .source-title { flex: 1 1 auto; }
 a.source-title.source-link { color: var(--accent); text-decoration: underline; }
 a.source-title.source-link:hover { text-decoration-thickness: 2px; }
-a.source-only-link {
+a.source-only-link, a.source-report-link {
   flex: 0 0 auto; font-size: .78em; color: var(--muted); text-decoration: none;
   border: 1px solid var(--border); border-radius: 5px; padding: .05em .4em;
 }
-a.source-only-link:hover, a.source-only-link:focus-visible { color: var(--fg); border-color: var(--muted); }
+a.source-only-link:hover, a.source-only-link:focus-visible,
+a.source-report-link:hover, a.source-report-link:focus-visible { color: var(--fg); border-color: var(--muted); }
 
 /* ---------- Focus mode (?only=<source-slug>): collapse the full catalog
    down to just what one source covers -- for a link embedded in that

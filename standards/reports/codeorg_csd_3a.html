@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Code.org's CS Discoveries (Unit 3a: Music Lab) — Standards Alignment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+h1 { margin: 0 0 .2rem; }
+.subtitle { color: var(--muted); margin: 0 0 1.3rem; }
+.report-actions { display: flex; gap: 1.2rem; align-items: center; margin: 0 0 1.3rem; }
+.print-button {
+  font: inherit; font-size: .92rem; padding: .5rem 1rem; border-radius: 8px;
+  border: 1px solid var(--accent); background: var(--accent); color: #fff; cursor: pointer;
+}
+.report-actions a { color: var(--accent); font-size: .92rem; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .8rem 1rem; font-size: .88rem; color: var(--muted); margin: 0 0 1.6rem;
+}
+.provenance strong { color: var(--fg); }
+h2 { margin: 2.2rem 0 .8rem; font-size: 1.3rem; }
+.summary-table { width: 100%; border-collapse: collapse; margin: 0 0 2rem; font-size: .92rem; }
+.summary-table th, .summary-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.summary-table th { color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .04em; }
+.summary-table a { text-decoration: none; }
+.fw-label { color: var(--muted); font-size: .82em; white-space: nowrap; }
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.anchor-link { color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal; opacity: .5; }
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.1rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.05rem; display: flex; flex-wrap: wrap; gap: .5rem; align-items: baseline; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .84rem; color: var(--muted); margin: .2rem 0 .6rem; }
+.topic .note { font-size: .86rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.strength-tag { color: var(--muted); font-weight: normal; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+@media print {
+  .report-actions { display: none; }
+  main { max-width: none; padding: 0 .3in; }
+  .topic, tr { break-inside: avoid; }
+  h1, h2, h3 { break-after: avoid; }
+  a[href^="http"]:after { content: " (" attr(href) ")"; font-size: .8em; color: var(--muted); }
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Code.org's CS Discoveries (Unit 3a: Music Lab) — Standards Alignment</h1>
+<p class="subtitle">8 standards across 4 frameworks</p>
+<div class="report-actions">
+<button class="print-button" onclick="window.print()">Print this page</button>
+<a href="../?only=codeorg_csd_3a">&larr; Back to Standards Coverage</a>
+</div>
+<div class="provenance"><strong>What this is.</strong> Every standard Code.org's CS Discoveries (Unit 3a: Music Lab) is recorded as covering, generated from this project’s standards-alignment data (8 standards across 4 frameworks). <strong>Source.</strong> <a href="https://studio.code.org/courses/csd-2026">https://studio.code.org/courses/csd-2026</a></div>
+<h2 id="summary">Summary</h2><table class="summary-table"><thead><tr><th>Code</th><th>Framework</th><th>What it asks for</th></tr></thead><tbody><tr><td><a href="#S-6-8.AP.12"><span class="code-badge">6-8.AP.12</span></a></td><td class="fw-label">California 6-8 Computer Science</td><td>Real programs combine multiple control structures and compound conditions, and get built up iteratively rather than all at once.</td></tr><tr><td><a href="#S-6-8.AP.13"><span class="code-badge">6-8.AP.13</span></a></td><td class="fw-label">California 6-8 Computer Science</td><td>Breaking a problem into smaller subproblems makes it possible to design, build, and review a program piece by piece.</td></tr><tr><td><a href="#S-9-12.AP.18"><span class="code-badge">9-12.AP.18</span></a></td><td class="fw-label">California 9-12 Computer Science</td><td>Designing for a broad audience means building in a way to collect feedback from real users and revising the design in response.</td></tr><tr><td><a href="#T-MS-PRO-PD-12"><span class="code-badge">MS-PRO-PD-12</span></a></td><td class="fw-label">CSTA 2026 (Middle School)</td><td>Naming a repeated block of steps and turning it into a procedure is what makes code easier to read and reuse.</td></tr><tr><td><a href="#S-2-AP-12"><span class="code-badge">2-AP-12</span></a></td><td class="fw-label">CSTA 2017 (6-8)</td><td>Nesting loops inside each other, or combining conditions with AND/OR/NOT, lets a program handle situations a single loop or single condition never could, and getting there takes iteration, not one pass.</td></tr><tr><td><a href="#S-2-AP-13"><span class="code-badge">2-AP-13</span></a></td><td class="fw-label">CSTA 2017 (6-8)</td><td>Breaking a problem into subproblems, and those into still smaller parts, is what lets a team, or just one person, focus on one piece of a program at a time.</td></tr><tr><td><a href="#S-3A-AP-19"><span class="code-badge">3A-AP-19</span></a></td><td class="fw-label">CSTA 2017 (9-12)</td><td>Designing for a broad audience means building in a systematic way to actually collect feedback from a range of users, then revising based on what you hear.</td></tr><tr><td><a href="#T-5.9"><span class="code-badge">5.9</span></a></td><td class="fw-label">California CTE (ICT) — Anchor Standards</td><td>A large problem becomes tractable once it's broken into smaller components.</td></tr></tbody></table><section><h2>California Computer Science Standards</h2><div class="topic" id="S-6-8.AP.12"><h3><a class="anchor-link" href="#S-6-8.AP.12">#</a><span class="code-badge">6-8.AP.12</span> <span class="fw-label">California 6-8 Computer Science</span></h3><p class="paraphrase">Real programs combine multiple control structures and compound conditions, and get built up iteratively rather than all at once.</p><p class="meta">Covered in <a href="https://studio.code.org/courses/csd-2026/units/3?readonly">Unit 3 (Unit 3a - Programming with Music Lab)</a></p><p class="note">Mechanically derived from this carrier's own csta2017 entry (2-AP-12, strength: strong) via the castandards-csta2017 crosswalk -- not independently checked against a code.org source document.</p></div><div class="topic" id="S-6-8.AP.13"><h3><a class="anchor-link" href="#S-6-8.AP.13">#</a><span class="code-badge">6-8.AP.13</span> <span class="fw-label">California 6-8 Computer Science</span></h3><p class="paraphrase">Breaking a problem into smaller subproblems makes it possible to design, build, and review a program piece by piece.</p><p class="meta">Covered in <a href="https://studio.code.org/courses/csd-2026/units/3?readonly">Unit 3 (Unit 3a - Programming with Music Lab)</a></p><p class="note">Mechanically derived from this carrier's own csta2017 entry (2-AP-13, strength: strong) via the castandards-csta2017 crosswalk -- not independently checked against a code.org source document.</p></div><div class="topic" id="S-9-12.AP.18"><h3><a class="anchor-link" href="#S-9-12.AP.18">#</a><span class="code-badge">9-12.AP.18</span> <span class="fw-label">California 9-12 Computer Science</span></h3><p class="paraphrase">Designing for a broad audience means building in a way to collect feedback from real users and revising the design in response.</p><p class="meta">Covered in <a href="https://studio.code.org/courses/csd-2026/units/3?readonly">Unit 3 (Unit 3a - Programming with Music Lab)</a></p><p class="note">Mechanically derived from this carrier's own csta2017 entry (3A-AP-19, strength: strong) via the castandards-csta2017 crosswalk -- not independently checked against a code.org source document.</p></div></section><section><h2>CSTA 2026</h2><div class="topic" id="T-MS-PRO-PD-12"><h3><a class="anchor-link" href="#T-MS-PRO-PD-12">#</a><span class="code-badge">MS-PRO-PD-12</span> <span class="fw-label">CSTA 2026 (Middle School)</span></h3><p class="paraphrase">Naming a repeated block of steps and turning it into a procedure is what makes code easier to read and reuse.</p><p class="note">Recognizing the opportunity and creating a simple procedure is the task; procedures with parameters or return values, or large modular systems, are not expected.</p><p class="meta">Covered in <a href="https://studio.code.org/courses/csd-2026/units/3?readonly">Unit 3 (Unit 3a - Programming with Music Lab)</a></p><p class="note">This carrier's own inference: Music Lab's 'Functions - Explore/Practice/Synthesize' sequence is this standard's own use-a-procedure-for-clarity-and-reusability territory, almost by name.</p></div></section><section><h2>CSTA 2017</h2><div class="topic" id="S-2-AP-12"><h3><a class="anchor-link" href="#S-2-AP-12">#</a><span class="code-badge">2-AP-12</span> <span class="fw-label">CSTA 2017 (6-8)</span></h3><p class="paraphrase">Nesting loops inside each other, or combining conditions with AND/OR/NOT, lets a program handle situations a single loop or single condition never could, and getting there takes iteration, not one pass.</p><p class="meta">Covered in <a href="https://studio.code.org/courses/csd-2026/units/3?readonly">Unit 3 (Unit 3a - Programming with Music Lab)</a></p><p class="note">code.org's own CSD-2026 standards data (fetched directly from studio.code.org/courses/csd-2026/units/N/standards) cites this for Unit 3a (12 lessons, from 'Sequencing - Explore' onward).</p></div><div class="topic" id="S-2-AP-13"><h3><a class="anchor-link" href="#S-2-AP-13">#</a><span class="code-badge">2-AP-13</span> <span class="fw-label">CSTA 2017 (6-8)</span></h3><p class="paraphrase">Breaking a problem into subproblems, and those into still smaller parts, is what lets a team, or just one person, focus on one piece of a program at a time.</p><p class="meta">Covered in <a href="https://studio.code.org/courses/csd-2026/units/3?readonly">Unit 3 (Unit 3a - Programming with Music Lab)</a></p><p class="note">code.org's own CSD-2026 standards data (fetched directly from studio.code.org/courses/csd-2026/units/N/standards) cites this for Unit 3a (12 lessons, from 'Sequencing - Explore' onward).</p></div><div class="topic" id="S-3A-AP-19"><h3><a class="anchor-link" href="#S-3A-AP-19">#</a><span class="code-badge">3A-AP-19</span> <span class="fw-label">CSTA 2017 (9-12)</span></h3><p class="paraphrase">Designing for a broad audience means building in a systematic way to actually collect feedback from a range of users, then revising based on what you hear.</p><p class="meta">Covered in <a href="https://studio.code.org/courses/csd-2026/units/3?readonly">Unit 3 (Unit 3a - Programming with Music Lab)</a></p><p class="note">code.org's own CSD-2026 standards data (fetched directly from studio.code.org/courses/csd-2026/units/N/standards) cites this for Unit 3a ('Introduction to Music Lab').</p></div></section><section><h2>California CTE (ICT)</h2><div class="topic" id="T-5.9"><h3><a class="anchor-link" href="#T-5.9">#</a><span class="code-badge">5.9</span> <span class="fw-label">California CTE (ICT) — Anchor Standards</span></h3><p class="paraphrase">A large problem becomes tractable once it's broken into smaller components.</p><p class="meta">Covered in <a href="https://studio.code.org/courses/csd-2026/units/3?readonly">Unit 3 (Unit 3a - Programming with Music Lab)</a></p><p class="note">This carrier's own inference: Music Lab's own 'Functions - Practice' objective ('decompose songs into specific parts by using functions strategically') is this anchor standard's own decomposition language, nearly word for word.</p></div></section>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</body>
+</html>
