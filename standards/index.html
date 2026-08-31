@@ -60,7 +60,7 @@ aside#source-picker h2 { font-size: 0.75rem; text-transform: uppercase; letter-s
   vertical-align: -.15em;
 }
 .source-group[open] summary::before { content: "▾"; }
-.source-row { display: flex; align-items: center; gap: .55rem; padding: .3rem 0; cursor: pointer; }
+.source-row { display: flex; align-items: flex-start; gap: .55rem; padding: .3rem 0; cursor: pointer; }
 /* The checkbox doubles as the legend swatch -- its own source color, hollow
    when unchecked (a colored outline, so identity still reads even when
    toggled off) and solid-filled with a checkmark when checked.
@@ -86,15 +86,16 @@ aside#source-picker h2 { font-size: 0.75rem; text-transform: uppercase; letter-s
   mix-blend-mode: difference;
 }
 .source-row input[type="checkbox"].source-checkbox:checked { background: var(--swatch-color); }
-.source-row .source-title { flex: 1 1 auto; }
+/* .source-text is a plain inline-flow span, not a flex item of its own --
+   the title and the (only · report) parenthetical need to wrap together as
+   one paragraph when the row runs out of width, not stay pinned side by
+   side on one line the way sibling flex items would. */
+.source-row .source-text { flex: 1 1 auto; }
 a.source-title.source-link { color: var(--accent); text-decoration: underline; }
 a.source-title.source-link:hover { text-decoration-thickness: 2px; }
-a.source-only-link, a.source-report-link {
-  flex: 0 0 auto; font-size: .78em; color: var(--muted); text-decoration: none;
-  border: 1px solid var(--border); border-radius: 5px; padding: .05em .4em;
-}
-a.source-only-link:hover, a.source-only-link:focus-visible,
-a.source-report-link:hover, a.source-report-link:focus-visible { color: var(--fg); border-color: var(--muted); }
+.source-aux { font-size: .82em; color: var(--muted); white-space: nowrap; }
+a.source-aux-link { color: var(--muted); text-decoration: underline; text-decoration-color: var(--border); }
+a.source-aux-link:hover, a.source-aux-link:focus-visible { color: var(--fg); text-decoration-color: var(--muted); }
 
 /* ---------- Focus mode (?only=<source-slug-or-abbrev>): highlights one
    source's coverage across the full catalog -- nothing hidden by default,

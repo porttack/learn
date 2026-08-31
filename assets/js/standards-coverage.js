@@ -866,8 +866,7 @@
     var title = (manifestBySlug[slug] || {}).title || slug;
     var reportLink = hasReport(slug) ? ' <a href="?report=' + esc(slug) + (params.get('view') ? '&view=' + esc(params.get('view')) : '') + '">View report</a>' : '';
     banner.innerHTML =
-      'Showing standards covered by <strong>' + esc(title) + '</strong>. ' +
-      '<a href="' + esc(window.location.pathname) + '">Show all standards</a>' + reportLink +
+      'Showing standards covered by <strong>' + esc(title) + '</strong>.' + reportLink +
       ' <label class="only-hide-toggle"><input type="checkbox" id="only-hide-uncovered"> Hide standards not covered</label>';
     banner.hidden = false;
     document.getElementById('only-hide-uncovered').addEventListener('change', function (e) {
@@ -957,23 +956,27 @@
       var titleHtml = baseUrl
         ? '<a class="source-title source-link" href="' + esc(baseUrl) + '" target="_blank" rel="noopener">' + label + '</a>'
         : '<span class="source-title">' + label + '</span>';
-      // A real, copyable link (not a click-intercepted one like the .reco-link
+      // Real, copyable links (not click-intercepted like the .reco-link
       // sidebar shortcuts) -- meant to be right-clicked and pasted into that
-      // source's own page, so it needs a plain href a reader can grab, not
+      // source's own page, so they need a plain href a reader can grab, not
       // just an in-page behavior. See applyOnlyParam()/#only-banner for what
-      // opening it actually does.
+      // opening "only" actually does. Flowed inline right after the title as
+      // plain parenthetical text (not boxed buttons) -- a bordered pill per
+      // link per row was too much chrome for a ~260px-wide sidebar, especially
+      // once title text itself wraps to two lines.
       var onlyHtml =
-        '<a class="source-only-link" href="?only=' + esc(s.slug) + '&view=open-all" ' +
-        'title="Link to just ' + esc(s.title) + '’s standards">only ↗</a>';
+        '<a class="source-aux-link" href="?only=' + esc(s.slug) + '&view=open-all" ' +
+        'title="Link to just ' + esc(s.title) + '’s standards">only</a>';
       var reportHtml = sourceHasCoverage(carrierFiles, s.slug)
-        ? '<a class="source-report-link" href="?report=' + esc(s.slug) + '" ' +
-          'title="Printable report of everything ' + esc(s.title) + ' covers">report ↗</a>'
+        ? ' · <a class="source-aux-link" href="?report=' + esc(s.slug) + '" ' +
+          'title="Printable report of everything ' + esc(s.title) + ' covers">report</a>'
         : '';
       return (
         '<label class="source-row">' +
         '<input type="checkbox" checked class="source-checkbox" data-source="' + esc(s.slug) +
         '" style="--swatch-color:var(--hue-' + esc(s.slug) + ')">' +
-        titleHtml + onlyHtml + reportHtml +
+        '<span class="source-text">' + titleHtml +
+        ' <span class="source-aux">(' + onlyHtml + reportHtml + ')</span></span>' +
         '</label>'
       );
     }
@@ -1005,7 +1008,7 @@
     // Without this, a click on the link bubbles up to the <label> and also
     // toggles the checkbox -- native label-forwarding behavior on a click that
     // already did something (navigate), not what a reader clicking a link wants.
-    list.querySelectorAll('a.source-link, a.source-only-link, a.source-report-link').forEach(function (a) {
+    list.querySelectorAll('a.source-link, a.source-aux-link').forEach(function (a) {
       a.addEventListener('click', function (e) { e.stopPropagation(); });
     });
 
