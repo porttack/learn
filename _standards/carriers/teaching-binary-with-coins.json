@@ -17,9 +17,18 @@
   "locator_titles": {
    "post": "Teaching Binary With Coins"
   },
-  "caveat": "A single blog post, not a chaptered source -- locator_kind is \"none\" (so every entry shows just the post's own title, not \"Unit post\") and locator_url_template is the bare base_url with no {locator} substitution, since there's only one page to link to. Checked against CSTA 2026 and CA CTE (ICT) too: neither framework has a standard for binary/bit-level data representation at all (CSTA 2026's own Data & Analysis strand is entirely data-science/spreadsheet-shaped, no binary-numbers equivalent survived from CSTA 2017 into the 2026 revision), so those two frameworks are omitted outright rather than padded with a forced or checked-gap entry -- there's no code to even check against."
+  "caveat": "A single blog post, not a chaptered source -- locator_kind is \"none\" (so every entry shows just the post's own title, not \"Unit post\") and locator_url_template is the bare base_url with no {locator} substitution, since there's only one page to link to. Checked against CSTA 2026 too: that framework has no standard for binary/bit-level data representation at all (its own Data & Analysis strand is entirely data-science/spreadsheet-shaped, no binary-numbers equivalent survived from CSTA 2017 into the 2026 revision), so it's omitted outright rather than padded with a forced or checked-gap entry -- there's no code to even check against. CA CTE (ICT) does have a match (5.11) and is included below."
  },
  "coverage": {
+  "ca-ict-anchor": {
+   "5.11": {
+    "locators": [
+     "post"
+    ],
+    "strength": "strong",
+    "note": "The anchor standard's own paraphrase, 'numbers can be represented in more than one base system, including binary and hexadecimal,' is close to a one-line summary of this whole lesson -- the coin-store base-2 conversion, then the byte-to-hex split in the last section."
+   }
+  },
   "apcsp": {
    "2.1": {
     "locators": [
