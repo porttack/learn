@@ -4,6 +4,7 @@
   "base_url": "https://python.porttack.com",
   "locator_kind": "chapter",
   "locator_url_template": "{base_url}/chap{locator}.html",
+  "readonly_suffix": true,
   "source": "working_in_python",
   "locator_titles": {
    "1": "Welcome",

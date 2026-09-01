@@ -205,13 +205,15 @@ class Coverage:
 
     def _locator_url(self, source, locator, anchor_slug):
         """Resolve a locator to a URL, or None if its source has no url template
-        (little_brother, supplement -- nowhere to link yet). Always links to the
-        static ?readonly view (no live JupyterLite pane), never the interactive
-        notebook -- a chapter's live pane can interfere with anchor scrolling, and
-        a reader clicking through from a standards page wants to read the content,
-        not launch a kernel. A separate link to the live/interactive notebook view
-        (python.porttack.com/current/notebooks/index.html?path=...) is a deferred,
-        separate feature, not this one."""
+        (little_brother, supplement -- nowhere to link yet). The ?readonly suffix is
+        specific to working_in_python's JupyterLite setup -- it always links to the
+        static read-only view (no live pane) rather than the interactive notebook,
+        since a chapter's live pane can interfere with anchor scrolling and a reader
+        clicking through from a standards page wants to read the content, not launch
+        a kernel -- so it's opt-in via meta.readonly_suffix, not assumed for every
+        source with a locator_url_template. A plain single-page source (a blog post,
+        say) just wants its own URL back, with no notebook-specific query string
+        tacked onto the end."""
         meta = self.source_meta.get(source, {})
         template = meta.get("locator_url_template")
         if not template:
@@ -225,7 +227,10 @@ class Coverage:
         else:
             padded = str(locator)
         url = template.format(base_url=meta.get("base_url", ""), locator=padded)
-        url += f"?readonly#{anchor_slug}" if anchor_slug else "?readonly"
+        if meta.get("readonly_suffix"):
+            url += f"?readonly#{anchor_slug}" if anchor_slug else "?readonly"
+        elif anchor_slug:
+            url += f"#{anchor_slug}"
         return url
 
     def _locator_clause(self, source, locator, anchor):
@@ -235,21 +240,26 @@ class Coverage:
         chapter) when both are known. A locator with an assigned interlude letter (an
         editorial label, e.g. "6b" -> "A") reads as "Interlude A" instead of "Chapter
         6b" -- display only, the URL still resolves from the underlying locator, since
-        this is not a file/URL rename. Linked when the source has somewhere to link
-        to, plain text otherwise."""
+        this is not a file/URL rename. locator_kind "none" (a source with no real
+        sub-units, e.g. a single blog post) skips the "Chapter"/"Unit" noun entirely
+        and just shows that locator's own title -- "Unit post" would imply structure
+        that doesn't exist. Linked when the source has somewhere to link to, plain
+        text otherwise."""
         meta = self.source_meta.get(source, {})
         interlude_letter = meta.get("interlude_letters", {}).get(str(locator))
+        locator_title = meta.get("locator_titles", {}).get(str(locator))
         if interlude_letter:
             text = f"Interlude {interlude_letter}"
+        elif meta.get("locator_kind") == "none":
+            text = locator_title or "the source"
         else:
             noun = "Chapter" if meta.get("locator_kind") == "chapter" else "Unit"
             text = f"{noun} {locator}"
         section_title = anchor.get("title") if anchor else None
-        chapter_title = meta.get("locator_titles", {}).get(str(locator))
         if section_title:
             text += f" – {section_title}"
-        elif chapter_title:
-            text += f" ({chapter_title})"
+        elif locator_title and meta.get("locator_kind") != "none":
+            text += f" ({locator_title})"
         url = self._locator_url(source, locator, anchor.get("slug") if anchor else None)
         return f'<a href="{esc(url)}">{esc(text)}</a>' if url else esc(text)
 

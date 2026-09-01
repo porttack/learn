@@ -90,6 +90,11 @@
   // ---------- Locator rendering: shared by makeCoverage (many sources, keyed
   // by slug) and the per-source report (just the one carrier's own meta) ----------
 
+  // The ?readonly suffix is specific to working_in_python's JupyterLite setup
+  // (always link the static read-only view, never the live notebook pane) --
+  // opt-in via meta.readonly_suffix, not assumed for every source with a
+  // locator_url_template. A plain single-page source just wants its own URL
+  // back, no notebook-specific query string tacked on.
   function locatorUrlFor(meta, locator, anchorSlug) {
     var template = meta.locator_url_template;
     if (!template) return null;
@@ -99,22 +104,32 @@
       if (m) padded = ('00' + m[1]).slice(-2) + m[2];
     }
     var url = template.replace('{base_url}', meta.base_url || '').replace('{locator}', padded);
-    url += anchorSlug ? '?readonly#' + anchorSlug : '?readonly';
+    if (meta.readonly_suffix) {
+      url += anchorSlug ? '?readonly#' + anchorSlug : '?readonly';
+    } else if (anchorSlug) {
+      url += '#' + anchorSlug;
+    }
     return url;
   }
 
+  // locator_kind "none" (a source with no real sub-units, e.g. a single blog
+  // post) skips the "Chapter"/"Unit" noun entirely and just shows that
+  // locator's own title -- "Unit post" would imply structure that doesn't
+  // exist.
   function locatorClauseFor(meta, locator, anchor) {
     var interludeLetter = (meta.interlude_letters || {})[String(locator)];
+    var locatorTitle = (meta.locator_titles || {})[String(locator)];
     var text;
     if (interludeLetter) {
       text = 'Interlude ' + interludeLetter;
+    } else if (meta.locator_kind === 'none') {
+      text = locatorTitle || 'the source';
     } else {
       text = (meta.locator_kind === 'chapter' ? 'Chapter ' : 'Unit ') + locator;
     }
     var sectionTitle = anchor && anchor.title;
-    var chapterTitle = (meta.locator_titles || {})[String(locator)];
     if (sectionTitle) text += ' – ' + sectionTitle;
-    else if (chapterTitle) text += ' (' + chapterTitle + ')';
+    else if (locatorTitle && meta.locator_kind !== 'none') text += ' (' + locatorTitle + ')';
     var url = locatorUrlFor(meta, locator, anchor && anchor.slug);
     return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
   }
