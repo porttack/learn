@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "title": "Teaching Binary With Coins",
+  "base_url": "https://porttack.com/2026/08/31/teaching-binary-with-coins.html",
+  "locator_kind": "none",
+  "locator_url_template": null,
+  "source": "teaching_binary_with_coins",
+  "abbrev": "Coins",
+  "caveat": "A single blog post, not a chaptered source -- locator_kind is \"none\" and every entry's locators stay empty, same convention as supplement.json. Checked against CSTA 2026 and CA CTE (ICT) too: neither framework has a standard for binary/bit-level data representation at all (CSTA 2026's own Data & Analysis strand is entirely data-science/spreadsheet-shaped, no binary-numbers equivalent survived from CSTA 2017 into the 2026 revision), so those two frameworks are omitted outright rather than padded with a forced or checked-gap entry -- there's no code to even check against.",
+  "alignment_log": [
+   {
+    "date": "2026-08-31",
+    "by": "Claude Sonnet 5",
+    "scope": "Initial alignment pass: AP CSP, California K-12 CS Standards (6-8 and 9-12), CSTA 2017 (Level 2 and 3A).",
+    "note": "4 codes added, all strong or partial matches -- a single, focused lesson on binary/hex/RGB data representation lines up unusually cleanly with this specific slice of the data strand across every framework that has one. No explicit gaps recorded; nothing else in any catalog is close enough to be worth a checked:true entry for a one-page source this narrowly scoped."
+   }
+  ]
+ },
+ "coverage": {
+  "apcsp": {
+   "2.1": {
+    "locators": [],
+    "strength": "strong",
+    "note": "The whole coin-store activity is this topic almost by definition: bits/bytes ('eight bits is a byte,' the 128-64-32-16-8-4-2-1 coin set), base-10-to-base-2 place-value conversion (the cash-register grid is DAT-1.C's algorithm, derived rather than handed over), and the two-agreements setup ('every amount from 1 through 15,' 'exactly one way') that pays off directly in the overflow discussion the post itself calls out ('what happens if you need 256 and only own eight coins,' DAT-1.B). EK DAT-1.A.6 ('combining bits... stand for higher-level things like numbers, letters, or colors') is close to a direct quote of the post's own RGB color-picker section."
+   }
+  },
+  "castandards": {
+   "9-12.DA.8": {
+    "locators": [],
+    "strength": "strong",
+    "note": "The color-picker demonstration (RGB, each channel 0-255) and the byte-to-hex conversion ('split a byte down the middle, convert each half, and you get two characters instead of eight') are this standard's own example set almost verbatim -- a color represented digitally in more than one way, converting between representations as a normal task."
+   },
+   "6-8.DA.7": {
+    "locators": [],
+    "strength": "partial",
+    "note": "This carrier's own inference, mirroring 9-12.DA.8 above at the lighter 'representation changes what's easy to see' framing this 6-8 standard uses -- hex vs. binary for the same byte value is exactly that: which representation makes byte boundaries or bit patterns easier to read, which is the post's own argument for introducing hex at all."
+   }
+  },
+  "csta2017": {
+   "3A-DA-09": {
+    "locators": [],
+    "strength": "strong",
+    "note": "Direct match: 'the same real-world thing... can be represented in more than one bit-level encoding, and you should be able to convert between them' is the byte-to-hex-to-RGB chain this lesson builds, explicitly named in the post's own 'AP CSP alignment' section (representing the same value multiple ways and explaining the choice)."
+   },
+   "2-DA-07": {
+    "locators": [],
+    "strength": "strong",
+    "note": "Even more literal than 3A-DA-09 above -- this MS-level standard names binary, an RGB value, and a hex code in one sentence, which is exactly the color-picker payoff: '#FFFFFF is white' by way of one byte, two hex digits, converted from binary and back."
+   }
+  }
+ }
+}

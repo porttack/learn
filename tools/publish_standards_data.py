@@ -74,6 +74,7 @@ HUES = [
     ("#1c83ab", "#2993c1"),  # 12 teal
     ("#892b7b", "#a6438b"),  # 13 plum
     ("#b8860b", "#b8860b"),  # 14 gold
+    ("#b32eba", "#cb52d1"),  # 15 orchid
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -84,6 +85,19 @@ HUES = [
 # ~21.2 dark), plus a full 14-slot run in both modes to confirm no other pair
 # regressed -- both PASS (light mode's pre-existing contrast WARN on slots
 # 3/4/5/10 is unchanged, not something this addition introduced).
+#
+# Slot 15 (orchid) added 2026-08-31 alongside teaching_binary_with_coins,
+# inserted before the still-placeholder cs50psets so real sources stay
+# contiguous. Searched for a genuinely unused hue family (existing violet is
+# ~248 deg, magenta ~338, plum ~318 -- nothing sat in the ~270-300 deg gap
+# between them) via the dataviz skill's validate() export, brute-forcing
+# random HSL samples and keeping only ones passing the adjacent check against
+# slot 14 (gold, the new neighbor) in both modes: node
+# scripts/validate_palette.js "#b8860b,#b32eba" --mode light and
+# "#b8860b,#cb52d1" --mode dark both PASS (worst adjacent CVD ~26.6 light /
+# ~24.0 dark), plus a full 15-slot run in both modes to confirm no other pair
+# regressed -- both PASS (same pre-existing light-mode contrast WARN on slots
+# 3/4/5/10, unchanged).
 #
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
@@ -115,6 +129,7 @@ SOURCE_ORDER = [
     "codeorg_csd_3a",
     "codeorg_csd_3b",
     "hour_of_data",
+    "teaching_binary_with_coins",
     "cs50psets",
 ]
 

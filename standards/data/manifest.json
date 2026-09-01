@@ -118,6 +118,14 @@
    "abbrev": "HoData",
    "hue_light": "#b8860b",
    "hue_dark": "#b8860b"
+  },
+  {
+   "slug": "teaching_binary_with_coins",
+   "file": "teaching-binary-with-coins.json",
+   "title": "Teaching Binary With Coins",
+   "abbrev": "Coins",
+   "hue_light": "#b32eba",
+   "hue_dark": "#cb52d1"
   }
  ],
  "crosswalks": [
