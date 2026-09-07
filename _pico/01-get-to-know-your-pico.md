@@ -73,7 +73,7 @@ At the bottom of your Pico are three smaller gold pads with the word ‘DEBUG’
   <figcaption>Figure 1-6: Debug pads</figcaption>
 </figure>
 
-Turn your Pico over and you’ll see the underside has writing on it ([Figure 1-7](#fig-1-7)). This printed text is known as a *silk-screen layer*, and labels each of the pins with its core function. You’ll see things like ‘GP0’ and ‘GP1’, ‘GND’, ‘RUN’, and ‘3V3’. If you ever forget which pin is which, these labels will tell you, but you won’t be able to see them when the Pico is pushed into a breadboard, so we’ve printed full pinout diagrams for easier reference.
+Turn your Pico over and you’ll see the underside has writing on it ([Figure 1-7](#fig-1-7)). This printed text is known as a *silk-screen layer*, and labels each of the pins with its core function. You’ll see things like ‘GP0’ and ‘GP1’, ‘GND’, ‘RUN’, and ‘3V3’. If you ever forget which pin is which, these labels will tell you, but you won’t be able to see them when the Pico is pushed into a breadboard, so see [Appendix B, Pinout guide](/pico/14-pinout-guide/) for a full diagram to refer back to.
 
 You might have noticed that not all the labels line up with their pins. The small holes at the top and bottom of the board are *mounting holes*, designed to allow you to fix your Pico to projects more permanently, using screws or nuts and bolts. Where the holes get in the way of the labelling, the labels are pushed further up or down the board: looking at the top-right. So ‘VBUS’ is the first pin on the left, ‘VSYS’ the second, and ‘GND’ the third.
 

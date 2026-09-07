@@ -43,7 +43,7 @@ Like counting in Python, your Pico’s GPIO pins start at the number 0 rather th
 - **AGND** (*ADC 0 volts ground*): A special ground connection for use with the ADC_VREF pin.
 - **RUN** (*Enables or disables your Pico*): The RUN pin is used to start and stop your Pico from another microcontroller or other controlling device.
 
-Several of the GPIO pins have additional functions, covered as later lessons put them to use.
+Several of the GPIO pins have additional functions, covered as later lessons put them to use; for the full picture, see [Appendix B, Pinout guide](/pico/14-pinout-guide/).
 
 <aside class="callout note" markdown="1">
 **MISSING PINS**
