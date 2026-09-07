@@ -1,9 +1,8 @@
 ---
 layout: lesson
-title: "Interlude A: Programming with MicroPython"
+title: "Chapter 2: Programming with MicroPython"
 pathway: pico
-order: 1.5
-label: "Interlude A"
+order: 2
 source: rpi-pico-2e
 subtitle: "Connect a computer and start writing programs for your Raspberry Pi Pico using the MicroPython language"
 ---
@@ -13,7 +12,7 @@ subtitle: "Connect a computer and start writing programs for your Raspberry Pi P
 <aside class="callout note" markdown="1">
 **THONNY OR VIPERIDE?**
 
-This lesson uses Thonny, a desktop app you install on your computer. If you’d rather use [ViperIDE](https://viper-ide.org), a browser-based tool with nothing to install, skip ahead to [Writing and running code with ViperIDE](/pico/02-viperide-and-your-first-program/) instead — it covers the same ground with a different tool.
+This lesson uses Thonny, a desktop app you install on your computer. If you’d rather use [ViperIDE](https://viper-ide.org), a browser-based tool with nothing to install, skip ahead to [Interlude A: Writing and running code with ViperIDE](/pico/02-viperide-and-your-first-program/) instead — it covers the same ground with a different tool.
 </aside>
 
 Since its launch in 1991, the Python programming language — named after the famous comedy troupe Monty Python, rather than the snake — has grown to become one of the most popular in the world. Its popularity, though, doesn’t mean there aren’t improvements that could be made — particularly if you’re working with a microcontroller.

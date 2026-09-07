@@ -1,8 +1,9 @@
 ---
 layout: lesson
-title: "Writing and running code with ViperIDE"
+title: "Interlude A: Writing and running code with ViperIDE"
 pathway: pico
-order: 2
+order: 2.5
+label: "Interlude A"
 source: original
 subtitle: "Connect your Pico to ViperIDE and write your first MicroPython programs: no software to install, no admin rights needed."
 ---
@@ -13,7 +14,7 @@ no software to install, no admin rights needed.*
 <aside class="callout note" markdown="1">
 **USING THONNY INSTEAD?**
 
-If you’re using Thonny rather than ViperIDE, see [Interlude A: Programming with MicroPython](/pico/01b-programming-with-thonny/) instead — it covers the same ground with Thonny’s interface.
+If you’re using Thonny rather than ViperIDE, see [Chapter 2: Programming with MicroPython](/pico/01b-programming-with-thonny/) instead — it covers the same ground with Thonny’s interface.
 </aside>
 
 Your Pico is flashed with MicroPython and ready to go. Now you need a way
