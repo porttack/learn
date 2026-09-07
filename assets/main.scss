@@ -3,7 +3,9 @@
 @import "minima";
 
 .site-menu {
-  position: fixed;
+  // absolute, not fixed: it should scroll away with the page, not hover
+  // over the content the whole time.
+  position: absolute;
   top: 0.5em;
   // Track .wrapper's own centered max-width instead of the viewport edge,
   // so the menu lines up with the content column even on a wide window.
