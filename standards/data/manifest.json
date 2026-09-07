@@ -126,6 +126,22 @@
    "abbrev": "Coins",
    "hue_light": "#b32eba",
    "hue_dark": "#cb52d1"
+  },
+  {
+   "slug": "kagan_teambuilding",
+   "file": "kagan-teambuilding.json",
+   "title": "Kagan Cooperative Learning \u2014 Teambuilding",
+   "abbrev": "KaganTB",
+   "hue_light": "#570cf8",
+   "hue_dark": "#622bd8"
+  },
+  {
+   "slug": "kagan_classbuilding",
+   "file": "kagan-classbuilding.json",
+   "title": "Kagan Cooperative Learning \u2014 Classbuilding",
+   "abbrev": "KaganCB",
+   "hue_light": "#5ba72a",
+   "hue_dark": "#4ab00a"
   }
  ],
  "crosswalks": [

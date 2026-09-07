@@ -75,6 +75,8 @@ HUES = [
     ("#892b7b", "#a6438b"),  # 13 plum
     ("#b8860b", "#b8860b"),  # 14 gold
     ("#b32eba", "#cb52d1"),  # 15 orchid
+    ("#570cf8", "#622bd8"),  # 16 indigo
+    ("#5ba72a", "#4ab00a"),  # 17 spring green
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -99,6 +101,25 @@ HUES = [
 # regressed -- both PASS (same pre-existing light-mode contrast WARN on slots
 # 3/4/5/10, unchanged).
 #
+# Slots 16-17 (indigo, spring green) added 2026-09-04 alongside
+# kagan_teambuilding and kagan_classbuilding, both inserted before the
+# still-placeholder cs50psets so real sources stay contiguous. Same
+# brute-force-and-validate method as every slot above: indigo fills the
+# ~270-290 deg gap between violet (~248) and orchid (~297) that orchid's own
+# addition didn't fully use, chosen for its adjacent pair against slot 15
+# (orchid); spring green fills the ~90-105 deg gap between olive (~70) and
+# green (~120), chosen against slot 16 (indigo). node
+# scripts/validate_palette.js "#b32eba,#570cf8" --mode light and
+# "#cb52d1,#622bd8" --mode dark both PASS (CVD 9.9 light / 10.0 dark, clear of
+# the 6-8 floor band); "#570cf8,#5ba72a" --mode light and "#622bd8,#4ab00a"
+# --mode dark both PASS (CVD ~38-39, wide margin). Full 17-slot run in both
+# modes afterward confirmed no other pair regressed -- both PASS, worst
+# adjacent CVD/normal-floor pairs are unchanged pre-existing ones (not the two
+# new pairs), and dark mode's WARN moved from slot 15 (orchid alone) to slot
+# 16 (indigo) since indigo is the new lower-contrast neighbor against the dark
+# surface -- same kind of relief-required WARN the palette already carries
+# elsewhere, not a new category of problem.
+#
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
 # intentionally omitted -- excluded from this admin-facing view by direction,
@@ -110,10 +131,10 @@ HUES = [
 # slot were separated from another real source's slot by an unused reserved slot, a
 # combined view showing just the real sources would render two colors adjacent that
 # were never validated as a pair. Keeping real sources contiguous at the front avoids
-# that: all 14 slots were validated together, so any subset of today's fourteen sources is
+# that: all 17 slots were validated together, so any subset of today's seventeen sources is
 # safe in any combination. cs50psets has no carrier file and is skipped below
 # (harmless to leave it here, past the end of HUES) -- when it becomes real, HUES
-# needs a 15th color and a fresh validation pass, same as every slot addition before it.
+# needs an 18th color and a fresh validation pass, same as every slot addition before it.
 SOURCE_ORDER = [
     "working_in_python",
     "little_brother",
@@ -130,6 +151,8 @@ SOURCE_ORDER = [
     "codeorg_csd_3b",
     "hour_of_data",
     "teaching_binary_with_coins",
+    "kagan_teambuilding",
+    "kagan_classbuilding",
     "cs50psets",
 ]
 

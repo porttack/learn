@@ -1,0 +1,102 @@
+{
+ "meta": {
+  "title": "Kagan Cooperative Learning — Teambuilding",
+  "base_url": null,
+  "locator_kind": "structure",
+  "locator_url_template": null,
+  "source": "kagan_teambuilding",
+  "abbrev": "KaganTB",
+  "locator_titles": {
+   "RoundRobin": "RoundRobin",
+   "RoundTable": "RoundTable",
+   "Fan-N-Pick": "Fan-N-Pick",
+   "Placemat Consensus": "Placemat Consensus",
+   "Team Statements": "Team Statements",
+   "Team Projects": "Team Projects",
+   "Team Interview": "Team Interview",
+   "Three-Step Interview": "Three-Step Interview",
+   "Pairs Compare": "Pairs Compare",
+   "Team Formations": "Team Formations",
+   "Find-the-Fiction": "Find-the-Fiction"
+  },
+  "alignment_log": [
+   {
+    "date": "2026-09-04",
+    "by": "Claude Sonnet 5",
+    "scope": "Initial alignment pass, checked against every framework catalog in this repo (apcsp, castandards, csta2026, csta2017, ca-ict-anchor).",
+    "note": "6 ca-ict-anchor codes added under 9.0 (Leadership and Teamwork) and 2.0 (Communications) -- the strongest fit, since this is a general classroom teambuilding toolkit, not CS content."
+   },
+   {
+    "date": "2026-09-04",
+    "by": "Claude Sonnet 5",
+    "scope": "Follow-up cursory check of the other four catalogs specifically for partial/related-tier matches (the first pass had only ruled out strong coverage there).",
+    "note": "Added 4 codes at partial/related, all anchored on Team Projects (assign roles and resource access, then the team completes a shared deliverable): castandards 6-8.AP.18 and csta2017 2-AP-18 as partial (their own mechanism -- assigned roles, shared timeline, not just dividing labor blindly -- is genuinely taught, just through a non-code example); castandards 9-12.AP.21 and csta2017 3A-AP-22 as related (they add 'shared tools'/'real collaborative tools like shared code' specifics that this book doesn't teach). Considered but rejected as too much of a stretch even for related: csta2026 MS-PRO-PD-15 and HS-PRO-PD-15 (both explicitly scoped to 'building a program' -- no programming context here at all), apcsp 1.1 (about giving credit specifically in a computing project), and the feedback/refine-a-design cluster (castandards 6-8.AP.15/9-12.AP.18, csta2017 2-AP-15/3A-AP-19) -- Kagan's structures build group consensus, not an iterative user-feedback loop on a designed artifact."
+   },
+   {
+    "date": "2026-09-04",
+    "by": "Claude Sonnet 5",
+    "scope": "Downgrade pass at the teacher's direction, re-reading every entry against the strong/partial/related definitions with a stricter eye.",
+    "note": "Every entry (9.2, 9.3, 9.6 were strong; 2.1, castandards 6-8.AP.18, csta2017 2-AP-18 were partial) is now related. The teacher's own objection was the right one on a re-read: these structures put students through the *behavior* -- taking turns, reaching consensus, sharing personal facts, assigning roles -- but nothing in the book teaches or names the standard's own content (what makes a team trait a team trait, why valuing differences matters, the sender/receiver model as a concept). That's practice without instruction, which is what 'related' means in this project's own strength scale, not 'partial' (a narrower version of the same taught content) and certainly not 'strong.' Nothing in this file earns above related; a coverage map reader should see it as a supporting/vocabulary-touching source for these codes, not a teaching one."
+   }
+  ],
+  "caveat": "This is a purchased, copyrighted Kagan Publishing book (236 pages), not a public or linkable source -- base_url and locator_url_template are null, and the PDF itself is not committed to this repo (same policy as the adapted-rpi-pico-2e EPUB: working input, never redistributed). Locators are the book's 14 named cooperative-learning structures (4S Brainstorming, Blind Sequencing, Fan-N-Pick, Find-the-Fiction, Pairs Compare, Placemat Consensus, RoundRobin, RoundTable, Team Charades, Team Formations, Team Interview, Team Projects, Team Statements, Three-Step Interview), not the 100+ individual get-to-know-you topics each structure is taught through (e.g. \"Hello, My Name Is,\" \"My Favorite Movie\") -- those are interchangeable content for the same structure, not separate coverage. Assessed from the table of contents, the \"Structures-at-a-Glance\" step-by-step summaries, and the preface's own stated rationale (the \"Five Aims of Teambuilding\": Getting Acquainted, Team Identity, Mutual Support, Valuing Differences, Developing Synergy), not a page-by-page read of all 210 pages -- treat this as a first pass, not exhaustive. Every entry in this file is rated related, none strong or partial -- these structures put students through the *behavior* a standard names (taking turns, reaching consensus, assigning roles) without the book ever teaching or naming that behavior as content, which is what 'related' means on this project's own scale. The castandards/csta2017 entries are all narrower-scope matches on Team Projects specifically -- they'd read oddly if this book gets combined into a CS-content coverage map alongside sources that teach team software development, since none of this is actually about code."
+ },
+ "coverage": {
+  "ca-ict-anchor": {
+   "9.2": {
+    "locators": ["RoundRobin", "RoundTable", "Placemat Consensus", "Fan-N-Pick", "Team Statements"],
+    "strength": "related",
+    "note": "RoundRobin/RoundTable's equal turns, Fan-N-Pick's rotating roles, and Placemat Consensus/Team Statements' individual-input-to-group-decision arc all put students through the behaviors this standard names -- cooperation, rotating leadership, consensus. But none of it is taught or named as content; a student practices the trait by doing the structure, without the structure ever explaining what a team trait is or why it matters. That's support for the standard, not coverage of it."
+   },
+   "9.3": {
+    "locators": ["Team Projects", "Team Formations"],
+    "strength": "related",
+    "note": "Team Projects and Team Formations have the whole team coordinate on a shared build, which is the general shape of teamwork this standard names, and the book's own preface draws an explicit line to workplace teams. But that line is teacher-facing front matter, not something a student encounters -- students experience the coordination itself, not instruction connecting it to school/community/workplace citizenship."
+   },
+   "9.6": {
+    "locators": ["Team Interview", "Three-Step Interview", "Pairs Compare", "Team Statements", "Find-the-Fiction"],
+    "strength": "related",
+    "note": "\"Valuing Differences\" is one of the book's own named Five Aims, and these interview-style structures are built to surface personal differences between teammates -- but that means classmates trading trivia about favorite movies and weekend plans, not the standard's own frame of respecting individual and cultural differences in a workplace. Close enough in spirit to surface, not close enough to call taught."
+   },
+   "9.7": {
+    "locators": ["Team Projects"],
+    "strength": "related",
+    "note": "Team Projects has a team solve a shared task through assigned roles and active back-and-forth, which is the general shape 9.7 describes, but the book's projects (build a team tower, invent something from pipe cleaners, solve a puzzle) are generic classroom tasks, not ICT-sector work -- worth noting as a transferable skill-builder, not sector-specific coverage."
+   },
+   "2.1": {
+    "locators": ["Fan-N-Pick", "Three-Step Interview", "RoundRobin", "Pairs Compare"],
+    "strength": "related",
+    "note": "Fan-N-Pick, Three-Step Interview, RoundRobin, and Pairs Compare all put students through an explicit asker/answerer or speaker/listener turn each round, which is the shape of the sender/receiver model this standard describes. Nothing in the structure names or teaches that model, though -- it's practiced by doing the activity, never instructed -- so this is support for the standard, not direct coverage."
+   },
+   "2.3": {
+    "locators": ["Team Interview", "Three-Step Interview", "Find-the-Fiction"],
+    "strength": "related",
+    "note": "Find-the-Fiction has teammates weigh what's said against what's plausible to guess which statement is false, and the interview structures require a real response to what a partner just said, not a scripted one -- but this is closer to a game mechanic than direct instruction in reading implied meaning, so it's worth surfacing rather than counted as real coverage."
+   }
+  },
+  "castandards": {
+   "6-8.AP.18": {
+    "locators": ["Team Projects"],
+    "strength": "related",
+    "note": "Team Projects assigns roles and resource access before the team builds together, echoing this standard's own shape (splitting tasks, keeping a timeline, not working in silence). But the standard's own frame is explicitly about code ('not just dividing the code'), Team Projects' deliverables are generic classroom builds, and the assigned-roles step is a single line in the structure's mechanics, not taught content -- a distant echo, not genuine coverage."
+   },
+   "9-12.AP.21": {
+    "locators": ["Team Projects"],
+    "strength": "related",
+    "note": "Team Projects does assign defined roles before the team builds something together, matching half of this standard, but the standard also specifically names 'shared tools' -- collaborative software tooling this book never touches -- so it's surfaced as related rather than counted as genuine coverage."
+   }
+  },
+  "csta2017": {
+   "2-AP-18": {
+    "locators": ["Team Projects"],
+    "strength": "related",
+    "note": "Echoes Team Projects' own step list -- assigned roles and a shared timeline, not everyone quietly working on their own piece -- but this CSTA standard lives in a programming course and Team Projects' example deliverables aren't software, and the match is a single structural beat, not taught content."
+   },
+   "3A-AP-22": {
+    "locators": ["Team Projects"],
+    "strength": "related",
+    "note": "The 'taking on a specific role' half matches Team Projects directly, but the standard also names 'real collaborative tools, like shared code or shared documents,' which this book doesn't teach -- surfaced as related rather than genuine coverage."
+   }
+  }
+ }
+}

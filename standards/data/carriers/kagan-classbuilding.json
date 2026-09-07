@@ -1,0 +1,66 @@
+{
+ "meta": {
+  "title": "Kagan Cooperative Learning — Classbuilding",
+  "base_url": null,
+  "locator_kind": "structure",
+  "locator_url_template": null,
+  "source": "kagan_classbuilding",
+  "abbrev": "KaganCB",
+  "locator_titles": {
+   "Corners": "Corners",
+   "Find Someone Who": "Find Someone Who",
+   "Formations": "Formations",
+   "Inside-Outside Circle": "Inside-Outside Circle",
+   "Line-Ups": "Line-Ups",
+   "Mix-Freeze-Group": "Mix-Freeze-Group",
+   "Mix-N-Match": "Mix-N-Match",
+   "Similarity Groups": "Similarity Groups",
+   "Stir-the-Class": "Stir-the-Class",
+   "Who Am I?": "Who Am I?"
+  },
+  "alignment_log": [
+   {
+    "date": "2026-09-04",
+    "by": "Claude Sonnet 5",
+    "scope": "Initial alignment pass, checked against every framework catalog in this repo (apcsp, castandards, csta2026, csta2017, ca-ict-anchor).",
+    "note": "5 ca-ict-anchor codes added under 9.0 (Leadership and Teamwork) and 2.0 (Communications), the same two anchor standards kagan-teambuilding.json maps to and for the same reason -- no other catalog has a code this kind of content earns without stretching it. Weighted more toward whole-class climate/citizenship (9.3) and valuing differences (9.6) than team-decision-making (9.2), reflecting that classbuilding is explicitly whole-class mixing, not team-internal cooperation the way teambuilding is."
+   },
+   {
+    "date": "2026-09-04",
+    "by": "Claude Sonnet 5",
+    "scope": "Downgrade pass at the teacher's direction, re-reading every entry against the strong/partial/related definitions with a stricter eye.",
+    "note": "Every entry (9.3 and 9.6 were strong; 2.1 was partial) is now related. On a stricter read, these structures put students through the *behavior* -- sorting by trait, hunting for a matching classmate, trading questions -- but nothing in the book teaches or names the standard's own content (what respecting differences means, why classroom citizenship matters, the sender/receiver model as a concept). That's practice without instruction, which is what 'related' means on this project's own scale, not 'partial' or 'strong.' Nothing in this file earns above related."
+   }
+  ],
+  "caveat": "This is a purchased, copyrighted Kagan Publishing book (212 pages), not a public or linkable source -- base_url and locator_url_template are null, and the PDF itself is not committed to this repo (same policy as the adapted-rpi-pico-2e EPUB: working input, never redistributed). Locators are the book's 10 named cooperative-learning structures (Corners, Find Someone Who, Formations, Inside-Outside Circle, Line-Ups, Mix-Freeze-Group, Mix-N-Match, Similarity Groups, Stir-the-Class, Who Am I?), not the many topic-specific activity variants under each (e.g. \"Sequence the Presidents,\" \"Coins-N-Cents\") -- those are interchangeable content for the same structure. Assessed from the table of contents, the \"Structures-at-a-Glance\" step-by-step summaries, and the preface's own definition of classbuilding (\"the process by which a room full of individuals with different backgrounds and experiences become a caring community of active learners\"), not a page-by-page read of all 190+ pages -- treat this as a first pass, not exhaustive. Every entry in this file is rated related, none strong or partial -- these structures put students through the behavior a standard names without the book ever teaching or naming that behavior as content, which is what 'related' means on this project's own scale."
+ },
+ "coverage": {
+  "ca-ict-anchor": {
+   "9.3": {
+    "locators": ["Corners", "Line-Ups", "Similarity Groups", "Mix-Freeze-Group"],
+    "strength": "related",
+    "note": "Classbuilding's own stated purpose -- improving whole-class climate -- touches 9.3's scope (\"school, community\" settings, not just workplace teams), and Corners/Line-Ups/Similarity Groups do have the class sort itself by a trait and discuss across the grouping. But none of it is instruction connecting that experience to citizenship or teamwork as a concept -- students do the sorting and discussing, nothing in the structure names why it matters, which keeps this at related rather than a taught match."
+   },
+   "9.6": {
+    "locators": ["Corners", "Find Someone Who", "Similarity Groups", "Who Am I?"],
+    "strength": "related",
+    "note": "These structures only work because classmates differ, and the preface names celebrating \"the diversity of every other classmate\" as a goal -- but what students actually do is trade trivia and sort by preference, not engage with the standard's own frame of respecting individual and cultural differences in a workplace. Worth surfacing for the shared theme, not close enough to call taught."
+   },
+   "9.2": {
+    "locators": ["Corners", "Similarity Groups"],
+    "strength": "related",
+    "note": "These involve group discussion and shared reasoning, which touches on the cooperation/decision-making traits 9.2 names, but classbuilding groupings are ad hoc and whole-class, not the stable, role-differentiated teams 9.2 is really describing -- worth surfacing, not counted as real team-decision-making coverage."
+   },
+   "2.1": {
+    "locators": ["Find Someone Who", "Inside-Outside Circle", "Mix-N-Match", "Stir-the-Class"],
+    "strength": "related",
+    "note": "Each of these rotates students through a repeated asker/answerer exchange with a new partner every round -- Inside-Outside Circle's two concentric circles trade questions and switch, Mix-N-Match has partners quiz and trade cards, Stir-the-Class rotates who answers within a huddle. Students get heavy repetition of the sender/receiver exchange itself, but it's never named or taught as a concept, which keeps this at related rather than a taught match."
+   },
+   "2.3": {
+    "locators": ["Inside-Outside Circle", "Who Am I?"],
+    "strength": "related",
+    "note": "Both require actually responding to what a rotating partner just said rather than a scripted line, and Who Am I? in particular is a guessing game built on picking up on clues from a partner's answers -- closer to a game mechanic that touches responsive listening than direct instruction in reading implied meaning, so it's surfaced rather than counted as real coverage."
+   }
+  }
+ }
+}
