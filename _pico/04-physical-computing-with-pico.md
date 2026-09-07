@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Physical computing with Raspberry Pi Pico"
+title: "Chapter 4: Physical computing with Raspberry Pi Pico"
 pathway: pico
 order: 4
 source: rpi-pico-2e

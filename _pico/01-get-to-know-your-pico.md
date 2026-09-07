@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Get to know your Raspberry Pi Pico"
+title: "Chapter 1: Get to know your Raspberry Pi Pico"
 pathway: pico
 order: 1
 source: rpi-pico-2e

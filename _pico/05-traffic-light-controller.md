@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Traffic light controller"
+title: "Chapter 5: Traffic light controller"
 pathway: pico
 order: 5
 source: rpi-pico-2e

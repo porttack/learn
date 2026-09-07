@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Physical computing"
+title: "Chapter 3: Physical computing"
 pathway: pico
 order: 3
 source: rpi-pico-2e
