@@ -279,7 +279,19 @@ noscript p {
 .cov-tooltip .tt-source { margin: .3em 0 0; color: var(--muted); }
 .cov-tooltip .tt-source-note { font-style: italic; margin: 0 0 .3em; }
 .tt-source-strength { color: var(--muted); font-weight: 400; }
-.cov-anchor-block { opacity: .6; font-size: .92em; }
+/* De-emphasized relative to Pathway C below it, but opacity can't go on the
+   block itself: an ancestor's opacity forces its whole subtree (tooltip
+   included) into one translucent compositing layer, so an open .cov-tooltip
+   -- an absolutely-positioned descendant, not exempted by that positioning --
+   would render at this same reduced opacity over whatever sits behind it
+   instead of the solid var(--bg) it declares, making its text unreadable.
+   Applying it only to each badge's resting chrome (button + bars), not
+   .cov-badge itself, keeps .cov-tooltip a full-opacity sibling instead. */
+.cov-anchor-block { font-size: .92em; }
+.cov-anchor-block .cov-subpanel-heading,
+.cov-anchor-block .cov-subgroup h4,
+.cov-anchor-block .cov-badge-btn,
+.cov-anchor-block .cov-bars { opacity: .6; }
 /* Cross-framework compare: a chevron per matched standard in the other
    framework, expanding in place (not a nested floating tooltip) to show that
    standard's own paraphrase side by side with this one. */
