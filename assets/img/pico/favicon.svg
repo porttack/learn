@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Simple, crisp microchip glyph (not a photo of a real board): a dark
+       IC body with bold gold legs on all four sides. Kept to 2 thick legs
+       per side, not 3 thin ones, so the shape still reads clearly at real
+       favicon sizes (16-32px), where finer pins just blur into the body. -->
+  <g fill="#f0b429">
+    <rect x="3" y="10" width="5" height="4"/>
+    <rect x="3" y="18" width="5" height="4"/>
+    <rect x="24" y="10" width="5" height="4"/>
+    <rect x="24" y="18" width="5" height="4"/>
+    <rect x="10" y="3" width="4" height="5"/>
+    <rect x="18" y="3" width="4" height="5"/>
+    <rect x="10" y="24" width="4" height="5"/>
+    <rect x="18" y="24" width="4" height="5"/>
+  </g>
+  <rect x="8" y="8" width="16" height="16" rx="2" fill="#1b1f23"/>
+</svg>
