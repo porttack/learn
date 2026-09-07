@@ -145,9 +145,10 @@ Rules:
 1. **Never mix sources within one page.** A page is entirely adapted or
    entirely original. Mixing forces the whole page to 3.0 and makes the
    provenance line a lie. If a lesson needs both, split it into two lessons.
-2. Every lesson declares `source:` in front matter — either
-   `adapted-rpi-pico-2e` or `original`. The layout renders the correct
-   attribution footer from that field. Do not hand-write attribution.
+2. Every lesson declares `source:` in front matter — matching an `id` in
+   `_data/sources.yml` (e.g. `rpi-pico-2e`) or `original`. The layout renders
+   the correct attribution footer from that field. Do not hand-write
+   attribution.
 3. **Do not commit the EPUB or PDF.** They are gitignored. They are working
    input, not repo content. Redistributing the whole book is a separate
    question from publishing an adaptation, and one we don't need to answer.
@@ -222,9 +223,12 @@ pseudocode presented as if it runs.
 - Code that touches thrusters, power, or anything in water gets a safety
   callout. Water and mains-adjacent power near teenagers is the real risk in
   this course, not bad syntax.
-- **No em dashes or en dashes in student-facing content.** Part of the
-  program's AI-signal awareness; a stray em dash reads as machine-written to
-  the students and parents who notice. Applies to prose, not to code.
+- **No em dashes or en dashes in original student-facing content.** Part of
+  the program's AI-signal awareness; a stray em dash reads as machine-written
+  to the students and parents who notice. Applies to prose written for this
+  site, not to code, and not to text adapted from a licensed source (e.g. the
+  rpi-pico-2e book): a faithful adaptation keeps the source's own dashes
+  rather than rewriting its voice out.
 
 ## Writing style
 

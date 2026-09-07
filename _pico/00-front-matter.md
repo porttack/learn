@@ -52,7 +52,7 @@ The publisher, and contributors accept no responsibility in respect of any omiss
 
 ## Welcome
 
-You might think of computers as things you stick on your desk and type on. That is certainly one type of computer, but it’s not the only type. In this book, we’re looking at microcontrollers — small processing units with a bit of memory that are good at controlling other hardware. You probably have lots of microcontrollers in your house already.
+You might think of computers as things you stick on your desk and type on. That is certainly one type of computer, but it’s not the only type. In this book, we’re looking at microcontrollers: small processing units with a bit of memory that are good at controlling other hardware. You probably have lots of microcontrollers in your house already.
 
 There’s a good chance your washing machine is controlled by a microcontroller; maybe your watch is; you might find one in your coffee machine or microwave. All these microcontrollers already have software running on them and the manufacturers make it hard to make any kind of change to that software.
 
@@ -70,7 +70,7 @@ Ben Everard is a geek who has stumbled into a career that lets him play with new
 
 Raspberry Pi is an affordable way to do something useful, or to do something fun.
 
-Democratising technology — providing access to tools — has been our motivation since the Raspberry Pi project began. By driving down the cost of general-purpose computing to below $5, we’ve opened up the ability for anybody to use computers in projects that used to require prohibitive amounts of capital. Today, with barriers to entry being removed, we see Raspberry Pi computers being used everywhere from interactive museum exhibits and schools to national postal sorting offices and government call centres. Kitchen table businesses all over the world have been able to scale and find success in a way that just wasn’t possible in a world where integrating technology meant spending large sums on laptops and PCs.
+Democratising technology, providing access to tools, has been our motivation since the Raspberry Pi project began. By driving down the cost of general-purpose computing to below $5, we’ve opened up the ability for anybody to use computers in projects that used to require prohibitive amounts of capital. Today, with barriers to entry being removed, we see Raspberry Pi computers being used everywhere from interactive museum exhibits and schools to national postal sorting offices and government call centres. Kitchen table businesses all over the world have been able to scale and find success in a way that just wasn’t possible in a world where integrating technology meant spending large sums on laptops and PCs.
 
 Raspberry Pi removes the high entry cost to computing for people across all demographics: while children can benefit from a computing education that previously wasn’t open to them, many adults have also historically been priced out of using computers for enterprise, entertainment, and creativity.
 

@@ -25,18 +25,18 @@ Start by finding the LED: it’s the small rectangular component to the left of 
 
 The on-board LED is connected to a GPIO pin (GP25 for Pico and Pico 2, but a GPIO on the wireless chip for Pico W and Pico 2 W) that is not broken out to a physical pin on the edge of your Pico. While you can’t connect external hardware to the pin, it can be treated just the same as any other GPIO pin within your programs, but must be referred to as `"LED"`. It’s a simple way to add an output to your programs without needing any extra components.
 
-Open ViperIDE and connect to your Pico — see the [ViperIDE lesson](/pico/02-viperide-and-your-first-program/) for a refresher if you need one. Create a new file, then start your program with the following line:
+Open ViperIDE and connect to your Pico. See the [ViperIDE lesson](/pico/02-viperide-and-your-first-program/) for a refresher if you need one. Create a new file, then start your program with the following line:
 
 ```python
 import machine
 ```
 
-This short line of code is key to working with MicroPython on your Pico. It loads, or *imports*, a collection of MicroPython code known as a *library* — in this case, the `machine` library. The `machine` library contains all the instructions MicroPython needs to communicate with the Pico and other MicroPython-compatible devices, extending the language for physical computing. Without this line, you won’t be able to control any of your Pico’s GPIO pins — and you won’t be able to make the on-board LED light up.
+This short line of code is key to working with MicroPython on your Pico. It loads, or *imports*, a collection of MicroPython code known as a *library*: in this case, the `machine` library. The `machine` library contains all the instructions MicroPython needs to communicate with the Pico and other MicroPython-compatible devices, extending the language for physical computing. Without this line, you won’t be able to control any of your Pico’s GPIO pins, and you won’t be able to make the on-board LED light up.
 
 <aside class="callout note" markdown="1">
 **SELECTIVE IMPORTS**
 
-In both MicroPython and Python it’s possible to import part of a library, rather than the whole library. This can use less memory and allows you to refer to functions without their library name prefix. Most programs in this book import whole libraries; elsewhere you may see programs with lines like `from machine import Pin`; this imports only the `Pin` function, rather than the whole `machine` library.
+In both MicroPython and Python it’s possible to import part of a library, rather than the whole library. This can use less memory and allows you to refer to functions without their library name prefix. Most programs here import whole libraries; elsewhere you may see programs with lines like `from machine import Pin`; this imports only the `Pin` function, rather than the whole `machine` library.
 </aside>
 
 The `machine` library exposes what is known as an *application programming interface (API)*. The name sounds complicated, but describes exactly what it does: it provides a way for your program, or the *application*, to communicate with the Pico via an *interface*.
@@ -49,7 +49,7 @@ led_onboard = machine.Pin("LED", machine.Pin.OUT)
 
 This line defines an object called `led_onboard`, which offers a friendly name you can use to refer to the on-board LED later in your program. It’s technically possible to use any name here, but it’s best to stick with names which describe the variable’s purpose, to make the program easier to read and understand.
 
-The second part of the line calls the `Pin` function in the machine library. This function, as its name suggests, is designed for handling your Pico’s GPIO pins. At the moment, none of the GPIO pins — including the on-board LED pin — know what they’re supposed to be doing. The first argument, `"LED"`, tells the `Pin` function to use the GPIO assigned to the on-board LED, which means you don’t need to remember its pin number. The second, `machine.Pin.OUT`, tells Pico the pin should be used as an *output* rather than an *input*.
+The second part of the line calls the `Pin` function in the machine library. This function, as its name suggests, is designed for handling your Pico’s GPIO pins. At the moment, none of the GPIO pins (including the on-board LED pin) know what they’re supposed to be doing. The first argument, `"LED"`, tells the `Pin` function to use the GPIO assigned to the on-board LED, which means you don’t need to remember its pin number. The second, `machine.Pin.OUT`, tells Pico the pin should be used as an *output* rather than an *input*.
 
 That line alone is enough to set the pin up, but it won’t light the LED. To do that, you need to tell your Pico to actually turn the pin on. Type the following code on the next line:
 
@@ -67,7 +67,7 @@ You’ll notice, however, that the LED stays lit. That’s because your program 
 led_onboard.value(0)
 ```
 
-Run the program this time, though, and the LED never seems to light up. That’s because your Pico works very, very quickly — much faster than you can see with the naked eye. The LED is lighting up, but for such a short time that it appears to remain dark. To fix that, you need to slow your program down by introducing a delay.
+Run the program this time, though, and the LED never seems to light up. That’s because your Pico works very, very quickly, much faster than you can see with the naked eye. The LED is lighting up, but for such a short time that it appears to remain dark. To fix that, you need to slow your program down by introducing a delay.
 
 Go back to the top of your program: click to move your cursor to the end of the first line and press ENTER to insert a new second line. On this line, type:
 
@@ -85,7 +85,7 @@ time.sleep(5)
 
 This calls the `sleep` function from the `time` library, which makes your program pause for the number of seconds you typed: in this case, five seconds.
 
-Click the **Run** button again. This time you’ll see the on-board LED on your Pico light up, stay lit for five seconds — try counting along — and go out again.
+Click the **Run** button again. This time you’ll see the on-board LED on your Pico light up, stay lit for five seconds (try counting along), and go out again.
 
 Finally, it’s time to make the LED blink. To do that, you’ll need to create a loop. Rewrite your program so it matches the one below:
 
@@ -136,11 +136,11 @@ The next projects in this chapter will be much easier to complete if you use a s
 
 A breadboard is covered with holes which are spaced 2.54mm apart to match most components. Under these holes are metal strips (*terminals*) which act like invisible jumper wires. These run in columns on the board, with most boards having a gap down the middle to split them in two halves. Many breadboards also have letters going up the left side and numbers on the top and bottom. These allow you to find a particular hole: A1 is the bottom-left, B1 is the hole just above it, while B2 is one hole to the right. A1 is connected to B1 by the hidden metal strips, but no number hole is ever connected to a different number hole unless you add a jumper wire.
 
-Larger breadboards also have strips of holes along the top and bottom, typically marked with red and black or red and blue stripes. These are the *power rails*, and are designed to make wiring easier: you can connect a single wire from your Pico’s ground pin to one of the power rails — typically marked with a blue or black stripe and a minus symbol — to provide a *common ground* for lots of components on the breadboard, and you can do the same if your circuit needs 3.3V or 5V power.
+Larger breadboards also have strips of holes along the top and bottom, typically marked with red and black or red and blue stripes. These are the *power rails*, and are designed to make wiring easier: you can connect a single wire from your Pico’s ground pin to one of the power rails (typically marked with a blue or black stripe and a minus symbol) to provide a *common ground* for lots of components on the breadboard, and you can do the same if your circuit needs 3.3V or 5V power.
 
 Adding electronic components to a breadboard is simple: just line their leads (the sticky-out metal parts) up with the holes and gently push until the component is in place. For connections you need to make beyond those the breadboard makes for you, you can use male-to-male (M2M) jumper wires; for connections from the breadboard to components not installed in the breadboard, use male-to-female (M2F) jumper wires.
 
-Push your Pico into the breadboard so it straddles the middle gap and the micro USB port is at the edge of the board (see [Figure 4-3](#fig-4-3)). Pins 1 and 40 should be in the breadboard column marked with a 1, if your breadboard is numbered. Before pushing your Pico down, make sure the header pins are all properly positioned — if you bend a pin, it can be difficult to straighten it again without it breaking.
+Push your Pico into the breadboard so it straddles the middle gap and the micro USB port is at the edge of the board (see [Figure 4-3](#fig-4-3)). Pins 1 and 40 should be in the breadboard column marked with a 1, if your breadboard is numbered. Before pushing your Pico down, make sure the header pins are all properly positioned: if you bend a pin, it can be difficult to straighten it again without it breaking.
 
 <figure id="fig-4-3">
   <img src="{{ '/assets/img/pico/fig-4-3.jpg' | relative_url }}" alt="Figure 4-3: Your Pico is designed to sit securely in a solderless breadboard">
@@ -157,21 +157,21 @@ Your Pico’s pins are designed to be a fun and safe way to experiment with phys
 
 #### Next steps: an external LED
 
-So far, you’ve been working with your Pico on its own — running MicroPython programs on its RP2040 or RP2350 microcontroller and toggling the on-board LED on and off. Microcontrollers are usually used with *external* components, though — and your Pico is no exception.
+So far, you’ve been working with your Pico on its own: running MicroPython programs on its RP2040 or RP2350 microcontroller and toggling the on-board LED on and off. Microcontrollers are usually used with *external* components, though, and your Pico is no exception.
 
-For this project, you’ll need a breadboard, male-to-male (M2M) jumper wires, an LED, and a 330 Ω resistor — or as close to 330 Ω as you have available. If you don’t have a breadboard, you can use female-to-female (F2F) jumper wires, but the circuit will be fragile and easy to break.
+For this project, you’ll need a breadboard, male-to-male (M2M) jumper wires, an LED, and a 330 Ω resistor, or as close to 330 Ω as you have available. If you don’t have a breadboard, you can use female-to-female (F2F) jumper wires, but the circuit will be fragile and easy to break.
 
 <aside class="callout note" markdown="1">
 **RESISTANCE IS VITAL**
 
-The resistor is a vital component in this circuit: it protects your Raspberry Pi and the LED by limiting the amount of electrical current the LED can draw. Without it, the LED can pull too much current and burn itself — or your Raspberry Pi — out. When used like this, the resistor is known as a *current-limiting resistor*. The exact value of the resistor you need depends on the LED you’re using, but 330 Ω works for most common LEDs. The higher the value, the dimmer the LED; the lower the value, the brighter the LED.
+The resistor is a vital component in this circuit: it protects your Raspberry Pi and the LED by limiting the amount of electrical current the LED can draw. Without it, the LED can pull too much current and burn out, possibly taking your Raspberry Pi with it. When used like this, the resistor is known as a *current-limiting resistor*. The exact value of the resistor you need depends on the LED you’re using, but 330 Ω works for most common LEDs. The higher the value, the dimmer the LED; the lower the value, the brighter the LED.
 
 Never connect an LED to a Raspberry Pi without a current-limiting resistor, unless you know the LED has a built-in resistor of appropriate value.
 </aside>
 
 Hold the LED in your fingers: you’ll see one of its leads is longer than the other. The longer lead is known as the *anode*, and represents the positive side of the circuit; the shorter lead is the *cathode*, and represents the negative side. The anode needs to be connected to one of your Pico’s GPIO pins via the resistor; the cathode needs to be connected to a ground pin.
 
-*With your Pico unplugged from USB*, start by connecting the resistor: take either end and insert it into the breadboard in the same column as your Pico’s GP15 pin at the bottom-right — if you’re using a numbered breadboard with your Pico inserted at the edge, this should be column 20. Push the other end into a free column further down the breadboard — we’re using column 26.
+*With your Pico unplugged from USB*, start by connecting the resistor: take either end and insert it into the breadboard in the same column as your Pico’s GP15 pin at the bottom-right: if you’re using a numbered breadboard with your Pico inserted at the edge, this should be column 20. Push the other end into a free column further down the breadboard: we’re using column 26.
 
 <aside class="callout warning" markdown="1">
 **WARNING**
@@ -179,7 +179,7 @@ Hold the LED in your fingers: you’ll see one of its leads is longer than the o
 Never cram more than one component lead or jumper wire into a single hole on the breadboard. Remember: aside from the split in the middle, same-numbered holes are connected, so a component lead in A1 is connected to anything in B1, C1, D1, and E1.
 </aside>
 
-Take the LED, and push the longer leg — the anode — into the same column as the end of the resistor. Push the shorter leg — the cathode — into the same column but across the centre gap in the breadboard, so it’s lined up but not electrically connected to the longer leg except through the LED itself. Finally, insert a male-to-male (M2M) jumper wire into the same column as the shorter leg of the LED, then either connect it directly to one of your Pico’s ground pins (via another hole in its column) or to the negative side of your breadboard’s power rail. If you connect it to the power rail, finish the circuit by connecting the rail to one of your Pico’s ground pins. Your finished circuit should look like [Figure 4-4](#fig-4-4). Connect your Pico to your Raspberry Pi or computer.
+Take the LED, and push the longer leg (the anode) into the same column as the end of the resistor. Push the shorter leg (the cathode) into the same column but across the centre gap in the breadboard, so it’s lined up but not electrically connected to the longer leg except through the LED itself. Finally, insert a male-to-male (M2M) jumper wire into the same column as the shorter leg of the LED, then either connect it directly to one of your Pico’s ground pins (via another hole in its column) or to the negative side of your breadboard’s power rail. If you connect it to the power rail, finish the circuit by connecting the rail to one of your Pico’s ground pins. Your finished circuit should look like [Figure 4-4](#fig-4-4). Connect your Pico to your Raspberry Pi or computer.
 
 <figure id="fig-4-4">
   <img src="{{ '/assets/img/pico/fig-4-4.png' | relative_url }}" alt="Figure 4-4: The finished circuit, with an LED and a resistor">
@@ -192,7 +192,7 @@ Controlling an external LED in MicroPython is no different to controlling your P
 led_onboard = machine.Pin("LED", machine.Pin.OUT)
 ```
 
-Edit the pin number, changing it from the string `"LED"` — the pin connected to your Pico’s internal LED — to 15, the pin to which you connected the external LED. Also edit the name you created: you’re not using the on-board LED anymore, so have it say `led_external` instead. You’ll also have to change the name elsewhere in the program, until it looks like this:
+Edit the pin number, changing it from the string `"LED"` (the pin connected to your Pico’s internal LED) to 15, the pin to which you connected the external LED. Also edit the name you created: you’re not using the on-board LED anymore, so have it say `led_external` instead. You’ll also have to change the name elsewhere in the program, until it looks like this:
 
 ```python
 import machine
@@ -208,10 +208,10 @@ while True:
 <aside class="callout note" markdown="1">
 **PIN NUMBERS**
 
-The GPIO pins on your Pico are usually shown in pinout diagrams with their full names, such as GP15. In MicroPython, though, the letters G and P are dropped — so make sure you write `15` rather than `GP15` in your program or it won’t work!
+The GPIO pins on your Pico are usually shown in pinout diagrams with their full names, such as GP15. In MicroPython, though, the letters G and P are dropped, so make sure you write `15` rather than `GP15` in your program or it won’t work!
 </aside>
 
-You don’t really *need* to change the name in the program: it would run just the same if you’d left it at `led_onboard`, as it’s only the pin number which truly matters. When you come back to the program later, though, it would be very confusing to have an object named `led_onboard` which lights up an external LED — try to get into the habit of making sure your names match their purpose!
+You don’t really *need* to change the name in the program: it would run just the same if you’d left it at `led_onboard`, as it’s only the pin number which truly matters. When you come back to the program later, though, it would be very confusing to have an object named `led_onboard` which lights up an external LED. Try to get into the habit of making sure your names match their purpose!
 
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: MULTIPLE LEDS**
@@ -230,7 +230,7 @@ Outputs like LEDs are one thing, but the ‘input/output’ part of ‘GPIO’ m
   <figcaption>Figure 4-5: Wiring a four-leg push-button switch to GP14</figcaption>
 </figure>
 
-Connect the ground or negative power rail of your breadboard to one of your Pico’s GND pins, Pin 38, and from there to one of the legs of the switch; then connect the other leg to pin GP14 on your Pico — it’s the one just to the left of the pin you used for the LED project, and should be in column 19 of your breadboard.
+Connect the ground or negative power rail of your breadboard to one of your Pico’s GND pins, Pin 38, and from there to one of the legs of the switch; then connect the other leg to pin GP14 on your Pico: it’s the one just to the left of the pin you used for the LED project, and should be in column 19 of your breadboard.
 
 If you’re using a push-button with four legs, your circuit will only work if you use the correct pair of legs: the legs are connected in pairs, so you need to either use the two legs on the same side of the centre divide or diagonally opposite legs.
 
@@ -246,25 +246,25 @@ Next, set up a pin as an input, rather than an output:
 button = machine.Pin(14, machine.Pin.IN, machine.Pin.PULL_UP)
 ```
 
-This works in the same way as your LED projects: an object called `button` is created, which includes the pin number — GP14, in this case — and configures it as an input with the internal resistor set to pull-up. Creating the object, though, doesn’t mean it will do anything by itself — just as creating the LED objects earlier didn’t make the LEDs light up.
+This works in the same way as your LED projects: an object called `button` is created, which includes the pin number (GP14, in this case) and configures it as an input with the internal resistor set to pull-up. Creating the object, though, doesn’t mean it will do anything by itself, just as creating the LED objects earlier didn’t make the LEDs light up.
 
 <aside class="callout note" markdown="1">
 **RESISTANCE IS HIDDEN**
 
-Unlike an LED, you don’t need to provide the current-limiting resistor for a push-button switch. It still needs a resistor: a *pull-up* or *pull-down* resistor, depending on how your circuit works. Without a pull-up or pull-down resistor, an input is known as *floating* — which means it has a ‘noisy’ signal which can trigger even when you’re not pushing the button.
+Unlike an LED, you don’t need to provide the current-limiting resistor for a push-button switch. It still needs a resistor: a *pull-up* or *pull-down* resistor, depending on how your circuit works. Without a pull-up or pull-down resistor, an input is known as *floating*, which means it has a ‘noisy’ signal which can trigger even when you’re not pushing the button.
 
 So where’s the resistor in this circuit? Hidden in your Pico. Just like it has an on-board LED, your Pico includes an on-board *programmable resistor* connected to each GPIO pin. These can be set in MicroPython to pull-down resistors *or* pull-up resistors.
 
-What’s the difference? A pull-down resistor connects the pin to ground, meaning when the push-button isn’t pressed, the input will be 0. A pull-up resistor connects the pin to 3V3, meaning when the push-button isn’t pressed, the input will be 1. Circuits in this book will use programmable resistors in pull-up mode.
+What’s the difference? A pull-down resistor connects the pin to ground, meaning when the push-button isn’t pressed, the input will be 0. A pull-up resistor connects the pin to 3V3, meaning when the push-button isn’t pressed, the input will be 1. Circuits here will use programmable resistors in pull-up mode.
 </aside>
 
-To actually read the button, you need to use the `machine` API again — this time using the `value` function to read, rather than set, the value of the pin. Type the following line:
+To actually read the button, you need to use the `machine` API again, this time using the `value` function to read, rather than set, the value of the pin. Type the following line:
 
 ```python
 print(button.value())
 ```
 
-Click the **Run** icon and save your program as `Button.py` — remembering to make sure it saves on your Pico. Your program will print out a single number: the value of the input on GP14. Because the input is using a pull-up resistor, this value will be 1 — letting you know the button isn’t pushed.
+Click the **Run** icon and save your program as `Button.py`, remembering to make sure it saves on your Pico. Your program will print out a single number: the value of the input on GP14. Because the input is using a pull-up resistor, this value will be 1, letting you know the button isn’t pushed.
 
 Hold down the button with your finger, and press the **Run** icon again. This time, you’ll see the value 0 printed to the Terminal: pushing the button has completed the circuit and changed the value read from the pin.
 
@@ -318,14 +318,14 @@ while True:
     if button.value() == 0:
 ```
 
-Rather than printing a message to the Terminal, this time you’ll toggle the output pin (and the LED connected to it) based on the value of the input pin. Type the following, remembering it will need to be indented by eight spaces — which your editor should indent automatically after you press Enter on the line above:
+Rather than printing a message to the Terminal, this time you’ll toggle the output pin (and the LED connected to it) based on the value of the input pin. Type the following, remembering it will need to be indented by eight spaces, which your editor should indent automatically after you press Enter on the line above:
 
 ```python
         led_external.value(1)
         time.sleep(2)
 ```
 
-That’s enough to turn the LED on, but you’ll also need to turn it off again when the button isn’t being pressed. Add the following new line, using the BACKSPACE key to delete four of the eight spaces — meaning the line will not be part of the `if` statement, but will form part of the infinite loop:
+That’s enough to turn the LED on, but you’ll also need to turn it off again when the button isn’t being pressed. Add the following new line, using the BACKSPACE key to delete four of the eight spaces, meaning the line will not be part of the `if` statement, but will form part of the infinite loop:
 
 ```python
     led_external.value(0)
@@ -349,7 +349,7 @@ while True:
 
 Save the program as `Switch.py` on your Pico and click **Run**. At first, nothing will happen; push the button, and you’ll see the LED light up. Let go of the button; after two seconds, the LED will go out until you press the button again.
 
-Congratulations: you’ve built your first circuit which controls one pin based on the input from another — a building block for bigger things!
+Congratulations: you’ve built your first circuit which controls one pin based on the input from another: a building block for bigger things!
 
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: BUILDING IT UP**

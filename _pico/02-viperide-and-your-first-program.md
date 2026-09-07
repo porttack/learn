@@ -6,7 +6,7 @@ order: 2
 source: original
 ---
 
-*Connect your Pico to ViperIDE and write your first MicroPython programs —
+*Connect your Pico to ViperIDE and write your first MicroPython programs:
 no software to install, no admin rights needed.*
 
 Your Pico is flashed with MicroPython and ready to go. Now you need a way
@@ -24,7 +24,7 @@ You don't need an account.
 
 Plug your Pico into your computer with a micro USB cable. In ViperIDE,
 look for the option to connect over USB/serial. Your browser will show a
-list of devices — pick the one that matches your Pico (it may show up as
+list of devices; pick the one that matches your Pico (it may show up as
 something like "USB Serial Device"). The first time, your browser will ask
 permission to talk to the device; allow it.
 
@@ -35,7 +35,7 @@ manager, even if that list is empty right now.
   <img src="{{ '/assets/img/pico/viperide-interface.png' | relative_url }}" alt="The ViperIDE interface: a File Manager pane on the left, a code editor top-right, and a Terminal pane bottom-right showing MicroPython REPL output.">
   <figcaption>
     The ViperIDE interface: File Manager (left), editor (top right), and
-    Terminal — this is the REPL — (bottom right). The blue &#9654; button
+    Terminal, the REPL, at bottom right. The blue &#9654; button
     next to the ViperIDE logo runs your file.
     <br>Screenshot: <a href="https://github.com/vshymanskyy/ViperIDE">ViperIDE</a> by Volodymyr Shymanskyy, MIT License.
   </figcaption>
@@ -44,11 +44,11 @@ manager, even if that list is empty right now.
 <aside class="callout warning" markdown="1">
 **VIRTUAL DEVICE ISN'T YOUR PICO**
 
-ViperIDE also offers a **Virtual Device** — a MicroPython simulator that
+ViperIDE also offers a **Virtual Device**: a MicroPython simulator that
 runs entirely inside the browser tab, no hardware required. It's genuinely
 useful for practicing plain Python syntax when you don't have your Pico
 with you. But it has no `machine` module and no GPIO pins: any code that
-touches hardware — LEDs, buttons, sensors, motors — will fail or do
+touches hardware (LEDs, buttons, sensors, motors) will fail or do
 nothing on the Virtual Device. Once you reach physical computing, you must
 be connected to your real, physical Pico to see it work.
 </aside>
@@ -72,7 +72,7 @@ time your Pico powers on). This is where your actual projects will live.
 
 If you've used Thonny before, ViperIDE's editor pane is roughly what
 Thonny calls the script area, and its REPL is the same idea as Thonny's
-Python shell — a live prompt, not a saved file. ViperIDE doesn't have
+Python shell: a live prompt, not a saved file. ViperIDE doesn't have
 Thonny's separate "MicroPython vs. regular Python" interpreter switch,
 because it only ever talks to MicroPython devices.
 </aside>
@@ -86,7 +86,7 @@ print("Hello, world!")
 ```
 
 Press Enter. Your Pico should immediately print the message back. That
-`print()` function is how your program talks to you — you'll use it
+`print()` function is how your program talks to you. You'll use it
 constantly, especially for figuring out what's going wrong when something
 doesn't work.
 
@@ -98,7 +98,7 @@ print("Hello, world!")
 ```
 
 Click the blue &#9654; (play) button near the ViperIDE logo, or press
-`F5`. You should see the same output — but this time, the code stays on
+`F5`. You should see the same output, but this time the code stays on
 your Pico. Unplug it, plug it back in, and it'll print the message again
 on its own, because `main.py` runs automatically on startup.
 
@@ -112,14 +112,14 @@ your Pico (restarts it without disconnecting) if it ever seems stuck.
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: MAKE IT YOURS**
 
-Change the message to something else — your name, a joke, anything. Run
+Change the message to something else: your name, a joke, anything. Run
 it again. Then try printing two different messages on two separate lines.
 Does the order they run in match the order you wrote them?
 </aside>
 
 ## Loops and indentation
 
-Typing the same `print()` line five times would work, but it's tedious —
+Typing the same `print()` line five times would work, but it's tedious,
 and if you wanted to change the message, you'd have to change it in five
 places. A loop does the repetition for you:
 
@@ -129,11 +129,11 @@ for count in range(5):
 ```
 
 Run that in the editor. You should see five lines of output, numbered 0
-through 4 — not 1 through 5. MicroPython, like most programming languages,
+through 4, not 1 through 5. MicroPython, like most programming languages,
 starts counting from zero.
 
 Notice the indentation: the `print()` line is indented under the `for`
-line. That indentation isn't just for readability — it's how MicroPython
+line. That indentation isn't just for readability. It's how MicroPython
 knows which lines belong *inside* the loop. Everything indented the same
 amount right after the `for` line runs once per loop; anything back at the
 left margin runs only once, after the loop finishes.
@@ -141,8 +141,8 @@ left margin runs only once, after the loop finishes.
 <aside class="callout warning" markdown="1">
 **INDENTATION IS NOT OPTIONAL**
 
-Get the indentation wrong — mixing tabs and spaces, or indenting by a
-different amount than the line above — and MicroPython will refuse to run
+Get the indentation wrong (mixing tabs and spaces, or indenting by a
+different amount than the line above) and MicroPython will refuse to run
 your code with an indentation error. This isn't the computer being picky
 for no reason: the indentation *is* the structure of your program.
 </aside>
@@ -151,7 +151,7 @@ for no reason: the indentation *is* the structure of your program.
 **CHALLENGE: LOOP THE LOOP**
 
 Change `range(5)` to `range(10)`. Then try adding a second `print()` line
-indented the same amount as the first — what happens to the output?
+indented the same amount as the first. What happens to the output?
 </aside>
 
 ## Variables and conditionals
@@ -168,7 +168,7 @@ else:
 ```
 
 Run it, then change `favorite_number` to something less than 5 and run it
-again. The `if` line asks a question — is `favorite_number > 5`? — and
+again. The `if` line asks a question (is `favorite_number > 5`?), and
 MicroPython runs whichever indented block matches the answer.
 
 You can chain more conditions with `elif` ("else if"):
@@ -187,20 +187,20 @@ else:
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: ADD MORE CONDITIONS**
 
-Add another `elif` for a specific number you care about — something like
+Add another `elif` for a specific number you care about, something like
 `elif favorite_number == 7: print("Lucky number seven!")`. Test it with a
 few different values to make sure each one lands in the branch you expect.
 </aside>
 
-You now have the basic building blocks — printing, loops, variables, and
-conditionals — that every program in this pathway builds on. None of this
+You now have the basic building blocks (printing, loops, variables, and
+conditionals) that every program in this pathway builds on. None of this
 needed your Pico's hardware; you could have run all of it on ViperIDE's
 Virtual Device. That changes starting next lesson, where these same
 building blocks start controlling real components.
 
 ## Further reading
 
-- [ViperIDE](https://viper-ide.org) — the tool itself
+- [ViperIDE](https://viper-ide.org): the tool itself
 - [How to write code for your Raspberry Pi Pico in your web browser with
   ViperIDE](https://www.tomshardware.com/raspberry-pi/raspberry-pi-pico/how-to-write-code-for-your-raspberry-pi-pico-in-your-web-browser-with-viperide),
-  Tom's Hardware — a walkthrough of the same setup from a different angle
+  Tom's Hardware: a walkthrough of the same setup from a different angle

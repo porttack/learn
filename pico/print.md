@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "MicroPython on Raspberry Pi Pico — Print Edition"
+title: "MicroPython on Raspberry Pi Pico, Print Edition"
 permalink: /pico/print/
 ---
 
