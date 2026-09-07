@@ -126,6 +126,14 @@ Local dev:
     bundle install
     bundle exec jekyll serve
 
+**Claude: use port 4010 for any verification server, never 4000.** The
+author often has their own `bundle exec jekyll serve` running on the
+default port 4000 for manual testing; `pkill`-ing "jekyll serve" and
+restarting it to check a change kills that server out from under them.
+Run your own instance on 4010 instead (`bundle exec jekyll serve --port
+4010`), and only `pkill` a process you started yourself on that port, never
+a blanket `pkill -f "jekyll serve"`.
+
 ## Licensing — read before adding content
 
 This repo mixes two content sources. Getting this wrong is the one mistake

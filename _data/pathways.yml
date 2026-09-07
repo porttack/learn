@@ -13,8 +13,8 @@
   title: "MicroPython on Pi Pico"
   collection: pico
   url: /pico/
-  status: in-progress
   standards_carrier: pico
+  image: /assets/img/pico/fig-1-1.jpg
   blurb: >-
     Get acquainted with the Raspberry Pi Pico and MicroPython: wiring,
     flashing firmware, and physical computing fundamentals. Foundational
