@@ -2,7 +2,6 @@
 layout: minimal
 title: "ROV Robotics"
 permalink: /rovrobotics/print/
-bare_home_link: true
 ---
 
 <div class="print-pathway">

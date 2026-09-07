@@ -17,7 +17,7 @@ layout: minimal
   <p class="lesson-label">
     {% unless pathway_meta %}{{ page.pathway }} &middot; {% endunless %}{{ pathway_meta.item_label | default: "Lesson" }} {{ page.order }}
   </p>
-  {% include page-title.html title=page.title %}
+  <h1>{{ page.title }}</h1>
   {% if page.unit %}
   <p class="lesson-card-hint">New to lesson cards? <a href="{{ '/rovrobotics/what-is-a-lesson-card/' | relative_url }}">See what a lesson card is</a>.</p>
   {% endif %}

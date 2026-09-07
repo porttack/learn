@@ -5,13 +5,13 @@
 
   <body>
 
-    {% if page.bare_home_link %}
-    <div class="site-topbar">
-      <div class="wrapper">
-        <a href="{{ "/" | relative_url }}" class="home-link">&larr; Home</a>
-      </div>
+    <div class="site-menu">
+      <input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+      <label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+      <nav class="site-menu-panel">
+        <a href="{{ "/" | relative_url }}">Home</a>
+      </nav>
     </div>
-    {% endif %}
 
     <main class="page-content" aria-label="Content">
       <div class="wrapper">

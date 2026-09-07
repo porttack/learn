@@ -4,7 +4,7 @@ title: "ROV Robotics"
 permalink: /rovrobotics/
 ---
 
-{% include page-title.html title=page.title %}
+# ROV Robotics
 
 The curriculum, lesson cards, and working practices behind a MATE ROV team run
 as an engineering company. Sprints, pool days, design decision records, and a

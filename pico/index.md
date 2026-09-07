@@ -4,7 +4,7 @@ title: "MicroPython on Pi Pico"
 permalink: /pico/
 ---
 
-{% include page-title.html title=page.title %}
+# MicroPython on Pi Pico
 
 Get acquainted with the Raspberry Pi Pico and MicroPython: wiring,
 flashing firmware, and physical computing fundamentals. Foundational

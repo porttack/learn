@@ -2,31 +2,64 @@
 ---
 @import "minima";
 
-.site-topbar {
-  border-bottom: 1px solid $grey-color-light;
-  padding: 0.6em 0;
-}
+.site-menu {
+  position: fixed;
+  top: 0.5em;
+  right: 0.7em;
+  z-index: 10;
 
-.home-link {
-  font-size: 0.85em;
-  color: $grey-color-dark;
-  text-decoration: none;
-  white-space: nowrap;
-
-  &:hover {
-    text-decoration: underline;
+  .site-menu-trigger {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
   }
-}
 
-.page-title-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+  .site-menu-icon {
+    display: block;
+    font-size: 1.3em;
+    line-height: 1;
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    color: $grey-color-dark;
+    cursor: pointer;
+    user-select: none;
 
-  h1 {
-    margin: 0;
+    &:hover {
+      background: $grey-color-light;
+    }
+  }
+
+  .site-menu-panel {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.3em;
+    min-width: 8em;
+    background: $background-color;
+    border: 1px solid $grey-color-light;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+
+    a {
+      display: block;
+      padding: 0.5em 1em;
+      color: $text-color;
+      text-decoration: none;
+      white-space: nowrap;
+
+      &:hover {
+        background: $grey-color-light;
+      }
+    }
+  }
+
+  .site-menu-trigger:checked ~ .site-menu-panel {
+    display: block;
+  }
+
+  .site-menu-trigger:focus ~ .site-menu-icon {
+    outline: 2px solid $grey-color-dark;
   }
 }
 
@@ -652,8 +685,7 @@ table.checkoff {
 }
 
 @media print {
-  .site-topbar,
-  .home-link,
+  .site-menu,
   .lesson-nav,
   .print-button,
   .copy-btn,

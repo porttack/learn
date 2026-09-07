@@ -4,7 +4,7 @@ title: "Electronics 101"
 permalink: /electronics101/
 ---
 
-{% include page-title.html title=page.title %}
+# Electronics 101
 
 Build nine circuits in Tinkercad, from a single AA cell to a micro:bit
 aiming a servo, then rebuild the last five with real parts. You build each
