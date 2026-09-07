@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "Electronics 101 — Print Edition"
+title: "Electronics 101"
 permalink: /electronics101/print/
 ---
 

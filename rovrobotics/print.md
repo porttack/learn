@@ -1,6 +1,6 @@
 ---
 layout: default
-title: "ROV Robotics, Print Edition"
+title: "ROV Robotics"
 permalink: /rovrobotics/print/
 ---
 
