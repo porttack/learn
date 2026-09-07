@@ -836,7 +836,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-CYB-ND-01">#</a><span class="code-badge">S1-CYB-ND-01</span></h3>
 <p class="paraphrase">The same service often comes in an insecure and a secure flavor -- HTTP and HTTPS, Telnet and SSH -- and knowing which one a situation calls for means weighing the risk of plaintext against the cost of encrypting.</p>
 <p class="note">Comparing protocol pairs and reasoning about exposure in simulations or case studies is the scope; actually attacking a live network or configuring real infrastructure is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/11-wifi-connectivity/">Chapter 11 (Wi-Fi connectivity)</a> (partial)</p>
+<p class="note">The lesson explicitly contrasts an http:// and https:// address and explains what the 's' buys you, but doesn't have students weigh that tradeoff themselves in a decision of their own.</p>
 </div>
 <div class="topic" id="T-S1-CYB-ND-02">
 <h3><a class="anchor-link" href="#T-S1-CYB-ND-02">#</a><span class="code-badge">S1-CYB-ND-02</span></h3>
@@ -1408,13 +1409,15 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-PHY-CI-04">#</a><span class="code-badge">S1-PHY-CI-04</span></h3>
 <p class="paraphrase">Getting one device to wirelessly hand off sensor readings to a neighboring device or a gateway, and then actually doing something with that data once it arrives -- logging it, charting it, letting it flip a switch -- rather than just proving the link works.</p>
 <p class="note">Short-range, device-to-device or device-to-gateway transmission with a real downstream use for the data is the scope; setting up cloud services, managing servers, or inventing a custom protocol is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/11-wifi-connectivity/">Chapter 11 (Wi-Fi connectivity)</a></p>
+<p class="note">The web server project has the Pico W wirelessly serve a page that reads a live sensor value and lets a button toggle an LED -- doing something with the data (letting it flip a switch) rather than just proving the wireless link works, which is this standard's own distinction.</p>
 </div>
 <div class="topic" id="T-S1-PHY-CI-05">
 <h3><a class="anchor-link" href="#T-S1-PHY-CI-05">#</a><span class="code-badge">S1-PHY-CI-05</span></h3>
 <p class="paraphrase">Linking two or more physical devices so they share data or actions, picking a communication method -- serial, Bluetooth, Wi-Fi, a low-power radio link -- and weighing what it costs you in range, message size, delay, or battery life.</p>
 <p class="note">Comparing and choosing among available communication options for a small multi-device setup is the scope; designing networking infrastructure or deploying it at scale is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/10-digital-communication-protocols/">Chapter 10 (Digital communication protocols: I2C and SPI)</a>, <a href="https://learn.porttack.com/pico/12-bluetooth-connectivity/">Chapter 12 (Bluetooth connectivity)</a> (partial)</p>
+<p class="note">Chapter 12's Bluetooth beacon explicitly weighs range, message size, and battery life -- close to this standard's own language. Chapter 10's I2C-versus-SPI comparison is the same kind of tradeoff discussion, but over a wired bus rather than one of the standard's own wireless examples, so it's a narrower fit.</p>
 </div>
 <div class="tier-heading">Specialty II</div>
 <div class="topic" id="T-S2-PHY-CI-04">
@@ -1427,7 +1430,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S2-PHY-CI-05">#</a><span class="code-badge">S2-PHY-CI-05</span></h3>
 <p class="paraphrase">Pulling data together from several physical devices through a central point -- a single-board computer or a coordinating script -- sketching out a simple message format for how they talk, and connecting that setup to real security concerns.</p>
 <p class="note">A small, simulated-or-built network with a basic protocol and security reasoning is the scope; cloud servers, advanced cryptography, or enterprise-grade security configuration are not required.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/12-bluetooth-connectivity/">Chapter 12 (Bluetooth connectivity)</a></p>
+<p class="note">A second Pico scans for and subscribes to a BLE beacon identified by a UUID and characteristic -- a simple, deliberate message format for how two devices agree on what data they're sharing, which is this standard's own framing.</p>
 </div>
 <div class="subconcept-heading">Design &amp; Development</div>
 <div class="tier-heading">Specialty I</div>
@@ -1450,8 +1454,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-PHY-HC-01">#</a><span class="code-badge">S1-PHY-HC-01</span></h3>
 <p class="paraphrase">You build a working circuit from a schematic -- a microcontroller, a resistor, an LED is the classic starter -- and when the LED doesn't light, a multimeter and a look at the wiring is how you find the loose connection or backwards part.</p>
 <p class="note">Building and debugging a single-microcontroller circuit from a diagram is the scope; circuits with multiple integrated chips, or laying out and etching a custom PCB, are not expected.</p>
-<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/05-traffic-light-controller/">Chapter 5 (Traffic light controller)</a>, <a href="https://learn.porttack.com/pico/06-reaction-game/">Chapter 6 (Reaction game)</a></p>
-<p class="note">Both chapters have students build a working circuit from a wiring diagram and figure out why it doesn't work when a wire or pin is wrong -- this standard's own example (an LED that won't light) almost exactly.</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/04-physical-computing-with-pico/">Chapter 4 (Physical computing with Raspberry Pi Pico)</a>, <a href="https://learn.porttack.com/pico/05-traffic-light-controller/">Chapter 5 (Traffic light controller)</a>, <a href="https://learn.porttack.com/pico/06-reaction-game/">Chapter 6 (Reaction game)</a>, <a href="https://learn.porttack.com/pico/07-burglar-alarm/">Chapter 7 (Burglar alarm)</a>, <a href="https://learn.porttack.com/pico/08-temperature-gauge/">Chapter 8 (Temperature gauge)</a>, <a href="https://learn.porttack.com/pico/10-digital-communication-protocols/">Chapter 10 (Digital communication protocols: I2C and SPI)</a></p>
+<p class="note">Chapters 4, 5, 6, 7, 8, and 10 all have students build a working circuit from a wiring diagram -- an LED and button, a traffic light, PIR sensor and buzzer, a potentiometer, an OLED module -- and work out why it doesn't behave right when a wire, resistor, or voltage is wrong. This standard's own example (an LED that won't light) runs through nearly every hands-on chapter in the pathway.</p>
 </div>
 <div class="tier-heading">Specialty II</div>
 <div class="topic" id="T-S2-PHY-HC-01">
@@ -1466,15 +1470,16 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-PHY-IO-02">#</a><span class="code-badge">S1-PHY-IO-02</span></h3>
 <p class="paraphrase">Picking a sensor and an output that fit the job -- a light sensor driving an LED, a button triggering a buzzer or a short motion -- and wiring and coding them so the system actually reacts to something happening in the real world.</p>
 <p class="note">A handful of everyday sensors and outputs on a hobbyist board is the scope; large component counts, industrial-grade hardware, or anything mission-critical are not expected.</p>
-<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/05-traffic-light-controller/">Chapter 5 (Traffic light controller)</a></p>
-<p class="note">The pedestrian-crossing button triggering the buzzer is the standard's own example verbatim -- a button triggering a buzzer -- wired and coded so the system reacts to a real button press.</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/04-physical-computing-with-pico/">Chapter 4 (Physical computing with Raspberry Pi Pico)</a>, <a href="https://learn.porttack.com/pico/05-traffic-light-controller/">Chapter 5 (Traffic light controller)</a>, <a href="https://learn.porttack.com/pico/07-burglar-alarm/">Chapter 7 (Burglar alarm)</a></p>
+<p class="note">Chapter 4's button-triggers-LED circuit and chapter 5's pedestrian-crossing button triggering a buzzer are close to this standard's own example verbatim. Chapter 7's PIR sensor triggering an LED and buzzer extends the same pattern to a more specialized input sensor.</p>
 </div>
 <div class="tier-heading">Specialty II</div>
 <div class="topic" id="T-S2-PHY-IO-02">
 <h3><a class="anchor-link" href="#T-S2-PHY-IO-02">#</a><span class="code-badge">S2-PHY-IO-02</span></h3>
 <p class="paraphrase">Building a system where a sensor's reading actually steers an output toward a target -- a fan that speeds up as a room gets warmer -- and choosing which sensor to use by weighing accuracy, response time, and cost against each other.</p>
 <p class="note">The feedback loop can be conceptual, simulated, or partly built depending on the setup; a fully optimized, precision, or industrial-grade control system is not expected.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/08-temperature-gauge/">Chapter 8 (Temperature gauge)</a></p>
+<p class="note">Fading an LED's brightness from a potentiometer reading via PWM is close to this standard's own fan-speed example: a sensor's reading steering an output toward a target.</p>
 </div>
 <div class="subconcept-heading">Professional Practice</div>
 <div class="tier-heading">Specialty I</div>
@@ -1589,7 +1594,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-MS-PRO-RD-17">#</a><span class="code-badge">MS-PRO-RD-17</span></h3>
 <p class="paraphrase">Tracing through a piece of code -- watching what a loop repeats, what a conditional branches on, what a variable holds at each step, what a procedure does when it's called -- is how you show you actually understand what it does.</p>
 <p class="note">Tracing execution is the task; debugging the code, testing it, or analyzing procedures that take parameters or return values is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/01b-programming-with-thonny/">Chapter 2 (Programming with MicroPython)</a> (partial)</p>
+<p class="note">Chapter 2's loop, conditional, and variable examples are simple enough to trace by hand, but neither the Thonny nor ViperIDE version explicitly asks students to explain what a piece of code does step by step -- that's implicit in following along, not a stated activity.</p>
 </div>
 <div class="topic" id="T-MS-PRO-RD-18">
 <h3><a class="anchor-link" href="#T-MS-PRO-RD-18">#</a><span class="code-badge">MS-PRO-RD-18</span></h3>
@@ -1654,9 +1660,10 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-MS-PRO-VD-16">#</a><span class="code-badge">MS-PRO-VD-16</span></h3>
 <p class="paraphrase">A program that stores several kinds of data in variables -- numbers, text, true/false -- can update them, make decisions based on them, and repeat actions using them.</p>
 <p class="note">Working with individual variables (incrementing, accumulating, converting) is the scope; lists, dictionaries, and other data structures are not expected here.</p>
-<p class="meta">Covered by Carnegie Mellon's Introduction to Programming with Python (High School): Unit 9.1 (Types and Input (Unit 9 is optional)), Unit 9.2 (Strings (Unit 9 is optional)); Covered by Code.org's CS Discoveries (Unit 3b: Animations &amp; Games): <a href="https://studio.code.org/courses/csd-2026/units/4">Unit 4 (Unit 3b - Interactive Animations and Games)</a></p>
+<p class="meta">Covered by Carnegie Mellon's Introduction to Programming with Python (High School): Unit 9.1 (Types and Input (Unit 9 is optional)), Unit 9.2 (Strings (Unit 9 is optional)); Covered by Code.org's CS Discoveries (Unit 3b: Animations &amp; Games): <a href="https://studio.code.org/courses/csd-2026/units/4">Unit 4 (Unit 3b - Interactive Animations and Games)</a>; Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/01b-programming-with-thonny/">Chapter 2 (Programming with MicroPython)</a></p>
 <p class="note">This carrier's own inference, and Unit 9 is optional in CMU's own pacing guide: types and input (9.1) and strings (9.2) is a program storing and updating more than one kind of data in variables.</p>
 <p class="note">This carrier's own inference: Unit 3b's 'Variables' lesson and everything built on it is this standard's own multiple-data-types-in-variables territory.</p>
+<p class="note">Chapter 2 has students store numbers and strings in variables, update them, branch on them with conditionals, and repeat actions with loops -- exactly the standard's own scope.</p>
 </div>
 <div class="tier-heading">High School</div>
 <div class="topic" id="T-HS-PRO-VD-16">
@@ -1691,7 +1698,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-SWD-DD-03">#</a><span class="code-badge">S1-SWD-DD-03</span></h3>
 <p class="paraphrase">An IDE's everyday tools -- autocomplete and error highlighting while typing, breakpoints and variable inspection while debugging, built-in commits while collaborating -- are what make day-to-day coding faster and more reliable.</p>
 <p class="note">Using these built-in IDE features fluently is the expectation; understanding how they work internally or building custom build configurations is not.</p>
-<p class="meta">Not covered by Working in Python (a jupyter notebook)</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/01b-programming-with-thonny/">Chapter 2 (Programming with MicroPython)</a> (partial); Not covered by Working in Python (a jupyter notebook)</p>
+<p class="note">The Thonny version's SYNTAX ERROR callout, and the ViperIDE version's own note about indentation errors, both touch an IDE's error-highlighting as a day-to-day coding aid, though neither lesson covers breakpoints, variable inspection, or version control -- the standard's other examples.</p>
 <p class="note">Real gap: this is a Jupyter-notebook course, not an IDE-based one. No autocomplete, breakpoints, variable inspectors, or built-in commit tooling anywhere -- debugging is taught through print statements, doctest, and hand-tracing instead (see every chapter's Debugging section).</p>
 </div>
 <div class="tier-heading">Specialty II</div>
@@ -1806,7 +1814,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-MS-SYS-HW-31">#</a><span class="code-badge">MS-SYS-HW-31</span></h3>
 <p class="paraphrase">Specialized computing devices -- a robot, a vehicle's control unit, a medical imaging machine, a farm sensor -- all use the same input/output/processing/storage pattern to get real industry work done.</p>
 <p class="note">Describing how a chosen device works at that level is the task; building or programming the device is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/01-get-to-know-your-pico/">Chapter 1 (Get to know your Raspberry Pi Pico)</a>, <a href="https://learn.porttack.com/pico/09-data-logger/">Chapter 9 (Data logger)</a> (related)</p>
+<p class="note">Chapter 1 introduces the Pico as a microcontroller development board built for physical computing, and chapter 9 turns it into a standalone, unattended data-logging device -- both touch the idea of a specialized computing device, but neither lesson discusses the input/output/processing/storage framing this standard uses.</p>
 </div>
 <div class="tier-heading">High School</div>
 <div class="topic" id="T-HS-SYS-HW-29">

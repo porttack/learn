@@ -8,139 +8,498 @@
     "locator_url_template": "{base_url}/pico/{locator}/",
     "locator_slugs": {
       "5": "05-traffic-light-controller",
-      "6": "06-reaction-game"
+      "6": "06-reaction-game",
+      "1": "01-get-to-know-your-pico",
+      "2": "01b-programming-with-thonny",
+      "3": "03-physical-computing",
+      "4": "04-physical-computing-with-pico",
+      "7": "07-burglar-alarm",
+      "8": "08-temperature-gauge",
+      "9": "09-data-logger",
+      "10": "10-digital-communication-protocols",
+      "11": "11-wifi-connectivity",
+      "12": "12-bluetooth-connectivity"
     },
     "locator_titles": {
       "5": "Traffic light controller",
-      "6": "Reaction game"
+      "6": "Reaction game",
+      "1": "Get to know your Raspberry Pi Pico",
+      "2": "Programming with MicroPython",
+      "3": "Physical computing",
+      "4": "Physical computing with Raspberry Pi Pico",
+      "7": "Burglar alarm",
+      "8": "Temperature gauge",
+      "9": "Data logger",
+      "10": "Digital communication protocols: I2C and SPI",
+      "11": "Wi-Fi connectivity",
+      "12": "Bluetooth connectivity"
     },
-    "caveat": "Initial pass covering only chapters 5-6 (the first two converted chapters with a real assignment/project). A fuller realignment across all 12 chapters is planned once the rest are converted.",
+    "caveat": "Aligns all 12 numbered chapters. The three reference appendices (specifications, pinout guide, programmable I/O) are intentionally out of scope -- they're look-up material for the curious, not taught lessons with their own pedagogical content to align. Chapter 2 is taught twice, once with Thonny (Chapter 2 proper) and once with ViperIDE (Interlude A) -- both lesson files carry the same chapter: 2 front matter and therefore show identical coverage, since they teach the same underlying programming concepts through different tools.",
     "alignment_log": [
       {
         "date": "2026-09-06",
         "by": "Claude Sonnet 5",
         "scope": "First pass: chapters 5 (traffic light controller) and 6 (reaction game) against all four frameworks",
         "note": "Initial alignment; nothing re-checked yet since this is the carrier's first version."
+      },
+      {
+        "date": "2026-09-07",
+        "by": "Claude Sonnet 5",
+        "scope": "Full pass: chapters 1-4 and 7-12 against all four frameworks (5-6 already covered by the initial pass)",
+        "note": "Extended several chapter 5-6 codes to new chapters where the same standard genuinely recurs (event-driven programming, circuit-building from a schematic, the loops/conditionals/procedures toolkit), and added new codes for concepts unique to the new chapters (networking, file I/O, communication protocols, binary/hex representation, Bluetooth/asyncio). Chapters 1 and 3 have thinner coverage in places (hardware assembly and a component reference, respectively) -- some frameworks genuinely have little to say about them, and those gaps are left unmarked per this carrier's own convention of omitting rather than padding."
       }
     ]
   },
   "coverage": {
     "apcsp": {
       "1.2": {
-        "locators": [5, 6],
+        "locators": [
+          5,
+          6,
+          7
+        ],
         "strength": "strong",
-        "note": "Chapter 5's pedestrian-crossing button and chapter 6's two-player buttons both use a hardware interrupt (machine.Pin.irq) to run code in response to a real-world trigger rather than in a fixed top-to-bottom order -- the textbook event-driven case this topic covers."
+        "note": "Chapters 5 and 6's pedestrian-crossing button and two-player buttons, and chapter 7's PIR motion sensor, all use a hardware interrupt (machine.Pin.irq) to run code in response to a real-world trigger rather than in a fixed top-to-bottom order -- the textbook event-driven case this topic covers."
       },
       "3.16": {
-        "locators": [5],
+        "locators": [
+          5
+        ],
         "strength": "strong",
         "note": "The traffic light program models a real intersection's light cycle: a simplified stand-in with its own state (which light is on) that updates over time, built for the specific purpose of demonstrating control logic rather than modeling every detail of a real signal."
       },
       "3.15": {
-        "locators": [6],
+        "locators": [
+          6
+        ],
         "strength": "strong",
         "note": "random.uniform(5, 10) picks how long the LED stays lit before the player can react, so a player can't just count down a fixed number of seconds -- a direct use of a random value drawn from a range."
       },
       "3.1": {
-        "locators": [5, 6],
-        "strength": "partial",
-        "note": "Both chapters rely on a global variable (button_pressed in chapter 5, fastest_btn in chapter 6) that the main program reads and an interrupt handler writes, so its value has to be reasoned about across two separate points of execution."
+        "locators": [
+          2,
+          4,
+          5,
+          6
+        ],
+        "strength": "strong",
+        "note": "Chapter 2 is a clean, direct introduction to naming a value with assignment. Chapter 4 reinforces it by having students rename a variable (led_onboard to led_external) purely for readability once its meaning changes. Chapters 5 and 6 rely on a global variable (button_pressed, fastest_btn) that a main program reads and an interrupt handler writes, so its value has to be reasoned about across two separate points of execution -- a narrower, partial angle on the same topic."
       },
       "3.8": {
-        "locators": [5],
-        "strength": "partial",
-        "note": "The traffic light cycle itself is a straightforward while True loop; the lesson doesn't dig into loop termination conditions or nested iteration beyond that one repeating cycle."
+        "locators": [
+          2,
+          4,
+          5,
+          7
+        ],
+        "strength": "strong",
+        "note": "Chapter 2 covers both definite iteration (for with range) and indefinite iteration (while True), plus breaking out of a loop early. Chapter 4's blinking-LED program is a clean while True loop. Chapter 5's traffic light cycle is a similar repeating while True loop. Chapter 7's for i in range(50) flash loop is a finite, counted loop -- the other half of the topic's scope."
       },
       "3.13": {
-        "locators": [6],
+        "locators": [
+          6,
+          7
+        ],
         "strength": "strong",
-        "note": "One handler function (btn_handler) serves both the left and right buttons in the two-player version -- the same procedure runs for either input, distinguished only by the pin parameter it's called with, exactly the one-procedure-many-inputs idea this topic covers."
+        "note": "One handler function serves multiple independent inputs, distinguished only by the parameter it's called with: btn_handler for either button in chapter 6's two-player mode, and pir_handler for either PIR sensor in chapter 7's multi-room alarm -- the same one-procedure-many-inputs idea in both."
       },
       "3.6": {
-        "locators": [6],
+        "locators": [
+          2,
+          4,
+          6,
+          7
+        ],
+        "strength": "strong",
+        "note": "Chapter 2 introduces if/elif/else directly. Chapter 4's button-and-LED program (if button.value() == 0) is a clean, single-condition example. Chapter 7 extends this to if pin is snsr_pir / elif pin is snsr_pir2, comparing object identity rather than a value -- a slightly different angle. Chapter 6's winner-decision logic uses the same identity-comparison style."
+      },
+      "1.4": {
+        "locators": [
+          2
+        ],
         "strength": "partial",
-        "note": "The two-player version decides a winner with if fastest_btn is left_btn / elif fastest_btn is right_btn -- straightforward conditionals, though comparing object identity rather than a value is a slightly different angle than the topic's own examples."
+        "note": "Both the Thonny and ViperIDE versions of chapter 2 walk through what a syntax error looks like (a misspelled print, a missing quotation mark, a bad indent) and how to recognize and fix it, though neither lesson frames this as a general testing strategy beyond 'try again and compare.'"
+      },
+      "3.3": {
+        "locators": [
+          8
+        ],
+        "strength": "partial",
+        "note": "Converting a raw ADC reading into a voltage, and a voltage into a temperature, both use a conversion-factor equation built from ordinary arithmetic -- the lesson doesn't dwell on order-of-operations rules explicitly, but the equations depend on them."
+      },
+      "3.14": {
+        "locators": [
+          4,
+          10,
+          12
+        ],
+        "strength": "strong",
+        "note": "Chapter 4 explicitly explains import as bringing in pre-written code and introduces the API concept through machine and time. Chapter 10 uses a separate ssd1306.py driver file as a library the program imports rather than reimplementing. Chapter 12 imports aioble, bluetooth, and struct, each doing real work the lesson doesn't ask students to build themselves."
+      },
+      "2.4": {
+        "locators": [
+          9
+        ],
+        "strength": "strong",
+        "note": "The data logger opens, writes to, appends to, and flushes a file on the Pico's own filesystem to build up a temperature log over time -- reading, combining, and rewriting data in a file, exactly this topic's framing."
+      },
+      "4.1": {
+        "locators": [
+          11
+        ],
+        "strength": "strong",
+        "note": "Making an HTTP GET request to a real website (https://text.npr.org) and processing the response is a direct, hands-on example of the internet moving data between computers as discrete requests and responses."
+      },
+      "4.2": {
+        "locators": [
+          11
+        ],
+        "strength": "partial",
+        "note": "The lesson's STATUS CODES section has students check the result of a network request rather than assuming it always succeeds, but it doesn't build a system that keeps working when a connection actually fails -- more awareness of unreliability than designed-in tolerance for it."
       }
     },
     "castandards": {
       "9-12.AP.15": {
-        "locators": [5, 6],
+        "locators": [
+          5,
+          6,
+          7
+        ],
         "strength": "strong",
-        "note": "Both chapters replace straight-line, run-to-completion code with a button press (an event) that changes what runs next via an interrupt handler -- the standard's own framing almost verbatim."
+        "note": "Chapters 5 and 6 replace straight-line, run-to-completion code with a button press that changes what runs next via an interrupt handler. Chapter 7 does the same with a PIR sensor's rising-edge trigger -- the standard's own framing almost verbatim in all three."
       },
       "9-12.AP.14": {
-        "locators": [5],
+        "locators": [
+          4,
+          5
+        ],
         "strength": "partial",
-        "note": "Chapter 5 contrasts polling (checking a button in the main loop) with using an interrupt, and picks the interrupt for a reason it gives -- a real control-structure choice, though the lesson doesn't have students weigh the tradeoff themselves."
+        "note": "Chapter 4 has students rewrite an explicit led.value(1)/led.value(0) pair as a single led.toggle() call and explicitly frames it as an optimization -- two different control structures for the same job. Chapter 5 contrasts polling with using an interrupt and picks the interrupt for a stated reason, though the lesson doesn't have students weigh the tradeoff themselves."
       },
       "9-12.CS.3": {
-        "locators": [5],
+        "locators": [
+          5
+        ],
         "strength": "related",
         "note": "Wiring three LEDs, a button, and a buzzer to the right pins on a breadboard is exactly the kind of troubleshooting-by-testing this standard describes, but the lesson doesn't frame it as a debugging skill explicitly."
       },
       "9-12.DA.11": {
-        "locators": [6],
+        "locators": [
+          6
+        ],
         "strength": "related",
         "note": "The lesson states a real baseline (average human reaction time, ~200-250ms) that a player's own measured result can be compared against, but it doesn't ask students to use the comparison to adjust a model."
+      },
+      "6-8.AP.11": {
+        "locators": [
+          4
+        ],
+        "strength": "partial",
+        "note": "Chapter 4 has students rename led_onboard to led_external purely because its meaning changed, and says explicitly to make names match their purpose -- though the lesson doesn't develop naming conventions any further than this one example."
+      },
+      "6-8.AP.12": {
+        "locators": [
+          2,
+          4
+        ],
+        "strength": "partial",
+        "note": "Chapter 2 combines loops and conditionals rather than teaching them in isolation. Chapter 4 builds its combined LED-and-button program iteratively across three small programs (Blink, Button, Switch) rather than all at once."
+      },
+      "9-12.CS.2": {
+        "locators": [
+          10
+        ],
+        "strength": "partial",
+        "note": "The ssd1306.py driver hides the low-level I2C/SPI protocol behind a small set of drawing functions -- a real example of a software layer sitting on top of a hardware interface, though the lesson doesn't name the layering explicitly."
+      },
+      "9-12.DA.8": {
+        "locators": [
+          8,
+          12
+        ],
+        "strength": "strong",
+        "note": "Chapter 8 converts a raw ADC reading into a voltage and then into a temperature via two separate equations -- the same real-world quantity represented three different ways. Chapter 12 packs a floating-point temperature into structured binary bytes with struct.pack and unpacks it back with struct.unpack on the receiving end."
+      },
+      "9-12.DA.9": {
+        "locators": [
+          9
+        ],
+        "strength": "partial",
+        "note": "The FILE STORAGE aside works out how long the data logger can run before filling the Pico's file system at different logging intervals -- a real storage-capacity tradeoff, though the lesson doesn't extend this to reliability, privacy, or integrity."
+      },
+      "9-12.NI.5": {
+        "locators": [
+          11
+        ],
+        "strength": "partial",
+        "note": "The lesson touches on IP addressing when connecting to Wi-Fi and reaching a server by its address, but doesn't get into how the internet's own routing and lookup infrastructure lets that scale."
+      },
+      "6-8.CS.2": {
+        "locators": [
+          3,
+          10
+        ],
+        "strength": "related",
+        "note": "Chapter 3's catalog of components (which resistor, which sensor, which display) touches choosing hardware for a job. Chapter 10's I2C-vs-SPI comparison touches weighing tradeoffs between two ways to connect hardware. Neither lesson frames this as building a complete data-collecting system, though."
       }
     },
     "csta2026": {
       "S1-PHY-HC-01": {
-        "locators": [5, 6],
+        "locators": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          10
+        ],
         "strength": "strong",
-        "note": "Both chapters have students build a working circuit from a wiring diagram and figure out why it doesn't work when a wire or pin is wrong -- this standard's own example (an LED that won't light) almost exactly."
+        "note": "Chapters 4, 5, 6, 7, 8, and 10 all have students build a working circuit from a wiring diagram -- an LED and button, a traffic light, PIR sensor and buzzer, a potentiometer, an OLED module -- and work out why it doesn't behave right when a wire, resistor, or voltage is wrong. This standard's own example (an LED that won't light) runs through nearly every hands-on chapter in the pathway."
       },
       "S1-PHY-IO-02": {
-        "locators": [5],
+        "locators": [
+          4,
+          5,
+          7
+        ],
         "strength": "strong",
-        "note": "The pedestrian-crossing button triggering the buzzer is the standard's own example verbatim -- a button triggering a buzzer -- wired and coded so the system reacts to a real button press."
+        "note": "Chapter 4's button-triggers-LED circuit and chapter 5's pedestrian-crossing button triggering a buzzer are close to this standard's own example verbatim. Chapter 7's PIR sensor triggering an LED and buzzer extends the same pattern to a more specialized input sensor."
       },
       "HS-ALG-PS-04": {
-        "locators": [6],
+        "locators": [
+          6
+        ],
         "strength": "strong",
         "note": "The single-player game's use of random.uniform(5, 10) means the same program gives a different light-up delay every run, the exact contrast this standard draws between deterministic and randomness-driven algorithms."
       },
       "S1-GMD-DD-03": {
-        "locators": [6],
+        "locators": [
+          6
+        ],
         "strength": "strong",
         "note": "The reaction game is a small, complete game: input (a button press) that does something (stops the timer), and rules (whichever pin triggered first) that decide the outcome."
       },
       "HS-PRO-RD-17": {
-        "locators": [5, 6],
+        "locators": [
+          5,
+          6
+        ],
         "strength": "partial",
         "note": "Both programs can be read by tracing what the shared variable holds, what the loop repeats, and what the conditional branches on -- though neither lesson asks students to explain this explicitly themselves."
+      },
+      "MS-PRO-RD-17": {
+        "locators": [
+          2
+        ],
+        "strength": "partial",
+        "note": "Chapter 2's loop, conditional, and variable examples are simple enough to trace by hand, but neither the Thonny nor ViperIDE version explicitly asks students to explain what a piece of code does step by step -- that's implicit in following along, not a stated activity."
+      },
+      "MS-PRO-VD-16": {
+        "locators": [
+          2
+        ],
+        "strength": "strong",
+        "note": "Chapter 2 has students store numbers and strings in variables, update them, branch on them with conditionals, and repeat actions with loops -- exactly the standard's own scope."
+      },
+      "S1-SWD-DD-03": {
+        "locators": [
+          2
+        ],
+        "strength": "partial",
+        "note": "The Thonny version's SYNTAX ERROR callout, and the ViperIDE version's own note about indentation errors, both touch an IDE's error-highlighting as a day-to-day coding aid, though neither lesson covers breakpoints, variable inspection, or version control -- the standard's other examples."
+      },
+      "S2-PHY-IO-02": {
+        "locators": [
+          8
+        ],
+        "strength": "strong",
+        "note": "Fading an LED's brightness from a potentiometer reading via PWM is close to this standard's own fan-speed example: a sensor's reading steering an output toward a target."
+      },
+      "S1-PHY-CI-05": {
+        "locators": [
+          10,
+          12
+        ],
+        "strength": "partial",
+        "note": "Chapter 12's Bluetooth beacon explicitly weighs range, message size, and battery life -- close to this standard's own language. Chapter 10's I2C-versus-SPI comparison is the same kind of tradeoff discussion, but over a wired bus rather than one of the standard's own wireless examples, so it's a narrower fit."
+      },
+      "S1-PHY-CI-04": {
+        "locators": [
+          11
+        ],
+        "strength": "strong",
+        "note": "The web server project has the Pico W wirelessly serve a page that reads a live sensor value and lets a button toggle an LED -- doing something with the data (letting it flip a switch) rather than just proving the wireless link works, which is this standard's own distinction."
+      },
+      "S2-PHY-CI-05": {
+        "locators": [
+          12
+        ],
+        "strength": "strong",
+        "note": "A second Pico scans for and subscribes to a BLE beacon identified by a UUID and characteristic -- a simple, deliberate message format for how two devices agree on what data they're sharing, which is this standard's own framing."
+      },
+      "S1-CYB-ND-01": {
+        "locators": [
+          11
+        ],
+        "strength": "partial",
+        "note": "The lesson explicitly contrasts an http:// and https:// address and explains what the 's' buys you, but doesn't have students weigh that tradeoff themselves in a decision of their own."
+      },
+      "MS-SYS-HW-31": {
+        "locators": [
+          1,
+          9
+        ],
+        "strength": "related",
+        "note": "Chapter 1 introduces the Pico as a microcontroller development board built for physical computing, and chapter 9 turns it into a standalone, unattended data-logging device -- both touch the idea of a specialized computing device, but neither lesson discusses the input/output/processing/storage framing this standard uses."
       }
     },
     "ca-ict-anchor": {
       "C4.5": {
-        "locators": [5, 6],
+        "locators": [
+          5,
+          6,
+          7,
+          12
+        ],
         "strength": "strong",
-        "note": "Both chapters are a hands-on example of the event-driven paradigm this standard names, in contrast to the purely procedural style of earlier chapters."
+        "note": "Chapters 5, 6, and 7 are hands-on examples of the event-driven paradigm this standard names, in contrast to the purely procedural style of earlier chapters. Chapter 12's asyncio coroutines and tasks are a software-level instance of the same paradigm, running concurrently rather than start to finish."
       },
       "C9.5": {
-        "locators": [5, 6],
+        "locators": [
+          5,
+          6,
+          7
+        ],
         "strength": "strong",
-        "note": "Both projects are a microcontroller (the Pico) programmed to run a physical device -- a traffic light system and a reaction-time game -- the standard's own example."
+        "note": "Chapters 5, 6, and 7's projects are all a microcontroller (the Pico) programmed to run a physical device -- a traffic light system, a reaction-time game, and a burglar alarm -- the standard's own example."
       },
       "C4.9": {
-        "locators": [6],
+        "locators": [
+          2,
+          4,
+          6,
+          7
+        ],
         "strength": "strong",
-        "note": "Chapter 6 exercises the full toolkit this standard names in one lesson: branches and loops, a reusable procedure that takes a parameter, and variables holding state across calls."
+        "note": "Chapter 2 introduces the basic toolkit -- branches, loops, variables. Chapter 4 exercises loops and conditionals together for the first time on real hardware. Chapter 6 exercises the full toolkit in one lesson: branches, loops, a reusable procedure that takes a parameter, and state-holding variables. Chapter 7 adds a second reusable, parameterized procedure (the shared interrupt handler) on top of the same toolkit."
       },
       "C9.3": {
-        "locators": [5],
+        "locators": [
+          4,
+          5,
+          7,
+          8
+        ],
         "strength": "partial",
-        "note": "The button-to-interrupt-to-LED/buzzer chain is hardware capturing input, processing it, and acting on it, though the lesson doesn't frame it in those terms."
+        "note": "Chapter 4's button-to-LED chain, chapter 5's button-to-interrupt-to-LED/buzzer chain, chapter 7's PIR-to-interrupt-to-LED/buzzer chain, and chapter 8's potentiometer-to-PWM chain are all hardware capturing input, processing it, and acting on it, though none of the lessons frame it in those terms explicitly."
       },
       "5.5": {
-        "locators": [5],
+        "locators": [
+          5
+        ],
         "strength": "related",
         "note": "Debugging a miswired breadboard circuit takes the same structured, methodical approach this standard describes, though the lesson doesn't teach the approach itself, just requires it."
       },
       "5.12": {
-        "locators": [6],
+        "locators": [
+          6
+        ],
         "strength": "related",
         "note": "The winner-decision logic is boolean comparisons (is left_btn / is right_btn), though the lesson doesn't discuss boolean logic as a topic in its own right."
+      },
+      "C9.2": {
+        "locators": [
+          1,
+          4,
+          10
+        ],
+        "strength": "strong",
+        "note": "Chapter 1's soldering section is a full walkthrough of assembling hardware with the right tools (iron, solder, stand) and testing the result (checking every joint for bridges or cold joints). Chapter 4 builds a breadboard circuit and tests it by running the program. Chapter 10 wires and tests an external OLED module."
+      },
+      "C4.6": {
+        "locators": [
+          2
+        ],
+        "strength": "strong",
+        "note": "Chapter 2's SYNTAX ERROR callout is a direct example of this standard: Python has its own syntax, and a misspelled keyword or missing quotation mark stops the program from running at all."
+      },
+      "C4.3": {
+        "locators": [
+          2
+        ],
+        "strength": "partial",
+        "note": "Chapter 2 (in both its Thonny and ViperIDE forms) is entirely about working inside a development environment, though the lesson doesn't compare it against a bare content editor the way the standard frames the spectrum."
+      },
+      "C4.1": {
+        "locators": [
+          10
+        ],
+        "strength": "partial",
+        "note": "I2C and SPI are low-level hardware protocols; the ssd1306.py driver sits above them as a higher-level interface the program actually calls -- touches the standard's low-level-to-high-level spectrum without discussing it as a spectrum."
+      },
+      "5.11": {
+        "locators": [
+          10,
+          12
+        ],
+        "strength": "partial",
+        "note": "Chapter 10's HEXADECIMAL aside directly explains base-16 notation for I2C addresses. Chapter 12 uses hexadecimal UUIDs (0x181A, 0x2A6E) for BLE service and characteristic identifiers, converting one to decimal by hand as an example."
+      },
+      "C9.4": {
+        "locators": [
+          8
+        ],
+        "strength": "partial",
+        "note": "Reading the ADC and driving PWM both touch how a microcontroller represents and processes data at a low level, though the lesson doesn't discuss digital logic or memory organization directly."
+      },
+      "C4.4": {
+        "locators": [
+          12
+        ],
+        "strength": "strong",
+        "note": "struct.pack and struct.unpack encode a floating-point temperature into a specific binary layout and decode it back on the other end -- a direct, hands-on example of data having a type and that type being encoded in a specific way."
+      },
+      "10.10": {
+        "locators": [
+          9
+        ],
+        "strength": "strong",
+        "note": "The data logger reads, writes, and appends files on the Pico's own filesystem, and main.py's special auto-run behavior is part of how that filesystem is organized."
+      },
+      "10.7": {
+        "locators": [
+          9
+        ],
+        "strength": "partial",
+        "note": "The FILE STORAGE aside works entirely in bytes and MiB to figure out how long the logger can run before filling the Pico's storage -- a real, worked use of metric prefixes, though it's one aside rather than a running theme."
+      },
+      "C9.1": {
+        "locators": [
+          9
+        ],
+        "strength": "related",
+        "note": "Turning the Pico into a standalone, headless logging device touches the idea of device-focused development beyond a personal computer, but the lesson doesn't connect it to the standard's own broader examples (robots, smart appliances)."
+      },
+      "C7.1": {
+        "locators": [
+          11
+        ],
+        "strength": "strong",
+        "note": "The Pico W hosts its own small web server, serving a dynamic page over Wi-Fi -- a direct, if miniature, example of web hosting needing both the right hardware and the right software."
+      },
+      "10.8": {
+        "locators": [
+          11
+        ],
+        "strength": "partial",
+        "note": "The lesson touches on private-versus-public IP addressing and explains what https:// buys you over plain http://, but doesn't get into authorization or access rights specifically."
+      },
+      "C4.2": {
+        "locators": [
+          11
+        ],
+        "strength": "partial",
+        "note": "The chapter has the Pico act as an HTTP client (making GET requests) and, separately, as an HTTP server (hosting its own page) -- a real client-side/server-side round trip, though the lesson doesn't frame the two roles as one system."
       }
     }
   }

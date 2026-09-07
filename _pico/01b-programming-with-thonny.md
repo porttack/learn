@@ -3,6 +3,7 @@ layout: lesson
 title: "Chapter 2: Programming with MicroPython"
 pathway: pico
 order: 2
+chapter: 2
 source: rpi-pico-2e
 subtitle: "Connect a computer and start writing programs for your Raspberry Pi Pico using the MicroPython language"
 ---

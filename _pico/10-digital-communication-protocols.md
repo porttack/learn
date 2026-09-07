@@ -3,6 +3,7 @@ layout: lesson
 title: "Chapter 10: Digital communication protocols: I2C and SPI"
 pathway: pico
 order: 10
+chapter: 10
 source: rpi-pico-2e
 subtitle: "Explore these two popular communication protocols and use them to display data on an OLED display"
 ---

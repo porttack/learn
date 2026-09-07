@@ -3,6 +3,7 @@ layout: lesson
 title: "Chapter 3: Physical computing"
 pathway: pico
 order: 3
+chapter: 3
 source: rpi-pico-2e
 subtitle: "Learn about your Raspberry Pi Pico’s pins and the electronic components you can connect and control"
 ---

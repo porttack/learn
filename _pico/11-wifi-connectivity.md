@@ -3,6 +3,7 @@ layout: lesson
 title: "Chapter 11: Wi-Fi connectivity with Pico W and Pico 2 W"
 pathway: pico
 order: 11
+chapter: 11
 source: rpi-pico-2e
 subtitle: "Turn Raspberry Pi Pico W into a network-connected node for the Internet of Things as you learn to unleash its Wi-Fi powers"
 ---

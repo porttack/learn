@@ -3,6 +3,7 @@ layout: lesson
 title: "Chapter 1: Get to know your Raspberry Pi Pico"
 pathway: pico
 order: 1
+chapter: 1
 source: rpi-pico-2e
 subtitle: "Get acquainted with your powerful new microcontroller board and learn how to attach pin headers and install MicroPython to program it"
 ---

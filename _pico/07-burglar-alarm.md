@@ -3,6 +3,7 @@ layout: lesson
 title: "Chapter 7: Burglar alarm"
 pathway: pico
 order: 7
+chapter: 7
 source: rpi-pico-2e
 subtitle: "Use a motion sensor to detect intruders and sound the alarm with a flashing light and siren"
 ---
