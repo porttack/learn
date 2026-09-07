@@ -4,7 +4,7 @@ title: "CS50 Problem Sets"
 permalink: /cs50-psets/
 ---
 
-# CS50 Problem Sets
+{% include page-title.html title=page.title %}
 
 A mix of problem sets: some adapted from [Harvard's CS50
 AP](https://cs50.harvard.edu/ap) curriculum, some from [CS50's

@@ -2,6 +2,7 @@
 layout: minimal
 title: "Electronics 101"
 permalink: /electronics101/print/
+bare_home_link: true
 ---
 
 <div class="print-pathway">

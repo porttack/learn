@@ -2,6 +2,7 @@
 layout: minimal
 title: "MicroPython on Pi Pico"
 permalink: /pico/print/
+bare_home_link: true
 ---
 
 <div class="print-pathway">

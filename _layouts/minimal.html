@@ -5,11 +5,13 @@
 
   <body>
 
+    {% if page.bare_home_link %}
     <div class="site-topbar">
       <div class="wrapper">
         <a href="{{ "/" | relative_url }}" class="home-link">&larr; Home</a>
       </div>
     </div>
+    {% endif %}
 
     <main class="page-content" aria-label="Content">
       <div class="wrapper">

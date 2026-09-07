@@ -2,6 +2,7 @@
 layout: minimal
 title: "CS50 Problem Sets"
 permalink: /cs50-psets/print/
+bare_home_link: true
 ---
 
 <div class="print-pathway">

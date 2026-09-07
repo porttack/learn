@@ -5,15 +5,28 @@
 .site-topbar {
   border-bottom: 1px solid $grey-color-light;
   padding: 0.6em 0;
+}
 
-  .home-link {
-    font-size: 0.85em;
-    color: $grey-color-dark;
-    text-decoration: none;
+.home-link {
+  font-size: 0.85em;
+  color: $grey-color-dark;
+  text-decoration: none;
+  white-space: nowrap;
 
-    &:hover {
-      text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.page-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  h1 {
+    margin: 0;
   }
 }
 
@@ -640,6 +653,7 @@ table.checkoff {
 
 @media print {
   .site-topbar,
+  .home-link,
   .lesson-nav,
   .print-button,
   .copy-btn,
