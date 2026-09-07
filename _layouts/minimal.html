@@ -8,6 +8,7 @@
     <div class="site-menu">
       <input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
       <label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+      <label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
       <nav class="site-menu-panel">
         {% for item in site.data.site_menu %}
         <a href="{{ item.url | relative_url }}">{{ item.title }}</a>

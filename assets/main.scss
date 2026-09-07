@@ -24,6 +24,8 @@
   }
 
   .site-menu-icon {
+    position: relative;
+    z-index: 2;
     display: block;
     font-size: 1.3em;
     line-height: 1;
@@ -38,6 +40,24 @@
     }
   }
 
+  // Covers the whole viewport while the menu is open, so a click anywhere
+  // outside the panel (it's also a label for the same checkbox) closes it.
+  // Pure CSS, no JS needed for click-outside-to-close.
+  .site-menu-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    cursor: default;
+  }
+
+  .site-menu-trigger:checked ~ .site-menu-backdrop {
+    display: block;
+  }
+
   .site-menu-panel {
     display: none;
     position: absolute;
@@ -45,6 +65,7 @@
     right: 0;
     margin-top: 0.3em;
     min-width: 8em;
+    z-index: 2;
     background: $background-color;
     border: 1px solid $grey-color-light;
     border-radius: 4px;
