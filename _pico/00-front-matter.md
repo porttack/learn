@@ -1,10 +1,18 @@
 ---
 layout: lesson
-title: "Front matter"
+title: "Introduction: Front matter"
 pathway: pico
 order: 0
+label: "Introduction"
 source: rpi-pico-2e
+subtitle: "The book's copyright page, welcome note, and author bios"
 ---
+
+{% assign book = site.data.sources | where: "id", "rpi-pico-2e" | first %}
+<p class="provenance">
+  Adapted from <cite>{{ book.title }}</cite>, {{ book.year }}, by {{ book.author }} ({{ book.publisher }}).
+  Licensed under <a href="{{ book.licence_url }}">{{ book.licence }}</a>.
+</p>
 
 ## Get started with MicroPython on Raspberry Pi Pico, 2<sup>nd</sup> Edition
 
