@@ -4,6 +4,8 @@ description: >-
   high school students.
 url: "https://learn.porttack.com"
 baseurl: ""
+author: "Eric Brown"
+author_url: "https://porttack.com"
 
 theme: minima
 minima:
