@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Convert spine sections of the Pico MicroPython book EPUB into lesson
-markdown for the `rov` Jekyll collection.
+markdown for the `pico` Jekyll collection.
 
 The XHTML in this EPUB is well-formed XML, so this uses only
 xml.etree.ElementTree from the standard library -- no BeautifulSoup needed.
@@ -9,6 +9,10 @@ Usage:
     python3 tools/epub_to_lessons.py source/rpi-pico-2e/book.epub \\
         --lesson 00-front-matter:Front matter:00,01,02,03,04 \\
         --lesson 01-get-to-know-your-pico:Get to know your Raspberry Pi Pico:05
+
+Give TITLE without a colon (SLUG:TITLE:FILES splits on the first two colons),
+then add the "Chapter N: "/"Appendix N: " prefix by hand afterward, per
+CLAUDE.md's chapter-numbered-title convention.
 
 Each --lesson is SLUG:TITLE:FILES, where FILES is a comma-separated list of
 spine basenames (no extension) to concatenate, in order, into one lesson.
@@ -410,9 +414,9 @@ def main():
     parser.add_argument("epub_path")
     parser.add_argument("--lesson", action="append", required=True, dest="lessons",
                          help="SLUG:TITLE:FILES (repeatable)")
-    parser.add_argument("--outdir", default="_rov")
-    parser.add_argument("--imgdir", default="assets/img/rov")
-    parser.add_argument("--pathway", default="rov")
+    parser.add_argument("--outdir", default="_pico")
+    parser.add_argument("--imgdir", default="assets/img/pico")
+    parser.add_argument("--pathway", default="pico")
     parser.add_argument("--source-id", default="rpi-pico-2e")
     args = parser.parse_args()
 
