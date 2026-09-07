@@ -2,21 +2,26 @@
 layout: minimal
 title: "MicroPython on Pi Pico"
 permalink: /pico/
+source: original
 ---
 
 # MicroPython on Pi Pico
+
+{% assign book = site.data.sources | where: "id", "rpi-pico-2e" | first %}
+<p class="provenance">
+  Adapted from <cite>{{ book.title }}</cite>, {{ book.year }}, by {{ book.author }} ({{ book.publisher }}).
+  Licensed under <a href="{{ book.licence_url }}">{{ book.licence }}</a>.
+</p>
 
 Get acquainted with the Raspberry Pi Pico and MicroPython: wiring,
 flashing firmware, and physical computing fundamentals. Foundational
 material shared across courses, not specific to any one class.
 
-We write and run code in [ViperIDE](https://viper-ide.org), a
-browser-based MicroPython IDE: no software install, no admin rights
-needed.
+<div class="pathway-hero-image">
+  <img src="{{ '/assets/img/pico/fig-1-1.jpg' | relative_url }}" alt="The top of a Raspberry Pi Pico 2 board">
+</div>
 
 ## Contents
-
-**I'm in the process of porting this Creative Commons licensed book for my students and classroom. It is only partially ported right now.**
 
 <ol class="lesson-list">
 {% assign lessons = site.pico | sort: "order" %}
@@ -33,3 +38,5 @@ needed.
 </ol>
 
 [Print the whole pathway]({{ '/pico/print/' | relative_url }})
+
+{% include provenance.html %}

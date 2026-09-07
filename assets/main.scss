@@ -128,6 +128,22 @@ figure {
   }
 }
 
+// A small, deliberately modest hero image on a pathway's own landing page --
+// not a full-width banner, just a little visual anchor near the intro text.
+.pathway-hero-image {
+  display: block;
+  max-width: 280px;
+  margin: 1.2em auto;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    border: 1px solid $grey-color-light;
+  }
+}
+
 .video-embed {
   position: relative;
   width: 100%;
