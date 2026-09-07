@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: minimal
 ---
 {% assign pathway_meta = site.data.pathways | where: "id", page.pathway | first %}
 {% assign pathway_pages = site[page.pathway] | sort: "order" %}

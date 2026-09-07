@@ -4,6 +4,7 @@ title: "Chapter 5: Traffic light controller"
 pathway: pico
 order: 5
 source: rpi-pico-2e
+subtitle: "Create your own mini pedestrian crossing system with multiple LEDs and a push-button"
 ---
 
 *Create your own mini pedestrian crossing system with multiple LEDs and a push-button*

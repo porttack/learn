@@ -2,6 +2,21 @@
 ---
 @import "minima";
 
+.site-topbar {
+  border-bottom: 1px solid $grey-color-light;
+  padding: 0.6em 0;
+
+  .home-link {
+    font-size: 0.85em;
+    color: $grey-color-dark;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 .pathway-back {
   font-size: 0.9em;
   margin-bottom: 0.5em;
@@ -548,6 +563,16 @@ figure {
   padding-left: 0;
 }
 
+.lesson-list li {
+  margin-bottom: 0.9em;
+}
+
+.lesson-subtitle {
+  margin: 0.15em 0 0;
+  font-size: 0.9em;
+  color: $grey-color-dark;
+}
+
 .lesson-sublist {
   list-style: none;
   padding-left: 1.2em;
@@ -614,8 +639,7 @@ table.checkoff {
 }
 
 @media print {
-  .site-header,
-  .site-footer,
+  .site-topbar,
   .lesson-nav,
   .print-button,
   .copy-btn,

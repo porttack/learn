@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: minimal
 title: "ROV Robotics"
 permalink: /rovrobotics/print/
 ---

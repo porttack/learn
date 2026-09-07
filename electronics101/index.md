@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: minimal
 title: "Electronics 101"
 permalink: /electronics101/
 ---

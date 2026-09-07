@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: minimal
 title: "MicroPython on Pi Pico"
 permalink: /pico/print/
 ---

@@ -4,6 +4,7 @@ title: "Chapter 6: Reaction game"
 pathway: pico
 order: 6
 source: rpi-pico-2e
+subtitle: "Build a simple reaction timing game using an LED and push-buttons, for one or two players"
 ---
 
 *Build a simple reaction timing game using an LED and push-buttons, for one or two players*

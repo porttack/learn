@@ -4,6 +4,7 @@ title: "Writing and running code with ViperIDE"
 pathway: pico
 order: 2
 source: original
+subtitle: "Connect your Pico to ViperIDE and write your first MicroPython programs: no software to install, no admin rights needed."
 ---
 
 *Connect your Pico to ViperIDE and write your first MicroPython programs:

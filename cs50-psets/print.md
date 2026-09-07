@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: minimal
 title: "CS50 Problem Sets"
 permalink: /cs50-psets/print/
 ---

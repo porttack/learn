@@ -4,6 +4,7 @@ title: "Chapter 4: Physical computing with Raspberry Pi Pico"
 pathway: pico
 order: 4
 source: rpi-pico-2e
+subtitle: "Start connecting basic electronic components to Raspberry Pi Pico and writing programs to control and sense them"
 ---
 
 *Start connecting basic electronic components to Raspberry Pi Pico and writing programs to control and sense them*
