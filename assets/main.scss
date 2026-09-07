@@ -1,5 +1,9 @@
 ---
 ---
+// Override minima's default (800px) before importing it -- $content-width
+// is declared with !default there, so setting it first here wins.
+$content-width: 900px;
+
 @import "minima";
 
 .site-menu {
