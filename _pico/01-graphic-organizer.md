@@ -24,7 +24,7 @@ Read the introduction and the guided tour section before answering these.
 
 Explain each word in your own words. Use the chapter for help if you get stuck.
 
-<table class="checkoff">
+<table class="checkoff vocab-table">
   <thead>
     <tr><th>Word</th><th>What it means</th></tr>
   </thead>
@@ -101,7 +101,7 @@ This section has real safety warnings in it. Slow down and read them carefully.
 
 ### Vocabulary
 
-<table class="checkoff">
+<table class="checkoff vocab-table">
   <thead>
     <tr><th>Word</th><th>What it means</th></tr>
   </thead>

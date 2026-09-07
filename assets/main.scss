@@ -769,6 +769,49 @@ table.checkoff {
   &.checkoff-voltage td:not(:first-child) {
     height: 2em;
   }
+
+  // Vocabulary tables (term + blank definition): the term column only ever
+  // holds a short word, but the definition column is where a student
+  // actually writes -- give it most of the row instead of letting an empty
+  // cell collapse to the width of its own header text. Extra vertical
+  // padding on top, since an empty cell has nothing else to force a taller
+  // row for a multi-line answer.
+  &.vocab-table {
+    table-layout: fixed;
+
+    th:first-child, td:first-child {
+      width: 30%;
+    }
+
+    td {
+      padding-top: 1.1em;
+      padding-bottom: 1.1em;
+    }
+
+    // A third, narrow column for physical pin numbers, between the term and
+    // its definition -- makes students check the pinout figure again rather
+    // than answer from memory.
+    &.with-pins {
+      th:nth-child(2), td:nth-child(2) {
+        width: 16%;
+      }
+    }
+  }
+
+  // Component ID tables (a labeled figure's parts, matched to a category and
+  // a description): column widths are set via <colgroup><col> in the markup
+  // itself, not here -- table-layout: fixed sizes columns from the first
+  // row's own cells, and the letter column's width lived only on its body
+  // <td class="checkbox-cell">, never its header <th>, so it was ignored.
+  // A <colgroup> is unambiguous regardless of which row has a class on it.
+  &.components-table {
+    table-layout: fixed;
+
+    td {
+      padding-top: 1.1em;
+      padding-bottom: 1.1em;
+    }
+  }
 }
 
 .checkoff-note {

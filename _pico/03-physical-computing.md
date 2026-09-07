@@ -6,6 +6,7 @@ order: 3
 chapter: 3
 source: rpi-pico-2e
 subtitle: "Learn about your Raspberry Pi Pico’s pins and the electronic components you can connect and control"
+organizer: /pico/03-graphic-organizer/
 ---
 
 *Learn about your Raspberry Pi Pico’s pins and the electronic components you can connect and control*
@@ -43,6 +44,28 @@ Like counting in Python, your Pico’s GPIO pins start at the number 0 rather th
 - **ADC_VREF** (*Analogue-to-digital converter (ADC) voltage reference*): A special input pin which sets a reference voltage for any analogue inputs.
 - **AGND** (*ADC 0 volts ground*): A special ground connection for use with the ADC_VREF pin.
 - **RUN** (*Enables or disables your Pico*): The RUN pin is used to start and stop your Pico from another microcontroller or other controlling device.
+
+<aside class="callout note" markdown="1">
+**VBUS VS VSYS**
+
+These two pins are easy to mix up. VBUS is a 5V pass-through straight from your Pico’s micro USB port. It’s not something you power your Pico from: you read power out of it, for other 5V hardware, and it sits close to 0V whenever USB isn’t connected. VSYS is the opposite: it’s an input, the pin your Pico’s own power supply actually runs on, and it accepts a much wider range than VBUS, anywhere from 1.8V to 5.5V. That’s what lets you power your Pico from something other than USB.
+</aside>
+
+<aside class="callout note" markdown="1">
+**POWERING YOUR PICO**
+
+Micro USB is the easiest way to power your Pico: it supplies 5V and lets you load programs at the same time. If you want to run your Pico without a computer nearby, you can instead feed VSYS with anywhere from 1.8V to 5.5V, from a battery pack or another power supply. Either way, your Pico’s own regulator turns that into the steady 3.3V its chip and GPIO pins actually run on, available on the 3V3(OUT) pin for powering small external circuits of your own.
+
+VSYS’s range has to sit above the lowest voltage your Pico’s regulator needs to work at all, and below the highest voltage the regulator and chip can safely take. A few real power sources that land inside that range:
+
+- A breadboard power supply module, set to either 3.3V or 5V
+- 2 to 3 alkaline AA batteries in series (about 1.5V each, so roughly 3V to 4.5V)
+- 2 to 4 NiMH AA batteries in series (about 1.2V each, so roughly 2.4V to 4.8V)
+
+Feeding VSYS more than 5.5V can permanently damage your Pico’s regulator and chip, so don’t connect a source you haven’t checked against that range.
+
+It’s also worth knowing the name of a related failure mode: a ***brownout***. That’s when the voltage reaching your Pico sags too low while it’s running, and it’s often a current problem more than a voltage problem: if your power source can’t supply enough current for what your circuit is drawing, its voltage droops under that load even if it looked fine with nothing connected. A battery pack running down is one cause, but so is adding a component like a motor or servo, which can pull a large burst of current the moment it starts moving and drag the whole circuit’s voltage down with it. When you’re choosing a power source, its current rating matters just as much as its voltage. Unlike unplugging your Pico outright, a brownout can leave it half-powered, behaving unpredictably or resetting without warning, instead of shutting down or restarting cleanly.
+</aside>
 
 Several of the GPIO pins have additional functions, covered as later lessons put them to use; for the full picture, see [Appendix B, Pinout guide](/pico/14-pinout-guide/).
 
