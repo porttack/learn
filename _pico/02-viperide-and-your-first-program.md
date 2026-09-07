@@ -10,6 +10,12 @@ subtitle: "Connect your Pico to ViperIDE and write your first MicroPython progra
 *Connect your Pico to ViperIDE and write your first MicroPython programs:
 no software to install, no admin rights needed.*
 
+<aside class="callout note" markdown="1">
+**USING THONNY INSTEAD?**
+
+If you’re using Thonny rather than ViperIDE, see [Interlude A: Programming with MicroPython](/pico/01b-programming-with-thonny/) instead — it covers the same ground with Thonny’s interface.
+</aside>
+
 Your Pico is flashed with MicroPython and ready to go. Now you need a way
 to actually write code and send it to the board. That's
 [ViperIDE](https://viper-ide.org): it runs entirely in your browser, talks
