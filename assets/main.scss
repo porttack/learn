@@ -570,6 +570,49 @@ figure {
   }
 }
 
+// Shared by .copy-command's hand-placed button and the copy button
+// auto-injected into every rendered ```python block (see the script in
+// _layouts/lesson.html) -- both are absolutely positioned inside whichever
+// wrapper below gives them `position: relative`.
+.copy-btn {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8em;
+  height: 1.8em;
+  padding: 0;
+  background: $background-color;
+  color: $grey-color-dark;
+  border: 1px solid $grey-color-light;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    color: $text-color;
+    border-color: $grey-color;
+  }
+
+  .check-icon {
+    display: none;
+  }
+
+  &.copied {
+    color: #2e7d32;
+    border-color: #2e7d32;
+
+    .copy-icon {
+      display: none;
+    }
+
+    .check-icon {
+      display: block;
+    }
+  }
+}
+
 .copy-command {
   position: relative;
   margin: 1em 0;
@@ -578,44 +621,13 @@ figure {
     margin: 0;
     padding-right: 3em;
   }
+}
 
-  .copy-btn {
-    position: absolute;
-    top: 0.5em;
-    right: 0.5em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.8em;
-    height: 1.8em;
-    padding: 0;
-    background: $background-color;
-    color: $grey-color-dark;
-    border: 1px solid $grey-color-light;
-    border-radius: 4px;
-    cursor: pointer;
+.language-python.highlighter-rouge {
+  position: relative;
 
-    &:hover {
-      color: $text-color;
-      border-color: $grey-color;
-    }
-
-    .check-icon {
-      display: none;
-    }
-
-    &.copied {
-      color: #2e7d32;
-      border-color: #2e7d32;
-
-      .copy-icon {
-        display: none;
-      }
-
-      .check-icon {
-        display: block;
-      }
-    }
+  pre {
+    padding-right: 3em;
   }
 }
 

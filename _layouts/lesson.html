@@ -40,6 +40,18 @@ layout: minimal
 </article>
 
 <script>
+document.querySelectorAll('.language-python.highlighter-rouge').forEach(function (block) {
+  if (block.querySelector('.copy-btn')) return;
+  var btn = document.createElement('button');
+  btn.className = 'copy-btn';
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'Copy this code to clipboard');
+  btn.innerHTML =
+    '<svg class="copy-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="8" y="8" width="12" height="12" rx="2" ry="2"></rect><path d="M4 16V5a1 1 0 0 1 1-1h11"></path></svg>' +
+    '<svg class="check-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  block.appendChild(btn);
+});
+
 document.addEventListener('click', function (event) {
   var btn = event.target.closest('.copy-btn');
   if (!btn) return;
