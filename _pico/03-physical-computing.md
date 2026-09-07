@@ -7,6 +7,7 @@ chapter: 3
 source: rpi-pico-2e
 subtitle: "Learn about your Raspberry Pi Pico’s pins and the electronic components you can connect and control"
 organizer: /pico/03-graphic-organizer/
+slides: /pico/03-intro-slides/
 ---
 
 *Learn about your Raspberry Pi Pico’s pins and the electronic components you can connect and control*

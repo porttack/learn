@@ -1,12 +1,12 @@
 ---
-title: "Chapter 1 Slides"
-permalink: /pico/01-intro-slides/
+title: "Chapter 3 Slides"
+permalink: /pico/03-intro-slides/
 ---
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Chapter 1: Get to Know Your Raspberry Pi Pico -- Slides</title>
+<title>Chapter 3: Physical Computing -- Slides</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="/assets/img/pico/favicon.svg">
 <style>
@@ -342,139 +342,128 @@ const { useState, useEffect, useRef, useCallback } = React;
 const SLIDES = [
   {
     kind: "title",
-    kicker: "Chapter 1",
-    title: "Get to Know Your Raspberry Pi Pico",
-    subtitle: "A tiny board that can control real things in the real world",
-    notes: "Welcome them in. This is the first day of the Pico unit. Today is mostly about building excitement and vocabulary before they read the chapter themselves -- don't over-explain anything yet, that's what the reading and the graphic organizer are for."
-  },
-  {
-    kind: "bullets",
-    kicker: "Warm-up",
-    title: "How small can a computer get?",
-    bullets: [
-      "A laptop is a computer.",
-      "A phone is a computer.",
-      "This board is about the size of a stick of gum. Also a computer."
-    ],
-    notes: "If you have a real Pico, hold it up here. Ask a couple of students to guess how small a 'real' computer could get before it stops working. Let them be wrong, it's a fun guess. The answer is basically 'this small, and smaller.'"
+    kicker: "Chapter 3",
+    title: "Physical Computing",
+    subtitle: "How your Pico reaches out and touches the real world",
+    notes: "Chapter 3 is concepts and vocabulary, not a build: nothing gets wired up today, that's Chapter 4. The job today is to get the vocabulary and the mental model in place before they read, and to make them comfortable with the idea that 'coding' can mean more than software on a screen."
   },
   {
     kind: "bullets",
     kicker: "Big idea",
-    title: "Not All Computers Are the Same",
+    title: "More Than Just a Screen",
     bullets: [
-      "Raspberry Pi: a full computer. Desktop, files, a web browser.",
-      "Raspberry Pi Pico: a microcontroller. Built to run ONE program, forever, and control hardware."
+      "Coding usually makes you think: software",
+      "Physical computing means code that reaches into the real world",
+      "A crosswalk button. A thermostat. Your Pico."
     ],
-    notes: "This is the key vocabulary distinction the chapter draws: single-board computer vs. microcontroller. A Pico doesn't boot a desktop, it just runs your program the instant it powers on. That's exactly why it's cheap, small, and shows up inside appliances instead of a full computer."
-  },
-  {
-    kind: "bullets",
-    kicker: "Where these already are",
-    title: "You Already Use These Every Day",
-    bullets: [
-      "A washing machine's control panel",
-      "A programmable thermostat",
-      "A game controller",
-      "The button at a pedestrian crosswalk"
-    ],
-    notes: "Ask the class to brainstorm 2-3 more examples before you reveal these. Most kids have never thought about the fact that a washing machine has a computer in it. This is the physical computing idea: software controlling something in the real world, not just a screen."
+    notes: "This is the chapter's own opening idea. Ask the class for their own examples of a computer controlling something physical before revealing these -- most kids have never thought about how many everyday objects have a tiny computer inside them."
   },
   {
     kind: "image",
-    kicker: "Meet the board",
-    title: "Parts of the Pico",
-    image: "/assets/img/pico/fig-1-1.jpg",
+    kicker: "Meet the pins",
+    title: "Your Pico's Pins",
+    image: "/assets/img/pico/fig-3-1.png",
     bullets: [
-      "Pins along both edges (GPIO)",
-      "A chip in the middle: the actual computer",
-      "A micro USB port and a tiny BOOTSEL button"
+      "Pins run along both edges",
+      "Most are GPIO: general purpose, you decide their job",
+      "A few have one specific job, like power or reset"
     ],
-    notes: "Quick tour only, don't lecture on every part yet. The chapter and the graphic organizer cover these in detail with real photos. The goal here is just to pre-load the vocabulary (GPIO, chip, BOOTSEL) so it's familiar when they hit it in the reading.",
-    down: [
-      {
-        kind: "gallery",
-        kicker: "A closer look",
-        title: "Three More Parts Worth Knowing",
-        images: [
-          { src: "/assets/img/pico/fig-1-3.jpg", caption: "The chip itself: an RP2040 or RP2350" },
-          { src: "/assets/img/pico/fig-1-5.jpg", caption: "BOOTSEL: hold this to load firmware" },
-          { src: "/assets/img/pico/fig-1-6.jpg", caption: "Debug pads, for later, more advanced work" }
-        ],
-        notes: "Only go here if you have time or a genuinely curious class. These photos match what's in the reading and the graphic organizer, so this is an early look, not new information -- don't let it turn into the whole lecture."
-      }
-    ]
+    notes: "This is the full pinout diagram from the chapter, the same one Appendix B expands on later. Don't try to explain every label, that's what the reading and the organizer are for -- the goal here is just orientation: GPIO pins in green, power/ground/special pins called out separately."
   },
   {
     kind: "bullets",
-    kicker: "Wait, where are the pins?",
-    title: "Your Pico Ships Flat",
+    kicker: "Words you'll need",
+    title: "New Vocabulary",
     bullets: [
-      "No metal pins yet, on purpose",
-      "Only solder if yours doesn't already have headers",
-      "Headers are what let it plug into a breadboard"
+      "GPIO, PIO, ADC",
+      "VBUS, VSYS, GND, RUN",
+      "You'll define these yourself in the organizer"
     ],
-    notes: "Explain that Pico ships without headers so it can also be soldered flat onto other boards (castellated edges) for finished products. Check first whether today's boards already have headers attached -- if so, skip the soldering detour below entirely and go straight to Loading the Software.",
+    notes: "Deliberately don't define these here. The graphic organizer specifically has students write these in their own words rather than just repeating a spelled-out acronym, so defining them on a slide would undercut that. Just make the words themselves familiar before they read."
+  },
+  {
+    kind: "bullets",
+    kicker: "Easy to mix up",
+    title: "VBUS vs. VSYS",
+    bullets: [
+      "VBUS: 5V straight from the USB port",
+      "VSYS: powers your whole Pico, 1.8V to 5.5V",
+      "One is basically an output, the other is an input"
+    ],
+    notes: "This is content added to Chapter 3 beyond the original book: two callouts on VBUS/VSYS and on powering the Pico. Worth spending real time here since it's genuinely confusing, and it directly sets up the organizer's own pin-number question.",
     down: [
       {
         kind: "safety",
-        kicker: "If you're soldering today",
-        title: "Safety First",
+        kicker: "Other ways to power it",
+        title: "Powering Your Pico Off USB",
         bullets: [
-          "The iron gets very hot, and stays hot after it's unplugged",
-          "Never touch the metal part, ever",
-          "Solder contains flux -- wash your hands after using it",
-          "Put the iron back in its stand any time you're not using it"
+          "A breadboard power supply module (3.3V or 5V)",
+          "2 to 3 alkaline AA batteries (about 3V to 4.5V)",
+          "2 to 4 NiMH AA batteries (about 2.4V to 4.8V)",
+          "Going over 5.5V can permanently damage your Pico"
         ],
-        notes: "Slow down here and say this out loud clearly, don't just let them read it. If you're soldering today, this is the most important slide of the day. If you're demonstrating, physically show the stand and model putting the iron back in it. Mention that mistakes are fixable (that's in the chapter too) so nobody panics over a messy joint, but burns and flux exposure are the real risks worth taking seriously."
-      },
-      {
-        kind: "gallery",
-        kicker: "What you're aiming for",
-        title: "A Good Joint (and Some Common Mistakes)",
-        images: [
-          { src: "/assets/img/pico/fig-1-14.jpg", caption: "A well-soldered pin: neat, shiny, volcano-shaped" },
-          { src: "/assets/img/pico/fig-1-15.png", caption: "Five common mistakes, and how to fix each one" }
-        ],
-        notes: "This is a preview, not a substitute for the chapter's own step-by-step instructions. Use it to set expectations for what 'good' looks like before they start, then have them actually follow the written steps and the graphic organizer's sequencing and troubleshooting activities, rather than trying to solder from this slide alone. That's the line worth holding: a hook or a heads-up here is fine, replacing the reading is not."
+        notes: "Matches the chapter's own callout. Worth mentioning brownouts too if there's time: a brownout is usually a current problem more than a pure voltage one -- a power source that can't supply enough current sags under load, and a motor or servo drawing a big burst of current is a common real-world cause."
       }
     ]
   },
   {
-    kind: "bullets",
-    kicker: "Almost ready to code",
-    title: "Loading the Software",
+    kind: "image",
+    kicker: "Parts you'll use",
+    title: "Nine Components to Know",
+    image: "/assets/img/pico/fig-3-2.png",
     bullets: [
-      "Hold BOOTSEL, then plug in USB",
-      "Pico shows up like a USB drive",
-      "Drag one firmware file onto it",
-      "You only do this once"
+      "Resistor, LED, push-button: the basics",
+      "PIR sensor, potentiometer, OLED display: a bit fancier",
+      "You'll match each letter in the organizer"
     ],
-    notes: "This is installing MicroPython. Emphasize 'only once' -- students sometimes worry they'll have to redo this every class. Also worth mentioning there are different firmware files for Pico, Pico W, Pico 2, and Pico 2 W, so they need to grab the right one for their board."
+    notes: "This is the chapter's own labeled figure (A through I), which the organizer asks students to match to names and categories. Don't give away which letter is which here -- that matching is the whole point of the organizer activity."
+  },
+  {
+    kind: "image",
+    kicker: "A useful skill",
+    title: "Reading Resistor Colors",
+    image: "/assets/img/pico/fig-3-3.png",
+    bullets: [
+      "Resistors don't print their value as a number",
+      "Colored bands encode it instead",
+      "Useful, but don't stress over it"
+    ],
+    notes: "This chapter's resistor color code content is a nice-to-have skill, not something to spend the whole period on. The organizer only asks two short questions on it, deliberately light. Keep this slide brief.",
+    down: [
+      {
+        kind: "bullets",
+        kicker: "Try it",
+        title: "Decode This Resistor",
+        bullets: [
+          "Look at the resistor at the top of the chart",
+          "Two orange bands: the digits 3 and 3",
+          "One brown band: multiply by 10",
+          "33 times 10 = 330 ohms"
+        ],
+        notes: "This is the book's own worked example, and it matches the fill-in-the-blank on the graphic organizer word for word. Walk through it together if you want a quick win before moving on."
+      }
+    ]
   },
   {
     kind: "bullets",
     kicker: "Plan",
-    title: "Chapter 1 Plan",
+    title: "Chapter 3 Plan",
     bullets: [
-      { text: "Read Chapter 1", href: "/pico/01-get-to-know-your-pico/" },
-      { text: "Fill out the graphic organizer as you go", href: "/pico/01-graphic-organizer/" },
-      "Solder your headers, if you need to",
-      "Install MicroPython"
+      { text: "Read Chapter 3", href: "/pico/03-physical-computing/" },
+      { text: "Fill out the graphic organizer as you go", href: "/pico/03-graphic-organizer/" }
     ],
-    notes: "Set expectations for pacing, and be honest that this might not all happen today -- reading and the graphic organizer are sometimes homework, and soldering or installing MicroPython might land on a separate day depending on your schedule. Remind them the graphic organizer gets checked for completeness, not perfection, and that it's meant to be filled out WHILE reading, not after."
+    notes: "Same as Chapter 1: this might be homework rather than today's in-class work, adjust as needed. There's no soldering or building today, so Chapter 3 often moves faster in class than Chapter 1 did."
   },
   {
     kind: "bullets",
     kicker: "Coming up",
-    title: "Where This Is All Going",
+    title: "Next: You Actually Build Something",
     bullets: [
-      "A working traffic light you build and code yourself",
-      "A reaction-time game with buttons and LEDs",
-      "A burglar alarm with a real motion sensor",
-      "Eventually: Wi-Fi and Bluetooth"
+      "Chapter 3 was ideas and vocabulary",
+      "Chapter 4 you wire your first LED",
+      "Chapter 4 you read your first button"
     ],
-    notes: "Optional hype slide -- skip it if you're short on time, it's not required content. The idea is to give them a reason to care about today's less exciting parts (soldering, installing firmware) by showing the payoff coming later in the pathway."
+    notes: "Optional hype slide -- skip it if you're short on time, it's not required content. The idea is to promise them the hands-on part starts next chapter, since Chapter 3 itself is deliberately concept-only."
   },
   {
     kind: "title",
@@ -593,7 +582,7 @@ function OutlineCard({ slide, heading, nested }) {
 function Outline() {
   return (
     <div className="outline">
-      <h1>Chapter 1: Get to Know Your Raspberry Pi Pico</h1>
+      <h1>Chapter 3: Physical Computing</h1>
       <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
       {SLIDES.map((s, i) => (
         <React.Fragment key={i}>
@@ -610,7 +599,7 @@ function Outline() {
 // Deep-linking: ?slide=3 opens on that slide (1-indexed, to match the
 // on-screen counter), ?extra=1 additionally drops into that slide's Nth
 // "down" slide if it has any, ?outline=1 opens straight into the
-// speaker-notes outline -- handy for linking straight to the safety slide,
+// speaker-notes outline -- handy for linking straight to a specific slide,
 // or handing a substitute teacher the notes view without them finding the
 // button.
 function initialStateFromUrl() {
@@ -668,7 +657,7 @@ function App() {
     return (
       <div className="app">
         <div className="toolbar">
-          <a className="back-link" href="/pico/01-get-to-know-your-pico/">&larr; Chapter 1</a>
+          <a className="back-link" href="/pico/03-physical-computing/">&larr; Chapter 3</a>
           <div className="spacer"></div>
           <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
           <button onClick={() => window.print()}>Print</button>
@@ -702,7 +691,7 @@ function App() {
         </div>
       )}
       <div className="toolbar">
-        <a className="back-link" href="/pico/01-get-to-know-your-pico/">&larr; Chapter 1</a>
+        <a className="back-link" href="/pico/03-physical-computing/">&larr; Chapter 3</a>
         <div className="spacer"></div>
         <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
         <span className="counter">{index + 1} / {SLIDES.length}</span>

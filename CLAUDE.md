@@ -209,6 +209,74 @@ Classes: `warning`, `note`, `challenge`.
 Code: fenced blocks tagged `python`. Real, runnable MicroPython. Never
 pseudocode presented as if it runs.
 
+## Companion materials: graphic organizers and slides
+
+Some chapters get two optional companion pages, built so far for `_pico`
+chapters 1 and 3 (`01`/`03-get-to-know...`, `01`/`03-physical-computing`).
+Use those two chapters as the template rather than starting from scratch.
+
+**Wiring, on the chapter's own front matter:**
+
+    organizer: /pico/01-graphic-organizer/
+    slides: /pico/01-intro-slides/
+
+`pico/index.md`'s contents list reads these to render a small pill link next
+to that chapter's title. **The link text must include the chapter number**
+(`Chapter {{ lesson.chapter }} slides`, not a bare "Intro slides") — every
+row would otherwise show identical, ambiguous link text.
+
+**The graphic organizer** is a printable fill-in-as-you-read worksheet:
+`_pico/NN-graphic-organizer.md`, a real collection member (`layout: lesson`,
+`order: N.1`, `label: "Chapter N Companion"`, `source: original`,
+`companion: true`). The `companion: true` flag excludes it from
+`pico/index.md`'s contents list and `pico/print.md`'s full-pathway printout
+(both loops skip anything with that flag) while still giving it a working
+permalink and correct prev/next nav via the collection.
+
+Reuses `electronics101`'s existing `.checkoff`/`.fill-line`/
+`.checkoff-questions` worksheet CSS, plus additions in `assets/main.scss`:
+`.vocab-table` (term + definition, definition column deliberately wider,
+taller rows so a multi-line answer fits; add `.with-pins` for an extra
+narrow physical-pin-number column), `.components-table` (a labeled figure's
+parts matched to a category and a description), `.draw-box` (a dashed empty
+box for a hand-drawn answer). **Column widths on either table must be set
+via an explicit `<colgroup><col style="width: …">` in the markup, not
+CSS `th:nth-child`/`td:nth-child` rules** — `table-layout: fixed` sizes
+columns from the table's first row, so a width declared only on a body
+`<td class="checkbox-cell">` and never the matching header `<th>` is
+silently ignored. A `<thead>` on a `table.checkoff` that splits across a
+print page boundary repeats automatically (verified empirically); no extra
+CSS needed for that. Target **1 to 4 printed pages** — verify with a real
+print-to-PDF (headless Chrome + `pdfinfo`), not just the on-screen view,
+since taller rows and extra columns can quietly push a page over. If the
+teacher flags a topic as something they "only marginally care about," keep
+its footprint small (fewer questions, no extra column) rather than giving
+it equal weight to the rest of the organizer.
+
+**The slides** are a self-contained page, `pico/NN-intro-slides.html` —
+a plain page, **not** a collection member, front matter only carries
+`title:`/`permalink:`, no `layout:` (so Jekyll emits the file's own HTML
+completely unwrapped, no site chrome). React 18 + ReactDOM 18 (UMD) +
+Babel standalone, loaded from `unpkg.com` with **exact pinned versions**,
+compiling JSX in-browser. The whole `<script type="text/babel">` body must
+be wrapped in `{% raw %}…{% endraw %}` — Liquid otherwise chokes on JSX
+object-literal syntax like `style={{ transform: ... }}`, reading `{{` as
+its own variable tag. It needs its own `<link rel="icon" ...>` by hand,
+since it never goes through `_includes/head.html`'s pathway-scoped favicon
+include.
+
+Design rules for the deck itself: big type, few words per slide (the class
+reads fast; explanation belongs in a slide's `notes` field, shown only in a
+toggleable panel hidden by default so a projected view stays clean, or in
+the `?outline=1` printable view for pre-class paper prep). A bullet can be
+a plain string or `{ text, href }` to link straight at the chapter or its
+organizer. A top-level slide can carry a `down: [...]` array of optional
+"down arrow" slides (extra photos, safety detail, a worked example) that
+the normal next/prev flow skips right past — put anything that would let a
+student skip the actual reading behind one of these, and say so in its own
+`notes`. Other built-in features: live 16:9/4:3 aspect toggle, fullscreen,
+and deep-linking via `?slide=N&extra=M`.
+
 ## Hard content rules
 
 - **ViperIDE, not Thonny.** Students are on Macs with Chrome, connecting over

@@ -30,7 +30,7 @@ material shared across courses, not specific to any one class.
   <li>
     <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
     {% if lesson.organizer %}<a class="lesson-companion-link" href="{{ lesson.organizer | relative_url }}">Graphic organizer</a>{% endif %}
-    {% if lesson.slides %}<a class="lesson-companion-link" href="{{ lesson.slides | relative_url }}">Intro slides</a>{% endif %}
+    {% if lesson.slides %}<a class="lesson-companion-link" href="{{ lesson.slides | relative_url }}">Chapter {{ lesson.chapter }} slides</a>{% endif %}
     {% if lesson.subtitle %}<p class="lesson-subtitle">{{ lesson.subtitle }}</p>{% endif %}
   </li>
   {% endunless %}
