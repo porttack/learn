@@ -1,5 +1,5 @@
 - id: pico
-  title: "MicroPython on Raspberry Pi Pico"
+  title: "MicroPython on Pi Pico"
   collection: pico
   url: /pico/
   status: in-progress

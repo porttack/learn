@@ -1,17 +1,17 @@
 ---
 layout: default
-title: "MicroPython on Raspberry Pi Pico"
+title: "MicroPython on Pi Pico"
 permalink: /pico/
 ---
 
-# MicroPython on Raspberry Pi Pico
+# MicroPython on Pi Pico
 
 Get acquainted with the Raspberry Pi Pico and MicroPython: wiring,
 flashing firmware, and physical computing fundamentals. Foundational
 material shared across courses, not specific to any one class.
 
 We write and run code in [ViperIDE](https://viper-ide.org), a
-browser-based MicroPython IDE — no software install, no admin rights
+browser-based MicroPython IDE: no software install, no admin rights
 needed.
 
 ## Contents
