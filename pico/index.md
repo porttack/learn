@@ -21,10 +21,14 @@ needed.
 <ol class="lesson-list">
 {% assign lessons = site.pico | sort: "order" %}
 {% for lesson in lessons %}
+  {% unless lesson.companion %}
   <li>
     <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
+    {% if lesson.organizer %}<a class="lesson-companion-link" href="{{ lesson.organizer | relative_url }}">Graphic organizer</a>{% endif %}
+    {% if lesson.slides %}<a class="lesson-companion-link" href="{{ lesson.slides | relative_url }}">Intro slides</a>{% endif %}
     {% if lesson.subtitle %}<p class="lesson-subtitle">{{ lesson.subtitle }}</p>{% endif %}
   </li>
+  {% endunless %}
 {% endfor %}
 </ol>
 

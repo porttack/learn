@@ -701,6 +701,16 @@ figure {
   color: $grey-color-dark;
 }
 
+.lesson-companion-link {
+  margin-left: 0.6em;
+  font-size: 0.8em;
+  white-space: nowrap;
+  color: $grey-color-dark;
+  border: 1px solid $grey-color-light;
+  border-radius: 1em;
+  padding: 0.1em 0.7em;
+}
+
 .lesson-sublist {
   list-style: none;
   padding-left: 1.2em;
@@ -766,8 +776,52 @@ table.checkoff {
   color: $grey-color-dark;
 }
 
+// Graphic-organizer pages: a small photo to identify, with the answer
+// written on the blank line underneath rather than a normal figcaption.
+.organizer-photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2em;
+  margin: 1.2em 0;
+}
+
+.organizer-photo {
+  width: 150px;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid $grey-color-light;
+    border-radius: 4px;
+  }
+
+  .fill-line {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin-top: 0.4em;
+  }
+}
+
+// An empty, bordered space for a hand-drawn answer (a sketch, a diagram).
+// Dashed rather than solid so it reads as "draw here," not a photo frame.
+.draw-box {
+  border: 1px dashed $grey-color;
+  border-radius: 4px;
+  min-height: 7em;
+  margin: 1em 0;
+}
+
+// Extra line-height so an inline .fill-line sitting mid-sentence has room to
+// write on, instead of crowding the line of text above it.
+.fill-line-paragraph {
+  line-height: 2.4;
+}
+
 @media print {
   .site-menu,
+  .pathway-back,
   .lesson-nav,
   .print-button,
   .copy-btn,
@@ -788,8 +842,41 @@ table.checkoff {
 
   figure,
   .callout,
-  table.checkoff tr {
+  table.checkoff tr,
+  .organizer-photo,
+  .draw-box {
     break-inside: avoid;
+  }
+
+  // A graphic organizer packs a lot of small fill-in elements onto a page
+  // meant to be handed out on paper; the roomier on-screen spacing (easier
+  // to read/edit) is more than a printed page needs, and easily pushes a
+  // multi-page organizer past its page budget by one line.
+  .checkoff-questions li {
+    margin-bottom: 0.7em;
+  }
+
+  p.fill-line {
+    height: 1.3em;
+  }
+
+  .fill-line-paragraph {
+    line-height: 2;
+  }
+
+  h2 {
+    margin-top: 1em;
+    margin-bottom: 0.3em;
+  }
+
+  h3 {
+    margin-top: 0.8em;
+    margin-bottom: 0.2em;
+  }
+
+  table.checkoff th,
+  table.checkoff td {
+    padding: 0.3em 0.6em;
   }
 
   h1, h2, h3 {

@@ -1,0 +1,722 @@
+---
+title: "Chapter 1 Intro Slides"
+permalink: /pico/01-intro-slides/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chapter 1: Get to Know Your Raspberry Pi Pico -- Intro Slides</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --accent: #2a7ae2;
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #57606a;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #e9edf1;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  #root { height: 100%; }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .stage-outer {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* Fixed-size design canvas, scaled to fit via a JS-computed transform --
+     lets every slide be authored at generous, fixed pixel sizes ("bigger
+     type") without hand-tuning responsive font sizes per breakpoint. */
+  .stage {
+    width: 1280px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.18);
+    padding: 80px 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .stage.ar-16-9 { height: 720px; }
+  .stage.ar-4-3 { height: 960px; }
+
+  .kicker {
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 18px;
+  }
+
+  .slide-title {
+    font-size: 64px;
+    line-height: 1.1;
+    margin: 0 0 40px;
+    font-weight: 700;
+  }
+
+  .slide-body {
+    font-size: 36px;
+    line-height: 1.5;
+  }
+
+  .slide-body ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+
+  .slide-body li {
+    margin-bottom: 22px;
+  }
+
+  .slide-body li:last-child { margin-bottom: 0; }
+
+  .slide-image-row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .slide-image-row img {
+    max-height: 260px;
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-image-row .slide-body {
+    flex: 1 1 auto;
+    font-size: 30px;
+  }
+
+  .slide-image-row .slide-body li {
+    margin-bottom: 16px;
+  }
+
+  .slide-body a, .slide-image-row .slide-body a {
+    color: var(--accent);
+  }
+
+  .slide-gallery-row {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    align-items: flex-start;
+  }
+
+  .slide-gallery-item {
+    flex: 1 1 0;
+    text-align: center;
+  }
+
+  .slide-gallery-item img {
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-gallery-item .caption {
+    margin-top: 14px;
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .depth-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 14px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  .depth-nav.depth-up {
+    bottom: auto;
+    top: 14px;
+  }
+
+  .depth-nav:hover {
+    background: rgba(0,0,0,0.75);
+  }
+
+  .title-slide {
+    text-align: left;
+    justify-content: center;
+  }
+
+  .title-slide .slide-title {
+    font-size: 76px;
+    margin-bottom: 16px;
+  }
+
+  .title-slide .slide-subtitle {
+    font-size: 34px;
+    color: var(--muted);
+  }
+
+  .safety-slide {
+    background: #fff7e6;
+  }
+
+  .safety-slide .kicker {
+    color: #b25e00;
+  }
+
+  .slide-counter-badge {
+    position: absolute;
+    bottom: 18px;
+    right: 24px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  /* --- Toolbar (not part of the scaled stage, so it stays a readable,
+     fixed size regardless of projector distance / zoom level) --- */
+  .toolbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #1b1f23;
+    color: #fff;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar button {
+    background: #333a42;
+    color: #fff;
+    border: 1px solid #4a545e;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .toolbar button:hover { background: #444e58; }
+  .toolbar button.active { background: var(--accent); border-color: var(--accent); }
+  .toolbar button:disabled { opacity: 0.4; cursor: default; }
+
+  .toolbar .spacer { flex: 1 1 auto; }
+  .toolbar .counter { min-width: 4.5em; text-align: center; }
+  .toolbar a.back-link { color: #9db8e8; text-decoration: none; font-size: 14px; }
+  .toolbar a.back-link:hover { text-decoration: underline; }
+
+  /* --- Speaker notes panel: docked below the stage, plain readable text,
+     hidden by default so a mirrored/projected display shows a clean deck. --- */
+  .notes-panel {
+    flex: 0 0 auto;
+    background: #f6f8fa;
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    max-height: 26vh;
+    overflow-y: auto;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .notes-panel h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+
+  .click-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30%;
+    cursor: pointer;
+  }
+  .click-zone.left { left: 0; }
+  .click-zone.right { right: 0; }
+
+  /* --- Outline / print-notes view: a plain scrollable page listing every
+     slide with its full speaker notes, meant for printing ahead of class. --- */
+  .outline {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .outline h1 { margin-bottom: 4px; }
+  .outline .outline-sub { color: var(--muted); margin-top: 0; }
+
+  .outline-slide {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    break-inside: avoid;
+  }
+
+  .outline-slide h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+  }
+
+  .outline-slide.outline-nested {
+    margin: 12px 0 12px 32px;
+    background: #f6f8fa;
+    border-style: dashed;
+  }
+
+  .outline-slide h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: var(--muted);
+  }
+
+  .outline-slide .outline-bullets {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 14px;
+  }
+
+  .outline-slide .outline-notes {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .outline-slide .outline-notes p:first-child { margin-top: 0; }
+
+  @media print {
+    .toolbar { display: none !important; }
+    .outline { height: auto; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+<script type="text/babel" data-type="module">
+{% raw %}
+const { useState, useEffect, useRef, useCallback } = React;
+
+// Edit this array to change the deck. `bullets` is what students see on the
+// slide (keep it short, they're reading fast); `notes` is only ever shown in
+// the notes panel or the printable outline, so it can be a full paragraph.
+// A bullet can be a plain string, or { text, href } to render as a link.
+// A top-level slide can carry a `down` array of extra slides reachable with
+// the down arrow / "More" button -- optional detail (more pictures, a deeper
+// dive) that the fast path (left/right, space) skips right over.
+const SLIDES = [
+  {
+    kind: "title",
+    kicker: "Chapter 1",
+    title: "Get to Know Your Raspberry Pi Pico",
+    subtitle: "A tiny board that can control real things in the real world",
+    notes: "Welcome them in. This is the first day of the Pico unit. Today is mostly about building excitement and vocabulary before they read the chapter themselves -- don't over-explain anything yet, that's what the reading and the graphic organizer are for."
+  },
+  {
+    kind: "bullets",
+    kicker: "Warm-up",
+    title: "How small can a computer get?",
+    bullets: [
+      "A laptop is a computer.",
+      "A phone is a computer.",
+      "This board is about the size of a stick of gum. Also a computer."
+    ],
+    notes: "If you have a real Pico, hold it up here. Ask a couple of students to guess how small a 'real' computer could get before it stops working. Let them be wrong, it's a fun guess. The answer is basically 'this small, and smaller.'"
+  },
+  {
+    kind: "bullets",
+    kicker: "Big idea",
+    title: "Not All Computers Are the Same",
+    bullets: [
+      "Raspberry Pi: a full computer. Desktop, files, a web browser.",
+      "Raspberry Pi Pico: a microcontroller. Built to run ONE program, forever, and control hardware."
+    ],
+    notes: "This is the key vocabulary distinction the chapter draws: single-board computer vs. microcontroller. A Pico doesn't boot a desktop, it just runs your program the instant it powers on. That's exactly why it's cheap, small, and shows up inside appliances instead of a full computer."
+  },
+  {
+    kind: "bullets",
+    kicker: "Where these already are",
+    title: "You Already Use These Every Day",
+    bullets: [
+      "A washing machine's control panel",
+      "A programmable thermostat",
+      "A game controller",
+      "The button at a pedestrian crosswalk"
+    ],
+    notes: "Ask the class to brainstorm 2-3 more examples before you reveal these. Most kids have never thought about the fact that a washing machine has a computer in it. This is the physical computing idea: software controlling something in the real world, not just a screen."
+  },
+  {
+    kind: "image",
+    kicker: "Meet the board",
+    title: "Parts of the Pico",
+    image: "/assets/img/pico/fig-1-1.jpg",
+    bullets: [
+      "Pins along both edges (GPIO)",
+      "A chip in the middle: the actual computer",
+      "A micro USB port and a tiny BOOTSEL button"
+    ],
+    notes: "Quick tour only, don't lecture on every part yet. The chapter and the graphic organizer cover these in detail with real photos. The goal here is just to pre-load the vocabulary (GPIO, chip, BOOTSEL) so it's familiar when they hit it in the reading.",
+    down: [
+      {
+        kind: "gallery",
+        kicker: "A closer look",
+        title: "Three More Parts Worth Knowing",
+        images: [
+          { src: "/assets/img/pico/fig-1-3.jpg", caption: "The chip itself: an RP2040 or RP2350" },
+          { src: "/assets/img/pico/fig-1-5.jpg", caption: "BOOTSEL: hold this to load firmware" },
+          { src: "/assets/img/pico/fig-1-6.jpg", caption: "Debug pads, for later, more advanced work" }
+        ],
+        notes: "Only go here if you have time or a genuinely curious class. These photos match what's in the reading and the graphic organizer, so this is an early look, not new information -- don't let it turn into the whole lecture."
+      }
+    ]
+  },
+  {
+    kind: "bullets",
+    kicker: "Wait, where are the pins?",
+    title: "Your Pico Ships Flat",
+    bullets: [
+      "No metal pins yet, on purpose",
+      "Only solder if yours doesn't already have headers",
+      "Headers are what let it plug into a breadboard"
+    ],
+    notes: "Explain that Pico ships without headers so it can also be soldered flat onto other boards (castellated edges) for finished products. Check first whether today's boards already have headers attached -- if so, skip the soldering detour below entirely and go straight to Loading the Software.",
+    down: [
+      {
+        kind: "safety",
+        kicker: "If you're soldering today",
+        title: "Safety First",
+        bullets: [
+          "The iron gets very hot, and stays hot after it's unplugged",
+          "Never touch the metal part, ever",
+          "Solder contains flux -- wash your hands after using it",
+          "Put the iron back in its stand any time you're not using it"
+        ],
+        notes: "Slow down here and say this out loud clearly, don't just let them read it. If you're soldering today, this is the most important slide of the day. If you're demonstrating, physically show the stand and model putting the iron back in it. Mention that mistakes are fixable (that's in the chapter too) so nobody panics over a messy joint, but burns and flux exposure are the real risks worth taking seriously."
+      },
+      {
+        kind: "gallery",
+        kicker: "What you're aiming for",
+        title: "A Good Joint (and Some Common Mistakes)",
+        images: [
+          { src: "/assets/img/pico/fig-1-14.jpg", caption: "A well-soldered pin: neat, shiny, volcano-shaped" },
+          { src: "/assets/img/pico/fig-1-15.png", caption: "Five common mistakes, and how to fix each one" }
+        ],
+        notes: "This is a preview, not a substitute for the chapter's own step-by-step instructions. Use it to set expectations for what 'good' looks like before they start, then have them actually follow the written steps and the graphic organizer's sequencing and troubleshooting activities, rather than trying to solder from this slide alone. That's the line worth holding: a hook or a heads-up here is fine, replacing the reading is not."
+      }
+    ]
+  },
+  {
+    kind: "bullets",
+    kicker: "Almost ready to code",
+    title: "Loading the Software",
+    bullets: [
+      "Hold BOOTSEL, then plug in USB",
+      "Pico shows up like a USB drive",
+      "Drag one firmware file onto it",
+      "You only do this once"
+    ],
+    notes: "This is installing MicroPython. Emphasize 'only once' -- students sometimes worry they'll have to redo this every class. Also worth mentioning there are different firmware files for Pico, Pico W, Pico 2, and Pico 2 W, so they need to grab the right one for their board."
+  },
+  {
+    kind: "bullets",
+    kicker: "Plan",
+    title: "Chapter 1 Plan",
+    bullets: [
+      { text: "Read Chapter 1", href: "/pico/01-get-to-know-your-pico/" },
+      { text: "Fill out the graphic organizer as you go", href: "/pico/01-graphic-organizer/" },
+      "Solder your headers, if you need to",
+      "Install MicroPython"
+    ],
+    notes: "Set expectations for pacing, and be honest that this might not all happen today -- reading and the graphic organizer are sometimes homework, and soldering or installing MicroPython might land on a separate day depending on your schedule. Remind them the graphic organizer gets checked for completeness, not perfection, and that it's meant to be filled out WHILE reading, not after."
+  },
+  {
+    kind: "bullets",
+    kicker: "Coming up",
+    title: "Where This Is All Going",
+    bullets: [
+      "A working traffic light you build and code yourself",
+      "A reaction-time game with buttons and LEDs",
+      "A burglar alarm with a real motion sensor",
+      "Eventually: Wi-Fi and Bluetooth"
+    ],
+    notes: "Optional hype slide -- skip it if you're short on time, it's not required content. The idea is to give them a reason to care about today's less exciting parts (soldering, installing firmware) by showing the payoff coming later in the pathway."
+  },
+  {
+    kind: "title",
+    title: "Questions?",
+    subtitle: "Let's get started.",
+    notes: "Open the floor briefly, then transition into independent reading time."
+  }
+];
+
+// A bullet is either a plain string, or { text, href } to render as a link
+// (used for pointing straight at the chapter or the graphic organizer).
+function renderBullets(bullets) {
+  return (
+    <ul>
+      {bullets.map((b, i) => (
+        <li key={i}>{typeof b === "string" ? b : <a href={b.href}>{b.text}</a>}</li>
+      ))}
+    </ul>
+  );
+}
+
+function Stage({ slide, aspect }) {
+  const arClass = aspect === "4:3" ? "ar-4-3" : "ar-16-9";
+  if (slide.kind === "title") {
+    return (
+      <div className={"stage title-slide " + arClass}>
+        {slide.kicker && <p className="kicker">{slide.kicker}</p>}
+        <h1 className="slide-title">{slide.title}</h1>
+        {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+      </div>
+    );
+  }
+  if (slide.kind === "image") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-image-row">
+          <img src={slide.image} alt="" />
+          <div className="slide-body">{renderBullets(slide.bullets)}</div>
+        </div>
+      </div>
+    );
+  }
+  if (slide.kind === "gallery") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-gallery-row">
+          {slide.images.map((im, i) => (
+            <div className="slide-gallery-item" key={i}>
+              <img src={im.src} alt="" />
+              <p className="caption">{im.caption}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  const extraClass = slide.kind === "safety" ? " safety-slide" : "";
+  return (
+    <div className={"stage " + arClass + extraClass}>
+      <p className="kicker">{slide.kicker}</p>
+      <h1 className="slide-title">{slide.title}</h1>
+      <div className="slide-body">{renderBullets(slide.bullets)}</div>
+    </div>
+  );
+}
+
+function ScaledStage({ slide, aspect }) {
+  const outerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const designW = 1280;
+  const designH = aspect === "4:3" ? 960 : 720;
+
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const recompute = () => {
+      const rect = el.getBoundingClientRect();
+      const s = Math.min((rect.width * 0.94) / designW, (rect.height * 0.94) / designH);
+      setScale(s > 0 ? s : 1);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => { ro.disconnect(); window.removeEventListener("resize", recompute); };
+  }, [designH]);
+
+  return (
+    <div className="stage-outer" ref={outerRef}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}>
+        <Stage slide={slide} aspect={aspect} />
+      </div>
+    </div>
+  );
+}
+
+function bulletsToText(bullets) {
+  return bullets.map(b => (typeof b === "string" ? b : b.text)).join(" / ");
+}
+
+function OutlineCard({ slide, heading, nested }) {
+  return (
+    <div className={"outline-slide" + (nested ? " outline-nested" : "")}>
+      {nested ? <h3>{heading}</h3> : <h2>{heading}</h2>}
+      {slide.bullets && <p className="outline-bullets">On slide: {bulletsToText(slide.bullets)}</p>}
+      {slide.images && <p className="outline-bullets">Photos: {slide.images.map(im => im.caption).join(" / ")}</p>}
+      <div className="outline-notes"><p>{slide.notes}</p></div>
+    </div>
+  );
+}
+
+function Outline() {
+  return (
+    <div className="outline">
+      <h1>Chapter 1: Get to Know Your Raspberry Pi Pico</h1>
+      <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
+      {SLIDES.map((s, i) => (
+        <React.Fragment key={i}>
+          <OutlineCard slide={s} heading={`${i + 1}. ${s.title}`} />
+          {(s.down || []).map((d, j) => (
+            <OutlineCard slide={d} heading={`Extra: ${d.title}`} nested key={j} />
+          ))}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+// Deep-linking: ?slide=3 opens on that slide (1-indexed, to match the
+// on-screen counter), ?extra=1 additionally drops into that slide's Nth
+// "down" slide if it has any, ?outline=1 opens straight into the
+// speaker-notes outline -- handy for linking straight to the safety slide,
+// or handing a substitute teacher the notes view without them finding the
+// button.
+function initialStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const slideParam = parseInt(params.get("slide"), 10);
+  const index = Number.isInteger(slideParam) ? Math.min(Math.max(slideParam - 1, 0), SLIDES.length - 1) : 0;
+  const maxExtra = (SLIDES[index].down || []).length;
+  const extraParam = parseInt(params.get("extra"), 10);
+  const subIndex = Number.isInteger(extraParam) ? Math.min(Math.max(extraParam, 0), maxExtra) : 0;
+  const mode = params.get("outline") ? "outline" : "deck";
+  return { index, subIndex, mode };
+}
+
+function App() {
+  const initial = initialStateFromUrl();
+  const [index, setIndex] = useState(initial.index);
+  const [subIndex, setSubIndex] = useState(initial.subIndex);
+  const [showNotes, setShowNotes] = useState(false);
+  const [aspect, setAspect] = useState("16:9");
+  const [mode, setMode] = useState(initial.mode); // "deck" | "outline"
+
+  const topSlide = SLIDES[index];
+  const downSlides = topSlide.down || [];
+  const slide = subIndex === 0 ? topSlide : downSlides[subIndex - 1];
+
+  const next = useCallback(() => { setIndex(i => Math.min(i + 1, SLIDES.length - 1)); setSubIndex(0); }, []);
+  const prev = useCallback(() => { setIndex(i => Math.max(i - 1, 0)); setSubIndex(0); }, []);
+  const goDown = useCallback(() => setSubIndex(s => Math.min(s + 1, downSlides.length)), [downSlides.length]);
+  const goUp = useCallback(() => setSubIndex(s => Math.max(s - 1, 0)), []);
+
+  useEffect(() => {
+    function onKey(e) {
+      if (mode !== "deck") {
+        if (e.key === "Escape") setMode("deck");
+        return;
+      }
+      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); goDown(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); goUp(); }
+      else if (e.key === "n" || e.key === "N") setShowNotes(v => !v);
+      else if (e.key === "f" || e.key === "F") toggleFullscreen();
+      else if (e.key === "o" || e.key === "O") setMode("outline");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mode, next, prev, goDown, goUp]);
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+
+  if (mode === "outline") {
+    return (
+      <div className="app">
+        <div className="toolbar">
+          <a className="back-link" href="/pico/01-get-to-know-your-pico/">&larr; Chapter 1</a>
+          <div className="spacer"></div>
+          <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
+          <button onClick={() => window.print()}>Print</button>
+        </div>
+        <Outline />
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      <div className="stage-outer" style={{ position: "relative" }}>
+        <ScaledStage slide={slide} aspect={aspect} />
+        <div className="click-zone left" onClick={prev} title="Previous slide"></div>
+        <div className="click-zone right" onClick={next} title="Next slide"></div>
+        {subIndex > 0 && (
+          <button className="depth-nav depth-up" onClick={goUp} title="Back to the main flow">&#9650; Back</button>
+        )}
+        {subIndex < downSlides.length && (
+          <button className="depth-nav depth-down" onClick={goDown} title="More about this slide">&#9660; More</button>
+        )}
+        <div className="slide-counter-badge">
+          {index + 1} / {SLIDES.length}
+          {subIndex > 0 && <span> &middot; extra {subIndex}/{downSlides.length}</span>}
+        </div>
+      </div>
+      {showNotes && (
+        <div className="notes-panel">
+          <h3>Speaker notes</h3>
+          <p>{slide.notes}</p>
+        </div>
+      )}
+      <div className="toolbar">
+        <a className="back-link" href="/pico/01-get-to-know-your-pico/">&larr; Chapter 1</a>
+        <div className="spacer"></div>
+        <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
+        <span className="counter">{index + 1} / {SLIDES.length}</span>
+        <button onClick={next} disabled={index === SLIDES.length - 1}>Next &rarr;</button>
+        <button className={showNotes ? "active" : ""} onClick={() => setShowNotes(v => !v)}>Notes (N)</button>
+        <button onClick={() => setMode("outline")}>Print notes (O)</button>
+        <button onClick={() => setAspect(a => a === "16:9" ? "4:3" : "16:9")}>{aspect}</button>
+        <button onClick={toggleFullscreen}>Fullscreen (F)</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+{% endraw %}
+</script>
+</body>
+</html>

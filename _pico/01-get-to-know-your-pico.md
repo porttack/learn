@@ -6,6 +6,8 @@ order: 1
 chapter: 1
 source: rpi-pico-2e
 subtitle: "Get acquainted with your powerful new microcontroller board and learn how to attach pin headers and install MicroPython to program it"
+organizer: /pico/01-graphic-organizer/
+slides: /pico/01-intro-slides/
 ---
 
 *Get acquainted with your powerful new microcontroller board and learn how to attach pin headers and install MicroPython to program it*
