@@ -10,6 +10,13 @@ source/
 *.epub
 *.pdf
 
+# Scratch working directory for source material (EPUBs, PDFs, extracted
+# text) being converted into lessons or carrier alignments. Working input,
+# never committed -- same policy as the *.pdf/*.epub rule above, but for the
+# whole directory, since it also collects non-PDF scratch files (e.g. a
+# plain-text book export) that those patterns wouldn't catch.
+tmp/
+
 # Private teacher planning notes — candid working drafts, never committed.
 # Content meant to be checked in belongs in _program-notes-public/ instead.
 # See CLAUDE.md.
