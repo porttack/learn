@@ -5,6 +5,7 @@ pathway: pico
 order: 15
 label: "Appendix C"
 source: rpi-pico-2e
+subtitle: "A tour of Programmable I/O, the Pico's trick for implementing custom hardware protocols"
 ---
 
 In this appendix, we look at code that looks very different from the code we’ve dealt with in the rest of this pathway. That’s because we’ll be dealing with things at a low level. Most of the time, MicroPython hides the complexities of how things work on the microcontroller. When we do something like:

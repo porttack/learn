@@ -4,6 +4,7 @@ title: "Chapter 8: Temperature gauge"
 pathway: pico
 order: 8
 source: rpi-pico-2e
+subtitle: "Use your Raspberry Pi Pico’s built-in ADC to convert analogue inputs, and also to read its internal temperature sensor"
 ---
 
 *Use your Raspberry Pi Pico’s built-in ADC to convert analogue inputs, and also to read its internal temperature sensor*

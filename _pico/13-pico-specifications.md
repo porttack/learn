@@ -5,6 +5,7 @@ pathway: pico
 order: 13
 label: "Appendix A"
 source: rpi-pico-2e
+subtitle: "A reference for the curious: what's inside the Pico and Pico 2's microcontroller chips"
 ---
 
 The various components and features of a microcontroller are known as its *specifications*, and a look at the specifications gives you the information you need to compare two microcontrollers.

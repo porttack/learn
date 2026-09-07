@@ -4,6 +4,7 @@ title: "Chapter 9: Data logger"
 pathway: pico
 order: 9
 source: rpi-pico-2e
+subtitle: "Untether Raspberry Pi Pico from the computer to make it a fully portable temperature-logging device"
 ---
 
 *Untether Raspberry Pi Pico from the computer to make it a fully portable temperature-logging device*

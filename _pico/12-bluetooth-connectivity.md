@@ -4,6 +4,7 @@ title: "Chapter 12: Bluetooth connectivity with Pico W and Pico 2 W"
 pathway: pico
 order: 12
 source: rpi-pico-2e
+subtitle: "Link Raspberry Pi Pico W or Pico 2 W to your smartphone, tablet, computer, or another Pico with Bluetooth Low Energy"
 ---
 
 *Link Raspberry Pi Pico W or Pico 2 W to your smartphone, tablet, computer, or another Pico with Bluetooth Low Energy*

@@ -5,6 +5,7 @@ pathway: pico
 order: 14
 label: "Appendix B"
 source: rpi-pico-2e
+subtitle: "A complete reference to every GPIO pin's functions on the Pico 2"
 ---
 
 Raspberry Pi Pico, Pico W, Pico 2, and Pico 2 W expose 26 of their microcontroller’s GPIO (general-purpose input/output) pins by routing them straight out to header pins on the board. GP0 to GP22 are digital only and GP26–28 are able to be used either as digital GPIO or as ADC (analogue-to-digital converter) inputs, selectable in software. Most of the GPIO pins also offer secondary functionality for SPI, I2C, or UART communication protocols. All GPIO pins may also be used with PWM (pulse-width modulation) — see [Chapter 8, Temperature gauge](/pico/08-temperature-gauge/) for more details.
