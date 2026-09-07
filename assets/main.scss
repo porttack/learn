@@ -5,7 +5,14 @@
 .site-menu {
   position: fixed;
   top: 0.5em;
+  // Track .wrapper's own centered max-width instead of the viewport edge,
+  // so the menu lines up with the content column even on a wide window.
+  // unquote(): this repo's Sass (Ruby Sass, via jekyll-sass-converter 1.x)
+  // tries to evaluate max()/calc() itself instead of passing them through
+  // as plain CSS, and errors on the nested calc() -- unquote a built string
+  // so it emits verbatim.
   right: 0.7em;
+  right: unquote("max(0.7em, calc((100vw - #{$content-width}) / 2 + 0.7em))");
   z-index: 10;
 
   .site-menu-trigger {
