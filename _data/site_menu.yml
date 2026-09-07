@@ -2,7 +2,7 @@
 # (_includes are per-page; this is the one place that controls the whole
 # site's nav menu). Order here is the order they render in.
 
-- title: Home
+- title: Home (learn.porttack.com)
   url: /
 - title: MicroPython on Pi Pico
   url: /pico/

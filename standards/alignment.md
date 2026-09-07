@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: minimal
 title: "Standards Alignment"
 permalink: /standards/alignment/
 ---

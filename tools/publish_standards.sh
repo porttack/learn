@@ -26,7 +26,7 @@ cp "$TMP"/*.html "$ROOT/standards/"
 
 {
   echo "---"
-  echo "layout: default"
+  echo "layout: minimal"
   echo 'title: "Standards Alignment"'
   echo "permalink: /standards/alignment/"
   echo "---"

@@ -84,9 +84,43 @@ ul.ek-list li {
 .hidden { display: none !important; }
 footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
 :target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: block; padding: .5em 1em; color: var(--fg); text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
 </style>
 </head>
 <body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/">Home (learn.porttack.com)</a>
+<a href="/pico/">MicroPython on Pi Pico</a>
+<a href="/electronics101/">Electronics 101</a>
+<a href="/working-in-python/">Working in Python</a>
+<a href="/standards/">Standards</a>
+</nav>
+</div>
 <div class="layout">
 <nav class="toc" aria-label="Table of contents">
 <h2><a href="#AlgorithmsDesign">Algorithms &amp; Design</a></h2><ul>
