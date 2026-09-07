@@ -218,5 +218,5 @@ In reality, for many projects, you can quite happily use either protocol, and yo
 
 Your Pico has two hardware I2C buses and two hardware SPI buses. However, you can use more than these if you want to. Both I2C and SPI can be implemented in software rather than hardware. This means the main processing core handles the communication protocol rather than a specialised bit of the microcontroller. This is known as *bit banging*. While it can be useful, it puts more strain on your processor core than using the specialised hardware, and you may find that you can’t reach high baudrates.
 
-The Pico has a trick up its sleeve for this — PIO. We won’t cover it in detail here, but it’s an extra bit of hardware in the microcontroller that can be dedicated to input/output protocols such as I2C and SPI. With PIO, you can create extra I2C or SPI buses without taxing the main processor core.
+The Pico has a trick up its sleeve for this — PIO. See [Appendix C, Programmable I/O](/pico/15-programmable-io/) for more, but it’s an extra bit of hardware in the microcontroller that can be dedicated to input/output protocols such as I2C and SPI. With PIO, you can create extra I2C or SPI buses without taxing the main processor core.
 </aside>
