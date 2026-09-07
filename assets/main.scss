@@ -673,11 +673,15 @@ figure {
   }
 
   li {
-    margin-bottom: 0.3em;
+    margin-bottom: 0.6em;
   }
 
   a {
     color: $grey-color-dark;
+  }
+
+  .standards-note {
+    margin: 0.2em 0 0;
   }
 }
 

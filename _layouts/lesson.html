@@ -70,15 +70,17 @@ document.addEventListener('click', function (event) {
 
 // Standards alignment widget: reads a published carrier JSON
 // (standards/data/carriers/<slug>.json, see _standards/carriers/README.md)
-// client-side and lists the standards covered for this page's chapter.
-// Reference-page filename + anchor-id prefix per framework -- must match
-// tools/build_alignment.py's own scheme (S- for castandards/csta2017, T- for
+// client-side and lists the standards covered for this page's chapter, each
+// with the catalog's own short description of what the code means (not just
+// our note on how this lesson covers it). Reference-page filename + anchor-id
+// prefix + catalog filename per framework -- the reference-page scheme must
+// match tools/build_alignment.py's own (S- for castandards/csta2017, T- for
 // apcsp topics/csta2026/ca-ict-anchor).
 var STANDARDS_FRAMEWORKS = {
-  apcsp: { file: 'apcsp-standards-reference.html', prefix: 'T', name: 'AP Computer Science Principles' },
-  castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California 9-12 Computer Science' },
-  csta2026: { file: 'csta2026-standards-reference.html', prefix: 'T', name: 'CSTA 2026' },
-  'ca-ict-anchor': { file: 'ca-ict-anchor-standards-reference.html', prefix: 'T', name: 'CA CTE (ICT)' }
+  apcsp: { file: 'apcsp-standards-reference.html', prefix: 'T', name: 'AP Computer Science Principles', catalog: 'apcsp' },
+  castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California 9-12 Computer Science', catalog: 'castandards' },
+  csta2026: { file: 'csta2026-standards-reference.html', prefix: 'T', name: 'CSTA 2026', catalog: 'csta2026' },
+  'ca-ict-anchor': { file: 'ca-ict-anchor-standards-reference.html', prefix: 'T', name: 'CA CTE (ICT)', catalog: 'ca-ict-anchor' }
 };
 
 function escapeHtml(s) {
@@ -87,12 +89,41 @@ function escapeHtml(s) {
   return div.innerHTML;
 }
 
+// Each catalog framework nests its codes differently -- see
+// _standards/carriers/README.md and standards/data/catalog/*.json. apcsp
+// topics have a short title; everything else only has a one-sentence
+// paraphrase, shown in full -- these are single sentences already, and
+// truncating them by word count tends to cut off right before the
+// sentence's actual point (many read "setup -- payload").
+function catalogLabel(fw, catalogData, code) {
+  if (!catalogData) return null;
+  if (fw === 'apcsp') {
+    var topic = (catalogData.topics || []).filter(function (t) { return t.code === code; })[0];
+    return topic ? (topic.title || topic.paraphrase) : null;
+  }
+  if (fw === 'castandards' || fw === 'csta2026') {
+    var std = (catalogData.standards || []).filter(function (s) { return s.code === code; })[0];
+    return std ? std.paraphrase : null;
+  }
+  if (fw === 'ca-ict-anchor') {
+    var groups = (catalogData.anchor_standards || []).concat(((catalogData.pathway || {}).standards) || []);
+    var label = null;
+    groups.forEach(function (g) {
+      (g.items || []).forEach(function (item) {
+        if (item.code === code) label = item.paraphrase;
+      });
+    });
+    return label;
+  }
+  return null;
+}
+
 document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(function (section) {
   var chapter = Number(section.getAttribute('data-chapter'));
   fetch(section.getAttribute('data-carrier-url'))
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (data) {
-      if (!data) return;
+      if (!data) return null;
       var groups = [];
       Object.keys(STANDARDS_FRAMEWORKS).forEach(function (fw) {
         var coverage = (data.coverage || {})[fw] || {};
@@ -105,15 +136,29 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
         });
         if (items.length) groups.push({ fw: fw, items: items });
       });
-      if (!groups.length) return;
+      if (!groups.length) return null;
+      // Only fetch the catalogs actually needed for the frameworks matched above.
+      return Promise.all(groups.map(function (g) {
+        var catalogUrl = '/standards/data/catalog/' + STANDARDS_FRAMEWORKS[g.fw].catalog + '.json';
+        return fetch(catalogUrl).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+      })).then(function (catalogs) {
+        return { groups: groups, catalogs: catalogs };
+      });
+    })
+    .then(function (result) {
+      if (!result) return;
       var html = '<h2>Standards alignment</h2>';
-      groups.forEach(function (g) {
+      result.groups.forEach(function (g, i) {
         var meta = STANDARDS_FRAMEWORKS[g.fw];
+        var catalogData = result.catalogs[i];
         html += '<h3>' + escapeHtml(meta.name) + '</h3><ul>';
         g.items.forEach(function (item) {
           var url = '/standards/' + meta.file + '#' + meta.prefix + '-' + encodeURIComponent(item.code);
+          var label = catalogLabel(g.fw, catalogData, item.code);
           html += '<li><a href="' + url + '">' + escapeHtml(item.code) + '</a>' +
-            (item.note ? ': ' + escapeHtml(item.note) : '') + '</li>';
+            (label ? ' — <em>' + escapeHtml(label) + '</em>' : '') +
+            (item.note ? '<p class="standards-note">' + escapeHtml(item.note) + '</p>' : '') +
+            '</li>';
         });
         html += '</ul>';
       });
