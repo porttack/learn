@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "title": "MicroPython on Pi Pico",
+    "abbrev": "Pico",
+    "source": "pico",
+    "base_url": "https://learn.porttack.com",
+    "locator_kind": "chapter",
+    "locator_url_template": "{base_url}/pico/{locator}/",
+    "locator_slugs": {
+      "5": "05-traffic-light-controller",
+      "6": "06-reaction-game"
+    },
+    "locator_titles": {
+      "5": "Traffic light controller",
+      "6": "Reaction game"
+    },
+    "caveat": "Initial pass covering only chapters 5-6 (the first two converted chapters with a real assignment/project). A fuller realignment across all 12 chapters is planned once the rest are converted.",
+    "alignment_log": [
+      {
+        "date": "2026-09-06",
+        "by": "Claude Sonnet 5",
+        "scope": "First pass: chapters 5 (traffic light controller) and 6 (reaction game) against all four frameworks",
+        "note": "Initial alignment; nothing re-checked yet since this is the carrier's first version."
+      }
+    ]
+  },
+  "coverage": {
+    "apcsp": {
+      "1.2": {
+        "locators": [5, 6],
+        "strength": "strong",
+        "note": "Chapter 5's pedestrian-crossing button and chapter 6's two-player buttons both use a hardware interrupt (machine.Pin.irq) to run code in response to a real-world trigger rather than in a fixed top-to-bottom order -- the textbook event-driven case this topic covers."
+      },
+      "3.16": {
+        "locators": [5],
+        "strength": "strong",
+        "note": "The traffic light program models a real intersection's light cycle: a simplified stand-in with its own state (which light is on) that updates over time, built for the specific purpose of demonstrating control logic rather than modeling every detail of a real signal."
+      },
+      "3.15": {
+        "locators": [6],
+        "strength": "strong",
+        "note": "random.uniform(5, 10) picks how long the LED stays lit before the player can react, so a player can't just count down a fixed number of seconds -- a direct use of a random value drawn from a range."
+      },
+      "3.1": {
+        "locators": [5, 6],
+        "strength": "partial",
+        "note": "Both chapters rely on a global variable (button_pressed in chapter 5, fastest_btn in chapter 6) that the main program reads and an interrupt handler writes, so its value has to be reasoned about across two separate points of execution."
+      },
+      "3.8": {
+        "locators": [5],
+        "strength": "partial",
+        "note": "The traffic light cycle itself is a straightforward while True loop; the lesson doesn't dig into loop termination conditions or nested iteration beyond that one repeating cycle."
+      },
+      "3.13": {
+        "locators": [6],
+        "strength": "strong",
+        "note": "One handler function (btn_handler) serves both the left and right buttons in the two-player version -- the same procedure runs for either input, distinguished only by the pin parameter it's called with, exactly the one-procedure-many-inputs idea this topic covers."
+      },
+      "3.6": {
+        "locators": [6],
+        "strength": "partial",
+        "note": "The two-player version decides a winner with if fastest_btn is left_btn / elif fastest_btn is right_btn -- straightforward conditionals, though comparing object identity rather than a value is a slightly different angle than the topic's own examples."
+      }
+    },
+    "castandards": {
+      "9-12.AP.15": {
+        "locators": [5, 6],
+        "strength": "strong",
+        "note": "Both chapters replace straight-line, run-to-completion code with a button press (an event) that changes what runs next via an interrupt handler -- the standard's own framing almost verbatim."
+      },
+      "9-12.AP.14": {
+        "locators": [5],
+        "strength": "partial",
+        "note": "Chapter 5 contrasts polling (checking a button in the main loop) with using an interrupt, and picks the interrupt for a reason it gives -- a real control-structure choice, though the lesson doesn't have students weigh the tradeoff themselves."
+      },
+      "9-12.CS.3": {
+        "locators": [5],
+        "strength": "related",
+        "note": "Wiring three LEDs, a button, and a buzzer to the right pins on a breadboard is exactly the kind of troubleshooting-by-testing this standard describes, but the lesson doesn't frame it as a debugging skill explicitly."
+      },
+      "9-12.DA.11": {
+        "locators": [6],
+        "strength": "related",
+        "note": "The lesson states a real baseline (average human reaction time, ~200-250ms) that a player's own measured result can be compared against, but it doesn't ask students to use the comparison to adjust a model."
+      }
+    },
+    "csta2026": {
+      "S1-PHY-HC-01": {
+        "locators": [5, 6],
+        "strength": "strong",
+        "note": "Both chapters have students build a working circuit from a wiring diagram and figure out why it doesn't work when a wire or pin is wrong -- this standard's own example (an LED that won't light) almost exactly."
+      },
+      "S1-PHY-IO-02": {
+        "locators": [5],
+        "strength": "strong",
+        "note": "The pedestrian-crossing button triggering the buzzer is the standard's own example verbatim -- a button triggering a buzzer -- wired and coded so the system reacts to a real button press."
+      },
+      "HS-ALG-PS-04": {
+        "locators": [6],
+        "strength": "strong",
+        "note": "The single-player game's use of random.uniform(5, 10) means the same program gives a different light-up delay every run, the exact contrast this standard draws between deterministic and randomness-driven algorithms."
+      },
+      "S1-GMD-DD-03": {
+        "locators": [6],
+        "strength": "strong",
+        "note": "The reaction game is a small, complete game: input (a button press) that does something (stops the timer), and rules (whichever pin triggered first) that decide the outcome."
+      },
+      "HS-PRO-RD-17": {
+        "locators": [5, 6],
+        "strength": "partial",
+        "note": "Both programs can be read by tracing what the shared variable holds, what the loop repeats, and what the conditional branches on -- though neither lesson asks students to explain this explicitly themselves."
+      }
+    },
+    "ca-ict-anchor": {
+      "C4.5": {
+        "locators": [5, 6],
+        "strength": "strong",
+        "note": "Both chapters are a hands-on example of the event-driven paradigm this standard names, in contrast to the purely procedural style of earlier chapters."
+      },
+      "C9.5": {
+        "locators": [5, 6],
+        "strength": "strong",
+        "note": "Both projects are a microcontroller (the Pico) programmed to run a physical device -- a traffic light system and a reaction-time game -- the standard's own example."
+      },
+      "C4.9": {
+        "locators": [6],
+        "strength": "strong",
+        "note": "Chapter 6 exercises the full toolkit this standard names in one lesson: branches and loops, a reusable procedure that takes a parameter, and variables holding state across calls."
+      },
+      "C9.3": {
+        "locators": [5],
+        "strength": "partial",
+        "note": "The button-to-interrupt-to-LED/buzzer chain is hardware capturing input, processing it, and acting on it, though the lesson doesn't frame it in those terms."
+      },
+      "5.5": {
+        "locators": [5],
+        "strength": "related",
+        "note": "Debugging a miswired breadboard circuit takes the same structured, methodical approach this standard describes, though the lesson doesn't teach the approach itself, just requires it."
+      },
+      "5.12": {
+        "locators": [6],
+        "strength": "related",
+        "note": "The winner-decision logic is boolean comparisons (is left_btn / is right_btn), though the lesson doesn't discuss boolean logic as a topic in its own right."
+      }
+    }
+  }
+}

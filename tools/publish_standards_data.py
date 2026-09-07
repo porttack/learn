@@ -77,6 +77,7 @@ HUES = [
     ("#b32eba", "#cb52d1"),  # 15 orchid
     ("#570cf8", "#622bd8"),  # 16 indigo
     ("#5ba72a", "#4ab00a"),  # 17 spring green
+    ("#4169e1", "#5c7cfa"),  # 18 royal blue
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -120,6 +121,18 @@ HUES = [
 # surface -- same kind of relief-required WARN the palette already carries
 # elsewhere, not a new category of problem.
 #
+# Slot 18 (royal blue) added 2026-09-06 alongside pico, inserted before the
+# still-placeholder cs50psets so real sources stay contiguous. Blue (slot 1,
+# ~213 deg) and violet (slot 7, ~249 deg) leave a ~36 deg gap unused between
+# them; royal blue sits there (~225 deg), validated against its new adjacent
+# neighbor, slot 17 (spring green, ~97 deg -- about as far away on the wheel
+# as two hues get): node scripts/validate_palette.js "#5ba72a,#4169e1" --mode
+# light and "#4ab00a,#5c7cfa" --mode dark both PASS (CVD ~32-34, wide
+# margin). Full 18-slot run in both modes afterward confirmed no other pair
+# regressed -- both PASS; light mode's pre-existing WARN set (slots 3/4/5/10,
+# plus spring green since its own addition) is unchanged, and royal blue adds
+# no new WARN in either mode.
+#
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
 # intentionally omitted -- excluded from this admin-facing view by direction,
@@ -131,10 +144,10 @@ HUES = [
 # slot were separated from another real source's slot by an unused reserved slot, a
 # combined view showing just the real sources would render two colors adjacent that
 # were never validated as a pair. Keeping real sources contiguous at the front avoids
-# that: all 17 slots were validated together, so any subset of today's seventeen sources is
+# that: all 18 slots were validated together, so any subset of today's eighteen sources is
 # safe in any combination. cs50psets has no carrier file and is skipped below
 # (harmless to leave it here, past the end of HUES) -- when it becomes real, HUES
-# needs an 18th color and a fresh validation pass, same as every slot addition before it.
+# needs a 19th color and a fresh validation pass, same as every slot addition before it.
 SOURCE_ORDER = [
     "working_in_python",
     "little_brother",
@@ -153,6 +166,7 @@ SOURCE_ORDER = [
     "teaching_binary_with_coins",
     "kagan_teambuilding",
     "kagan_classbuilding",
+    "pico",
     "cs50psets",
 ]
 

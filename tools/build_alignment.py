@@ -221,9 +221,16 @@ class Coverage:
         # Chapter locators zero-pad only the leading numeric run, e.g. 3 -> "03" and
         # the lettered interlude "7b" -> "07b" (never "7b" padded to width 2, which
         # would wrongly leave it unpadded since it's already 2 characters long).
+        # locator_slugs overrides this entirely for a source whose real per-chapter
+        # URL isn't a zero-padded number (e.g. Jekyll's full-filename permalinks) --
+        # opt-in per locator, so every source without it behaves exactly as before.
         if meta.get("locator_kind") == "chapter":
-            m = re.match(r"^(\d+)([a-zA-Z]*)$", str(locator))
-            padded = f"{int(m.group(1)):02d}{m.group(2)}" if m else str(locator)
+            slug = meta.get("locator_slugs", {}).get(str(locator))
+            if slug:
+                padded = slug
+            else:
+                m = re.match(r"^(\d+)([a-zA-Z]*)$", str(locator))
+                padded = f"{int(m.group(1)):02d}{m.group(2)}" if m else str(locator)
         else:
             padded = str(locator)
         url = template.format(base_url=meta.get("base_url", ""), locator=padded)

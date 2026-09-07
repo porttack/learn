@@ -410,9 +410,10 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-ALG-PS-04">#</a><span class="code-badge">HS-ALG-PS-04</span></h3>
 <p class="paraphrase">An algorithm that always gives the same result from the same input behaves differently from one that leans on randomness and can vary run to run.</p>
 <p class="note">Explaining the distinction in plain terms is enough; formal probability calculations aren't expected.</p>
-<p class="meta">Covered by Carnegie Mellon's Introduction to Programming with Python (High School): Unit 8.2 (Random Values); Covered by Carnegie Mellon's AP CSP in Python: Unit 4 (Unit 4: Complex Conditionals, More Events, and Libraries)</p>
+<p class="meta">Covered by Carnegie Mellon's Introduction to Programming with Python (High School): Unit 8.2 (Random Values); Covered by Carnegie Mellon's AP CSP in Python: Unit 4 (Unit 4: Complex Conditionals, More Events, and Libraries); Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/06-reaction-game/">Chapter 6 (Reaction game)</a></p>
 <p class="note">This carrier's own inference: random values (8.2) is where a program's behavior stops being deterministic, this standard's own distinction.</p>
 <p class="note">This carrier's own inference: Unit 4's Random Numbers lesson is the clearest instance of a program that doesn't give the same result from the same input.</p>
+<p class="note">The single-player game's use of random.uniform(5, 10) means the same program gives a different light-up delay every run, the exact contrast this standard draws between deterministic and randomness-driven algorithms.</p>
 </div>
 <div class="topic" id="T-HS-ALG-PS-05">
 <h3><a class="anchor-link" href="#T-HS-ALG-PS-05">#</a><span class="code-badge">HS-ALG-PS-05</span></h3>
@@ -1317,7 +1318,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-GMD-DD-03">#</a><span class="code-badge">S1-GMD-DD-03</span></h3>
 <p class="paraphrase">Wiring together the pieces that make a game actually playable -- input that does something, code that reacts to it, and rules that decide when you win or lose -- so the separate functions add up to one coherent play experience rather than sitting as disconnected demos.</p>
 <p class="note">A working, connected set of input, response, and outcome logic is the target; a finished, commercial-quality game with polished visuals or advanced UI is not.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/06-reaction-game/">Chapter 6 (Reaction game)</a></p>
+<p class="note">The reaction game is a small, complete game: input (a button press) that does something (stops the timer), and rules (whichever pin triggered first) that decide the outcome.</p>
 </div>
 <div class="topic" id="T-S1-GMD-DD-04">
 <h3><a class="anchor-link" href="#T-S1-GMD-DD-04">#</a><span class="code-badge">S1-GMD-DD-04</span></h3>
@@ -1448,7 +1450,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-PHY-HC-01">#</a><span class="code-badge">S1-PHY-HC-01</span></h3>
 <p class="paraphrase">You build a working circuit from a schematic -- a microcontroller, a resistor, an LED is the classic starter -- and when the LED doesn't light, a multimeter and a look at the wiring is how you find the loose connection or backwards part.</p>
 <p class="note">Building and debugging a single-microcontroller circuit from a diagram is the scope; circuits with multiple integrated chips, or laying out and etching a custom PCB, are not expected.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/05-traffic-light-controller/">Chapter 5 (Traffic light controller)</a>, <a href="https://learn.porttack.com/pico/06-reaction-game/">Chapter 6 (Reaction game)</a></p>
+<p class="note">Both chapters have students build a working circuit from a wiring diagram and figure out why it doesn't work when a wire or pin is wrong -- this standard's own example (an LED that won't light) almost exactly.</p>
 </div>
 <div class="tier-heading">Specialty II</div>
 <div class="topic" id="T-S2-PHY-HC-01">
@@ -1463,7 +1466,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-S1-PHY-IO-02">#</a><span class="code-badge">S1-PHY-IO-02</span></h3>
 <p class="paraphrase">Picking a sensor and an output that fit the job -- a light sensor driving an LED, a button triggering a buzzer or a short motion -- and wiring and coding them so the system actually reacts to something happening in the real world.</p>
 <p class="note">A handful of everyday sensors and outputs on a hobbyist board is the scope; large component counts, industrial-grade hardware, or anything mission-critical are not expected.</p>
-<p class="meta">Unassigned</p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/05-traffic-light-controller/">Chapter 5 (Traffic light controller)</a></p>
+<p class="note">The pedestrian-crossing button triggering the buzzer is the standard's own example verbatim -- a button triggering a buzzer -- wired and coded so the system reacts to a real button press.</p>
 </div>
 <div class="tier-heading">Specialty II</div>
 <div class="topic" id="T-S2-PHY-IO-02">
@@ -1598,7 +1602,8 @@ reproduced as-is.</div>
 <h3><a class="anchor-link" href="#T-HS-PRO-RD-17">#</a><span class="code-badge">HS-PRO-RD-17</span></h3>
 <p class="paraphrase">Reading someone else's code well means being able to explain what each moving part does -- a variable holding state, a loop repeating until some condition, a conditional branching on it -- and how those parts cooperate.</p>
 <p class="note">This is about tracing a manageable segment of code, not untangling a large system with many interacting structures.</p>
-<p class="meta">Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="meta">Covered by MicroPython on Pi Pico: <a href="https://learn.porttack.com/pico/05-traffic-light-controller/">Chapter 5 (Traffic light controller)</a>, <a href="https://learn.porttack.com/pico/06-reaction-game/">Chapter 6 (Reaction game)</a> (partial); Covered by Working in Python (a jupyter notebook): <a href="https://python.porttack.com/chap03.html?readonly">Chapter 3 (Functions)</a>, <a href="https://python.porttack.com/chap05.html?readonly">Chapter 5 (Conditionals and Recursion)</a>, <a href="https://python.porttack.com/chap06.html?readonly">Chapter 6 (Return Values)</a>, <a href="https://python.porttack.com/chap07.html?readonly">Chapter 7 (Iteration and Search)</a>, <a href="https://python.porttack.com/chap08.html?readonly">Chapter 8 (Strings and Regular Expressions)</a></p>
+<p class="note">Both programs can be read by tracing what the shared variable holds, what the loop repeats, and what the conditional branches on -- though neither lesson asks students to explain this explicitly themselves.</p>
 <p class="note">Chapter 3's stack diagrams and tracebacks explain what a function's parameters and loop are doing, but conditionals (the standard's third element) don't appear until chapter 5 -- partial there. Chapter 5's countdown stack trace and Chapter 7's predict-the-output prompts (total, count, which doctest fails) complete the triad: a variable holding state, a loop or conditional, and how they cooperate. Chapter 6's factorial trace and Chapter 8's file-reading loop (a state variable, a loop repeating on a condition, a conditional branching on it) are further worked instances of the same standard.</p>
 </div>
 <div class="topic" id="T-HS-PRO-RD-18">

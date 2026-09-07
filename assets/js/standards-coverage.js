@@ -100,8 +100,13 @@
     if (!template) return null;
     var padded = String(locator);
     if (meta.locator_kind === 'chapter') {
-      var m = /^(\d+)([a-zA-Z]*)$/.exec(String(locator));
-      if (m) padded = ('00' + m[1]).slice(-2) + m[2];
+      var slug = (meta.locator_slugs || {})[String(locator)];
+      if (slug) {
+        padded = slug;
+      } else {
+        var m = /^(\d+)([a-zA-Z]*)$/.exec(String(locator));
+        if (m) padded = ('00' + m[1]).slice(-2) + m[2];
+      }
     }
     var url = template.replace('{base_url}', meta.base_url || '').replace('{locator}', padded);
     if (meta.readonly_suffix) {
