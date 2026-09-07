@@ -37,6 +37,7 @@ layout: minimal
   </nav>
 
   {% include provenance.html %}
+  {% include standards-alignment.html %}
 </article>
 
 <script>
@@ -65,5 +66,60 @@ document.addEventListener('click', function (event) {
       btn.classList.remove('copied');
     }, 1500);
   });
+});
+
+// Standards alignment widget: reads a published carrier JSON
+// (standards/data/carriers/<slug>.json, see _standards/carriers/README.md)
+// client-side and lists the standards covered for this page's chapter.
+// Reference-page filename + anchor-id prefix per framework -- must match
+// tools/build_alignment.py's own scheme (S- for castandards/csta2017, T- for
+// apcsp topics/csta2026/ca-ict-anchor).
+var STANDARDS_FRAMEWORKS = {
+  apcsp: { file: 'apcsp-standards-reference.html', prefix: 'T', name: 'AP Computer Science Principles' },
+  castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California 9-12 Computer Science' },
+  csta2026: { file: 'csta2026-standards-reference.html', prefix: 'T', name: 'CSTA 2026' },
+  'ca-ict-anchor': { file: 'ca-ict-anchor-standards-reference.html', prefix: 'T', name: 'CA CTE (ICT)' }
+};
+
+function escapeHtml(s) {
+  var div = document.createElement('div');
+  div.textContent = s == null ? '' : s;
+  return div.innerHTML;
+}
+
+document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(function (section) {
+  var chapter = Number(section.getAttribute('data-chapter'));
+  fetch(section.getAttribute('data-carrier-url'))
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (!data) return;
+      var groups = [];
+      Object.keys(STANDARDS_FRAMEWORKS).forEach(function (fw) {
+        var coverage = (data.coverage || {})[fw] || {};
+        var items = [];
+        Object.keys(coverage).forEach(function (code) {
+          var entry = coverage[code];
+          if (entry.locators && entry.locators.indexOf(chapter) !== -1) {
+            items.push({ code: code, note: entry.note });
+          }
+        });
+        if (items.length) groups.push({ fw: fw, items: items });
+      });
+      if (!groups.length) return;
+      var html = '<h2>Standards alignment</h2>';
+      groups.forEach(function (g) {
+        var meta = STANDARDS_FRAMEWORKS[g.fw];
+        html += '<h3>' + escapeHtml(meta.name) + '</h3><ul>';
+        g.items.forEach(function (item) {
+          var url = '/standards/' + meta.file + '#' + meta.prefix + '-' + encodeURIComponent(item.code);
+          html += '<li><a href="' + url + '">' + escapeHtml(item.code) + '</a>' +
+            (item.note ? ': ' + escapeHtml(item.note) : '') + '</li>';
+        });
+        html += '</ul>';
+      });
+      section.innerHTML = html;
+      section.hidden = false;
+    })
+    .catch(function () {});
 });
 </script>

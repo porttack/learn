@@ -649,6 +649,38 @@ figure {
   }
 }
 
+.standards-alignment {
+  margin-top: 1.5em;
+  padding-top: 1em;
+  border-top: 1px solid $grey-color-light;
+  font-size: 0.85em;
+  color: $grey-color-dark;
+
+  h2 {
+    font-size: 1em;
+    margin-bottom: 0.4em;
+  }
+
+  h3 {
+    font-size: 0.9em;
+    margin: 0.8em 0 0.3em;
+    color: $grey-color;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.2em;
+  }
+
+  li {
+    margin-bottom: 0.3em;
+  }
+
+  a {
+    color: $grey-color-dark;
+  }
+}
+
 .pathway-list,
 .lesson-list {
   list-style: none;
@@ -735,6 +767,7 @@ table.checkoff {
   .lesson-nav,
   .print-button,
   .copy-btn,
+  .standards-alignment,
   .video-embed,
   .pset-demo,
   .terminal-demo {
