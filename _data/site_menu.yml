@@ -1,0 +1,14 @@
+# Links shown in the hamburger menu on every page using _layouts/minimal.html
+# (_includes are per-page; this is the one place that controls the whole
+# site's nav menu). Order here is the order they render in.
+
+- title: Home
+  url: /
+- title: MicroPython on Pi Pico
+  url: /pico/
+- title: Electronics 101
+  url: /electronics101/
+- title: Working in Python
+  url: /working-in-python/
+- title: Standards
+  url: /standards/

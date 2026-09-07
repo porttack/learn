@@ -9,7 +9,9 @@
       <input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
       <label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
       <nav class="site-menu-panel">
-        <a href="{{ "/" | relative_url }}">Home</a>
+        {% for item in site.data.site_menu %}
+        <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+        {% endfor %}
       </nav>
     </div>
 
