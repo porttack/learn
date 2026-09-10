@@ -1,5 +1,6 @@
 ---
 title: "Readability"
+permalink: /cs50/problems/2024/x/sentimental/readability/
 order: 6
 source: cs50-ap
 source_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/6/readability/"
