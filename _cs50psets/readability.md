@@ -655,11 +655,11 @@ Check your style:
 
 Check your correctness:
 
-{% include copy-command.html command="check50 porttack/cs50/problems/py/readability" %}
+{% include copy-command.html command="check50 cs50/problems/2024/x/sentimental/readability" %}
 
 Submit your work:
 
-{% include copy-command.html command="submit50 porttack/cs50/problems/py/readability" %}
+{% include copy-command.html command="submit50 cs50/problems/2024/x/sentimental/readability" %}
 
 <hr>
 
