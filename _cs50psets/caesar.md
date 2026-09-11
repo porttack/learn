@@ -1,6 +1,7 @@
 ---
 title: "Caesar"
 order: 5
+chapter: 5
 source: cs50-ap
 source_url: "https://docs.cs50.net/2019/ap/problems/sentimental/caesar/caesar.html"
 ---
@@ -226,18 +227,3 @@ Submit your work:
   what wraps the alphabet around from `Z` back to `A`. (AP calls this
   `MOD`.)
 
-<hr>
-
-## Standards Alignment
-
-**AP CSP:** [3.4 Strings](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.4), [3.8 Iteration](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.8), [3.13 Developing Procedures](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.13) (Big Idea 3, 30–35% of the exam). Also [5.6 Safe Computing](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-5.6), headers only — the exam doesn't test encryption mechanics, but this is where the concept lives.
-**California 9-12:** [9-12.DA.8](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.DA.8), [9-12.NI.6](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.NI.6)
-**CSTA 2026:** [HS-ALG-PS-02](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-ALG-PS-02), [HS-SYS-SE-33](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-SYS-SE-33)
-**CA CTE (ICT):** [C4.9](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.9), [C4.4](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.4) (Pathway C). Also [C2.2](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C2.2), headers only.
-
-Rotating letters through `ord()`/`chr()` is 3.4 and 3.8 in miniature:
-a string walked one character at a time. The shift doubling as a
-command-line argument is 3.13's territory, and ICT's C4.9 in different
-words; converting a letter to a number and back is DA.8. Caesar's own
-cipher is a case study for 5.6 and NI.6: a tiny keyspace is what makes
-it breakable, which is exactly the tradeoff those standards are about.

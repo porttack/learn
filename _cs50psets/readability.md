@@ -2,6 +2,7 @@
 title: "Readability"
 permalink: /cs50/problems/2024/x/sentimental/readability/
 order: 6
+chapter: 6
 source: cs50-ap
 source_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/6/readability/"
 ---
@@ -680,19 +681,3 @@ Submit your work:
   words, rather than a raw count, so texts of different lengths can be
   compared fairly.
 
-<hr>
-
-## Standards Alignment
-
-**AP CSP:** [3.3 Mathematical Expressions](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.3), [3.4 Strings](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.4), [3.8 Iteration](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.8), [3.13 Developing Procedures](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.13) (Big Idea 3, 30–35% of the exam). Also [3.6 Conditionals](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.6), headers only — the three-way output is a straightforward branch once the harder counting work is done.
-**California 9-12:** [9-12.AP.14](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.AP.14), [9-12.AP.16](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.AP.16)
-**CSTA 2026:** [HS-ALG-PS-02](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-ALG-PS-02), [HS-PRO-PD-12](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-PRO-PD-12)
-**CA CTE (ICT):** [C4.9](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.9) (Pathway C).
-
-Turning a formula into code is 3.3 in its most direct form, and walking
-text one character at a time to build up the three counts is 3.4 and
-3.8 together. Splitting the problem into a function per count, plus
-one for the formula, is 3.13 and AP.16's decomposition, and CSTA's
-HS-ALG-PS-02 and HS-PRO-PD-12 in different words; ICT's C4.9 names the
-same shared toolkit (loops, functions with parameters, branches) this
-problem asks for all at once.

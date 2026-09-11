@@ -78,6 +78,7 @@ HUES = [
     ("#570cf8", "#622bd8"),  # 16 indigo
     ("#5ba72a", "#4ab00a"),  # 17 spring green
     ("#4169e1", "#5c7cfa"),  # 18 royal blue
+    ("#22a048", "#30a654"),  # 19 jade
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -133,21 +134,35 @@ HUES = [
 # plus spring green since its own addition) is unchanged, and royal blue adds
 # no new WARN in either mode.
 #
+# Slot 19 (jade) added 2026-09-10 alongside cs50psets, which stops being a
+# placeholder here (it now has a real carrier file). Green (slot 6, 120 deg)
+# and the aqua/teal/cyan cluster (~158-200 deg) leave a ~38 deg gap unused;
+# jade sits at ~140 deg, validated against its new adjacent neighbor, slot 18
+# (royal blue, ~225 deg): node scripts/validate_palette.js
+# "...,#4169e1,#22a048" --mode light and "...,#5c7cfa,#30a654" --mode dark
+# both PASS (worst adjacent CVD 9.1 light / 8.4 dark, both above the 8.0
+# target). Full 19-slot run in both modes afterward confirmed no other pair
+# regressed -- both PASS; the worst adjacent/normal-floor pairs in each mode
+# are unchanged pre-existing ones (not the new pair), and the pre-existing
+# light-mode WARN set (slots 3/4/5/10/17) and dark-mode WARN set (slot 16)
+# are both unchanged -- jade adds no new WARN in either mode.
+#
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
 # intentionally omitted -- excluded from this admin-facing view by direction,
 # though it stays in the underlying data.
 #
 # ORDER MATTERS: every source with a real carrier file today must come before any
-# not-yet-built placeholder (cs50psets). The palette's "adjacent" CVD validation only
+# not-yet-built placeholder. The palette's "adjacent" CVD validation only
 # covers slots that are actually next to each other in this list -- if a real source's
 # slot were separated from another real source's slot by an unused reserved slot, a
 # combined view showing just the real sources would render two colors adjacent that
 # were never validated as a pair. Keeping real sources contiguous at the front avoids
-# that: all 18 slots were validated together, so any subset of today's eighteen sources is
-# safe in any combination. cs50psets has no carrier file and is skipped below
-# (harmless to leave it here, past the end of HUES) -- when it becomes real, HUES
-# needs a 19th color and a fresh validation pass, same as every slot addition before it.
+# that: all 19 slots were validated together, so any subset of today's nineteen sources is
+# safe in any combination. cs50psets now has a real carrier file (added 2026-09-10,
+# slot 19/jade) -- there is no placeholder left at the moment; the next new source
+# appended to this list will need its own HUES entry and validation pass, same as
+# every slot addition before it.
 SOURCE_ORDER = [
     "working_in_python",
     "little_brother",

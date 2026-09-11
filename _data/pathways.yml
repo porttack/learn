@@ -47,6 +47,7 @@
   url: /cs50-psets/
   status: in-progress
   item_label: "Problem"
+  standards_carrier: cs50psets
   blurb: >-
     A mix of problem sets: some adapted from Harvard's CS50 AP and CS50
     Python curricula, some written from scratch by teachers and past

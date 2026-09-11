@@ -99,14 +99,15 @@
     var template = meta.locator_url_template;
     if (!template) return null;
     var padded = String(locator);
-    if (meta.locator_kind === 'chapter') {
-      var slug = (meta.locator_slugs || {})[String(locator)];
-      if (slug) {
-        padded = slug;
-      } else {
-        var m = /^(\d+)([a-zA-Z]*)$/.exec(String(locator));
-        if (m) padded = ('00' + m[1]).slice(-2) + m[2];
-      }
+    // locator_slugs is checked regardless of locator_kind -- see the matching
+    // fix in tools/build_alignment.py's _locator_url for why (a non-chapter
+    // source, e.g. cs50psets, can still need a per-locator URL override).
+    var slug = (meta.locator_slugs || {})[String(locator)];
+    if (slug) {
+      padded = slug;
+    } else if (meta.locator_kind === 'chapter') {
+      var m = /^(\d+)([a-zA-Z]*)$/.exec(String(locator));
+      if (m) padded = ('00' + m[1]).slice(-2) + m[2];
     }
     var url = template.replace('{base_url}', meta.base_url || '').replace('{locator}', padded);
     if (meta.readonly_suffix) {

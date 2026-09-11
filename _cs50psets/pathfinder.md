@@ -1,6 +1,7 @@
 ---
 title: "Pathfinder"
 order: 2
+chapter: 2
 source: original
 ---
 
@@ -751,21 +752,3 @@ Submit your work:
   character it represents.
 - **string** — A type that represents sequences of characters.
 
-<hr>
-
-## Standards Alignment
-
-**AP CSP:** [2.1 Binary Numbers](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-2.1) (Big Idea 2, 17 to 22% of the exam). Also [3.13 Developing Procedures](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.13), headers only, covering the optional helper-function requirement in "To Get Full Credit" rather than the core spec.
-**California 9-12:** [9-12.DA.8](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.DA.8)
-**CSTA 2026:** [HS-ALG-PS-02](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-ALG-PS-02)
-**CA CTE (ICT):** [C4.4](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.4) (Pathway C).
-
-Converting a two-digit hex byte into the character it represents, and
-back, is 2.1's binary place-value idea one layer up: hex digits are a
-compact stand-in for four bits at a time. It's DA.8 in different words
-too, since the same character can be written as a letter or as a byte,
-and moving between them is the whole point of this problem. C4.4 names
-that same idea from the CTE side: data has types, and those types get
-encoded in specific ways. The optional helper function in "To Get Full
-Credit" is 3.13 and CSTA's HS-ALG-PS-02 territory: wrapping the
-byte-to-character conversion in its own function instead of inlining it.

@@ -1,6 +1,7 @@
 ---
 title: "Mario (less comfortable)"
 order: 1
+chapter: 1
 source: cs50-ap
 source_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/6/mario/less/"
 ---
@@ -135,18 +136,3 @@ Submit your work:
 - **boolean expression** — An expression whose value is either True or
   False.
 
-<hr>
-
-## Standards Alignment
-
-**AP CSP:** [3.6 Conditionals](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.6), [3.8 Iteration](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.8) (Big Idea 3, 30–35% of the exam). Also [3.9 Developing Algorithms](https://python.porttack.com/alignment/apcsp-standards-reference.html#T-3.9), headers only — building the pyramid row by row is a small case of "start rough, refine in steps," but that's not really the point of this problem.
-**California 9-12:** [9-12.AP.14](https://python.porttack.com/alignment/ca-cs-standards-reference.html#S-9-12.AP.14)
-**CSTA 2026:** [HS-ALG-PS-02](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-ALG-PS-02), [HS-DAT-DC-24](https://python.porttack.com/alignment/csta2026-standards-reference.html#T-HS-DAT-DC-24)
-**CA CTE (ICT):** [C4.9](https://python.porttack.com/alignment/ca-ict-anchor-standards-reference.html#T-C4.9) (Pathway C).
-
-The re-prompt loop until a valid height is entered is 3.6's
-conditionals wrapped in 3.8's iteration, and DAT-DC-24's range-checking
-in practice: is the value the right type, does it fall in a sensible
-range. Building the pyramid one row, then one hash, at a time is
-AP.14's control-structure choice made concrete, and ICT's C4.9 in
-different words.
