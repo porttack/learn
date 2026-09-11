@@ -124,6 +124,7 @@ function catalogLabel(fw, catalogData, code) {
 
 document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(function (section) {
   var chapter = Number(section.getAttribute('data-chapter'));
+  var carrierSlug = section.getAttribute('data-carrier-slug');
   fetch(section.getAttribute('data-carrier-url'))
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (data) {
@@ -166,6 +167,17 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
         });
         html += '</ul>';
       });
+      if (carrierSlug) {
+        var mapUrl = '/standards/?only=' + encodeURIComponent(carrierSlug) + '&view=open-all';
+        // &locator=<chapter> narrows the report to just this lesson's own
+        // coverage instead of the whole pathway's -- see filterCoverageToLocator()
+        // in standards-coverage.js. The report page itself offers a "View all
+        // of <pathway>" link back out, so this is never a dead end.
+        var reportUrl = '/standards/?report=' + encodeURIComponent(carrierSlug) + '&locator=' + encodeURIComponent(chapter) + '&view=open-all';
+        html += '<p class="standards-alignment-links">' +
+          '<a href="' + mapUrl + '">See this pathway on the full standards map</a> &middot; ' +
+          '<a href="' + reportUrl + '">View this lesson\'s own report</a></p>';
+      }
       section.innerHTML = html;
       section.hidden = false;
     })

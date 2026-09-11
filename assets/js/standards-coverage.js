@@ -607,10 +607,40 @@
     return reportSection('ca-ict', 'California CTE (ICT)', 'ca-ict-anchor-standards-reference.html', subs);
   }
 
-  function buildSourceReportHtml(slug, carrierFiles, catalogs) {
+  // Narrows one source's own coverage dict down to just the codes a single
+  // locator covers -- e.g. cs50psets is one carrier file for the whole
+  // pathway (the user deliberately doesn't want a separate JSON/source per
+  // problem set), but a reader on one lesson's own page wants that lesson's
+  // own report, not the whole pathway's. Per code, keeps only that one
+  // locator (so reportCard's own clause shows just it, not every locator
+  // that happens to share the code) and drops the code entirely if this
+  // locator isn't one of the ones covering it -- a "checked: true, no
+  // locators" source-wide gap never matches a specific locator either, which
+  // is correct: "what does this one lesson cover" has nothing to say about a
+  // gap recorded against the source as a whole.
+  function filterCoverageToLocator(coverage, locator) {
+    var target = String(locator);
+    var out = {};
+    Object.keys(coverage || {}).forEach(function (fw) {
+      var entries = coverage[fw] || {};
+      var filtered = {};
+      Object.keys(entries).forEach(function (code) {
+        var entry = entries[code];
+        var locs = (entry.locators || []).filter(function (l) { return String(l) === target; });
+        if (!locs.length) return;
+        var anchors = {};
+        if ((entry.anchors || {})[target]) anchors[target] = entry.anchors[target];
+        filtered[code] = { locators: locs, anchors: anchors, note: entry.note, strength: entry.strength };
+      });
+      out[fw] = filtered;
+    });
+    return out;
+  }
+
+  function buildSourceReportHtml(slug, carrierFiles, catalogs, locator) {
     var carrier = carrierFiles[slug] || {};
     var meta = carrier.meta || {};
-    var coverage = carrier.coverage || {};
+    var coverage = locator ? filterCoverageToLocator(carrier.coverage || {}, locator) : (carrier.coverage || {});
     function covered(fw) { return coverage[fw] || {}; }
 
     return [
@@ -628,14 +658,26 @@
   function renderReportMode(slug, carrierFiles, catalogs, manifestBySlug) {
     document.body.classList.add('cov-report-mode');
     var meta = manifestBySlug[slug] || {};
+    var carrierMeta = (carrierFiles[slug] || {}).meta || {};
+    var params = new URLSearchParams(window.location.search);
     // ?view=<preset> scopes which sections start open, same VIEW_PRESETS ids
     // as the badge grid (e.g. &view=ca-cs or &view=ap-only) -- so a link can
     // be "just this source's CA coverage" or "...AP coverage" instead of
     // always opening the whole report. Defaults to fully expanded.
-    var view = new URLSearchParams(window.location.search).get('view') || 'open-all';
+    var view = params.get('view') || 'open-all';
+    // ?locator=<n> narrows the report to one locator's own coverage (e.g. one
+    // problem set out of cs50psets' whole pathway) -- see
+    // filterCoverageToLocator(). Only honored when this source's own carrier
+    // actually names that locator (locator_titles); otherwise a typo'd or
+    // stale link falls back to the ordinary full-source report rather than
+    // silently rendering an unlabeled, possibly-empty scoped view.
+    var locator = params.get('locator') || null;
+    var locatorTitle = locator ? (carrierMeta.locator_titles || {})[locator] : null;
+    if (locator && !locatorTitle) locator = null;
+    var sourceTitle = meta.title || slug;
 
     var titleEl = document.querySelector('.page-header h1');
-    if (titleEl) titleEl.textContent = (meta.title || slug) + ' — Standards Report';
+    if (titleEl) titleEl.textContent = (locatorTitle ? locatorTitle + ' (' + sourceTitle + ')' : sourceTitle) + ' — Standards Report';
     var homeLink = document.querySelector('.page-header .home-link');
     if (homeLink) {
       homeLink.textContent = '← Back to Standards Coverage';
@@ -644,6 +686,12 @@
 
     var actionsRow = document.querySelector('.panel-actions');
     if (actionsRow) {
+      if (locatorTitle) {
+        var scopeNote = document.createElement('span');
+        scopeNote.className = 'report-scope-note';
+        scopeNote.innerHTML = 'Showing only <strong>' + esc(locatorTitle) + '</strong>. <a href="?report=' + encodeURIComponent(slug) + '&view=' + encodeURIComponent(view) + '">View all of ' + esc(sourceTitle) + '</a>';
+        actionsRow.appendChild(scopeNote);
+      }
       var printBtn = document.createElement('button');
       printBtn.type = 'button';
       printBtn.className = 'view-toggle-btn print-report-btn';
@@ -652,7 +700,7 @@
       actionsRow.appendChild(printBtn);
     }
 
-    document.getElementById('panels').innerHTML = buildSourceReportHtml(slug, carrierFiles, catalogs);
+    document.getElementById('panels').innerHTML = buildSourceReportHtml(slug, carrierFiles, catalogs, locator);
 
     // Without this, a click on a section's framework-reference link bubbles
     // up to <summary> and also toggles that section closed -- same fix as
@@ -866,7 +914,7 @@
   // landscape, with this source's coverage highlighted on it"). The
   // "Hide standards not covered" checkbox in the banner is the opt-in for
   // that narrower view.
-  function applyOnlyParam(manifest, manifestBySlug, handleToggle, panelActions, hasReport) {
+  function applyOnlyParam(manifest, manifestBySlug, carrierFiles, handleToggle, panelActions) {
     var params = new URLSearchParams(window.location.search);
     var raw = params.get('only');
     if (!raw) return;
@@ -885,7 +933,9 @@
     var view = params.get('view') || 'open-all';
     applyRecommendation(slug, view, handleToggle, panelActions);
     var title = (manifestBySlug[slug] || {}).title || slug;
-    var reportLink = hasReport(slug) ? ' <a href="?report=' + esc(slug) + (params.get('view') ? '&view=' + esc(params.get('view')) : '') + '">View report</a>' : '';
+    var reportLink = sourceHasCoverage(carrierFiles, slug)
+      ? ' <a href="?report=' + esc(slug) + '&view=' + esc(view) + '">View report</a>'
+      : '';
     banner.innerHTML =
       'Showing standards covered by <strong>' + esc(title) + '</strong>.' + reportLink +
       ' <label class="only-hide-toggle"><input type="checkbox" id="only-hide-uncovered"> Hide standards not covered</label>';
@@ -893,6 +943,31 @@
     document.getElementById('only-hide-uncovered').addEventListener('change', function (e) {
       document.body.classList.toggle('cov-only-hide', e.target.checked);
     });
+
+    // A source that's one carrier file for a whole group of things (e.g.
+    // cs50psets is one JSON for six problem sets, deliberately not six
+    // separate sources) can still name each thing individually via
+    // meta.locator_titles -- when it does, offer a jump-straight-to-its-own
+    // report picker, so "expand this pathway into its individual pieces" is
+    // a couple of clicks from the map without needing a link from that
+    // piece's own page.
+    var locatorTitles = ((carrierFiles[slug] || {}).meta || {}).locator_titles || {};
+    var locatorKeys = Object.keys(locatorTitles);
+    if (locatorKeys.length) {
+      var picker = document.createElement('div');
+      picker.className = 'only-locator-picker';
+      var options = locatorKeys.map(function (loc) {
+        return '<option value="' + esc(loc) + '">' + esc(locatorTitles[loc]) + '</option>';
+      }).join('');
+      picker.innerHTML =
+        '<label for="only-locator-select">Jump to one of these on its own: </label>' +
+        '<select id="only-locator-select"><option value="">Choose one…</option>' + options + '</select>';
+      banner.appendChild(picker);
+      picker.querySelector('select').addEventListener('change', function (e) {
+        if (!e.target.value) return;
+        window.location.href = '?report=' + encodeURIComponent(slug) + '&locator=' + encodeURIComponent(e.target.value) + '&view=' + encodeURIComponent(view);
+      });
+    }
   }
 
   // ---------- Detail panel (click-to-open), built lazily from current checkbox state ----------
@@ -1168,7 +1243,7 @@
       wireCrossRefToggles();
       wireRecommendations(handleToggle, panelActions);
       applyParamsFromLocation(handleToggle, panelActions);
-      applyOnlyParam(manifest, manifestBySlug, handleToggle, panelActions, function (slug) { return sourceHasCoverage(carrierFiles, slug); });
+      applyOnlyParam(manifest, manifestBySlug, carrierFiles, handleToggle, panelActions);
     });
   }).catch(function (err) {
     document.getElementById('panels').innerHTML =

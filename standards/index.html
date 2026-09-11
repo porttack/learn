@@ -111,6 +111,15 @@ a.source-aux-link:hover, a.source-aux-link:focus-visible { color: var(--fg); tex
 #only-banner a { color: var(--accent); font-weight: 600; }
 .only-hide-toggle { margin-left: .3em; font-weight: normal; color: var(--fg); white-space: nowrap; }
 .only-hide-toggle input { margin-right: .3em; }
+/* A source whose meta.locator_titles names individual pieces (e.g. cs50psets'
+   six problem sets, one carrier file, not six sources) gets this jump-to-one
+   picker appended to the #only-banner -- see applyOnlyParam(). Absent
+   entirely for a source with no locator_titles. */
+.only-locator-picker { margin-top: .5em; font-size: .92em; }
+.only-locator-picker select {
+  font: inherit; padding: .2em .4em; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--bg); color: var(--fg);
+}
 body.cov-only-hide .cov-badge:not(.has-coverage) { display: none; }
 body.cov-only-hide .cov-panel:not(:has(.cov-badge.has-coverage)),
 body.cov-only-hide .cov-group:not(:has(.cov-badge.has-coverage)),
@@ -130,6 +139,10 @@ body.cov-report-mode main#coverage-content { max-width: 900px; margin: 0 auto; }
 .report-subsection summary { cursor: pointer; font-weight: 600; padding: .3rem 0; }
 .report-empty { color: var(--muted); font-size: .88rem; margin: .2rem 0 .6rem 1rem; }
 .print-report-btn { margin-left: auto; }
+/* Shown only when ?report=...&locator=... is scoped to one locator -- see
+   renderReportMode(). Sits in .panel-actions beside the view-toggle buttons. */
+.report-scope-note { font-size: .88em; color: var(--muted); }
+.report-scope-note a { color: var(--accent); }
 .topic {
   background: var(--code-bg); border: 1px solid var(--border); border-radius: 10px;
   padding: .9rem 1.15rem; margin: .8rem 0 .8rem 1rem;
