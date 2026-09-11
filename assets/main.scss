@@ -106,6 +106,19 @@ $content-width: 900px;
   }
 }
 
+// Minima's own default link style has no underline until :hover -- fine for
+// a nav/button-styled link (an arrow, a border, a pill shape already says
+// "click me"), but a plain inline link in running prose then has no way to
+// read as a link at all until a reader happens to hover it. Lesson bodies
+// are full of exactly that (figure captions, glossary entries, standards
+// notes, "see also" references), so restore the underline for links inside
+// lesson content specifically. The handful of nav-styled links already
+// opting out (.pathway-back above, .lesson-prev/.lesson-next below) keep
+// doing so explicitly, same convention either way.
+article.lesson a {
+  text-decoration: underline;
+}
+
 .lesson-label {
   text-transform: uppercase;
   font-size: 0.85em;
@@ -992,6 +1005,10 @@ figure {
   margin-top: 2.5em;
   padding-top: 1em;
   border-top: 1px solid $grey-color-light;
+
+  a {
+    text-decoration: none;
+  }
 
   .print-button {
     font: inherit;
