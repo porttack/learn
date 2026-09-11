@@ -148,6 +148,14 @@ section.big-idea > h2 { font-size: 1.5rem; }
 .topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
 .topic .paraphrase { margin: .3rem 0; }
 .topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
 .topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
 .lo { margin: .9rem 0 .9rem .2rem; }
 .lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
@@ -317,34 +325,57 @@ class Coverage:
         url = self._locator_url(source, locator, anchor.get("slug") if anchor else None)
         return f'<a href="{esc(url)}">{esc(text)}</a>' if url else esc(text)
 
+    def _carrier_clause(self, source, entry, with_title):
+        """One source's coverage of one code, as plain body text (no wrapping
+        element -- callers decide whether that's a <li> or the only sentence in
+        a <p>). with_title=False drops the leading source name, for scoped
+        (single-source) mode where it would just repeat the one source this
+        run was given on every line."""
+        locs = entry.get("locators", [])
+        anchors = entry.get("anchors", {})
+        title = esc(self.source_meta.get(source, {}).get("title", source))
+        if locs:
+            clauses = ", ".join(self._locator_clause(source, loc, anchors.get(str(loc))) for loc in locs)
+            strength = entry.get("strength")
+            if strength and strength != "strong":
+                clauses += f' <span class="meta-strength">({esc(strength)})</span>'
+            return f"Covered in {clauses}" if not with_title else f"<strong>{title}:</strong> {clauses}"
+        if entry.get("checked"):
+            return "Not covered" if not with_title else f"<strong>{title}:</strong> not covered"
+        return "Covered, no locator on record" if not with_title else f"<strong>{title}:</strong> covered, no locator on record"
+
     def carrier_html(self, code):
         """None means: say nothing (used when --source scoping is active and this
         code has no coverage from the loaded source -- it may well be carried by a
         source this run was never given, and "unassigned" would be a false claim of
         a gap. Only the unscoped, all-sources view may claim "Unassigned". Returns
-        HTML -- callers must NOT esc() the result."""
+        a complete, ready-to-insert HTML block -- callers must NOT esc() the result
+        and must NOT wrap it in another element (scoped mode returns its own <p
+        class="meta">; the cross-source view, where a popular code can easily be
+        carried by half a dozen sources, returns a <ul class="meta-list"> with one
+        line per source instead of the old single run-on sentence, which became
+        unreadable once several sources piled into it)."""
         entries = self.get(code)
         if not entries:
-            return None if self.scoped else "Unassigned"
-        parts = []
+            return None if self.scoped else '<p class="meta">Unassigned</p>'
+        if self.scoped:
+            # A scoped run only ever loads one carrier file, so there's at most
+            # one entry here -- a single sentence reads fine, no list needed.
+            parts = [self._carrier_clause(source, entry, with_title=False) for source, entry in entries]
+            return f'<p class="meta">{"; ".join(parts)}</p>'
+        # Each source's own note is folded into its own <li> here, right under
+        # that source's "Covered by" line -- a flat list of notes rendered
+        # separately below (the old behavior, still used in scoped mode) has no
+        # way to show which note belongs to which source once there's more than
+        # one, which is exactly the confusing part a reader flagged.
+        items = []
         for source, entry in entries:
-            locs = entry.get("locators", [])
-            anchors = entry.get("anchors", {})
-            title = esc(self.source_meta.get(source, {}).get("title", source))
-            if locs:
-                clauses = ", ".join(self._locator_clause(source, loc, anchors.get(str(loc))) for loc in locs)
-                strength = entry.get("strength")
-                if strength and strength != "strong":
-                    clauses += f" ({esc(strength)})"
-                # In scoped (single-source) mode the source name is always the one
-                # source this run was given -- redundant on every line, so drop it.
-                # In the cross-source view, multiple sources are genuinely in play.
-                parts.append(f"Covered in {clauses}" if self.scoped else f"Covered by {title}: {clauses}")
-            elif entry.get("checked"):
-                parts.append("Not covered" if self.scoped else f"Not covered by {title}")
-            else:
-                parts.append("Covered, no locator on record" if self.scoped else f"Covered by {title}, no locator on record")
-        return "; ".join(parts)
+            li = self._carrier_clause(source, entry, with_title=True)
+            if entry.get("note"):
+                note = esc(humanize_chapter_refs(entry["note"], self.source_meta.get(source, {}).get("interlude_letters")))
+                li += f'<div class="meta-note">{note}</div>'
+            items.append(f"<li>{li}</li>")
+        return f'<ul class="meta-list">{"".join(items)}</ul>'
 
     def coverage_summary(self, code):
         """(covering: list[str], total: int) -- of every source this Coverage was
@@ -356,6 +387,13 @@ class Coverage:
         return covering, len(self.source_meta)
 
     def notes(self, code):
+        """Only meaningful in scoped (single-source) mode. The cross-source view
+        folds each source's note directly into its own <li> in carrier_html()
+        instead -- see the comment there -- so this returns nothing there, and
+        callers' existing "for note in cov.notes(code)" loops naturally render
+        nothing extra rather than showing every note twice."""
+        if not self.scoped:
+            return []
         return [
             humanize_chapter_refs(entry["note"], self.source_meta.get(source, {}).get("interlude_letters"))
             for source, entry in self.get(code)
@@ -409,7 +447,7 @@ def render_apcsp(catalog, cov, scope_label):
             body.append(f'<p class="paraphrase">{esc(t["paraphrase"])}</p>')
             line = cov.carrier_html(t["code"])
             if line:
-                body.append(f'<p class="meta">{line}</p>')
+                body.append(line)
             for note in cov.notes(t["code"]):
                 body.append(f'<p class="note">{esc(note)}</p>')
             for ex in t.get("exclusions", []):
@@ -478,7 +516,7 @@ def render_castandards(catalog, cov, scope_label):
                     body.append(f'<p class="note">{esc(s["scope_note"])}</p>')
                 line = cov.carrier_html(s["code"])
                 if line:
-                    body.append(f'<p class="meta">{line}</p>')
+                    body.append(line)
                 for note in cov.notes(s["code"]):
                     body.append(f'<p class="note">{esc(note)}</p>')
                 body.append("</div>")
@@ -520,7 +558,7 @@ def render_csta2017(catalog, cov, scope_label):
             body.append(f'<p class="paraphrase">{esc(s["paraphrase"])}</p>')
             line = cov.carrier_html(s["code"])
             if line:
-                body.append(f'<p class="meta">{line}</p>')
+                body.append(line)
             for note in cov.notes(s["code"]):
                 body.append(f'<p class="note">{esc(note)}</p>')
             body.append("</div>")
@@ -594,7 +632,7 @@ def render_csta2026(catalog, cov, scope_label):
                         body.append(f'<p class="note">{esc(s["scope_note"])}</p>')
                     line = cov.carrier_html(s["code"])
                     if line:
-                        body.append(f'<p class="meta">{line}</p>')
+                        body.append(line)
                     for note in cov.notes(s["code"]):
                         body.append(f'<p class="note">{esc(note)}</p>')
                     body.append("</div>")
@@ -626,7 +664,7 @@ def render_ca_ict(catalog, cov, scope_label):
         out.append(f'<p class="paraphrase">{esc(grp["paraphrase"])}</p>')
         grp_line = cov.carrier_html(grp["code"])
         if grp_line:
-            out.append(f'<p class="meta">{grp_line}</p>')
+            out.append(grp_line)
         if grp.get("items"):
             out.append('<ul class="ek-list">')
             for item in grp["items"]:
