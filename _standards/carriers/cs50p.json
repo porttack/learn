@@ -17,7 +17,14 @@
    "7": "Lecture 7: Regular Expressions",
    "8": "Lecture 8: Object-Oriented Programming"
   },
-  "caveat": "Mapped from CS50 Python's own published lecture-notes headings (cs50.harvard.edu/python/notes/<n>/), not from an audit of problem-set content -- comparable confidence to cs50ap/cs50ap_extended, not cmu_cs1. Week 9 (Et Cetera plus the course's closing 'Congratulations!' note) is excluded by direction -- it's a miscellaneous-syntax grab-bag and a wrap-up, not sequenced instruction this teacher uses."
+  "caveat": "Mapped from CS50 Python's own published lecture-notes headings (cs50.harvard.edu/python/notes/<n>/), not from an audit of problem-set content -- comparable confidence to cs50ap/cs50ap_extended, not cmu_cs1. Week 9 (Et Cetera plus the course's closing 'Congratulations!' note) is excluded by direction -- it's a miscellaneous-syntax grab-bag and a wrap-up, not sequenced instruction this teacher uses. csta2017 entries were added later, read directly against CSTA's own paraphrase text for the six codes crosswalking to this file's existing castandards entries -- not an independent sweep of the full CSTA 2017 catalog.",
+  "alignment_log": [
+   {
+    "date": "2026-09-10",
+    "by": "Claude Sonnet 5",
+    "scope": "Added csta2017 for the six codes crosswalking to this file's existing castandards entries (AP.13, AP.14, AP.16, AP.17, AP.20, DA.9), read directly against CSTA's own paraphrase text rather than assumed from the crosswalk's code-equivalence alone. One (3A-AP-21) downgraded to partial: CSTA's own wording is specifically about usability and accessibility testing, which week 5's Unit Tests material doesn't address."
+   }
+  ]
  },
  "coverage": {
   "apcsp": {
@@ -158,6 +165,51 @@
      5
     ],
     "note": "Unit Tests and pytest, named week-5 headings, are repeated rounds of testing aimed at more than just running once."
+   }
+  },
+  "csta2017": {
+   "3A-AP-14": {
+    "locators": [
+     2
+    ],
+    "strength": "strong",
+    "note": "Read directly against CSTA's own text: lists replacing near-identical variables matches week 2's Lists and Dictionaries material directly. Same evidence as 9-12.AP.13 above."
+   },
+   "3A-AP-15": {
+    "locators": [
+     1
+    ],
+    "strength": "strong",
+    "note": "Read directly against CSTA's own text: if/elif/else vs. match is a real, explicit choice between control structures in week 1's own material, matching CSTA's justify-the-tradeoffs framing directly. Same evidence as 9-12.AP.14 above."
+   },
+   "3A-AP-17": {
+    "locators": [
+     0,
+     8
+    ],
+    "strength": "strong",
+    "note": "Read directly against CSTA's own text: functions (week 0) and classes (week 8) are both named, explicit decomposition into reusable procedures and objects. Same evidence as 9-12.AP.16 above."
+   },
+   "3A-AP-18": {
+    "locators": [
+     4
+    ],
+    "strength": "strong",
+    "note": "Read directly against CSTA's own text: week 4's Libraries, Packages, and Making Your Own Libraries material is explicitly about building from code someone else wrote, matching CSTA's own 'including code someone else wrote' framing even more directly than CA's wording. Same evidence as 9-12.AP.17 above."
+   },
+   "3A-AP-21": {
+    "locators": [
+     5
+    ],
+    "strength": "partial",
+    "note": "Read directly against CSTA's own text: week 5's Unit Tests and pytest material is real iterative testing, but CSTA's own standard is specifically about usability and accessibility, which week 5's material doesn't address. Same evidence as 9-12.AP.20 above, downgraded from strong on this narrower reading."
+   },
+   "3A-DA-10": {
+    "locators": [
+     6
+    ],
+    "strength": "strong",
+    "note": "Read directly against CSTA's own text: week 6's File I/O, CSV and Binary Files, and PIL material is literally about how and where data is organized and stored, matching CSTA's own local-vs-cloud-storage-tradeoffs framing. Same evidence as 9-12.DA.9 above."
    }
   },
   "csta2026": {

@@ -40,6 +40,12 @@
     "by": "Claude Sonnet 5",
     "scope": "CSTA 2026 core (HS-*) and CA CTE/ICT (anchor + Pathway C), checked against chapters 9-13 specifically, following the 2026-08-31 pass's CSTA/CA-Specialty work",
     "note": "Added 4 csta2026 core + 1 ca-ict-anchor + 1 apcsp entry (6 total), all with real locators, no new gaps logged (not an exhaustive gap sweep of either catalog -- focused on finding genuine matches for chapters 9-13, which had zero csta2026-core and zero ca-ict-anchor coverage before this pass). Also corrected S1-SWD-TR-06's note, which described chapters 9-13's 'Ask a virtual assistant' sections as still present -- they were removed book-wide the same day, in working_in_python's own repo, by a VA-removal policy decision unrelated to this pass. Two clear findings: chap10's too_slow/much_faster list-vs-dict speed comparison is the single richest piece of evidence in chapters 9-13, carrying apcsp 3.17, csta2026 HS-ALG-PS-03, and ca-ict-anchor C5.3 simultaneously; chap12's deterministic/pseudorandom glossary terms are an unusually direct, named match for csta2026 HS-ALG-PS-04."
+   },
+   {
+    "date": "2026-09-10",
+    "by": "Claude Sonnet 5",
+    "scope": "csta2017, for the six codes crosswalking to this file's existing core castandards entries (AP.13, AP.14, AP.16, AP.17, AP.20, DA.9) -- not an independent sweep of the full CSTA 2017 catalog",
+    "note": "Added 6 csta2017 entries, read directly against CSTA's own paraphrase text rather than assumed from the crosswalk's code-equivalence alone. Two came back lower than a naive crosswalk-strength read would suggest: 3A-AP-17 (partial, since the classes half of CSTA's procedures-or-objects framing lives in this book's independent-study chapters 14-19, not the sequenced course) and 3A-AP-21 (related, since CSTA's own standard specifically names usability/accessibility testing, which chap04/chap07's iterative-testing work doesn't address -- the same gap 9-12.AP.20's own note already flags)."
    }
   ]
  },
@@ -397,6 +403,55 @@
     "locators": [],
     "note": "Not covered. Same status as this file's core 9-12.DA.11 entry: chap12's Markov text model is a model of sorts, but the chapter never judges how accurately it represents anything or uses that judgment to refine a hypothesis.",
     "checked": true
+   }
+  },
+  "csta2017": {
+   "3A-AP-14": {
+    "locators": [
+     9
+    ],
+    "strength": "strong",
+    "note": "Read directly against CSTA's own text: chap09 (Lists) is a direct match for lists replacing near-identical variables. Same evidence as 9-12.AP.13 above."
+   },
+   "3A-AP-15": {
+    "locators": [
+     5,
+     6
+    ],
+    "strength": "strong",
+    "note": "Read directly against CSTA's own text: the iterative-vs-recursive Fibonacci comparison across chap05/chap06 is exactly picking one control structure over another and weighing the tradeoff, matching CSTA's own defend-your-choice framing directly. Same evidence as 9-12.AP.14 above."
+   },
+   "3A-AP-17": {
+    "locators": [
+     3,
+     4
+    ],
+    "strength": "partial",
+    "note": "Read directly against CSTA's own text: chap03/chap04's function-decomposition material carries the procedure half of this standard directly. The classes material (chapters 14-19) that would carry the object half is independent-study/post-AP-exam content, not part of the sequenced course, so this stays partial rather than strong, same caveat as 9-12.AP.16 above."
+   },
+   "3A-AP-18": {
+    "locators": [
+     2,
+     4,
+     8
+    ],
+    "strength": "strong",
+    "note": "Read directly against CSTA's own text: chap02's import, chap04's jupyturtle, and chap08's re module are all building from code someone else wrote, matching CSTA's own 'including code someone else wrote' framing directly. Same evidence as 9-12.AP.17 above."
+   },
+   "3A-AP-21": {
+    "locators": [
+     4,
+     7
+    ],
+    "strength": "related",
+    "note": "Read directly against CSTA's own text: chap04's development plan and chap07's doctest work are real iterative testing, but CSTA's own standard specifically names usability and accessibility, which neither chapter addresses, the same gap the 9-12.AP.20 note above already flags."
+   },
+   "3A-DA-10": {
+    "locators": [
+     "7b"
+    ],
+    "strength": "partial",
+    "note": "Read directly against CSTA's own text: interlude 7b's file-size-vs-quality tradeoffs across image formats is adjacent storage-tradeoff territory, but the interlude's own framing leans on compression rather than CSTA's specific local-vs-cloud, cost/speed/privacy framing, same partial rating as the 9-12.DA.9 note above."
    }
   },
   "csta2026": {
