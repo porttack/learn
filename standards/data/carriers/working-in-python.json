@@ -34,6 +34,12 @@
     "by": "Claude Sonnet 5",
     "scope": "CSTA 2026 Specialty I/II (SWD, DSC primary; CYB/AIN skimmed) and CA 9-12 Specialty, checked against chapters 1-13 plus interludes 6b/7b",
     "note": "Added 3 csta2026 + 8 castandards covered entries (11 total) and 6 csta2026 + 8 castandards explicit gaps (14 total). CYB and AIN specialty areas were skimmed but yielded no genuine matches (a chap11 Caesar-cipher exercise and chap12's LLM-vs-Markov aside were considered and rejected as too tangential); nothing added for either. CA IC.27-30 (impact of computing) and NI.3-6 (networking) omitted outright as out of scope, consistent with this file's existing apcsp_big_ideas rollup routing impact-of-computing to little_brother instead. A same-day follow-up pass added `strength` ratings (strong/partial/related) to all 11 covered entries above, since a first read conflated real-but-partial coverage with full coverage -- see 9-12S.AP.14/16/19 and S2-DSC-AM-07, rated partial."
+   },
+   {
+    "date": "2026-09-09",
+    "by": "Claude Sonnet 5",
+    "scope": "CSTA 2026 core (HS-*) and CA CTE/ICT (anchor + Pathway C), checked against chapters 9-13 specifically, following the 2026-08-31 pass's CSTA/CA-Specialty work",
+    "note": "Added 4 csta2026 core + 1 ca-ict-anchor + 1 apcsp entry (6 total), all with real locators, no new gaps logged (not an exhaustive gap sweep of either catalog -- focused on finding genuine matches for chapters 9-13, which had zero csta2026-core and zero ca-ict-anchor coverage before this pass). Also corrected S1-SWD-TR-06's note, which described chapters 9-13's 'Ask a virtual assistant' sections as still present -- they were removed book-wide the same day, in working_in_python's own repo, by a VA-removal policy decision unrelated to this pass. Two clear findings: chap10's too_slow/much_faster list-vs-dict speed comparison is the single richest piece of evidence in chapters 9-13, carrying apcsp 3.17, csta2026 HS-ALG-PS-03, and ca-ict-anchor C5.3 simultaneously; chap12's deterministic/pseudorandom glossary terms are an unusually direct, named match for csta2026 HS-ALG-PS-04."
    }
   ]
  },
@@ -179,6 +185,12 @@
     "locators": [
      12
     ]
+   },
+   "3.17": {
+    "locators": [
+     10
+    ],
+    "note": "chap10's too_slow/much_faster comparison is a direct instance of AAP-4.A.5's informal efficiency-by-counting: the chapter reasons that checking every word against every other word is roughly 'the number of words squared -- roughly -- which is almost 13 billion' comparisons, then measures the dictionary-based version at '10,000 times faster.' Two algorithms solving the identical problem (finding reversed-word pairs), correctness held equal, efficiency the only variable -- AAP-4.A.6's own framing. No complexity-class vocabulary (constant/linear/quadratic) appears, which is fine: this topic's own exclusions rule out formal Big-O analysis, and AAP-4.A.5 explicitly names counting statement executions as a legitimate informal alternative."
    }
   },
   "castandards": {
@@ -470,7 +482,7 @@
    },
    "S1-SWD-TR-06": {
     "locators": [],
-    "note": "Close but not a real match: chapters 9-13 each have an 'Ask a virtual assistant' section suggesting prompts a student could use, including chap12's 'copy add_bigram into a virtual assistant and ask can you rewrite this using setdefault.' But this is a standalone chatbot workflow, not the IDE-integrated feature summarizing or flagging bugs in legacy code that this standard actually names.",
+    "note": "Not a match, and now moot: chapters 9-13 used to each have an 'Ask a virtual assistant' section suggesting prompts a student could use, including chap12's 'copy add_bigram into a virtual assistant and ask can you rewrite this using setdefault.' That content was removed book-wide on 2026-09-09 (VA removal decided as policy for every chapter tier, not just 1-11 -- see working_in_python's own AUDIT.md). Even when it existed, this was a standalone chatbot workflow, not the IDE-integrated feature summarizing or flagging bugs in legacy code that this standard actually names, so the verdict is unchanged.",
     "checked": true
    },
    "S2-SWD-DD-04": {
@@ -482,6 +494,34 @@
     "locators": [],
     "note": "Real gap, same evidence as this file's castandards 9-12.DA.10 entry: no charting library or visualization of any kind appears in chapters 1-13. chap12's word-frequency and Markov work computes summary counts but never a histogram, scatter plot, or any other chart.",
     "checked": true
+   },
+   "HS-ALG-PS-01": {
+    "locators": [
+     9,
+     10,
+     11
+    ],
+    "note": "Chapters 9-11 are three chapters of exactly this standard's own example: choosing a built-in structure -- list, dictionary, tuple -- to go with an algorithm rather than building one from scratch. chap10's word_dict (a dictionary used purely for fast membership checking, never for its values) and chap11's tuples-as-dictionary-keys are both cases of picking the structure the task actually calls for, not just the first one that works."
+   },
+   "HS-ALG-PS-03": {
+    "locators": [
+     10
+    ],
+    "note": "Same evidence as this file's new apcsp 3.17 entry: chap10 times too_slow against much_faster and reports both correctness and a concrete speed difference (10,000x), not just whether the answer comes out right."
+   },
+   "HS-ALG-PS-04": {
+    "locators": [
+     12
+    ],
+    "note": "chap12 defines deterministic and pseudorandom as glossary terms and explicitly contrasts them ('most computer programs are deterministic... For some applications... we want the computer to be unpredictable') before introducing random.choice/random.choices -- a direct match to this standard's own framing, not just incidental use of the random module."
+   },
+   "HS-PRO-VD-16": {
+    "locators": [
+     9,
+     10,
+     11
+    ],
+    "note": "Chapters 9-11 are this book's dedicated treatment of exactly the structures this standard names -- lists and dictionaries explicitly, tuples as the third option -- and chap10's 'A dictionary is like a list, but more general' framing is this book's own version of choosing the right one for the job."
    }
   },
   "ca-ict-anchor": {
@@ -537,9 +577,13 @@
    },
    "C4.7": {
     "locators": [
-     8
+     8,
+     9,
+     10,
+     11,
+     13
     ],
-    "note": "chap08's Writing files section (open, read mode vs 'w' mode, close) is a direct match for this standard's 'files' item."
+    "note": "chap08's Writing files section (open, read mode vs 'w' mode, close) is a direct match for this standard's 'files' item. Chapters 9 (lists), 10 (dictionaries), 11 (tuples), and 13 (files and shelve-based key-value storage) extend it to the 'data structures' and 'databases' items -- in sequence, this book's treatment of every structure this standard names except objects."
    },
    "C4.9": {
     "locators": [
@@ -584,6 +628,12 @@
      8
     ],
     "note": "Every chapter's Debugging section -- same pattern as AP CRD-1.4/CRD-2.I, already the carrier for AP topic 1.4 in every chapter. Headers only throughout; no single chapter's Debugging section is more chapter-specific than any other's."
+   },
+   "C5.3": {
+    "locators": [
+     10
+    ],
+    "note": "Same evidence as this file's new apcsp 3.17 and csta2026 HS-ALG-PS-03 entries: chap10's too_slow rewritten as much_faster is a deliberate, measured performance optimization, not an incidental speedup."
    }
   }
  },

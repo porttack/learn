@@ -150,6 +150,14 @@
    "abbrev": "Pico",
    "hue_light": "#4169e1",
    "hue_dark": "#5c7cfa"
+  },
+  {
+   "slug": "cs50psets",
+   "file": "cs50psets.json",
+   "title": "CS50 Problem Sets",
+   "abbrev": "CS50PS",
+   "hue_light": "#22a048",
+   "hue_dark": "#30a654"
   }
  ],
  "crosswalks": [
