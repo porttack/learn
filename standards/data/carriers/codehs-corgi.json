@@ -22,82 +22,203 @@
    "14": "Final Exam",
    "optional-extension": "Optional extension: Data Structures"
   },
-  "caveat": "Inferred from the public CodeHS Corgi syllabus's topic list (porttack.com, \"CodeHS vs CMU\", Appendix C), not audited against the platform directly -- the syllabus lists topics at a coarser grain than CMU's own scope and sequence, so this mapping carries materially lower confidence than the cmu_cs1 carrier file.",
-  "abbrev": "Corgi"
+  "caveat": "Inferred from the public CodeHS Corgi syllabus's topic list (originally compiled for porttack.com, \"CodeHS vs CMU\", Appendix C), not audited against the platform directly -- the syllabus lists topics at a coarser grain than CMU's own scope and sequence, so this mapping carries materially lower confidence than the cmu_cs1 carrier file. csta2017 codes were first derived mechanically via crosswalk-castandards-csta2017.json, then re-read directly against CSTA's own paraphrase text (not just piped through the crosswalk's strength rating) -- several came back downgraded from that direct read, where CSTA's own wording asks for something more specific (a self-chosen prototype, a justified control-structure choice, systematic feedback from a range of users, usability/accessibility-focused testing) than the syllabus's topic list evidences. csta2026 and ca-ict-anchor entries are this carrier's own inference, in the same spirit as cmu-cs1.json's inferred entries, since no CodeHS-published alignment exists for either framework.",
+  "abbrev": "Corgi",
+  "alignment_log": [
+   {
+    "date": "2026-09-10",
+    "by": "Claude Sonnet 5",
+    "scope": "Added csta2017 (crosswalk-derived from the existing castandards entries), csta2026 and ca-ict-anchor (own inference, mirroring cmu-cs1.json's approach), strength ratings on every entry, and an explicit checked-gap for 9-12.AP.19 / 3A-AP-20 (software licensing, not in the unit list). Still a syllabus-level pass, not audited against the CodeHS platform itself."
+   },
+   {
+    "date": "2026-09-10",
+    "by": "Claude Sonnet 5",
+    "scope": "Re-read all eleven csta2017 entries directly against CSTA's own paraphrase text instead of relying solely on the castandards crosswalk. Downgraded five (3A-AP-13, 3A-AP-15, 3A-AP-19, 3A-AP-21, and confirmed 3A-AP-14/3A-AP-22 already at 'related') where CSTA's own wording asks for something the syllabus doesn't evidence -- self-directed prototyping, an explicit justify-your-choice step, systematic multi-user feedback, or usability/accessibility-specific testing. Checked 3B-AP-* for anything Corgi might independently reach that CA's core 9-12 set doesn't draw from; nothing in the syllabus (recursion, algorithmic-efficiency comparison, formal SDLC process, version control, code review) supports adding any."
+   }
+  ]
  },
  "coverage": {
   "castandards": {
    "9-12.AP.12": {
-    "locators": [
-     2,
-     5,
-     7,
-     9,
-     11
-    ],
-    "note": "Recurs across every 'challenges' unit (2, 5, 7, 9, 11) -- larger problems that call for choosing among algorithms already introduced."
+    "locators": [2, 5, 7, 9, 11],
+    "strength": "partial",
+    "note": "Recurs across every 'challenges' unit (2, 5, 7, 9, 11) -- larger problems that call for choosing among algorithms already introduced. Syllabus-inferred: whether these problems actually require justifying that choice, rather than just applying it, isn't visible from the topic list."
    },
    "9-12.AP.13": {
-    "locators": [
-     "optional-extension"
-    ],
+    "locators": ["optional-extension"],
+    "strength": "related",
     "note": "Arrays, lists, objects, sets, and grids live only in an optional extension sequenced after the final project -- the final exam's own listed coverage never touches them. Whether a student ever meets this standard depends on whether their teacher assigns material after the course is functionally over. Included because the extension exists, not because it's reliably taught."
    },
    "9-12.AP.14": {
-    "locators": [
-     1,
-     6,
-     7
-    ],
+    "locators": [1, 6, 7],
+    "strength": "partial",
     "note": "Control-structure choice appears in Karel (unit 1) and the JavaScript control-structures units (6-7), though this is inferred from the syllabus's topic list, not audited against the platform directly."
    },
    "9-12.AP.15": {
-    "locators": [
-     10,
-     11,
-     12
-    ],
+    "locators": [10, 11, 12],
+    "strength": "partial",
     "note": "Iterative development via animation/game events across units 10-12."
    },
    "9-12.AP.16": {
-    "locators": [
-     1,
-     2
-    ],
+    "locators": [1, 2],
+    "strength": "partial",
     "note": "Karel's top-down design (units 1-2) is decomposition into subproblems."
    },
    "9-12.AP.17": {
-    "locators": [
-     1,
-     3,
-     8,
-     9
-    ],
+    "locators": [1, 3, 8, 9],
+    "strength": "partial",
     "note": "Modular design via functions recurs in units 1, 3, 8, and 9."
    },
    "9-12.AP.18": {
-    "locators": [
-     13
-    ],
-    "note": "Design-for-audience lands only in the Unit 13 final project -- a capstone, not a recurring practice."
+    "locators": [13],
+    "strength": "partial",
+    "note": "Design-for-audience lands only in the Unit 13 final project -- a capstone, not a recurring practice. A genuine open-ended build does ask for it once; it just isn't the ten-times-a-year rhythm CMU's Creative Task gives the same standard."
+   },
+   "9-12.AP.19": {
+    "locators": [],
+    "checked": true,
+    "note": "Not in Corgi's unit list -- software license limitations don't appear anywhere in the syllabus, the same gap as CMU CS1, which defers this topic to AP CS Principles."
    },
    "9-12.AP.20": {
-    "locators": [
-     13
-    ],
+    "locators": [13],
+    "strength": "partial",
     "note": "Iterative refinement lands only in the Unit 13 final project."
    },
    "9-12.AP.21": {
-    "locators": [
-     13
-    ],
-    "note": "One collaboration lesson appears in unit 3 (driver/navigator), but the standard's own real practice is concentrated in the Unit 13 final project -- collaboration as capstone, not rhythm."
+    "locators": [3, 13],
+    "strength": "related",
+    "note": "One collaboration lesson appears in unit 3 (driver/navigator, list the pros and cons), and the final project (13) may involve it too, but the standard's own real practice is concentrated at the end of the course rather than built into the rhythm of every unit -- one lesson on pair programming addresses the letter of the standard without much of what it's meant to capture."
    },
    "9-12.AP.22": {
-    "locators": [
-     13
-    ],
+    "locators": [13],
+    "strength": "partial",
     "note": "Documentation lands only in the Unit 13 final project."
+   }
+  },
+  "csta2017": {
+   "3A-AP-13": {
+    "locators": [2, 5, 7, 9, 11],
+    "strength": "related",
+    "note": "Read directly against CSTA's own text: 3A-AP-13 is specifically about prototyping around a problem that interests you personally, not just applying a known algorithm to an assigned problem. Corgi's challenge units (2, 5, 7, 9, 11) are larger, course-designed problems built on algorithms already introduced, not open, student-chosen prototypes -- the self-directed-prototype practice this standard actually asks for isn't evidenced, unlike CMU's Creative Task. Downgraded from the castandards-csta2017 crosswalk's 'partial' after this direct read; the crosswalk itself already flagged this code's fit with CA's 9-12.AP.12 as 'partial' for the same reason."
+   },
+   "3A-AP-14": {
+    "locators": ["optional-extension"],
+    "strength": "related",
+    "note": "Read directly against CSTA's own text: 3A-AP-14's list-generalizes-near-identical-variables framing matches what the optional Data Structures extension teaches. Same caveat as 9-12.AP.13 above: the extension is sequenced after the final project and the final exam doesn't touch it."
+   },
+   "3A-AP-15": {
+    "locators": [1, 6, 7],
+    "strength": "related",
+    "note": "Read directly against CSTA's own text: 3A-AP-15 specifically asks students to defend a control-structure choice on readability/performance tradeoffs, not just use control structures. Corgi's unit list (Karel in 1, JavaScript control structures in 6-7) shows the constructs being taught, but nothing in the syllabus evidences an explicit justify-your-choice requirement the way CMU's Creative Task design sheet does. Downgraded from the crosswalk's inherited 'strong' after this direct read."
+   },
+   "3A-AP-16": {
+    "locators": [10, 11, 12],
+    "strength": "partial",
+    "note": "Read directly against CSTA's own text: an event like a button press or location change triggering a procedure matches Corgi's mouse/keyboard event handling in the animation and games units (10-12) directly. The standard's own 'built for a practical purpose or social issue' framing is extra context Corgi's game-style projects don't specifically aim at, which is why this stays partial rather than strong."
+   },
+   "3A-AP-17": {
+    "locators": [1, 2],
+    "strength": "partial",
+    "note": "Read directly against CSTA's own text: decomposing systematically into procedures, modules, or objects to reuse existing pieces matches Karel's top-down design (units 1-2) reasonably well."
+   },
+   "3A-AP-18": {
+    "locators": [1, 3, 8, 9],
+    "strength": "partial",
+    "note": "Read directly against CSTA's own text: a complex artifact as a system of interacting smaller pieces is a bigger claim than intro-level functions typically deliver alone. Corgi's functions across units 1, 3, 8, and 9 are real modular pieces, just not evidenced as an interacting system at the scale this standard's own wording implies."
+   },
+   "3A-AP-19": {
+    "locators": [13],
+    "strength": "related",
+    "note": "Read directly against CSTA's own text: 3A-AP-19 specifically asks for systematic feedback collection from a range of users, not just an open-ended build. Corgi's unit 13 final project is a plausible place for that to happen, but nothing in the syllabus evidences a required feedback step -- the same gap CMU's own Creative Task rubric has for the parallel CA standard (9-12.AP.18 above). Downgraded from the crosswalk's inherited 'strong' after this direct read."
+   },
+   "3A-AP-20": {
+    "locators": [],
+    "checked": true,
+    "note": "Read directly against CSTA's own text, same conclusion as the crosswalk: software licensing isn't in Corgi's unit list, the same gap as 9-12.AP.19 above."
+   },
+   "3A-AP-21": {
+    "locators": [13],
+    "strength": "related",
+    "note": "Read directly against CSTA's own text: 3A-AP-21 is specifically about usability and accessibility testing, narrower than general iterative refinement. Corgi's final project (13) is the one place this could happen, but the syllabus gives no evidence the testing there is usability- or accessibility-focused rather than just functional. Downgraded from the crosswalk's inherited 'strong' after this direct read."
+   },
+   "3A-AP-22": {
+    "locators": [3, 13],
+    "strength": "related",
+    "note": "Read directly against CSTA's own text: real collaborative tools and team roles matches the unit 3 driver/navigator lesson and whatever collaboration the final project (13) involves, but concentrated at the end of the course rather than built into the rhythm of every unit."
+   },
+   "3A-AP-23": {
+    "locators": [13],
+    "strength": "partial",
+    "note": "Read directly against CSTA's own text: this standard accepts documentation in several forms (written notes, diagrams, a presentation, a demo). The final project's project-planning and pseudocode step (13) is a defensible match."
+   }
+  },
+  "csta2026": {
+   "HS-ALG-PS-02": {
+    "locators": [1, 3, 8],
+    "strength": "partial",
+    "note": "This carrier's own inference, mirroring cmu-cs1.json's HS-ALG-PS-02 entry: functions in Karel (1), JavaScript basics (3), and the dedicated Functions unit (8) are wrapping-repeated-steps-in-a-function territory."
+   },
+   "HS-ALG-PS-04": {
+    "locators": [3],
+    "strength": "partial",
+    "note": "This carrier's own inference: random values, introduced in JavaScript Basics (3), is where a program's behavior stops being deterministic."
+   },
+   "HS-PRO-PD-12": {
+    "locators": [1, 3, 8],
+    "strength": "partial",
+    "note": "This carrier's own inference, same evidence as HS-ALG-PS-02 above: functions across units 1, 3, and 8 organize a program into distinct, reusable pieces."
+   },
+   "HS-PRO-VD-16": {
+    "locators": ["optional-extension"],
+    "strength": "related",
+    "note": "This carrier's own inference: arrays, lists, objects, sets, and grids are the course's own answer to choosing a data structure, but they live only in the optional extension after the final project -- same caveat as 9-12.AP.13 above."
+   },
+   "HS-PRO-TR-19": {
+    "locators": [13],
+    "strength": "partial",
+    "note": "This carrier's own inference: the final project's project-planning and pseudocode step is checking a program against its own original plan, once, at the end of the course."
+   },
+   "HS-PRO-TR-20": {
+    "locators": [13],
+    "strength": "partial",
+    "note": "This carrier's own inference: the final project is the one place in Corgi where feedback could change the build."
+   },
+   "MS-PRO-PD-12": {
+    "locators": [1, 3, 8],
+    "strength": "partial",
+    "note": "This carrier's own inference, mirroring HS-PRO-PD-12 above."
+   },
+   "MS-PRO-PD-15": {
+    "locators": [3, 13],
+    "strength": "related",
+    "note": "This carrier's own inference: the unit 3 driver/navigator lesson and whatever collaboration the final project (13) involves are this standard's planning-together, feedback, and shared-tools territory, but concentrated at the end of the course rather than a rhythm -- same evidence as 9-12.AP.21 above."
+   },
+   "MS-PRO-VD-16": {
+    "locators": [3],
+    "strength": "partial",
+    "note": "This carrier's own inference: variables and constants in JavaScript Basics (3) is a program storing more than one kind of data."
+   },
+   "MS-PRO-TR-19": {
+    "locators": [13],
+    "strength": "partial",
+    "note": "This carrier's own inference, mirroring HS-PRO-TR-19 above."
+   },
+   "MS-PRO-TR-20": {
+    "locators": [13],
+    "strength": "partial",
+    "note": "This carrier's own inference, mirroring HS-PRO-TR-20 above."
+   }
+  },
+  "ca-ict-anchor": {
+   "C4.9": {
+    "locators": [1, 6, 8],
+    "strength": "partial",
+    "note": "This carrier's own inference: control flow and conditionals in Karel (1) and JavaScript Control Structures (6), plus functions with parameters (8), are the branches-loops-procedures toolkit this standard names."
+   },
+   "5.9": {
+    "locators": [1, 2],
+    "strength": "partial",
+    "note": "This carrier's own inference: Karel's top-down design (units 1-2) is the same decomposition evidence as 9-12.AP.16 above."
    }
   }
  }
