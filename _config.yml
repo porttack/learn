@@ -79,22 +79,15 @@ exclude:
 # same day before working-in-python decided to stop shipping it into the
 # JupyterLite build at all for now (its own AUDIT.md, 2026-08-16, has the
 # full back-and-forth) -- nothing to include here for it either way, since it
-# doesn't exist in that submodule right now. Only two kinds of
-# underscore-prefixed .ipynb still exist there: the two front-matter
-# notebooks (also Title Case now: "_Start-Here.ipynb", "_Using-Notebooks.ipynb"),
-# and two TEMPORARY aliases for chapters 2 and 3
-# (old, all-lowercase served names, deliberately NOT recapitalized -- they
-# exist only to match whatever path a student's browser may already have
-# cached from before the cleanup, so they have to stay byte-for-byte what
-# they always were. Kept for a few days post-cleanup -- see that repo's
-# AUDIT.md, 2026-08-16). Remove the two alias lines below once
-# working-in-python's own tools/build_jupyterlite_content.py's ALIASES dict
-# drops them.
+# doesn't exist in that submodule right now. The temporary chapter 2/3 alias
+# entries this comment used to describe were removed 2026-09-14, once
+# working-in-python's own ALIASES dict dropped them (confirmed empty as of
+# that repo's 2026-09-13 interlude-rename work). Only one kind of
+# underscore-prefixed .ipynb still exists there: the two front-matter
+# notebooks, also Title Case now ("_Start-Here.ipynb", "_Using-Notebooks.ipynb").
 include:
   - _static
   - _sources
   - _sphinx_design_static
   - "_Start-Here.ipynb"
   - "_Using-Notebooks.ipynb"
-  - "__chap02-variables-and-statements.ipynb"
-  - "__chap03-functions.ipynb"
