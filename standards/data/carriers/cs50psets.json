@@ -12,7 +12,7 @@
       "3": "/cs50-psets/palindromes/",
       "4": "/cs50-psets/square/",
       "5": "/cs50-psets/caesar/",
-      "6": "/cs50/problems/2024/x/sentimental/readability/"
+      "6": "/cs50-psets/readability/"
     },
     "locator_titles": {
       "1": "Mario (less comfortable)",
@@ -22,7 +22,7 @@
       "5": "Caesar",
       "6": "Readability"
     },
-    "caveat": "This is this repo's own _cs50psets pathway (a mix of CS50 AP-adapted and originally written problem sets), not Harvard's CS50 AP curriculum itself -- that's the separate cs50ap/cs50ap-extended carriers. Locators are this pathway's own order numbers (1-6), not CS50's own pset numbering. Readability's locator_slugs entry is a full external-looking path, not the /cs50-psets/ default, because that page's own permalink front matter deliberately mirrors CS50's own problems/2024/x/sentimental/readability slug.",
+    "caveat": "This is this repo's own _cs50psets pathway (a mix of CS50 AP-adapted and originally written problem sets), not Harvard's CS50 AP curriculum itself -- that's the separate cs50ap/cs50ap-extended carriers. Locators are this pathway's own order numbers (1-6), not CS50's own pset numbering. locator_slugs is still needed even though every page uses the collection's plain /cs50-psets/:name/ permalink, since a pset's filename slug (e.g. 'mario-less') isn't a predictable function of its locator number the way a zero-padded chapter number would be.",
     "alignment_log": [
       {
         "date": "2026-09-10",

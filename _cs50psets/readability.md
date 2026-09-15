@@ -1,6 +1,5 @@
 ---
 title: "Readability"
-permalink: /cs50/problems/2024/x/sentimental/readability/
 order: 6
 chapter: 6
 source: cs50-ap
