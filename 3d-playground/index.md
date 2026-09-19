@@ -15,6 +15,10 @@ Instead of pixels, what you build is a real 3D model you can spin around,
 print, and hold.
 
 <div class="playground-cards">
+  <a class="playground-card" href="{{ '/3d-playground/intro/' | relative_url }}">
+    <strong>Start Here &rarr;</strong>
+    <span>A short first lesson: position, size, and your first few boxes.</span>
+  </a>
   <a class="playground-card" href="{{ '/3d-playground/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
     <span>Write Python on the left, watch the model update live on the right.</span>
