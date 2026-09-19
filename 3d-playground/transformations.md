@@ -224,6 +224,7 @@ want more than one axis at once.
   }
 
   .embed {
+    position: relative;
     margin: 1.2em 0;
     border: 1px solid #d0d7de;
     border-radius: 8px;
@@ -340,11 +341,48 @@ want more than one axis at once.
   .embed-viewer canvas { display: block; }
 
   .quiz {
+    position: relative;
     margin: 1.4em 0;
     padding: 14px 16px;
     border-left: 5px solid #8b5cf6;
     background: #f5f3ff;
     border-radius: 0 8px 8px 0;
+  }
+  .checkpoint-locked > *:not(.checkpoint-lock) {
+    filter: blur(4px);
+    pointer-events: none;
+    user-select: none;
+  }
+  .checkpoint-lock {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-align: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.55);
+  }
+  .checkpoint-lock p {
+    margin: 0;
+    font-weight: 600;
+    color: #57606a;
+    background: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .checkpoint-skip {
+    font: inherit;
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    background: white;
+    color: #57606a;
+    cursor: pointer;
   }
   .quiz-prompt { margin: 0 0 10px; font-weight: 600; }
   .quiz-options {
@@ -857,6 +895,7 @@ class Embed {
     const result = checker(this.lastShapes, this.group);
     this.feedbackEl.className = "check-feedback " + (result.pass ? "pass" : "fail");
     this.feedbackEl.textContent = result.message;
+    if (result.pass) progress.markDone(this.checkerName);
   }
 
   rebuild(shapes) {
@@ -889,6 +928,7 @@ function setupQuizzes() {
           feedback.textContent = "Correct!";
           feedback.className = "quiz-feedback correct";
           solved = true;
+          progress.markDone(quiz.dataset.quiz);
         } else {
           btn.classList.add("incorrect");
           feedback.textContent = "Not quite -- try another one.";
@@ -898,6 +938,60 @@ function setupQuizzes() {
     });
   });
 }
+
+// Checkpoints unlock in order -- each one stays blurred/disabled until the
+// one before it is solved. Saved to localStorage (per browser, not per
+// student -- there's no login here) so it survives a reload; the "already
+// know this" link is a deliberate, always-present escape hatch, since nothing
+// else could unstick a student if this ever gets in the way by mistake.
+function initLessonProgress(lessonId, order) {
+  const storageKey = "3d-playground-progress:" + lessonId;
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch (e) { saved = {}; }
+
+  function checkpointEl(id) {
+    return document.querySelector('[data-quiz="' + id + '"], [data-check="' + id + '"]');
+  }
+  function unlock(el) {
+    const lock = el.querySelector(".checkpoint-lock");
+    if (lock) lock.remove();
+    el.classList.remove("checkpoint-locked");
+  }
+  function lock(el) {
+    if (el.querySelector(".checkpoint-lock")) return;
+    const overlay = document.createElement("div");
+    overlay.className = "checkpoint-lock";
+    overlay.innerHTML = '<p>🔒 Complete the checkpoint above first</p>';
+    const skip = document.createElement("button");
+    skip.type = "button";
+    skip.className = "checkpoint-skip";
+    skip.textContent = "I already know this -- unlock it";
+    skip.addEventListener("click", () => unlock(el));
+    overlay.appendChild(skip);
+    el.classList.add("checkpoint-locked");
+    el.appendChild(overlay);
+  }
+
+  order.forEach((id, i) => {
+    const el = checkpointEl(id);
+    if (!el) return;
+    if (i > 0 && !saved[order[i - 1]]) lock(el);
+  });
+
+  return {
+    markDone(id) {
+      if (saved[id]) return;
+      saved[id] = true;
+      try { localStorage.setItem(storageKey, JSON.stringify(saved)); } catch (e) { /* private browsing, etc. */ }
+      const idx = order.indexOf(id);
+      if (idx === -1 || idx + 1 >= order.length) return;
+      const nextEl = checkpointEl(order[idx + 1]);
+      if (nextEl) unlock(nextEl);
+    },
+  };
+}
+
+const progress = initLessonProgress("transformations", ["rotate-z", "order", "ex2", "segments"]);
 
 async function main() {
   setupQuizzes();
