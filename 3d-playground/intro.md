@@ -451,6 +451,34 @@ function alignOffset(align, width, depth) {
   return { ox, oy };
 }
 
+// A camera sitting at a fixed distance works fine for small shapes, but a
+// student trying Box(20, 20, 20) (very reasonable -- "change some of the
+// numbers" is the actual instruction) ends up with the camera *inside* the
+// shape, which is invisible (back faces are culled) rather than obviously
+// wrong. Only nudges the camera outward, along the direction it's already
+// facing, and only when it would otherwise be unsafe -- normal-sized shapes
+// never trigger this, so it doesn't interfere with a student's own zoom.
+function ensureShapeVisible(camera, controls, group) {
+  const box = new THREE.Box3().setFromObject(group);
+  if (box.isEmpty()) return;
+  const sphere = box.getBoundingSphere(new THREE.Sphere());
+  const farthestExtent = controls.target.distanceTo(sphere.center) + sphere.radius;
+  const currentDist = camera.position.distanceTo(controls.target);
+  const safeDist = farthestExtent * 1.8 + 1;
+  if (currentDist < safeDist) {
+    const dir = camera.position.clone().sub(controls.target);
+    if (dir.lengthSq() < 1e-6) dir.set(1, -1, 0.8);
+    dir.normalize();
+    camera.position.copy(controls.target).addScaledVector(dir, safeDist);
+    controls.maxDistance = Math.max(controls.maxDistance, safeDist * 3);
+    if (camera.far < safeDist * 4) {
+      camera.far = safeDist * 4;
+      camera.updateProjectionMatrix();
+    }
+    controls.update();
+  }
+}
+
 function makeTickSprite(text) {
   const canvas = document.createElement("canvas");
   canvas.width = 64;
@@ -727,6 +755,7 @@ class Embed {
       mesh.position.set(node.x || 0, node.y || 0, node.z || 0);
       this.group.add(mesh);
     }
+    ensureShapeVisible(this.camera, this.controls, this.group);
   }
 
   ready() {
