@@ -1,12 +1,12 @@
 ---
-title: "3D Playground (prototype)"
-permalink: /3d-playground/
+title: "3D Playground Studio"
+permalink: /3d-playground/studio/
 ---
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>3D Playground (prototype)</title>
+<title>3D Playground Studio</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='15' y='30' width='45' height='45' fill='%232a7ae2'/%3E%3Cellipse cx='75' cy='55' rx='15' ry='10' fill='%23111'/%3E%3Crect x='60' y='35' width='30' height='20' fill='%23111'/%3E%3Cellipse cx='75' cy='35' rx='15' ry='10' fill='%23333'/%3E%3C/svg%3E">
 <style>
@@ -152,9 +152,13 @@ permalink: /3d-playground/
 <div class="app">
   <div class="panel">
     <header>
-      <h1>3D Playground (prototype)</h1>
+      <h1>3D Playground Studio</h1>
       <p>Same idea as 2D graphics, one more axis. Write Python, see a 3D model.</p>
-      <p><a href="{{ '/3d-playground-cheatsheet/' | relative_url }}">Cheatsheet &rarr;</a></p>
+      <p>
+        <a href="{{ '/3d-playground/' | relative_url }}">&larr; 3D Playground</a>
+        &middot;
+        <a href="{{ '/3d-playground/cheatsheet/' | relative_url }}">Cheatsheet &rarr;</a>
+      </p>
     </header>
     <textarea id="code" spellcheck="false"># A plate with two mounting holes drilled through it
 Box(6, 4, 1.5)

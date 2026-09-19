@@ -41,6 +41,15 @@
     library of lesson cards covering water physics, electricity, control,
     software, and ocean science.
 
+- id: 3d-playground
+  title: "3D Playground"
+  url: /3d-playground/
+  status: in-progress
+  blurb: >-
+    Write Python, watch it become an actual 3D model you can spin around
+    and print. Same idea as the 2D shapes you already know, one more
+    axis: boxes, cylinders, extruded text, booleans, holes.
+
 - id: cs50psets
   title: "CS50 Problem Sets"
   collection: cs50psets
