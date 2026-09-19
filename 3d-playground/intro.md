@@ -243,10 +243,43 @@ something of your own, or keep the Cheatsheet open while you work.
     color: #2a7ae2;
     cursor: pointer;
   }
+  .embed-export {
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    background: white;
+    color: #57606a;
+    cursor: pointer;
+  }
   .embed-status {
     font-size: 0.8rem;
     color: #57606a;
     margin-left: auto;
+  }
+  .embed-zoom-controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .embed-zoom-controls button {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    background: rgba(255,255,255,0.9);
+    color: #1b1f23;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .embed-zoom-controls button:hover {
+    border-color: #2a7ae2;
+    color: #2a7ae2;
   }
   .embed-error {
     display: none;
@@ -369,6 +402,8 @@ something of your own, or keep the Cheatsheet open while you work.
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
+import { STLExporter } from "three/addons/exporters/STLExporter.js";
 
 const MINI_SHIM = `
 _shapes = []
@@ -395,6 +430,24 @@ def _dump():
 
 let pyodide;
 const material = new THREE.MeshStandardMaterial({ color: 0x2a7ae2 });
+
+function makeTickSprite(text) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 64;
+  canvas.height = 32;
+  const ctx = canvas.getContext("2d");
+  ctx.font = "20px monospace";
+  ctx.fillStyle = "#57606a";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, 32, 16);
+  const spriteMaterial = new THREE.SpriteMaterial({
+    map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true,
+  });
+  const sprite = new THREE.Sprite(spriteMaterial);
+  sprite.scale.set(0.5, 0.25, 1);
+  return sprite;
+}
 
 function buildGeometry(node) {
   if (node.type === "box") {
@@ -477,6 +530,11 @@ class Embed {
       toolbar.appendChild(this.checkBtn);
     }
 
+    this.exportBtn = document.createElement("button");
+    this.exportBtn.className = "embed-export";
+    this.exportBtn.textContent = "Export STL";
+    toolbar.appendChild(this.exportBtn);
+
     this.statusEl = document.createElement("span");
     this.statusEl.className = "embed-status";
     this.statusEl.textContent = "Loading Python…";
@@ -493,6 +551,18 @@ class Embed {
     this.viewerEl = document.createElement("div");
     this.viewerEl.className = "embed-viewer";
     container.appendChild(this.viewerEl);
+
+    const zoomControls = document.createElement("div");
+    zoomControls.className = "embed-zoom-controls";
+    this.zoomInBtn = document.createElement("button");
+    this.zoomInBtn.textContent = "+";
+    this.zoomInBtn.title = "Zoom in";
+    this.zoomOutBtn = document.createElement("button");
+    this.zoomOutBtn.textContent = "−";
+    this.zoomOutBtn.title = "Zoom out";
+    zoomControls.appendChild(this.zoomInBtn);
+    zoomControls.appendChild(this.zoomOutBtn);
+    this.viewerEl.appendChild(zoomControls);
   }
 
   setupScene() {
@@ -519,8 +589,24 @@ class Embed {
     grid.position.z = -0.01;
     this.scene.add(grid);
     this.scene.add(new THREE.AxesHelper(2));
+    for (let i = -6; i <= 6; i += 2) {
+      if (i === 0) continue;
+      const xTick = makeTickSprite(String(i));
+      xTick.position.set(i, -0.4, 0.02);
+      this.scene.add(xTick);
+      const yTick = makeTickSprite(String(i));
+      yTick.position.set(-0.4, i, 0.02);
+      this.scene.add(yTick);
+    }
     this.group = new THREE.Group();
     this.scene.add(this.group);
+
+    this.viewHelper = new ViewHelper(this.camera, this.renderer.domElement);
+    this.viewHelper.location.left = 6;
+    this.viewHelper.location.bottom = 6;
+    this.viewHelper.setLabels("X", "Y", "Z");
+    this.renderer.domElement.addEventListener("click", (e) => this.viewHelper.handleClick(e));
+    this.clock = new THREE.Clock();
   }
 
   resize() {
@@ -535,6 +621,27 @@ class Embed {
     requestAnimationFrame(() => this.animate());
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
+    if (this.viewHelper.animating) this.viewHelper.update(this.clock.getDelta());
+    this.renderer.autoClear = false;
+    this.viewHelper.render(this.renderer);
+    this.renderer.autoClear = true;
+  }
+
+  zoomBy(delta) {
+    this.renderer.domElement.dispatchEvent(new WheelEvent("wheel", { deltaY: delta, bubbles: true, cancelable: true }));
+  }
+
+  exportSTL() {
+    if (!this.group.children.length) return;
+    const exporter = new STLExporter();
+    const stlText = exporter.parse(this.group);
+    const blob = new Blob([stlText], { type: "model/stl" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "model.stl";
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   bindEvents() {
@@ -547,6 +654,9 @@ class Embed {
     if (this.checkBtn) {
       this.checkBtn.addEventListener("click", () => this.check());
     }
+    this.exportBtn.addEventListener("click", () => this.exportSTL());
+    this.zoomInBtn.addEventListener("click", () => this.zoomBy(-120));
+    this.zoomOutBtn.addEventListener("click", () => this.zoomBy(120));
   }
 
   showError(message) {

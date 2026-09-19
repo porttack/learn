@@ -178,13 +178,25 @@ permalink: /3d-playground/cheatsheet/
     <h2>3D Solids</h2>
     <div class="entry">
       <code>Box(width, depth, height,
-    x=0, y=0, z=0, hole=False, fill=None)</code>
-      <p>Sized along x/y/z in that order. The base sits at z -- it is not centered on z like it is on x and y.</p>
+    x=0, y=0, z=0, hole=False, fill=None,
+    align="center", center=False)</code>
+      <p>Sized along x/y/z in that order. The base sits at z -- it is not centered on z like it is on x and y, unless center=True.</p>
     </div>
     <div class="entry">
       <code>Cylinder(radius, height,
-    x=0, y=0, z=0, hole=False, fill=None)</code>
+    x=0, y=0, z=0, hole=False, fill=None,
+    align="center", center=False)</code>
       <p>Stands upright along z. Base sits at z, same as Box.</p>
+    </div>
+    <div class="entry">
+      <code>align="left-top" / "top" / "right-top" /
+"left" / "center" / "right" /
+"left-bottom" / "bottom" / "right-bottom"</code>
+      <p>Like CMU's align: a 9-way grid that changes what (x, y) points at. Redefined here since z is vertical, not y: "top" means farther away from you (+y), "bottom" means closer to you (-y).</p>
+    </div>
+    <div class="entry">
+      <code>center=True</code>
+      <p>Like OpenSCAD's center: also centers the shape on z, instead of sitting with its base at z.</p>
     </div>
   </section>
 

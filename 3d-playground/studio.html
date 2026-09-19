@@ -139,12 +139,37 @@ permalink: /3d-playground/studio/
   .hint {
     position: absolute;
     bottom: 8px;
-    left: 8px;
+    right: 8px;
+    max-width: 60%;
     font-size: 0.75rem;
     color: var(--muted);
     background: rgba(255,255,255,0.85);
     padding: 4px 8px;
     border-radius: 4px;
+    text-align: right;
+  }
+  .zoom-controls {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .zoom-controls button {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.9);
+    color: var(--ink);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .zoom-controls button:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 </style>
 </head>
@@ -178,7 +203,11 @@ linear_extrude(label, height=2.5, x=6)</textarea>
   <div class="splitter" id="splitter"></div>
   <div class="viewer">
     <div id="canvas-holder"></div>
-    <div class="hint">Box &middot; Cylinder &middot; Label(font=, bold=, italic=) &middot; linear_extrude &middot; union() &middot; difference() &middot; translate() &middot; rotate() &middot; hole=True</div>
+    <div class="zoom-controls">
+      <button id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
+      <button id="zoom-out" title="Zoom out" aria-label="Zoom out">&minus;</button>
+    </div>
+    <div class="hint">Box &middot; Cylinder &middot; Label(font=, bold=, italic=) &middot; linear_extrude &middot; union() &middot; difference() &middot; translate() &middot; rotate() &middot; hole=True &middot; align=/center=</div>
   </div>
 </div>
 
@@ -312,6 +341,16 @@ viewHelper.location.bottom = 8;
 viewHelper.setLabels("X", "Y", "Z");
 renderer.domElement.addEventListener("click", (e) => viewHelper.handleClick(e));
 
+// Dispatching a real wheel event (rather than moving the camera directly)
+// keeps OrbitControls' own internal state in sync -- otherwise the next
+// drag-to-orbit would snap back to wherever OrbitControls last thought
+// the camera was.
+function zoomBy(delta) {
+  renderer.domElement.dispatchEvent(new WheelEvent("wheel", { deltaY: delta, bubbles: true, cancelable: true }));
+}
+document.getElementById("zoom-in").addEventListener("click", () => zoomBy(-120));
+document.getElementById("zoom-out").addEventListener("click", () => zoomBy(120));
+
 function resize() {
   const w = holder.clientWidth, h = holder.clientHeight;
   renderer.setSize(w, h);
@@ -366,22 +405,31 @@ def _resolve_hole_fill(hole, fill, inherit=None):
         return True, None
     return hole, fill
 
-def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET):
+def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False):
     # Args line up with (x, y, z): width runs along x, depth along y,
     # height along z (the "new" axis you're pushing up out of the page).
     # fill: any CSS/X11 color name ("red", "cornflowerblue", ...) -- a
     # preview-only aid, it never ends up in the exported STL.
+    # align: like CMU's align -- a 9-way grid ("left-top", "top", "right-top",
+    # "left", "center", "right", "left-bottom", "bottom", "right-bottom")
+    # that changes what (x, y) points at. Redefined for this scene: "top"
+    # means farther away from you (+y), "bottom" means closer to you (-y) --
+    # z is vertical here, not y, so top/bottom describe depth, not height.
+    # center: like OpenSCAD's center -- True lifts the shape so it's
+    # centered on z too, instead of sitting with its base at z.
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
     return Solid({
         "type": "box", "width": width, "height": height, "depth": depth,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
+        "align": align, "center": center,
     })
 
-def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET):
+def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False):
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
     return Solid({
         "type": "cylinder", "radius": radius, "height": height,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
+        "align": align, "center": center,
     })
 
 # ---- 2D profiles, for linear_extrude() ----
@@ -425,11 +473,15 @@ def Label(text, x, y, size=1, font="helvetiker", bold=False, italic=False):
         "font": font, "bold": bold, "italic": italic,
     }
 
-def linear_extrude(profile, height, x=0, y=0, z=0, hole=False, fill=_UNSET):
+def linear_extrude(profile, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align=None, center=False):
+    # align is opt-in here (default: no change) -- a 2D profile like Rect
+    # already has its own left/top-style coordinates baked in, so forcing
+    # a bounding-box center by default would move every existing shape.
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
     return Solid({
         "type": "extrude", "profile": profile, "height": height,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
+        "align": align, "center": center,
     })
 
 def translate(solid, x=0, y=0, z=0):
@@ -533,16 +585,31 @@ function materialFor(fill) {
 const evaluator = new Evaluator();
 let disposableGeometries = [];
 
+// CMU-style align, redefined for this scene: "top"/"bottom" describe y
+// (depth -- farther/closer to you), not vertical position, since z owns
+// vertical here. "left"/"right" still mean x, same as CMU.
+function alignOffset(align, width, depth) {
+  const a = align || "center";
+  let ox = 0, oy = 0;
+  if (a.includes("left")) ox = width / 2;
+  else if (a.includes("right")) ox = -width / 2;
+  if (a.includes("top")) oy = -depth / 2;
+  else if (a.includes("bottom")) oy = depth / 2;
+  return { ox, oy };
+}
+
 function buildLeafGeometry(node) {
   if (node.type === "box") {
     const geometry = new THREE.BoxGeometry(node.width, node.depth, node.height);
-    geometry.translate(0, 0, node.height / 2); // base at z=0, not center
+    const { ox, oy } = alignOffset(node.align, node.width, node.depth);
+    geometry.translate(ox, oy, node.center ? 0 : node.height / 2);
     return geometry;
   }
   if (node.type === "cylinder") {
     const geometry = new THREE.CylinderGeometry(node.radius, node.radius, node.height, 32);
     geometry.rotateX(Math.PI / 2); // stand it up along z instead of three.js's default y
-    geometry.translate(0, 0, node.height / 2);
+    const { ox, oy } = alignOffset(node.align, node.radius * 2, node.radius * 2);
+    geometry.translate(ox, oy, node.center ? 0 : node.height / 2);
     return geometry;
   }
   if (node.type === "extrude") {
@@ -569,12 +636,24 @@ function buildLeafGeometry(node) {
       const bbox = geometry.boundingBox;
       const cx = (bbox.max.x + bbox.min.x) / 2;
       const cy = (bbox.max.y + bbox.min.y) / 2;
-      geometry.translate(-cx + profile.x, -cy + profile.y, 0); // center on (x, y) like CMU's Label
+      geometry.translate(-cx + profile.x, -cy + profile.y, node.center ? -node.height / 2 : 0); // center on (x, y) like CMU's Label
       return geometry;
     }
     const points = profile.points.map(([x, y]) => new THREE.Vector2(x, y));
     const shape = new THREE.Shape(points);
-    return new THREE.ExtrudeGeometry(shape, { depth: node.height, bevelEnabled: false });
+    const geometry = new THREE.ExtrudeGeometry(shape, { depth: node.height, bevelEnabled: false });
+    if (node.align) {
+      // align is opt-in here: a profile like Rect already has its own
+      // left/top-style coordinates, so this only kicks in if you ask for it.
+      const xs = profile.points.map((p) => p[0]);
+      const ys = profile.points.map((p) => p[1]);
+      const minX = Math.min(...xs), maxX = Math.max(...xs);
+      const minY = Math.min(...ys), maxY = Math.max(...ys);
+      const { ox, oy } = alignOffset(node.align, maxX - minX, maxY - minY);
+      geometry.translate(-(minX + maxX) / 2 + ox, -(minY + maxY) / 2 + oy, 0);
+    }
+    if (node.center) geometry.translate(0, 0, -node.height / 2);
+    return geometry;
   }
   throw new Error(`Unknown shape type: ${node.type}`);
 }
