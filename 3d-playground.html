@@ -1,0 +1,762 @@
+---
+title: "3D Playground (prototype)"
+permalink: /3d-playground/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>3D Playground (prototype)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='15' y='30' width='45' height='45' fill='%232a7ae2'/%3E%3Cellipse cx='75' cy='55' rx='15' ry='10' fill='%23111'/%3E%3Crect x='60' y='35' width='30' height='20' fill='%23111'/%3E%3Cellipse cx='75' cy='35' rx='15' ry='10' fill='%23333'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --accent: #2a7ae2;
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #57606a;
+    --border: #d0d7de;
+    --error-bg: #fff0f0;
+    --error-border: #d1242f;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #e9edf1;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  .app {
+    display: flex;
+    height: 100%;
+  }
+  .panel {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    min-width: 320px;
+    max-width: 75%;
+    background: var(--paper);
+  }
+  .splitter {
+    flex: 0 0 auto;
+    width: 6px;
+    cursor: col-resize;
+    background: var(--border);
+  }
+  .splitter:hover,
+  .splitter.dragging {
+    background: var(--accent);
+  }
+  header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  header h1 {
+    margin: 0 0 4px;
+    font-size: 1.1rem;
+  }
+  header p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  header p + p {
+    margin-top: 4px;
+  }
+  header a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  header a:hover {
+    text-decoration: underline;
+  }
+  #code {
+    flex: 1 1 auto;
+    width: 100%;
+    border: 0;
+    resize: none;
+    padding: 16px;
+    font: 14px/1.5 "SF Mono", Menlo, Consolas, monospace;
+    outline: none;
+    tab-size: 4;
+  }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--border);
+  }
+  button {
+    font: inherit;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  button.secondary {
+    background: white;
+    color: var(--accent);
+  }
+  #status {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  #error {
+    display: none;
+    margin: 0 16px 16px;
+    padding: 10px 12px;
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    border-radius: 6px;
+    color: var(--error-border);
+    font: 12px/1.4 "SF Mono", Menlo, Consolas, monospace;
+    white-space: pre-wrap;
+    max-height: 160px;
+    overflow: auto;
+  }
+  .viewer {
+    flex: 1 1 auto;
+    position: relative;
+    min-width: 0;
+  }
+  #canvas-holder {
+    position: absolute;
+    inset: 0;
+  }
+  .viewer canvas {
+    display: block;
+  }
+  .hint {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255,255,255,0.85);
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="panel">
+    <header>
+      <h1>3D Playground (prototype)</h1>
+      <p>Same idea as 2D graphics, one more axis. Write Python, see a 3D model.</p>
+      <p><a href="{{ '/3d-playground-cheatsheet/' | relative_url }}">Cheatsheet &rarr;</a></p>
+    </header>
+    <textarea id="code" spellcheck="false"># A plate with two mounting holes drilled through it
+Box(6, 4, 1.5)
+Cylinder(0.7, 2, x=-1.8, hole=True)
+Cylinder(0.7, 2, x=1.8, hole=True)
+
+# Text you can hold: linear_extrude() also works on Label()
+label = Label("HI", 0, 0, size=1.2)
+linear_extrude(label, height=2.5, x=6)</textarea>
+    <div id="error"></div>
+    <div class="toolbar">
+      <button id="run" disabled>Run</button>
+      <button id="download" class="secondary" disabled>Download STL</button>
+      <span id="status">Loading Python&hellip;</span>
+    </div>
+  </div>
+  <div class="splitter" id="splitter"></div>
+  <div class="viewer">
+    <div id="canvas-holder"></div>
+    <div class="hint">Box &middot; Cylinder &middot; Label(font=, bold=, italic=) &middot; linear_extrude &middot; union() &middot; difference() &middot; translate() &middot; rotate() &middot; hole=True</div>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/",
+    "three-mesh-bvh": "https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.9.15/build/index.module.js",
+    "three-bvh-csg": "https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.18/build/index.module.js"
+  }
+}
+</script>
+<script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { STLExporter } from "three/addons/exporters/STLExporter.js";
+import { FontLoader } from "three/addons/loaders/FontLoader.js";
+import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
+import { Brush, Evaluator, ADDITION, SUBTRACTION, INTERSECTION } from "three-bvh-csg";
+import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
+
+// "helvetiker" is the built-in default (loaded eagerly at startup, so the
+// common case has zero extra latency); the rest lazy-load on first use of
+// font=. Filenames were checked against each package's actual file listing --
+// they're NOT all the same pattern, so don't guess new ones without checking.
+const HELVETIKER_URLS = {
+  400: "https://cdn.jsdelivr.net/gh/mrdoob/three.js@r186/examples/fonts/helvetiker_regular.typeface.json",
+  700: "https://cdn.jsdelivr.net/gh/mrdoob/three.js@r186/examples/fonts/helvetiker_bold.typeface.json",
+};
+const FONT_PACKAGES = {
+  arial: "@compai/font-arimo@0.0.4",
+  monospace: "@compai/font-jet-brains-mono@0.0.2",
+  cursive: "@compai/font-dancing-script@0.0.3",
+  caveat: "@compai/font-caveat@0.0.4",
+  montserrat: "@compai/font-montserrat@0.0.4",
+};
+function fontUrlFor(family, bold) {
+  const weight = bold ? 700 : 400;
+  const pkg = FONT_PACKAGES[family];
+  if (!pkg) return HELVETIKER_URLS[weight] || HELVETIKER_URLS[400];
+  return `https://cdn.jsdelivr.net/npm/${pkg}/data/typefaces/normal-${weight}.json`;
+}
+
+// ---- three.js scene setup ----
+const holder = document.getElementById("canvas-holder");
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xe9edf1);
+
+// z is "up" here (matches OpenSCAD/CAD convention) -- x,y is the flat
+// ground plane students already know from 2D drawing, so a 2D shape
+// laid down at z=0 and pushed up by linear_extrude just makes sense.
+const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 200);
+camera.up.set(0, 0, 1);
+camera.position.set(10, -10, 9);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+holder.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0, 0);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.minDistance = 2;
+controls.maxDistance = 80;
+// Stop just short of a fully edge-on view of the ground plane: at a true
+// grazing angle, the grid and any shape's base z-fight no matter how far
+// the grid is nudged below z=0, since screen-space depth precision between
+// two near-coplanar surfaces collapses as the view angle approaches 90 deg.
+controls.maxPolarAngle = Math.PI * 0.47;
+controls.update();
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+sun.position.set(5, -10, 12);
+scene.add(sun);
+
+const grid = new THREE.GridHelper(20, 20, 0xbbbbbb, 0xdddddd);
+grid.rotation.x = Math.PI / 2;
+grid.position.z = -0.01; // nudge below z=0 so it never exactly coincides with a shape's base (z-fighting)
+scene.add(grid);
+scene.add(new THREE.AxesHelper(3));
+
+// Small numeric tick labels along x/y/z so you can gauge real size -- these
+// are sprites, which always face the camera, so they stay readable no
+// matter how the model is rotated.
+function makeTickSprite(text) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 64;
+  canvas.height = 32;
+  const ctx = canvas.getContext("2d");
+  ctx.font = "20px monospace";
+  ctx.fillStyle = "#57606a";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, 32, 16);
+  const spriteMaterial = new THREE.SpriteMaterial({
+    map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true,
+  });
+  const sprite = new THREE.Sprite(spriteMaterial);
+  sprite.scale.set(0.6, 0.3, 1);
+  return sprite;
+}
+const axisTicks = new THREE.Group();
+for (let i = -10; i <= 10; i += 2) {
+  if (i === 0) continue;
+  const xTick = makeTickSprite(String(i));
+  xTick.position.set(i, -0.6, 0.02);
+  axisTicks.add(xTick);
+  const yTick = makeTickSprite(String(i));
+  yTick.position.set(-0.6, i, 0.02);
+  axisTicks.add(yTick);
+}
+for (let i = 1; i <= 6; i++) {
+  const zTick = makeTickSprite(String(i));
+  zTick.position.set(-0.3, -0.3, i);
+  axisTicks.add(zTick);
+}
+scene.add(axisTicks);
+
+const modelGroup = new THREE.Group();
+scene.add(modelGroup);
+
+// Small corner orientation gizmo, OpenSCAD-style (lower-left, click an axis
+// to snap the camera to it).
+const viewHelper = new ViewHelper(camera, renderer.domElement);
+viewHelper.location.left = 8;
+viewHelper.location.bottom = 8;
+viewHelper.setLabels("X", "Y", "Z");
+renderer.domElement.addEventListener("click", (e) => viewHelper.handleClick(e));
+
+function resize() {
+  const w = holder.clientWidth, h = holder.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(holder);
+resize();
+
+const clock = new THREE.Clock();
+(function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera);
+  if (viewHelper.animating) viewHelper.update(clock.getDelta());
+  renderer.autoClear = false;
+  viewHelper.render(renderer);
+  renderer.autoClear = true;
+})();
+
+// ---- Python shim ----
+const PYTHON_SHIM = `
+import json
+import math
+
+# Every Box/Cylinder/linear_extrude call creates a Solid and registers it --
+# it renders automatically, exactly like a CMU shape, unless it gets
+# consumed by union()/difference() first (then only the *combined* result
+# stays registered). This is what lets "Box(2,2,2)" on its own line just
+# work, while still allowing shapes to be combined.
+_registry = []
+
+class Solid:
+    def __init__(self, data):
+        self.data = data
+        _registry.append(self)
+
+def _consume(solid):
+    if solid in _registry:
+        _registry.remove(solid)
+
+# fill has three states, not two -- distinguished by whether you passed it
+# at all, same idea as CMU's fill=None meaning "not filled in":
+#   omitted entirely      -> normal solid, default color
+#   fill=None (explicit)  -> not solid -- same as hole=True
+#   fill="red" (a color)  -> solid, that color
+_UNSET = object()
+def _resolve_hole_fill(hole, fill, inherit=None):
+    if fill is _UNSET:
+        return hole, inherit
+    if fill is None:
+        return True, None
+    return hole, fill
+
+def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET):
+    # Args line up with (x, y, z): width runs along x, depth along y,
+    # height along z (the "new" axis you're pushing up out of the page).
+    # fill: any CSS/X11 color name ("red", "cornflowerblue", ...) -- a
+    # preview-only aid, it never ends up in the exported STL.
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    return Solid({
+        "type": "box", "width": width, "height": height, "depth": depth,
+        "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
+    })
+
+def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET):
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    return Solid({
+        "type": "cylinder", "radius": radius, "height": height,
+        "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
+    })
+
+# ---- 2D profiles, for linear_extrude() ----
+# Each of these returns a flat description of an outline -- nothing is
+# added to the scene until you extrude it (same as Rect/Circle in CMU:
+# nothing shows up until you draw it).
+
+def Rect(left, top, width, height):
+    return {"kind": "points", "points": [
+        (left, top),
+        (left + width, top),
+        (left + width, top + height),
+        (left, top + height),
+    ]}
+
+def Circle(centerX, centerY, radius, segments=32):
+    return {"kind": "points", "points": [
+        (centerX + radius * math.cos(2 * math.pi * i / segments),
+         centerY + radius * math.sin(2 * math.pi * i / segments))
+        for i in range(segments)
+    ]}
+
+def RegularPolygon(centerX, centerY, radius, numSides, rotateAngle=0):
+    start = math.radians(rotateAngle) + math.pi / 2
+    return {"kind": "points", "points": [
+        (centerX + radius * math.cos(start + 2 * math.pi * i / numSides),
+         centerY + radius * math.sin(start + 2 * math.pi * i / numSides))
+        for i in range(numSides)
+    ]}
+
+def Polygon(*coords):
+    if len(coords) < 6 or len(coords) % 2 != 0:
+        raise ValueError("Polygon needs at least 3 (x, y) pairs: Polygon(x1, y1, x2, y2, x3, y3, ...)")
+    return {"kind": "points", "points": [(coords[i], coords[i + 1]) for i in range(0, len(coords), 2)]}
+
+def Label(text, x, y, size=1, font="helvetiker", bold=False, italic=False):
+    # Matches CMU's Label(value, x, y, size): centered at (x, y).
+    # font: "helvetiker" (default) / "arial" / "monospace" / "cursive" / "caveat" / "montserrat"
+    return {
+        "kind": "text", "text": str(text), "x": x, "y": y, "size": size,
+        "font": font, "bold": bold, "italic": italic,
+    }
+
+def linear_extrude(profile, height, x=0, y=0, z=0, hole=False, fill=_UNSET):
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    return Solid({
+        "type": "extrude", "profile": profile, "height": height,
+        "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
+    })
+
+def translate(solid, x=0, y=0, z=0):
+    _consume(solid)
+    return Solid({
+        "type": "translate", "x": x, "y": y, "z": z,
+        "child": solid.data, "hole": solid.data.get("hole", False),
+        "fill": solid.data.get("fill"),
+    })
+
+def rotate(solid, angle, axis="z"):
+    # Two forms, like OpenSCAD: rotate(shape, 90, axis="x") turns 90 degrees
+    # around one named axis, or rotate(shape, [rx, ry, rz]) applies all
+    # three axis angles (x first, then y, then z) in one call.
+    _consume(solid)
+    data = {
+        "type": "rotate", "child": solid.data,
+        "hole": solid.data.get("hole", False), "fill": solid.data.get("fill"),
+    }
+    if isinstance(angle, (list, tuple)):
+        data["mode"] = "vector"
+        data["angles"] = list(angle)
+    else:
+        data["mode"] = "axis"
+        data["angle"] = angle
+        data["axis"] = axis
+    return Solid(data)
+
+def union(*solids, hole=False, fill=_UNSET):
+    for s in solids:
+        _consume(s)
+    inherit = solids[0].data.get("fill") if solids else None
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill, inherit)
+    return Solid({
+        "type": "union", "children": [s.data for s in solids],
+        "hole": is_hole, "fill": resolved_fill,
+    })
+
+def difference(base, *subtract, hole=False, fill=_UNSET):
+    _consume(base)
+    for s in subtract:
+        _consume(s)
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill, base.data.get("fill"))
+    return Solid({
+        "type": "difference", "base": base.data,
+        "subtract": [s.data for s in subtract], "hole": is_hole, "fill": resolved_fill,
+    })
+
+def intersection(*solids, hole=False, fill=_UNSET):
+    # Only the overlap of every shape passed in survives -- NOT "first
+    # shape minus the rest" (that's difference()).
+    for s in solids:
+        _consume(s)
+    inherit = solids[0].data.get("fill") if solids else None
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill, inherit)
+    return Solid({
+        "type": "intersection", "children": [s.data for s in solids],
+        "hole": is_hole, "fill": resolved_fill,
+    })
+
+def _reset():
+    _registry.clear()
+
+def _dump():
+    # A "hole" shape isn't drawn on its own -- it's subtracted from every
+    # other shape it overlaps. Each solid is cut independently (not merged
+    # into one shape first) so unrelated solids keep their own colors --
+    # a hole that doesn't touch a given solid just leaves it unchanged.
+    holes = [s.data for s in _registry if s.data.get("hole")]
+    solids = [s.data for s in _registry if not s.data.get("hole")]
+    if holes:
+        result = [
+            {"type": "difference", "base": solid, "subtract": holes, "fill": solid.get("fill")}
+            for solid in solids
+        ]
+    else:
+        result = solids
+    return json.dumps(result)
+`;
+
+const runBtn = document.getElementById("run");
+const downloadBtn = document.getElementById("download");
+const statusEl = document.getElementById("status");
+const errorEl = document.getElementById("error");
+const codeEl = document.getElementById("code");
+
+let pyodide;
+const fontCache = new Map(); // "family|weight" -> loaded Font
+const material = new THREE.MeshStandardMaterial({ color: 0x2a7ae2 });
+// fill= colors (any CSS/X11 color name -- three.js parses those natively)
+// are purely a preview aid and never touch the exported STL. Materials are
+// cached by color string and reused across runs, not disposed each time.
+const materialCache = new Map();
+function materialFor(fill) {
+  if (!fill) return material;
+  if (!materialCache.has(fill)) {
+    materialCache.set(fill, new THREE.MeshStandardMaterial({ color: new THREE.Color(fill) }));
+  }
+  return materialCache.get(fill);
+}
+const evaluator = new Evaluator();
+let disposableGeometries = [];
+
+function buildLeafGeometry(node) {
+  if (node.type === "box") {
+    const geometry = new THREE.BoxGeometry(node.width, node.depth, node.height);
+    geometry.translate(0, 0, node.height / 2); // base at z=0, not center
+    return geometry;
+  }
+  if (node.type === "cylinder") {
+    const geometry = new THREE.CylinderGeometry(node.radius, node.radius, node.height, 32);
+    geometry.rotateX(Math.PI / 2); // stand it up along z instead of three.js's default y
+    geometry.translate(0, 0, node.height / 2);
+    return geometry;
+  }
+  if (node.type === "extrude") {
+    const profile = node.profile;
+    if (profile.kind === "text") {
+      const key = (profile.font || "helvetiker") + "|" + (profile.bold ? 700 : 400);
+      const loadedFont = fontCache.get(key);
+      if (!loadedFont) throw new Error(`Font "${profile.font}" isn't loaded yet -- try Run again.`);
+      const geometry = new TextGeometry(profile.text, {
+        font: loadedFont, size: profile.size, depth: node.height, bevelEnabled: false,
+      });
+      if (profile.italic) {
+        // No italic glyphs for every family, so fake it the way most
+        // software does when a true italic design isn't available: shear
+        // x by a fraction of y (a ~14 degree slant).
+        geometry.applyMatrix4(new THREE.Matrix4().set(
+          1, 0.25, 0, 0,
+          0, 1, 0, 0,
+          0, 0, 1, 0,
+          0, 0, 0, 1,
+        ));
+      }
+      geometry.computeBoundingBox();
+      const bbox = geometry.boundingBox;
+      const cx = (bbox.max.x + bbox.min.x) / 2;
+      const cy = (bbox.max.y + bbox.min.y) / 2;
+      geometry.translate(-cx + profile.x, -cy + profile.y, 0); // center on (x, y) like CMU's Label
+      return geometry;
+    }
+    const points = profile.points.map(([x, y]) => new THREE.Vector2(x, y));
+    const shape = new THREE.Shape(points);
+    return new THREE.ExtrudeGeometry(shape, { depth: node.height, bevelEnabled: false });
+  }
+  throw new Error(`Unknown shape type: ${node.type}`);
+}
+
+const AXES = { x: new THREE.Vector3(1, 0, 0), y: new THREE.Vector3(0, 1, 0), z: new THREE.Vector3(0, 0, 1) };
+function resolveAxis(axis) {
+  if (Array.isArray(axis)) return new THREE.Vector3(axis[0], axis[1], axis[2]).normalize();
+  return AXES[axis] || AXES.z;
+}
+
+// `matrix` accumulates translate()/rotate() wrappers plus each leaf's own
+// x/y/z as we recurse inward, and gets baked directly into leaf geometry
+// vertices -- this is what lets translate(rotate(shape, 45), x=5) compose
+// the same way nested calls do in OpenSCAD (innermost applies first).
+const CSG_OPS = { union: ADDITION, difference: SUBTRACTION, intersection: INTERSECTION };
+function buildBrush(node, matrix = new THREE.Matrix4()) {
+  if (node.type in CSG_OPS) {
+    // union/intersection combine a flat list of children; difference
+    // combines [base, ...subtract] -- everything after the first operand
+    // is subtracted from it, not just consumed alongside it.
+    const parts = node.type === "difference" ? [node.base, ...node.subtract] : node.children;
+    const op = CSG_OPS[node.type];
+    let result = buildBrush(parts[0], matrix);
+    for (let i = 1; i < parts.length; i++) {
+      const operand = buildBrush(parts[i], matrix);
+      result = evaluator.evaluate(result, operand, op);
+      disposableGeometries.push(result.geometry);
+    }
+    result.material = materialFor(node.fill);
+    return result;
+  }
+  if (node.type === "translate") {
+    const m = new THREE.Matrix4().makeTranslation(node.x || 0, node.y || 0, node.z || 0);
+    return buildBrush(node.child, matrix.clone().multiply(m));
+  }
+  if (node.type === "rotate") {
+    let m;
+    if (node.mode === "vector") {
+      // OpenSCAD's rotate([rx,ry,rz]): x first, then y, then z.
+      const [rx, ry, rz] = node.angles;
+      m = new THREE.Matrix4()
+        .makeRotationZ(THREE.MathUtils.degToRad(rz))
+        .multiply(new THREE.Matrix4().makeRotationY(THREE.MathUtils.degToRad(ry)))
+        .multiply(new THREE.Matrix4().makeRotationX(THREE.MathUtils.degToRad(rx)));
+    } else {
+      m = new THREE.Matrix4().makeRotationAxis(resolveAxis(node.axis), THREE.MathUtils.degToRad(node.angle));
+    }
+    return buildBrush(node.child, matrix.clone().multiply(m));
+  }
+  const geometry = buildLeafGeometry(node);
+  const localOffset = new THREE.Matrix4().makeTranslation(node.x || 0, node.y || 0, node.z || 0);
+  geometry.applyMatrix4(matrix.clone().multiply(localOffset));
+  disposableGeometries.push(geometry);
+  const brush = new Brush(geometry, materialFor(node.fill));
+  brush.updateMatrixWorld();
+  return brush;
+}
+
+function collectFontRequests(node, needed) {
+  if (!node) return;
+  if (node.type === "extrude" && node.profile && node.profile.kind === "text") {
+    needed.add((node.profile.font || "helvetiker") + "|" + (node.profile.bold ? 700 : 400));
+  }
+  (node.children || []).forEach((c) => collectFontRequests(c, needed));
+  if (node.base) collectFontRequests(node.base, needed);
+  (node.subtract || []).forEach((c) => collectFontRequests(c, needed));
+  if (node.child) collectFontRequests(node.child, needed);
+}
+
+async function ensureFontsLoaded(shapes) {
+  const needed = new Set();
+  shapes.forEach((s) => collectFontRequests(s, needed));
+  const loader = new FontLoader();
+  await Promise.all([...needed].filter((key) => !fontCache.has(key)).map((key) => {
+    const [family, weight] = key.split("|");
+    return new Promise((resolve, reject) => {
+      loader.load(fontUrlFor(family, weight === "700"), (f) => { fontCache.set(key, f); resolve(); }, undefined, reject);
+    });
+  }));
+}
+
+function showError(message) {
+  errorEl.textContent = message;
+  errorEl.style.display = "block";
+}
+function clearError() {
+  errorEl.style.display = "none";
+  errorEl.textContent = "";
+}
+
+function rebuildScene(shapes) {
+  for (const child of [...modelGroup.children]) {
+    modelGroup.remove(child);
+  }
+  for (const geom of disposableGeometries) {
+    geom.dispose();
+  }
+  disposableGeometries = [];
+
+  for (const node of shapes) {
+    modelGroup.add(buildBrush(node));
+  }
+  downloadBtn.disabled = modelGroup.children.length === 0;
+}
+
+let runToken = 0;
+async function run() {
+  const token = ++runToken;
+  clearError();
+  try {
+    pyodide.runPython("_reset()");
+    pyodide.runPython(codeEl.value);
+    const shapes = JSON.parse(pyodide.runPython("_dump()"));
+    await ensureFontsLoaded(shapes);
+    if (token !== runToken) return; // a newer run started meanwhile -- let it own the render
+    rebuildScene(shapes);
+  } catch (err) {
+    if (token === runToken) showError(err.message);
+  }
+}
+
+// Plain <textarea> treats Tab as "move focus to the next control," not
+// "indent" -- without this, writing a def block is basically unworkable.
+codeEl.addEventListener("keydown", (e) => {
+  if (e.key !== "Tab") return;
+  e.preventDefault();
+  const { value, selectionStart, selectionEnd } = codeEl;
+  codeEl.value = value.slice(0, selectionStart) + "    " + value.slice(selectionEnd);
+  codeEl.selectionStart = codeEl.selectionEnd = selectionStart + 4;
+  codeEl.dispatchEvent(new Event("input"));
+});
+
+let debounceTimer;
+codeEl.addEventListener("input", () => {
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(run, 600);
+});
+runBtn.addEventListener("click", run);
+
+downloadBtn.addEventListener("click", () => {
+  const exporter = new STLExporter();
+  const stlText = exporter.parse(modelGroup);
+  const blob = new Blob([stlText], { type: "model/stl" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "model.stl";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// ---- draggable panel/viewer splitter ----
+const splitter = document.getElementById("splitter");
+const panel = document.querySelector(".panel");
+splitter.addEventListener("pointerdown", (e) => {
+  splitter.setPointerCapture(e.pointerId);
+  splitter.classList.add("dragging");
+  const appLeft = document.querySelector(".app").getBoundingClientRect().left;
+  function onMove(ev) {
+    const width = ev.clientX - appLeft;
+    panel.style.width = width + "px";
+  }
+  function onUp() {
+    splitter.classList.remove("dragging");
+    splitter.removeEventListener("pointermove", onMove);
+    splitter.removeEventListener("pointerup", onUp);
+  }
+  splitter.addEventListener("pointermove", onMove);
+  splitter.addEventListener("pointerup", onUp);
+});
+
+function loadDefaultFont() {
+  return new Promise((resolve, reject) => {
+    new FontLoader().load(HELVETIKER_URLS[400], (loaded) => { fontCache.set("helvetiker|400", loaded); resolve(); }, undefined, reject);
+  });
+}
+
+async function main() {
+  const [loadedPyodide] = await Promise.all([loadPyodide(), loadDefaultFont()]);
+  pyodide = loadedPyodide;
+  pyodide.runPython(PYTHON_SHIM);
+  statusEl.textContent = "Ready";
+  runBtn.disabled = false;
+  run();
+}
+main();
+</script>
+</body>
+</html>

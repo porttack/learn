@@ -1,0 +1,322 @@
+---
+title: "3D Playground Cheatsheet"
+permalink: /3d-playground-cheatsheet/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>3D Playground Cheatsheet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='15' y='30' width='45' height='45' fill='%232a7ae2'/%3E%3Cellipse cx='75' cy='55' rx='15' ry='10' fill='%23111'/%3E%3Crect x='60' y='35' width='30' height='20' fill='%23111'/%3E%3Cellipse cx='75' cy='35' rx='15' ry='10' fill='%23333'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --ink: #1b1f23;
+    --muted: #57606a;
+    --border: #d0d7de;
+    --paper: #ffffff;
+    --page-bg: #e9edf1;
+    --accent: #2a7ae2;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--page-bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  header {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px 24px 8px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  header h1 {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+  header p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  header a {
+    color: var(--accent);
+    font-size: 0.9rem;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  header a:hover { text-decoration: underline; }
+
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 8px 24px 40px;
+    columns: 4 280px;
+    column-gap: 16px;
+  }
+
+  .category {
+    break-inside: avoid;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .category h2 {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: white;
+  }
+  .category .note {
+    padding: 8px 12px 0;
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .entry {
+    padding: 8px 12px;
+    border-top: 1px solid var(--border);
+  }
+  .entry:first-of-type { border-top: none; }
+  .entry code {
+    display: block;
+    font: 12px/1.4 "SF Mono", Menlo, Consolas, monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--ink);
+  }
+  .entry p {
+    margin: 4px 0 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+
+  .cat-solids h2    { background: #2a7ae2; }
+  .cat-profiles h2  { background: #2e9e6b; }
+  .cat-extrude h2   { background: #1f9d99; }
+  .cat-boolean h2   { background: #8b5cf6; }
+  .cat-transform h2 { background: #e07b1f; }
+  .cat-holes h2     { background: #d1242f; }
+  .cat-color h2     { background: #b98900; }
+  .cat-coords h2    { background: #57606a; }
+  .cat-editor h2    { background: #1b1f23; }
+
+  .swatches {
+    padding: 8px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    border-top: 1px solid var(--border);
+  }
+  .swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font: 11px/1 "SF Mono", Menlo, Consolas, monospace;
+    color: var(--muted);
+  }
+  .swatch .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,0.15);
+    flex: 0 0 auto;
+  }
+
+  .axis-diagram {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .axis-diagram svg { width: 100%; max-width: 200px; height: auto; }
+
+  @media print {
+    body { background: white; }
+    header { padding: 8px 16px 4px; }
+    header a { display: none; }
+    main { columns: 4 200px; padding: 4px 16px 12px; }
+    .category { border: 1px solid #999; margin-bottom: 10px; }
+    .category h2 { padding: 5px 10px; font-size: 0.72rem; }
+    .category .note { padding: 6px 10px 0; font-size: 0.7rem; }
+    .entry { padding: 6px 10px; }
+    .entry code { font-size: 10.5px; }
+    .entry p { font-size: 0.68rem; }
+  }
+
+  @media (max-width: 700px) {
+    main { columns: 1; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>3D Playground Cheatsheet</h1>
+    <p>Every function the playground understands, on one page.</p>
+  </div>
+  <a href="{{ '/3d-playground/' | relative_url }}">&larr; Back to the playground</a>
+</header>
+<main>
+
+  <section class="category cat-solids">
+    <h2>3D Solids</h2>
+    <div class="entry">
+      <code>Box(width, depth, height,
+    x=0, y=0, z=0, hole=False, fill=None)</code>
+      <p>Sized along x/y/z in that order. The base sits at z -- it is not centered on z like it is on x and y.</p>
+    </div>
+    <div class="entry">
+      <code>Cylinder(radius, height,
+    x=0, y=0, z=0, hole=False, fill=None)</code>
+      <p>Stands upright along z. Base sits at z, same as Box.</p>
+    </div>
+  </section>
+
+  <section class="category cat-profiles">
+    <h2>2D Profiles</h2>
+    <p class="note">Nothing appears until you pass one to linear_extrude() -- same as Rect/Circle in CMU graphics.</p>
+    <div class="entry">
+      <code>Rect(left, top, width, height)</code>
+    </div>
+    <div class="entry">
+      <code>Circle(centerX, centerY, radius,
+    segments=32)</code>
+    </div>
+    <div class="entry">
+      <code>RegularPolygon(centerX, centerY,
+    radius, numSides, rotateAngle=0)</code>
+    </div>
+    <div class="entry">
+      <code>Polygon(x1, y1, x2, y2, x3, y3, ...)</code>
+      <p>At least 3 points.</p>
+    </div>
+    <div class="entry">
+      <code>Label(text, x, y, size=1,
+    font="helvetiker", bold=False, italic=False)</code>
+      <p>Centered at (x, y), like CMU's Label. font: helvetiker (default, no extra load) / arial / monospace / cursive / caveat / montserrat.</p>
+    </div>
+  </section>
+
+  <section class="category cat-extrude">
+    <h2>Extrude</h2>
+    <div class="entry">
+      <code>linear_extrude(profile, height,
+    x=0, y=0, z=0, hole=False, fill=None)</code>
+      <p>Pushes a 2D profile up along z by height. Works on Rect/Circle/RegularPolygon/Polygon/Label alike.</p>
+    </div>
+  </section>
+
+  <section class="category cat-boolean">
+    <h2>Boolean Operations</h2>
+    <div class="entry">
+      <code>union(*solids, hole=False, fill=None)</code>
+      <p>Everything merged into one solid.</p>
+    </div>
+    <div class="entry">
+      <code>difference(base, *subtract,
+    hole=False, fill=None)</code>
+      <p>base with every other shape cut out of it.</p>
+    </div>
+    <div class="entry">
+      <code>intersection(*solids,
+    hole=False, fill=None)</code>
+      <p>Only the overlap of every shape survives -- NOT "first minus the rest" (that's difference).</p>
+    </div>
+  </section>
+
+  <section class="category cat-transform">
+    <h2>Transformations</h2>
+    <div class="entry">
+      <code>translate(solid, x=0, y=0, z=0)</code>
+    </div>
+    <div class="entry">
+      <code>rotate(solid, angle, axis="z")</code>
+      <p>angle in degrees, around one named axis ("x"/"y"/"z").</p>
+    </div>
+    <div class="entry">
+      <code>rotate(solid, [rx, ry, rz])</code>
+      <p>OpenSCAD-style: all three angles at once, x applied first, then y, then z.</p>
+    </div>
+    <div class="entry">
+      <code>translate(rotate(shape, 45), x=5)</code>
+      <p>These nest like OpenSCAD's do: innermost call applies first.</p>
+    </div>
+  </section>
+
+  <section class="category cat-holes">
+    <h2>Holes</h2>
+    <p class="note">A shortcut for the common "drill a hole" case, without writing difference() by hand.</p>
+    <div class="entry">
+      <code>hole=True</code>
+      <p>On Box / Cylinder / linear_extrude / union / difference / intersection. Every hole-marked shape is subtracted from everything else at the end. As soon as any hole exists, all non-hole top-level shapes get merged into one solid first -- reach for difference() directly if you need finer control over what subtracts from what.</p>
+    </div>
+  </section>
+
+  <section class="category cat-color">
+    <h2>Colors (preview only)</h2>
+    <p class="note">fill= never reaches the exported STL -- 3D prints have no color. It just helps you tell shapes apart while you build.</p>
+    <div class="entry">
+      <code>fill="red"</code>
+      <p>Any CSS/X11 color name works, not just a fixed list.</p>
+    </div>
+    <div class="swatches">
+      <span class="swatch"><span class="dot" style="background:red"></span>red</span>
+      <span class="swatch"><span class="dot" style="background:crimson"></span>crimson</span>
+      <span class="swatch"><span class="dot" style="background:darkorange"></span>darkorange</span>
+      <span class="swatch"><span class="dot" style="background:gold"></span>gold</span>
+      <span class="swatch"><span class="dot" style="background:green"></span>green</span>
+      <span class="swatch"><span class="dot" style="background:cornflowerblue"></span>cornflowerblue</span>
+      <span class="swatch"><span class="dot" style="background:mediumorchid"></span>mediumorchid</span>
+      <span class="swatch"><span class="dot" style="background:gray"></span>gray</span>
+    </div>
+  </section>
+
+  <section class="category cat-coords">
+    <h2>Coordinate System</h2>
+    <div class="axis-diagram">
+      <svg viewBox="0 0 200 160" fill="none">
+        <line x1="100" y1="120" x2="180" y2="140" stroke="#d1242f" stroke-width="2"/>
+        <polygon points="180,140 168,136 172,146" fill="#d1242f"/>
+        <text x="184" y="148" font-size="14" fill="#d1242f" font-family="monospace">x</text>
+        <line x1="100" y1="120" x2="30" y2="100" stroke="#2e9e6b" stroke-width="2"/>
+        <polygon points="30,100 42,98 38,108" fill="#2e9e6b"/>
+        <text x="12" y="96" font-size="14" fill="#2e9e6b" font-family="monospace">y</text>
+        <line x1="100" y1="120" x2="100" y2="20" stroke="#2a7ae2" stroke-width="2"/>
+        <polygon points="100,20 95,32 105,32" fill="#2a7ae2"/>
+        <text x="106" y="24" font-size="14" fill="#2a7ae2" font-family="monospace">z</text>
+        <circle cx="100" cy="120" r="3" fill="#1b1f23"/>
+      </svg>
+    </div>
+    <div class="entry">
+      <p>x, y is the flat ground plane -- the same plane you already draw on in 2D graphics. z is the new axis: straight up, out of the page.</p>
+    </div>
+    <div class="entry">
+      <p>A shape's height sits with its base AT z, not centered on it -- Box(2,2,2) sits on the ground, it doesn't straddle it.</p>
+    </div>
+  </section>
+
+  <section class="category cat-editor">
+    <h2>Editor</h2>
+    <div class="entry"><code>Tab</code><p>Indents -- writes real Python, def blocks included.</p></div>
+    <div class="entry"><p>Auto-runs about 0.6s after you stop typing, or click Run.</p></div>
+    <div class="entry"><p>Drag the divider between the panes to resize them.</p></div>
+    <div class="entry"><p>Scroll or pinch to zoom, drag to orbit.</p></div>
+    <div class="entry"><p>Click an axis ball on the gizmo (lower left) to snap the view to it.</p></div>
+    <div class="entry"><p>Download STL exports the model -- geometry only, no fill colors.</p></div>
+  </section>
+
+</main>
+</body>
+</html>
