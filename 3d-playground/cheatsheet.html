@@ -207,6 +207,10 @@ permalink: /3d-playground/cheatsheet/
       <code>fillet=0.5</code>
       <p>Rounds edges/corners with a smooth curve (a "fillet", not a "chamfer" -- a chamfer is a flat cut). On Box: all edges and corners. On Cylinder: just the rim, where the flat cap meets the curved side. Same units as everything else. Clamped automatically so it can't exceed the shape itself.</p>
     </div>
+    <div class="entry">
+      <code>SEGMENTS = 6</code>
+      <p>A global default for segments=, like OpenSCAD's $fn special variable (as a plain variable instead, since a leading $ isn't legal in Python). Set it once, anything drawn after that point picks it up unless it gives its own segments=. Resets to 32 every Run, so it never carries over from a previous run.</p>
+    </div>
   </section>
 
   <section class="category cat-profiles">

@@ -407,6 +407,12 @@ def _resolve_hole_fill(hole, fill, inherit=None):
         return True, None
     return hole, fill
 
+# Default curve resolution -- OpenSCAD's $fn, but as a plain global instead
+# of a special variable (a leading $ isn't legal in a Python name). Change
+# it once at the top of your code and every Circle()/Cylinder() after that
+# point picks it up, unless that call gives its own segments=.
+SEGMENTS = 32
+
 def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, fillet=0):
     # Args line up with (x, y, z): width runs along x, depth along y,
     # height along z (the "new" axis you're pushing up out of the page).
@@ -431,20 +437,23 @@ def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="cen
         "align": align, "center": center, "fillet": fillet,
     })
 
-def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, segments=32, fillet=0):
+def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, segments=_UNSET, fillet=0):
     # segments: how many flat faces approximate the curved side -- OpenSCAD
     # calls this $fn, but a leading $ isn't legal in a Python name. Low
     # values turn the "cylinder" into a visible prism (segments=6 is a
     # hexagon, segments=3 a triangle) rather than a smooth curve. It also
     # controls how smooth a fillet looks, same as $fn would in OpenSCAD.
+    # Defaults to whatever SEGMENTS currently is, so setting SEGMENTS once
+    # changes every Circle()/Cylinder() after that point.
     # fillet: rounds the rim edges (where the flat top/bottom meets the
     # curved side) instead of the cylinder's whole body -- same "fillet,
     # not chamfer" idea as Box.
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    resolved_segments = SEGMENTS if segments is _UNSET else segments
     return Solid({
         "type": "cylinder", "radius": radius, "height": height,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
-        "align": align, "center": center, "segments": segments, "fillet": fillet,
+        "align": align, "center": center, "segments": resolved_segments, "fillet": fillet,
     })
 
 # ---- 2D profiles, for linear_extrude() ----
@@ -460,11 +469,12 @@ def Rect(left, top, width, height):
         (left, top + height),
     ]}
 
-def Circle(centerX, centerY, radius, segments=32):
+def Circle(centerX, centerY, radius, segments=_UNSET):
+    n = SEGMENTS if segments is _UNSET else segments
     return {"kind": "points", "points": [
-        (centerX + radius * math.cos(2 * math.pi * i / segments),
-         centerY + radius * math.sin(2 * math.pi * i / segments))
-        for i in range(segments)
+        (centerX + radius * math.cos(2 * math.pi * i / n),
+         centerY + radius * math.sin(2 * math.pi * i / n))
+        for i in range(n)
     ]}
 
 def RegularPolygon(centerX, centerY, radius, numSides, rotateAngle=0):
@@ -558,6 +568,8 @@ def intersection(*solids, hole=False, fill=_UNSET):
     })
 
 def _reset():
+    global SEGMENTS
+    SEGMENTS = 32
     _registry.clear()
 
 def _dump():
