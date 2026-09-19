@@ -16,8 +16,12 @@ print, and hold.
 
 <div class="playground-cards">
   <a class="playground-card" href="{{ '/3d-playground/intro/' | relative_url }}">
-    <strong>Start Here &rarr;</strong>
+    <strong>Lesson 1: Start Here &rarr;</strong>
     <span>A short first lesson: position, size, and your first few boxes.</span>
+  </a>
+  <a class="playground-card" href="{{ '/3d-playground/transformations/' | relative_url }}">
+    <strong>Lesson 2: Transformations &rarr;</strong>
+    <span>Cylinders, rotate(), translate(), and how they compose.</span>
   </a>
   <a class="playground-card" href="{{ '/3d-playground/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>

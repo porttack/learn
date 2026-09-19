@@ -1,152 +1,141 @@
 ---
 layout: minimal
-title: "Position and Size"
-permalink: /3d-playground/intro/
+title: "Transformations"
+permalink: /3d-playground/transformations/
 ---
 
 <div class="lesson-crumbs">
   <a href="{{ '/3d-playground/' | relative_url }}">&larr; 3D Playground</a>
+  &middot;
+  <a href="{{ '/3d-playground/intro/' | relative_url }}">&larr; Position and Size</a>
 </div>
 
 <div class="lesson" markdown="1">
 
-# Position and Size
+# Transformations
 
-## Our First Program
+## Meet the Cylinder
 
-Let's build a box. Click **Run** below to run this Python code:
+Everything from the last lesson (position, size, `align=`, `center=`) works
+exactly the same for a new shape: `Cylinder(radius, height, x=0, y=0,
+z=0)`. Same base-at-z, centered-on-x/y rule as `Box`. Try it:
 
-<div class="embed" data-embed="first">
-<textarea class="embed-code">Box(4, 4, 4)</textarea>
+<div class="embed" data-embed="cyl">
+<textarea class="embed-code">Cylinder(1.5, 4)</textarea>
 </div>
 
-You just ran a Python program that built a real 3D object! Now let's edit
-it. In the code above, change some of the numbers and click Run a few
-times. See how the box changes. If the code stops working, no problem,
-just click Reset to start over and try again.
+We're using a cylinder for this lesson on purpose, not just for variety.
+A box that's rotated often looks almost the same as before, especially if
+it's close to a cube. A cylinder standing up and a cylinder lying down
+look nothing alike, so it's much easier to actually see what a
+transformation did.
 
-## The Scene
+## Turning Things: rotate()
 
-To understand what's going on, we first have to talk about the scene. In
-this tool, shapes are placed in 3D space instead of drawn on a flat
-canvas. We use `(x, y, z)` coordinates to talk about where something sits:
+`rotate(shape, angle, axis="z")` takes a shape and gives back a new,
+rotated one. `angle` is in degrees. `axis` is `"x"`, `"y"`, or `"z"` --
+which direction you're turning around.
 
-- `(0, 0, 0)` is the **center** of the scene, not a corner.
-- As `x` increases, you head right.
-- As `y` increases, you head away from you.
-- As `z` increases, you head up.
+<div class="embed" data-embed="rotate1">
+<textarea class="embed-code">standing = Cylinder(1, 4)
+rotate(standing, 90, axis="y")</textarea>
+</div>
 
-If you've used a 2D canvas before, this is a little different: there,
-`y` increased as you went *down*, and `(0, 0)` was the top-left corner.
-Here, up is a real direction, so `z` takes over that job, and `x`/`y`
-share the flat ground, centered on zero instead of starting in a corner.
+Notice `standing` never shows up on its own here. That's on purpose:
+`rotate()` *consumes* the shape you give it, the same way you'd expect if
+you handed someone a piece of paper and they folded it -- you don't also
+still have an unfolded copy. Only the result of `rotate(...)` renders.
 
-<div class="quiz" data-quiz="up" data-answer="up">
-  <p class="quiz-prompt">If you increase a shape's <code>z</code> value, which way does it move?</p>
+<div class="quiz" data-quiz="rotate-z" data-answer="same">
+  <p class="quiz-prompt">If you rotate a standing cylinder 90&deg; around <code>axis="z"</code>, what happens to how it looks?</p>
   <div class="quiz-options">
-    <button class="quiz-option" data-key="down">Down</button>
-    <button class="quiz-option" data-key="toward">Toward you</button>
-    <button class="quiz-option" data-key="up">Up</button>
-    <button class="quiz-option" data-key="right">Right</button>
+    <button class="quiz-option" data-key="falls">It falls on its side</button>
+    <button class="quiz-option" data-key="same">Nothing visible changes</button>
+    <button class="quiz-option" data-key="taller">It gets taller</button>
+    <button class="quiz-option" data-key="gone">It disappears</button>
   </div>
   <p class="quiz-feedback"></p>
 </div>
 
-## Building Boxes
+Try it yourself below before reading on.
 
-Here is the Python code from above:
+<div class="embed" data-embed="rotate-z-demo">
+<textarea class="embed-code">rotate(Cylinder(1, 4), 90, axis="z")</textarea>
+</div>
 
-```python
-Box(4, 4, 4)
-```
+A standing cylinder's own axis *is* `z`. Spinning something around its own
+axis doesn't change its silhouette at all -- it's the same reason spinning
+a can of soup in place doesn't make it look any different, even though it
+really is turning. This is worth remembering: rotating around the axis a
+shape is already lined up with is often invisible.
 
-We use `Box` to build a rectangular block. In full, `Box` takes six
-values: `width`, `depth`, `height`, `x`, `y`, `z`. The first three are
-required, in that order. The last three are optional and default to 0 if
-you leave them out. So the code above makes a block 4 wide, 4 deep, 4
-tall, centered at `x=0, y=0`, with its bottom sitting right on the
-ground.
+## Moving Things: translate()
 
-That last part is worth slowing down on: `Box` is centered on `x` and
-`y`, but it sits on top of `z`, not centered on it. A box's bottom is
-always at whatever `z` you give it (0, if you don't say), and it builds
-upward from there.
+You already know how to move a shape: give `Box`/`Cylinder` their own
+`x=`/`y=`/`z=`. So why would you ever need `translate(shape, x=0, y=0,
+z=0)` too?
 
-**Question:** if you call `Box(2, 2, 8, x=1)`, where does the *top* of
-the box end up? (Hint: which argument is height, and where does height
-start counting from?)
+Because once you've rotated something, its own sense of "up" has changed.
+A cylinder lying on its side doesn't have a clean `z=` to lift it off the
+ground with any more -- its height now runs sideways. `translate()` moves
+the *finished* shape in the scene's real x/y/z, no matter what it's been
+rotated into.
 
-<div class="quiz" data-quiz="boxcall" data-answer="a">
-  <p class="quiz-prompt">Which call makes a box that's 4 wide, 4 deep, 10 tall, sitting on the ground, centered above <code>x=3, y=0</code>?</p>
-  <div class="quiz-options quiz-options-code">
-    <button class="quiz-option" data-key="c"><code>Box(4, 10, 4, x=3)</code></button>
-    <button class="quiz-option" data-key="b"><code>Box(4, 4, 10, z=3)</code></button>
-    <button class="quiz-option" data-key="a"><code>Box(4, 4, 10, x=3)</code></button>
-    <button class="quiz-option" data-key="d"><code>Box(10, 4, 4, x=3)</code></button>
+<div class="embed" data-embed="translate1">
+<textarea class="embed-code">lying = rotate(Cylinder(1, 4), 90, axis="y")
+translate(lying, z=1)</textarea>
+</div>
+
+## Order Matters
+
+`translate()` and `rotate()` nest like any other function calls, and like
+CMU's own nested function calls, the inside runs first. That means
+`translate(rotate(shape, 90, axis="x"), z=3)` and `rotate(translate(shape,
+z=3), 90, axis="x")` are **not** the same thing, even though they use the
+exact same two operations.
+
+<div class="embed" data-embed="order1">
+<textarea class="embed-code">a = translate(rotate(Cylinder(1, 3), 90, axis="x"), z=3)
+b = rotate(translate(Cylinder(1, 3, x=4), z=3), 90, axis="x")</textarea>
+</div>
+
+Run that, then look closely at `a` and `b`. Try swapping which one has
+`x=4` if you want to line them up side by side for an easier comparison.
+
+<div class="quiz" data-quiz="order" data-answer="lift-then-tip">
+  <p class="quiz-prompt"><code>translate(rotate(cyl, 90, axis="x"), z=3)</code> -- which happens first?</p>
+  <div class="quiz-options">
+    <button class="quiz-option" data-key="move-then-tip">It moves up to z=3, then tips onto its side</button>
+    <button class="quiz-option" data-key="lift-then-tip">It tips onto its side, then the whole thing lifts to z=3</button>
+    <button class="quiz-option" data-key="same-thing">Both orders always look the same</button>
   </div>
   <p class="quiz-feedback"></p>
 </div>
 
 ## Checking Your Work
 
-An important part of learning to code is knowing when you've actually
-gotten it right. Below, you'll see a **Check My Work** button next to
-Run. Read the instructions, edit the code, click Run, then click Check
-My Work to see how you did. If it's not right yet, keep adjusting and
-try again.
-
 <div class="exercise">
   <p class="exercise-prompt">
-    <strong>Exercise:</strong> build a box that is 4 wide, 2 deep, 3
-    tall, centered at <code>x=3</code> (leave <code>y</code> and
-    <code>z</code> at their defaults).
+    <strong>Exercise:</strong> build a cylinder that's lying down instead
+    of standing up (its long axis running sideways, not vertically). Any
+    axis, any position -- just make it lie down.
   </p>
-  <div class="embed" data-embed="ex1" data-check="ex1">
-  <textarea class="embed-code">Box(1, 1, 1)</textarea>
+  <div class="embed" data-embed="ex2" data-check="ex2">
+  <textarea class="embed-code">Cylinder(1, 3)</textarea>
   </div>
 </div>
 
-## Errors
-
-Python is very picky. Here are some rules to follow:
-
-- Case matters, so `Box` is not the same as `box`.
-- A command must have the right number of values after it. For `Box`,
-  those are `width`, `depth`, and `height` at least. These values are
-  called **arguments**. Arguments must be in the right order, inside
-  parentheses, and separated by commas.
-
-If any of these rules aren't followed, you have an error, and your code
-won't run until you fix it. Try running the broken code below. Read the
-error message. What does it tell you?
-
-<div class="embed" data-embed="broken">
-<textarea class="embed-code">box(20, 20, 20)</textarea>
-</div>
-
-## Comments
-
-Did you notice the `#` signs followed by English text in some of the
-code examples in the cheatsheet? Those are called comments. You can add
-a comment to any line of your code: anything from the `#` sign to the
-end of that line is a comment, and Python ignores it completely. So why
-use them? To make your code easier for you, and for others, to
-understand.
-
 ## Practice
 
-That's it for the basics! From here, move on to rotating and moving
-shapes, head to the Studio to build something of your own, or keep the
-Cheatsheet open while you work.
+That's rotate(), translate(), and how they compose. One more thing worth
+knowing: `Cylinder` also takes `segments=`, which controls how many flat
+faces approximate its curved side -- try `segments=6` sometime for a
+hexagonal prism instead of a smooth cylinder. It's in the cheatsheet.
 
 <div class="playground-cards">
-  <a class="playground-card" href="{{ '/3d-playground/transformations/' | relative_url }}">
-    <strong>Lesson 2: Transformations &rarr;</strong>
-    <span>Cylinders, rotate(), translate(), and how they compose.</span>
-  </a>
   <a class="playground-card" href="{{ '/3d-playground/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
-    <span>Write Python on the left, watch the model update live on the right.</span>
+    <span>Everything from both lessons, plus union/difference, fillets, and more.</span>
   </a>
   <a class="playground-card" href="{{ '/3d-playground/cheatsheet/' | relative_url }}">
     <strong>Cheatsheet &rarr;</strong>
@@ -188,7 +177,6 @@ Cheatsheet open while you work.
     overflow-x: auto;
   }
 
-  /* ---- embedded runnable widget ---- */
   .embed {
     margin: 1.2em 0;
     border: 1px solid #d0d7de;
@@ -305,7 +293,6 @@ Cheatsheet open while you work.
   }
   .embed-viewer canvas { display: block; }
 
-  /* ---- checkpoint quiz ---- */
   .quiz {
     margin: 1.4em 0;
     padding: 14px 16px;
@@ -319,7 +306,6 @@ Cheatsheet open while you work.
     flex-wrap: wrap;
     gap: 8px;
   }
-  .quiz-options-code { flex-direction: column; align-items: flex-start; }
   .quiz-option {
     font: inherit;
     font-size: 0.9rem;
@@ -341,7 +327,6 @@ Cheatsheet open while you work.
   .quiz-feedback.correct { color: #216e39; }
   .quiz-feedback.incorrect { color: #d1242f; }
 
-  /* ---- exercise wrapper ---- */
   .exercise {
     margin: 1.4em 0;
     padding: 14px 16px;
@@ -371,7 +356,6 @@ Cheatsheet open while you work.
     border: 1px solid #b98900;
   }
 
-  /* ---- closing cards (same look as the landing page) ---- */
   .playground-cards {
     display: flex;
     flex-wrap: wrap;
@@ -411,10 +395,6 @@ import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
 
 const MINI_SHIM = `
-# Box/Cylinder register themselves and render on their own, exactly like
-# lesson 1 -- unless translate()/rotate() consumes one first, in which case
-# only the *wrapped* result stays registered. Same idea as Studio's
-# union()/difference(), just for one shape instead of combining several.
 _registry = []
 
 class Solid:
@@ -449,8 +429,6 @@ def translate(solid, x=0, y=0, z=0):
     })
 
 def rotate(solid, angle, axis="z"):
-    # angle in degrees. axis is "x"/"y"/"z", or pass [rx, ry, rz] to rotate
-    # around all three at once (x first, then y, then z).
     _consume(solid)
     data = {"type": "rotate", "child": solid.data, "fill": solid.data.get("fill")}
     if isinstance(angle, (list, tuple)):
@@ -483,74 +461,6 @@ function materialFor(fill) {
   return materialCache.get(fill);
 }
 
-// Same align redefinition as the Studio: "top"/"bottom" describe y (depth)
-// here, not vertical position, since z is up in this scene.
-function alignOffset(align, width, depth) {
-  const a = align || "center";
-  let ox = 0, oy = 0;
-  if (a.includes("left")) ox = width / 2;
-  else if (a.includes("right")) ox = -width / 2;
-  if (a.includes("top")) oy = -depth / 2;
-  else if (a.includes("bottom")) oy = depth / 2;
-  return { ox, oy };
-}
-
-// A camera sitting at a fixed distance works fine for small shapes, but a
-// student trying Box(20, 20, 20) (very reasonable -- "change some of the
-// numbers" is the actual instruction) ends up with the camera *inside* the
-// shape, which is invisible (back faces are culled) rather than obviously
-// wrong. Only nudges the camera outward, along the direction it's already
-// facing, and only when it would otherwise be unsafe -- normal-sized shapes
-// never trigger this, so it doesn't interfere with a student's own zoom.
-//
-// The grid is a fixed 20-unit square by default, which has the same
-// problem one step removed: once the camera pulls back far enough to frame
-// a 20-unit box, the box is roughly the same size as the whole grid and
-// visually swallows it. Resizing the grid to match current content (both
-// growing and shrinking) fixes that; unlike the camera, this has no reason
-// to be one-directional, since a plain grid resize can't strand anything
-// out of view the way moving the camera inward could.
-function resizeGrid(gridState, targetSize) {
-  if (targetSize === gridState.size) return;
-  const scene = gridState.mesh.parent;
-  scene.remove(gridState.mesh);
-  gridState.mesh.geometry.dispose();
-  gridState.mesh.material.dispose();
-  const divisions = Math.min(targetSize, 40);
-  const newGrid = new THREE.GridHelper(targetSize, divisions, 0xbbbbbb, 0xdddddd);
-  newGrid.rotation.x = Math.PI / 2;
-  newGrid.position.z = -0.01;
-  scene.add(newGrid);
-  gridState.mesh = newGrid;
-  gridState.size = targetSize;
-}
-
-function fitSceneToContent(camera, controls, group, gridState) {
-  const box = new THREE.Box3().setFromObject(group);
-  let farthestExtent = 10; // matches the default 20-unit grid when the scene is empty
-  if (!box.isEmpty()) {
-    const sphere = box.getBoundingSphere(new THREE.Sphere());
-    farthestExtent = controls.target.distanceTo(sphere.center) + sphere.radius;
-  }
-
-  const currentDist = camera.position.distanceTo(controls.target);
-  const safeDist = farthestExtent * 1.8 + 1;
-  if (currentDist < safeDist) {
-    const dir = camera.position.clone().sub(controls.target);
-    if (dir.lengthSq() < 1e-6) dir.set(1, -1, 0.8);
-    dir.normalize();
-    camera.position.copy(controls.target).addScaledVector(dir, safeDist);
-    controls.maxDistance = Math.max(controls.maxDistance, safeDist * 3);
-    if (camera.far < safeDist * 4) {
-      camera.far = safeDist * 4;
-      camera.updateProjectionMatrix();
-    }
-    controls.update();
-  }
-
-  resizeGrid(gridState, Math.max(20, Math.ceil((farthestExtent * 3) / 10) * 10));
-}
-
 function makeTickSprite(text) {
   const canvas = document.createElement("canvas");
   canvas.width = 64;
@@ -569,11 +479,59 @@ function makeTickSprite(text) {
   return sprite;
 }
 
-// Leaf geometry only -- align/center baked in, but NOT x/y/z. Those get
-// folded into the accumulated matrix in buildMesh() below, which is what
-// lets translate()/rotate() wrap a shape correctly (matching Studio): the
-// wrapper's transform has to apply to the shape's already-positioned
-// geometry as one combined matrix, not as separate position/rotation
+function alignOffset(align, width, depth) {
+  const a = align || "center";
+  let ox = 0, oy = 0;
+  if (a.includes("left")) ox = width / 2;
+  else if (a.includes("right")) ox = -width / 2;
+  if (a.includes("top")) oy = -depth / 2;
+  else if (a.includes("bottom")) oy = depth / 2;
+  return { ox, oy };
+}
+
+function resizeGrid(gridState, targetSize) {
+  if (targetSize === gridState.size) return;
+  const scene = gridState.mesh.parent;
+  scene.remove(gridState.mesh);
+  gridState.mesh.geometry.dispose();
+  gridState.mesh.material.dispose();
+  const divisions = Math.min(targetSize, 40);
+  const newGrid = new THREE.GridHelper(targetSize, divisions, 0xbbbbbb, 0xdddddd);
+  newGrid.rotation.x = Math.PI / 2;
+  newGrid.position.z = -0.01;
+  scene.add(newGrid);
+  gridState.mesh = newGrid;
+  gridState.size = targetSize;
+}
+
+function fitSceneToContent(camera, controls, group, gridState) {
+  const box = new THREE.Box3().setFromObject(group);
+  let farthestExtent = 10;
+  if (!box.isEmpty()) {
+    const sphere = box.getBoundingSphere(new THREE.Sphere());
+    farthestExtent = controls.target.distanceTo(sphere.center) + sphere.radius;
+  }
+  const currentDist = camera.position.distanceTo(controls.target);
+  const safeDist = farthestExtent * 1.8 + 1;
+  if (currentDist < safeDist) {
+    const dir = camera.position.clone().sub(controls.target);
+    if (dir.lengthSq() < 1e-6) dir.set(1, -1, 0.8);
+    dir.normalize();
+    camera.position.copy(controls.target).addScaledVector(dir, safeDist);
+    controls.maxDistance = Math.max(controls.maxDistance, safeDist * 3);
+    if (camera.far < safeDist * 4) {
+      camera.far = safeDist * 4;
+      camera.updateProjectionMatrix();
+    }
+    controls.update();
+  }
+  resizeGrid(gridState, Math.max(20, Math.ceil((farthestExtent * 3) / 10) * 10));
+}
+
+// Leaf geometry only -- align/center baked in, but not x/y/z. Those fold
+// into the accumulated matrix in buildMesh() below, which is what lets
+// translate()/rotate() wrap a shape correctly: the wrapper's transform
+// has to apply as one combined matrix, not separate position/rotation
 // properties, or nesting them would compose in the wrong order.
 function buildGeometry(node) {
   if (node.type === "box") {
@@ -619,21 +577,27 @@ function buildMesh(node, matrix, disposables) {
   return new THREE.Mesh(geometry, materialFor(node.fill));
 }
 
-// The exercise checkers: given the parsed shape list from a run, return
-// { pass, message }. Kept deliberately simple -- just enough to check the
-// one or two properties an exercise is actually about.
-const near = (a, b, tol = 0.6) => Math.abs(a - b) <= tol;
+// Robust to *how* a shape ends up lying down (which axis, which order it
+// was composed in) -- checks the visible result instead of one specific
+// code path, since several different answers are equally correct here.
+// Compares against the cylinder's own declared height/radius rather than a
+// fixed ratio: a fixed threshold (e.g. "z-extent under 60% of the rest")
+// silently fails for dimensions where height and diameter aren't that far
+// apart (radius=1, height=3 is only a 2:3 ratio), which is exactly the
+// starter code here.
+function findLeaf(node) {
+  while (node.child) node = node.child;
+  return node;
+}
 const CHECKERS = {
-  ex1(shapes) {
-    const box = shapes.find((s) => s.type === "box");
-    if (!box) return { pass: false, message: "I don't see a Box yet -- try calling Box(...)." };
-    if (!near(box.width, 4) || !near(box.depth, 2) || !near(box.height, 3)) {
-      return { pass: false, message: "Check the width, depth, and height -- they should be 4, 2, and 3." };
-    }
-    if (!near(box.x, 3)) {
-      return { pass: false, message: "The size looks right! Now check where it's positioned -- it should be centered at x=3." };
-    }
-    return { pass: true, message: "Nice work, that's exactly right!" };
+  ex2(shapes, group) {
+    const cylinderNode = shapes.map(findLeaf).find((n) => n.type === "cylinder");
+    if (!cylinderNode) return { pass: false, message: "I don't see a Cylinder yet." };
+    const box = new THREE.Box3().setFromObject(group);
+    const size = box.getSize(new THREE.Vector3());
+    const stillStanding = Math.abs(size.z - cylinderNode.height) < Math.max(0.3, cylinderNode.height * 0.15);
+    if (stillStanding) return { pass: false, message: "That's still standing up -- try wrapping it in rotate()." };
+    return { pass: true, message: "Nice, it's lying down!" };
   },
 };
 
@@ -844,7 +808,7 @@ class Embed {
       this.feedbackEl.textContent = "Run your code first, then click Check My Work.";
       return;
     }
-    const result = checker(this.lastShapes);
+    const result = checker(this.lastShapes, this.group);
     this.feedbackEl.className = "check-feedback " + (result.pass ? "pass" : "fail");
     this.feedbackEl.textContent = result.message;
   }
