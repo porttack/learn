@@ -127,10 +127,18 @@ Run that, then look closely at `a` and `b`. Try swapping which one has
 
 ## Practice
 
-That's rotate(), translate(), and how they compose. One more thing worth
-knowing: `Cylinder` also takes `segments=`, which controls how many flat
-faces approximate its curved side -- try `segments=6` sometime for a
-hexagonal prism instead of a smooth cylinder. It's in the cheatsheet.
+That's rotate(), translate(), and how they compose. Two more things worth
+knowing, both in the cheatsheet if you want the details:
+
+- `Cylinder` also takes `segments=`, which controls how many flat faces
+  approximate its curved side -- try `segments=6` sometime for a hexagonal
+  prism instead of a smooth cylinder.
+- `rotate()` can also take a list of three angles instead of one angle and
+  an axis: `rotate(shape, [30, 0, 45])` rotates around x, then y, then z,
+  all in one call. Everything in this lesson used the `angle, axis="x"`
+  form on purpose, since it doesn't require knowing what a list is yet --
+  but if you've used lists before, the list form is there when you want
+  more than one axis at once.
 
 <div class="playground-cards">
   <a class="playground-card" href="{{ '/3d-playground/studio/' | relative_url }}">
