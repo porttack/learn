@@ -179,13 +179,14 @@ permalink: /3d-playground/cheatsheet/
     <div class="entry">
       <code>Box(width, depth, height,
     x=0, y=0, z=0, hole=False, fill=None,
-    align="center", center=False)</code>
+    align="center", center=False, fillet=0)</code>
       <p>Sized along x/y/z in that order. The base sits at z -- it is not centered on z like it is on x and y, unless center=True.</p>
     </div>
     <div class="entry">
       <code>Cylinder(radius, height,
     x=0, y=0, z=0, hole=False, fill=None,
-    align="center", center=False)</code>
+    align="center", center=False,
+    segments=32, fillet=0)</code>
       <p>Stands upright along z. Base sits at z, same as Box.</p>
     </div>
     <div class="entry">
@@ -197,6 +198,14 @@ permalink: /3d-playground/cheatsheet/
     <div class="entry">
       <code>center=True</code>
       <p>Like OpenSCAD's center: also centers the shape on z, instead of sitting with its base at z.</p>
+    </div>
+    <div class="entry">
+      <code>segments=6</code>
+      <p>Like OpenSCAD's $fn (a leading $ isn't legal in Python). How many flat faces approximate a curve -- low numbers turn Cylinder into a visible prism (6 = hexagon, 3 = triangle). Cylinder only.</p>
+    </div>
+    <div class="entry">
+      <code>fillet=0.5</code>
+      <p>Rounds edges/corners with a smooth curve (a "fillet", not a "chamfer" -- a chamfer is a flat cut). On Box: all edges and corners. On Cylinder: just the rim, where the flat cap meets the curved side. Same units as everything else. Clamped automatically so it can't exceed the shape itself.</p>
     </div>
   </section>
 

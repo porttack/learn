@@ -229,6 +229,7 @@ import { STLExporter } from "three/addons/exporters/STLExporter.js";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { Brush, Evaluator, ADDITION, SUBTRACTION, INTERSECTION } from "three-bvh-csg";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
 
 // "helvetiker" is the built-in default (loaded eagerly at startup, so the
@@ -406,7 +407,7 @@ def _resolve_hole_fill(hole, fill, inherit=None):
         return True, None
     return hole, fill
 
-def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False):
+def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, fillet=0):
     # Args line up with (x, y, z): width runs along x, depth along y,
     # height along z (the "new" axis you're pushing up out of the page).
     # fill: any CSS/X11 color name ("red", "cornflowerblue", ...) -- a
@@ -418,19 +419,32 @@ def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="cen
     # z is vertical here, not y, so top/bottom describe depth, not height.
     # center: like OpenSCAD's center -- True lifts the shape so it's
     # centered on z too, instead of sitting with its base at z.
+    # fillet: radius of a smooth, rounded edge/corner (same units as
+    # everything else here -- effectively mm once printed). Called a
+    # "chamfer" sometimes, but a chamfer is a flat angled cut; this is the
+    # rounded, curved kind, formally a "fillet". Clamped automatically so
+    # it can never exceed half the shortest side.
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
     return Solid({
         "type": "box", "width": width, "height": height, "depth": depth,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
-        "align": align, "center": center,
+        "align": align, "center": center, "fillet": fillet,
     })
 
-def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False):
+def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, segments=32, fillet=0):
+    # segments: how many flat faces approximate the curved side -- OpenSCAD
+    # calls this $fn, but a leading $ isn't legal in a Python name. Low
+    # values turn the "cylinder" into a visible prism (segments=6 is a
+    # hexagon, segments=3 a triangle) rather than a smooth curve. It also
+    # controls how smooth a fillet looks, same as $fn would in OpenSCAD.
+    # fillet: rounds the rim edges (where the flat top/bottom meets the
+    # curved side) instead of the cylinder's whole body -- same "fillet,
+    # not chamfer" idea as Box.
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
     return Solid({
         "type": "cylinder", "radius": radius, "height": height,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
-        "align": align, "center": center,
+        "align": align, "center": center, "segments": segments, "fillet": fillet,
     })
 
 # ---- 2D profiles, for linear_extrude() ----
@@ -599,18 +613,54 @@ function alignOffset(align, width, depth) {
   return { ox, oy };
 }
 
+// A rounded-rim cylinder has no ready-made three.js geometry, but revolving
+// a 2D cross-section profile with LatheGeometry does the job: walk from the
+// axis out to the flat bottom edge, quarter-circle up to the straight side,
+// straight up, quarter-circle back in to the flat top, then to the axis.
+// Profile is in LatheGeometry's own (radius, height-along-Y) space.
+function roundedCylinderProfile(radius, height, fillet, filletSegments) {
+  const r = Math.max(0, Math.min(fillet, radius, height / 2));
+  const points = [new THREE.Vector2(0, 0)];
+  const bottomCenter = new THREE.Vector2(radius - r, r);
+  for (let i = 0; i <= filletSegments; i++) {
+    const angle = -Math.PI / 2 + (i / filletSegments) * (Math.PI / 2);
+    points.push(new THREE.Vector2(bottomCenter.x + r * Math.cos(angle), bottomCenter.y + r * Math.sin(angle)));
+  }
+  const topCenter = new THREE.Vector2(radius - r, height - r);
+  for (let i = 0; i <= filletSegments; i++) {
+    const angle = (i / filletSegments) * (Math.PI / 2);
+    points.push(new THREE.Vector2(topCenter.x + r * Math.cos(angle), topCenter.y + r * Math.sin(angle)));
+  }
+  points.push(new THREE.Vector2(0, height));
+  return points;
+}
+
 function buildLeafGeometry(node) {
   if (node.type === "box") {
-    const geometry = new THREE.BoxGeometry(node.width, node.depth, node.height);
+    let geometry;
+    if (node.fillet > 0) {
+      geometry = new RoundedBoxGeometry(node.width, node.depth, node.height, 4, node.fillet);
+    } else {
+      geometry = new THREE.BoxGeometry(node.width, node.depth, node.height);
+    }
     const { ox, oy } = alignOffset(node.align, node.width, node.depth);
     geometry.translate(ox, oy, node.center ? 0 : node.height / 2);
     return geometry;
   }
   if (node.type === "cylinder") {
-    const geometry = new THREE.CylinderGeometry(node.radius, node.radius, node.height, 32);
+    const segs = node.segments || 32;
+    let geometry, oz;
+    if (node.fillet > 0) {
+      const filletSegs = Math.max(2, Math.round(segs / 8));
+      geometry = new THREE.LatheGeometry(roundedCylinderProfile(node.radius, node.height, node.fillet, filletSegs), segs);
+      oz = node.center ? -node.height / 2 : 0; // this profile already starts at its own base (y=0), unlike CylinderGeometry's center default
+    } else {
+      geometry = new THREE.CylinderGeometry(node.radius, node.radius, node.height, segs);
+      oz = node.center ? 0 : node.height / 2;
+    }
     geometry.rotateX(Math.PI / 2); // stand it up along z instead of three.js's default y
     const { ox, oy } = alignOffset(node.align, node.radius * 2, node.radius * 2);
-    geometry.translate(ox, oy, node.center ? 0 : node.height / 2);
+    geometry.translate(ox, oy, oz);
     return geometry;
   }
   if (node.type === "extrude") {
