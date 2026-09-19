@@ -109,6 +109,8 @@ permalink: /python3d/cheatsheet/
   .cat-transform h2 { background: #e07b1f; }
   .cat-holes h2     { background: #d1242f; }
   .cat-color h2     { background: #b98900; }
+  .cat-opacity h2   { background: #d6336c; }
+  .cat-interactive h2 { background: #4f46e5; }
   .cat-coords h2    { background: #57606a; }
   .cat-editor h2    { background: #1b1f23; }
 
@@ -179,14 +181,15 @@ permalink: /python3d/cheatsheet/
     <div class="entry">
       <code>Box(width, depth, height,
     x=0, y=0, z=0, hole=False, fill=None,
-    align="center", center=False, fillet=0)</code>
+    align="center", center=False, fillet=0,
+    opacity=100)</code>
       <p>Sized along x/y/z in that order. The base sits at z -- it is not centered on z like it is on x and y, unless center=True.</p>
     </div>
     <div class="entry">
       <code>Cylinder(radius, height,
     x=0, y=0, z=0, hole=False, fill=None,
     align="center", center=False,
-    segments=32, fillet=0)</code>
+    segments=32, fillet=0, opacity=100)</code>
       <p>Stands upright along z. Base sits at z, same as Box.</p>
     </div>
     <div class="entry">
@@ -244,7 +247,8 @@ permalink: /python3d/cheatsheet/
     <h2>Extrude</h2>
     <div class="entry">
       <code>linear_extrude(profile, height,
-    x=0, y=0, z=0, hole=False, fill=None)</code>
+    x=0, y=0, z=0, hole=False, fill=None,
+    opacity=100)</code>
       <p>Pushes a 2D profile up along z by height. Works on Rect/Circle/RegularPolygon/Polygon/Label alike.</p>
     </div>
   </section>
@@ -252,19 +256,21 @@ permalink: /python3d/cheatsheet/
   <section class="category cat-boolean">
     <h2>Boolean Operations</h2>
     <div class="entry">
-      <code>union(*solids, hole=False, fill=None)</code>
+      <code>union(*solids, hole=False, fill=None,
+    opacity=100)</code>
       <p>Everything merged into one solid.</p>
     </div>
     <div class="entry">
       <code>difference(base, *subtract,
-    hole=False, fill=None)</code>
+    hole=False, fill=None, opacity=100)</code>
       <p>base with every other shape cut out of it.</p>
     </div>
     <div class="entry">
       <code>intersection(*solids,
-    hole=False, fill=None)</code>
+    hole=False, fill=None, opacity=100)</code>
       <p>Only the overlap of every shape survives -- NOT "first minus the rest" (that's difference).</p>
     </div>
+    <p class="note">union/difference/intersection inherit fill= and opacity= from their first (or base) shape unless you give the boolean call its own.</p>
   </section>
 
   <section class="category cat-transform">
@@ -312,6 +318,43 @@ permalink: /python3d/cheatsheet/
       <span class="swatch"><span class="dot" style="background:mediumorchid"></span>mediumorchid</span>
       <span class="swatch"><span class="dot" style="background:gray"></span>gray</span>
     </div>
+  </section>
+
+  <section class="category cat-opacity">
+    <h2>Opacity (preview only)</h2>
+    <p class="note">Like CMU's opacity: 0-100, not 0-1. 100 (the default) is fully solid, 0 is invisible. Also never reaches the exported STL. Works on every 3D shape and on linear_extrude() -- 2D profiles like Rect/Circle don't have their own opacity, since nothing shows up until they're extruded anyway.</p>
+    <div class="entry">
+      <code>Box(2, 2, 2, fill="cornflowerblue", opacity=40)</code>
+    </div>
+    <div class="swatches">
+      <span class="swatch"><span class="dot" style="background:cornflowerblue; opacity:1"></span>opacity=100</span>
+      <span class="swatch"><span class="dot" style="background:cornflowerblue; opacity:0.7"></span>opacity=70</span>
+      <span class="swatch"><span class="dot" style="background:cornflowerblue; opacity:0.4"></span>opacity=40</span>
+      <span class="swatch"><span class="dot" style="background:cornflowerblue; opacity:0.15"></span>opacity=15</span>
+    </div>
+  </section>
+
+  <section class="category cat-interactive">
+    <h2>Interactive</h2>
+    <p class="note">All optional. Defined or not, Run/Reset/Stop/Export work exactly the same either way.</p>
+    <div class="entry">
+      <code>def onKeyPress(key): ...</code>
+      <p>Called on every key press, like CMU's onKeyPress. Click the viewer first to give it keyboard focus (shown with a blue outline and a hint). Named keys match CMU: "Up" / "Down" / "Left" / "Right" / "Space". Letters and digits come through as themselves ("a", "A", "1").</p>
+    </div>
+    <div class="entry">
+      <code>def onNext(): ...</code>
+      <p>Not from CMU -- our own addition. Defining it adds a Next button next to Stop; each click calls it again. Handy for a manual, step-by-step walkthrough instead of a key-driven one.</p>
+    </div>
+    <div class="entry">
+      <code>shape = Box(2, 2, 2)
+shape.x += 3</code>
+      <p>Every shape stays a live, mutable handle -- any field you passed in (x, fill, opacity, radius, whatever the shape takes) can be read or reassigned later. This is what makes onKeyPress/onNext useful: keep a reference from your first run, then move or restyle it from inside the handler instead of redrawing everything from scratch. Calling Box()/Cylinder()/etc. again inside a handler still works too -- it just adds a new shape each time rather than replacing one.</p>
+    </div>
+    <div class="entry">
+      <code>print(...)</code>
+      <p>Works everywhere -- top-level code, onKeyPress, onNext. Output appears in a small panel between the code and the toolbar, but only when there's something to show: no output, no panel. A print() right before a crash still shows, so it's there for the case you need it most.</p>
+    </div>
+    <p class="note">A real Run resets everything -- shape registry, any variables/functions you defined, all of it -- back to a clean slate. State only survives between individual onKeyPress/onNext calls within the same run.</p>
   </section>
 
   <section class="category cat-coords">

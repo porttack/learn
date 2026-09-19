@@ -8,19 +8,26 @@ permalink: /python3d/
 
 # Python in 3D
 
-You already know how to draw shapes in Python: a circle here, a rectangle
-there, maybe a label with some text. This is the same idea, with one more
-axis. Instead of drawing on a flat canvas, you're placing shapes in space.
-Instead of pixels, what you build is a real 3D model you can spin around,
-print, and hold.
+Write a few lines of Python and watch a real shape appear: a circle here, a
+rectangle there, maybe some text. Once that feels natural, this adds one
+more axis. Instead of drawing on a flat page, you're placing shapes in
+space. Instead of pixels, what you build is a real 3D model you can spin
+around, print, and hold.
+
+New to this whole idea? [Read where it comes from]({{ '/python3d/about/' | relative_url }})
+before diving in.
 
 <div class="playground-cards">
-  <a class="playground-card" href="{{ '/python3d/intro/' | relative_url }}">
-    <strong>Lesson 1: Start Here &rarr;</strong>
-    <span>A short first lesson: position, size, and your first few boxes.</span>
+  <a class="playground-card" href="{{ '/python3d/shapes/' | relative_url }}">
+    <strong>Lesson 1: Flat Shapes &rarr;</strong>
+    <span>Draw rectangles and circles on a flat page: your first coordinates and your first shapes.</span>
+  </a>
+  <a class="playground-card" href="{{ '/python3d/position-size/' | relative_url }}">
+    <strong>Lesson 2: Position and Size &rarr;</strong>
+    <span>Give shapes real height: position, size, and your first boxes.</span>
   </a>
   <a class="playground-card" href="{{ '/python3d/transformations/' | relative_url }}">
-    <strong>Lesson 2: Transformations &rarr;</strong>
+    <strong>Lesson 3: Transformations &rarr;</strong>
     <span>Cylinders, rotate(), translate(), and how they compose.</span>
   </a>
   <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">

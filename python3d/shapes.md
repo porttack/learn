@@ -1,209 +1,160 @@
 ---
 layout: minimal
-title: "Transformations"
-permalink: /python3d/transformations/
+title: "Flat Shapes"
+permalink: /python3d/shapes/
 ---
 
 <div class="lesson-crumbs">
   <a href="{{ '/python3d/' | relative_url }}">&larr; Python in 3D</a>
-  &middot;
-  <a href="{{ '/python3d/position-size/' | relative_url }}">&larr; Position and Size</a>
 </div>
 
 <div class="lesson" markdown="1">
 
-# Transformations
+# Flat Shapes
 
-## Meet the Cylinder
+<aside class="callout note" markdown="1">
+**ALREADY COMFORTABLE WITH THIS?**
 
-Everything from the last lesson (position, size, `align=`, `center=`) works
-exactly the same for a new shape: `Cylinder(radius, height, x=0, y=0,
-z=0)`. Same base-at-z, centered-on-x/y rule as `Box`. Try it:
+If you've already placed shapes with x/y coordinates somewhere else, this
+lesson will feel familiar. Feel free to
+[skip ahead to Lesson 2]({{ '/python3d/position-size/' | relative_url }}).
+</aside>
 
-<div class="embed" data-embed="cyl">
-<textarea class="embed-code">Cylinder(1.5, 4)</textarea>
+## Our First Shape
+
+Click **Run** below to run this Python code:
+
+<div class="embed" data-embed="first">
+<textarea class="embed-code">Rect(1, 1, 4, 3)</textarea>
 </div>
 
-We're using a cylinder for this lesson on purpose, not just for variety.
-A box that's rotated often looks almost the same as before, especially if
-it's close to a cube. A cylinder standing up and a cylinder lying down
-look nothing alike, so it's much easier to actually see what a
-transformation did.
+That's a rectangle. `Rect` is a Python function, and calling it is enough to
+draw it, no extra steps. Now edit the numbers above and click Run a few
+times. Watch how the rectangle changes shape and moves. If something stops
+working, click Reset to start over.
 
-## Turning Things: rotate()
+## The Flat Grid
 
-`rotate(shape, angle, axis="z")` takes a shape and gives back a new,
-rotated one. `angle` is in degrees. `axis` is `"x"`, `"y"`, or `"z"` --
-which direction you're turning around.
+Every shape here needs to know where to go. We use `(x, y)` coordinates for
+that:
 
-<div class="embed" data-embed="rotate1">
-<textarea class="embed-code">standing = Cylinder(1, 4)
-rotate(standing, 90, axis="y")</textarea>
-</div>
+- `(0, 0)` is the **center** of the grid.
+- As `x` increases, you head right.
+- As `y` increases, you head **down**.
 
-Notice `standing` never shows up on its own here. That's on purpose:
-`rotate()` *consumes* the shape you give it, the same way you'd expect if
-you handed someone a piece of paper and they folded it -- you don't also
-still have an unfolded copy. Only the result of `rotate(...)` renders.
+That last one trips people up the first time, so slow down on it. On paper,
+you're used to "up" meaning a bigger number, like a graph in math class.
+Here, `y` works the opposite way: bigger `y` means further down. This
+matches how a lot of drawing tools work, this one included.
 
-<div class="quiz" data-quiz="consumption" data-answer="justb">
-  <p class="quiz-prompt">You run <code>a = Cylinder(1, 3)</code> then <code>b = rotate(a, 90, axis="x")</code>, and nothing else. What shows up in the scene?</p>
+<div class="quiz" data-quiz="coords" data-answer="down">
+  <p class="quiz-prompt">If you increase a shape's <code>y</code> value, which way does it move on the screen?</p>
   <div class="quiz-options">
-    <button class="quiz-option" data-key="justa">Just a, standing up</button>
-    <button class="quiz-option" data-key="justb">Just b, lying down</button>
-    <button class="quiz-option" data-key="both">Both a and b</button>
-    <button class="quiz-option" data-key="neither">Neither -- you have to call a separate draw function</button>
+    <button class="quiz-option" data-key="up">Up</button>
+    <button class="quiz-option" data-key="down">Down</button>
+    <button class="quiz-option" data-key="right">Right</button>
+    <button class="quiz-option" data-key="nowhere">Nowhere, y doesn't affect position</button>
   </div>
   <p class="quiz-feedback"></p>
 </div>
 
-<div class="quiz" data-quiz="rotate-z" data-answer="same">
-  <p class="quiz-prompt">If you rotate a standing cylinder 90&deg; around <code>axis="z"</code>, what happens to how it looks?</p>
-  <div class="quiz-options">
-    <button class="quiz-option" data-key="falls">It falls on its side</button>
-    <button class="quiz-option" data-key="same">Nothing visible changes</button>
-    <button class="quiz-option" data-key="taller">It gets taller</button>
-    <button class="quiz-option" data-key="gone">It disappears</button>
+## Rectangles
+
+Here is the code from above again:
+
+```python
+Rect(1, 1, 4, 3)
+```
+
+In full, `Rect` takes four values, all required, in this order: `left`,
+`top`, `width`, `height`. `left` and `top` are the coordinates of the
+rectangle's **top-left corner**. `width` and `height` say how big it is
+from there. So the code above draws a rectangle whose top-left corner sits
+at `(1, 1)`, 4 units wide and 3 units tall.
+
+That's worth slowing down on too: a `Rect` is not centered on the point you
+give it. The point you give it is a corner, and the rectangle grows to the
+right and down from there.
+
+**Question:** if you call `Rect(2, 1, 4, 3)`, where is the corner opposite
+`(2, 1)`? (Hint: which two values do you add, and to which two numbers?)
+
+<div class="quiz" data-quiz="rectcall" data-answer="a">
+  <p class="quiz-prompt">Which call draws a rectangle 4 wide and 3 tall, with its top-left corner at <code>x=2, y=1</code>?</p>
+  <div class="quiz-options quiz-options-code">
+    <button class="quiz-option" data-key="a"><code>Rect(2, 1, 4, 3)</code></button>
+    <button class="quiz-option" data-key="b"><code>Rect(4, 3, 2, 1)</code></button>
+    <button class="quiz-option" data-key="c"><code>Rect(2, 1, 3, 4)</code></button>
+    <button class="quiz-option" data-key="d"><code>Rect(0, 0, 4, 3, x=2, y=1)</code></button>
   </div>
   <p class="quiz-feedback"></p>
 </div>
 
-Try it yourself below before reading on.
+## Circles
 
-<div class="embed" data-embed="rotate-z-demo">
-<textarea class="embed-code">rotate(Cylinder(1, 4), 90, axis="z")</textarea>
+`Circle` is the other shape you'll use here:
+
+<div class="embed" data-embed="circle1">
+<textarea class="embed-code">Circle(0, 0, 2)</textarea>
 </div>
 
-A standing cylinder's own axis *is* `z`. Spinning something around its own
-axis doesn't change its silhouette at all -- it's the same reason spinning
-a can of soup in place doesn't make it look any different, even though it
-really is turning. This is worth remembering: rotating around the axis a
-shape is already lined up with is often invisible.
+`Circle` takes three values: `centerX`, `centerY`, `radius`. Notice the
+first two are called `centerX`/`centerY`, not `left`/`top`. That's not just
+a naming choice: a `Circle` is anchored by its **center**, not a corner.
+There isn't really a "corner" of a circle to anchor it by.
 
-## Moving Things: translate()
-
-You already know how to move a shape: give `Box`/`Cylinder` their own
-`x=`/`y=`/`z=`. So why would you ever need `translate(shape, x=0, y=0,
-z=0)` too?
-
-Because once you've rotated something, its own sense of "up" has changed.
-A cylinder lying on its side doesn't have a clean `z=` to lift it off the
-ground with any more -- its height now runs sideways. `translate()` moves
-the *finished* shape in the scene's real x/y/z, no matter what it's been
-rotated into.
-
-<div class="embed" data-embed="translate1">
-<textarea class="embed-code">lying = rotate(Cylinder(1, 4), 90, axis="y")
-translate(lying, z=1)</textarea>
-</div>
-
-<div class="quiz" data-quiz="translate-why" data-answer="rotated-up">
-  <p class="quiz-prompt">Why does the example above use <code>translate(lying, z=1)</code> instead of just building the cylinder with <code>z=1</code> in the first place?</p>
+<div class="quiz" data-quiz="circle" data-answer="anchor">
+  <p class="quiz-prompt"><code>Rect(2, 1, 4, 3)</code> and <code>Circle(2, 1, 4)</code> both start with the numbers <code>2, 1</code>. Why do they end up in different places?</p>
   <div class="quiz-options">
-    <button class="quiz-option" data-key="rotated-up">Because it's already been rotated, so its own z doesn't mean "up" the same way anymore</button>
-    <button class="quiz-option" data-key="required">Because rotate() always requires a translate() afterward</button>
-    <button class="quiz-option" data-key="no-diff">There's no real difference, it's just a style choice</button>
-    <button class="quiz-option" data-key="faster">translate() is faster to run than passing z= directly</button>
+    <button class="quiz-option" data-key="anchor">Rect's first two numbers are a corner; Circle's are the center</button>
+    <button class="quiz-option" data-key="same">They don't, both shapes end up in the same place</button>
+    <button class="quiz-option" data-key="units">Rect and Circle use different units for position</button>
+    <button class="quiz-option" data-key="ignored">Circle ignores position and always draws at the center of the grid</button>
   </div>
   <p class="quiz-feedback"></p>
 </div>
 
-## Order Matters
+You can also color a shape in with `fill=`:
 
-`translate()` and `rotate()` nest like any other function calls, and like
-CMU's own nested function calls, the inside runs first. That means
-`translate(rotate(shape, 90, axis="x"), z=3)` and `rotate(translate(shape,
-z=3), 90, axis="x")` are **not** the same thing, even though they use the
-exact same two operations.
-
-<div class="embed" data-embed="order1">
-<textarea class="embed-code">a = translate(rotate(Cylinder(1, 3), 90, axis="x"), z=3)
-b = rotate(translate(Cylinder(1, 3, x=4), z=3), 90, axis="x")</textarea>
-</div>
-
-Run that, then look closely at `a` and `b`. Try swapping which one has
-`x=4` if you want to line them up side by side for an easier comparison.
-
-<div class="quiz" data-quiz="order" data-answer="lift-then-tip">
-  <p class="quiz-prompt"><code>translate(rotate(cyl, 90, axis="x"), z=3)</code> -- which happens first?</p>
-  <div class="quiz-options">
-    <button class="quiz-option" data-key="move-then-tip">It moves up to z=3, then tips onto its side</button>
-    <button class="quiz-option" data-key="lift-then-tip">It tips onto its side, then the whole thing lifts to z=3</button>
-    <button class="quiz-option" data-key="same-thing">Both orders always look the same</button>
-  </div>
-  <p class="quiz-feedback"></p>
+<div class="embed" data-embed="fill1">
+<textarea class="embed-code">Rect(-4, -3, 3, 2, fill="crimson")
+Circle(2, 2, 1.5, fill="cornflowerblue")</textarea>
 </div>
 
 ## Checking Your Work
 
 <div class="exercise">
   <p class="exercise-prompt">
-    <strong>Exercise:</strong> build a cylinder that's lying down instead
-    of standing up (its long axis running sideways, not vertically). Any
-    axis, any position -- just make it lie down.
+    <strong>Exercise:</strong> draw a rectangle 4 wide and 3 tall with its
+    top-left corner at <code>(1, 1)</code>, and a circle with radius 2
+    centered at <code>(-3, -3)</code>.
   </p>
-  <div class="embed" data-embed="ex3" data-check="ex3">
-  <textarea class="embed-code">Cylinder(1, 3)</textarea>
+  <div class="embed" data-embed="ex1" data-check="ex1">
+  <textarea class="embed-code">Rect(0, 0, 1, 1)</textarea>
   </div>
-</div>
-
-## Curve Resolution
-
-A cylinder's curved side isn't actually curved -- it's a bunch of flat
-faces standing close enough together to look round. `segments=` controls
-how many:
-
-<div class="embed" data-embed="segments1">
-<textarea class="embed-code">Cylinder(1.5, 3, segments=6)</textarea>
-</div>
-
-6 segments makes a hexagon, not a circle. The default is 32, which is
-usually enough to look smooth. This is the same idea as OpenSCAD's `$fn`,
-if you've ever heard of that -- just under a name that's actually legal in
-Python (`$` can't start a variable name here).
-
-If you're about to build several cylinders and want them all a little
-chunkier or a little smoother, you don't have to repeat `segments=` on
-every single one. Set the global `SEGMENTS` once, and every `Cylinder`
-after that point picks it up automatically:
-
-<div class="embed" data-embed="segments2">
-<textarea class="embed-code">SEGMENTS = 6
-
-Cylinder(1, 3, x=-3)
-Cylinder(1, 3, x=0)
-Cylinder(1, 3, x=3, segments=32)</textarea>
-</div>
-
-That last one still comes out smooth -- giving a shape its own `segments=`
-always wins over the global default.
-
-<div class="quiz" data-quiz="segments" data-answer="square">
-  <p class="quiz-prompt">If you set <code>SEGMENTS = 4</code> before making a <code>Cylinder</code>, what shape do you actually get?</p>
-  <div class="quiz-options">
-    <button class="quiz-option" data-key="smooth">A smooth cylinder, same as always</button>
-    <button class="quiz-option" data-key="square">A square prism (a box with a square cross-section)</button>
-    <button class="quiz-option" data-key="cone">A cone</button>
-    <button class="quiz-option" data-key="triangle">A triangular prism</button>
-  </div>
-  <p class="quiz-feedback"></p>
 </div>
 
 ## Practice
 
-That's rotate(), translate(), how they compose, and how to control curve
-resolution. One more thing worth knowing, in the cheatsheet if you want
-the details: `rotate()` can also take a list of three angles instead of
-one angle and an axis: `rotate(shape, [30, 0, 45])` rotates around x, then
-y, then z, all in one call. Everything in this lesson used the `angle,
-axis="x"` form on purpose, since it doesn't require knowing what a list is
-yet -- but if you've used lists before, the list form is there when you
-want more than one axis at once.
+That's it for flat shapes! One thing to know before you move on: in the
+Studio (the full sandbox tool), `Rect` and `Circle` work a little
+differently. There, they describe a flat outline, and nothing shows up
+until you call `linear_extrude(...)` to give it real height. We kept things
+simple here on purpose, so you could focus on positioning first. You'll
+meet `linear_extrude` for real once you get to the Studio and the
+Cheatsheet.
+
+From here, move on to real 3D shapes with height, or jump straight to the
+Studio or Cheatsheet.
 
 <div class="playground-cards">
+  <a class="playground-card" href="{{ '/python3d/position-size/' | relative_url }}">
+    <strong>Lesson 2: Position and Size &rarr;</strong>
+    <span>Give shapes real height: position, size, and your first boxes.</span>
+  </a>
   <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
-    <span>Everything from both lessons, plus union/difference, fillets, and more.</span>
+    <span>Write Python on the left, watch the model update live on the right.</span>
   </a>
   <a class="playground-card" href="{{ '/python3d/cheatsheet/' | relative_url }}">
     <strong>Cheatsheet &rarr;</strong>
@@ -245,6 +196,7 @@ want more than one axis at once.
     overflow-x: auto;
   }
 
+  /* ---- embedded runnable widget ---- */
   .embed {
     position: relative;
     margin: 1.2em 0;
@@ -405,6 +357,7 @@ want more than one axis at once.
   .embed-key-hint[hidden] { display: none; }
   .embed-viewer canvas { display: block; }
 
+  /* ---- checkpoint quiz ---- */
   .quiz {
     position: relative;
     margin: 1.4em 0;
@@ -455,6 +408,7 @@ want more than one axis at once.
     flex-wrap: wrap;
     gap: 8px;
   }
+  .quiz-options-code { flex-direction: column; align-items: flex-start; }
   .quiz-option {
     font: inherit;
     font-size: 0.9rem;
@@ -476,6 +430,7 @@ want more than one axis at once.
   .quiz-feedback.correct { color: #216e39; }
   .quiz-feedback.incorrect { color: #d1242f; }
 
+  /* ---- exercise wrapper ---- */
   .exercise {
     margin: 1.4em 0;
     padding: 14px 16px;
@@ -505,6 +460,7 @@ want more than one axis at once.
     border: 1px solid #b98900;
   }
 
+  /* ---- closing cards (same look as the landing page) ---- */
   .playground-cards {
     display: flex;
     flex-wrap: wrap;
@@ -539,20 +495,25 @@ want more than one axis at once.
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
 
+// Rect/Circle are self-registering and immediately visible here, matching
+// real CMU behavior (Rect(10,10,50,50) just draws something -- no separate
+// "make it visible" step). That's a deliberate simplification: in the
+// Studio, 2D shapes are inert until you linear_extrude() them, which is
+// the real OpenSCAD-style profile/extrude idea. We keep that for later --
+// this lesson is about coordinates, not the extrude step.
 const MINI_SHIM = `
+import math
+
 _registry = []
 
 class Solid:
     # Attribute access proxies straight into .data, so a shape kept from
-    # an earlier run stays a live handle: shape.x += 3 (or .fill =, .opacity
-    # =, any field already in its data dict) mutates it in place. This is
-    # what makes onKeyPress/onNext useful for moving an existing shape,
-    # not just drawing new ones -- see run()/runEvent() below, which never
-    # clear the registry before calling into student code, so a shape you
-    # keep a reference to survives and reflects whatever you changed on it.
+    # an earlier run stays a live handle: shape.x += 3 (or .fill =, any
+    # field already in its data dict) mutates it in place -- useful for
+    # onKeyPress/onNext, which call back into this same running session
+    # without clearing the registry first.
     def __init__(self, data):
         self.__dict__["data"] = data
         _registry.append(self)
@@ -564,55 +525,41 @@ class Solid:
     def __setattr__(self, name, value):
         self.__dict__["data"][name] = value
 
-def _consume(solid):
-    if solid in _registry:
-        _registry.remove(solid)
+# Just enough depth for the 3D viewer to show a real, lit surface -- you
+# don't need to think about this yet. Every shape gets the same thickness.
+_THICKNESS = 0.4
 
-SEGMENTS = 32
-
-def Box(width, depth, height, x=0, y=0, z=0, fill=None, align="center", center=False, opacity=100):
+def Rect(left, top, width, height, fill=None, opacity=100):
     return Solid({
-        "type": "box", "width": width, "depth": depth, "height": height,
-        "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
-        "opacity": opacity,
+        "kind": "rect", "left": left, "top": top, "width": width, "height": height,
+        "fill": fill, "opacity": opacity,
     })
 
-def Cylinder(radius, height, x=0, y=0, z=0, fill=None, align="center", center=False, segments=None, opacity=100):
+def Circle(centerX, centerY, radius, fill=None, opacity=100):
     return Solid({
-        "type": "cylinder", "radius": radius, "height": height,
-        "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
-        "segments": SEGMENTS if segments is None else segments, "opacity": opacity,
+        "kind": "circle", "centerX": centerX, "centerY": centerY, "radius": radius,
+        "fill": fill, "opacity": opacity,
     })
 
-def translate(solid, x=0, y=0, z=0):
-    _consume(solid)
-    return Solid({
-        "type": "translate", "x": x, "y": y, "z": z,
-        "child": solid.data, "fill": solid.data.get("fill"),
-        "opacity": solid.data.get("opacity", 100),
-    })
-
-def rotate(solid, angle, axis="z"):
-    _consume(solid)
-    data = {
-        "type": "rotate", "child": solid.data, "fill": solid.data.get("fill"),
-        "opacity": solid.data.get("opacity", 100),
-    }
-    if isinstance(angle, (list, tuple)):
-        data["mode"] = "vector"
-        data["angles"] = list(angle)
-    else:
-        data["mode"] = "axis"
-        data["angle"] = angle
-        data["axis"] = axis
-    return Solid(data)
+# The outline actually drawn is computed fresh at dump time, not when
+# Rect()/Circle() was first called -- so mutating a kept shape's own
+# properties (rect.left += 1, circle.radius = 3, ...) is reflected the
+# next time it's drawn, not frozen at whatever it was on creation.
+def _points_for(data):
+    if data["kind"] == "rect":
+        left, top, width, height = data["left"], data["top"], data["width"], data["height"]
+        return [(left, top), (left + width, top), (left + width, top + height), (left, top + height)]
+    segments = 48
+    cx, cy, r = data["centerX"], data["centerY"], data["radius"]
+    return [
+        (cx + r * math.cos(2 * math.pi * i / segments), cy + r * math.sin(2 * math.pi * i / segments))
+        for i in range(segments)
+    ]
 
 def _reset():
     # Every real Run gets a genuinely fresh namespace, not just an empty
     # shape registry -- see studio.html for why (a stale onKeyPress/onNext
     # from a previous run would otherwise keep responding).
-    global SEGMENTS
-    SEGMENTS = 32
     _registry.clear()
     for name in list(globals().keys()):
         if name not in _BASE_NAMES:
@@ -620,7 +567,12 @@ def _reset():
 
 def _dump():
     import json
-    return json.dumps([s.data for s in _registry])
+    out = []
+    for s in _registry:
+        d = dict(s.data)
+        d["points"] = _points_for(s.data)
+        out.append(d)
+    return json.dumps(out)
 
 _BASE_NAMES = set(globals().keys()) | {"_BASE_NAMES"}
 `;
@@ -790,143 +742,43 @@ function materialFor(fill, opacity = 100) {
   return materialCache.get(key);
 }
 
-function makeTickSprite(text) {
-  const canvas = document.createElement("canvas");
-  canvas.width = 64;
-  canvas.height = 32;
-  const ctx = canvas.getContext("2d");
-  ctx.font = "20px monospace";
-  ctx.fillStyle = "#57606a";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(text, 32, 16);
-  const spriteMaterial = new THREE.SpriteMaterial({
-    map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true,
-  });
-  const sprite = new THREE.Sprite(spriteMaterial);
-  sprite.scale.set(0.5, 0.25, 1);
-  return sprite;
-}
-
-function alignOffset(align, width, depth) {
-  const a = align || "center";
-  let ox = 0, oy = 0;
-  if (a.includes("left")) ox = width / 2;
-  else if (a.includes("right")) ox = -width / 2;
-  if (a.includes("top")) oy = -depth / 2;
-  else if (a.includes("bottom")) oy = depth / 2;
-  return { ox, oy };
-}
-
-function resizeGrid(gridState, targetSize) {
-  if (targetSize === gridState.size) return;
-  const scene = gridState.mesh.parent;
-  scene.remove(gridState.mesh);
-  gridState.mesh.geometry.dispose();
-  gridState.mesh.material.dispose();
-  const divisions = Math.min(targetSize, 40);
-  const newGrid = new THREE.GridHelper(targetSize, divisions, 0xbbbbbb, 0xdddddd);
-  newGrid.rotation.x = Math.PI / 2;
-  newGrid.position.z = -0.01;
-  scene.add(newGrid);
-  gridState.mesh = newGrid;
-  gridState.size = targetSize;
-}
-
-function fitSceneToContent(camera, controls, group, gridState) {
-  const box = new THREE.Box3().setFromObject(group);
-  let farthestExtent = 10;
-  if (!box.isEmpty()) {
-    const sphere = box.getBoundingSphere(new THREE.Sphere());
-    farthestExtent = controls.target.distanceTo(sphere.center) + sphere.radius;
-  }
-  const currentDist = camera.position.distanceTo(controls.target);
-  const safeDist = farthestExtent * 1.8 + 1;
-  if (currentDist < safeDist) {
-    const dir = camera.position.clone().sub(controls.target);
-    if (dir.lengthSq() < 1e-6) dir.set(1, -1, 0.8);
-    dir.normalize();
-    camera.position.copy(controls.target).addScaledVector(dir, safeDist);
-    controls.maxDistance = Math.max(controls.maxDistance, safeDist * 3);
-    if (camera.far < safeDist * 4) {
-      camera.far = safeDist * 4;
-      camera.updateProjectionMatrix();
-    }
-    controls.update();
-  }
-  resizeGrid(gridState, Math.max(20, Math.ceil((farthestExtent * 3) / 10) * 10));
-}
-
-// Leaf geometry only -- align/center baked in, but not x/y/z. Those fold
-// into the accumulated matrix in buildMesh() below, which is what lets
-// translate()/rotate() wrap a shape correctly: the wrapper's transform
-// has to apply as one combined matrix, not separate position/rotation
-// properties, or nesting them would compose in the wrong order.
-function buildGeometry(node) {
-  if (node.type === "box") {
-    const g = new THREE.BoxGeometry(node.width, node.depth, node.height);
-    const { ox, oy } = alignOffset(node.align, node.width, node.depth);
-    g.translate(ox, oy, node.center ? 0 : node.height / 2);
-    return g;
-  }
-  if (node.type === "cylinder") {
-    const g = new THREE.CylinderGeometry(node.radius, node.radius, node.height, node.segments || 32);
-    g.rotateX(Math.PI / 2);
-    const { ox, oy } = alignOffset(node.align, node.radius * 2, node.radius * 2);
-    g.translate(ox, oy, node.center ? 0 : node.height / 2);
-    return g;
-  }
-  return null;
-}
-
-const AXES = { x: new THREE.Vector3(1, 0, 0), y: new THREE.Vector3(0, 1, 0), z: new THREE.Vector3(0, 0, 1) };
-
-function buildMesh(node, matrix, disposables) {
-  if (node.type === "translate") {
-    const m = new THREE.Matrix4().makeTranslation(node.x || 0, node.y || 0, node.z || 0);
-    return buildMesh(node.child, matrix.clone().multiply(m), disposables);
-  }
-  if (node.type === "rotate") {
-    let m;
-    if (node.mode === "vector") {
-      const [rx, ry, rz] = node.angles;
-      m = new THREE.Matrix4()
-        .makeRotationZ(THREE.MathUtils.degToRad(rz))
-        .multiply(new THREE.Matrix4().makeRotationY(THREE.MathUtils.degToRad(ry)))
-        .multiply(new THREE.Matrix4().makeRotationX(THREE.MathUtils.degToRad(rx)));
-    } else {
-      m = new THREE.Matrix4().makeRotationAxis(AXES[node.axis] || AXES.z, THREE.MathUtils.degToRad(node.angle));
-    }
-    return buildMesh(node.child, matrix.clone().multiply(m), disposables);
-  }
-  const geometry = buildGeometry(node);
-  const localOffset = new THREE.Matrix4().makeTranslation(node.x || 0, node.y || 0, node.z || 0);
-  geometry.applyMatrix4(matrix.clone().multiply(localOffset));
+// No translate()/rotate() composition in this lesson -- every shape is a
+// flat outline, extruded a fixed thin amount purely so the viewer has real
+// geometry to light and show. Centered on z so it doesn't read as "sitting
+// on" or "floating above" anything -- z isn't a concept this lesson uses.
+function buildMesh(node, disposables) {
+  const points = node.points.map(([x, y]) => new THREE.Vector2(x, y));
+  const shape = new THREE.Shape(points);
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth: 0.4, bevelEnabled: false });
+  geometry.translate(0, 0, -0.2);
   disposables.push(geometry);
   return new THREE.Mesh(geometry, materialFor(node.fill, node.opacity));
 }
 
-// Robust to *how* a shape ends up lying down (which axis, which order it
-// was composed in) -- checks the visible result instead of one specific
-// code path, since several different answers are equally correct here.
-// Compares against the cylinder's own declared height/radius rather than a
-// fixed ratio: a fixed threshold (e.g. "z-extent under 60% of the rest")
-// silently fails for dimensions where height and diameter aren't that far
-// apart (radius=1, height=3 is only a 2:3 ratio), which is exactly the
-// starter code here.
-function findLeaf(node) {
-  while (node.child) node = node.child;
-  return node;
-}
+// The exercise checkers: given the parsed shape list from a run, return
+// { pass, message }. A Rect always dumps 4 points; a Circle dumps 48 --
+// that difference is all we need to tell them apart here.
+const near = (a, b, tol = 0.4) => Math.abs(a - b) <= tol;
 const CHECKERS = {
-  ex3(shapes, group) {
-    const cylinderNode = shapes.map(findLeaf).find((n) => n.type === "cylinder");
-    if (!cylinderNode) return { pass: false, message: "I don't see a Cylinder yet." };
-    const box = new THREE.Box3().setFromObject(group);
-    const size = box.getSize(new THREE.Vector3());
-    const stillStanding = Math.abs(size.z - cylinderNode.height) < Math.max(0.3, cylinderNode.height * 0.15);
-    if (stillStanding) return { pass: false, message: "That's still standing up -- try wrapping it in rotate()." };
-    return { pass: true, message: "Nice, it's lying down!" };
+  ex1(shapes) {
+    const rect = shapes.find((s) => s.points.length === 4);
+    if (!rect) return { pass: false, message: "I don't see a Rect yet -- try calling Rect(...)." };
+    const xs = rect.points.map((p) => p[0]), ys = rect.points.map((p) => p[1]);
+    const left = Math.min(...xs), top = Math.min(...ys);
+    const width = Math.max(...xs) - left, height = Math.max(...ys) - top;
+    if (!near(left, 1) || !near(top, 1) || !near(width, 4) || !near(height, 3)) {
+      return { pass: false, message: "Check the Rect: left=1, top=1, width=4, height=3." };
+    }
+    const circle = shapes.find((s) => s.points.length > 4);
+    if (!circle) return { pass: false, message: "The Rect looks right! Now add a Circle too." };
+    const cxs = circle.points.map((p) => p[0]), cys = circle.points.map((p) => p[1]);
+    const cx = (Math.max(...cxs) + Math.min(...cxs)) / 2;
+    const cy = (Math.max(...cys) + Math.min(...cys)) / 2;
+    const r = (Math.max(...cxs) - Math.min(...cxs)) / 2;
+    if (!near(cx, -3) || !near(cy, -3) || !near(r, 2)) {
+      return { pass: false, message: "Check the Circle: centered at (-3, -3) with radius 2." };
+    }
+    return { pass: true, message: "Nice work, that's exactly right!" };
   },
 };
 
@@ -1040,56 +892,65 @@ class Embed {
     this.viewerEl.appendChild(zoomControls);
   }
 
+  // A locked-down, top-down orthographic camera instead of the free-orbit
+  // perspective camera the other lessons use -- this lesson is about a
+  // flat page, not a 3D scene, so the viewer should actually look flat.
+  // The vertical flip (world +y renders toward the bottom of the screen,
+  // matching Rect's "top" corner and this lesson's own "y increases down"
+  // explanation) comes from swapping top/bottom in the frustum itself,
+  // not from fighting the camera's up-vector -- that avoids any gimbal
+  // weirdness from looking straight down an axis that's also "up."
   setupScene() {
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xe9edf1);
-    this.camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
-    this.camera.up.set(0, 0, 1);
-    this.camera.position.set(6, -6, 5);
+    this.viewSize = 10;
+    this.camera = new THREE.OrthographicCamera(-10, 10, -10, 10, 0.1, 100);
+    this.camera.position.set(0, 0, 50);
+    this.camera.lookAt(0, 0, 0);
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.viewerEl.appendChild(this.renderer.domElement);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableRotate = false;
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
-    this.controls.maxPolarAngle = Math.PI * 0.47;
-    this.controls.minDistance = 1.5;
-    this.controls.maxDistance = 40;
-    this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-    const sun = new THREE.DirectionalLight(0xffffff, 0.8);
-    sun.position.set(5, -10, 12);
+    this.controls.screenSpacePanning = true;
+    this.controls.minZoom = 0.3;
+    this.controls.maxZoom = 8;
+    this.controls.mouseButtons = { LEFT: THREE.MOUSE.PAN, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+    const sun = new THREE.DirectionalLight(0xffffff, 0.7);
+    sun.position.set(0, 0, 20);
     this.scene.add(sun);
     const grid = new THREE.GridHelper(20, 20, 0xbbbbbb, 0xdddddd);
     grid.rotation.x = Math.PI / 2;
-    grid.position.z = -0.01;
+    grid.position.z = -0.21;
     this.scene.add(grid);
-    this.gridState = { mesh: grid, size: 20 };
     this.scene.add(new THREE.AxesHelper(2));
-    for (let i = -6; i <= 6; i += 2) {
+    for (let i = -8; i <= 8; i += 2) {
       if (i === 0) continue;
       const xTick = makeTickSprite(String(i));
-      xTick.position.set(i, -0.4, 0.02);
+      xTick.position.set(i, -0.6, 0.02);
       this.scene.add(xTick);
       const yTick = makeTickSprite(String(i));
-      yTick.position.set(-0.4, i, 0.02);
+      yTick.position.set(-0.6, i, 0.02);
       this.scene.add(yTick);
     }
     this.group = new THREE.Group();
     this.scene.add(this.group);
-
-    this.viewHelper = new ViewHelper(this.camera, this.renderer.domElement);
-    this.viewHelper.location.left = 6;
-    this.viewHelper.location.bottom = 6;
-    this.viewHelper.setLabels("X", "Y", "Z");
-    this.renderer.domElement.addEventListener("click", (e) => this.viewHelper.handleClick(e));
-    this.clock = new THREE.Clock();
   }
 
   resize() {
     const w = this.viewerEl.clientWidth, h = this.viewerEl.clientHeight;
     if (!w || !h) return;
     this.renderer.setSize(w, h);
-    this.camera.aspect = w / h;
+    const aspect = w / h;
+    const H = this.viewSize;
+    this.camera.left = -H * aspect;
+    this.camera.right = H * aspect;
+    // top/bottom swapped on purpose -- see the note above setupScene().
+    this.camera.top = -H;
+    this.camera.bottom = H;
     this.camera.updateProjectionMatrix();
   }
 
@@ -1097,10 +958,6 @@ class Embed {
     requestAnimationFrame(() => this.animate());
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
-    if (this.viewHelper.animating) this.viewHelper.update(this.clock.getDelta());
-    this.renderer.autoClear = false;
-    this.viewHelper.render(this.renderer);
-    this.renderer.autoClear = true;
   }
 
   zoomBy(delta) {
@@ -1193,7 +1050,7 @@ class Embed {
   // the still-running session instead of the whole script. The registry is
   // never cleared first (see Solid's mutability, and the worker's "event"
   // handler), so a shape kept from an earlier run/event survives and can
-  // be mutated in place; calling Cylinder()/etc. again just adds to what's
+  // be mutated in place; calling Rect()/Circle() again just adds to what's
   // there.
   async runEvent(fnName, args) {
     const token = ++this.runToken;
@@ -1220,7 +1077,7 @@ class Embed {
       this.feedbackEl.textContent = "Run your code first, then click Check My Work.";
       return;
     }
-    const result = checker(this.lastShapes, this.group);
+    const result = checker(this.lastShapes);
     this.feedbackEl.className = "check-feedback " + (result.pass ? "pass" : "fail");
     this.feedbackEl.textContent = result.message;
     if (result.pass) progress.markDone(this.checkerName);
@@ -1231,9 +1088,8 @@ class Embed {
     for (const g of this.disposables) g.dispose();
     this.disposables = [];
     for (const node of shapes) {
-      this.group.add(buildMesh(node, new THREE.Matrix4(), this.disposables));
+      this.group.add(buildMesh(node, this.disposables));
     }
-    fitSceneToContent(this.camera, this.controls, this.group, this.gridState);
   }
 
   ready() {
@@ -1241,6 +1097,24 @@ class Embed {
     this.stopBtn.disabled = false;
     this.statusEl.textContent = "Ready -- click Run";
   }
+}
+
+function makeTickSprite(text) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 64;
+  canvas.height = 32;
+  const ctx = canvas.getContext("2d");
+  ctx.font = "20px monospace";
+  ctx.fillStyle = "#57606a";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, 32, 16);
+  const spriteMaterial = new THREE.SpriteMaterial({
+    map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true,
+  });
+  const sprite = new THREE.Sprite(spriteMaterial);
+  sprite.scale.set(0.9, 0.45, 1);
+  return sprite;
 }
 
 function setupQuizzes() {
@@ -1320,7 +1194,7 @@ function initLessonProgress(lessonId, order) {
   };
 }
 
-const progress = initLessonProgress("transformations", ["consumption", "rotate-z", "translate-why", "order", "ex3", "segments"]);
+const progress = initLessonProgress("shapes", ["coords", "rectcall", "circle", "ex1"]);
 
 async function main() {
   setupQuizzes();

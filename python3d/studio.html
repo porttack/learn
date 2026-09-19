@@ -124,6 +124,22 @@ permalink: /python3d/studio/
     max-height: 160px;
     overflow: auto;
   }
+  /* Unobtrusive by design: no space reserved at all unless a run/event
+     actually printed something, via [hidden] rather than a fixed-height
+     placeholder. */
+  #output {
+    margin: 0 16px 16px;
+    padding: 10px 12px;
+    background: #f6f8fa;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--ink);
+    font: 12px/1.4 "SF Mono", Menlo, Consolas, monospace;
+    white-space: pre-wrap;
+    max-height: 160px;
+    overflow: auto;
+  }
+  #output[hidden] { display: none; }
   .viewer {
     flex: 1 1 auto;
     position: relative;
@@ -133,6 +149,25 @@ permalink: /python3d/studio/
     position: absolute;
     inset: 0;
   }
+  /* Only relevant once onKeyPress is defined -- see keyboard-active class
+     toggled in JS -- so it doesn't visually suggest every script is
+     keyboard-interactive. */
+  #canvas-holder:focus { outline: none; }
+  #canvas-holder.keyboard-active:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  .key-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: rgba(255,255,255,0.85);
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .key-hint[hidden] { display: none; }
   .viewer canvas {
     display: block;
   }
@@ -194,16 +229,19 @@ Cylinder(0.7, 2, x=1.8, hole=True)
 label = Label("HI", 0, 0, size=1.2)
 linear_extrude(label, height=2.5, x=6)</textarea>
     <div id="error"></div>
+    <div id="output" hidden></div>
     <div class="toolbar">
       <button id="run" disabled>Run</button>
       <button id="stop" class="secondary" disabled title="Stuck in a loop? This restarts Python.">Stop</button>
+      <button id="next" class="secondary" hidden title="Calls onNext() again.">Next</button>
       <button id="download" class="secondary" disabled>Download STL</button>
       <span id="status">Loading Python&hellip;</span>
     </div>
   </div>
   <div class="splitter" id="splitter"></div>
   <div class="viewer">
-    <div id="canvas-holder"></div>
+    <div id="canvas-holder" tabindex="0"></div>
+    <div class="key-hint" id="key-hint" hidden>Click here, then press a key</div>
     <div class="zoom-controls">
       <button id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
       <button id="zoom-out" title="Zoom out" aria-label="Zoom out">&minus;</button>
@@ -386,9 +424,25 @@ import math
 _registry = []
 
 class Solid:
+    # Attribute access proxies straight into .data, so a shape kept from
+    # an earlier run stays a live handle: shape.x += 3 (or .fill =, .opacity
+    # =, any field already in its data dict) mutates it in place. This is
+    # what makes onKeyPress/onNext useful for moving an existing shape,
+    # not just drawing new ones -- see run()/event() below, which never
+    # clear the registry before calling into student code, so a shape you
+    # keep a reference to survives and reflects whatever you changed on it.
     def __init__(self, data):
-        self.data = data
+        self.__dict__["data"] = data
         _registry.append(self)
+    def __getattr__(self, name):
+        # only reached when normal lookup fails, so this never intercepts
+        # .data itself (set directly above) or a real method/attribute
+        data = self.__dict__["data"]
+        if name in data:
+            return data[name]
+        raise AttributeError(f"'Solid' object has no attribute '{name}'")
+    def __setattr__(self, name, value):
+        self.__dict__["data"][name] = value
 
 def _consume(solid):
     if solid in _registry:
@@ -413,7 +467,7 @@ def _resolve_hole_fill(hole, fill, inherit=None):
 # point picks it up, unless that call gives its own segments=.
 SEGMENTS = 32
 
-def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, fillet=0):
+def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, fillet=0, opacity=100):
     # Args line up with (x, y, z): width runs along x, depth along y,
     # height along z (the "new" axis you're pushing up out of the page).
     # fill: any CSS/X11 color name ("red", "cornflowerblue", ...) -- a
@@ -430,14 +484,16 @@ def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="cen
     # "chamfer" sometimes, but a chamfer is a flat angled cut; this is the
     # rounded, curved kind, formally a "fillet". Clamped automatically so
     # it can never exceed half the shortest side.
+    # opacity: 0-100, like CMU's opacity -- 100 is fully solid, 0 is
+    # invisible. Preview-only, same as fill: never affects the STL.
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
     return Solid({
         "type": "box", "width": width, "height": height, "depth": depth,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
-        "align": align, "center": center, "fillet": fillet,
+        "align": align, "center": center, "fillet": fillet, "opacity": opacity,
     })
 
-def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, segments=_UNSET, fillet=0):
+def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, segments=_UNSET, fillet=0, opacity=100):
     # segments: how many flat faces approximate the curved side -- OpenSCAD
     # calls this $fn, but a leading $ isn't legal in a Python name. Low
     # values turn the "cylinder" into a visible prism (segments=6 is a
@@ -448,12 +504,14 @@ def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="cent
     # fillet: rounds the rim edges (where the flat top/bottom meets the
     # curved side) instead of the cylinder's whole body -- same "fillet,
     # not chamfer" idea as Box.
+    # opacity: 0-100, like CMU's opacity -- see Box.
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
     resolved_segments = SEGMENTS if segments is _UNSET else segments
     return Solid({
         "type": "cylinder", "radius": radius, "height": height,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
         "align": align, "center": center, "segments": resolved_segments, "fillet": fillet,
+        "opacity": opacity,
     })
 
 # ---- 2D profiles, for linear_extrude() ----
@@ -558,15 +616,16 @@ def Label(text, x, y, size=1, font="helvetiker", bold=False, italic=False):
         "font": font, "bold": bold, "italic": italic,
     }
 
-def linear_extrude(profile, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align=None, center=False):
+def linear_extrude(profile, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align=None, center=False, opacity=100):
     # align is opt-in here (default: no change) -- a 2D profile like Rect
     # already has its own left/top-style coordinates baked in, so forcing
     # a bounding-box center by default would move every existing shape.
+    # opacity: 0-100, like CMU's opacity -- see Box.
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
     return Solid({
         "type": "extrude", "profile": profile, "height": height,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
-        "align": align, "center": center,
+        "align": align, "center": center, "opacity": opacity,
     })
 
 def translate(solid, x=0, y=0, z=0):
@@ -574,7 +633,7 @@ def translate(solid, x=0, y=0, z=0):
     return Solid({
         "type": "translate", "x": x, "y": y, "z": z,
         "child": solid.data, "hole": solid.data.get("hole", False),
-        "fill": solid.data.get("fill"),
+        "fill": solid.data.get("fill"), "opacity": solid.data.get("opacity", 100),
     })
 
 def rotate(solid, angle, axis="z"):
@@ -585,6 +644,7 @@ def rotate(solid, angle, axis="z"):
     data = {
         "type": "rotate", "child": solid.data,
         "hole": solid.data.get("hole", False), "fill": solid.data.get("fill"),
+        "opacity": solid.data.get("opacity", 100),
     }
     if isinstance(angle, (list, tuple)):
         data["mode"] = "vector"
@@ -595,42 +655,43 @@ def rotate(solid, angle, axis="z"):
         data["axis"] = axis
     return Solid(data)
 
-def union(*solids, hole=False, fill=_UNSET):
+def union(*solids, hole=False, fill=_UNSET, opacity=_UNSET):
     for s in solids:
         _consume(s)
     inherit = solids[0].data.get("fill") if solids else None
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill, inherit)
+    inherit_opacity = solids[0].data.get("opacity", 100) if solids else 100
+    resolved_opacity = inherit_opacity if opacity is _UNSET else opacity
     return Solid({
         "type": "union", "children": [s.data for s in solids],
-        "hole": is_hole, "fill": resolved_fill,
+        "hole": is_hole, "fill": resolved_fill, "opacity": resolved_opacity,
     })
 
-def difference(base, *subtract, hole=False, fill=_UNSET):
+def difference(base, *subtract, hole=False, fill=_UNSET, opacity=_UNSET):
     _consume(base)
     for s in subtract:
         _consume(s)
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill, base.data.get("fill"))
+    resolved_opacity = base.data.get("opacity", 100) if opacity is _UNSET else opacity
     return Solid({
         "type": "difference", "base": base.data,
         "subtract": [s.data for s in subtract], "hole": is_hole, "fill": resolved_fill,
+        "opacity": resolved_opacity,
     })
 
-def intersection(*solids, hole=False, fill=_UNSET):
+def intersection(*solids, hole=False, fill=_UNSET, opacity=_UNSET):
     # Only the overlap of every shape passed in survives -- NOT "first
     # shape minus the rest" (that's difference()).
     for s in solids:
         _consume(s)
     inherit = solids[0].data.get("fill") if solids else None
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill, inherit)
+    inherit_opacity = solids[0].data.get("opacity", 100) if solids else 100
+    resolved_opacity = inherit_opacity if opacity is _UNSET else opacity
     return Solid({
         "type": "intersection", "children": [s.data for s in solids],
-        "hole": is_hole, "fill": resolved_fill,
+        "hole": is_hole, "fill": resolved_fill, "opacity": resolved_opacity,
     })
-
-def _reset():
-    global SEGMENTS
-    SEGMENTS = 32
-    _registry.clear()
 
 def _dump():
     # A "hole" shape isn't drawn on its own -- it's subtracted from every
@@ -641,20 +702,46 @@ def _dump():
     solids = [s.data for s in _registry if not s.data.get("hole")]
     if holes:
         result = [
-            {"type": "difference", "base": solid, "subtract": holes, "fill": solid.get("fill")}
+            {
+                "type": "difference", "base": solid, "subtract": holes,
+                "fill": solid.get("fill"), "opacity": solid.get("opacity", 100),
+            }
             for solid in solids
         ]
     else:
         result = solids
     return json.dumps(result)
+
+def _reset():
+    # Every real Run gets a genuinely fresh namespace, not just an empty
+    # shape registry: without this, a function or variable a student
+    # defined (onKeyPress, a counter, anything) would silently survive
+    # into a run whose code no longer defines it -- most visible with
+    # onKeyPress/onNext, where a stale one from a previous run would keep
+    # responding to key presses/Next clicks a student thinks they removed.
+    global SEGMENTS
+    SEGMENTS = 32
+    _registry.clear()
+    for name in list(globals().keys()):
+        if name not in _BASE_NAMES:
+            del globals()[name]
+
+# Snapshotted last, once every shim name above (including _reset itself)
+# already exists -- _reset() uses this to know which globals are ours vs.
+# the student's. Must come after _reset's own def, or _reset would delete
+# itself the first time it ran.
+_BASE_NAMES = set(globals().keys()) | {"_BASE_NAMES"}
 `;
 
 const runBtn = document.getElementById("run");
 const stopBtn = document.getElementById("stop");
+const nextBtn = document.getElementById("next");
 const downloadBtn = document.getElementById("download");
 const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
+const outputEl = document.getElementById("output");
 const codeEl = document.getElementById("code");
+const keyHintEl = document.getElementById("key-hint");
 
 // Pyodide runs in a Web Worker, not the main thread -- a runaway while/for
 // loop in student code blocks whatever thread it's running on, and if that
@@ -669,26 +756,64 @@ const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.mjs"
 // it's not a network/CORS problem -- importScripts' own loader specifically
 // rejects it). The ESM build loaded via dynamic import() in a module worker
 // uses the standard module-fetch pipeline instead and doesn't hit this.
+// onKeyPress/onNext (if the student's code defines them) are invoked
+// straight into this same already-running session -- the registry is
+// never cleared first, so a shape kept from the initial run (or an
+// earlier event) survives and can be mutated in place (see Solid's
+// __setattr__ above) rather than needing to be redrawn from scratch.
 const WORKER_SCRIPT = `
 let pyodide = null;
+let outputLines = [];
+function hasFn(name) {
+  const fn = pyodide.globals.get(name);
+  const ok = !!fn && typeof fn === "function";
+  if (fn && fn.destroy) fn.destroy();
+  return ok;
+}
 self.onmessage = async (e) => {
   const { id, type, payload } = e.data;
   try {
     if (type === "init") {
       const { loadPyodide } = await import(payload.pyodideUrl);
-      pyodide = await loadPyodide();
+      pyodide = await loadPyodide({
+        stdout: (msg) => outputLines.push(msg),
+        stderr: (msg) => outputLines.push(msg),
+      });
       pyodide.runPython(payload.shim);
       self.postMessage({ id, type: "ready" });
       return;
     }
     if (type === "run") {
+      outputLines = [];
       pyodide.runPython("_reset()");
       pyodide.runPython(payload.code);
       const shapes = pyodide.runPython("_dump()");
-      self.postMessage({ id, type: "result", shapes });
+      self.postMessage({
+        id, type: "result", shapes,
+        hasOnKeyPress: hasFn("onKeyPress"), hasOnNext: hasFn("onNext"),
+        output: outputLines,
+      });
+      return;
+    }
+    if (type === "event") {
+      const fn = pyodide.globals.get(payload.fnName);
+      let ran = false, shapes = null;
+      outputLines = [];
+      if (fn && typeof fn === "function") {
+        try {
+          fn(...(payload.args || []));
+          ran = true;
+        } finally {
+          fn.destroy();
+        }
+        shapes = pyodide.runPython("_dump()");
+      }
+      self.postMessage({ id, type: "result", shapes, ran, output: outputLines });
     }
   } catch (err) {
-    self.postMessage({ id, type: "error", message: err.message });
+    // Whatever printed before the crash is exactly what's most useful for
+    // debugging it -- don't let an exception swallow that output.
+    self.postMessage({ id, type: "error", message: err.message, output: outputLines });
   }
 };
 `;
@@ -705,13 +830,19 @@ class PyodideWorker {
     const blob = new Blob([WORKER_SCRIPT], { type: "application/javascript" });
     this.worker = new Worker(URL.createObjectURL(blob), { type: "module" });
     this.worker.onmessage = (e) => {
-      const { id, type, message, shapes } = e.data;
+      const { id, type, message, output, ...result } = e.data;
       const entry = this.pending.get(id);
       if (!entry) return;
       this.pending.delete(id);
-      if (type === "error") entry.reject(new Error(message));
-      else if (type === "result") entry.resolve(shapes);
-      else entry.resolve();
+      if (type === "error") {
+        const err = new Error(message);
+        err.output = output; // whatever printed before the crash, if anything
+        entry.reject(err);
+      } else if (type === "result") {
+        entry.resolve({ ...result, output });
+      } else {
+        entry.resolve();
+      }
     };
     const id = this.nextId++;
     this.readyPromise = new Promise((resolve, reject) => this.pending.set(id, { resolve, reject }));
@@ -727,6 +858,13 @@ class PyodideWorker {
       this.worker.postMessage({ id, type: "run", payload: { code } });
     });
   }
+  event(fnName, args = []) {
+    const id = this.nextId++;
+    return new Promise((resolve, reject) => {
+      this.pending.set(id, { resolve, reject });
+      this.worker.postMessage({ id, type: "event", payload: { fnName, args } });
+    });
+  }
   async cancelAndRestart() {
     for (const [, entry] of this.pending) entry.reject(new Error("Stopped -- restarting Python."));
     this.pending.clear();
@@ -738,17 +876,22 @@ class PyodideWorker {
 
 let worker;
 const fontCache = new Map(); // "family|weight" -> loaded Font
-const material = new THREE.MeshStandardMaterial({ color: 0x2a7ae2 });
 // fill= colors (any CSS/X11 color name -- three.js parses those natively)
-// are purely a preview aid and never touch the exported STL. Materials are
-// cached by color string and reused across runs, not disposed each time.
+// and opacity= (0-100, CMU-style) are purely a preview aid and never touch
+// the exported STL. Materials are cached by (color, opacity) pair and
+// reused across runs, not disposed each time -- keying on opacity too
+// matters here, since two shapes sharing a color but not an opacity would
+// otherwise silently share (and fight over) one material's opacity.
 const materialCache = new Map();
-function materialFor(fill) {
-  if (!fill) return material;
-  if (!materialCache.has(fill)) {
-    materialCache.set(fill, new THREE.MeshStandardMaterial({ color: new THREE.Color(fill) }));
+function materialFor(fill, opacity = 100) {
+  const key = (fill || "default") + "|" + opacity;
+  if (!materialCache.has(key)) {
+    const color = fill ? new THREE.Color(fill) : new THREE.Color(0x2a7ae2);
+    materialCache.set(key, new THREE.MeshStandardMaterial({
+      color, transparent: opacity < 100, opacity: opacity / 100,
+    }));
   }
-  return materialCache.get(fill);
+  return materialCache.get(key);
 }
 const evaluator = new Evaluator();
 let disposableGeometries = [];
@@ -886,7 +1029,7 @@ function buildBrush(node, matrix = new THREE.Matrix4()) {
       result = evaluator.evaluate(result, operand, op);
       disposableGeometries.push(result.geometry);
     }
-    result.material = materialFor(node.fill);
+    result.material = materialFor(node.fill, node.opacity);
     return result;
   }
   if (node.type === "translate") {
@@ -911,7 +1054,7 @@ function buildBrush(node, matrix = new THREE.Matrix4()) {
   const localOffset = new THREE.Matrix4().makeTranslation(node.x || 0, node.y || 0, node.z || 0);
   geometry.applyMatrix4(matrix.clone().multiply(localOffset));
   disposableGeometries.push(geometry);
-  const brush = new Brush(geometry, materialFor(node.fill));
+  const brush = new Brush(geometry, materialFor(node.fill, node.opacity));
   brush.updateMatrixWorld();
   return brush;
 }
@@ -1019,21 +1162,81 @@ function rebuildScene(shapes) {
   fitSceneToContent(camera, controls, modelGroup, gridState);
 }
 
+function showOutput(lines) {
+  if (!lines || lines.length === 0) {
+    outputEl.hidden = true;
+    outputEl.textContent = "";
+    return;
+  }
+  outputEl.hidden = false;
+  outputEl.textContent = lines.join("\n");
+}
+
+// Only relevant once onKeyPress is actually defined -- toggled fresh on
+// every real Run (never after an event call) so editing code that removes
+// onKeyPress cleanly drops the listener's effect, and clicking Stop (a
+// fresh interpreter, nothing defined yet) turns it off too.
+function setKeyboardActive(active) {
+  holder.classList.toggle("keyboard-active", active);
+  keyHintEl.hidden = !active;
+}
+
 let runToken = 0;
 async function run() {
   const token = ++runToken;
   clearError();
   try {
-    const shapesJson = await worker.run(codeEl.value);
+    const { shapes: shapesJson, hasOnKeyPress, hasOnNext, output } = await worker.run(codeEl.value);
     if (token !== runToken) return; // a newer run (or a Stop) happened meanwhile
     const shapes = JSON.parse(shapesJson);
     await ensureFontsLoaded(shapes);
     if (token !== runToken) return; // a newer run started meanwhile -- let it own the render
     rebuildScene(shapes);
+    showOutput(output);
+    setKeyboardActive(!!hasOnKeyPress);
+    nextBtn.hidden = !hasOnNext;
   } catch (err) {
-    if (token === runToken) showError(err.message);
+    if (token !== runToken) return;
+    showOutput(err.output); // whatever printed before the crash, if anything
+    showError(err.message);
   }
 }
+
+// Shared by both the keydown listener and the Next button -- same render
+// path as a normal run(), just invoking one already-defined function in
+// the still-running session instead of the whole script. The registry is
+// never cleared first (see Solid's mutability, and the worker's "event"
+// handler), so a shape kept from an earlier run/event survives and can be
+// mutated in place; calling Box()/etc. again just adds to what's there.
+async function runEvent(fnName, args) {
+  const token = ++runToken;
+  clearError();
+  try {
+    const { shapes: shapesJson, ran, output } = await worker.event(fnName, args);
+    if (token !== runToken) return;
+    if (!ran) return; // e.g. mid-edit, the function briefly isn't defined -- ignore quietly
+    const shapes = JSON.parse(shapesJson);
+    await ensureFontsLoaded(shapes);
+    if (token !== runToken) return;
+    rebuildScene(shapes);
+    showOutput(output);
+  } catch (err) {
+    if (token !== runToken) return;
+    showOutput(err.output);
+    showError(err.message);
+  }
+}
+
+// CMU names its named keys this way; everything else (letters, digits,
+// punctuation) already matches the raw browser event.key value.
+const KEY_NAMES = { ArrowUp: "Up", ArrowDown: "Down", ArrowLeft: "Left", ArrowRight: "Right", " ": "Space" };
+holder.addEventListener("keydown", (e) => {
+  if (!holder.classList.contains("keyboard-active")) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return; // don't hijack browser/system shortcuts
+  e.preventDefault();
+  runEvent("onKeyPress", [KEY_NAMES[e.key] || e.key]);
+});
+nextBtn.addEventListener("click", () => runEvent("onNext", []));
 
 async function stopAndRestart() {
   runToken++; // invalidate whatever run() call is currently awaiting the stuck worker
@@ -1041,6 +1244,9 @@ async function stopAndRestart() {
   stopBtn.disabled = true;
   statusEl.textContent = "Restarting Python…";
   clearError();
+  showOutput(null);
+  setKeyboardActive(false);
+  nextBtn.hidden = true;
   try {
     await worker.cancelAndRestart();
   } finally {

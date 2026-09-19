@@ -1,11 +1,13 @@
 ---
 layout: minimal
 title: "Position and Size"
-permalink: /python3d/intro/
+permalink: /python3d/position-size/
 ---
 
 <div class="lesson-crumbs">
   <a href="{{ '/python3d/' | relative_url }}">&larr; Python in 3D</a>
+  &middot;
+  <a href="{{ '/python3d/shapes/' | relative_url }}">&larr; Flat Shapes</a>
 </div>
 
 <div class="lesson" markdown="1">
@@ -36,10 +38,11 @@ canvas. We use `(x, y, z)` coordinates to talk about where something sits:
 - As `y` increases, you head away from you.
 - As `z` increases, you head up.
 
-If you've used a 2D canvas before, this is a little different: there,
-`y` increased as you went *down*, and `(0, 0)` was the top-left corner.
-Here, up is a real direction, so `z` takes over that job, and `x`/`y`
-share the flat ground, centered on zero instead of starting in a corner.
+If you just came from [Lesson 1]({{ '/python3d/shapes/' | relative_url }}),
+this is a little different: there, `y` increased as you went *down*, and
+`(0, 0)` was a corner. Here, up is a real direction, so `z` takes over that
+job, and `x`/`y` share the flat ground, centered on zero instead of starting
+in a corner.
 
 <div class="quiz" data-quiz="up" data-answer="up">
   <p class="quiz-prompt">If you increase a shape's <code>z</code> value, which way does it move?</p>
@@ -101,7 +104,7 @@ try again.
     tall, centered at <code>x=3</code> (leave <code>y</code> and
     <code>z</code> at their defaults).
   </p>
-  <div class="embed" data-embed="ex1" data-check="ex1">
+  <div class="embed" data-embed="ex2" data-check="ex2">
   <textarea class="embed-code">Box(1, 1, 1)</textarea>
   </div>
 </div>
@@ -172,7 +175,7 @@ Cheatsheet open while you work.
 
 <div class="playground-cards">
   <a class="playground-card" href="{{ '/python3d/transformations/' | relative_url }}">
-    <strong>Lesson 2: Transformations &rarr;</strong>
+    <strong>Lesson 3: Transformations &rarr;</strong>
     <span>Cylinders, rotate(), translate(), and how they compose.</span>
   </a>
   <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">
@@ -330,12 +333,54 @@ Cheatsheet open while you work.
     font: 11.5px/1.4 "SF Mono", Menlo, Consolas, monospace;
     white-space: pre-wrap;
   }
+  /* Unobtrusive by design: [hidden] means no space reserved at all unless
+     a run/event actually printed something. */
+  .embed-output {
+    margin: 0 10px 10px;
+    padding: 8px 10px;
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    color: #1b1f23;
+    font: 11.5px/1.4 "SF Mono", Menlo, Consolas, monospace;
+    white-space: pre-wrap;
+  }
+  .embed-output[hidden] { display: none; }
+  .embed-next {
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    background: white;
+    color: #57606a;
+    cursor: pointer;
+  }
   .embed-viewer {
     position: relative;
     height: 260px;
     border-top: 1px solid #d0d7de;
     background: #e9edf1;
   }
+  /* Only relevant once onKeyPress is defined -- see keyboard-active class
+     toggled in JS -- so it doesn't visually suggest every embed is
+     keyboard-interactive. */
+  .embed-viewer:focus { outline: none; }
+  .embed-viewer.keyboard-active:focus {
+    outline: 2px solid #2a7ae2;
+    outline-offset: -2px;
+  }
+  .embed-key-hint {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    font-size: 0.75rem;
+    color: #57606a;
+    background: rgba(255,255,255,0.85);
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .embed-key-hint[hidden] { display: none; }
   .embed-viewer canvas { display: block; }
 
   /* ---- checkpoint quiz ---- */
@@ -488,9 +533,23 @@ const MINI_SHIM = `
 _registry = []
 
 class Solid:
+    # Attribute access proxies straight into .data, so a shape kept from
+    # an earlier run stays a live handle: shape.x += 3 (or .fill =, .opacity
+    # =, any field already in its data dict) mutates it in place. This is
+    # what makes onKeyPress/onNext useful for moving an existing shape,
+    # not just drawing new ones -- see run()/runEvent() below, which never
+    # clear the registry before calling into student code, so a shape you
+    # keep a reference to survives and reflects whatever you changed on it.
     def __init__(self, data):
-        self.data = data
+        self.__dict__["data"] = data
         _registry.append(self)
+    def __getattr__(self, name):
+        data = self.__dict__["data"]
+        if name in data:
+            return data[name]
+        raise AttributeError(f"'Solid' object has no attribute '{name}'")
+    def __setattr__(self, name, value):
+        self.__dict__["data"][name] = value
 
 def _consume(solid):
     if solid in _registry:
@@ -498,18 +557,18 @@ def _consume(solid):
 
 SEGMENTS = 32
 
-def Box(width, depth, height, x=0, y=0, z=0, fill=None, align="center", center=False, fillet=0):
+def Box(width, depth, height, x=0, y=0, z=0, fill=None, align="center", center=False, fillet=0, opacity=100):
     return Solid({
         "type": "box", "width": width, "depth": depth, "height": height,
         "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
-        "fillet": fillet,
+        "fillet": fillet, "opacity": opacity,
     })
 
-def Cylinder(radius, height, x=0, y=0, z=0, fill=None, align="center", center=False, segments=None):
+def Cylinder(radius, height, x=0, y=0, z=0, fill=None, align="center", center=False, segments=None, opacity=100):
     return Solid({
         "type": "cylinder", "radius": radius, "height": height,
         "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
-        "segments": SEGMENTS if segments is None else segments,
+        "segments": SEGMENTS if segments is None else segments, "opacity": opacity,
     })
 
 def translate(solid, x=0, y=0, z=0):
@@ -517,13 +576,17 @@ def translate(solid, x=0, y=0, z=0):
     return Solid({
         "type": "translate", "x": x, "y": y, "z": z,
         "child": solid.data, "fill": solid.data.get("fill"),
+        "opacity": solid.data.get("opacity", 100),
     })
 
 def rotate(solid, angle, axis="z"):
     # angle in degrees. axis is "x"/"y"/"z", or pass [rx, ry, rz] to rotate
     # around all three at once (x first, then y, then z).
     _consume(solid)
-    data = {"type": "rotate", "child": solid.data, "fill": solid.data.get("fill")}
+    data = {
+        "type": "rotate", "child": solid.data, "fill": solid.data.get("fill"),
+        "opacity": solid.data.get("opacity", 100),
+    }
     if isinstance(angle, (list, tuple)):
         data["mode"] = "vector"
         data["angles"] = list(angle)
@@ -534,13 +597,21 @@ def rotate(solid, angle, axis="z"):
     return Solid(data)
 
 def _reset():
+    # Every real Run gets a genuinely fresh namespace, not just an empty
+    # shape registry -- see studio.html for why (a stale onKeyPress/onNext
+    # from a previous run would otherwise keep responding).
     global SEGMENTS
     SEGMENTS = 32
     _registry.clear()
+    for name in list(globals().keys()):
+        if name not in _BASE_NAMES:
+            del globals()[name]
 
 def _dump():
     import json
     return json.dumps([s.data for s in _registry])
+
+_BASE_NAMES = set(globals().keys()) | {"_BASE_NAMES"}
 `;
 
 // Python runs in a Web Worker, shared by every embed on this page, so a
@@ -552,26 +623,62 @@ def _dump():
 // outright in some Chromium builds even though fetch() of the same URL
 // succeeds, while the ESM build works end to end.
 const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.mjs";
+// onKeyPress/onNext (if the student's code defines them) are invoked
+// straight into this same already-running session -- the registry is
+// never cleared first, so a shape kept from the initial run (or an
+// earlier event) survives and can be mutated in place (see Solid's
+// __setattr__ above) rather than needing to be redrawn from scratch.
 const WORKER_SCRIPT = `
 let pyodide = null;
+let outputLines = [];
+function hasFn(name) {
+  const fn = pyodide.globals.get(name);
+  const ok = !!fn && typeof fn === "function";
+  if (fn && fn.destroy) fn.destroy();
+  return ok;
+}
 self.onmessage = async (e) => {
   const { id, type, payload } = e.data;
   try {
     if (type === "init") {
       const { loadPyodide } = await import(payload.pyodideUrl);
-      pyodide = await loadPyodide();
+      pyodide = await loadPyodide({
+        stdout: (msg) => outputLines.push(msg),
+        stderr: (msg) => outputLines.push(msg),
+      });
       pyodide.runPython(payload.shim);
       self.postMessage({ id, type: "ready" });
       return;
     }
     if (type === "run") {
+      outputLines = [];
       pyodide.runPython("_reset()");
       pyodide.runPython(payload.code);
       const shapes = pyodide.runPython("_dump()");
-      self.postMessage({ id, type: "result", shapes });
+      self.postMessage({
+        id, type: "result", shapes,
+        hasOnKeyPress: hasFn("onKeyPress"), hasOnNext: hasFn("onNext"),
+        output: outputLines,
+      });
+      return;
+    }
+    if (type === "event") {
+      const fn = pyodide.globals.get(payload.fnName);
+      let ran = false, shapes = null;
+      outputLines = [];
+      if (fn && typeof fn === "function") {
+        try {
+          fn(...(payload.args || []));
+          ran = true;
+        } finally {
+          fn.destroy();
+        }
+        shapes = pyodide.runPython("_dump()");
+      }
+      self.postMessage({ id, type: "result", shapes, ran, output: outputLines });
     }
   } catch (err) {
-    self.postMessage({ id, type: "error", message: err.message });
+    self.postMessage({ id, type: "error", message: err.message, output: outputLines });
   }
 };
 `;
@@ -588,13 +695,19 @@ class PyodideWorker {
     const blob = new Blob([WORKER_SCRIPT], { type: "application/javascript" });
     this.worker = new Worker(URL.createObjectURL(blob), { type: "module" });
     this.worker.onmessage = (e) => {
-      const { id, type, message, shapes } = e.data;
+      const { id, type, message, output, ...result } = e.data;
       const entry = this.pending.get(id);
       if (!entry) return;
       this.pending.delete(id);
-      if (type === "error") entry.reject(new Error(message));
-      else if (type === "result") entry.resolve(shapes);
-      else entry.resolve();
+      if (type === "error") {
+        const err = new Error(message);
+        err.output = output;
+        entry.reject(err);
+      } else if (type === "result") {
+        entry.resolve({ ...result, output });
+      } else {
+        entry.resolve();
+      }
     };
     const id = this.nextId++;
     this.readyPromise = new Promise((resolve, reject) => this.pending.set(id, { resolve, reject }));
@@ -608,6 +721,13 @@ class PyodideWorker {
       this.worker.postMessage({ id, type: "run", payload: { code } });
     });
   }
+  event(fnName, args = []) {
+    const id = this.nextId++;
+    return new Promise((resolve, reject) => {
+      this.pending.set(id, { resolve, reject });
+      this.worker.postMessage({ id, type: "event", payload: { fnName, args } });
+    });
+  }
   async cancelAndRestart() {
     for (const [, entry] of this.pending) entry.reject(new Error("Stopped -- restarting Python."));
     this.pending.clear();
@@ -617,6 +737,10 @@ class PyodideWorker {
   }
 }
 
+// CMU names its named keys this way; everything else (letters, digits,
+// punctuation) already matches the raw browser event.key value.
+const KEY_NAMES = { ArrowUp: "Up", ArrowDown: "Down", ArrowLeft: "Left", ArrowRight: "Right", " ": "Space" };
+
 let worker;
 let embeds = [];
 async function stopAndRestart() {
@@ -625,6 +749,9 @@ async function stopAndRestart() {
     e.stopBtn.disabled = true;
     e.statusEl.textContent = "Restarting Python…";
     e.clearError();
+    e.showOutput(null);
+    e.setKeyboardActive(false);
+    e.nextBtn.hidden = true;
   });
   try {
     await worker.cancelAndRestart();
@@ -637,14 +764,19 @@ async function stopAndRestart() {
   }
 }
 
-const material = new THREE.MeshStandardMaterial({ color: 0x2a7ae2 });
+// Materials are cached by (color, opacity) pair, not just color -- two
+// shapes sharing a fill but not an opacity would otherwise silently share
+// (and fight over) one material's opacity.
 const materialCache = new Map();
-function materialFor(fill) {
-  if (!fill) return material;
-  if (!materialCache.has(fill)) {
-    materialCache.set(fill, new THREE.MeshStandardMaterial({ color: new THREE.Color(fill) }));
+function materialFor(fill, opacity = 100) {
+  const key = (fill || "default") + "|" + opacity;
+  if (!materialCache.has(key)) {
+    const color = fill ? new THREE.Color(fill) : new THREE.Color(0x2a7ae2);
+    materialCache.set(key, new THREE.MeshStandardMaterial({
+      color, transparent: opacity < 100, opacity: opacity / 100,
+    }));
   }
-  return materialCache.get(fill);
+  return materialCache.get(key);
 }
 
 // Same align redefinition as the Studio: "top"/"bottom" describe y (depth)
@@ -782,7 +914,7 @@ function buildMesh(node, matrix, disposables) {
   const localOffset = new THREE.Matrix4().makeTranslation(node.x || 0, node.y || 0, node.z || 0);
   geometry.applyMatrix4(matrix.clone().multiply(localOffset));
   disposables.push(geometry);
-  return new THREE.Mesh(geometry, materialFor(node.fill));
+  return new THREE.Mesh(geometry, materialFor(node.fill, node.opacity));
 }
 
 // The exercise checkers: given the parsed shape list from a run, return
@@ -790,7 +922,7 @@ function buildMesh(node, matrix, disposables) {
 // one or two properties an exercise is actually about.
 const near = (a, b, tol = 0.6) => Math.abs(a - b) <= tol;
 const CHECKERS = {
-  ex1(shapes) {
+  ex2(shapes) {
     const box = shapes.find((s) => s.type === "box");
     if (!box) return { pass: false, message: "I don't see a Box yet -- try calling Box(...)." };
     if (!near(box.width, 4) || !near(box.depth, 2) || !near(box.height, 3)) {
@@ -831,6 +963,11 @@ class Embed {
     this.errorEl.className = "embed-error";
     container.appendChild(this.errorEl);
 
+    this.outputEl = document.createElement("div");
+    this.outputEl.className = "embed-output";
+    this.outputEl.hidden = true;
+    container.appendChild(this.outputEl);
+
     const toolbar = document.createElement("div");
     toolbar.className = "embed-toolbar";
 
@@ -846,6 +983,13 @@ class Embed {
     this.stopBtn.title = "Stuck in a loop? This restarts Python.";
     this.stopBtn.disabled = true;
     toolbar.appendChild(this.stopBtn);
+
+    this.nextBtn = document.createElement("button");
+    this.nextBtn.className = "embed-next";
+    this.nextBtn.textContent = "Next";
+    this.nextBtn.title = "Calls onNext() again.";
+    this.nextBtn.hidden = true;
+    toolbar.appendChild(this.nextBtn);
 
     this.resetBtn = document.createElement("button");
     this.resetBtn.className = "embed-reset";
@@ -879,7 +1023,14 @@ class Embed {
 
     this.viewerEl = document.createElement("div");
     this.viewerEl.className = "embed-viewer";
+    this.viewerEl.tabIndex = 0;
     container.appendChild(this.viewerEl);
+
+    this.keyHintEl = document.createElement("div");
+    this.keyHintEl.className = "embed-key-hint";
+    this.keyHintEl.textContent = "Click here, then press a key";
+    this.keyHintEl.hidden = true;
+    this.viewerEl.appendChild(this.keyHintEl);
 
     const zoomControls = document.createElement("div");
     zoomControls.className = "embed-zoom-controls";
@@ -977,6 +1128,7 @@ class Embed {
   bindEvents() {
     this.runBtn.addEventListener("click", () => this.run());
     this.stopBtn.addEventListener("click", () => stopAndRestart());
+    this.nextBtn.addEventListener("click", () => this.runEvent("onNext", []));
     this.resetBtn.addEventListener("click", () => {
       this.codeEl.value = this.starterCode;
       if (this.feedbackEl) this.feedbackEl.className = "check-feedback";
@@ -988,6 +1140,12 @@ class Embed {
     this.exportBtn.addEventListener("click", () => this.exportSTL());
     this.zoomInBtn.addEventListener("click", () => this.zoomBy(-120));
     this.zoomOutBtn.addEventListener("click", () => this.zoomBy(120));
+    this.viewerEl.addEventListener("keydown", (e) => {
+      if (!this.viewerEl.classList.contains("keyboard-active")) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return; // don't hijack browser/system shortcuts
+      e.preventDefault();
+      this.runEvent("onKeyPress", [KEY_NAMES[e.key] || e.key]);
+    });
   }
 
   showError(message) {
@@ -998,17 +1156,63 @@ class Embed {
     this.errorEl.style.display = "none";
   }
 
+  showOutput(lines) {
+    if (!lines || lines.length === 0) {
+      this.outputEl.hidden = true;
+      this.outputEl.textContent = "";
+      return;
+    }
+    this.outputEl.hidden = false;
+    this.outputEl.textContent = lines.join("\n");
+  }
+
+  // Only relevant once onKeyPress is actually defined -- toggled fresh on
+  // every real Run (never after an event call), so editing code that
+  // removes onKeyPress cleanly drops the listener's effect.
+  setKeyboardActive(active) {
+    this.viewerEl.classList.toggle("keyboard-active", active);
+    this.keyHintEl.hidden = !active;
+  }
+
   async run() {
     const token = ++this.runToken;
     this.clearError();
     try {
-      const shapesJson = await worker.run(this.codeEl.value);
+      const { shapes: shapesJson, hasOnKeyPress, hasOnNext, output } = await worker.run(this.codeEl.value);
       if (token !== this.runToken) return; // a newer run (or a Stop) happened meanwhile
       this.lastShapes = JSON.parse(shapesJson);
       this.rebuild(this.lastShapes);
+      this.showOutput(output);
+      this.setKeyboardActive(!!hasOnKeyPress);
+      this.nextBtn.hidden = !hasOnNext;
     } catch (err) {
       if (token !== this.runToken) return;
       this.lastShapes = null;
+      this.showOutput(err.output);
+      this.showError(err.message);
+    }
+  }
+
+  // Shared by both the keydown listener and the Next button -- same render
+  // path as a normal run(), just invoking one already-defined function in
+  // the still-running session instead of the whole script. The registry is
+  // never cleared first (see Solid's mutability, and the worker's "event"
+  // handler), so a shape kept from an earlier run/event survives and can
+  // be mutated in place; calling Box()/Cylinder() again just adds to
+  // what's there.
+  async runEvent(fnName, args) {
+    const token = ++this.runToken;
+    this.clearError();
+    try {
+      const { shapes: shapesJson, ran, output } = await worker.event(fnName, args);
+      if (token !== this.runToken) return;
+      if (!ran) return; // e.g. mid-edit, the function briefly isn't defined -- ignore quietly
+      this.lastShapes = JSON.parse(shapesJson);
+      this.rebuild(this.lastShapes);
+      this.showOutput(output);
+    } catch (err) {
+      if (token !== this.runToken) return;
+      this.showOutput(err.output);
       this.showError(err.message);
     }
   }
@@ -1121,7 +1325,7 @@ function initLessonProgress(lessonId, order) {
   };
 }
 
-const progress = initLessonProgress("intro", ["up", "boxcall", "ex1", "fillet"]);
+const progress = initLessonProgress("position-size", ["up", "boxcall", "ex2", "fillet"]);
 
 async function main() {
   setupQuizzes();
