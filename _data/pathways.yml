@@ -41,9 +41,9 @@
     library of lesson cards covering water physics, electricity, control,
     software, and ocean science.
 
-- id: 3d-playground
-  title: "3D Playground"
-  url: /3d-playground/
+- id: python3d
+  title: "Python in 3D"
+  url: /python3d/
   status: in-progress
   blurb: >-
     Write Python, watch it become an actual 3D model you can spin around

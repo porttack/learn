@@ -1,12 +1,12 @@
 ---
 layout: minimal
-title: "3D Playground"
-permalink: /3d-playground/
+title: "Python in 3D"
+permalink: /python3d/
 ---
 
 <div class="playground-landing" markdown="1">
 
-# 3D Playground
+# Python in 3D
 
 You already know how to draw shapes in Python: a circle here, a rectangle
 there, maybe a label with some text. This is the same idea, with one more
@@ -15,19 +15,19 @@ Instead of pixels, what you build is a real 3D model you can spin around,
 print, and hold.
 
 <div class="playground-cards">
-  <a class="playground-card" href="{{ '/3d-playground/intro/' | relative_url }}">
+  <a class="playground-card" href="{{ '/python3d/intro/' | relative_url }}">
     <strong>Lesson 1: Start Here &rarr;</strong>
     <span>A short first lesson: position, size, and your first few boxes.</span>
   </a>
-  <a class="playground-card" href="{{ '/3d-playground/transformations/' | relative_url }}">
+  <a class="playground-card" href="{{ '/python3d/transformations/' | relative_url }}">
     <strong>Lesson 2: Transformations &rarr;</strong>
     <span>Cylinders, rotate(), translate(), and how they compose.</span>
   </a>
-  <a class="playground-card" href="{{ '/3d-playground/studio/' | relative_url }}">
+  <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
     <span>Write Python on the left, watch the model update live on the right.</span>
   </a>
-  <a class="playground-card" href="{{ '/3d-playground/cheatsheet/' | relative_url }}">
+  <a class="playground-card" href="{{ '/python3d/cheatsheet/' | relative_url }}">
     <strong>Cheatsheet &rarr;</strong>
     <span>Every shape, transform, and option on one page.</span>
   </a>
