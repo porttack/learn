@@ -196,6 +196,7 @@ linear_extrude(label, height=2.5, x=6)</textarea>
     <div id="error"></div>
     <div class="toolbar">
       <button id="run" disabled>Run</button>
+      <button id="stop" class="secondary" disabled title="Stuck in a loop? This restarts Python.">Stop</button>
       <button id="download" class="secondary" disabled>Download STL</button>
       <span id="status">Loading Python&hellip;</span>
     </div>
@@ -221,7 +222,6 @@ linear_extrude(label, height=2.5, x=6)</textarea>
   }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -650,12 +650,93 @@ def _dump():
 `;
 
 const runBtn = document.getElementById("run");
+const stopBtn = document.getElementById("stop");
 const downloadBtn = document.getElementById("download");
 const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
 const codeEl = document.getElementById("code");
 
-let pyodide;
+// Pyodide runs in a Web Worker, not the main thread -- a runaway while/for
+// loop in student code blocks whatever thread it's running on, and if that
+// were the main thread, the whole page (including the Stop button itself)
+// would freeze with it. GitHub Pages can't set the COOP/COEP headers
+// SharedArrayBuffer-based interruption needs, so there's no graceful "just
+// stop this one call" available -- Stop means terminate the whole worker
+// and boot a fresh one, which takes a few seconds, same as the initial load.
+const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.mjs";
+// A classic worker's importScripts() fails to load pyodide.js from this CDN in
+// some Chromium builds (confirmed: fetch() of the exact same URL succeeds, so
+// it's not a network/CORS problem -- importScripts' own loader specifically
+// rejects it). The ESM build loaded via dynamic import() in a module worker
+// uses the standard module-fetch pipeline instead and doesn't hit this.
+const WORKER_SCRIPT = `
+let pyodide = null;
+self.onmessage = async (e) => {
+  const { id, type, payload } = e.data;
+  try {
+    if (type === "init") {
+      const { loadPyodide } = await import(payload.pyodideUrl);
+      pyodide = await loadPyodide();
+      pyodide.runPython(payload.shim);
+      self.postMessage({ id, type: "ready" });
+      return;
+    }
+    if (type === "run") {
+      pyodide.runPython("_reset()");
+      pyodide.runPython(payload.code);
+      const shapes = pyodide.runPython("_dump()");
+      self.postMessage({ id, type: "result", shapes });
+    }
+  } catch (err) {
+    self.postMessage({ id, type: "error", message: err.message });
+  }
+};
+`;
+
+class PyodideWorker {
+  constructor(pyodideUrl, shim) {
+    this.pyodideUrl = pyodideUrl;
+    this.shim = shim;
+    this.nextId = 1;
+    this.pending = new Map();
+    this._spawn();
+  }
+  _spawn() {
+    const blob = new Blob([WORKER_SCRIPT], { type: "application/javascript" });
+    this.worker = new Worker(URL.createObjectURL(blob), { type: "module" });
+    this.worker.onmessage = (e) => {
+      const { id, type, message, shapes } = e.data;
+      const entry = this.pending.get(id);
+      if (!entry) return;
+      this.pending.delete(id);
+      if (type === "error") entry.reject(new Error(message));
+      else if (type === "result") entry.resolve(shapes);
+      else entry.resolve();
+    };
+    const id = this.nextId++;
+    this.readyPromise = new Promise((resolve, reject) => this.pending.set(id, { resolve, reject }));
+    this.worker.postMessage({ id, type: "init", payload: { pyodideUrl: this.pyodideUrl, shim: this.shim } });
+  }
+  ready() {
+    return this.readyPromise;
+  }
+  run(code) {
+    const id = this.nextId++;
+    return new Promise((resolve, reject) => {
+      this.pending.set(id, { resolve, reject });
+      this.worker.postMessage({ id, type: "run", payload: { code } });
+    });
+  }
+  async cancelAndRestart() {
+    for (const [, entry] of this.pending) entry.reject(new Error("Stopped -- restarting Python."));
+    this.pending.clear();
+    this.worker.terminate();
+    this._spawn();
+    await this.ready();
+  }
+}
+
+let worker;
 const fontCache = new Map(); // "family|weight" -> loaded Font
 const material = new THREE.MeshStandardMaterial({ color: 0x2a7ae2 });
 // fill= colors (any CSS/X11 color name -- three.js parses those natively)
@@ -943,9 +1024,9 @@ async function run() {
   const token = ++runToken;
   clearError();
   try {
-    pyodide.runPython("_reset()");
-    pyodide.runPython(codeEl.value);
-    const shapes = JSON.parse(pyodide.runPython("_dump()"));
+    const shapesJson = await worker.run(codeEl.value);
+    if (token !== runToken) return; // a newer run (or a Stop) happened meanwhile
+    const shapes = JSON.parse(shapesJson);
     await ensureFontsLoaded(shapes);
     if (token !== runToken) return; // a newer run started meanwhile -- let it own the render
     rebuildScene(shapes);
@@ -953,6 +1034,22 @@ async function run() {
     if (token === runToken) showError(err.message);
   }
 }
+
+async function stopAndRestart() {
+  runToken++; // invalidate whatever run() call is currently awaiting the stuck worker
+  runBtn.disabled = true;
+  stopBtn.disabled = true;
+  statusEl.textContent = "Restarting Python…";
+  clearError();
+  try {
+    await worker.cancelAndRestart();
+  } finally {
+    statusEl.textContent = "Ready";
+    runBtn.disabled = false;
+    stopBtn.disabled = false;
+  }
+}
+stopBtn.addEventListener("click", stopAndRestart);
 
 // Plain <textarea> treats Tab as "move focus to the next control," not
 // "indent" -- without this, writing a def block is basically unworkable.
@@ -1011,11 +1108,11 @@ function loadDefaultFont() {
 }
 
 async function main() {
-  const [loadedPyodide] = await Promise.all([loadPyodide(), loadDefaultFont()]);
-  pyodide = loadedPyodide;
-  pyodide.runPython(PYTHON_SHIM);
+  worker = new PyodideWorker(PYODIDE_URL, PYTHON_SHIM);
+  await Promise.all([worker.ready(), loadDefaultFont()]);
   statusEl.textContent = "Ready";
   runBtn.disabled = false;
+  stopBtn.disabled = false;
   run();
 }
 main();
