@@ -259,7 +259,7 @@ Cheatsheet open while you work.
     cursor: pointer;
   }
   .embed-run:disabled { opacity: 0.5; cursor: default; }
-  .embed-reset {
+  .embed-reset, .embed-stop {
     font: inherit;
     font-size: 0.85rem;
     padding: 6px 14px;
@@ -269,6 +269,7 @@ Cheatsheet open while you work.
     color: #57606a;
     cursor: pointer;
   }
+  .embed-stop:disabled { opacity: 0.5; cursor: default; }
   .embed-check {
     font: inherit;
     font-weight: 600;
@@ -472,7 +473,6 @@ Cheatsheet open while you work.
   }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
@@ -543,7 +543,100 @@ def _dump():
     return json.dumps([s.data for s in _registry])
 `;
 
-let pyodide;
+// Python runs in a Web Worker, shared by every embed on this page, so a
+// runaway loop in one exercise can't freeze the tab. See studio.html for
+// the full rationale (COOP/COEP headers aren't available on GitHub Pages,
+// so "Stop" always means terminate-and-respawn the whole interpreter) and
+// for why the worker loads pyodide's ESM build via dynamic import() rather
+// than importScripts(): importScripts() of this exact CDN file fails
+// outright in some Chromium builds even though fetch() of the same URL
+// succeeds, while the ESM build works end to end.
+const PYODIDE_URL = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.mjs";
+const WORKER_SCRIPT = `
+let pyodide = null;
+self.onmessage = async (e) => {
+  const { id, type, payload } = e.data;
+  try {
+    if (type === "init") {
+      const { loadPyodide } = await import(payload.pyodideUrl);
+      pyodide = await loadPyodide();
+      pyodide.runPython(payload.shim);
+      self.postMessage({ id, type: "ready" });
+      return;
+    }
+    if (type === "run") {
+      pyodide.runPython("_reset()");
+      pyodide.runPython(payload.code);
+      const shapes = pyodide.runPython("_dump()");
+      self.postMessage({ id, type: "result", shapes });
+    }
+  } catch (err) {
+    self.postMessage({ id, type: "error", message: err.message });
+  }
+};
+`;
+
+class PyodideWorker {
+  constructor(pyodideUrl, shim) {
+    this.pyodideUrl = pyodideUrl;
+    this.shim = shim;
+    this.nextId = 1;
+    this.pending = new Map();
+    this._spawn();
+  }
+  _spawn() {
+    const blob = new Blob([WORKER_SCRIPT], { type: "application/javascript" });
+    this.worker = new Worker(URL.createObjectURL(blob), { type: "module" });
+    this.worker.onmessage = (e) => {
+      const { id, type, message, shapes } = e.data;
+      const entry = this.pending.get(id);
+      if (!entry) return;
+      this.pending.delete(id);
+      if (type === "error") entry.reject(new Error(message));
+      else if (type === "result") entry.resolve(shapes);
+      else entry.resolve();
+    };
+    const id = this.nextId++;
+    this.readyPromise = new Promise((resolve, reject) => this.pending.set(id, { resolve, reject }));
+    this.worker.postMessage({ id, type: "init", payload: { pyodideUrl: this.pyodideUrl, shim: this.shim } });
+  }
+  ready() { return this.readyPromise; }
+  run(code) {
+    const id = this.nextId++;
+    return new Promise((resolve, reject) => {
+      this.pending.set(id, { resolve, reject });
+      this.worker.postMessage({ id, type: "run", payload: { code } });
+    });
+  }
+  async cancelAndRestart() {
+    for (const [, entry] of this.pending) entry.reject(new Error("Stopped -- restarting Python."));
+    this.pending.clear();
+    this.worker.terminate();
+    this._spawn();
+    await this.ready();
+  }
+}
+
+let worker;
+let embeds = [];
+async function stopAndRestart() {
+  embeds.forEach((e) => {
+    e.runBtn.disabled = true;
+    e.stopBtn.disabled = true;
+    e.statusEl.textContent = "Restarting Python…";
+    e.clearError();
+  });
+  try {
+    await worker.cancelAndRestart();
+  } finally {
+    embeds.forEach((e) => {
+      e.runBtn.disabled = false;
+      e.stopBtn.disabled = false;
+      e.statusEl.textContent = "Ready -- click Run";
+    });
+  }
+}
+
 const material = new THREE.MeshStandardMaterial({ color: 0x2a7ae2 });
 const materialCache = new Map();
 function materialFor(fill) {
@@ -717,6 +810,7 @@ class Embed {
     this.starterCode = seedTextarea.value;
     this.checkerName = container.dataset.check;
     this.disposables = [];
+    this.runToken = 0;
     this.buildDom(container);
     this.setupScene();
     this.bindEvents();
@@ -745,6 +839,13 @@ class Embed {
     this.runBtn.textContent = "Run";
     this.runBtn.disabled = true;
     toolbar.appendChild(this.runBtn);
+
+    this.stopBtn = document.createElement("button");
+    this.stopBtn.className = "embed-stop";
+    this.stopBtn.textContent = "Stop";
+    this.stopBtn.title = "Stuck in a loop? This restarts Python.";
+    this.stopBtn.disabled = true;
+    toolbar.appendChild(this.stopBtn);
 
     this.resetBtn = document.createElement("button");
     this.resetBtn.className = "embed-reset";
@@ -875,6 +976,7 @@ class Embed {
 
   bindEvents() {
     this.runBtn.addEventListener("click", () => this.run());
+    this.stopBtn.addEventListener("click", () => stopAndRestart());
     this.resetBtn.addEventListener("click", () => {
       this.codeEl.value = this.starterCode;
       if (this.feedbackEl) this.feedbackEl.className = "check-feedback";
@@ -896,14 +998,16 @@ class Embed {
     this.errorEl.style.display = "none";
   }
 
-  run() {
+  async run() {
+    const token = ++this.runToken;
     this.clearError();
     try {
-      pyodide.runPython("_reset()");
-      pyodide.runPython(this.codeEl.value);
-      this.lastShapes = JSON.parse(pyodide.runPython("_dump()"));
+      const shapesJson = await worker.run(this.codeEl.value);
+      if (token !== this.runToken) return; // a newer run (or a Stop) happened meanwhile
+      this.lastShapes = JSON.parse(shapesJson);
       this.rebuild(this.lastShapes);
     } catch (err) {
+      if (token !== this.runToken) return;
       this.lastShapes = null;
       this.showError(err.message);
     }
@@ -935,6 +1039,7 @@ class Embed {
 
   ready() {
     this.runBtn.disabled = false;
+    this.stopBtn.disabled = false;
     this.statusEl.textContent = "Ready -- click Run";
   }
 }
@@ -1020,9 +1125,9 @@ const progress = initLessonProgress("intro", ["up", "boxcall", "ex1", "fillet"])
 
 async function main() {
   setupQuizzes();
-  const embeds = [...document.querySelectorAll("[data-embed]")].map((el) => new Embed(el));
-  pyodide = await loadPyodide();
-  pyodide.runPython(MINI_SHIM);
+  embeds = [...document.querySelectorAll("[data-embed]")].map((el) => new Embed(el));
+  worker = new PyodideWorker(PYODIDE_URL, MINI_SHIM);
+  await worker.ready();
   embeds.forEach((e) => e.ready());
 }
 main();
