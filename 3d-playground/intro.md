@@ -44,10 +44,10 @@ share the flat ground, centered on zero instead of starting in a corner.
 <div class="quiz" data-quiz="up" data-answer="up">
   <p class="quiz-prompt">If you increase a shape's <code>z</code> value, which way does it move?</p>
   <div class="quiz-options">
-    <button class="quiz-option" data-key="up">Up</button>
     <button class="quiz-option" data-key="down">Down</button>
-    <button class="quiz-option" data-key="right">Right</button>
     <button class="quiz-option" data-key="toward">Toward you</button>
+    <button class="quiz-option" data-key="up">Up</button>
+    <button class="quiz-option" data-key="right">Right</button>
   </div>
   <p class="quiz-feedback"></p>
 </div>
@@ -79,9 +79,9 @@ start counting from?)
 <div class="quiz" data-quiz="boxcall" data-answer="a">
   <p class="quiz-prompt">Which call makes a box that's 4 wide, 4 deep, 10 tall, sitting on the ground, centered above <code>x=3, y=0</code>?</p>
   <div class="quiz-options quiz-options-code">
-    <button class="quiz-option" data-key="a"><code>Box(4, 4, 10, x=3)</code></button>
-    <button class="quiz-option" data-key="b"><code>Box(4, 4, 10, z=3)</code></button>
     <button class="quiz-option" data-key="c"><code>Box(4, 10, 4, x=3)</code></button>
+    <button class="quiz-option" data-key="b"><code>Box(4, 4, 10, z=3)</code></button>
+    <button class="quiz-option" data-key="a"><code>Box(4, 4, 10, x=3)</code></button>
     <button class="quiz-option" data-key="d"><code>Box(10, 4, 4, x=3)</code></button>
   </div>
   <p class="quiz-feedback"></p>
@@ -731,8 +731,7 @@ class Embed {
 
   ready() {
     this.runBtn.disabled = false;
-    this.statusEl.textContent = "Ready";
-    this.run();
+    this.statusEl.textContent = "Ready -- click Run";
   }
 }
 
