@@ -126,6 +126,17 @@ thing.) It's not just decoration, either: rounded corners and edges are
 genuinely easier to 3D print cleanly and are less likely to snag or crack
 than a sharp corner.
 
+<div class="quiz" data-quiz="fillet" data-answer="clamped">
+  <p class="quiz-prompt">What actually happens if you set <code>fillet=</code> to something bigger than half the box's shortest side?</p>
+  <div class="quiz-options">
+    <button class="quiz-option" data-key="error">Python raises an error</button>
+    <button class="quiz-option" data-key="bigger">The box gets bigger to fit the rounding</button>
+    <button class="quiz-option" data-key="clamped">It's automatically limited to the largest size that still fits</button>
+    <button class="quiz-option" data-key="nothing">Nothing -- fillet= is ignored past that point</button>
+  </div>
+  <p class="quiz-feedback"></p>
+</div>
+
 ## Errors
 
 Python is very picky. Here are some rules to follow:
@@ -1005,7 +1016,7 @@ function initLessonProgress(lessonId, order) {
   };
 }
 
-const progress = initLessonProgress("intro", ["up", "boxcall", "ex1"]);
+const progress = initLessonProgress("intro", ["up", "boxcall", "ex1", "fillet"]);
 
 async function main() {
   setupQuizzes();

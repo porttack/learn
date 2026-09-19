@@ -46,6 +46,17 @@ Notice `standing` never shows up on its own here. That's on purpose:
 you handed someone a piece of paper and they folded it -- you don't also
 still have an unfolded copy. Only the result of `rotate(...)` renders.
 
+<div class="quiz" data-quiz="consumption" data-answer="justb">
+  <p class="quiz-prompt">You run <code>a = Cylinder(1, 3)</code> then <code>b = rotate(a, 90, axis="x")</code>, and nothing else. What shows up in the scene?</p>
+  <div class="quiz-options">
+    <button class="quiz-option" data-key="justa">Just a, standing up</button>
+    <button class="quiz-option" data-key="justb">Just b, lying down</button>
+    <button class="quiz-option" data-key="both">Both a and b</button>
+    <button class="quiz-option" data-key="neither">Neither -- you have to call a separate draw function</button>
+  </div>
+  <p class="quiz-feedback"></p>
+</div>
+
 <div class="quiz" data-quiz="rotate-z" data-answer="same">
   <p class="quiz-prompt">If you rotate a standing cylinder 90&deg; around <code>axis="z"</code>, what happens to how it looks?</p>
   <div class="quiz-options">
@@ -84,6 +95,17 @@ rotated into.
 <div class="embed" data-embed="translate1">
 <textarea class="embed-code">lying = rotate(Cylinder(1, 4), 90, axis="y")
 translate(lying, z=1)</textarea>
+</div>
+
+<div class="quiz" data-quiz="translate-why" data-answer="rotated-up">
+  <p class="quiz-prompt">Why does the example above use <code>translate(lying, z=1)</code> instead of just building the cylinder with <code>z=1</code> in the first place?</p>
+  <div class="quiz-options">
+    <button class="quiz-option" data-key="rotated-up">Because it's already been rotated, so its own z doesn't mean "up" the same way anymore</button>
+    <button class="quiz-option" data-key="required">Because rotate() always requires a translate() afterward</button>
+    <button class="quiz-option" data-key="no-diff">There's no real difference, it's just a style choice</button>
+    <button class="quiz-option" data-key="faster">translate() is faster to run than passing z= directly</button>
+  </div>
+  <p class="quiz-feedback"></p>
 </div>
 
 ## Order Matters
@@ -991,7 +1013,7 @@ function initLessonProgress(lessonId, order) {
   };
 }
 
-const progress = initLessonProgress("transformations", ["rotate-z", "order", "ex2", "segments"]);
+const progress = initLessonProgress("transformations", ["consumption", "rotate-z", "translate-why", "order", "ex2", "segments"]);
 
 async function main() {
   setupQuizzes();
