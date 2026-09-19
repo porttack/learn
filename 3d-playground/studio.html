@@ -461,13 +461,72 @@ def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="cent
 # added to the scene until you extrude it (same as Rect/Circle in CMU:
 # nothing shows up until you draw it).
 
-def Rect(left, top, width, height):
-    return {"kind": "points", "points": [
+def _round_polygon_corners(points, radius, segments):
+    # Rounds every corner of a (convex) point list with an arc of the given
+    # radius, using vector geometry general enough to work on any corner
+    # angle -- a 90-degree Rect corner and a hexagon's 120-degree corner
+    # both fall out of the same math, rather than needing a special case
+    # per shape. Extruding a rounded profile straight up (no bevel) rounds
+    # only the vertical edges -- the flat top and bottom stay sharp, since
+    # that's a different, unrelated kind of rounding (Box's fillet=).
+    if radius <= 0:
+        return points
+    n = len(points)
+    seg_count = max(2, round(segments / 8))
+    result = []
+    for i in range(n):
+        px, py = points[(i - 1) % n]
+        cx0, cy0 = points[i]
+        nx, ny = points[(i + 1) % n]
+
+        d1x, d1y = px - cx0, py - cy0
+        len1 = math.hypot(d1x, d1y)
+        d1x, d1y = d1x / len1, d1y / len1
+
+        d2x, d2y = nx - cx0, ny - cy0
+        len2 = math.hypot(d2x, d2y)
+        d2x, d2y = d2x / len2, d2y / len2
+
+        dot = max(-1, min(1, d1x * d2x + d1y * d2y))
+        half_angle = math.acos(dot) / 2
+        if half_angle < 1e-6 or half_angle > math.pi / 2 - 1e-6:
+            result.append((cx0, cy0))
+            continue
+
+        # clamp so the rounding never reaches past the midpoint of either
+        # edge (matches Box's own fillet clamping -- can't exceed the shape)
+        max_r = min(len1 / 2, len2 / 2) * math.tan(half_angle)
+        r = min(radius, max_r)
+        if r <= 0:
+            result.append((cx0, cy0))
+            continue
+
+        tangent_dist = r / math.tan(half_angle)
+        bx, by = d1x + d2x, d1y + d2y
+        blen = math.hypot(bx, by)
+        bx, by = bx / blen, by / blen
+        center_dist = r / math.sin(half_angle)
+        centerx, centery = cx0 + bx * center_dist, cy0 + by * center_dist
+
+        t1x, t1y = cx0 + d1x * tangent_dist, cy0 + d1y * tangent_dist
+        t2x, t2y = cx0 + d2x * tangent_dist, cy0 + d2y * tangent_dist
+        a1 = math.atan2(t1y - centery, t1x - centerx)
+        a2 = math.atan2(t2y - centery, t2x - centerx)
+        delta = (a2 - a1 + math.pi) % (2 * math.pi) - math.pi  # shortest way around
+
+        for k in range(seg_count + 1):
+            angle = a1 + delta * (k / seg_count)
+            result.append((centerx + r * math.cos(angle), centery + r * math.sin(angle)))
+    return result
+
+def Rect(left, top, width, height, fillet=0):
+    points = [
         (left, top),
         (left + width, top),
         (left + width, top + height),
         (left, top + height),
-    ]}
+    ]
+    return {"kind": "points", "points": _round_polygon_corners(points, fillet, SEGMENTS)}
 
 def Circle(centerX, centerY, radius, segments=_UNSET):
     n = SEGMENTS if segments is _UNSET else segments
@@ -477,13 +536,14 @@ def Circle(centerX, centerY, radius, segments=_UNSET):
         for i in range(n)
     ]}
 
-def RegularPolygon(centerX, centerY, radius, numSides, rotateAngle=0):
+def RegularPolygon(centerX, centerY, radius, numSides, rotateAngle=0, fillet=0):
     start = math.radians(rotateAngle) + math.pi / 2
-    return {"kind": "points", "points": [
+    points = [
         (centerX + radius * math.cos(start + 2 * math.pi * i / numSides),
          centerY + radius * math.sin(start + 2 * math.pi * i / numSides))
         for i in range(numSides)
-    ]}
+    ]
+    return {"kind": "points", "points": _round_polygon_corners(points, fillet, SEGMENTS)}
 
 def Polygon(*coords):
     if len(coords) < 6 or len(coords) % 2 != 0:

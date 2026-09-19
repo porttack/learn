@@ -217,7 +217,8 @@ permalink: /3d-playground/cheatsheet/
     <h2>2D Profiles</h2>
     <p class="note">Nothing appears until you pass one to linear_extrude() -- same as Rect/Circle in CMU graphics.</p>
     <div class="entry">
-      <code>Rect(left, top, width, height)</code>
+      <code>Rect(left, top, width, height, fillet=0)</code>
+      <p>fillet rounds the corners in the 2D profile -- extruded straight up, that rounds only the vertical edges. The flat top/bottom stay sharp (that's Box's own fillet= instead).</p>
     </div>
     <div class="entry">
       <code>Circle(centerX, centerY, radius,
@@ -225,7 +226,8 @@ permalink: /3d-playground/cheatsheet/
     </div>
     <div class="entry">
       <code>RegularPolygon(centerX, centerY,
-    radius, numSides, rotateAngle=0)</code>
+    radius, numSides, rotateAngle=0,
+    fillet=0)</code>
     </div>
     <div class="entry">
       <code>Polygon(x1, y1, x2, y2, x3, y3, ...)</code>
