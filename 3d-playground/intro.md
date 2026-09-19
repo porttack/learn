@@ -458,11 +458,37 @@ function alignOffset(align, width, depth) {
 // wrong. Only nudges the camera outward, along the direction it's already
 // facing, and only when it would otherwise be unsafe -- normal-sized shapes
 // never trigger this, so it doesn't interfere with a student's own zoom.
-function ensureShapeVisible(camera, controls, group) {
+//
+// The grid is a fixed 20-unit square by default, which has the same
+// problem one step removed: once the camera pulls back far enough to frame
+// a 20-unit box, the box is roughly the same size as the whole grid and
+// visually swallows it. Resizing the grid to match current content (both
+// growing and shrinking) fixes that; unlike the camera, this has no reason
+// to be one-directional, since a plain grid resize can't strand anything
+// out of view the way moving the camera inward could.
+function resizeGrid(gridState, targetSize) {
+  if (targetSize === gridState.size) return;
+  const scene = gridState.mesh.parent;
+  scene.remove(gridState.mesh);
+  gridState.mesh.geometry.dispose();
+  gridState.mesh.material.dispose();
+  const divisions = Math.min(targetSize, 40);
+  const newGrid = new THREE.GridHelper(targetSize, divisions, 0xbbbbbb, 0xdddddd);
+  newGrid.rotation.x = Math.PI / 2;
+  newGrid.position.z = -0.01;
+  scene.add(newGrid);
+  gridState.mesh = newGrid;
+  gridState.size = targetSize;
+}
+
+function fitSceneToContent(camera, controls, group, gridState) {
   const box = new THREE.Box3().setFromObject(group);
-  if (box.isEmpty()) return;
-  const sphere = box.getBoundingSphere(new THREE.Sphere());
-  const farthestExtent = controls.target.distanceTo(sphere.center) + sphere.radius;
+  let farthestExtent = 10; // matches the default 20-unit grid when the scene is empty
+  if (!box.isEmpty()) {
+    const sphere = box.getBoundingSphere(new THREE.Sphere());
+    farthestExtent = controls.target.distanceTo(sphere.center) + sphere.radius;
+  }
+
   const currentDist = camera.position.distanceTo(controls.target);
   const safeDist = farthestExtent * 1.8 + 1;
   if (currentDist < safeDist) {
@@ -477,6 +503,8 @@ function ensureShapeVisible(camera, controls, group) {
     }
     controls.update();
   }
+
+  resizeGrid(gridState, Math.max(20, Math.ceil((farthestExtent * 3) / 10) * 10));
 }
 
 function makeTickSprite(text) {
@@ -638,6 +666,7 @@ class Embed {
     grid.rotation.x = Math.PI / 2;
     grid.position.z = -0.01;
     this.scene.add(grid);
+    this.gridState = { mesh: grid, size: 20 };
     this.scene.add(new THREE.AxesHelper(2));
     for (let i = -6; i <= 6; i += 2) {
       if (i === 0) continue;
@@ -755,7 +784,7 @@ class Embed {
       mesh.position.set(node.x || 0, node.y || 0, node.z || 0);
       this.group.add(mesh);
     }
-    ensureShapeVisible(this.camera, this.controls, this.group);
+    fitSceneToContent(this.camera, this.controls, this.group, this.gridState);
   }
 
   ready() {
