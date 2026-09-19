@@ -125,20 +125,58 @@ Run that, then look closely at `a` and `b`. Try swapping which one has
   </div>
 </div>
 
+## Curve Resolution
+
+A cylinder's curved side isn't actually curved -- it's a bunch of flat
+faces standing close enough together to look round. `segments=` controls
+how many:
+
+<div class="embed" data-embed="segments1">
+<textarea class="embed-code">Cylinder(1.5, 3, segments=6)</textarea>
+</div>
+
+6 segments makes a hexagon, not a circle. The default is 32, which is
+usually enough to look smooth. This is the same idea as OpenSCAD's `$fn`,
+if you've ever heard of that -- just under a name that's actually legal in
+Python (`$` can't start a variable name here).
+
+If you're about to build several cylinders and want them all a little
+chunkier or a little smoother, you don't have to repeat `segments=` on
+every single one. Set the global `SEGMENTS` once, and every `Cylinder`
+after that point picks it up automatically:
+
+<div class="embed" data-embed="segments2">
+<textarea class="embed-code">SEGMENTS = 6
+
+Cylinder(1, 3, x=-3)
+Cylinder(1, 3, x=0)
+Cylinder(1, 3, x=3, segments=32)</textarea>
+</div>
+
+That last one still comes out smooth -- giving a shape its own `segments=`
+always wins over the global default.
+
+<div class="quiz" data-quiz="segments" data-answer="square">
+  <p class="quiz-prompt">If you set <code>SEGMENTS = 4</code> before making a <code>Cylinder</code>, what shape do you actually get?</p>
+  <div class="quiz-options">
+    <button class="quiz-option" data-key="smooth">A smooth cylinder, same as always</button>
+    <button class="quiz-option" data-key="square">A square prism (a box with a square cross-section)</button>
+    <button class="quiz-option" data-key="cone">A cone</button>
+    <button class="quiz-option" data-key="triangle">A triangular prism</button>
+  </div>
+  <p class="quiz-feedback"></p>
+</div>
+
 ## Practice
 
-That's rotate(), translate(), and how they compose. Two more things worth
-knowing, both in the cheatsheet if you want the details:
-
-- `Cylinder` also takes `segments=`, which controls how many flat faces
-  approximate its curved side -- try `segments=6` sometime for a hexagonal
-  prism instead of a smooth cylinder.
-- `rotate()` can also take a list of three angles instead of one angle and
-  an axis: `rotate(shape, [30, 0, 45])` rotates around x, then y, then z,
-  all in one call. Everything in this lesson used the `angle, axis="x"`
-  form on purpose, since it doesn't require knowing what a list is yet --
-  but if you've used lists before, the list form is there when you want
-  more than one axis at once.
+That's rotate(), translate(), how they compose, and how to control curve
+resolution. One more thing worth knowing, in the cheatsheet if you want
+the details: `rotate()` can also take a list of three angles instead of
+one angle and an axis: `rotate(shape, [30, 0, 45])` rotates around x, then
+y, then z, all in one call. Everything in this lesson used the `angle,
+axis="x"` form on purpose, since it doesn't require knowing what a list is
+yet -- but if you've used lists before, the list form is there when you
+want more than one axis at once.
 
 <div class="playground-cards">
   <a class="playground-card" href="{{ '/3d-playground/studio/' | relative_url }}">

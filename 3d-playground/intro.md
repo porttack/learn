@@ -106,6 +106,26 @@ try again.
   </div>
 </div>
 
+## Rounding Corners
+
+Every `Box` so far has had sharp, square corners. You can round them with
+`fillet=`, which takes a size, same units as everything else:
+
+<div class="embed" data-embed="fillet1">
+<textarea class="embed-code">Box(4, 4, 4, fillet=0.8)</textarea>
+</div>
+
+Try changing that `0.8`. A small number rounds just the edges a little; a
+number close to half the box's shortest side rounds it almost into a
+capsule shape. If you go bigger than that, it gets clamped automatically
+-- a rounded corner can't be bigger than the box it's rounding.
+
+This kind of rounded, curved edge has a real name: a **fillet**. (A flat,
+angled cut instead of a curve would be called a *chamfer* -- a different
+thing.) It's not just decoration, either: rounded corners and edges are
+genuinely easier to 3D print cleanly and are less likely to snag or crack
+than a sharp corner.
+
 ## Errors
 
 Python is very picky. Here are some rules to follow:
@@ -409,6 +429,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
+import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 
 const MINI_SHIM = `
 # Box/Cylinder register themselves and render on their own, exactly like
@@ -428,10 +449,11 @@ def _consume(solid):
 
 SEGMENTS = 32
 
-def Box(width, depth, height, x=0, y=0, z=0, fill=None, align="center", center=False):
+def Box(width, depth, height, x=0, y=0, z=0, fill=None, align="center", center=False, fillet=0):
     return Solid({
         "type": "box", "width": width, "depth": depth, "height": height,
         "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
+        "fillet": fillet,
     })
 
 def Cylinder(radius, height, x=0, y=0, z=0, fill=None, align="center", center=False, segments=None):
@@ -577,7 +599,9 @@ function makeTickSprite(text) {
 // properties, or nesting them would compose in the wrong order.
 function buildGeometry(node) {
   if (node.type === "box") {
-    const g = new THREE.BoxGeometry(node.width, node.depth, node.height);
+    const g = node.fillet > 0
+      ? new RoundedBoxGeometry(node.width, node.depth, node.height, 4, node.fillet)
+      : new THREE.BoxGeometry(node.width, node.depth, node.height);
     const { ox, oy } = alignOffset(node.align, node.width, node.depth);
     g.translate(ox, oy, node.center ? 0 : node.height / 2);
     return g;
