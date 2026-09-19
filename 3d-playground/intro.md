@@ -408,16 +408,16 @@ import { STLExporter } from "three/addons/exporters/STLExporter.js";
 const MINI_SHIM = `
 _shapes = []
 
-def Box(width, depth, height, x=0, y=0, z=0):
+def Box(width, depth, height, x=0, y=0, z=0, fill=None, align="center", center=False):
     _shapes.append({
         "type": "box", "width": width, "depth": depth, "height": height,
-        "x": x, "y": y, "z": z,
+        "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
     })
 
-def Cylinder(radius, height, x=0, y=0, z=0):
+def Cylinder(radius, height, x=0, y=0, z=0, fill=None, align="center", center=False):
     _shapes.append({
         "type": "cylinder", "radius": radius, "height": height,
-        "x": x, "y": y, "z": z,
+        "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
     })
 
 def _reset():
@@ -430,6 +430,26 @@ def _dump():
 
 let pyodide;
 const material = new THREE.MeshStandardMaterial({ color: 0x2a7ae2 });
+const materialCache = new Map();
+function materialFor(fill) {
+  if (!fill) return material;
+  if (!materialCache.has(fill)) {
+    materialCache.set(fill, new THREE.MeshStandardMaterial({ color: new THREE.Color(fill) }));
+  }
+  return materialCache.get(fill);
+}
+
+// Same align redefinition as the Studio: "top"/"bottom" describe y (depth)
+// here, not vertical position, since z is up in this scene.
+function alignOffset(align, width, depth) {
+  const a = align || "center";
+  let ox = 0, oy = 0;
+  if (a.includes("left")) ox = width / 2;
+  else if (a.includes("right")) ox = -width / 2;
+  if (a.includes("top")) oy = -depth / 2;
+  else if (a.includes("bottom")) oy = depth / 2;
+  return { ox, oy };
+}
 
 function makeTickSprite(text) {
   const canvas = document.createElement("canvas");
@@ -452,13 +472,15 @@ function makeTickSprite(text) {
 function buildGeometry(node) {
   if (node.type === "box") {
     const g = new THREE.BoxGeometry(node.width, node.depth, node.height);
-    g.translate(0, 0, node.height / 2);
+    const { ox, oy } = alignOffset(node.align, node.width, node.depth);
+    g.translate(ox, oy, node.center ? 0 : node.height / 2);
     return g;
   }
   if (node.type === "cylinder") {
     const g = new THREE.CylinderGeometry(node.radius, node.radius, node.height, 32);
     g.rotateX(Math.PI / 2);
-    g.translate(0, 0, node.height / 2);
+    const { ox, oy } = alignOffset(node.align, node.radius * 2, node.radius * 2);
+    g.translate(ox, oy, node.center ? 0 : node.height / 2);
     return g;
   }
   return null;
@@ -701,7 +723,7 @@ class Embed {
       const geometry = buildGeometry(node);
       if (!geometry) continue;
       this.disposables.push(geometry);
-      const mesh = new THREE.Mesh(geometry, material);
+      const mesh = new THREE.Mesh(geometry, materialFor(node.fill));
       mesh.position.set(node.x || 0, node.y || 0, node.z || 0);
       this.group.add(mesh);
     }
