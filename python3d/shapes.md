@@ -140,9 +140,22 @@ That's it for flat shapes! One thing to know before you move on: in the
 Studio (the full sandbox tool), `Rect` and `Circle` work a little
 differently. There, they describe a flat outline, and nothing shows up
 until you call `linear_extrude(...)` to give it real height. We kept things
-simple here on purpose, so you could focus on positioning first. You'll
-meet `linear_extrude` for real once you get to the Studio and the
-Cheatsheet.
+simple here on purpose, so you could focus on positioning first.
+
+Here's a small preview of that, working right now -- with a bonus shape,
+`Label`, that draws text:
+
+<div class="embed" data-embed="extrude-preview" data-rotatable="true">
+<textarea class="embed-code">linear_extrude(Label("Mr. Brown", 0, 0, size=1.5), 1)</textarea>
+</div>
+
+`linear_extrude(shape, height)` takes a shape you already drew and gives
+it a real height instead of the thin default. This one viewer, just for
+this example, lets you drag to rotate, so you can actually see that
+height. (Every other viewer in this lesson stays locked flat, since this
+lesson is about a flat page.) Go ahead and change `"Mr. Brown"` to your
+own name. You'll meet `linear_extrude` (and `Label`'s full set of
+options) for real once you get to the Studio and the Cheatsheet.
 
 From here, move on to real 3D shapes with height, or jump straight to the
 Studio or Cheatsheet.
@@ -496,6 +509,8 @@ Studio or Cheatsheet.
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
+import { FontLoader } from "three/addons/loaders/FontLoader.js";
+import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 // Rect/Circle are self-registering and immediately visible here, matching
 // real CMU behavior (Rect(10,10,50,50) just draws something -- no separate
@@ -525,6 +540,10 @@ class Solid:
     def __setattr__(self, name, value):
         self.__dict__["data"][name] = value
 
+def _consume(solid):
+    if solid in _registry:
+        _registry.remove(solid)
+
 # Just enough depth for the 3D viewer to show a real, lit surface -- you
 # don't need to think about this yet. Every shape gets the same thickness.
 _THICKNESS = 0.4
@@ -540,6 +559,27 @@ def Circle(centerX, centerY, radius, fill=None, opacity=100):
         "kind": "circle", "centerX": centerX, "centerY": centerY, "radius": radius,
         "fill": fill, "opacity": opacity,
     })
+
+def Label(text, x, y, size=1, fill=None, opacity=100):
+    # Matches CMU's Label(value, x, y, size): centered at (x, y). Just the
+    # one font here (no font=/bold=/italic= yet) -- this lesson only needs
+    # a taste of real text, not the full Studio API.
+    return Solid({
+        "kind": "text", "text": str(text), "x": x, "y": y, "size": size,
+        "fill": fill, "opacity": opacity,
+    })
+
+# A small, honest preview of the Studio's real linear_extrude(): there,
+# Rect/Circle are inert profiles until you extrude them. Here they're
+# already visible with a default thin height (see _THICKNESS above) --
+# this just swaps in a custom one instead of that default, so you get a
+# taste of "shapes with real height" without changing how Rect/Circle
+# behave everywhere else in this lesson.
+def linear_extrude(solid, height):
+    _consume(solid)
+    data = dict(solid.data)
+    data["_extrudeHeight"] = height
+    return Solid(data)
 
 # The outline actually drawn is computed fresh at dump time, not when
 # Rect()/Circle() was first called -- so mutating a kept shape's own
@@ -570,7 +610,8 @@ def _dump():
     out = []
     for s in _registry:
         d = dict(s.data)
-        d["points"] = _points_for(s.data)
+        if d["kind"] != "text":
+            d["points"] = _points_for(s.data)
         out.append(d)
     return json.dumps(out)
 
@@ -743,14 +784,28 @@ function materialFor(fill, opacity = 100) {
 }
 
 // No translate()/rotate() composition in this lesson -- every shape is a
-// flat outline, extruded a fixed thin amount purely so the viewer has real
-// geometry to light and show. Centered on z so it doesn't read as "sitting
-// on" or "floating above" anything -- z isn't a concept this lesson uses.
+// flat outline, extruded either the default thin amount or, if
+// linear_extrude() set one, a custom height. Centered on z either way, so
+// it doesn't read as "sitting on" or "floating above" anything -- z isn't
+// a concept this lesson otherwise uses.
 function buildMesh(node, disposables) {
+  const depth = node._extrudeHeight || 0.4;
+  if (node.kind === "text") {
+    const geometry = new TextGeometry(node.text, {
+      font: fontCache.get("helvetiker"), size: node.size, depth, bevelEnabled: false,
+    });
+    geometry.computeBoundingBox();
+    const bbox = geometry.boundingBox;
+    const cx = (bbox.max.x + bbox.min.x) / 2;
+    const cy = (bbox.max.y + bbox.min.y) / 2;
+    geometry.translate(-cx + node.x, -cy + node.y, -depth / 2); // centered on (x, y) like CMU's Label
+    disposables.push(geometry);
+    return new THREE.Mesh(geometry, materialFor(node.fill, node.opacity));
+  }
   const points = node.points.map(([x, y]) => new THREE.Vector2(x, y));
   const shape = new THREE.Shape(points);
-  const geometry = new THREE.ExtrudeGeometry(shape, { depth: 0.4, bevelEnabled: false });
-  geometry.translate(0, 0, -0.2);
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
+  geometry.translate(0, 0, -depth / 2);
   disposables.push(geometry);
   return new THREE.Mesh(geometry, materialFor(node.fill, node.opacity));
 }
@@ -788,6 +843,7 @@ class Embed {
     const seedTextarea = container.querySelector(".embed-code");
     this.starterCode = seedTextarea.value;
     this.checkerName = container.dataset.check;
+    this.rotatable = container.dataset.rotatable === "true";
     this.disposables = [];
     this.runToken = 0;
     this.buildDom(container);
@@ -905,19 +961,37 @@ class Embed {
     this.scene.background = new THREE.Color(0xe9edf1);
     this.viewSize = 10;
     this.camera = new THREE.OrthographicCamera(-10, 10, -10, 10, 0.1, 100);
-    this.camera.position.set(0, 0, 50);
+    if (this.rotatable) {
+      // OrbitControls fixes its orbit axis from camera.up at construction
+      // time, so the linear_extrude() preview -- the one embed that
+      // actually rotates -- needs z-up set before that happens, same
+      // convention as the other two lessons' free-orbit viewers. Starting
+      // from an angled 3/4 view (not straight down) avoids the gimbal
+      // case entirely, so there's no need for the flipped-frustum y-down
+      // trick here either -- that's specific to the locked top-down view.
+      this.camera.up.set(0, 0, 1);
+      this.camera.position.set(6, -6, 5);
+    } else {
+      this.camera.position.set(0, 0, 50);
+    }
     this.camera.lookAt(0, 0, 0);
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.viewerEl.appendChild(this.renderer.domElement);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.enableRotate = false;
+    // The linear_extrude() preview is the one embed on this page where
+    // seeing height actually matters -- a locked top-down view can't show
+    // it at all, so that one embed alone gets to rotate like a normal 3D
+    // viewer (data-rotatable="true" on its markup).
+    this.controls.enableRotate = this.rotatable;
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
     this.controls.screenSpacePanning = true;
     this.controls.minZoom = 0.3;
     this.controls.maxZoom = 8;
-    this.controls.mouseButtons = { LEFT: THREE.MOUSE.PAN, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+    this.controls.mouseButtons = this.rotatable
+      ? { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN }
+      : { LEFT: THREE.MOUSE.PAN, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
     const sun = new THREE.DirectionalLight(0xffffff, 0.7);
     sun.position.set(0, 0, 20);
@@ -948,9 +1022,12 @@ class Embed {
     const H = this.viewSize;
     this.camera.left = -H * aspect;
     this.camera.right = H * aspect;
-    // top/bottom swapped on purpose -- see the note above setupScene().
-    this.camera.top = -H;
-    this.camera.bottom = H;
+    // top/bottom swapped on purpose for the locked top-down view -- see
+    // the note above setupScene(). The rotatable preview uses a normal,
+    // unflipped frustum, since it isn't trying to hold a fixed y-down
+    // top-down illusion in the first place.
+    this.camera.top = this.rotatable ? H : -H;
+    this.camera.bottom = this.rotatable ? -H : H;
     this.camera.updateProjectionMatrix();
   }
 
@@ -1196,11 +1273,22 @@ function initLessonProgress(lessonId, order) {
 
 const progress = initLessonProgress("shapes", ["coords", "rectcall", "circle", "ex1"]);
 
+// One font, loaded once, eagerly -- this lesson's Label() doesn't take a
+// font= choice, so there's nothing to lazy-load on demand the way Studio
+// does for its multiple font families.
+const fontCache = new Map();
+function loadDefaultFont() {
+  return new Promise((resolve, reject) => {
+    const url = "https://cdn.jsdelivr.net/gh/mrdoob/three.js@r186/examples/fonts/helvetiker_regular.typeface.json";
+    new FontLoader().load(url, (loaded) => { fontCache.set("helvetiker", loaded); resolve(); }, undefined, reject);
+  });
+}
+
 async function main() {
   setupQuizzes();
   embeds = [...document.querySelectorAll("[data-embed]")].map((el) => new Embed(el));
   worker = new PyodideWorker(PYODIDE_URL, MINI_SHIM);
-  await worker.ready();
+  await Promise.all([worker.ready(), loadDefaultFont()]);
   embeds.forEach((e) => e.ready());
 }
 main();

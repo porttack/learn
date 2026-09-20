@@ -373,6 +373,14 @@ scene.add(axisTicks);
 const modelGroup = new THREE.Group();
 scene.add(modelGroup);
 
+// debug (#) / background (%) overlays live in their own group, separate
+// from modelGroup, so Download STL -- which only exports modelGroup --
+// never picks them up. They're a debugging aid, never part of the model.
+const overlayGroup = new THREE.Group();
+scene.add(overlayGroup);
+const debugMaterial = new THREE.MeshStandardMaterial({ color: 0xff00ff, transparent: true, opacity: 0.55, depthWrite: false });
+const backgroundMaterial = new THREE.MeshStandardMaterial({ color: 0x9aa5b1, transparent: true, opacity: 0.15, depthWrite: false });
+
 // Small corner orientation gizmo, OpenSCAD-style (lower-left, click an axis
 // to snap the camera to it).
 const viewHelper = new ViewHelper(camera, renderer.domElement);
@@ -443,6 +451,56 @@ class Solid:
         raise AttributeError(f"'Solid' object has no attribute '{name}'")
     def __setattr__(self, name, value):
         self.__dict__["data"][name] = value
+
+    # add()/subtract() grow or cut a shape in place -- unlike union()/
+    # difference(), which always make a brand new Solid, these mutate the
+    # SAME dict object (not replace it) so anything that already wrapped
+    # this shape (rotate(), translate(), a parent union's "children" list
+    # -- all of which hold a direct reference to this exact dict) sees the
+    # change too, the same referential-integrity rule .x += 3 relies on.
+    def add(self, other):
+        _consume(other)
+        data = self.__dict__["data"]
+        if data.get("type") != "union":
+            original = dict(data)
+            data.clear()
+            data.update({
+                "type": "union", "children": [original],
+                "hole": original.get("hole", False), "fill": original.get("fill"),
+                "opacity": original.get("opacity", 100),
+            })
+        data["children"].append(other.data)
+
+    def subtract(self, other):
+        _consume(other)
+        data = self.__dict__["data"]
+        if data.get("type") != "difference":
+            original = dict(data)
+            data.clear()
+            data.update({
+                "type": "difference", "base": original, "subtract": [other.data],
+                "hole": original.get("hole", False), "fill": original.get("fill"),
+                "opacity": original.get("opacity", 100),
+            })
+        else:
+            data["subtract"].append(other.data)
+
+    # a + b / a - b make a NEW combined shape (same as calling union()/
+    # difference() directly -- both a and b get consumed either way).
+    # a += b / a -= b mutate a in place instead (same as a.add(b) /
+    # a.subtract(b)) -- Python already gives += its own protocol
+    # (__iadd__) separate from + (__add__), which is exactly the
+    # mutate-vs-create split this needs.
+    def __add__(self, other):
+        return union(self, other)
+    def __sub__(self, other):
+        return difference(self, other)
+    def __iadd__(self, other):
+        self.add(other)
+        return self
+    def __isub__(self, other):
+        self.subtract(other)
+        return self
 
 def _consume(solid):
     if solid in _registry:
@@ -693,13 +751,81 @@ def intersection(*solids, hole=False, fill=_UNSET, opacity=_UNSET):
         "hole": is_hole, "fill": resolved_fill, "opacity": resolved_opacity,
     })
 
+# ---- OpenSCAD-style modifier characters, as attributes instead of a
+# prefix symbol (Python has no room for a literal *//#/% before a call
+# the way OpenSCAD's own syntax does): shape.disabled/.show_only/.debug/
+# .background, settable on any shape same as any other field. They have
+# to work no matter how deep a shape ends up buried in a union()/
+# difference() tree, not just at the top level, so walking into a node's
+# nested children/base/subtract/child is done generically once here
+# rather than taught to every function that builds one of those.
+def _walk(node, fn):
+    fn(node)
+    for child in node.get("children", []):
+        _walk(child, fn)
+    if "base" in node:
+        _walk(node["base"], fn)
+    for child in node.get("subtract", []):
+        _walk(child, fn)
+    if "child" in node:
+        _walk(node["child"], fn)
+
+def _find_flagged(nodes, flag):
+    found = []
+    def visit(node):
+        if node.get(flag):
+            found.append(node)
+    for n in nodes:
+        _walk(n, visit)
+    return found
+
+def _prune_excluded(node):
+    # disabled (*) and background (%) both mean "not really part of the
+    # model" -- excluded from the actual computed geometry entirely, not
+    # just hidden. background still gets a separate ghost overlay (see
+    # _dump()); disabled gets nothing at all. Returns None if this node
+    # (or, for a difference, its base) drops out entirely.
+    if node.get("disabled") or node.get("background"):
+        return None
+    node = dict(node)
+    if "children" in node:
+        node["children"] = [p for p in (_prune_excluded(c) for c in node["children"]) if p is not None]
+    if "base" in node:
+        pruned_base = _prune_excluded(node["base"])
+        if pruned_base is None:
+            return None
+        node["base"] = pruned_base
+    if "subtract" in node:
+        node["subtract"] = [p for p in (_prune_excluded(c) for c in node["subtract"]) if p is not None]
+    if "child" in node:
+        pruned_child = _prune_excluded(node["child"])
+        if pruned_child is None:
+            return None
+        node["child"] = pruned_child
+    return node
+
 def _dump():
     # A "hole" shape isn't drawn on its own -- it's subtracted from every
     # other shape it overlaps. Each solid is cut independently (not merged
     # into one shape first) so unrelated solids keep their own colors --
     # a hole that doesn't touch a given solid just leaves it unchanged.
-    holes = [s.data for s in _registry if s.data.get("hole")]
-    solids = [s.data for s in _registry if not s.data.get("hole")]
+    top = [s.data for s in _registry]
+
+    # ! (show_only): if anything anywhere is flagged, ONLY that renders --
+    # everything else in the design is set aside, not just this one part.
+    show_only = _find_flagged(top, "show_only")
+    pool = show_only if show_only else top
+
+    pruned = [p for p in (_prune_excluded(n) for n in pool) if p is not None]
+
+    # # (debug) and % (background) don't change what a shape contributes
+    # to its parent union/difference (background already got excluded
+    # from that just above) -- they just also draw a separate highlighted
+    # or ghosted copy of that one piece, on top of the normal result.
+    overlays = _find_flagged(pruned, "debug") + _find_flagged(pool, "background")
+
+    holes = [s for s in pruned if s.get("hole")]
+    solids = [s for s in pruned if not s.get("hole")]
     if holes:
         result = [
             {
@@ -710,6 +836,7 @@ def _dump():
         ]
     else:
         result = solids
+    result = result + [dict(ov, _overlay=True) for ov in overlays]
     return json.dumps(result)
 
 def _reset():
@@ -1150,13 +1277,25 @@ function rebuildScene(shapes) {
   for (const child of [...modelGroup.children]) {
     modelGroup.remove(child);
   }
+  for (const child of [...overlayGroup.children]) {
+    overlayGroup.remove(child);
+  }
   for (const geom of disposableGeometries) {
     geom.dispose();
   }
   disposableGeometries = [];
 
   for (const node of shapes) {
-    modelGroup.add(buildBrush(node));
+    if (node._overlay) {
+      // debug (#) / background (%): rendered as an extra ghost/highlight
+      // copy, never merged into the real model -- override whatever
+      // material buildBrush would have assigned from fill=/opacity=.
+      const mesh = buildBrush(node);
+      mesh.material = node.debug ? debugMaterial : backgroundMaterial;
+      overlayGroup.add(mesh);
+    } else {
+      modelGroup.add(buildBrush(node));
+    }
   }
   downloadBtn.disabled = modelGroup.children.length === 0;
   fitSceneToContent(camera, controls, modelGroup, gridState);

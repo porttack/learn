@@ -111,6 +111,7 @@ permalink: /python3d/cheatsheet/
   .cat-color h2     { background: #b98900; }
   .cat-opacity h2   { background: #d6336c; }
   .cat-interactive h2 { background: #4f46e5; }
+  .cat-modifiers h2 { background: #0f766e; }
   .cat-coords h2    { background: #57606a; }
   .cat-editor h2    { background: #1b1f23; }
 
@@ -256,21 +257,54 @@ permalink: /python3d/cheatsheet/
   <section class="category cat-boolean">
     <h2>Boolean Operations</h2>
     <div class="entry">
-      <code>union(*solids, hole=False, fill=None,
-    opacity=100)</code>
+      <code>union(*solids, hole=False, fill=...,
+    opacity=...)</code>
       <p>Everything merged into one solid.</p>
     </div>
     <div class="entry">
       <code>difference(base, *subtract,
-    hole=False, fill=None, opacity=100)</code>
+    hole=False, fill=..., opacity=...)</code>
       <p>base with every other shape cut out of it.</p>
     </div>
     <div class="entry">
       <code>intersection(*solids,
-    hole=False, fill=None, opacity=100)</code>
+    hole=False, fill=..., opacity=...)</code>
       <p>Only the overlap of every shape survives -- NOT "first minus the rest" (that's difference).</p>
     </div>
-    <p class="note">union/difference/intersection inherit fill= and opacity= from their first (or base) shape unless you give the boolean call its own.</p>
+    <p class="note">Leave fill=/opacity= out and they're inherited from the first (or base) shape -- not literally None/100, which would mean something different (fill=None specifically means hole=True). Give the boolean call its own fill=/opacity= to override that inheritance.</p>
+    <div class="entry">
+      <code>a.add(b)</code> / <code>a.subtract(b)</code>
+      <p>Grow or cut a shape in place -- a stays the same object, just bigger or with a bite taken out, instead of union()/difference() making a brand new one.</p>
+    </div>
+    <div class="entry">
+      <code>a + b</code> / <code>a - b</code>
+      <p>Same as union(a, b) / difference(a, b) -- makes a new shape, both operands consumed.</p>
+    </div>
+    <div class="entry">
+      <code>a += b</code> / <code>a -= b</code>
+      <p>Same as a.add(b) / a.subtract(b) -- mutates a in place. Python gives += its own meaning separate from +, which lines up with add() being "in place" and + being "make something new."</p>
+    </div>
+  </section>
+
+  <section class="category cat-modifiers">
+    <h2>Modifier Characters</h2>
+    <p class="note">OpenSCAD marks these with a symbol (*, !, #, %) right before a shape. Python has no room for a prefix character before a function call, so these are attributes instead -- set on any shape, same as x= or fill=. All four work no matter how deep a shape is buried inside a union()/difference().</p>
+    <div class="entry">
+      <code>shape.disabled = True</code>
+      <p>OpenSCAD's * -- completely excluded, as if commented out. Not rendered, not part of the real geometry, not in the STL.</p>
+    </div>
+    <div class="entry">
+      <code>shape.show_only = True</code>
+      <p>OpenSCAD's ! -- only this shape renders; everything else in the whole design is set aside until you remove it.</p>
+    </div>
+    <div class="entry">
+      <code>shape.debug = True</code>
+      <p>OpenSCAD's # -- draws an extra highlighted (magenta, translucent) copy of this shape on top of the normal result. Doesn't change what the shape actually contributes to a union/difference -- it's purely a visual callout.</p>
+    </div>
+    <div class="entry">
+      <code>shape.background = True</code>
+      <p>OpenSCAD's % -- the opposite of debug: shown as a faint gray ghost for reference, but excluded from the real geometry and the STL entirely, same as disabled.</p>
+    </div>
   </section>
 
   <section class="category cat-transform">
