@@ -18,7 +18,6 @@ Computer science and robotics pathways for middle and high school students.
       <img src="{{ pathway.image | relative_url }}" alt="">
     </div>
     {% endif %}
-    {% if pathway.status %}<p class="pathway-status"><em>Status: {{ pathway.status }}</em></p>{% endif %}
   </li>
 {% endfor %}
 </ul>

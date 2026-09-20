@@ -2,7 +2,6 @@
   title: "Electronics 101"
   collection: electronics101
   url: /electronics101/
-  status: in-progress
   blurb: >-
     Build nine circuits in Tinkercad, from a single AA cell to a micro:bit
     aiming a servo, then rebuild the last five with real parts. You build
@@ -23,7 +22,6 @@
 - id: working-in-python
   title: "Working in Python"
   url: /working-in-python/
-  status: in-progress
   blurb: >-
     An AP CSP-oriented adaptation of Allen Downey's <em>Think Python</em>,
     3rd edition (CC BY-NC-SA 4.0). Mirrored here from its own book repo,
@@ -34,7 +32,6 @@
   title: "ROV Robotics"
   collection: rovrobotics
   url: /rovrobotics/
-  status: in-progress
   blurb: >-
     The curriculum and working practices behind a MATE ROV team run as an
     engineering company. Sprints, pool days, design decision records, and a
@@ -44,7 +41,6 @@
 - id: python3d
   title: "Python in 3D"
   url: /python3d/
-  status: in-progress
   blurb: >-
     Write Python, watch it become an actual 3D model you can spin around
     and print. Same idea as the 2D shapes you already know, one more
@@ -54,7 +50,6 @@
   title: "CS50 Problem Sets"
   collection: cs50psets
   url: /cs50-psets/
-  status: in-progress
   item_label: "Problem"
   standards_carrier: cs50psets
   blurb: >-
@@ -66,7 +61,6 @@
 - id: ap-csp-reference
   title: "AP CSP Reference"
   url: /ap-csp-reference/
-  status: in-progress
   blurb: >-
     Quick-lookup material for AP Computer Science Principles, starting
     with a plain-English guide to the exam's pseudocode language, with a
@@ -76,7 +70,6 @@
 - id: standards
   title: "Standards"
   url: /standards/
-  status: in-progress
   blurb: >-
     A visual coverage map across every course and curriculum reviewed here,
     against AP CSP, California 9-12 CS, CSTA 2026, and CA CTE (ICT)
