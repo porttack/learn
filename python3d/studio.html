@@ -353,7 +353,7 @@ scene.add(new THREE.AxesHelper(3));
 // Small numeric tick labels along x/y/z so you can gauge real size -- these
 // are sprites, which always face the camera, so they stay readable no
 // matter how the model is rotated.
-function makeTickSprite(text) {
+function makeTickSprite(text, width, height) {
   const canvas = document.createElement("canvas");
   canvas.width = 64;
   canvas.height = 32;
@@ -367,25 +367,61 @@ function makeTickSprite(text) {
     map: new THREE.CanvasTexture(canvas), depthTest: false, transparent: true,
   });
   const sprite = new THREE.Sprite(spriteMaterial);
-  sprite.scale.set(0.6, 0.3, 1);
+  sprite.scale.set(width, height, 1);
   return sprite;
 }
+// Rounds a raw spacing up to a "nice" 1/2/5 x 10^n step -- standard
+// axis-labeling approach, same idea a spreadsheet chart uses to pick
+// gridline spacing instead of some ugly number like 37.
+function niceStep(rawStep) {
+  const exp = Math.floor(Math.log10(rawStep));
+  const base = rawStep / 10 ** exp;
+  const niceBase = base <= 1 ? 1 : base <= 2 ? 2 : base <= 5 ? 5 : 10;
+  return niceBase * 10 ** exp;
+}
+// X/Y tick labels are rebuilt to match the grid's current size, not fixed
+// at a hardcoded range -- CMU-style 2D code (Rect/Circle coordinates
+// commonly running up to a 400x400 canvas) auto-fits the grid out to
+// match, and without this, tick labels sized/spaced for a small 3D model
+// would sit tiny and clustered near the origin at that scale: visually
+// indistinguishable from having no labels at all, which is exactly what
+// prompted this. Kept in their own group, separate from the fixed Z
+// ticks below (height, 1-6, left as a small static range on purpose --
+// almost everything built here is far shorter than it is wide) so
+// rebuilding one never disposes of the other.
 const axisTicks = new THREE.Group();
-for (let i = -10; i <= 10; i += 2) {
-  if (i === 0) continue;
-  const xTick = makeTickSprite(String(i));
-  xTick.position.set(i, -0.6, 0.02);
-  axisTicks.add(xTick);
-  const yTick = makeTickSprite(String(i));
-  yTick.position.set(-0.6, i, 0.02);
-  axisTicks.add(yTick);
+const tickState = { size: null };
+function updateAxisTicks(gridSize) {
+  if (tickState.size === gridSize) return;
+  tickState.size = gridSize;
+  for (const child of [...axisTicks.children]) {
+    axisTicks.remove(child);
+    child.material.map.dispose();
+    child.material.dispose();
+  }
+  const step = niceStep(gridSize / 10);
+  const width = step * 0.3, height = step * 0.15, offset = step * -0.3;
+  for (let i = -gridSize / 2; i <= gridSize / 2; i += step) {
+    if (i === 0) continue;
+    const label = String(Math.round(i * 100) / 100);
+    const xTick = makeTickSprite(label, width, height);
+    xTick.position.set(i, offset, 0.02);
+    axisTicks.add(xTick);
+    const yTick = makeTickSprite(label, width, height);
+    yTick.position.set(offset, i, 0.02);
+    axisTicks.add(yTick);
+  }
 }
-for (let i = 1; i <= 6; i++) {
-  const zTick = makeTickSprite(String(i));
-  zTick.position.set(-0.3, -0.3, i);
-  axisTicks.add(zTick);
-}
+updateAxisTicks(20);
 scene.add(axisTicks);
+
+const zTicks = new THREE.Group();
+for (let i = 1; i <= 6; i++) {
+  const zTick = makeTickSprite(String(i), 0.6, 0.3);
+  zTick.position.set(-0.3, -0.3, i);
+  zTicks.add(zTick);
+}
+scene.add(zTicks);
 
 const modelGroup = new THREE.Group();
 scene.add(modelGroup);
@@ -1542,7 +1578,9 @@ function fitSceneToContent(camera, controls, group, gridState) {
     controls.update();
   }
 
-  resizeGrid(gridState, Math.max(20, Math.ceil((farthestExtent * 3) / 10) * 10));
+  const targetGridSize = Math.max(20, Math.ceil((farthestExtent * 3) / 10) * 10);
+  resizeGrid(gridState, targetGridSize);
+  updateAxisTicks(targetGridSize);
 }
 
 function rebuildScene(shapes) {
