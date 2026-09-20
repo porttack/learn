@@ -30,6 +30,14 @@ before diving in.
     <strong>Lesson 3: Transformations &rarr;</strong>
     <span>Cylinders, rotate(), translate(), and how they compose.</span>
   </a>
+  <a class="playground-card" href="{{ '/python3d/combining-shapes/' | relative_url }}">
+    <strong>Lesson 4: Combining Shapes &rarr;</strong>
+    <span>union(), consuming shapes, and growing a compound shape with add()/+=.</span>
+  </a>
+  <a class="playground-card" href="{{ '/python3d/cutting-shapes/' | relative_url }}">
+    <strong>Lesson 5: Cutting Shapes &rarr;</strong>
+    <span>difference(), hole=, and cutting one shape out of another.</span>
+  </a>
   <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
     <span>Write Python on the left, watch the model update live on the right.</span>

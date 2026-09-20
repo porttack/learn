@@ -201,9 +201,13 @@ yet -- but if you've used lists before, the list form is there when you
 want more than one axis at once.
 
 <div class="playground-cards">
+  <a class="playground-card" href="{{ '/python3d/combining-shapes/' | relative_url }}">
+    <strong>Lesson 4: Combining Shapes &rarr;</strong>
+    <span>union(), consuming shapes, and growing a compound shape with add()/+=.</span>
+  </a>
   <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
-    <span>Everything from both lessons, plus union/difference, fillets, and more.</span>
+    <span>Everything from every lesson, plus fillets, align=, and more.</span>
   </a>
   <a class="playground-card" href="{{ '/python3d/cheatsheet/' | relative_url }}">
     <strong>Cheatsheet &rarr;</strong>
@@ -565,8 +569,7 @@ class Solid:
         self.__dict__["data"][name] = value
 
 def _consume(solid):
-    if solid in _registry:
-        _registry.remove(solid)
+    solid.data["visible"] = False
 
 SEGMENTS = 32
 
@@ -574,7 +577,7 @@ def Box(width, depth, height, x=0, y=0, z=0, fill=None, align="center", center=F
     return Solid({
         "type": "box", "width": width, "depth": depth, "height": height,
         "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
-        "opacity": opacity,
+        "opacity": opacity, "visible": True,
     })
 
 def Cylinder(radius, height, x=0, y=0, z=0, fill=None, align="center", center=False, segments=None, opacity=100):
@@ -582,21 +585,27 @@ def Cylinder(radius, height, x=0, y=0, z=0, fill=None, align="center", center=Fa
         "type": "cylinder", "radius": radius, "height": height,
         "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
         "segments": SEGMENTS if segments is None else segments, "opacity": opacity,
+        "visible": True,
     })
 
+# translate()/rotate() snapshot the shape's data (a plain dict copy) before
+# consuming it, so the new result is independent -- mutating the original
+# afterward can't reach back into what it was turned into.
 def translate(solid, x=0, y=0, z=0):
+    snapshot = dict(solid.data)
     _consume(solid)
     return Solid({
         "type": "translate", "x": x, "y": y, "z": z,
-        "child": solid.data, "fill": solid.data.get("fill"),
-        "opacity": solid.data.get("opacity", 100),
+        "child": snapshot, "fill": snapshot.get("fill"),
+        "opacity": snapshot.get("opacity", 100), "visible": True,
     })
 
 def rotate(solid, angle, axis="z"):
+    snapshot = dict(solid.data)
     _consume(solid)
     data = {
-        "type": "rotate", "child": solid.data, "fill": solid.data.get("fill"),
-        "opacity": solid.data.get("opacity", 100),
+        "type": "rotate", "child": snapshot, "fill": snapshot.get("fill"),
+        "opacity": snapshot.get("opacity", 100), "visible": True,
     }
     if isinstance(angle, (list, tuple)):
         data["mode"] = "vector"
@@ -620,7 +629,7 @@ def _reset():
 
 def _dump():
     import json
-    return json.dumps([s.data for s in _registry])
+    return json.dumps([s.data for s in _registry if s.data.get("visible", True)])
 
 _BASE_NAMES = set(globals().keys()) | {"_BASE_NAMES"}
 `;
@@ -756,6 +765,7 @@ let worker;
 let embeds = [];
 async function stopAndRestart() {
   embeds.forEach((e) => {
+    e.runToken++; // invalidate whatever run() call is currently awaiting the stuck worker
     e.runBtn.disabled = true;
     e.stopBtn.disabled = true;
     e.statusEl.textContent = "Restarting Python…";
@@ -1320,11 +1330,20 @@ function initLessonProgress(lessonId, order) {
   };
 }
 
-const progress = initLessonProgress("transformations", ["consumption", "rotate-z", "translate-why", "order", "ex3", "segments"]);
+// Assigned inside main(), after embeds are built -- see the note there
+// for why initLessonProgress() can't run before that.
+let progress;
 
 async function main() {
   setupQuizzes();
   embeds = [...document.querySelectorAll("[data-embed]")].map((el) => new Embed(el));
+  // Must run after the line above: Embed's buildDom() replaces each
+  // embed's innerHTML, which would silently wipe out a checkpoint-lock
+  // overlay (and its "I already know this" skip button) added to an
+  // exercise checkpoint any earlier -- exercises are [data-embed]
+  // elements Embed rebuilds; quizzes aren't, so this only ever bit
+  // exercise checkpoints, and only when one was locked at page load.
+  progress = initLessonProgress("transformations", ["consumption", "rotate-z", "translate-why", "order", "ex3", "segments"]);
   worker = new PyodideWorker(PYODIDE_URL, MINI_SHIM);
   await worker.ready();
   embeds.forEach((e) => e.ready());

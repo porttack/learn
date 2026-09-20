@@ -235,6 +235,7 @@ linear_extrude(label, height=2.5, x=6)</textarea>
       <button id="stop" class="secondary" disabled title="Stuck in a loop? This restarts Python.">Stop</button>
       <button id="next" class="secondary" hidden title="Calls onNext() again.">Next</button>
       <button id="download" class="secondary" disabled>Download STL</button>
+      <button id="share" class="secondary" title="Copy a link to this exact code">Share</button>
       <span id="status">Loading Python&hellip;</span>
     </div>
   </div>
@@ -246,7 +247,7 @@ linear_extrude(label, height=2.5, x=6)</textarea>
       <button id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
       <button id="zoom-out" title="Zoom out" aria-label="Zoom out">&minus;</button>
     </div>
-    <div class="hint">Box &middot; Cylinder &middot; Label(font=, bold=, italic=) &middot; linear_extrude &middot; union() &middot; difference() &middot; translate() &middot; rotate() &middot; hole=True &middot; align=/center=</div>
+    <div class="hint">Box &middot; Cylinder &middot; Label(font=, bold=, italic=) &middot; linear_extrude &middot; union() &middot; difference() &middot; translate() &middot; rotate() &middot; hole=True &middot; align=/center= &middot; hold Shift to look from underneath</div>
   </div>
 </div>
 
@@ -256,7 +257,8 @@ linear_extrude(label, height=2.5, x=6)</textarea>
     "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
     "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/",
     "three-mesh-bvh": "https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.9.15/build/index.module.js",
-    "three-bvh-csg": "https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.18/build/index.module.js"
+    "three-bvh-csg": "https://cdn.jsdelivr.net/npm/three-bvh-csg@0.0.18/build/index.module.js",
+    "lz-string": "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/+esm"
   }
 }
 </script>
@@ -264,6 +266,7 @@ linear_extrude(label, height=2.5, x=6)</textarea>
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
+import LZString from "lz-string";
 import { FontLoader } from "three/addons/loaders/FontLoader.js";
 import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { Brush, Evaluator, ADDITION, SUBTRACTION, INTERSECTION } from "three-bvh-csg";
@@ -318,7 +321,14 @@ controls.maxDistance = 80;
 // grazing angle, the grid and any shape's base z-fight no matter how far
 // the grid is nudged below z=0, since screen-space depth precision between
 // two near-coplanar surfaces collapses as the view angle approaches 90 deg.
-controls.maxPolarAngle = Math.PI * 0.47;
+// Holding Shift lifts this (see the keydown/keyup listeners below) for
+// students who want to check the underside of a model -- the same
+// grazing-angle z-fighting can flicker briefly while rotating through the
+// horizon on the way there, but it's transient and only shows up while
+// Shift is actually held.
+const NORMAL_MAX_POLAR = Math.PI * 0.47;
+const FREE_MAX_POLAR = Math.PI - 0.01; // not exactly PI -- avoids a degenerate up-vector right at the pole
+controls.maxPolarAngle = NORMAL_MAX_POLAR;
 controls.update();
 
 scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -426,9 +436,16 @@ import math
 
 # Every Box/Cylinder/linear_extrude call creates a Solid and registers it --
 # it renders automatically, exactly like a CMU shape, unless it gets
-# consumed by union()/difference() first (then only the *combined* result
-# stays registered). This is what lets "Box(2,2,2)" on its own line just
-# work, while still allowing shapes to be combined.
+# consumed by union()/difference() first. Consuming a shape never removes
+# it from here or destroys it -- it copies the shape's current data into
+# the new combined result, then sets the ORIGINAL's own .visible to False
+# (same property CMU uses, doing double duty as the old disabled-modifier
+# flag -- see _prune_excluded()). The original stays a fully live, valid
+# Solid; it's just an orphan now, holding stale data nothing else points
+# to, so changing it after the fact can't bleed into what it was copied
+# into. _dump() below never special-cases the registry itself -- an
+# invisible entry here is filtered out the same way an invisible entry
+# anywhere else in the tree is.
 _registry = []
 
 class Solid:
@@ -456,34 +473,52 @@ class Solid:
     # difference(), which always make a brand new Solid, these mutate the
     # SAME dict object (not replace it) so anything that already wrapped
     # this shape (rotate(), translate(), a parent union's "children" list
-    # -- all of which hold a direct reference to this exact dict) sees the
-    # change too, the same referential-integrity rule .x += 3 relies on.
+    # -- all of which hold a copy of this dict as it was AT THAT TIME)
+    # keeps seeing whatever this shape looks like going forward, the same
+    # referential-integrity rule .x += 3 relies on. other gets snapshotted
+    # before being consumed, same as every top-level combinator below --
+    # so touching other later can't reach back into what it was added.
+    #
+    # add() checks other's own hole flag rather than ignoring it: a
+    # hole-marked shape gets cut into self instead of glued on, same rule
+    # union() uses below. subtract() always cuts regardless of other's own
+    # hole flag -- it's already the explicit "cut this" operation, so
+    # there's no ambiguity to resolve.
     def add(self, other):
+        snapshot = dict(other.data)
         _consume(other)
-        data = self.__dict__["data"]
-        if data.get("type") != "union":
-            original = dict(data)
-            data.clear()
-            data.update({
-                "type": "union", "children": [original],
-                "hole": original.get("hole", False), "fill": original.get("fill"),
-                "opacity": original.get("opacity", 100),
-            })
-        data["children"].append(other.data)
+        self._fold(snapshot, as_hole=bool(snapshot.get("hole")))
 
     def subtract(self, other):
+        snapshot = dict(other.data)
         _consume(other)
+        self._fold(snapshot, as_hole=True)
+
+    def _fold(self, snapshot, as_hole):
         data = self.__dict__["data"]
-        if data.get("type") != "difference":
-            original = dict(data)
-            data.clear()
-            data.update({
-                "type": "difference", "base": original, "subtract": [other.data],
-                "hole": original.get("hole", False), "fill": original.get("fill"),
-                "opacity": original.get("opacity", 100),
-            })
+        if as_hole:
+            if data.get("type") != "difference":
+                original = dict(data)
+                data.clear()
+                data.update({
+                    "type": "difference", "base": original, "subtract": [snapshot],
+                    "hole": original.get("hole", False), "fill": original.get("fill"),
+                    "opacity": original.get("opacity", 100),
+                    "visible": original.get("visible", True),
+                })
+            else:
+                data["subtract"].append(snapshot)
         else:
-            data["subtract"].append(other.data)
+            if data.get("type") != "union":
+                original = dict(data)
+                data.clear()
+                data.update({
+                    "type": "union", "children": [original],
+                    "hole": original.get("hole", False), "fill": original.get("fill"),
+                    "opacity": original.get("opacity", 100),
+                    "visible": original.get("visible", True),
+                })
+            data["children"].append(snapshot)
 
     # a + b / a - b make a NEW combined shape (same as calling union()/
     # difference() directly -- both a and b get consumed either way).
@@ -503,8 +538,7 @@ class Solid:
         return self
 
 def _consume(solid):
-    if solid in _registry:
-        _registry.remove(solid)
+    solid.data["visible"] = False
 
 # fill has three states, not two -- distinguished by whether you passed it
 # at all, same idea as CMU's fill=None meaning "not filled in":
@@ -549,6 +583,7 @@ def Box(width, depth, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="cen
         "type": "box", "width": width, "height": height, "depth": depth,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
         "align": align, "center": center, "fillet": fillet, "opacity": opacity,
+        "visible": True,
     })
 
 def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="center", center=False, segments=_UNSET, fillet=0, opacity=100):
@@ -569,7 +604,7 @@ def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="cent
         "type": "cylinder", "radius": radius, "height": height,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
         "align": align, "center": center, "segments": resolved_segments, "fillet": fillet,
-        "opacity": opacity,
+        "opacity": opacity, "visible": True,
     })
 
 # ---- 2D profiles, for linear_extrude() ----
@@ -635,74 +670,117 @@ def _round_polygon_corners(points, radius, segments):
             result.append((centerx + r * math.cos(angle), centery + r * math.sin(angle)))
     return result
 
-def Rect(left, top, width, height, fillet=0):
+# Rect/Circle/RegularPolygon/Polygon/Label are real Solids, self-registering
+# and visible the moment you call them -- exactly like Box/Cylinder, and
+# matching Lesson 1's behavior. Left alone, a 2D shape renders as a thin
+# slab (see DEFAULT_2D_THICKNESS in the JS below); linear_extrude() gives
+# it a real height. fill=/opacity=/hole= all work the same as everywhere
+# else, for the same reason: one set of rules, not a separate profile-only
+# dialect.
+def Rect(left, top, width, height, fill=_UNSET, opacity=100, hole=False, fillet=0):
     points = [
         (left, top),
         (left + width, top),
         (left + width, top + height),
         (left, top + height),
     ]
-    return {"kind": "points", "points": _round_polygon_corners(points, fillet, SEGMENTS)}
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    return Solid({
+        "type": "rect", "kind": "points",
+        "points": _round_polygon_corners(points, fillet, SEGMENTS),
+        "hole": is_hole, "fill": resolved_fill, "opacity": opacity, "visible": True,
+    })
 
-def Circle(centerX, centerY, radius, segments=_UNSET):
+def Circle(centerX, centerY, radius, segments=_UNSET, fill=_UNSET, opacity=100, hole=False):
     n = SEGMENTS if segments is _UNSET else segments
-    return {"kind": "points", "points": [
-        (centerX + radius * math.cos(2 * math.pi * i / n),
-         centerY + radius * math.sin(2 * math.pi * i / n))
-        for i in range(n)
-    ]}
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    return Solid({
+        "type": "circle", "kind": "points",
+        "points": [
+            (centerX + radius * math.cos(2 * math.pi * i / n),
+             centerY + radius * math.sin(2 * math.pi * i / n))
+            for i in range(n)
+        ],
+        "hole": is_hole, "fill": resolved_fill, "opacity": opacity, "visible": True,
+    })
 
-def RegularPolygon(centerX, centerY, radius, numSides, rotateAngle=0, fillet=0):
+def RegularPolygon(centerX, centerY, radius, numSides, rotateAngle=0, fillet=0, fill=_UNSET, opacity=100, hole=False):
     start = math.radians(rotateAngle) + math.pi / 2
     points = [
         (centerX + radius * math.cos(start + 2 * math.pi * i / numSides),
          centerY + radius * math.sin(start + 2 * math.pi * i / numSides))
         for i in range(numSides)
     ]
-    return {"kind": "points", "points": _round_polygon_corners(points, fillet, SEGMENTS)}
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    return Solid({
+        "type": "polygon", "kind": "points",
+        "points": _round_polygon_corners(points, fillet, SEGMENTS),
+        "hole": is_hole, "fill": resolved_fill, "opacity": opacity, "visible": True,
+    })
 
-def Polygon(*coords):
+def Polygon(*coords, fill=_UNSET, opacity=100, hole=False):
     if len(coords) < 6 or len(coords) % 2 != 0:
         raise ValueError("Polygon needs at least 3 (x, y) pairs: Polygon(x1, y1, x2, y2, x3, y3, ...)")
-    return {"kind": "points", "points": [(coords[i], coords[i + 1]) for i in range(0, len(coords), 2)]}
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    return Solid({
+        "type": "polygon", "kind": "points",
+        "points": [(coords[i], coords[i + 1]) for i in range(0, len(coords), 2)],
+        "hole": is_hole, "fill": resolved_fill, "opacity": opacity, "visible": True,
+    })
 
-def Label(text, x, y, size=1, font="helvetiker", bold=False, italic=False):
+def Label(text, x, y, size=1, font="helvetiker", bold=False, italic=False, fill=_UNSET, opacity=100, hole=False):
     # Matches CMU's Label(value, x, y, size): centered at (x, y).
     # font: "helvetiker" (default) / "arial" / "monospace" / "cursive" / "caveat" / "montserrat"
-    return {
-        "kind": "text", "text": str(text), "x": x, "y": y, "size": size,
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    return Solid({
+        "type": "label", "kind": "text",
+        "text": str(text), "x": x, "y": y, "size": size,
         "font": font, "bold": bold, "italic": italic,
-    }
+        "hole": is_hole, "fill": resolved_fill, "opacity": opacity, "visible": True,
+    })
 
 def linear_extrude(profile, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align=None, center=False, opacity=100):
     # align is opt-in here (default: no change) -- a 2D profile like Rect
     # already has its own left/top-style coordinates baked in, so forcing
     # a bounding-box center by default would move every existing shape.
-    # opacity: 0-100, like CMU's opacity -- see Box.
-    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    # opacity: 0-100, like CMU's opacity -- see Box. profile is a real
+    # Solid now (see above), so it's snapshotted-then-consumed like every
+    # other combinator's input -- see the note above translate().
+    snapshot = dict(profile.data)
+    _consume(profile)
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill, snapshot.get("fill"))
     return Solid({
-        "type": "extrude", "profile": profile, "height": height,
+        "type": "extrude", "profile": snapshot, "height": height,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
-        "align": align, "center": center, "opacity": opacity,
+        "align": align, "center": center, "opacity": opacity, "visible": True,
     })
 
+# translate()/rotate()/union()/difference()/intersection() all follow the
+# same two-step pattern: snapshot each input's data (a plain dict copy) so
+# the new result is a genuinely independent structure, THEN consume the
+# input (flip its own .visible to False). Snapshotting before consuming,
+# rather than embedding solid.data itself, is what stops a later
+# solid.x += 3 from reaching back into a shape it no longer owns.
 def translate(solid, x=0, y=0, z=0):
+    snapshot = dict(solid.data)
     _consume(solid)
     return Solid({
         "type": "translate", "x": x, "y": y, "z": z,
-        "child": solid.data, "hole": solid.data.get("hole", False),
-        "fill": solid.data.get("fill"), "opacity": solid.data.get("opacity", 100),
+        "child": snapshot, "hole": snapshot.get("hole", False),
+        "fill": snapshot.get("fill"), "opacity": snapshot.get("opacity", 100),
+        "visible": True,
     })
 
 def rotate(solid, angle, axis="z"):
     # Two forms, like OpenSCAD: rotate(shape, 90, axis="x") turns 90 degrees
     # around one named axis, or rotate(shape, [rx, ry, rz]) applies all
     # three axis angles (x first, then y, then z) in one call.
+    snapshot = dict(solid.data)
     _consume(solid)
     data = {
-        "type": "rotate", "child": solid.data,
-        "hole": solid.data.get("hole", False), "fill": solid.data.get("fill"),
-        "opacity": solid.data.get("opacity", 100),
+        "type": "rotate", "child": snapshot,
+        "hole": snapshot.get("hole", False), "fill": snapshot.get("fill"),
+        "opacity": snapshot.get("opacity", 100), "visible": True,
     }
     if isinstance(angle, (list, tuple)):
         data["mode"] = "vector"
@@ -714,51 +792,90 @@ def rotate(solid, angle, axis="z"):
     return Solid(data)
 
 def union(*solids, hole=False, fill=_UNSET, opacity=_UNSET):
+    snapshots = [dict(s.data) for s in solids]
     for s in solids:
         _consume(s)
-    inherit = solids[0].data.get("fill") if solids else None
-    is_hole, resolved_fill = _resolve_hole_fill(hole, fill, inherit)
-    inherit_opacity = solids[0].data.get("opacity", 100) if solids else 100
+    inherit = snapshots[0].get("fill") if snapshots else None
+    explicit_hole, resolved_fill = _resolve_hole_fill(hole, fill, inherit)
+    inherit_opacity = snapshots[0].get("opacity", 100) if snapshots else 100
     resolved_opacity = inherit_opacity if opacity is _UNSET else opacity
+
+    # union() looks at what it was actually given rather than blindly
+    # gluing geometry together no matter what: a mix of hole and non-hole
+    # children cuts the holes into the non-hole parts right now (same as
+    # calling difference() yourself); an all-hole group of children stays
+    # a hole -- just a bigger one, ready to cut whatever it ends up near
+    # later, the same idea union(*shapes, hole=True) already supports
+    # explicitly. Every node here already carries its own "hole" field,
+    # compound ones included, so this is a shallow check, not a tree walk.
+    hole_parts = [s for s in snapshots if s.get("hole")]
+    solid_parts = [s for s in snapshots if not s.get("hole")]
+
+    if hole_parts and solid_parts:
+        base = solid_parts[0] if len(solid_parts) == 1 else {
+            "type": "union", "children": solid_parts,
+            "fill": resolved_fill, "opacity": resolved_opacity, "visible": True,
+        }
+        return Solid({
+            "type": "difference", "base": base, "subtract": hole_parts,
+            "fill": resolved_fill, "opacity": resolved_opacity,
+            "hole": explicit_hole, "visible": True,
+        })
+    if hole_parts and not solid_parts:
+        return Solid({
+            "type": "union", "children": snapshots,
+            "fill": resolved_fill, "opacity": resolved_opacity,
+            "hole": True, "visible": True,
+        })
     return Solid({
-        "type": "union", "children": [s.data for s in solids],
-        "hole": is_hole, "fill": resolved_fill, "opacity": resolved_opacity,
+        "type": "union", "children": snapshots,
+        "fill": resolved_fill, "opacity": resolved_opacity,
+        "hole": explicit_hole, "visible": True,
     })
 
 def difference(base, *subtract, hole=False, fill=_UNSET, opacity=_UNSET):
+    base_snapshot = dict(base.data)
+    subtract_snapshots = [dict(s.data) for s in subtract]
     _consume(base)
     for s in subtract:
         _consume(s)
-    is_hole, resolved_fill = _resolve_hole_fill(hole, fill, base.data.get("fill"))
-    resolved_opacity = base.data.get("opacity", 100) if opacity is _UNSET else opacity
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill, base_snapshot.get("fill"))
+    resolved_opacity = base_snapshot.get("opacity", 100) if opacity is _UNSET else opacity
     return Solid({
-        "type": "difference", "base": base.data,
-        "subtract": [s.data for s in subtract], "hole": is_hole, "fill": resolved_fill,
-        "opacity": resolved_opacity,
+        "type": "difference", "base": base_snapshot,
+        "subtract": subtract_snapshots, "hole": is_hole, "fill": resolved_fill,
+        "opacity": resolved_opacity, "visible": True,
     })
 
 def intersection(*solids, hole=False, fill=_UNSET, opacity=_UNSET):
     # Only the overlap of every shape passed in survives -- NOT "first
     # shape minus the rest" (that's difference()).
+    snapshots = [dict(s.data) for s in solids]
     for s in solids:
         _consume(s)
-    inherit = solids[0].data.get("fill") if solids else None
+    inherit = snapshots[0].get("fill") if snapshots else None
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill, inherit)
-    inherit_opacity = solids[0].data.get("opacity", 100) if solids else 100
+    inherit_opacity = snapshots[0].get("opacity", 100) if snapshots else 100
     resolved_opacity = inherit_opacity if opacity is _UNSET else opacity
     return Solid({
-        "type": "intersection", "children": [s.data for s in solids],
+        "type": "intersection", "children": snapshots,
         "hole": is_hole, "fill": resolved_fill, "opacity": resolved_opacity,
+        "visible": True,
     })
 
 # ---- OpenSCAD-style modifier characters, as attributes instead of a
 # prefix symbol (Python has no room for a literal *//#/% before a call
-# the way OpenSCAD's own syntax does): shape.disabled/.show_only/.debug/
-# .background, settable on any shape same as any other field. They have
-# to work no matter how deep a shape ends up buried in a union()/
-# difference() tree, not just at the top level, so walking into a node's
-# nested children/base/subtract/child is done generically once here
-# rather than taught to every function that builds one of those.
+# the way OpenSCAD's own syntax does): shape.visible/.show_only/.debug/
+# .background, settable on any shape same as any other field. visible
+# defaults to True and is the same property CMU shapes use -- it's also
+# what a consumed shape's own _consume() call flips to False, so "not
+# drawn because it got combined into something else" and "not drawn
+# because a student set .visible = False to debug" are the same
+# mechanism, not two. They all have to work no matter how deep a shape
+# ends up buried in a union()/difference() tree, not just at the top
+# level, so walking into a node's nested children/base/subtract/child is
+# done generically once here rather than taught to every function that
+# builds one of those.
 def _walk(node, fn):
     fn(node)
     for child in node.get("children", []):
@@ -780,12 +897,13 @@ def _find_flagged(nodes, flag):
     return found
 
 def _prune_excluded(node):
-    # disabled (*) and background (%) both mean "not really part of the
-    # model" -- excluded from the actual computed geometry entirely, not
-    # just hidden. background still gets a separate ghost overlay (see
-    # _dump()); disabled gets nothing at all. Returns None if this node
+    # not visible (whether from *, or from having been consumed) and
+    # background (%) both mean "not really part of the model" -- excluded
+    # from the actual computed geometry entirely, not just hidden.
+    # background still gets a separate ghost overlay (see _dump()); a
+    # merely-invisible node gets nothing at all. Returns None if this node
     # (or, for a difference, its base) drops out entirely.
-    if node.get("disabled") or node.get("background"):
+    if not node.get("visible", True) or node.get("background"):
         return None
     node = dict(node)
     if "children" in node:
@@ -809,6 +927,11 @@ def _dump():
     # other shape it overlaps. Each solid is cut independently (not merged
     # into one shape first) so unrelated solids keep their own colors --
     # a hole that doesn't touch a given solid just leaves it unchanged.
+    # _registry is never pruned as things get consumed, so top can include
+    # invisible orphans left behind by translate()/rotate()/union()/etc. --
+    # the _prune_excluded() pass just below drops those the same way it
+    # drops anything else with visible=False, so nothing extra is needed
+    # here to filter them out.
     top = [s.data for s in _registry]
 
     # ! (show_only): if anything anywhere is flagged, ONLY that renders --
@@ -864,11 +987,30 @@ const runBtn = document.getElementById("run");
 const stopBtn = document.getElementById("stop");
 const nextBtn = document.getElementById("next");
 const downloadBtn = document.getElementById("download");
+const shareBtn = document.getElementById("share");
 const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
 const outputEl = document.getElementById("output");
 const codeEl = document.getElementById("code");
 const keyHintEl = document.getElementById("key-hint");
+
+// A shared link looks like ?code=<compressed>. If one's present, it
+// replaces the default starter code before the very first Run -- this
+// has to happen before anything reads codeEl.value for that first run.
+// No backend exists on this static site to shorten a link, so the code
+// itself has to fit in the URL; LZString gets typical student programs
+// (a handful to a few dozen lines) well under the ~8000-character
+// practical safety margin modern browsers support, even though a truly
+// enormous program could still theoretically hit that ceiling.
+const sharedCode = new URLSearchParams(location.search).get("code");
+if (sharedCode) {
+  try {
+    const decoded = LZString.decompressFromEncodedURIComponent(sharedCode);
+    if (decoded) codeEl.value = decoded;
+  } catch (e) {
+    // Malformed/corrupted ?code= -- just fall back to the default starter code.
+  }
+}
 
 // Pyodide runs in a Web Worker, not the main thread -- a runaway while/for
 // loop in student code blocks whatever thread it's running on, and if that
@@ -1058,6 +1200,63 @@ function roundedCylinderProfile(radius, height, fillet, filletSegments) {
   return points;
 }
 
+// A 2D shape left standing on its own (Rect/Circle/RegularPolygon/Polygon/
+// Label, never passed to linear_extrude()) still needs *some* height to
+// render as a real, visible solid -- this is that default, same idea as
+// Lesson 1's _THICKNESS. linear_extrude() always overrides it with a real
+// height, so this only ever shows up before that happens.
+const DEFAULT_2D_THICKNESS = 0.4;
+
+// Shared by the "extrude" case below and the bare-2D-shape case: builds a
+// Text or Shape/ExtrudeGeometry from a profile-like object (has "kind":
+// "points"/"text" plus either points or text/x/y/size/font/...), at a
+// given depth. `center` matches Box/Cylinder's own center= convention
+// (false: base sits at z=0, extends up); `align` is opt-in, same as
+// linear_extrude()'s align= -- a profile already has its own coordinates
+// baked in, so nothing repositions it unless asked to.
+function buildProfileGeometry(profile, depth, { align, center } = {}) {
+  if (profile.kind === "text") {
+    const key = (profile.font || "helvetiker") + "|" + (profile.bold ? 700 : 400);
+    const loadedFont = fontCache.get(key);
+    if (!loadedFont) throw new Error(`Font "${profile.font}" isn't loaded yet -- try Run again.`);
+    const geometry = new TextGeometry(profile.text, {
+      font: loadedFont, size: profile.size, depth, bevelEnabled: false,
+    });
+    if (profile.italic) {
+      // No italic glyphs for every family, so fake it the way most
+      // software does when a true italic design isn't available: shear
+      // x by a fraction of y (a ~14 degree slant).
+      geometry.applyMatrix4(new THREE.Matrix4().set(
+        1, 0.25, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        0, 0, 0, 1,
+      ));
+    }
+    geometry.computeBoundingBox();
+    const bbox = geometry.boundingBox;
+    const cx = (bbox.max.x + bbox.min.x) / 2;
+    const cy = (bbox.max.y + bbox.min.y) / 2;
+    geometry.translate(-cx + profile.x, -cy + profile.y, center ? -depth / 2 : 0); // center on (x, y) like CMU's Label
+    return geometry;
+  }
+  const points = profile.points.map(([x, y]) => new THREE.Vector2(x, y));
+  const shape = new THREE.Shape(points);
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
+  if (align) {
+    // align is opt-in here: a profile like Rect already has its own
+    // left/top-style coordinates, so this only kicks in if you ask for it.
+    const xs = profile.points.map((p) => p[0]);
+    const ys = profile.points.map((p) => p[1]);
+    const minX = Math.min(...xs), maxX = Math.max(...xs);
+    const minY = Math.min(...ys), maxY = Math.max(...ys);
+    const { ox, oy } = alignOffset(align, maxX - minX, maxY - minY);
+    geometry.translate(-(minX + maxX) / 2 + ox, -(minY + maxY) / 2 + oy, 0);
+  }
+  if (center) geometry.translate(0, 0, -depth / 2);
+  return geometry;
+}
+
 function buildLeafGeometry(node) {
   if (node.type === "box") {
     let geometry;
@@ -1087,47 +1286,15 @@ function buildLeafGeometry(node) {
     return geometry;
   }
   if (node.type === "extrude") {
-    const profile = node.profile;
-    if (profile.kind === "text") {
-      const key = (profile.font || "helvetiker") + "|" + (profile.bold ? 700 : 400);
-      const loadedFont = fontCache.get(key);
-      if (!loadedFont) throw new Error(`Font "${profile.font}" isn't loaded yet -- try Run again.`);
-      const geometry = new TextGeometry(profile.text, {
-        font: loadedFont, size: profile.size, depth: node.height, bevelEnabled: false,
-      });
-      if (profile.italic) {
-        // No italic glyphs for every family, so fake it the way most
-        // software does when a true italic design isn't available: shear
-        // x by a fraction of y (a ~14 degree slant).
-        geometry.applyMatrix4(new THREE.Matrix4().set(
-          1, 0.25, 0, 0,
-          0, 1, 0, 0,
-          0, 0, 1, 0,
-          0, 0, 0, 1,
-        ));
-      }
-      geometry.computeBoundingBox();
-      const bbox = geometry.boundingBox;
-      const cx = (bbox.max.x + bbox.min.x) / 2;
-      const cy = (bbox.max.y + bbox.min.y) / 2;
-      geometry.translate(-cx + profile.x, -cy + profile.y, node.center ? -node.height / 2 : 0); // center on (x, y) like CMU's Label
-      return geometry;
-    }
-    const points = profile.points.map(([x, y]) => new THREE.Vector2(x, y));
-    const shape = new THREE.Shape(points);
-    const geometry = new THREE.ExtrudeGeometry(shape, { depth: node.height, bevelEnabled: false });
-    if (node.align) {
-      // align is opt-in here: a profile like Rect already has its own
-      // left/top-style coordinates, so this only kicks in if you ask for it.
-      const xs = profile.points.map((p) => p[0]);
-      const ys = profile.points.map((p) => p[1]);
-      const minX = Math.min(...xs), maxX = Math.max(...xs);
-      const minY = Math.min(...ys), maxY = Math.max(...ys);
-      const { ox, oy } = alignOffset(node.align, maxX - minX, maxY - minY);
-      geometry.translate(-(minX + maxX) / 2 + ox, -(minY + maxY) / 2 + oy, 0);
-    }
-    if (node.center) geometry.translate(0, 0, -node.height / 2);
-    return geometry;
+    return buildProfileGeometry(node.profile, node.height, { align: node.align, center: node.center });
+  }
+  if (node.kind === "points" || node.kind === "text") {
+    // Rect/Circle/RegularPolygon/Polygon/Label, left standing on their
+    // own instead of being passed to linear_extrude() -- shown as a thin
+    // slab (see DEFAULT_2D_THICKNESS) so they're visible immediately,
+    // matching Lesson 1's behavior. Sits flush on z=0 like Box's own
+    // default (not centered on z), since there's a ground grid here.
+    return buildProfileGeometry(node, DEFAULT_2D_THICKNESS, {});
   }
   throw new Error(`Unknown shape type: ${node.type}`);
 }
@@ -1190,6 +1357,10 @@ function collectFontRequests(node, needed) {
   if (!node) return;
   if (node.type === "extrude" && node.profile && node.profile.kind === "text") {
     needed.add((node.profile.font || "helvetiker") + "|" + (node.profile.bold ? 700 : 400));
+  }
+  if (node.kind === "text") {
+    // A standalone Label(), not (yet) wrapped in linear_extrude().
+    needed.add((node.font || "helvetiker") + "|" + (node.bold ? 700 : 400));
   }
   (node.children || []).forEach((c) => collectFontRequests(c, needed));
   if (node.base) collectFontRequests(node.base, needed);
@@ -1372,10 +1543,28 @@ const KEY_NAMES = { ArrowUp: "Up", ArrowDown: "Down", ArrowLeft: "Left", ArrowRi
 holder.addEventListener("keydown", (e) => {
   if (!holder.classList.contains("keyboard-active")) return;
   if (e.metaKey || e.ctrlKey || e.altKey) return; // don't hijack browser/system shortcuts
+  if (e.key === "Shift") return; // reserved for the free-rotate toggle below
   e.preventDefault();
   runEvent("onKeyPress", [KEY_NAMES[e.key] || e.key]);
 });
 nextBtn.addEventListener("click", () => runEvent("onNext", []));
+
+// Hold Shift to temporarily lift the maxPolarAngle cap above, so a curious
+// student can orbit all the way underneath a model. Listens on window (not
+// the canvas holder) so it works the instant a drag starts, with no
+// separate click-to-focus step. The "blur" listener guards against a
+// keyup that never arrives -- alt-tabbing away, or a browser keyboard
+// shortcut swallowing the event -- which would otherwise strand Shift
+// "held" forever.
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Shift") controls.maxPolarAngle = FREE_MAX_POLAR;
+});
+window.addEventListener("keyup", (e) => {
+  if (e.key === "Shift") controls.maxPolarAngle = NORMAL_MAX_POLAR;
+});
+window.addEventListener("blur", () => {
+  controls.maxPolarAngle = NORMAL_MAX_POLAR;
+});
 
 async function stopAndRestart() {
   runToken++; // invalidate whatever run() call is currently awaiting the stuck worker
@@ -1424,6 +1613,20 @@ downloadBtn.addEventListener("click", () => {
   a.download = "model.stl";
   a.click();
   URL.revokeObjectURL(url);
+});
+
+shareBtn.addEventListener("click", async () => {
+  const compressed = LZString.compressToEncodedURIComponent(codeEl.value);
+  const url = `${location.origin}${location.pathname}?code=${compressed}`;
+  try {
+    await navigator.clipboard.writeText(url);
+    shareBtn.textContent = "Link copied!";
+  } catch (e) {
+    // Clipboard API unavailable (e.g. an insecure context) -- fall back
+    // to a prompt so the link is still reachable to copy by hand.
+    window.prompt("Copy this link:", url);
+  }
+  setTimeout(() => { shareBtn.textContent = "Share"; }, 1500);
 });
 
 // ---- draggable panel/viewer splitter ----

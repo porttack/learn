@@ -290,8 +290,8 @@ permalink: /python3d/cheatsheet/
     <h2>Modifier Characters</h2>
     <p class="note">OpenSCAD marks these with a symbol (*, !, #, %) right before a shape. Python has no room for a prefix character before a function call, so these are attributes instead -- set on any shape, same as x= or fill=. All four work no matter how deep a shape is buried inside a union()/difference().</p>
     <div class="entry">
-      <code>shape.disabled = True</code>
-      <p>OpenSCAD's * -- completely excluded, as if commented out. Not rendered, not part of the real geometry, not in the STL.</p>
+      <code>shape.visible = False</code>
+      <p>OpenSCAD's * -- completely excluded, as if commented out. Not rendered, not part of the real geometry, not in the STL. Every shape starts out visible=True; this is also exactly what happens automatically the moment a shape gets consumed by translate()/rotate()/union()/etc., so a shape that's stopped rendering on its own and one you've deliberately hidden are the same thing under the hood, not two separate ideas.</p>
     </div>
     <div class="entry">
       <code>shape.show_only = True</code>
@@ -303,7 +303,7 @@ permalink: /python3d/cheatsheet/
     </div>
     <div class="entry">
       <code>shape.background = True</code>
-      <p>OpenSCAD's % -- the opposite of debug: shown as a faint gray ghost for reference, but excluded from the real geometry and the STL entirely, same as disabled.</p>
+      <p>OpenSCAD's % -- the opposite of debug: shown as a faint gray ghost for reference, but excluded from the real geometry and the STL entirely, same as visible=False.</p>
     </div>
   </section>
 
