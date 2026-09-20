@@ -219,27 +219,30 @@ permalink: /python3d/cheatsheet/
 
   <section class="category cat-profiles">
     <h2>2D Profiles</h2>
-    <p class="note">Nothing appears until you pass one to linear_extrude() -- same as Rect/Circle in CMU graphics.</p>
+    <p class="note">These render right away, as a thin flat slab (fill=/opacity=/hole= all work, same as any 3D shape) -- extrude()/rotate_extrude() replace that default thinness with real height, same as Rect/Circle in CMU graphics.</p>
     <div class="entry">
-      <code>Rect(left, top, width, height, fillet=0)</code>
+      <code>Rect(left, top, width, height,
+    fill=..., opacity=100, hole=False, fillet=0)</code>
       <p>fillet rounds the corners in the 2D profile -- extruded straight up, that rounds only the vertical edges. The flat top/bottom stay sharp (that's Box's own fillet= instead).</p>
     </div>
     <div class="entry">
       <code>Circle(centerX, centerY, radius,
-    segments=32)</code>
+    segments=32, fill=..., opacity=100, hole=False)</code>
     </div>
     <div class="entry">
       <code>RegularPolygon(centerX, centerY,
     radius, numSides, rotateAngle=0,
-    fillet=0)</code>
+    fillet=0, fill=..., opacity=100, hole=False)</code>
     </div>
     <div class="entry">
-      <code>Polygon(x1, y1, x2, y2, x3, y3, ...)</code>
+      <code>Polygon(x1, y1, x2, y2, x3, y3, ...,
+    fill=..., opacity=100, hole=False)</code>
       <p>At least 3 points.</p>
     </div>
     <div class="entry">
       <code>Label(text, x, y, size=1,
-    font="helvetiker", bold=False, italic=False)</code>
+    font="helvetiker", bold=False, italic=False,
+    fill=..., opacity=100, hole=False)</code>
       <p>Centered at (x, y), like CMU's Label. font: helvetiker (default, no extra load) / arial / monospace / cursive / caveat / montserrat.</p>
     </div>
   </section>
@@ -247,10 +250,16 @@ permalink: /python3d/cheatsheet/
   <section class="category cat-extrude">
     <h2>Extrude</h2>
     <div class="entry">
-      <code>linear_extrude(profile, height,
+      <code>extrude(profile, height,
     x=0, y=0, z=0, hole=False, fill=None,
-    opacity=100)</code>
-      <p>Pushes a 2D profile up along z by height. Works on Rect/Circle/RegularPolygon/Polygon/Label alike.</p>
+    align=None, center=False, opacity=100)</code>
+      <p>Pushes a 2D profile straight up along z by height. Works on Rect/Circle/RegularPolygon/Polygon/Label alike. hole= inherits from the profile if you don't say otherwise -- extruding an already-hole shape stays a hole. Also callable as linear_extrude(...), the OpenSCAD name -- an alias, not a different function, kept so an old shared link never breaks.</p>
+    </div>
+    <div class="entry">
+      <code>rotate_extrude(profile, angle=360,
+    x=0, y=0, z=0, hole=False, fill=None,
+    opacity=100, segments=32)</code>
+      <p>Sweeps a profile around the z-axis instead -- a potter's wheel, not a cookie cutter. Each profile point is (radius, height); radius &lt; 0 is clamped to 0, same as OpenSCAD. angle=360 goes all the way around; less than that leaves a wedge open. Doesn't work on Label -- text isn't a sensible radius/height profile. hole= inherits from the profile, same as extrude().</p>
     </div>
   </section>
 
@@ -259,12 +268,12 @@ permalink: /python3d/cheatsheet/
     <div class="entry">
       <code>union(*solids, hole=False, fill=...,
     opacity=...)</code>
-      <p>Everything merged into one solid.</p>
+      <p>Merges non-hole shapes into one solid. If some of what you pass in are already hole=True, those get cut into the non-hole ones immediately instead of just being glued on -- an all-hole group stays a hole, just bigger. Only matters if you're mixing hole=True shapes in; plain shapes behave exactly like a normal merge.</p>
     </div>
     <div class="entry">
       <code>difference(base, *subtract,
     hole=False, fill=..., opacity=...)</code>
-      <p>base with every other shape cut out of it.</p>
+      <p>base with every other shape cut out of it -- always cuts, regardless of whether base/subtract happen to be marked hole=True themselves.</p>
     </div>
     <div class="entry">
       <code>intersection(*solids,
@@ -274,7 +283,7 @@ permalink: /python3d/cheatsheet/
     <p class="note">Leave fill=/opacity= out and they're inherited from the first (or base) shape -- not literally None/100, which would mean something different (fill=None specifically means hole=True). Give the boolean call its own fill=/opacity= to override that inheritance.</p>
     <div class="entry">
       <code>a.add(b)</code> / <code>a.subtract(b)</code>
-      <p>Grow or cut a shape in place -- a stays the same object, just bigger or with a bite taken out, instead of union()/difference() making a brand new one.</p>
+      <p>Grow or cut a shape in place -- a stays the same object, just bigger or with a bite taken out, instead of union()/difference() making a brand new one. add() is hole-aware the same way union() is: adding a hole=True shape cuts it into a instead of gluing it on. subtract() always cuts, like difference().</p>
     </div>
     <div class="entry">
       <code>a + b</code> / <code>a - b</code>
@@ -331,7 +340,7 @@ permalink: /python3d/cheatsheet/
     <p class="note">A shortcut for the common "drill a hole" case, without writing difference() by hand.</p>
     <div class="entry">
       <code>hole=True</code>
-      <p>On Box / Cylinder / linear_extrude / union / difference / intersection. Every hole-marked shape is subtracted from everything else at the end. As soon as any hole exists, all non-hole top-level shapes get merged into one solid first -- reach for difference() directly if you need finer control over what subtracts from what.</p>
+      <p>On Box / Cylinder / extrude / rotate_extrude / union / difference / intersection. Every hole-marked shape is subtracted independently from every other (non-hole) shape it overlaps at the end -- a hole that doesn't touch a given shape just leaves it unchanged. Reach for difference() directly if you need finer control over what subtracts from what.</p>
     </div>
   </section>
 
@@ -356,7 +365,7 @@ permalink: /python3d/cheatsheet/
 
   <section class="category cat-opacity">
     <h2>Opacity (preview only)</h2>
-    <p class="note">Like CMU's opacity: 0-100, not 0-1. 100 (the default) is fully solid, 0 is invisible. Also never reaches the exported STL. Works on every 3D shape and on linear_extrude() -- 2D profiles like Rect/Circle don't have their own opacity, since nothing shows up until they're extruded anyway.</p>
+    <p class="note">Like CMU's opacity: 0-100, not 0-1. 100 (the default) is fully solid, 0 is invisible. Also never reaches the exported STL. Works everywhere -- every 3D shape, extrude()/rotate_extrude(), and 2D profiles like Rect/Circle themselves, since those render on their own now too.</p>
     <div class="entry">
       <code>Box(2, 2, 2, fill="cornflowerblue", opacity=40)</code>
     </div>

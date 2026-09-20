@@ -139,23 +139,24 @@ Circle(2, 2, 1.5, fill="cornflowerblue")</textarea>
 That's it for flat shapes! One thing to know before you move on: in the
 Studio (the full sandbox tool), `Rect` and `Circle` work a little
 differently. There, they describe a flat outline, and nothing shows up
-until you call `linear_extrude(...)` to give it real height. We kept things
+until you call `extrude(...)` to give it real height. We kept things
 simple here on purpose, so you could focus on positioning first.
 
 Here's a small preview of that, working right now -- with a bonus shape,
 `Label`, that draws text:
 
 <div class="embed" data-embed="extrude-preview" data-rotatable="true">
-<textarea class="embed-code">linear_extrude(Label("Mr. Brown", 0, 0, size=1.5), 1)</textarea>
+<textarea class="embed-code">extrude(Label("Mr. Brown", 0, 0, size=1.5), 1)</textarea>
 </div>
 
-`linear_extrude(shape, height)` takes a shape you already drew and gives
+`extrude(shape, height)` takes a shape you already drew and gives
 it a real height instead of the thin default. This one viewer, just for
 this example, lets you drag to rotate, so you can actually see that
 height. (Every other viewer in this lesson stays locked flat, since this
 lesson is about a flat page.) Go ahead and change `"Mr. Brown"` to your
-own name. You'll meet `linear_extrude` (and `Label`'s full set of
-options) for real once you get to the Studio and the Cheatsheet.
+own name. You'll meet `extrude` (and `Label`'s full set of
+options) for real once you get to the Studio and the Cheatsheet -- along
+with a second kind, `rotate_extrude`, once you're further along.
 
 From here, move on to real 3D shapes with height, or jump straight to the
 Studio or Cheatsheet.
@@ -514,10 +515,10 @@ import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 
 // Rect/Circle are self-registering and immediately visible here, matching
 // real CMU behavior (Rect(10,10,50,50) just draws something -- no separate
-// "make it visible" step). That's a deliberate simplification: in the
-// Studio, 2D shapes are inert until you linear_extrude() them, which is
-// the real OpenSCAD-style profile/extrude idea. We keep that for later --
-// this lesson is about coordinates, not the extrude step.
+// "make it visible" step) -- the Studio works the same way now too, just
+// with more options (fill=/opacity=/hole=) than this lesson needs yet.
+// This lesson is about coordinates, not the extrude step, so that part
+// stays minimal here on purpose.
 const MINI_SHIM = `
 import math
 
@@ -568,13 +569,12 @@ def Label(text, x, y, size=1, fill=None, opacity=100):
         "fill": fill, "opacity": opacity, "visible": True,
     })
 
-# A small, honest preview of the Studio's real linear_extrude(): there,
-# Rect/Circle are inert profiles until you extrude them. Here they're
-# already visible with a default thin height (see _THICKNESS above) --
-# this just swaps in a custom one instead of that default, so you get a
-# taste of "shapes with real height" without changing how Rect/Circle
+# A small, honest preview of the Studio's real extrude(): shapes here
+# are already visible with a default thin height (see _THICKNESS above)
+# -- this just swaps in a custom one instead of that default, so you get
+# a taste of "shapes with real height" without changing how Rect/Circle
 # behave everywhere else in this lesson.
-def linear_extrude(solid, height):
+def extrude(solid, height):
     data = dict(solid.data)
     _consume(solid)
     data["_extrudeHeight"] = height
@@ -788,7 +788,7 @@ function materialFor(fill, opacity = 100) {
 
 // No translate()/rotate() composition in this lesson -- every shape is a
 // flat outline, extruded either the default thin amount or, if
-// linear_extrude() set one, a custom height. Centered on z either way, so
+// extrude() set one, a custom height. Centered on z either way, so
 // it doesn't read as "sitting on" or "floating above" anything -- z isn't
 // a concept this lesson otherwise uses.
 function buildMesh(node, disposables) {
@@ -966,7 +966,7 @@ class Embed {
     this.camera = new THREE.OrthographicCamera(-10, 10, -10, 10, 0.1, 100);
     if (this.rotatable) {
       // OrbitControls fixes its orbit axis from camera.up at construction
-      // time, so the linear_extrude() preview -- the one embed that
+      // time, so the extrude() preview -- the one embed that
       // actually rotates -- needs z-up set before that happens, same
       // convention as the other two lessons' free-orbit viewers. Starting
       // from an angled 3/4 view (not straight down) avoids the gimbal
@@ -982,7 +982,7 @@ class Embed {
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.viewerEl.appendChild(this.renderer.domElement);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    // The linear_extrude() preview is the one embed on this page where
+    // The extrude() preview is the one embed on this page where
     // seeing height actually matters -- a locked top-down view can't show
     // it at all, so that one embed alone gets to rotate like a normal 3D
     // viewer (data-rotatable="true" on its markup).

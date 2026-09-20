@@ -225,9 +225,9 @@ Box(6, 4, 1.5)
 Cylinder(0.7, 2, x=-1.8, hole=True)
 Cylinder(0.7, 2, x=1.8, hole=True)
 
-# Text you can hold: linear_extrude() also works on Label()
+# Text you can hold: extrude() also works on Label()
 label = Label("HI", 0, 0, size=1.2)
-linear_extrude(label, height=2.5, x=6)</textarea>
+extrude(label, height=2.5, x=6)</textarea>
     <div id="error"></div>
     <div id="output" hidden></div>
     <div class="toolbar">
@@ -247,7 +247,7 @@ linear_extrude(label, height=2.5, x=6)</textarea>
       <button id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
       <button id="zoom-out" title="Zoom out" aria-label="Zoom out">&minus;</button>
     </div>
-    <div class="hint">Box &middot; Cylinder &middot; Label(font=, bold=, italic=) &middot; linear_extrude &middot; union() &middot; difference() &middot; translate() &middot; rotate() &middot; hole=True &middot; align=/center= &middot; hold Shift to look from underneath</div>
+    <div class="hint">Box &middot; Cylinder &middot; Label(font=, bold=, italic=) &middot; extrude &middot; rotate_extrude &middot; union() &middot; difference() &middot; translate() &middot; rotate() &middot; hole=True &middot; align=/center= &middot; hold Alt/Option to look from underneath</div>
   </div>
 </div>
 
@@ -272,6 +272,7 @@ import { TextGeometry } from "three/addons/geometries/TextGeometry.js";
 import { Brush, Evaluator, ADDITION, SUBTRACTION, INTERSECTION } from "three-bvh-csg";
 import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
 import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
 // "helvetiker" is the built-in default (loaded eagerly at startup, so the
 // common case has zero extra latency); the rest lazy-load on first use of
@@ -302,7 +303,7 @@ scene.background = new THREE.Color(0xe9edf1);
 
 // z is "up" here (matches OpenSCAD/CAD convention) -- x,y is the flat
 // ground plane students already know from 2D drawing, so a 2D shape
-// laid down at z=0 and pushed up by linear_extrude just makes sense.
+// laid down at z=0 and pushed up by extrude() just makes sense.
 const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 200);
 camera.up.set(0, 0, 1);
 camera.position.set(10, -10, 9);
@@ -321,13 +322,19 @@ controls.maxDistance = 80;
 // grazing angle, the grid and any shape's base z-fight no matter how far
 // the grid is nudged below z=0, since screen-space depth precision between
 // two near-coplanar surfaces collapses as the view angle approaches 90 deg.
-// Holding Shift lifts this (see the keydown/keyup listeners below) for
+// Holding Alt lifts this (see the keydown/keyup listeners below) for
 // students who want to check the underside of a model -- the same
 // grazing-angle z-fighting can flicker briefly while rotating through the
 // horizon on the way there, but it's transient and only shows up while
-// Shift is actually held.
+// Alt is actually held.
 const NORMAL_MAX_POLAR = Math.PI * 0.47;
-const FREE_MAX_POLAR = Math.PI - 0.01; // not exactly PI -- avoids a degenerate up-vector right at the pole
+// Comfortably past the horizon (enough to see straight underneath a
+// model) but well short of the true pole at PI -- OrbitControls' own
+// spherical math gets numerically unstable close to directly-below,
+// which showed up as the camera drifting sideways instead of just
+// tilting further. 0.01 short of PI wasn't nearly enough margin;
+// this is a much larger, empirically-checked-safe one.
+const FREE_MAX_POLAR = Math.PI * 0.85;
 controls.maxPolarAngle = NORMAL_MAX_POLAR;
 controls.update();
 
@@ -388,8 +395,8 @@ scene.add(modelGroup);
 // never picks them up. They're a debugging aid, never part of the model.
 const overlayGroup = new THREE.Group();
 scene.add(overlayGroup);
-const debugMaterial = new THREE.MeshStandardMaterial({ color: 0xff00ff, transparent: true, opacity: 0.55, depthWrite: false });
-const backgroundMaterial = new THREE.MeshStandardMaterial({ color: 0x9aa5b1, transparent: true, opacity: 0.15, depthWrite: false });
+const debugMaterial = new THREE.MeshStandardMaterial({ color: 0xff00ff, transparent: true, opacity: 0.55, depthWrite: false, side: THREE.DoubleSide });
+const backgroundMaterial = new THREE.MeshStandardMaterial({ color: 0x9aa5b1, transparent: true, opacity: 0.15, depthWrite: false, side: THREE.DoubleSide });
 
 // Small corner orientation gizmo, OpenSCAD-style (lower-left, click an axis
 // to snap the camera to it).
@@ -434,7 +441,7 @@ const PYTHON_SHIM = `
 import json
 import math
 
-# Every Box/Cylinder/linear_extrude call creates a Solid and registers it --
+# Every Box/Cylinder/extrude call creates a Solid and registers it --
 # it renders automatically, exactly like a CMU shape, unless it gets
 # consumed by union()/difference() first. Consuming a shape never removes
 # it from here or destroys it -- it copies the shape's current data into
@@ -607,7 +614,7 @@ def Cylinder(radius, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align="cent
         "opacity": opacity, "visible": True,
     })
 
-# ---- 2D profiles, for linear_extrude() ----
+# ---- 2D profiles, for extrude()/rotate_extrude() ----
 # Each of these returns a flat description of an outline -- nothing is
 # added to the scene until you extrude it (same as Rect/Circle in CMU:
 # nothing shows up until you draw it).
@@ -673,10 +680,10 @@ def _round_polygon_corners(points, radius, segments):
 # Rect/Circle/RegularPolygon/Polygon/Label are real Solids, self-registering
 # and visible the moment you call them -- exactly like Box/Cylinder, and
 # matching Lesson 1's behavior. Left alone, a 2D shape renders as a thin
-# slab (see DEFAULT_2D_THICKNESS in the JS below); linear_extrude() gives
-# it a real height. fill=/opacity=/hole= all work the same as everywhere
-# else, for the same reason: one set of rules, not a separate profile-only
-# dialect.
+# slab (see DEFAULT_2D_THICKNESS in the JS below); extrude()/
+# rotate_extrude() give it a real height. fill=/opacity=/hole= all work
+# the same as everywhere else, for the same reason: one set of rules,
+# not a separate profile-only dialect.
 def Rect(left, top, width, height, fill=_UNSET, opacity=100, hole=False, fillet=0):
     points = [
         (left, top),
@@ -739,20 +746,53 @@ def Label(text, x, y, size=1, font="helvetiker", bold=False, italic=False, fill=
         "hole": is_hole, "fill": resolved_fill, "opacity": opacity, "visible": True,
     })
 
-def linear_extrude(profile, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align=None, center=False, opacity=100):
+def extrude(profile, height, x=0, y=0, z=0, hole=False, fill=_UNSET, align=None, center=False, opacity=100):
     # align is opt-in here (default: no change) -- a 2D profile like Rect
     # already has its own left/top-style coordinates baked in, so forcing
     # a bounding-box center by default would move every existing shape.
     # opacity: 0-100, like CMU's opacity -- see Box. profile is a real
     # Solid now (see above), so it's snapshotted-then-consumed like every
-    # other combinator's input -- see the note above translate().
+    # other combinator's input -- see the note above translate(). hole=
+    # inherits from the profile the same way union()/add() inherit a
+    # child's hole= (see the note above union() below) -- extruding an
+    # already-hole profile without saying anything shouldn't silently
+    # turn it into a solid, any more than combining one should.
     snapshot = dict(profile.data)
     _consume(profile)
-    is_hole, resolved_fill = _resolve_hole_fill(hole, fill, snapshot.get("fill"))
+    is_hole, resolved_fill = _resolve_hole_fill(hole or snapshot.get("hole", False), fill, snapshot.get("fill"))
     return Solid({
         "type": "extrude", "profile": snapshot, "height": height,
         "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
         "align": align, "center": center, "opacity": opacity, "visible": True,
+    })
+
+# OpenSCAD calls this linear_extrude, to distinguish it from rotate_extrude
+# (below). Lesson 1 only ever teaches one kind of extrusion, so it's just
+# "extrude" there -- introducing "linear" as a qualifier before a student
+# has ever seen the other kind only raises the question "linear as opposed
+# to what?" a lesson early. linear_extrude is kept as a working alias,
+# both because OpenSCAD-literate visitors will look for it by that name
+# and so an old ?code= share link never breaks.
+linear_extrude = extrude
+
+def rotate_extrude(profile, angle=360, x=0, y=0, z=0, hole=False, fill=_UNSET, opacity=100, segments=_UNSET):
+    # Sweeps a profile around the z-axis instead of pushing it straight up
+    # -- a potter's wheel, not a cookie cutter. Each point in the profile
+    # is (radius, height): radius is distance out from the axis (x < 0
+    # folds back across it, same as OpenSCAD), height is how far up.
+    # angle=360 sweeps all the way around; anything less leaves a wedge
+    # open, like a slice missing from a cake.
+    if profile.data.get("kind") != "points":
+        raise TypeError("rotate_extrude() needs a Rect/Circle/RegularPolygon/Polygon profile, not a Label")
+    snapshot = dict(profile.data)
+    _consume(profile)
+    # hole= inherits from the profile, same reasoning as extrude() above.
+    is_hole, resolved_fill = _resolve_hole_fill(hole or snapshot.get("hole", False), fill, snapshot.get("fill"))
+    resolved_segments = SEGMENTS if segments is _UNSET else segments
+    return Solid({
+        "type": "rotate_extrude", "profile": snapshot, "angle": angle, "segments": resolved_segments,
+        "x": x, "y": y, "z": z, "hole": is_hole, "fill": resolved_fill,
+        "opacity": opacity, "visible": True,
     })
 
 # translate()/rotate()/union()/difference()/intersection() all follow the
@@ -1157,7 +1197,12 @@ function materialFor(fill, opacity = 100) {
   if (!materialCache.has(key)) {
     const color = fill ? new THREE.Color(fill) : new THREE.Color(0x2a7ae2);
     materialCache.set(key, new THREE.MeshStandardMaterial({
-      color, transparent: opacity < 100, opacity: opacity / 100,
+      // DoubleSide -- without it, a shape viewed from underneath (see
+      // the Alt free-rotate feature above) shows only its back faces,
+      // which the default FrontSide culls to nothing. Same reasoning
+      // applies to any oddly-wound CSG result, not just the underneath
+      // case specifically.
+      color, transparent: opacity < 100, opacity: opacity / 100, side: THREE.DoubleSide,
     }));
   }
   return materialCache.get(key);
@@ -1201,10 +1246,10 @@ function roundedCylinderProfile(radius, height, fillet, filletSegments) {
 }
 
 // A 2D shape left standing on its own (Rect/Circle/RegularPolygon/Polygon/
-// Label, never passed to linear_extrude()) still needs *some* height to
-// render as a real, visible solid -- this is that default, same idea as
-// Lesson 1's _THICKNESS. linear_extrude() always overrides it with a real
-// height, so this only ever shows up before that happens.
+// Label, never passed to extrude()) still needs *some* height to render
+// as a real, visible solid -- this is that default, same idea as Lesson
+// 1's _THICKNESS. extrude() always overrides it with a real height, so
+// this only ever shows up before that happens.
 const DEFAULT_2D_THICKNESS = 0.4;
 
 // Shared by the "extrude" case below and the bare-2D-shape case: builds a
@@ -1212,7 +1257,7 @@ const DEFAULT_2D_THICKNESS = 0.4;
 // "points"/"text" plus either points or text/x/y/size/font/...), at a
 // given depth. `center` matches Box/Cylinder's own center= convention
 // (false: base sits at z=0, extends up); `align` is opt-in, same as
-// linear_extrude()'s align= -- a profile already has its own coordinates
+// extrude()'s align= -- a profile already has its own coordinates
 // baked in, so nothing repositions it unless asked to.
 function buildProfileGeometry(profile, depth, { align, center } = {}) {
   if (profile.kind === "text") {
@@ -1288,9 +1333,65 @@ function buildLeafGeometry(node) {
   if (node.type === "extrude") {
     return buildProfileGeometry(node.profile, node.height, { align: node.align, center: node.center });
   }
+  if (node.type === "rotate_extrude") {
+    // LatheGeometry sweeps its 2D points (x = radius, y = height) around
+    // its own local Y axis; rotateX(90deg) is the same y-up -> z-up fix
+    // Cylinder uses above, so the sweep ends up standing around z like
+    // everything else here instead of lying on its side around y.
+    // Negative radius is clamped to 0 -- OpenSCAD only uses the x >= 0
+    // half of a profile too, rather than mirroring the rest across the axis.
+    //
+    // Unlike THREE.Shape (used for extrude() and standalone 2D shapes,
+    // both of which always implicitly close back to their first point),
+    // LatheGeometry treats its points as an OPEN polyline -- it never
+    // adds a segment back from the last point to the first on its own.
+    // For a profile like Rect() (4 corners, no repeated closing point),
+    // that silently drops the wall that should connect the last corner
+    // back to the first -- confirmed by exporting a plain full-360 tube
+    // to STL and finding 64 boundary edges, all along exactly that
+    // missing wall. Closing the loop explicitly here (unless a student's
+    // own profile already ends where it started) fixes every sweep,
+    // partial or full, not just the partial-sweep cap case below.
+    const rawPoints = node.profile.points.map(([r, h]) => [Math.max(0, r), h]);
+    const first = rawPoints[0], last = rawPoints[rawPoints.length - 1];
+    const isClosed = first && last && first[0] === last[0] && first[1] === last[1];
+    const closedPoints = isClosed ? rawPoints : [...rawPoints, first];
+    const points = closedPoints.map(([r, h]) => new THREE.Vector2(r, h));
+    const phiLength = THREE.MathUtils.degToRad(node.angle);
+    const lathe = new THREE.LatheGeometry(points, node.segments || 32, 0, phiLength);
+    if (node.angle >= 360) {
+      lathe.rotateX(Math.PI / 2);
+      return lathe;
+    }
+    // A partial sweep needs its own two cut faces filled in --
+    // LatheGeometry only ever builds the swept lateral surface, so a
+    // wedge left as-is is an open shell at both cuts (confirmed by
+    // exporting one to STL: every edge along the profile's outline at
+    // each end belonged to only one triangle instead of two). The start
+    // cap is the profile itself, flat, at phi=0 (already in the XY
+    // plane, same convention THREE.Shape/ShapeGeometry uses); the end
+    // cap is the same shape rotated to phi=phiLength.
+    // Both cuts sit PI/2 away from where a naive reading of phi=0 would
+    // suggest -- LatheGeometry's own phi=0 reference direction is +Z,
+    // not +X (a ShapeGeometry built straight from (radius, height)
+    // points sits at +X by default), and empirically-checked (built a
+    // bare Lathe, read its actual boundary-loop vertex positions
+    // directly, solved for the rotation that reproduces them exactly --
+    // two earlier guesses at this, assuming phi=0 was +X and just
+    // guessing at the sweep's rotation sign, both left the geometry
+    // non-manifold, confirmed via STL boundary-edge export each time).
+    const shape = new THREE.Shape(points);
+    const startCap = new THREE.ShapeGeometry(shape);
+    startCap.rotateY(-Math.PI / 2);
+    const endCap = new THREE.ShapeGeometry(shape);
+    endCap.rotateY(phiLength - Math.PI / 2);
+    const geometry = mergeGeometries([lathe, startCap, endCap]);
+    geometry.rotateX(Math.PI / 2);
+    return geometry;
+  }
   if (node.kind === "points" || node.kind === "text") {
     // Rect/Circle/RegularPolygon/Polygon/Label, left standing on their
-    // own instead of being passed to linear_extrude() -- shown as a thin
+    // own instead of being passed to extrude() -- shown as a thin
     // slab (see DEFAULT_2D_THICKNESS) so they're visible immediately,
     // matching Lesson 1's behavior. Sits flush on z=0 like Box's own
     // default (not centered on z), since there's a ground grid here.
@@ -1359,7 +1460,7 @@ function collectFontRequests(node, needed) {
     needed.add((node.profile.font || "helvetiker") + "|" + (node.profile.bold ? 700 : 400));
   }
   if (node.kind === "text") {
-    // A standalone Label(), not (yet) wrapped in linear_extrude().
+    // A standalone Label(), not (yet) wrapped in extrude().
     needed.add((node.font || "helvetiker") + "|" + (node.bold ? 700 : 400));
   }
   (node.children || []).forEach((c) => collectFontRequests(c, needed));
@@ -1542,29 +1643,51 @@ async function runEvent(fnName, args) {
 const KEY_NAMES = { ArrowUp: "Up", ArrowDown: "Down", ArrowLeft: "Left", ArrowRight: "Right", " ": "Space" };
 holder.addEventListener("keydown", (e) => {
   if (!holder.classList.contains("keyboard-active")) return;
-  if (e.metaKey || e.ctrlKey || e.altKey) return; // don't hijack browser/system shortcuts
-  if (e.key === "Shift") return; // reserved for the free-rotate toggle below
+  if (e.metaKey || e.ctrlKey || e.altKey) return; // don't hijack browser/system shortcuts (Alt is also the free-rotate toggle below)
   e.preventDefault();
   runEvent("onKeyPress", [KEY_NAMES[e.key] || e.key]);
 });
 nextBtn.addEventListener("click", () => runEvent("onNext", []));
 
-// Hold Shift to temporarily lift the maxPolarAngle cap above, so a curious
-// student can orbit all the way underneath a model. Listens on window (not
-// the canvas holder) so it works the instant a drag starts, with no
+// Hold Alt (Option on a Mac) to temporarily lift the maxPolarAngle cap
+// above, so a curious student can orbit all the way underneath a model.
+// Not Shift/Ctrl/Meta: OrbitControls itself treats any of those, held
+// during a left-button drag, as a request to PAN instead of rotate (its
+// own single-button-mouse accessibility convention) -- so Shift was the
+// wrong choice the first time around, silently panning the camera and
+// target off into space instead of rotating at all. Alt isn't claimed by
+// OrbitControls, and this file already reserves it from onKeyPress
+// forwarding for the same "don't hijack a system-shortcut modifier"
+// reason above, so nothing new needs excluding there. Listens on window
+// (not the canvas holder) so it works the instant a drag starts, with no
 // separate click-to-focus step. The "blur" listener guards against a
 // keyup that never arrives -- alt-tabbing away, or a browser keyboard
-// shortcut swallowing the event -- which would otherwise strand Shift
+// shortcut swallowing the event -- which would otherwise strand Alt
 // "held" forever.
+//
+// controls.target is pinned to the world origin (see controls.target.set
+// above), which is fine at the normal capped angle -- most shapes sit
+// close enough to it that the small mismatch barely shows. It stops
+// being fine here: Box(2,2,2)'s own default placement (base at z=0,
+// so its center is at z=1, not z=0) is a small offset at a shallow
+// angle but swings the whole shape out of frame entirely once the
+// camera can orbit nearly underneath it. Recentering the target on the
+// model's own bounding-box center for as long as Alt is held fixes that
+// without touching the normal (un-modified) experience at all.
+function exitFreeRotate() {
+  controls.maxPolarAngle = NORMAL_MAX_POLAR;
+  controls.target.set(0, 0, 0);
+}
 window.addEventListener("keydown", (e) => {
-  if (e.key === "Shift") controls.maxPolarAngle = FREE_MAX_POLAR;
+  if (e.key !== "Alt" || controls.maxPolarAngle === FREE_MAX_POLAR) return;
+  controls.maxPolarAngle = FREE_MAX_POLAR;
+  const box = new THREE.Box3().setFromObject(modelGroup);
+  if (!box.isEmpty()) box.getCenter(controls.target);
 });
 window.addEventListener("keyup", (e) => {
-  if (e.key === "Shift") controls.maxPolarAngle = NORMAL_MAX_POLAR;
+  if (e.key === "Alt") exitFreeRotate();
 });
-window.addEventListener("blur", () => {
-  controls.maxPolarAngle = NORMAL_MAX_POLAR;
-});
+window.addEventListener("blur", exitFreeRotate);
 
 async function stopAndRestart() {
   runToken++; // invalidate whatever run() call is currently awaiting the stuck worker

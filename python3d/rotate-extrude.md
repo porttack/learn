@@ -1,191 +1,204 @@
 ---
 layout: minimal
-title: "Cutting Shapes"
-permalink: /python3d/cutting-shapes/
+title: "Shapes of Revolution"
+permalink: /python3d/rotate-extrude/
 ---
 
 <div class="lesson-crumbs">
   <a href="{{ '/python3d/' | relative_url }}">&larr; Python in 3D</a>
   &middot;
-  <a href="{{ '/python3d/combining-shapes/' | relative_url }}">&larr; Combining Shapes</a>
+  <a href="{{ '/python3d/cutting-shapes/' | relative_url }}">&larr; Cutting Shapes</a>
 </div>
 
 <div class="lesson" markdown="1">
 
-# Cutting Shapes
+<p class="advanced-badge">Advanced &middot; optional</p>
 
-## Why Cut Shapes
+# Shapes of Revolution
 
-Last lesson was about combining shapes into one. Sometimes you want the
-opposite: cut a shape *out* of another one. `difference(base, *subtract)`
-starts with `base` and removes every shape listed after it.
+This one's a bonus, not part of the main five lessons -- come back to it
+any time after Cutting Shapes. It's here because it's genuinely fun, not
+because you'll need it for anything else in this course.
+
+## Why Spin a Shape
+
+Every extrude so far has worked the same way: take a flat shape, push it
+straight up. There's a second way to turn a 2D shape into a 3D one:
+**spin it around an axis**, like a lump of clay on a potter's wheel, or a
+block of wood on a lathe. `rotate_extrude(profile)` does exactly that.
 
 <div class="embed" data-embed="first">
-<textarea class="embed-code">difference(Box(3, 3, 2), Cylinder(0.6, 3, z=-0.5))</textarea>
+<textarea class="embed-code">p = Rect(0, 0, 1.5, 3)
+rotate_extrude(p, fill="cornflowerblue")</textarea>
 </div>
 
-That's a block with a cylindrical hole drilled straight through it.
+That's a plain cylinder -- something you've built a dozen times with
+`Cylinder(1.5, 3)`. That's not a coincidence: spinning a rectangle all
+the way around its edge produces exactly the same shape a cylinder is.
+`rotate_extrude()` is really the more general tool; `Cylinder()` is just
+the one shape it makes so often that it got its own shortcut.
 
-## Drilling a Hole, the Short Way
+## Radius and Height, Not Left and Top
 
-Drilling a hole is such a common thing to want that there's a shortcut:
-`hole=True`.
+Here's the one idea this whole lesson rests on: once a profile is headed
+into `rotate_extrude()`, its two coordinates stop meaning what they
+meant everywhere else. The first number isn't "left" or "x" anymore --
+it's **how far out from the axis**. The second isn't "top" -- it's
+**how far up**. The axis itself is the z-axis, standing at x = 0.
 
-<div class="embed" data-embed="hole-demo">
-<textarea class="embed-code">Box(3, 3, 2, fill="orange")
-Cylinder(0.6, 3, z=-0.5, hole=True)</textarea>
+Move that same rectangle away from the axis instead of starting right at
+it, and you get something very different:
+
+<div class="embed" data-embed="tube">
+<textarea class="embed-code">p = Rect(1, 0, 0.5, 3)
+rotate_extrude(p, fill="tomato")</textarea>
 </div>
 
-Same result as the `difference()` example above, without writing
-`difference()` yourself. `hole=True` marks a shape as "not really there" --
-at the very end, every hole-marked shape gets subtracted from everything
-else in the scene.
+A pipe, not a solid cylinder -- because the profile never reached the
+axis, there's a gap all the way through the middle once it's spun
+around. The size of that gap is exactly the profile's own distance from
+x = 0.
 
-<div class="quiz" data-quiz="hole-shortcut" data-answer="drilled">
-  <p class="quiz-prompt"><code>Box(3, 3, 2)</code> and <code>Cylinder(0.6, 3, z=-0.5, hole=True)</code> on two separate lines, not wrapped in <code>difference()</code>. What do you see?</p>
+<div class="quiz" data-quiz="tube-vs-solid" data-answer="gap">
+  <p class="quiz-prompt">A profile's closest edge sits at x = 1 instead of x = 0, then gets rotate_extrude()'d. What's different about the result, compared to a profile that starts right at the axis?</p>
   <div class="quiz-options">
-    <button class="quiz-option" data-key="bump">A block with a solid cylinder poking through it</button>
-    <button class="quiz-option" data-key="drilled">A block with a hole drilled through it</button>
-    <button class="quiz-option" data-key="justblock">Just the block -- the hole-marked cylinder does nothing else</button>
-    <button class="quiz-option" data-key="justcyl">Just the cylinder</button>
+    <button class="quiz-option" data-key="gap">It has a hollow gap running through the middle</button>
+    <button class="quiz-option" data-key="bigger">It's just a bigger solid cylinder</button>
+    <button class="quiz-option" data-key="nothing">Nothing -- rotate_extrude() ignores how far the profile is from the axis</button>
+    <button class="quiz-option" data-key="error">It's an error -- profiles have to start at the axis</button>
   </div>
   <p class="quiz-feedback"></p>
 </div>
 
-## Cutting in Place
+A profile that dips to the *left* of the axis (a negative radius) gets
+clamped to the axis instead of wrapping around to the other side --
+keep your profile's x-coordinates at 0 or above, same rule real CAD
+tools like OpenSCAD use.
 
-`a.subtract(b)` cuts `b` out of `a`, in place -- the same idea as
-`a.add(b)` from the last lesson, just removing instead of adding.
-`a -= b` means the same thing.
+## Building a Real Profile
 
-<div class="embed" data-embed="subtract-method">
-<textarea class="embed-code">a = Box(3, 3, 2, fill="green")
-a -= Cylinder(0.6, 3, z=-0.5)</textarea>
+A rectangle only gets you cylinders and pipes. `Polygon()` -- the same
+one from the Flat Shapes lesson, just now doing double duty as a
+`rotate_extrude()` profile -- can trace out any outline you want, point
+by point. Trace the silhouette of *half* a vase, from base to rim, and
+spinning it fills in the rest:
+
+<div class="embed" data-embed="vase">
+<textarea class="embed-code">p = Polygon(
+    0, 0,      # start at the axis, on the ground
+    1.5, 0,    # out to the base's edge
+    1.5, 0.3,  # up the side of the base
+    0.6, 1,    # in sharply -- the neck
+    2, 2.5,    # back out wide -- the belly
+    0.8, 4,    # in again -- the shoulder
+    0.8, 4.3,  # straight up to the rim
+    0, 4.3,    # back to the axis, closing the top
+)
+rotate_extrude(p, fill="cornflowerblue")</textarea>
 </div>
 
-Notice this one doesn't need `hole=True` at all -- you already have both
-shapes in hand, so you can cut directly.
+Every point you added is one stop along the vase's outline, read from
+bottom to top. Wherever the profile swings out wide, the vase gets wide
+there too; wherever it pulls in, the vase pinches in.
 
-<div class="quiz" data-quiz="subtract-vs-minus" data-answer="same-object">
-  <p class="quiz-prompt"><code>a = Box(3, 3, 2)</code>, then <code>a -= Cylinder(0.6, 3, z=-0.5)</code>. What best describes what just happened?</p>
+<div class="quiz" data-quiz="vase-point" data-answer="widest">
+  <p class="quiz-prompt">In that profile, `2, 2.5` is the point with the largest first number (radius) of any of them. What part of the vase does it correspond to?</p>
   <div class="quiz-options">
-    <button class="quiz-option" data-key="new-object">a is a brand new object now; the old box is gone</button>
-    <button class="quiz-option" data-key="same-object">a is the exact same object as before, just with the cylinder's shape removed from it</button>
-    <button class="quiz-option" data-key="second-var">This makes a second variable, also named a</button>
-    <button class="quiz-option" data-key="nothing">Nothing happens until you also call difference() again</button>
+    <button class="quiz-option" data-key="widest">The widest point of the vase -- its belly</button>
+    <button class="quiz-option" data-key="tallest">The tallest point of the vase -- its rim</button>
+    <button class="quiz-option" data-key="narrowest">The narrowest point -- its neck</button>
+    <button class="quiz-option" data-key="base">The very base, sitting on the ground</button>
   </div>
   <p class="quiz-feedback"></p>
 </div>
 
-## A Hole Stays a Hole, However You Combine It
+## Leaving a Wedge Open
 
-`hole=True` means the same thing everywhere, not just for a shape left
-completely on its own. If you `+`/`union()` a hole-marked shape together
-with a regular one, the hole still gets cut out of the regular one, right
-away -- `+`/`union()`/`add()` check whether an ingredient is a hole
-before deciding what to do with it, instead of just gluing everything
-together no matter what.
+`rotate_extrude(profile, angle=360)` is the default -- spin all the way
+around. Anything less leaves a wedge open, like a slice missing from a
+cake. Before that, though, it helps to see what a sweep actually *is*:
+not a smooth curve, but flat copies of your profile, evenly spaced
+around the circle and connected to their neighbors -- the same
+`segments=` you already know from `Cylinder()`. The default (32) is
+smooth enough to look round. Turn it way down and the individual flat
+panels become obvious:
 
-<div class="embed" data-embed="surprise">
-<textarea class="embed-code">block = Box(4, 4, 2, fill="orange")
-peg = Cylinder(0.5, 3, z=-0.5, hole=True)
-combo = block + peg</textarea>
+<div class="embed" data-embed="segments-demo">
+<textarea class="embed-code">p = Rect(1, 0, 0.8, 2)
+rotate_extrude(p, segments=8, fill="orange")</textarea>
 </div>
 
-<div class="quiz" data-quiz="hole-surprise" data-answer="drilled">
-  <p class="quiz-prompt"><code>block = Box(4, 4, 2)</code>, <code>peg = Cylinder(0.5, 3, z=-0.5, hole=True)</code>, then <code>combo = block + peg</code>. What does combo actually look like?</p>
+Eight flat panels, not a smooth tube -- that's really what `segments=32`
+is too, just with so many panels they read as curved. Now leave a wedge
+open on that same low-segment shape:
+
+<div class="embed" data-embed="wedge">
+<textarea class="embed-code">p = Rect(1, 0, 0.8, 2)
+rotate_extrude(p, angle=270, segments=8, fill="orange")</textarea>
+</div>
+
+Once you can see the panels, the open end stops looking strange: it's
+just where the sweep stopped. The flat profile is standing there same
+as every other panel, with nothing built past it. Turn `segments=` back
+up (or drop it, since 32 is the default) once you're building something
+for real -- the low value here was only to see how it's built.
+
+<div class="quiz" data-quiz="wedge-angle" data-answer="quarter">
+  <p class="quiz-prompt">That's `angle=270` out of a full 360. Roughly how much of the ring is missing?</p>
   <div class="quiz-options">
-    <button class="quiz-option" data-key="drilled">A block with a hole drilled through it</button>
-    <button class="quiz-option" data-key="bump">A block with a solid bump sticking out</button>
-    <button class="quiz-option" data-key="unchanged">Just the block, completely unchanged</button>
-    <button class="quiz-option" data-key="error">An error -- you can't combine a hole with a non-hole</button>
+    <button class="quiz-option" data-key="quarter">About a quarter of it -- a 90-degree wedge</button>
+    <button class="quiz-option" data-key="half">About half of it</button>
+    <button class="quiz-option" data-key="none">Nothing's missing -- 270 still means a full circle</button>
+    <button class="quiz-option" data-key="threequarters">About three-quarters of it</button>
   </div>
   <p class="quiz-feedback"></p>
 </div>
 
-This works no matter which side does the combining -- `block + peg`,
-`peg + block`, `union(block, peg)`, and `block.add(peg)` (or
-`block += peg`) all cut the same hole, because each of those checks its
-ingredients for `hole=True` first. The one operation that *always* cuts,
-whether or not anything involved is marked `hole=True`, is the explicit
-`difference(block, peg)` / `block -= peg` -- reach for that when you want
-the cut to happen no matter how `peg` was built.
+## Bonus: A Ring from a Circle
 
-## Bonus: A Third Operation
+One more, just to see it: a `Circle()` that never reaches the axis at
+all, spun all the way around.
 
-There's one more boolean operation worth knowing about:
-`intersection(*shapes)` keeps *only* the part where every shape overlaps
--- not everything combined (`union`), not one thing with pieces removed
-(`difference`), just the shared middle.
-
-<div class="embed" data-embed="intersection-demo">
-<textarea class="embed-code">intersection(Box(3, 3, 3, x=-1), Cylinder(1.5, 4, z=-2))</textarea>
+<div class="embed" data-embed="donut">
+<textarea class="embed-code">p = Circle(1.5, 0, 0.5)
+rotate_extrude(p, fill="mediumorchid")</textarea>
 </div>
 
-That comes out as a partial cylinder, sliced flat on one side. Shifting
-the box over means only part of the cylinder's circular cross-section
-still overlaps it -- the piece sticking out past the box's edge is gone,
-along with the top and bottom the two shapes don't share in z.
-`intersection()` keeps only what's inside *every* shape at once, in
-every direction, not just height. It's in the Cheatsheet and the Studio
-if you want to explore it further -- this course doesn't test you on it,
-since `union()` and `difference()` alone already cover almost everything
-you'll want to build.
+A donut. The circle's own center sits 1.5 out from the axis and never
+gets closer to it than 1.0, so spinning it traces out a ring instead of
+a ball. `hole=True` works on a `rotate_extrude()` result too, same as
+everywhere else in this course -- and so does combining one with
+`union()`/`difference()`, wrapping it in `translate()`/`rotate()`, all
+of it. `rotate_extrude()` is a shape like any other once it exists.
 
 ## Checking Your Work
 
 <div class="exercise">
   <p class="exercise-prompt">
-    <strong>Exercise:</strong> build a block with a hole drilled through
-    it. Use <code>hole=True</code>, or <code>difference()</code>/
-    <code>-=</code> directly -- whichever you like.
+    <strong>Exercise:</strong> build something with <code>rotate_extrude()</code>
+    that's taller than it is wide -- a cup, a vase, a bottle, a chess
+    piece, whatever you like. Use at least three points in your profile
+    (a plain rectangle is too simple to count here).
   </p>
-  <div class="embed" data-embed="ex5" data-check="ex5">
-  <textarea class="embed-code">Box(3, 3, 2)</textarea>
-  </div>
-</div>
-
-## Match the Shape
-
-One more, just for fun. Here's a shape to reproduce. Flip to "Solution"
-to see it from any angle (spin it, zoom in), then flip back to "Your
-Code" and try to build the same thing. Flip back and forth as often as
-you want. "Check My Work" is loose on purpose here -- it just checks that
-this generally looks like a table, not that it matches the solution
-exactly, so there's more than one right answer.
-
-<div class="match-shape">
-  <div class="match-tabs">
-    <button class="match-tab active" data-tab="code" type="button">Your Code</button>
-    <button class="match-tab" data-tab="solution" type="button">Solution</button>
-  </div>
-  <div class="embed" data-embed="match-table" data-check="match-table">
-  <textarea class="embed-code"># A simple table. Add the four legs!
-top = Box(4, 4, 0.3, z=2)</textarea>
-  </div>
-  <div class="embed" data-embed="match-table-solution" data-solution="true" hidden>
-  <textarea class="embed-code">top = Box(4, 4, 0.3, z=2)
-leg1 = Cylinder(0.2, 2, x=-1.6, y=-1.6)
-leg2 = Cylinder(0.2, 2, x=1.6, y=-1.6)
-leg3 = Cylinder(0.2, 2, x=-1.6, y=1.6)
-leg4 = Cylinder(0.2, 2, x=1.6, y=1.6)
-union(top, leg1, leg2, leg3, leg4)</textarea>
+  <div class="embed" data-embed="ex-revolve" data-check="ex-revolve">
+  <textarea class="embed-code">p = Rect(0, 0, 1, 1)
+rotate_extrude(p)</textarea>
   </div>
 </div>
 
 ## Practice
 
-That's `difference()`, `hole=` as its shortcut, cutting in place with
-`subtract()`/`-=`, why `hole=True` doesn't affect `+`/`union()`, and a
-peek at `intersection()`. Between this lesson and the last, you can now
-combine and cut shapes -- everything you need to build genuinely
-complicated objects out of simple pieces.
+`rotate_extrude()`: spin a profile around the z-axis instead of pushing
+it straight up. The profile's coordinates become radius and height, not
+left and top. `angle=` for a partial sweep, `hole=` and every boolean
+operation work exactly like they do everywhere else.
+
+If you want to see how a real CAD tool explains this same idea, the
+[OpenSCAD User Manual has a page on rotate_extrude](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Using_the_2D_Subsystem#rotate_extrude)
+-- OpenSCAD is the tool this whole course's style of Python is modeled
+after.
 
 <div class="playground-cards">
-  <a class="playground-card" href="{{ '/python3d/rotate-extrude/' | relative_url }}">
-    <strong>Advanced: Shapes of Revolution &rarr;</strong>
-    <span>Optional bonus lesson. rotate_extrude() -- spin a profile around an axis, like a potter's wheel.</span>
-  </a>
   <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
     <span>Everything from every lesson, plus fillets, align=, and more.</span>
@@ -230,6 +243,17 @@ complicated objects out of simple pieces.
     overflow-x: auto;
   }
 
+  .advanced-badge {
+    display: inline-block;
+    margin: 0;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #fff3d6;
+    color: #7a5b00;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
   .embed {
     position: relative;
     margin: 1.2em 0;
@@ -249,10 +273,6 @@ complicated objects out of simple pieces.
     outline: none;
     box-sizing: border-box;
   }
-  /* Both set an explicit display above, which (at equal specificity)
-     beats the browser's default [hidden] rule since author styles win --
-     so a bare .hidden = true is a no-op for either without this. */
-  .embed-code[hidden], .embed-toolbar[hidden] { display: none; }
   .embed-toolbar {
     display: flex;
     align-items: center;
@@ -510,21 +530,6 @@ complicated objects out of simple pieces.
   .playground-card:hover { border-color: #2a7ae2; }
   .playground-card strong { color: #2a7ae2; font-size: 1.05rem; }
   .playground-card span { color: #57606a; font-size: 0.92rem; }
-
-  .match-shape { margin: 1.2em 0; }
-  .match-tabs { display: flex; gap: 8px; margin-bottom: 8px; }
-  .match-tab {
-    padding: 6px 14px;
-    border-radius: 6px;
-    border: 1px solid #d0d7de;
-    background: #fff;
-    color: #57606a;
-    font: inherit;
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
-  .match-tab:hover { border-color: #2a7ae2; color: #2a7ae2; }
-  .match-tab.active { background: #2a7ae2; border-color: #2a7ae2; color: #fff; }
 </style>
 
 <script type="importmap">
@@ -543,8 +548,11 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { ViewHelper } from "three/addons/helpers/ViewHelper.js";
 import { STLExporter } from "three/addons/exporters/STLExporter.js";
 import { Brush, Evaluator, ADDITION, SUBTRACTION, INTERSECTION } from "three-bvh-csg";
+import { mergeGeometries } from "three/addons/utils/BufferGeometryUtils.js";
 
 const MINI_SHIM = `
+import math
+
 _registry = []
 
 class Solid:
@@ -566,20 +574,11 @@ class Solid:
     def __setattr__(self, name, value):
         self.__dict__["data"][name] = value
 
-    # add()/subtract() grow or cut a shape in place -- mutating the same
-    # dict (not replacing it) so anything that already wrapped it keeps
-    # seeing updates, same rule shape.x += 3 relies on. + / - make a new
-    # shape (delegate to union()/difference()); += / -= mutate in place
-    # instead, via Python's own separate __iadd__/__isub__ protocol.
     # other is snapshotted (a plain dict copy) before being consumed, so
     # changing other afterward can't reach back into what it was
-    # added/subtracted.
-    #
-    # add() checks other's own hole flag rather than ignoring it: a
-    # hole-marked shape gets cut into self instead of glued on, same rule
-    # union() uses below. subtract() always cuts regardless of other's own
-    # hole flag -- it's already the explicit "cut this" operation, so
-    # there's no ambiguity to resolve.
+    # added/subtracted. add() checks other's own hole flag rather than
+    # ignoring it: a hole-marked shape gets cut into self instead of
+    # glued on, same rule union() uses below. subtract() always cuts.
     def add(self, other):
         snapshot = dict(other.data)
         _consume(other)
@@ -623,9 +622,9 @@ class Solid:
         return self
 
 # Consuming a shape never removes it or destroys it -- it just sets its
-# own .visible to False (same property CMU shapes use). The new combined
-# result always gets a fresh COPY of the shape's data instead, so the
-# original becomes an orphan holding stale data nothing else points to.
+# own .visible to False. The new combined result always gets a fresh
+# COPY of the shape's data instead, so the original becomes an orphan
+# holding stale data nothing else points to.
 def _consume(solid):
     solid.data["visible"] = False
 
@@ -641,6 +640,39 @@ def Cylinder(radius, height, x=0, y=0, z=0, fill=None, align="center", center=Fa
         "type": "cylinder", "radius": radius, "height": height,
         "x": x, "y": y, "z": z, "fill": fill, "align": align, "center": center,
         "segments": segments, "opacity": opacity, "hole": hole, "visible": True,
+    })
+
+# Rect/Circle/Polygon are real Solids, self-registering and visible the
+# moment you call them (a thin flat slab), exactly like Box/Cylinder --
+# extrude()/rotate_extrude() give one a real height instead.
+def Rect(left, top, width, height, fill=None, opacity=100, hole=False):
+    points = [
+        (left, top), (left + width, top),
+        (left + width, top + height), (left, top + height),
+    ]
+    return Solid({
+        "type": "rect", "kind": "points", "points": points,
+        "hole": hole, "fill": fill, "opacity": opacity, "visible": True,
+    })
+
+def Circle(centerX, centerY, radius, segments=32, fill=None, opacity=100, hole=False):
+    points = [
+        (centerX + radius * math.cos(2 * math.pi * i / segments),
+         centerY + radius * math.sin(2 * math.pi * i / segments))
+        for i in range(segments)
+    ]
+    return Solid({
+        "type": "circle", "kind": "points", "points": points,
+        "hole": hole, "fill": fill, "opacity": opacity, "visible": True,
+    })
+
+def Polygon(*coords, fill=None, opacity=100, hole=False):
+    if len(coords) < 6 or len(coords) % 2 != 0:
+        raise ValueError("Polygon needs at least 3 (x, y) pairs: Polygon(x1, y1, x2, y2, x3, y3, ...)")
+    points = [(coords[i], coords[i + 1]) for i in range(0, len(coords), 2)]
+    return Solid({
+        "type": "polygon", "kind": "points", "points": points,
+        "hole": hole, "fill": fill, "opacity": opacity, "visible": True,
     })
 
 def translate(solid, x=0, y=0, z=0):
@@ -677,14 +709,9 @@ def union(*solids, fill=None, opacity=None, hole=False):
     resolved_fill = fill if fill is not None else inherit_fill
     resolved_opacity = opacity if opacity is not None else inherit_opacity
 
-    # union() looks at what it was actually given rather than blindly
-    # gluing geometry together no matter what: a mix of hole and non-hole
-    # children cuts the holes into the non-hole parts right now (same as
-    # calling difference() yourself); an all-hole group of children stays
-    # a hole -- just a bigger one, ready to cut whatever it ends up near
-    # later, the same idea union(*shapes, hole=True) already supports
-    # explicitly. Every node here already carries its own "hole" field,
-    # compound ones included, so this is a shallow check, not a tree walk.
+    # A mix of hole and non-hole children cuts the holes into the
+    # non-hole parts immediately; an all-hole group of children stays a
+    # hole, just a bigger one.
     hole_parts = [s for s in snapshots if s.get("hole")]
     solid_parts = [s for s in snapshots if not s.get("hole")]
 
@@ -734,6 +761,31 @@ def intersection(*solids, fill=None, opacity=None, hole=False):
         "fill": fill if fill is not None else inherit_fill,
         "opacity": opacity if opacity is not None else inherit_opacity,
         "hole": hole, "visible": True,
+    })
+
+def extrude(profile, height, x=0, y=0, z=0, hole=False, fill=None, align=None, center=False, opacity=100):
+    snapshot = dict(profile.data)
+    _consume(profile)
+    resolved_fill = fill if fill is not None else snapshot.get("fill")
+    resolved_hole = hole or snapshot.get("hole", False)
+    return Solid({
+        "type": "extrude", "profile": snapshot, "height": height,
+        "x": x, "y": y, "z": z, "hole": resolved_hole, "fill": resolved_fill,
+        "align": align, "center": center, "opacity": opacity, "visible": True,
+    })
+
+def rotate_extrude(profile, angle=360, x=0, y=0, z=0, hole=False, fill=None, opacity=100, segments=32):
+    # Sweeps a profile around the z-axis instead of pushing it straight up.
+    # Each profile point is (radius, height); radius < 0 is clamped to 0,
+    # same as OpenSCAD -- keep a profile's x-coordinates at 0 or above.
+    snapshot = dict(profile.data)
+    _consume(profile)
+    resolved_fill = fill if fill is not None else snapshot.get("fill")
+    resolved_hole = hole or snapshot.get("hole", False)
+    return Solid({
+        "type": "rotate_extrude", "profile": snapshot, "angle": angle, "segments": segments,
+        "x": x, "y": y, "z": z, "hole": resolved_hole, "fill": resolved_fill,
+        "opacity": opacity, "visible": True,
     })
 
 def _reset():
@@ -930,7 +982,12 @@ function materialFor(fill, opacity = 100) {
   if (!materialCache.has(key)) {
     const color = fill ? new THREE.Color(fill) : new THREE.Color(0x2a7ae2);
     materialCache.set(key, new THREE.MeshStandardMaterial({
-      color, transparent: opacity < 100, opacity: opacity / 100,
+      // DoubleSide -- a rotate_extrude() cap's own winding isn't
+      // guaranteed to face outward for every profile/angle combination,
+      // so without this a correctly-built cap can still look culled
+      // (indistinguishable from a genuinely missing one) from some
+      // angles, undermining the whole point of adding real cap geometry.
+      color, transparent: opacity < 100, opacity: opacity / 100, side: THREE.DoubleSide,
     }));
   }
   return materialCache.get(key);
@@ -1003,6 +1060,35 @@ function fitSceneToContent(camera, controls, group, gridState) {
   resizeGrid(gridState, Math.max(20, Math.ceil((farthestExtent * 3) / 10) * 10));
 }
 
+// A 2D shape left standing on its own (Rect/Circle/Polygon, never passed
+// to extrude()/rotate_extrude()) still needs *some* height to render as
+// a real, visible solid -- this is that default. extrude() always
+// overrides it with a real height; rotate_extrude() never uses it at all
+// (its own points ARE the shape, nothing to default).
+const DEFAULT_2D_THICKNESS = 0.4;
+
+// Shared by extrude() and the bare-2D-shape case: builds a
+// Shape/ExtrudeGeometry from a profile's points, at a given depth.
+// `center` matches Box/Cylinder's own center= convention (false: base
+// sits at z=0, extends up); `align` is opt-in, same as extrude()'s
+// align= -- a profile already has its own coordinates baked in, so
+// nothing repositions it unless asked to.
+function buildProfileGeometry(profile, depth, { align, center } = {}) {
+  const points = profile.points.map(([x, y]) => new THREE.Vector2(x, y));
+  const shape = new THREE.Shape(points);
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false });
+  if (align) {
+    const xs = profile.points.map((p) => p[0]);
+    const ys = profile.points.map((p) => p[1]);
+    const minX = Math.min(...xs), maxX = Math.max(...xs);
+    const minY = Math.min(...ys), maxY = Math.max(...ys);
+    const { ox, oy } = alignOffset(align, maxX - minX, maxY - minY);
+    geometry.translate(-(minX + maxX) / 2 + ox, -(minY + maxY) / 2 + oy, 0);
+  }
+  if (center) geometry.translate(0, 0, -depth / 2);
+  return geometry;
+}
+
 // Leaf geometry only -- align/center baked in, but not x/y/z. Those fold
 // into the accumulated matrix in buildBrush() below, which is what lets
 // translate()/rotate()/union()/difference() wrap a shape correctly: the
@@ -1022,7 +1108,60 @@ function buildLeafGeometry(node) {
     g.translate(ox, oy, node.center ? 0 : node.height / 2);
     return g;
   }
-  return null;
+  if (node.type === "extrude") {
+    return buildProfileGeometry(node.profile, node.height, { align: node.align, center: node.center });
+  }
+  if (node.type === "rotate_extrude") {
+    // LatheGeometry sweeps its 2D points (x = radius, y = height) around
+    // its own local Y axis; rotateX(90deg) is the same y-up -> z-up fix
+    // Cylinder uses above, so the sweep ends up standing around z like
+    // everything else here instead of lying on its side around y.
+    // Negative radius is clamped to 0 -- OpenSCAD only uses the x >= 0
+    // half of a profile too, rather than mirroring the rest across the axis.
+    //
+    // Unlike THREE.Shape (used for extrude() and standalone 2D shapes,
+    // both of which always implicitly close back to their first point),
+    // LatheGeometry treats its points as an OPEN polyline -- it never
+    // connects the last point back to the first on its own. For a
+    // profile like Rect() (4 corners, no repeated closing point), that
+    // silently drops the wall that should connect the last corner back
+    // to the first. Closing the loop explicitly (unless a profile
+    // already ends where it started) fixes that for every sweep,
+    // partial or full.
+    const rawPoints = node.profile.points.map(([r, h]) => [Math.max(0, r), h]);
+    const first = rawPoints[0], last = rawPoints[rawPoints.length - 1];
+    const isClosed = first && last && first[0] === last[0] && first[1] === last[1];
+    const closedPoints = isClosed ? rawPoints : [...rawPoints, first];
+    const points = closedPoints.map(([r, h]) => new THREE.Vector2(r, h));
+    const phiLength = THREE.MathUtils.degToRad(node.angle);
+    const lathe = new THREE.LatheGeometry(points, node.segments || 32, 0, phiLength);
+    if (node.angle >= 360) {
+      lathe.rotateX(Math.PI / 2);
+      return lathe;
+    }
+    // A partial sweep also needs its own two cut faces filled in --
+    // LatheGeometry only ever builds the swept lateral surface, so a
+    // wedge is otherwise an open shell at both cuts. Both cap positions
+    // are PI/2 away from a naive reading of phi=0 -- LatheGeometry's own
+    // phi=0 reference direction is +Z, not +X (empirically checked: read
+    // a bare Lathe's actual boundary-vertex positions directly, solved
+    // for the rotation that reproduces them exactly).
+    const shape = new THREE.Shape(points);
+    const startCap = new THREE.ShapeGeometry(shape);
+    startCap.rotateY(-Math.PI / 2);
+    const endCap = new THREE.ShapeGeometry(shape);
+    endCap.rotateY(phiLength - Math.PI / 2);
+    const g = mergeGeometries([lathe, startCap, endCap]);
+    g.rotateX(Math.PI / 2);
+    return g;
+  }
+  if (node.kind === "points") {
+    // Rect/Circle/Polygon, left standing on their own instead of being
+    // passed to extrude()/rotate_extrude() -- shown as a thin slab (see
+    // DEFAULT_2D_THICKNESS) so they're visible immediately.
+    return buildProfileGeometry(node, DEFAULT_2D_THICKNESS, {});
+  }
+  throw new Error(`Unknown shape type: ${node.type}`);
 }
 
 const AXES = { x: new THREE.Vector3(1, 0, 0), y: new THREE.Vector3(0, 1, 0), z: new THREE.Vector3(0, 0, 1) };
@@ -1072,51 +1211,39 @@ function buildBrush(node, matrix = new THREE.Matrix4()) {
   return brush;
 }
 
-// Whether a student used hole=True or difference()/-= directly, the
-// dumped shape ends up the same either way: one top-level "difference"
-// node. That's what makes one checker accept both approaches.
+// Loose on purpose -- checks "is this a real rotate_extrude() with a
+// real profile, taller than it is wide," not any specific shape. A cup,
+// a vase, a chess piece, and a bottle should all pass equally.
 const CHECKERS = {
-  ex5(shapes) {
-    if (shapes.length !== 1 || shapes[0].type !== "difference") {
-      return { pass: false, message: "I should see one shape with something cut out of it -- try hole=True or difference()/-= ." };
-    }
-    if (!shapes[0].subtract || shapes[0].subtract.length < 1) {
-      return { pass: false, message: "I don't see anything being subtracted yet." };
-    }
-    return { pass: true, message: "Nice, that's a real hole!" };
-  },
-  // Loose on purpose -- this checks "does this look roughly like a
-  // table," not "does this match the solution exactly." Leg count,
-  // spacing, and exact proportions are all free to vary.
-  "match-table"(shapes, group) {
-    function countTypes(nodes) {
-      let boxes = 0, cylinders = 0;
-      function walk(n) {
-        if (n.type === "box") boxes++;
-        else if (n.type === "cylinder") cylinders++;
-        for (const c of n.children || []) walk(c);
-        if (n.base) walk(n.base);
-        for (const c of n.subtract || []) walk(c);
-        if (n.child) walk(n.child);
+  "ex-revolve"(shapes, group) {
+    function findRevolve(nodes) {
+      for (const n of nodes) {
+        if (n.type === "rotate_extrude") return n;
+        const found = findRevolve([
+          ...(n.children || []),
+          ...(n.base ? [n.base] : []),
+          ...(n.subtract || []),
+          ...(n.child ? [n.child] : []),
+        ]);
+        if (found) return found;
       }
-      for (const n of nodes) walk(n);
-      return { boxes, cylinders };
+      return null;
     }
-    const { boxes, cylinders } = countTypes(shapes);
-    if (boxes < 1) {
-      return { pass: false, message: "I don't see a tabletop -- try a wide, flat Box()." };
+    const revolve = findRevolve(shapes);
+    if (!revolve) {
+      return { pass: false, message: "I don't see a rotate_extrude() anywhere yet." };
     }
-    if (cylinders < 3) {
-      return { pass: false, message: `A table needs legs to stand on -- I only see ${cylinders} Cylinder(s). Try at least 3 or 4.` };
+    if (revolve.profile && revolve.profile.type === "rect") {
+      return { pass: false, message: "A plain Rect() just makes a cylinder or a tube -- try Polygon() with more points, or Circle() for a ring." };
+    }
+    if (!revolve.profile || !revolve.profile.points || revolve.profile.points.length < 3) {
+      return { pass: false, message: "The profile needs at least 3 points." };
     }
     const size = new THREE.Box3().setFromObject(group).getSize(new THREE.Vector3());
-    if (size.z < 1) {
-      return { pass: false, message: "This looks flat -- the legs should lift the top up off the ground." };
+    if (size.z <= Math.max(size.x, size.y)) {
+      return { pass: false, message: "This should be taller than it is wide -- try stretching your profile's height out more." };
     }
-    if (size.x < 2 || size.y < 2) {
-      return { pass: false, message: "This looks small and narrow for a table -- try spreading the legs out more." };
-    }
-    return { pass: true, message: "That looks like a table! Nice work." };
+    return { pass: true, message: "That's a real shape of revolution -- nice work." };
   },
 };
 
@@ -1495,35 +1622,6 @@ function initLessonProgress(lessonId, order) {
   };
 }
 
-// A "Match the Shape" pair is two ordinary [data-embed] elements (so
-// Embed builds and runs each one exactly like any other) -- the
-// data-solution="true" one just gets its code/toolbar hidden and an
-// automatic run, since the student never sees or clicks anything on it.
-// Must run AFTER embeds are constructed, same reason initLessonProgress()
-// below has to: Embed's buildDom() replaces the container's innerHTML,
-// which would silently undo hiding done any earlier.
-function setupMatchShapes(builtEmbeds) {
-  document.querySelectorAll(".match-shape").forEach((wrap) => {
-    const codeContainer = wrap.querySelector("[data-embed]:not([data-solution])");
-    const solutionContainer = wrap.querySelector('[data-embed][data-solution="true"]');
-    const solutionEmbed = builtEmbeds.find((e) => e.container === solutionContainer);
-    if (solutionEmbed) {
-      solutionEmbed.codeEl.hidden = true;
-      solutionContainer.querySelector(".embed-toolbar").hidden = true;
-    }
-    const tabs = wrap.querySelectorAll(".match-tab");
-    tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        tabs.forEach((t) => t.classList.remove("active"));
-        tab.classList.add("active");
-        const showSolution = tab.dataset.tab === "solution";
-        codeContainer.hidden = showSolution;
-        solutionContainer.hidden = !showSolution;
-      });
-    });
-  });
-}
-
 // Assigned inside main(), after embeds are built -- see the note there
 // for why initLessonProgress() can't run before that.
 let progress;
@@ -1537,12 +1635,10 @@ async function main() {
   // exercise checkpoint any earlier -- exercises are [data-embed]
   // elements Embed rebuilds; quizzes aren't, so this only ever bit
   // exercise checkpoints, and only when one was locked at page load.
-  progress = initLessonProgress("cutting-shapes", ["hole-shortcut", "subtract-vs-minus", "hole-surprise", "ex5"]);
-  setupMatchShapes(embeds);
+  progress = initLessonProgress("rotate-extrude", ["tube-vs-solid", "vase-point", "wedge-angle", "ex-revolve"]);
   worker = new PyodideWorker(PYODIDE_URL, MINI_SHIM);
   await worker.ready();
   embeds.forEach((e) => e.ready());
-  embeds.forEach((e) => { if (e.container.dataset.solution === "true") e.run(); });
 }
 main();
 </script>

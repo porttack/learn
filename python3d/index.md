@@ -38,6 +38,10 @@ before diving in.
     <strong>Lesson 5: Cutting Shapes &rarr;</strong>
     <span>difference(), hole=, and cutting one shape out of another.</span>
   </a>
+  <a class="playground-card" href="{{ '/python3d/rotate-extrude/' | relative_url }}">
+    <strong>Advanced: Shapes of Revolution &rarr;</strong>
+    <span>Optional bonus lesson. rotate_extrude() -- spin a profile around an axis instead of pushing it straight up.</span>
+  </a>
   <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
     <span>Write Python on the left, watch the model update live on the right.</span>
@@ -53,8 +57,9 @@ before diving in.
 - `Box(...)` and `Cylinder(...)` are 3D shapes you already understand
   from their 2D cousins. They just also have a height now.
 - `Rect`, `Circle`, `RegularPolygon`, `Polygon`, and `Label` are flat 2D
-  shapes, exactly like the ones you've drawn before. Nothing shows up in
-  3D until you push one up off the page with `linear_extrude(...)`.
+  shapes, exactly like the ones you've drawn before. They show up flat at
+  first; `extrude(...)` gives one real height, and `rotate_extrude(...)`
+  spins one around an axis instead, like a shape on a potter's wheel.
 - `union()`, `difference()`, and `intersection()` combine shapes: glue
   them together, cut one out of another, or keep only where they overlap.
 - `hole=True` is a shortcut for the single most common thing you'll want
