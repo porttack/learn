@@ -116,6 +116,15 @@ there's no starter shape to hand you there beyond the reminder of what
 it needs to do.
 
 ```python
+# Student Initials:
+"""
+Battery Gauge
+
+Slug: porttack/cs50/problems/py/battery
+Doctests: python3 -m doctest battery.py
+"""
+
+
 def main():
     # Prompt, then validate inside a try/except loop per the
     # specification below. Once you have a valid reading, print what
@@ -299,6 +308,13 @@ GOOD (110%)
 </script>
 
 ## Hints
+
+If exceptions still feel unfamiliar, CS50's own lecture on the topic
+is a solid general reference: [CS50P - Lecture 3 -
+Exceptions](https://www.youtube.com/watch?v=LW7g1169v7w). It's the
+same lecture that introduces the fuel tank problem mentioned above, so
+it covers try/except and raise from the ground up. The hints below are
+specific to this problem, not a substitute for it.
 
 <details class="hint-toggle" markdown="1">
 <summary>Need a hint?</summary>
