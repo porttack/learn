@@ -1408,8 +1408,8 @@ class Embed {
     this.controls.maxPolarAngle = NORMAL_MAX_POLAR;
     this.controls.minDistance = 1.5;
     this.controls.maxDistance = 40;
-    this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
-    const sun = new THREE.DirectionalLight(0xffffff, 0.8);
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.3);
     sun.position.set(5, -10, 12);
     this.scene.add(sun);
     const grid = new THREE.GridHelper(20, 20, 0xbbbbbb, 0xdddddd);

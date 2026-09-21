@@ -995,8 +995,8 @@ class Embed {
     this.controls.mouseButtons = this.rotatable
       ? { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN }
       : { LEFT: THREE.MOUSE.PAN, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
-    this.scene.add(new THREE.AmbientLight(0xffffff, 0.7));
-    const sun = new THREE.DirectionalLight(0xffffff, 0.7);
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+    const sun = new THREE.DirectionalLight(0xffffff, 1.0);
     sun.position.set(0, 0, 20);
     this.scene.add(sun);
     const grid = new THREE.GridHelper(20, 20, 0xbbbbbb, 0xdddddd);
