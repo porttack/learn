@@ -194,6 +194,11 @@ permalink: /python3d/cheatsheet/
       <p>Stands upright along z. Base sits at z, same as Box.</p>
     </div>
     <div class="entry">
+      <code>Polyhedron(points, faces,
+    fill=None, opacity=100, hole=False)</code>
+      <p>The rawest shape: matches OpenSCAD's polyhedron. points is a list of (x, y, z) corners; faces is a list of point NUMBERS (not coordinates) naming, in order, which corners trace each flat face -- e.g. a triangle from points 0, 1, 2 is face (0, 1, 2). Order matters within a face: list its corners walking around the OUTSIDE in one consistent direction (the right-hand-rule convention) so the face's normal points outward. Get it backwards and the shape still renders (every material here is double-sided) but that face's shading looks inside-out. Faces are fan-triangulated from their own first point, so this is only guaranteed correct for convex (or triangular) faces -- a genuinely non-convex face can triangulate wrong. See the <a href="{{ '/python3d/polyhedrons/' | relative_url }}">Polyhedrons lesson</a> for a full walkthrough of points vs. faces.</p>
+    </div>
+    <div class="entry">
       <code>align="left-top" / "top" / "right-top" /
 "left" / "center" / "right" /
 "left-bottom" / "bottom" / "right-bottom"</code>

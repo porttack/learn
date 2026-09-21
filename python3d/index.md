@@ -42,6 +42,10 @@ before diving in.
     <strong>Advanced: Shapes of Revolution &rarr;</strong>
     <span>Optional bonus lesson. rotate_extrude() -- spin a profile around an axis instead of pushing it straight up.</span>
   </a>
+  <a class="playground-card" href="{{ '/python3d/polyhedrons/' | relative_url }}">
+    <strong>Advanced: Polyhedrons &rarr;</strong>
+    <span>Optional bonus lesson. Points and faces -- the raw building blocks every 3D shape (and every .stl file) is made of.</span>
+  </a>
   <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
     <span>Write Python on the left, watch the model update live on the right.</span>
