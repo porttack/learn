@@ -467,9 +467,9 @@ scene.add(overlayGroup);
 const debugMaterial = new THREE.MeshStandardMaterial({ color: 0xff00ff, transparent: true, opacity: 0.55, depthWrite: false, side: THREE.DoubleSide });
 const backgroundMaterial = new THREE.MeshStandardMaterial({ color: 0x9aa5b1, transparent: true, opacity: 0.15, depthWrite: false, side: THREE.DoubleSide });
 
-// Oval's border=/dashes= (see buildOvalBorder() below) live here too --
-// a stroke color is a 2D-canvas-style preview idea, same as fill=, and
-// never belongs in printable geometry either.
+// Oval/Star's border=/dashes= (see buildShapeBorder() below) live here
+// too -- a stroke color is a 2D-canvas-style preview idea, same as
+// fill=, and never belongs in printable geometry either.
 const borderGroup = new THREE.Group();
 scene.add(borderGroup);
 // LineMaterial's line width is in screen pixels, which only means
@@ -538,6 +538,19 @@ import math
 _registry = []
 _BOX_EDGE_ATTRS = {"left", "top", "right", "bottom"}
 
+# Shared by Oval and Star's left/top/right/bottom/width/height: Oval
+# stores width/height directly (two independent numbers), Star only has
+# radius (one number driving a square 2*radius bounding box) -- this
+# hides that difference so __getattr__/__setattr__ below don't need to
+# know which shape they're looking at.
+def _effective_size(data):
+    if "width" in data:
+        return data["width"], data["height"]
+    if data.get("type") == "star":
+        d = data["radius"] * 2
+        return d, d
+    return None
+
 class Solid:
     # Attribute access proxies straight into .data, so a shape kept from
     # an earlier run stays a live handle: shape.x += 3 (or .fill =, .opacity
@@ -553,25 +566,48 @@ class Solid:
         # only reached when normal lookup fails, so this never intercepts
         # .data itself (set directly above) or a real method/attribute
         data = self.__dict__["data"]
+        # Star's own "points" argument (how many points the star has)
+        # collides with the "points" key every 2D profile's data dict
+        # already uses for its computed outline vertices -- this has to
+        # be checked BEFORE the generic "name in data" lookup just below,
+        # or star.points would return the outline coordinate list instead
+        # of the point count CMU's own Star object reports.
+        if data.get("type") == "star" and name == "points":
+            return data["_numPoints"]
         if name in data:
             return data[name]
-        # left/top/right/bottom, like CMU's Oval: derived from
-        # centerX/centerY/width/height rather than stored directly, so
-        # they're only meaningful on a shape that actually has those
-        # (Oval, for now -- nothing else here is centerX/width-shaped).
-        if name in _BOX_EDGE_ATTRS and "centerX" in data and "width" in data:
-            cx, cy, w, h = data["centerX"], data["centerY"], data["width"], data["height"]
-            return {"left": cx - w / 2, "right": cx + w / 2, "top": cy - h / 2, "bottom": cy + h / 2}[name]
+        if data.get("type") == "star" and name in ("width", "height"):
+            return data["radius"] * 2
+        # left/top/right/bottom, like CMU's Oval/Star: derived from
+        # centerX/centerY and an effective width/height rather than
+        # stored directly, so only meaningful on a shape that actually
+        # has those (see _effective_size above).
+        if name in _BOX_EDGE_ATTRS and "centerX" in data:
+            size = _effective_size(data)
+            if size:
+                w, h = size
+                cx, cy = data["centerX"], data["centerY"]
+                return {"left": cx - w / 2, "right": cx + w / 2, "top": cy - h / 2, "bottom": cy + h / 2}[name]
         raise AttributeError(f"'Solid' object has no attribute '{name}'")
     def __setattr__(self, name, value):
         data = self.__dict__["data"]
-        if name in _BOX_EDGE_ATTRS and "centerX" in data and "width" in data:
-            w, h = data["width"], data["height"]
-            if name == "left": data["centerX"] = value + w / 2
-            elif name == "right": data["centerX"] = value - w / 2
-            elif name == "top": data["centerY"] = value + h / 2
-            elif name == "bottom": data["centerY"] = value - h / 2
+        if data.get("type") == "star" and name == "points":
+            data["_numPoints"] = value
             return
+        if data.get("type") == "star" and name in ("width", "height"):
+            # A star only has one size knob -- setting either dimension
+            # moves the same radius, so they can never go non-square.
+            data["radius"] = value / 2
+            return
+        if name in _BOX_EDGE_ATTRS and "centerX" in data:
+            size = _effective_size(data)
+            if size:
+                w, h = size
+                if name == "left": data["centerX"] = value + w / 2
+                elif name == "right": data["centerX"] = value - w / 2
+                elif name == "top": data["centerY"] = value + h / 2
+                elif name == "bottom": data["centerY"] = value - h / 2
+                return
         data[name] = value
 
     # add()/subtract() grow or cut a shape in place -- unlike union()/
@@ -833,10 +869,12 @@ def Polygon(*coords, fill=_UNSET, opacity=100, hole=False):
         "hole": is_hole, "fill": resolved_fill, "opacity": opacity, "visible": True,
     })
 
-def _oval_align_offset(align, width, height):
+def _align_offset(align, width, height):
     # y-down (matches Rect's own left/top, and CMU's actual canvas) --
     # the OPPOSITE sign from Box's alignOffset on the JS side, which
-    # deliberately flips top/bottom for a 3D scene instead.
+    # deliberately flips top/bottom for a 3D scene instead. Shared by
+    # Oval and Star (any shape whose constructor takes a center point
+    # rather than a corner).
     a = align or "center"
     ox = oy = 0
     if "left" in a: ox = width / 2
@@ -856,11 +894,54 @@ def Oval(centerX, centerY, width, height, fill=_UNSET, border=None, borderWidth=
     # shapes -- handy for onKeyPress-driven animation. border/borderWidth/
     # dashes draw a separate outline (see buildBrush() on the JS side);
     # like fill, they're preview-only and never reach the exported STL.
-    ox, oy = _oval_align_offset(align, width, height)
+    ox, oy = _align_offset(align, width, height)
     is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
     return Solid({
         "type": "oval", "kind": "points",
         "centerX": centerX + ox, "centerY": centerY + oy, "width": width, "height": height,
+        "rotateAngle": rotateAngle, "points": [],
+        "border": border, "borderWidth": borderWidth, "dashes": dashes,
+        "hole": is_hole, "fill": resolved_fill, "opacity": opacity, "visible": visible,
+    })
+
+# Ratio of the star's inner (concave) vertices to its outer radius.
+# CMU's Star only exposes radius/points/roundness -- no separate
+# sharpness knob -- so this ratio is a deliberate approximation (a
+# reasonable classic-star look across different point counts), not a
+# measured match to CMU's own rendering. Flag this if it ever needs to
+# be closer.
+_STAR_INNER_RATIO = 0.5
+
+def Star(centerX, centerY, radius, points, fill=_UNSET, border=None, borderWidth=2,
+         roundness=None, opacity=100, rotateAngle=0, dashes=False, align="center",
+         visible=True, hole=False):
+    # Matches CMU's Star. Like Oval, centerX/centerY/radius/points/
+    # roundness/rotateAngle are stored raw and the outline recomputed
+    # fresh every _dump() (see _recompute_star_points below), so mutating
+    # any of them (or star.left/top/right/bottom/width/height, see Solid
+    # above) after the fact actually reshapes/moves it.
+    #
+    # roundness (0-100, CMU's only shape-softening knob) is modeled here
+    # as corner-filleting every vertex -- inner and outer alike -- reusing
+    # _round_polygon_corners() (already proven on Rect/RegularPolygon)
+    # rather than inventing new geometry. At 100 that fillets far enough
+    # to erase the points entirely, reading as a soft blob/circle; CMU's
+    # own exact interpretation isn't confirmed, but "how round" reads
+    # naturally as corner rounding, and this reuses tested code instead
+    # of a new, unverified geometric model.
+    if radius <= 0:
+        raise ValueError("Star radius must be greater than 0")
+    if points <= 2:
+        raise ValueError("Star points must be greater than 2")
+    if roundness is not None and not (0 <= roundness <= 100):
+        raise ValueError("Star roundness must be between 0 and 100")
+    diameter = radius * 2
+    ox, oy = _align_offset(align, diameter, diameter)
+    is_hole, resolved_fill = _resolve_hole_fill(hole, fill)
+    return Solid({
+        "type": "star", "kind": "points",
+        "centerX": centerX + ox, "centerY": centerY + oy,
+        "radius": radius, "_numPoints": points, "roundness": roundness,
         "rotateAngle": rotateAngle, "points": [],
         "border": border, "borderWidth": borderWidth, "dashes": dashes,
         "hole": is_hole, "fill": resolved_fill, "opacity": opacity, "visible": visible,
@@ -1113,6 +1194,22 @@ def _recompute_oval_points(node):
         ]
     node["points"] = points
 
+def _recompute_star_points(node):
+    if node.get("type") != "star":
+        return
+    cx, cy, r, n = node["centerX"], node["centerY"], node["radius"], node["_numPoints"]
+    inner_r = r * _STAR_INNER_RATIO
+    start = math.radians(node.get("rotateAngle", 0)) + math.pi / 2
+    points = []
+    for i in range(n * 2):
+        angle = start + math.pi * i / n
+        rad = r if i % 2 == 0 else inner_r
+        points.append((cx + rad * math.cos(angle), cy + rad * math.sin(angle)))
+    roundness = node.get("roundness")
+    if roundness:
+        points = _round_polygon_corners(points, (roundness / 100) * r, SEGMENTS)
+    node["points"] = points
+
 def _dump():
     # A "hole" shape isn't drawn on its own -- it's subtracted from every
     # other shape it overlaps. Each solid is cut independently (not merged
@@ -1125,14 +1222,15 @@ def _dump():
     # here to filter them out.
     top = [s.data for s in _registry]
 
-    # Oval's outline is recomputed fresh from centerX/centerY/width/
-    # height/rotateAngle on every dump, not baked in once at construction
-    # -- see Oval() and Solid.__getattr__/__setattr__ above for why.
-    # _walk() already knows how to reach every node in the tree
-    # (children/base/subtract/child), including ones nested inside a
-    # union()/difference() built after an Oval was consumed.
+    # Oval/Star's outlines are recomputed fresh from their raw properties
+    # on every dump, not baked in once at construction -- see Oval()/
+    # Star() and Solid.__getattr__/__setattr__ above for why. _walk()
+    # already knows how to reach every node in the tree (children/base/
+    # subtract/child), including ones nested inside a union()/difference()
+    # built after an Oval/Star was consumed.
     for n in top:
         _walk(n, _recompute_oval_points)
+        _walk(n, _recompute_star_points)
 
     # ! (show_only): if anything anywhere is flagged, ONLY that renders --
     # everything else in the design is set aside, not just this one part.
@@ -1614,27 +1712,29 @@ function buildBrush(node, matrix = new THREE.Matrix4()) {
   return brush;
 }
 
-// Oval's border=/borderWidth=/dashes=, drawn as a separate outline
-// tracing the same points its fill uses. A plain THREE.Line ignores
+// Oval/Star's border=/borderWidth=/dashes=, drawn as a separate outline
+// tracing the same points their fill uses. A plain THREE.Line ignores
 // linewidth on most GPUs -- WebGL has capped real line width at 1px
 // forever, regardless of what you ask for -- so a borderWidth that's
 // actually supposed to look different needs the Line2/LineMaterial
 // "fat line" addon instead, which draws thickness with a real shader.
-// Only ever called on a genuinely standalone, unconsumed Oval (see
+// Only ever called on a genuinely standalone, unconsumed Oval/Star (see
 // rebuildScene() below) -- combining it into a union()/translate()/etc.
 // first drops the border, a real (documented) v1 limitation, not a bug.
-function buildOvalBorder(node) {
+function buildShapeBorder(node) {
   const positions = [];
   for (const [x, y] of node.points) positions.push(x, y, DEFAULT_2D_THICKNESS + 0.002);
   positions.push(node.points[0][0], node.points[0][1], DEFAULT_2D_THICKNESS + 0.002);
   const geometry = new LineGeometry();
   geometry.setPositions(positions);
-  // Dash/gap length as a fraction of the oval's own size rather than a
+  // Dash/gap length as a fraction of the shape's own size rather than a
   // fixed constant -- CMU code shows up at wildly different coordinate
   // scales (a Box(2,2,2) demo vs. a ported 400x400-canvas sketch), and a
   // fixed dash length would be invisible at one scale and a solid blob
-  // at the other.
-  const dashUnit = Math.max(node.width, node.height) * 0.02;
+  // at the other. Star's data has no width/height (see _effective_size
+  // on the Python side) -- radius*2 stands in for it here instead.
+  const sizeHint = node.radius != null ? node.radius * 2 : Math.max(node.width, node.height);
+  const dashUnit = sizeHint * 0.02;
   const material = new LineMaterial({
     color: node.border ? new THREE.Color(node.border).getHex() : 0x000000,
     linewidth: node.borderWidth || 2,
@@ -1769,13 +1869,14 @@ function rebuildScene(shapes) {
       overlayGroup.add(mesh);
     } else {
       modelGroup.add(buildBrush(node));
-      // Oval's border=/borderWidth=/dashes=: a standalone outline, drawn
-      // only for a top-level, unconsumed Oval (still node.kind === "points"
-      // with real node.points at this stage) -- folding it into a
-      // union()/translate()/etc. first drops the border, same as any other
-      // preview-only property (fill=/opacity=) never surviving into an STL.
-      if (node.type === "oval" && node.border) {
-        borderGroup.add(buildOvalBorder(node));
+      // Oval/Star's border=/borderWidth=/dashes=: a standalone outline,
+      // drawn only for a top-level, unconsumed shape (still
+      // node.kind === "points" with real node.points at this stage) --
+      // folding it into a union()/translate()/etc. first drops the
+      // border, same as any other preview-only property (fill=/opacity=)
+      // never surviving into an STL.
+      if ((node.type === "oval" || node.type === "star") && node.border) {
+        borderGroup.add(buildShapeBorder(node));
       }
     }
   }

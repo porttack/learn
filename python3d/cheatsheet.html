@@ -237,6 +237,13 @@ permalink: /python3d/cheatsheet/
       <p>CMU parity shape. border draws a real outlined stroke (a fat Line2, so borderWidth actually changes thickness, unlike a plain WebGL line) -- dropped if the Oval gets folded into a union()/etc., same as any other preview-only property. left/top/right/bottom read and write like CMU's, and centerX/centerY/width/height/rotateAngle stay live -- change any of them after creation and the shape updates, which none of the other 2D profiles here do yet.</p>
     </div>
     <div class="entry">
+      <code>Star(centerX, centerY, radius, points,
+    fill=..., border=None, borderWidth=2,
+    roundness=None, opacity=100, rotateAngle=0,
+    dashes=False, align="center", hole=False)</code>
+      <p>CMU parity shape, same border=/left-right-top-bottom/live-mutation deal as Oval, including a settable width/height (a star only has one real size knob -- radius -- so setting either moves the same radius, keeping the bounding box square). points is the point count (radius&gt;0, points&gt;2, both required); star.points reads that count back, not an outline. roundness (0-100) fillets every vertex, inner and outer alike, using the same corner-rounding math as Rect/RegularPolygon's fillet= -- at 100 that erases the points into a soft blob. CMU doesn't document its own inner-point ratio or exact roundness math, so both are a reasonable approximation here, not a pixel-for-pixel match.</p>
+    </div>
+    <div class="entry">
       <code>RegularPolygon(centerX, centerY,
     radius, numSides, rotateAngle=0,
     fillet=0, fill=..., opacity=100, hole=False)</code>

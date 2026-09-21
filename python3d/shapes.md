@@ -124,9 +124,10 @@ Circle(2, 2, 1.5, fill="cornflowerblue")</textarea>
 <aside class="callout note" markdown="1">
 **COMING FROM CMU CS ACADEMY?**
 
-You might already know `Oval(centerX, centerY, width, height)` from there.
-It works here too, anchored by its center just like `Circle`. Not part of
-this lesson's checkpoints, just there if you want to try it.
+You might already know `Oval(centerX, centerY, width, height)` and
+`Star(centerX, centerY, radius, points)` from there. Both work here too,
+anchored by their center just like `Circle`. Not part of this lesson's
+checkpoints, just there if you want to try them.
 </aside>
 
 ## Checking Your Work
@@ -580,6 +581,21 @@ def Oval(centerX, centerY, width, height, fill=None, opacity=100, rotateAngle=0)
         "rotateAngle": rotateAngle, "fill": fill, "opacity": opacity, "visible": True,
     })
 
+# Same "floor, not full parity" reasoning as Oval above. No roundness=
+# here -- that needs corner-rounding geometry (_round_polygon_corners in
+# the Studio) this lesson's shim doesn't otherwise have any use for, so
+# porting it just for this one optional property isn't worth the extra
+# code in a lesson this deliberately minimal. Stored as "starPoints", not
+# "points" -- "points" is already this file's key for a shape's computed
+# outline coordinates (see _dump() below), and CMU's own Star.points
+# (the point COUNT) would collide with that.
+def Star(centerX, centerY, radius, points, fill=None, opacity=100, rotateAngle=0):
+    return Solid({
+        "kind": "star", "centerX": centerX, "centerY": centerY, "radius": radius,
+        "starPoints": points, "rotateAngle": rotateAngle,
+        "fill": fill, "opacity": opacity, "visible": True,
+    })
+
 def Label(text, x, y, size=1, fill=None, opacity=100):
     # Matches CMU's Label(value, x, y, size): centered at (x, y). Just the
     # one font here (no font=/bold=/italic= yet) -- this lesson only needs
@@ -626,6 +642,19 @@ def _points_for(data):
                 for px, py in points
             ]
         return points
+    if data["kind"] == "star":
+        cx, cy, r, n = data["centerX"], data["centerY"], data["radius"], data["starPoints"]
+        # Same inner/outer radius ratio as the Studio's Star -- CMU doesn't
+        # document its own, so this is a deliberate approximation, not a
+        # measured match. See studio.html's Star() for the longer version
+        # of this note.
+        inner_r = r * 0.5
+        start = math.pi / 2 + math.radians(data.get("rotateAngle", 0))
+        return [
+            (cx + (r if i % 2 == 0 else inner_r) * math.cos(start + math.pi * i / n),
+             cy + (r if i % 2 == 0 else inner_r) * math.sin(start + math.pi * i / n))
+            for i in range(n * 2)
+        ]
     cx, cy, r = data["centerX"], data["centerY"], data["radius"]
     return [
         (cx + r * math.cos(2 * math.pi * i / segments), cy + r * math.sin(2 * math.pi * i / segments))
