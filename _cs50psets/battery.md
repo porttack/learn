@@ -99,7 +99,9 @@ out with `pass` and two `>>>` examples, the same doctest format you've
 already seen in Think Python; run `python3 -m doctest battery.py` from
 inside your `battery` folder to check them. They'll fail until you
 replace `pass` with real code, and you should add one more example of
-your own, for the `LOW` case.
+your own, for the `LOW` case. If every example passes, the command
+prints nothing at all; silence means you're good. A failure prints a
+diff of what it expected versus what your code returned.
 
 Notice the first example passes in `89.6`, not a whole number.
 `gauge_reading` should round to the nearest integer itself rather than
@@ -115,10 +117,9 @@ it needs to do.
 
 ```python
 def main():
-    # Prompt for input, parse it, and validate it inside a
-    # try/except loop, per the specification below. Once you have a
-    # valid measured/nominal pair, pass the percentage to
-    # gauge_reading(), then print what it returns.
+    # Prompt, then validate inside a try/except loop per the
+    # specification below. Once you have a valid reading, print what
+    # gauge_reading() returns.
     pass
 
 
@@ -160,10 +161,13 @@ reports its charge.
   `GOOD (104%)`.
 - Otherwise (the percentage is between 81 and 99, inclusive), print
   just `N%`, with no label. For example, `73%`.
-- If the percentage would be **over 120**, that's not a realistic
-  battery reading anymore, probably a meter reading the wrong
-  terminals, or a mislabeled cell. Treat it as invalid input: don't
-  print anything, just prompt again.
+- If `X / Y` is more than `1.2`, that is, more than 120% of nominal
+  *before* any rounding, that's not a realistic battery reading
+  anymore, probably a meter reading the wrong terminals, or a
+  mislabeled cell. Treat it as invalid input: don't print anything,
+  just prompt again. Check this against the raw ratio, not the
+  rounded percentage: a raw reading of 120.3%, for instance, is
+  invalid even though it would round to a valid-looking 120%.
 - `X` must not be negative. A negative voltage isn't a real reading;
   prompt again.
 - `Y` must be a positive number. If it's zero or negative, prompt
@@ -186,6 +190,12 @@ are things Python has no complaint about at all: `float("-1")` and
 you'll need to raise the exception yourself with a `raise` statement,
 so that the same `except` block that catches Python's own exceptions
 catches yours too.
+
+That means the "over 120" check belongs inside the retry loop in
+`main`, alongside the other manually-raised rules, not inside
+`gauge_reading`. `gauge_reading` should be able to assume it's always
+handed a plausible reading; it only has three outputs to produce
+(`LOW`, `GOOD`, or a plain percentage), never a rejection.
 </aside>
 
 ## Usage
