@@ -348,6 +348,25 @@ want more than one axis at once.
     border-color: #2a7ae2;
     color: #2a7ae2;
   }
+  .embed-free-rotate {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font: inherit;
+    font-size: 0.72rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    background: rgba(255,255,255,0.9);
+    color: #1b1f23;
+    cursor: pointer;
+  }
+  .embed-free-rotate:hover { border-color: #2a7ae2; color: #2a7ae2; }
+  .embed-free-rotate.active {
+    background: #2a7ae2;
+    border-color: #2a7ae2;
+    color: #fff;
+  }
   .embed-error {
     display: none;
     margin: 0 10px 10px;
@@ -761,6 +780,16 @@ class PyodideWorker {
 // punctuation) already matches the raw browser event.key value.
 const KEY_NAMES = { ArrowUp: "Up", ArrowDown: "Down", ArrowLeft: "Left", ArrowRight: "Right", " ": "Space" };
 
+// See studio.html for the full "Look From Any Angle" story (three real
+// bugs, each verified via STL export or direct debugging, not just a
+// screenshot). This page only ships the button, not the Alt-key
+// alternative: a bare keydown has no way to know which of several
+// embeds on one page it should apply to, so the button (already scoped
+// to its own embed) is the only version that makes sense here, and it's
+// the one that works on a touchscreen/trackpad-only Chromebook too.
+const NORMAL_MAX_POLAR = Math.PI * 0.47;
+const FREE_MAX_POLAR = Math.PI * 0.85;
+
 let worker;
 let embeds = [];
 async function stopAndRestart() {
@@ -948,6 +977,7 @@ class Embed {
     this.checkerName = container.dataset.check;
     this.disposables = [];
     this.runToken = 0;
+    this.freeRotateActive = false;
     this.buildDom(container);
     this.setupScene();
     this.bindEvents();
@@ -1037,6 +1067,11 @@ class Embed {
     this.keyHintEl.hidden = true;
     this.viewerEl.appendChild(this.keyHintEl);
 
+    this.freeRotateBtn = document.createElement("button");
+    this.freeRotateBtn.className = "embed-free-rotate";
+    this.freeRotateBtn.textContent = "Look From Any Angle";
+    this.viewerEl.appendChild(this.freeRotateBtn);
+
     const zoomControls = document.createElement("div");
     zoomControls.className = "embed-zoom-controls";
     this.zoomInBtn = document.createElement("button");
@@ -1062,7 +1097,7 @@ class Embed {
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = 0.08;
-    this.controls.maxPolarAngle = Math.PI * 0.47;
+    this.controls.maxPolarAngle = NORMAL_MAX_POLAR;
     this.controls.minDistance = 1.5;
     this.controls.maxDistance = 40;
     this.scene.add(new THREE.AmbientLight(0xffffff, 0.6));
@@ -1145,12 +1180,34 @@ class Embed {
     this.exportBtn.addEventListener("click", () => this.exportSTL());
     this.zoomInBtn.addEventListener("click", () => this.zoomBy(-120));
     this.zoomOutBtn.addEventListener("click", () => this.zoomBy(120));
+    this.freeRotateBtn.addEventListener("click", () => {
+      this.freeRotateActive = !this.freeRotateActive;
+      this.applyFreeRotateState();
+    });
     this.viewerEl.addEventListener("keydown", (e) => {
       if (!this.viewerEl.classList.contains("keyboard-active")) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return; // don't hijack browser/system shortcuts
       e.preventDefault();
       this.runEvent("onKeyPress", [KEY_NAMES[e.key] || e.key]);
     });
+  }
+
+  // See the button's own construction (buildDom) and studio.html's much
+  // longer version of this same story. Re-centering the target on this
+  // embed's own current model (not the world origin) is what keeps an
+  // off-center shape from swinging out of frame entirely at the wider
+  // angle -- see rebuild() below for why this also has to re-run after
+  // every Run, not just on the initial toggle.
+  applyFreeRotateState() {
+    this.controls.maxPolarAngle = this.freeRotateActive ? FREE_MAX_POLAR : NORMAL_MAX_POLAR;
+    if (this.freeRotateActive) {
+      const box = new THREE.Box3().setFromObject(this.group);
+      if (!box.isEmpty()) box.getCenter(this.controls.target);
+    } else {
+      this.controls.target.set(0, 0, 0);
+    }
+    this.freeRotateBtn.textContent = this.freeRotateActive ? "Back to Normal View" : "Look From Any Angle";
+    this.freeRotateBtn.classList.toggle("active", this.freeRotateActive);
   }
 
   showError(message) {
@@ -1244,6 +1301,7 @@ class Embed {
       this.group.add(buildMesh(node, new THREE.Matrix4(), this.disposables));
     }
     fitSceneToContent(this.camera, this.controls, this.group, this.gridState);
+    if (this.freeRotateActive) this.applyFreeRotateState();
   }
 
   ready() {

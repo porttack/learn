@@ -206,6 +206,25 @@ permalink: /python3d/studio/
     border-color: var(--accent);
     color: var(--accent);
   }
+  #free-rotate {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font: inherit;
+    font-size: 0.78rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.9);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  #free-rotate:hover { border-color: var(--accent); color: var(--accent); }
+  #free-rotate.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
 </style>
 </head>
 <body>
@@ -243,11 +262,12 @@ extrude(label, height=2.5, x=6)</textarea>
   <div class="viewer">
     <div id="canvas-holder" tabindex="0"></div>
     <div class="key-hint" id="key-hint" hidden>Click here, then press a key</div>
+    <button id="free-rotate" title="Also works by holding Alt/Option while dragging">Look From Any Angle</button>
     <div class="zoom-controls">
       <button id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
       <button id="zoom-out" title="Zoom out" aria-label="Zoom out">&minus;</button>
     </div>
-    <div class="hint">Box &middot; Cylinder &middot; Label(font=, bold=, italic=) &middot; extrude &middot; rotate_extrude &middot; union() &middot; difference() &middot; translate() &middot; rotate() &middot; hole=True &middot; align=/center= &middot; hold Alt/Option to look from underneath</div>
+    <div class="hint">Box &middot; Cylinder &middot; Label(font=, bold=, italic=) &middot; extrude &middot; rotate_extrude &middot; union() &middot; difference() &middot; translate() &middot; rotate() &middot; hole=True &middot; align=/center= &middot; "Look From Any Angle" (or hold Alt/Option) to see underneath</div>
   </div>
 </div>
 
@@ -1609,6 +1629,11 @@ function rebuildScene(shapes) {
   }
   downloadBtn.disabled = modelGroup.children.length === 0;
   fitSceneToContent(camera, controls, modelGroup, gridState);
+  // Re-center free-rotate's target on whatever just got built, in case
+  // it's still toggled on from a previous run -- otherwise switching to
+  // a very different shape while "Look From Any Angle" stays on would
+  // leave the camera orbiting a point that no longer has anything near it.
+  if (altFreeRotate || buttonFreeRotate) applyFreeRotateState();
 }
 
 function showOutput(lines) {
@@ -1687,45 +1712,69 @@ holder.addEventListener("keydown", (e) => {
 });
 nextBtn.addEventListener("click", () => runEvent("onNext", []));
 
-// Hold Alt (Option on a Mac) to temporarily lift the maxPolarAngle cap
-// above, so a curious student can orbit all the way underneath a model.
-// Not Shift/Ctrl/Meta: OrbitControls itself treats any of those, held
-// during a left-button drag, as a request to PAN instead of rotate (its
-// own single-button-mouse accessibility convention) -- so Shift was the
-// wrong choice the first time around, silently panning the camera and
-// target off into space instead of rotating at all. Alt isn't claimed by
-// OrbitControls, and this file already reserves it from onKeyPress
-// forwarding for the same "don't hijack a system-shortcut modifier"
-// reason above, so nothing new needs excluding there. Listens on window
-// (not the canvas holder) so it works the instant a drag starts, with no
-// separate click-to-focus step. The "blur" listener guards against a
-// keyup that never arrives -- alt-tabbing away, or a browser keyboard
-// shortcut swallowing the event -- which would otherwise strand Alt
-// "held" forever.
+// Two independent ways to lift the maxPolarAngle cap and look underneath
+// a model: holding Alt (Option on a Mac), or the "Look From Any Angle"
+// button -- a held key doesn't work at all on a touchscreen/trackpad-only
+// Chromebook, so the button is the one guaranteed to work everywhere;
+// Alt stays as a quick option for anyone on a real keyboard who's found
+// it reliable. They're tracked as two separate flags (not one shared
+// boolean) so releasing Alt can't undo a click on the button, and vice
+// versa -- the free-rotate cap only actually comes back down once BOTH
+// are off. Not Shift/Ctrl/Meta for the key: OrbitControls itself treats
+// any of those, held during a left-button drag, as a request to PAN
+// instead of rotate (its own single-button-mouse accessibility
+// convention) -- so Shift was the wrong choice the first time around,
+// silently panning the camera and target off into space instead of
+// rotating at all. Alt isn't claimed by OrbitControls, and this file
+// already reserves it from onKeyPress forwarding for the same "don't
+// hijack a system-shortcut modifier" reason as Ctrl/Meta, so nothing new
+// needs excluding there.
 //
 // controls.target is pinned to the world origin (see controls.target.set
 // above), which is fine at the normal capped angle -- most shapes sit
 // close enough to it that the small mismatch barely shows. It stops
-// being fine here: Box(2,2,2)'s own default placement (base at z=0,
-// so its center is at z=1, not z=0) is a small offset at a shallow
-// angle but swings the whole shape out of frame entirely once the
-// camera can orbit nearly underneath it. Recentering the target on the
-// model's own bounding-box center for as long as Alt is held fixes that
-// without touching the normal (un-modified) experience at all.
-function exitFreeRotate() {
-  controls.maxPolarAngle = NORMAL_MAX_POLAR;
-  controls.target.set(0, 0, 0);
+// being fine here: Box(2,2,2)'s own default placement (base at z=0, so
+// its center is at z=1, not z=0) is a small offset at a shallow angle
+// but swings the whole shape out of frame entirely once the camera can
+// orbit nearly underneath it. Recentering the target on the model's own
+// bounding-box center while free-rotating is active fixes that without
+// touching the normal experience at all -- and gets redone after every
+// Run (see rebuildScene() below), so switching to a very different
+// shape while the button is still toggled on doesn't leave the camera
+// centered on empty space.
+let altFreeRotate = false;
+let buttonFreeRotate = false;
+function applyFreeRotateState() {
+  const active = altFreeRotate || buttonFreeRotate;
+  controls.maxPolarAngle = active ? FREE_MAX_POLAR : NORMAL_MAX_POLAR;
+  if (active) {
+    const box = new THREE.Box3().setFromObject(modelGroup);
+    if (!box.isEmpty()) box.getCenter(controls.target);
+  } else {
+    controls.target.set(0, 0, 0);
+  }
+  freeRotateBtn.textContent = buttonFreeRotate ? "Back to Normal View" : "Look From Any Angle";
+  freeRotateBtn.classList.toggle("active", buttonFreeRotate);
 }
 window.addEventListener("keydown", (e) => {
-  if (e.key !== "Alt" || controls.maxPolarAngle === FREE_MAX_POLAR) return;
-  controls.maxPolarAngle = FREE_MAX_POLAR;
-  const box = new THREE.Box3().setFromObject(modelGroup);
-  if (!box.isEmpty()) box.getCenter(controls.target);
+  if (e.key !== "Alt" || altFreeRotate) return;
+  altFreeRotate = true;
+  applyFreeRotateState();
 });
 window.addEventListener("keyup", (e) => {
-  if (e.key === "Alt") exitFreeRotate();
+  if (e.key !== "Alt") return;
+  altFreeRotate = false;
+  applyFreeRotateState();
 });
-window.addEventListener("blur", exitFreeRotate);
+window.addEventListener("blur", () => {
+  altFreeRotate = false;
+  applyFreeRotateState();
+});
+const freeRotateBtn = document.getElementById("free-rotate");
+freeRotateBtn.addEventListener("click", () => {
+  buttonFreeRotate = !buttonFreeRotate;
+  applyFreeRotateState();
+});
 
 async function stopAndRestart() {
   runToken++; // invalidate whatever run() call is currently awaiting the stuck worker
