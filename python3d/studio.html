@@ -200,6 +200,22 @@ permalink: /python3d/studio/
     position: absolute;
     inset: 0;
   }
+  /* Dragging a .stl over the viewer, to load back an exported file's
+     embedded code -- see the drop handler below. */
+  #canvas-holder.drag-over::after {
+    content: "Drop to load this STL's code";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(42, 122, 226, 0.15);
+    border: 2px dashed var(--accent);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 1rem;
+    pointer-events: none;
+  }
   /* Only relevant once onKeyPress is defined -- see keyboard-active class
      toggled in JS -- so it doesn't visually suggest every script is
      keyboard-interactive. */
@@ -2608,9 +2624,22 @@ codeEl.addEventListener("input", () => {
 });
 runBtn.addEventListener("click", run);
 
+// The "solid <name>" line is the only free-text slot ASCII STL offers --
+// slicers universally ignore it (it's a label, not data to any of them),
+// which is exactly why it's safe to repurpose here. Reuses the same
+// LZString encoding as the Share link above, so this doesn't need its
+// own size/character-safety reasoning -- same URL-safe alphabet, same
+// "well under any practical length ceiling for typical student code"
+// assumption already validated there. "endsolid <name>" (the matching
+// closing line the format requires) gets the same text, so a strict
+// parser checking the two match doesn't choke on it.
+const STL_CODE_PREFIX = "python3d-code:";
 downloadBtn.addEventListener("click", () => {
   const exporter = new STLExporter();
-  const stlText = exporter.parse(modelGroup);
+  let stlText = exporter.parse(modelGroup);
+  const marker = STL_CODE_PREFIX + LZString.compressToEncodedURIComponent(codeEl.value);
+  stlText = stlText.replace(/^solid [^\n]*/m, "solid " + marker);
+  stlText = stlText.replace(/endsolid [^\n]*$/m, "endsolid " + marker);
   const blob = new Blob([stlText], { type: "model/stl" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -2618,6 +2647,61 @@ downloadBtn.addEventListener("click", () => {
   a.download = "model.stl";
   a.click();
   URL.revokeObjectURL(url);
+});
+
+// Round-trips an STL this same page exported (see the marker written
+// above): drop it back in, and the exact code that made it loads into
+// the editor and runs -- this can ONLY recover code from a file that
+// carries that marker. An STL from anywhere else (a slicer, another
+// CAD tool, a plain re-export with the marker stripped) has no Python
+// source hiding in it to recover; there's no way to reverse-engineer
+// arbitrary mesh geometry back into the code that made it, so this
+// deliberately doesn't try -- it just reports plainly that it can't.
+async function handleDroppedSTL(file) {
+  if (!file.name.toLowerCase().endsWith(".stl")) {
+    showError(`"${file.name}" isn't a .stl file.`);
+    return;
+  }
+  const text = await file.text();
+  const match = text.match(/^solid python3d-code:(\S+)/);
+  if (!match) {
+    showError(
+      "This STL doesn't have this Studio's embedded code in it -- only a file " +
+      "downloaded from here (Download STL) can be loaded back in this way."
+    );
+    return;
+  }
+  let decoded = null;
+  try {
+    decoded = LZString.decompressFromEncodedURIComponent(match[1]);
+  } catch (e) {
+    decoded = null;
+  }
+  if (!decoded) {
+    showError("Couldn't read the code embedded in this STL -- it may have been edited or re-saved by another program.");
+    return;
+  }
+  clearError();
+  codeEl.value = decoded;
+  run();
+}
+
+holder.addEventListener("dragover", (e) => {
+  // Only react to an actual file being dragged (not, say, a text
+  // selection dragged from elsewhere on the page) -- dataTransfer.items
+  // reports its kind before drop without exposing the file itself yet.
+  if (![...e.dataTransfer.items].some((item) => item.kind === "file")) return;
+  e.preventDefault();
+  holder.classList.add("drag-over");
+});
+holder.addEventListener("dragleave", (e) => {
+  if (e.target === holder) holder.classList.remove("drag-over");
+});
+holder.addEventListener("drop", (e) => {
+  if (!e.dataTransfer.files.length) return;
+  e.preventDefault();
+  holder.classList.remove("drag-over");
+  handleDroppedSTL(e.dataTransfer.files[0]);
 });
 
 showOverhangsBtn.addEventListener("click", () => {
