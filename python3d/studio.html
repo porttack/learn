@@ -18,6 +18,9 @@ permalink: /python3d/studio/
     --border: #d0d7de;
     --error-bg: #fff0f0;
     --error-border: #d1242f;
+    --warn-bg: #fff8e8;
+    --warn-border: #b98900;
+    --warn-ink: #7a5b00;
   }
   * { box-sizing: border-box; }
   html, body {
@@ -84,6 +87,7 @@ permalink: /python3d/studio/
   }
   .toolbar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 8px;
     padding: 10px 16px;
@@ -106,6 +110,12 @@ permalink: /python3d/studio/
   button.secondary {
     background: white;
     color: var(--accent);
+  }
+  /* Show Overhangs is a toggle, not a one-shot action -- same on/off look
+     as #free-rotate.active below, just for a plain toolbar button. */
+  button.secondary.toggle-active {
+    background: var(--accent);
+    color: white;
   }
   #status {
     font-size: 0.8rem;
@@ -140,6 +150,47 @@ permalink: /python3d/studio/
     overflow: auto;
   }
   #output[hidden] { display: none; }
+  /* Auto-updates after every Run with a support warning; Auto-Orient
+     temporarily replaces its text with a suggested rotate() call instead
+     -- see updateOverhangDisplay()/autoOrient() below. */
+  #overhang-warning {
+    margin: 0 16px 16px;
+    padding: 10px 12px;
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 6px;
+    color: var(--warn-ink);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  #overhang-warning code {
+    background: rgba(0,0,0,0.06);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  #overhang-warning[hidden] { display: none; }
+  /* Same box style as #overhang-warning by default (a soft "you might
+     want to know this" amber); .severe (a piece floating disconnected
+     in mid-air, not just multiple separate-but-valid objects) switches
+     to the harder error-red, since that one will likely just fail to
+     print rather than merely needing a support structure. */
+  #pieces-warning {
+    margin: 0 16px 16px;
+    padding: 10px 12px;
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 6px;
+    color: var(--warn-ink);
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  #pieces-warning.severe {
+    background: var(--error-bg);
+    border-color: var(--error-border);
+    color: var(--error-border);
+  }
+  #pieces-warning[hidden] { display: none; }
   .viewer {
     flex: 1 1 auto;
     position: relative;
@@ -249,11 +300,15 @@ label = Label("HI", 0, 0, size=1.2)
 extrude(label, height=2.5, x=6)</textarea>
     <div id="error"></div>
     <div id="output" hidden></div>
+    <div id="overhang-warning" hidden></div>
+    <div id="pieces-warning" hidden></div>
     <div class="toolbar">
       <button id="run" disabled>Run</button>
       <button id="stop" class="secondary" disabled title="Stuck in a loop? This restarts Python.">Stop</button>
       <button id="next" class="secondary" hidden title="Calls onNext() again.">Next</button>
       <button id="download" class="secondary" disabled>Download STL</button>
+      <button id="show-overhangs" class="secondary" disabled title="Highlight faces steeper than 45° that will need print support">Show Overhangs</button>
+      <button id="auto-orient" class="secondary" disabled title="Suggest a rotation that reduces or removes the need for print support">Auto-Orient</button>
       <button id="share" class="secondary" title="Copy a link to this exact code">Share</button>
       <span id="status">Loading Python&hellip;</span>
     </div>
@@ -478,6 +533,21 @@ scene.add(borderGroup);
 // it silently going stale whenever the panel gets dragged wider/narrower
 // without a new Run in between.
 let borderMaterials = [];
+
+// "Show Overhangs" highlight -- a separate group like overlayGroup/
+// borderGroup, so it never ends up in the STL export either (a red
+// warning highlight is exactly the kind of preview-only thing that
+// shouldn't survive into printable geometry). polygonOffset nudges it
+// slightly toward the camera in the depth buffer, since it's built from
+// the model's own coincident triangles -- without that, it would
+// z-fight/flicker against the real surface underneath it.
+const overhangGroup = new THREE.Group();
+scene.add(overhangGroup);
+const overhangMaterial = new THREE.MeshStandardMaterial({
+  color: 0xff2d2d, side: THREE.DoubleSide,
+  polygonOffset: true, polygonOffsetFactor: -4, polygonOffsetUnits: -4,
+});
+let showOverhangs = false;
 
 // Small corner orientation gizmo, OpenSCAD-style (lower-left, click an axis
 // to snap the camera to it).
@@ -1285,6 +1355,10 @@ const runBtn = document.getElementById("run");
 const stopBtn = document.getElementById("stop");
 const nextBtn = document.getElementById("next");
 const downloadBtn = document.getElementById("download");
+const showOverhangsBtn = document.getElementById("show-overhangs");
+const autoOrientBtn = document.getElementById("auto-orient");
+const overhangWarningEl = document.getElementById("overhang-warning");
+const piecesWarningEl = document.getElementById("pieces-warning");
 const shareBtn = document.getElementById("share");
 const statusEl = document.getElementById("status");
 const errorEl = document.getElementById("error");
@@ -1748,6 +1822,468 @@ function buildShapeBorder(node) {
   return line;
 }
 
+// ---- Print-support analysis: which faces overhang past 45 deg, and
+// what rotation (if any) would reduce/remove that ----
+//
+// Every mesh in modelGroup already has its final vertex positions baked
+// in directly (see buildBrush() above: geometry.applyMatrix4(...) at leaf
+// level, before the Brush is created) -- modelGroup itself is never
+// rotated except by autoOrient()'s own preview (see below), so reading
+// mesh.geometry.attributes.position straight off is already reading real
+// model-space coordinates, no extra matrix math needed for the common
+// case.
+const OVERHANG_THRESHOLD_DEG = 45;
+const _DOWN = new THREE.Vector3(0, 0, -1);
+
+// Flat [x,y,z, x,y,z, ...] of every triangle corner in a group, 9 numbers
+// per triangle -- the shared starting point for both the live warning/
+// highlight (identity orientation) and autoOrient()'s search (many
+// candidate orientations), so geometry only has to be read out of the
+// actual THREE meshes once per Run/click, not once per candidate.
+function extractTriangleArray(group) {
+  const out = [];
+  for (const mesh of group.children) {
+    const pos = mesh.geometry.attributes.position;
+    const index = mesh.geometry.index;
+    const count = index ? index.count : pos.count;
+    for (let i = 0; i < count; i++) {
+      const vi = index ? index.getX(i) : i;
+      out.push(pos.getX(vi), pos.getY(vi), pos.getZ(vi));
+    }
+  }
+  return new Float32Array(out);
+}
+
+// The search-phase scorer: total overhanging surface AREA (not just a
+// triangle count -- a model with a few large bad faces and one with many
+// tiny ones shouldn't rank the same) for one candidate orientation,
+// applied to a COPY of each vertex only -- never mutates the real
+// triangles, since this runs once per candidate during autoOrient()'s
+// search and needs to stay cheap. A face resting flush on the print bed
+// (all three corners at the model's own lowest point, at this
+// orientation) is excluded -- it's sitting on the build plate, not
+// floating in air, even though its normal points straight down exactly
+// like a real overhang would.
+function scoreOrientation(flat, quaternion, thresholdRad, bedEps) {
+  const n = flat.length / 9;
+  const rotated = new Float32Array(flat.length);
+  const v = new THREE.Vector3();
+  let minZ = Infinity;
+  for (let i = 0; i < flat.length; i += 3) {
+    v.set(flat[i], flat[i + 1], flat[i + 2]).applyQuaternion(quaternion);
+    rotated[i] = v.x; rotated[i + 1] = v.y; rotated[i + 2] = v.z;
+    if (v.z < minZ) minZ = v.z;
+  }
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+  const e1 = new THREE.Vector3(), e2 = new THREE.Vector3(), normal = new THREE.Vector3();
+  let overhangArea = 0, totalArea = 0;
+  for (let t = 0; t < n; t++) {
+    const o = t * 9;
+    a.set(rotated[o], rotated[o + 1], rotated[o + 2]);
+    b.set(rotated[o + 3], rotated[o + 4], rotated[o + 5]);
+    c.set(rotated[o + 6], rotated[o + 7], rotated[o + 8]);
+    e1.subVectors(b, a);
+    e2.subVectors(c, a);
+    normal.crossVectors(e1, e2);
+    const area = normal.length() / 2;
+    if (area < 1e-9) continue; // degenerate triangle, ignore
+    normal.normalize();
+    totalArea += area;
+    if (normal.z >= 0) continue; // upward/sideways faces never need support
+    if (a.z <= minZ + bedEps && b.z <= minZ + bedEps && c.z <= minZ + bedEps) continue; // resting on the bed
+    if (normal.angleTo(_DOWN) < thresholdRad) overhangArea += area;
+  }
+  return { overhangArea, totalArea };
+}
+
+// Same math as scoreOrientation(), at the identity orientation, but also
+// collects the actual flagged triangle corners for the "Show Overhangs"
+// highlight -- kept as a separate function so the search above (which
+// tries many candidate orientations) never pays for triangle-position
+// bookkeeping it doesn't need.
+function analyzeCurrentOverhangs(group, thresholdDeg, bedEps) {
+  const thresholdRad = THREE.MathUtils.degToRad(thresholdDeg);
+  const flat = extractTriangleArray(group);
+  const n = flat.length / 9;
+  let minZ = Infinity;
+  for (let i = 2; i < flat.length; i += 3) minZ = Math.min(minZ, flat[i]);
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+  const e1 = new THREE.Vector3(), e2 = new THREE.Vector3(), normal = new THREE.Vector3();
+  let overhangArea = 0, totalArea = 0;
+  const flaggedTriangles = [];
+  for (let t = 0; t < n; t++) {
+    const o = t * 9;
+    a.set(flat[o], flat[o + 1], flat[o + 2]);
+    b.set(flat[o + 3], flat[o + 4], flat[o + 5]);
+    c.set(flat[o + 6], flat[o + 7], flat[o + 8]);
+    e1.subVectors(b, a);
+    e2.subVectors(c, a);
+    normal.crossVectors(e1, e2);
+    const area = normal.length() / 2;
+    if (area < 1e-9) continue;
+    normal.normalize();
+    totalArea += area;
+    if (normal.z >= 0) continue;
+    if (a.z <= minZ + bedEps && b.z <= minZ + bedEps && c.z <= minZ + bedEps) continue;
+    if (normal.angleTo(_DOWN) < thresholdRad) {
+      overhangArea += area;
+      flaggedTriangles.push(a.clone(), b.clone(), c.clone());
+    }
+  }
+  return { overhangArea, totalArea, flaggedTriangles };
+}
+
+// Candidate orientations for autoOrient() to try: the 6 axis-aligned
+// "rest it on a flat side" options, plus one more for every distinct,
+// sufficiently large flat facet already in the model -- the same "try
+// resting it on each real face" idea real slicer auto-orient tools use,
+// not a from-scratch numeric optimizer. Coplanar triangles making up one
+// visible flat face (rounded to ~1 degree of normal direction) are
+// grouped and summed so a face built from many small triangles counts
+// once, not dozens of times; anything under 1% of the model's total
+// surface area is dropped so a single stray sliver from a curved surface
+// never becomes its own candidate. This means the result is a good
+// heuristic, not a guaranteed global optimum -- a fully round shape (a
+// Cylinder lying on its side, say) has no orientation that removes 100%
+// of its overhang, since a curved surface always has some downward-
+// facing portion somewhere.
+function candidateOrientations(flat) {
+  const quats = [new THREE.Quaternion()]; // identity: "leave it as-is" is always valid
+  const axisDirs = [
+    new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1, 0, 0),
+    new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, -1, 0),
+    new THREE.Vector3(0, 0, 1), // (0,0,-1) is a no-op, same as identity above
+  ];
+  for (const dir of axisDirs) quats.push(new THREE.Quaternion().setFromUnitVectors(dir, _DOWN));
+
+  const n = flat.length / 9;
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+  const e1 = new THREE.Vector3(), e2 = new THREE.Vector3(), normal = new THREE.Vector3();
+  const byKey = new Map();
+  let totalArea = 0;
+  for (let t = 0; t < n; t++) {
+    const o = t * 9;
+    a.set(flat[o], flat[o + 1], flat[o + 2]);
+    b.set(flat[o + 3], flat[o + 4], flat[o + 5]);
+    c.set(flat[o + 6], flat[o + 7], flat[o + 8]);
+    e1.subVectors(b, a);
+    e2.subVectors(c, a);
+    normal.crossVectors(e1, e2);
+    const area = normal.length() / 2;
+    if (area < 1e-9) continue;
+    normal.normalize();
+    totalArea += area;
+    const key = Math.round(normal.x * 50) + "," + Math.round(normal.y * 50) + "," + Math.round(normal.z * 50);
+    const entry = byKey.get(key);
+    if (entry) entry.area += area;
+    else byKey.set(key, { normal: normal.clone(), area });
+  }
+  const minFacetArea = totalArea * 0.01;
+  for (const { normal: n2, area } of byKey.values()) {
+    if (area >= minFacetArea) quats.push(new THREE.Quaternion().setFromUnitVectors(n2, _DOWN));
+  }
+  return quats;
+}
+
+function formatPct(fraction) {
+  return fraction < 0.01 ? (fraction * 100).toFixed(1) + "%" : Math.round(fraction * 100) + "%";
+}
+
+// Runs after every Run/event (see rebuildScene() below) so the warning
+// stays current without a separate button click, and again whenever
+// "Show Overhangs" is toggled. Deliberately does NOT account for
+// autoOrient()'s own preview rotation (a lightweight, non-destructive
+// modelGroup.quaternion nudge -- see autoOrient() below): re-deriving
+// the warning/highlight from a rotated modelGroup would need every
+// caller to thread that rotation through, for a narrow edge case
+// (toggling Show Overhangs while an unsaved Auto-Orient preview is
+// showing) that isn't worth the extra complexity here.
+function updateOverhangDisplay() {
+  for (const child of [...overhangGroup.children]) {
+    overhangGroup.remove(child);
+    child.geometry.dispose();
+  }
+  if (modelGroup.children.length === 0) {
+    overhangWarningEl.hidden = true;
+    return;
+  }
+  const eps = modelEpsilon(new THREE.Box3().setFromObject(modelGroup));
+  const { overhangArea, totalArea, flaggedTriangles } = analyzeCurrentOverhangs(modelGroup, OVERHANG_THRESHOLD_DEG, eps);
+  const fraction = totalArea > 0 ? overhangArea / totalArea : 0;
+  if (fraction > 0.001) {
+    overhangWarningEl.hidden = false;
+    overhangWarningEl.textContent =
+      `⚠ This model has overhangs steeper than ${OVERHANG_THRESHOLD_DEG}° and will likely need print supports ` +
+      `(about ${formatPct(fraction)} of its surface area). Try Auto-Orient to see if rotating it helps.`;
+  } else {
+    overhangWarningEl.hidden = true;
+  }
+  if (showOverhangs && flaggedTriangles.length > 0) {
+    const positions = new Float32Array(flaggedTriangles.length * 3);
+    flaggedTriangles.forEach((v, i) => { positions[i * 3] = v.x; positions[i * 3 + 1] = v.y; positions[i * 3 + 2] = v.z; });
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    geometry.computeVertexNormals();
+    overhangGroup.add(new THREE.Mesh(geometry, overhangMaterial));
+  }
+}
+
+// A search over candidateOrientations(), scored by scoreOrientation() --
+// not a live re-render per candidate, just plain vector math, so this
+// runs synchronously on click rather than needing the Worker/async
+// machinery Run itself uses.
+function autoOrient() {
+  if (modelGroup.children.length === 0) return;
+  const thresholdRad = THREE.MathUtils.degToRad(OVERHANG_THRESHOLD_DEG);
+  const flat = extractTriangleArray(modelGroup);
+  const eps = modelEpsilon(new THREE.Box3().setFromObject(modelGroup));
+  const current = scoreOrientation(flat, new THREE.Quaternion(), thresholdRad, eps);
+  const currentFraction = current.totalArea > 0 ? current.overhangArea / current.totalArea : 0;
+
+  if (currentFraction <= 0.001) {
+    overhangWarningEl.hidden = false;
+    overhangWarningEl.textContent = "✓ No overhangs detected in the current orientation -- no supports needed.";
+    return;
+  }
+
+  let best = null;
+  for (const q of candidateOrientations(flat)) {
+    const score = scoreOrientation(flat, q, thresholdRad, eps);
+    if (!best || score.overhangArea < best.score.overhangArea) best = { quaternion: q, score };
+  }
+  const bestFraction = best.score.totalArea > 0 ? best.score.overhangArea / best.score.totalArea : 0;
+
+  // Close to identity, or no meaningful improvement over just leaving it
+  // alone -- don't suggest a rotation that isn't actually worth adding.
+  const isNearIdentity = Math.abs(best.quaternion.w) > 0.9999;
+  if (isNearIdentity || bestFraction >= currentFraction * 0.95) {
+    overhangWarningEl.hidden = false;
+    overhangWarningEl.textContent =
+      `The current orientation already looks close to optimal (about ${formatPct(currentFraction)} of its surface ` +
+      `area overhangs) -- no rotation found that meaningfully improves on it.`;
+    return;
+  }
+
+  const euler = new THREE.Euler().setFromQuaternion(best.quaternion, "XYZ");
+  const rx = (THREE.MathUtils.radToDeg(euler.x)).toFixed(1);
+  const ry = (THREE.MathUtils.radToDeg(euler.y)).toFixed(1);
+  const rz = (THREE.MathUtils.radToDeg(euler.z)).toFixed(1);
+
+  modelGroup.quaternion.copy(best.quaternion);
+  fitSceneToContent(camera, controls, modelGroup, gridState);
+  if (altFreeRotate || buttonFreeRotate) applyFreeRotateState();
+
+  overhangWarningEl.hidden = false;
+  overhangWarningEl.innerHTML =
+    `Suggested: <code>rotate(shape, [${rx}, ${ry}, ${rz}])</code> around your final shape &mdash; ` +
+    `reduces overhang from about ${formatPct(currentFraction)} to ${formatPct(bestFraction)} of the surface area. ` +
+    `Preview applied to the viewer; add that rotate() call to your code and click Run to keep it.`;
+}
+
+// ---- Disconnected-pieces analysis: would this export as one printable
+// solid, or several unconnected ones? ----
+//
+// Two real gotchas make "how many pieces" harder than counting
+// modelGroup.children:
+//  1. Two SEPARATE top-level shapes (never passed through union()) can
+//     still physically touch/overlap in space -- they print as one fused
+//     piece even though the student's code never combined them.
+//  2. A union() of two shapes that DON'T actually touch is still only
+//     ONE Brush/mesh (buildBrush() merges them into one BufferGeometry
+//     either way) -- but that merged result is still, physically, two
+//     separate floating pieces.
+// So this decomposes down to the real separate SOLID UNITS first (see
+// collectConnectivityUnits()), then checks actual geometric distance
+// between every pair of units, not just which JS objects they happen to
+// be.
+
+// A touching/overlapping tolerance scaled to the model's own size,
+// rather than one fixed number -- this pathway's code can appear at very
+// different coordinate scales (a plain Box(2,2,2) demo vs. a ported
+// CMU-style 400-unit-canvas sketch), and a fixed tolerance would be too
+// loose at tiny scales and too tight at huge ones.
+function modelEpsilon(box) {
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  return Math.max(size.length(), 1e-6) * 0.001;
+}
+
+// Decomposes the shape tree into the real separate ADDITIVE pieces for
+// connectivity purposes. union()'s children are true separate pieces of
+// material (only fused into one printed object if they happen to
+// physically touch/overlap) -- translate()/rotate() wrapping a union()
+// still decomposes through to its children, with the wrapper's transform
+// folded in. difference()/intersection(), and any plain leaf shape, are
+// each treated as ONE opaque unit and never decomposed further: once
+// material has been cut away or intersected, what's left is one fused
+// result by definition, not several pieces glued together.
+function decomposeForConnectivity(node, matrix) {
+  if (node.type === "union") {
+    return node.children.flatMap((c) => decomposeForConnectivity(c, matrix));
+  }
+  if (node.type === "translate") {
+    const m = new THREE.Matrix4().makeTranslation(node.x || 0, node.y || 0, node.z || 0);
+    return decomposeForConnectivity(node.child, matrix.clone().multiply(m));
+  }
+  if (node.type === "rotate") {
+    let m;
+    if (node.mode === "vector") {
+      const [rx, ry, rz] = node.angles;
+      m = new THREE.Matrix4()
+        .makeRotationZ(THREE.MathUtils.degToRad(rz))
+        .multiply(new THREE.Matrix4().makeRotationY(THREE.MathUtils.degToRad(ry)))
+        .multiply(new THREE.Matrix4().makeRotationX(THREE.MathUtils.degToRad(rx)));
+    } else {
+      m = new THREE.Matrix4().makeRotationAxis(resolveAxis(node.axis), THREE.MathUtils.degToRad(node.angle));
+    }
+    return decomposeForConnectivity(node.child, matrix.clone().multiply(m));
+  }
+  // Leaf, difference, or intersection: one opaque unit. buildBrush()'s own
+  // geometry goes into the shared disposableGeometries array like any
+  // other build, cleaned up at the top of the next rebuildScene() call --
+  // these throwaway brushes are never added to any rendered group.
+  return [buildBrush(node, matrix)];
+}
+
+// Reuses the meshes rebuildScene() already built in modelGroup for any
+// top-level shape that ISN'T a union() (no reason to rebuild those from
+// scratch), and only decomposes+rebuilds where a union() might be hiding
+// non-touching pieces. Tracks modelGroup's own child index SEPARATELY
+// from the shapes[] index -- rebuildScene()'s render loop skips debug(#)/
+// background(%) overlay nodes entirely (they go to overlayGroup, never
+// modelGroup), so the two arrays are only index-aligned once overlay
+// entries are excluded from the count too.
+function collectConnectivityUnits(shapes) {
+  const units = [];
+  let modelIdx = 0;
+  for (const node of shapes) {
+    if (node._overlay) continue; // never added to modelGroup -- not real print material either
+    if (node.type === "union") {
+      units.push(...decomposeForConnectivity(node, new THREE.Matrix4()));
+    } else {
+      units.push(modelGroup.children[modelIdx]);
+    }
+    modelIdx++;
+  }
+  return units;
+}
+
+// Real point-to-triangle distance (three.js's own Triangle.closestPointToPoint,
+// not hand-rolled) between every vertex of one mesh and every triangle of
+// the other, checked in both directions. A bounding-box gap is always a
+// valid LOWER BOUND on the true distance between the actual shapes, so
+// pairs that are obviously far apart skip the expensive part entirely.
+const _connTri = new THREE.Triangle();
+const _connClosest = new THREE.Vector3();
+const _connPoint = new THREE.Vector3();
+const _connA = new THREE.Vector3(), _connB = new THREE.Vector3(), _connC = new THREE.Vector3();
+function vertexToMeshMinDistance(vertexMesh, triMesh) {
+  const vPos = vertexMesh.geometry.attributes.position;
+  const tPos = triMesh.geometry.attributes.position;
+  const tIndex = triMesh.geometry.index;
+  const triCount = tIndex ? tIndex.count / 3 : tPos.count / 3;
+  let minDistSq = Infinity;
+  for (let vi = 0; vi < vPos.count; vi++) {
+    _connPoint.fromBufferAttribute(vPos, vi);
+    for (let t = 0; t < triCount; t++) {
+      const ia = tIndex ? tIndex.getX(t * 3) : t * 3;
+      const ib = tIndex ? tIndex.getX(t * 3 + 1) : t * 3 + 1;
+      const ic = tIndex ? tIndex.getX(t * 3 + 2) : t * 3 + 2;
+      _connA.fromBufferAttribute(tPos, ia);
+      _connB.fromBufferAttribute(tPos, ib);
+      _connC.fromBufferAttribute(tPos, ic);
+      _connTri.set(_connA, _connB, _connC);
+      _connTri.closestPointToPoint(_connPoint, _connClosest);
+      const d2 = _connPoint.distanceToSquared(_connClosest);
+      if (d2 < minDistSq) minDistSq = d2;
+    }
+  }
+  return Math.sqrt(minDistSq);
+}
+
+function minDistanceBetweenMeshes(meshA, meshB, eps) {
+  const boxA = new THREE.Box3().setFromObject(meshA);
+  const boxB = new THREE.Box3().setFromObject(meshB);
+  const dx = Math.max(boxA.min.x - boxB.max.x, boxB.min.x - boxA.max.x, 0);
+  const dy = Math.max(boxA.min.y - boxB.max.y, boxB.min.y - boxA.max.y, 0);
+  const dz = Math.max(boxA.min.z - boxB.max.z, boxB.min.z - boxA.max.z, 0);
+  const boxGap = Math.hypot(dx, dy, dz);
+  if (boxGap > eps) return boxGap;
+  const d1 = vertexToMeshMinDistance(meshA, meshB);
+  if (d1 <= eps) return d1;
+  return Math.min(d1, vertexToMeshMinDistance(meshB, meshA));
+}
+
+// Plain union-find over the units -- two units in the same group if
+// they're within `eps` of each other (touching or overlapping).
+function connectedComponents(units, eps) {
+  const n = units.length;
+  const parent = Array.from({ length: n }, (_, i) => i);
+  function find(x) { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; }
+  for (let i = 0; i < n; i++) {
+    for (let j = i + 1; j < n; j++) {
+      if (minDistanceBetweenMeshes(units[i], units[j], eps) <= eps) {
+        const ri = find(i), rj = find(j);
+        if (ri !== rj) parent[ri] = rj;
+      }
+    }
+  }
+  const groups = new Map();
+  for (let i = 0; i < n; i++) {
+    const root = find(i);
+    if (!groups.has(root)) groups.set(root, []);
+    groups.get(root).push(units[i]);
+  }
+  return [...groups.values()];
+}
+
+function updateDisconnectedPiecesWarning(shapes) {
+  if (modelGroup.children.length === 0) {
+    piecesWarningEl.hidden = true;
+    return;
+  }
+  const units = collectConnectivityUnits(shapes);
+  if (units.length <= 1) {
+    piecesWarningEl.hidden = true;
+    return;
+  }
+  const overallBox = new THREE.Box3().setFromObject(modelGroup);
+  const eps = modelEpsilon(overallBox);
+  const components = connectedComponents(units, eps);
+  if (components.length <= 1) {
+    piecesWarningEl.hidden = true; // everything touches/overlaps -- prints as one piece
+    return;
+  }
+
+  // A component is "floating" if its own lowest point sits meaningfully
+  // above the model's overall lowest point -- nothing (the bed, or
+  // another piece) is actually underneath it.
+  const globalMinZ = overallBox.min.z;
+  let floatingCount = 0;
+  for (const comp of components) {
+    let compMinZ = Infinity;
+    for (const mesh of comp) {
+      const box = new THREE.Box3().setFromObject(mesh);
+      compMinZ = Math.min(compMinZ, box.min.z);
+    }
+    if (compMinZ > globalMinZ + eps) floatingCount++;
+  }
+
+  piecesWarningEl.hidden = false;
+  if (floatingCount > 0) {
+    piecesWarningEl.classList.add("severe");
+    piecesWarningEl.textContent =
+      `⚠ ${floatingCount} part${floatingCount > 1 ? "s" : ""} of this model ${floatingCount > 1 ? "aren't" : "isn't"} touching ` +
+      `the build plate or anything else in the model -- ${floatingCount > 1 ? "they'll" : "it'll"} float in mid-air and will ` +
+      `likely fail to print. Move it so it touches something, or connect it with a shape in between.`;
+  } else {
+    piecesWarningEl.classList.remove("severe");
+    piecesWarningEl.textContent =
+      `This model will print as ${components.length} separate objects -- they don't touch or overlap anywhere. ` +
+      `That may be exactly what you want (printing several parts at once); if you meant it to be one connected piece, move them together.`;
+  }
+}
+
 function collectFontRequests(node, needed) {
   if (!node) return;
   if (node.type === "extrude" && node.profile && node.profile.kind === "text") {
@@ -1842,6 +2378,10 @@ function fitSceneToContent(camera, controls, group, gridState) {
 }
 
 function rebuildScene(shapes) {
+  // Undoes any leftover Auto-Orient preview from a previous click (see
+  // autoOrient() below) -- every fresh Run should start from the
+  // student's own code, not a rotation the tool applied as a suggestion.
+  modelGroup.quaternion.identity();
   for (const child of [...modelGroup.children]) {
     modelGroup.remove(child);
   }
@@ -1880,13 +2420,15 @@ function rebuildScene(shapes) {
       }
     }
   }
-  downloadBtn.disabled = modelGroup.children.length === 0;
+  downloadBtn.disabled = showOverhangsBtn.disabled = autoOrientBtn.disabled = modelGroup.children.length === 0;
   fitSceneToContent(camera, controls, modelGroup, gridState);
   // Re-center free-rotate's target on whatever just got built, in case
   // it's still toggled on from a previous run -- otherwise switching to
   // a very different shape while "Look From Any Angle" stays on would
   // leave the camera orbiting a point that no longer has anything near it.
   if (altFreeRotate || buttonFreeRotate) applyFreeRotateState();
+  updateOverhangDisplay();
+  updateDisconnectedPiecesWarning(shapes);
 }
 
 function showOutput(lines) {
@@ -2077,6 +2619,14 @@ downloadBtn.addEventListener("click", () => {
   a.click();
   URL.revokeObjectURL(url);
 });
+
+showOverhangsBtn.addEventListener("click", () => {
+  showOverhangs = !showOverhangs;
+  showOverhangsBtn.classList.toggle("toggle-active", showOverhangs);
+  updateOverhangDisplay();
+});
+
+autoOrientBtn.addEventListener("click", () => autoOrient());
 
 shareBtn.addEventListener("click", async () => {
   const compressed = LZString.compressToEncodedURIComponent(codeEl.value);
