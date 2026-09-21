@@ -121,6 +121,14 @@ You can also color a shape in with `fill=`:
 Circle(2, 2, 1.5, fill="cornflowerblue")</textarea>
 </div>
 
+<aside class="callout note" markdown="1">
+**COMING FROM CMU CS ACADEMY?**
+
+You might already know `Oval(centerX, centerY, width, height)` from there.
+It works here too, anchored by its center just like `Circle`. Not part of
+this lesson's checkpoints, just there if you want to try it.
+</aside>
+
 ## Checking Your Work
 
 <div class="exercise">
@@ -560,6 +568,18 @@ def Circle(centerX, centerY, radius, fill=None, opacity=100):
         "fill": fill, "opacity": opacity, "visible": True,
     })
 
+# Not taught in this lesson (Rect/Circle stay the actual curriculum), but
+# students arriving from CMU CS Academy already know Oval -- it shouldn't
+# silently not exist just because we don't teach it yet. Same reduced
+# feature set as Rect/Circle above (no border=/align=/hole= here either,
+# consistent with keeping this lesson's shim minimal -- those show up
+# later, in the Studio).
+def Oval(centerX, centerY, width, height, fill=None, opacity=100, rotateAngle=0):
+    return Solid({
+        "kind": "oval", "centerX": centerX, "centerY": centerY, "width": width, "height": height,
+        "rotateAngle": rotateAngle, "fill": fill, "opacity": opacity, "visible": True,
+    })
+
 def Label(text, x, y, size=1, fill=None, opacity=100):
     # Matches CMU's Label(value, x, y, size): centered at (x, y). Just the
     # one font here (no font=/bold=/italic= yet) -- this lesson only needs
@@ -590,6 +610,22 @@ def _points_for(data):
         left, top, width, height = data["left"], data["top"], data["width"], data["height"]
         return [(left, top), (left + width, top), (left + width, top + height), (left, top + height)]
     segments = 48
+    if data["kind"] == "oval":
+        cx, cy, w, h = data["centerX"], data["centerY"], data["width"], data["height"]
+        rx, ry = w / 2, h / 2
+        points = [
+            (cx + rx * math.cos(2 * math.pi * i / segments), cy + ry * math.sin(2 * math.pi * i / segments))
+            for i in range(segments)
+        ]
+        angle = data.get("rotateAngle", 0)
+        if angle:
+            rad = math.radians(angle)
+            ca, sa = math.cos(rad), math.sin(rad)
+            points = [
+                (cx + (px - cx) * ca - (py - cy) * sa, cy + (px - cx) * sa + (py - cy) * ca)
+                for px, py in points
+            ]
+        return points
     cx, cy, r = data["centerX"], data["centerY"], data["radius"]
     return [
         (cx + r * math.cos(2 * math.pi * i / segments), cy + r * math.sin(2 * math.pi * i / segments))

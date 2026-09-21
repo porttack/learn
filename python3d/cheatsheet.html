@@ -230,6 +230,13 @@ permalink: /python3d/cheatsheet/
     segments=32, fill=..., opacity=100, hole=False)</code>
     </div>
     <div class="entry">
+      <code>Oval(centerX, centerY, width, height,
+    fill=..., border=None, borderWidth=2,
+    opacity=100, rotateAngle=0, dashes=False,
+    align="center", hole=False)</code>
+      <p>CMU parity shape. border draws a real outlined stroke (a fat Line2, so borderWidth actually changes thickness, unlike a plain WebGL line) -- dropped if the Oval gets folded into a union()/etc., same as any other preview-only property. left/top/right/bottom read and write like CMU's, and centerX/centerY/width/height/rotateAngle stay live -- change any of them after creation and the shape updates, which none of the other 2D profiles here do yet.</p>
+    </div>
+    <div class="entry">
       <code>RegularPolygon(centerX, centerY,
     radius, numSides, rotateAngle=0,
     fillet=0, fill=..., opacity=100, hole=False)</code>
