@@ -54,10 +54,6 @@ purpose.
       return;
     }
     var ratio = x / y;
-    if (ratio > 1.2) {
-      result.textContent = 'That reading looks implausible for a real battery; a real program would ask again.';
-      return;
-    }
     var percent = Math.round(ratio * 100);
     if (percent <= 80) {
       result.textContent = 'LOW (' + percent + '%)';
@@ -170,13 +166,6 @@ reports its charge.
   `GOOD (104%)`.
 - Otherwise (the percentage is between 81 and 99, inclusive), print
   just `N%`, with no label. For example, `73%`.
-- If `X / Y` is more than `1.2`, that is, more than 120% of nominal
-  *before* any rounding, that's not a realistic battery reading
-  anymore, probably a meter reading the wrong terminals, or a
-  mislabeled cell. Treat it as invalid input: don't print anything,
-  just prompt again. Check this against the raw ratio, not the
-  rounded percentage: a raw reading of 120.3%, for instance, is
-  invalid even though it would round to a valid-looking 120%.
 - `X` must not be negative. A negative voltage isn't a real reading;
   prompt again.
 - `Y` must be a positive number. If it's zero or negative, prompt
@@ -192,17 +181,24 @@ reports its charge.
 Every one of those "prompt again" rules needs to funnel through the
 same retry loop, but not all of them happen the same way. Some of them
 are things Python already raises an exception for on its own, when you
-try to convert or divide something that doesn't work. Others (the
-"must not be negative," "must be positive," and "over 120" rules)
-are things Python has no complaint about at all: `float("-1")` and
-`5.0 / 1.5` both work fine as far as Python is concerned. For those,
-you'll need to raise the exception yourself with a `raise` statement,
-so that the same `except` block that catches Python's own exceptions
-catches yours too.
+try to convert or divide something that doesn't work: catch those with
+`try`/`except`. Others (the "must not be negative" and "must be
+positive" rules) are things Python has no complaint about at all:
+`float("-1")` and `5.0 / 1.5` both work fine as far as Python is
+concerned, so a plain `if condition: continue` right in the loop is
+all you need for those, no exception required.
 
-That means the "over 120" check belongs inside the retry loop in
-`main`, alongside the other manually-raised rules, not inside
-`gauge_reading`. `gauge_reading` should be able to assume it's always
+If you'd rather have every rule go through the same `except` block,
+you can `raise ValueError` yourself for those two instead of using
+`continue` directly; either way works and check50 doesn't care which
+you pick. A bare `except:` with no exception type named is also fine
+for a program this size. Naming the specific exceptions you expect
+(`except (ValueError, ZeroDivisionError):`) is better practice for
+anything you intend to keep working on, since a bare `except:` will
+also silently swallow a mistake elsewhere in your code, but that's a
+refinement, not a requirement here.
+
+Either way, `gauge_reading` should be able to assume it's always
 handed a plausible reading; it only has three outputs to produce
 (`LOW`, `GOOD`, or a plain percentage), never a rejection.
 </aside>
@@ -219,7 +215,7 @@ Your program should behave like the demo below.
 </div>
 
 <pre class="terminal-demo-print">$ python battery.py
-Voltage: 1.95/1.5
+Voltage: -1/1.5
 Voltage: abc/1.5
 Voltage: 1.35/1.5
 90%
@@ -229,8 +225,8 @@ Voltage: 1.2/1.5
 LOW (80%)
 
 $ python battery.py
-Voltage: 1.65/1.5
-GOOD (110%)
+Voltage: 2.25/1.5
+GOOD (150%)
 </pre>
 
 <script>
@@ -243,7 +239,7 @@ GOOD (110%)
     { text: 'python battery.py', type: true, speed: 90 },
     { text: '\n', type: false },
     { text: 'Voltage: ', type: false },
-    { text: '1.95/1.5\n', type: true, speed: 100 },
+    { text: '-1/1.5\n', type: true, speed: 100 },
     { text: 'Voltage: ', type: false },
     { text: 'abc/1.5\n', type: true, speed: 100 },
     { text: 'Voltage: ', type: false },
@@ -259,8 +255,8 @@ GOOD (110%)
     { text: 'python battery.py', type: true, speed: 90 },
     { text: '\n', type: false },
     { text: 'Voltage: ', type: false },
-    { text: '1.65/1.5\n', type: true, speed: 100 },
-    { text: 'GOOD (110%)\n', type: false }
+    { text: '2.25/1.5\n', type: true, speed: 100 },
+    { text: 'GOOD (150%)\n', type: false }
   ];
 
   var pauseBetweenLoops = 3600;
@@ -333,9 +329,13 @@ specific to this problem, not a substitute for it.
   `int()` would.
 - Dividing by zero raises `ZeroDivisionError`. A negative number
   dividing another number, though, raises nothing at all; that's a
-  rule you have to enforce yourself.
-- `raise ValueError` (with nothing after it) is enough to trigger your
-  `except` block. You don't need a custom message for it to work.
+  rule you have to enforce yourself, with a plain `if`, not an
+  exception.
+- If you want that rule to go through the `except` block too instead
+  of a plain `if`, `raise ValueError` (with nothing after it) is
+  enough to trigger it. You don't need a custom message for it to
+  work, and you don't need to do this at all if the plain `if` version
+  already reads fine to you.
 
 </details>
 
