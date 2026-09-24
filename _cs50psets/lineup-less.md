@@ -124,19 +124,19 @@ Log into cs50.dev, click on your terminal window, and run:
 
 ```
 cd
-mkdir lineup
-cd lineup
-code lineup.py
+mkdir lineup_less
+cd lineup_less
+code lineup_less.py
 ```
 
-That creates a new folder called `lineup`, moves into it, and opens a
-new, empty file called `lineup.py` for you to edit.
+That creates a new folder called `lineup_less`, moves into it, and opens a
+new, empty file called `lineup_less.py` for you to edit.
 
 ## Starter Code
 
-Paste this into `lineup.py` to start from. `enqueue` and `dequeue` are
+Paste this into `lineup_less.py` to start from. `enqueue` and `dequeue` are
 stubbed out with `pass` and doctest examples; run
-`python3 -m doctest lineup.py` from inside your `lineup` folder to
+`python3 -m doctest lineup_less.py` from inside your `lineup_less` folder to
 check them. They'll fail until you replace `pass` with real code.
 
 `main` is left as a comment on purpose, same as it was in Battery
@@ -146,10 +146,10 @@ docstring can't check a loop the way it can check a pure function.
 ```python
 # Student Initials:
 """
-Lineup
+Lineup (less comfortable)
 
-Slug: porttack/cs50/problems/py/lineup
-Doctests: python3 -m doctest lineup.py
+Slug: porttack/cs50/problems/py/lineup_less
+Doctests: python3 -m doctest lineup_less.py
 """
 
 CAPACITY = 5
@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
 ## Specification
 
-Implement a program, `lineup.py`, that runs the song request line for
+Implement a program, `lineup_less.py`, that runs the song request line for
 the dance.
 
 - Keep the lineup itself in a plain list, starting empty. `CAPACITY`
@@ -235,7 +235,7 @@ Your program should behave like the demo below.
   <pre><code id="lineup-usage-terminal"></code><span class="terminal-cursor">&nbsp;</span></pre>
 </div>
 
-<pre class="terminal-demo-print">$ python lineup.py
+<pre class="terminal-demo-print">$ python lineup_less.py
 Command: ADD Anti-Hero
 Added: Anti-Hero
 Command: ADD Flowers
@@ -248,7 +248,7 @@ Command: PLAY
 Nothing to play
 Command: DONE
 
-$ python lineup.py
+$ python lineup_less.py
 Command: ADD A
 Added: A
 Command: ADD B
@@ -271,7 +271,7 @@ Command: DONE
 
   var script = [
     { text: '$ ', type: false },
-    { text: 'python lineup.py', type: true, speed: 90 },
+    { text: 'python lineup_less.py', type: true, speed: 90 },
     { text: '\n', type: false },
     { text: 'Command: ', type: false },
     { text: 'ADD Anti-Hero\n', type: true, speed: 70 },
@@ -289,7 +289,7 @@ Command: DONE
     { text: 'PLAY\n', type: true, speed: 90 },
     { text: 'Nothing to play\n\n', type: false },
     { text: '$ ', type: false },
-    { text: 'python lineup.py', type: true, speed: 90 },
+    { text: 'python lineup_less.py', type: true, speed: 90 },
     { text: '\n', type: false },
     { text: 'Command: ', type: false },
     { text: 'ADD E\n', type: true, speed: 90 },
@@ -384,24 +384,24 @@ many times as you like.
 
 ## Style and Submission
 
-Run these one at a time, from inside your `lineup` folder.
+Run these one at a time, from inside your `lineup_less` folder.
 
 Check your style:
 
-{% include copy-command.html command="style50 lineup.py" %}
+{% include copy-command.html command="style50 lineup_less.py" %}
 
 Check your correctness:
 
-{% include copy-command.html command="check50 porttack/cs50/problems/py/lineup" %}
+{% include copy-command.html command="check50 porttack/cs50/problems/py/lineup_less" %}
 
 Submit your work:
 
-{% include copy-command.html command="submit50 porttack/cs50/problems/py/lineup" %}
+{% include copy-command.html command="submit50 porttack/cs50/problems/py/lineup_less" %}
 
 <hr>
 
 Once this is working, try the more comfortable version:
-[Lineup (more comfortable)](/cs50-psets/lineup-harder/) picks up right
+[Lineup (more comfortable)](/cs50-psets/lineup-more/) picks up right
 where this leaves off, the same lineup, plus a history of everything
 that's already played.
 

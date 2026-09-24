@@ -6,9 +6,9 @@ source: original
 subtitle: "The same song request line, rebuilt with deque, plus a history stack behind a BACK command."
 ---
 
-<figure id="fig-lineup-harder-history" class="pset-hero-compact">
-  <svg viewBox="0 0 300 210" role="img" aria-labelledby="lineup-harder-history-title">
-    <title id="lineup-harder-history-title">A stack of three song cards. The top card is highlighted and labeled Most Recent. Two plainer cards sit beneath it, each a little more faded than the one above, further back in the stack. An arrow labeled Back runs up the side, from the bottom card to the top one.</title>
+<figure id="fig-lineup-more-history" class="pset-hero-compact">
+  <svg viewBox="0 0 300 210" role="img" aria-labelledby="lineup-more-history-title">
+    <title id="lineup-more-history-title">A stack of three song cards. The top card is highlighted and labeled Most Recent. Two plainer cards sit beneath it, each a little more faded than the one above, further back in the stack. An arrow labeled Back runs up the side, from the bottom card to the top one.</title>
     <text x="150" y="24" text-anchor="middle" font-size="12" fill="#828282" letter-spacing="1">HISTORY</text>
 
     <rect x="70" y="34" width="160" height="46" rx="8" fill="#111"/>
@@ -25,11 +25,11 @@ subtitle: "The same song request line, rebuilt with deque, plus a history stack 
     <line x1="120" y1="156" x2="120" y2="176" stroke="#aaa" stroke-width="3"/>
 
     <defs>
-      <marker id="lineup-harder-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <marker id="lineup-more-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
         <path d="M0,0 L8,4 L0,8 z" fill="#111"/>
       </marker>
     </defs>
-    <line x1="255" y1="165" x2="255" y2="50" stroke="#111" stroke-width="2" marker-end="url(#lineup-harder-arrow)"/>
+    <line x1="255" y1="165" x2="255" y2="50" stroke="#111" stroke-width="2" marker-end="url(#lineup-more-arrow)"/>
     <text x="255" y="110" text-anchor="middle" font-size="11" fill="#828282" transform="rotate(-90 255 110)">BACK</text>
   </svg>
   <figcaption>BACK walks up the stack: most recently played first.</figcaption>
@@ -38,7 +38,7 @@ subtitle: "The same song request line, rebuilt with deque, plus a history stack 
 ## Background
 
 This is the more comfortable version of
-[Lineup (less comfortable)](/cs50-psets/lineup/): same DJ booth, same
+[Lineup (less comfortable)](/cs50-psets/lineup-less/): same DJ booth, same
 song request line. If you haven't done that yet, start there; this
 problem assumes you already have working `ADD` and `PLAY` commands,
 just rebuilt here with a different tool.
@@ -55,21 +55,21 @@ a stack, and its two operations are push (add to the top) and pop
 (remove from the top).
 
 <div class="pset-demo">
-  <label for="lineup-harder-song">Song request:</label>
-  <input type="text" id="lineup-harder-song" placeholder="e.g. Anti-Hero" autocomplete="off">
-  <button type="button" id="lineup-harder-add-btn">Add to lineup</button>
-  <button type="button" id="lineup-harder-play-btn">Play next</button>
-  <button type="button" id="lineup-harder-back-btn">Back</button>
-  <pre id="lineup-harder-state"></pre>
+  <label for="lineup-more-song">Song request:</label>
+  <input type="text" id="lineup-more-song" placeholder="e.g. Anti-Hero" autocomplete="off">
+  <button type="button" id="lineup-more-add-btn">Add to lineup</button>
+  <button type="button" id="lineup-more-play-btn">Play next</button>
+  <button type="button" id="lineup-more-back-btn">Back</button>
+  <pre id="lineup-more-state"></pre>
 </div>
 
 <script>
 (function () {
-  var songInput = document.getElementById('lineup-harder-song');
-  var addBtn = document.getElementById('lineup-harder-add-btn');
-  var playBtn = document.getElementById('lineup-harder-play-btn');
-  var backBtn = document.getElementById('lineup-harder-back-btn');
-  var state = document.getElementById('lineup-harder-state');
+  var songInput = document.getElementById('lineup-more-song');
+  var addBtn = document.getElementById('lineup-more-add-btn');
+  var playBtn = document.getElementById('lineup-more-play-btn');
+  var backBtn = document.getElementById('lineup-more-back-btn');
+  var state = document.getElementById('lineup-more-state');
   if (!songInput || !addBtn || !playBtn || !backBtn || !state) return;
 
   var CAPACITY = 5;
@@ -121,21 +121,21 @@ Log into cs50.dev, click on your terminal window, and run:
 
 ```
 cd
-mkdir lineup_harder
-cd lineup_harder
-code lineup_harder.py
+mkdir lineup_more
+cd lineup_more
+code lineup_more.py
 ```
 
-That creates a new folder called `lineup_harder`, moves into it, and opens a
-new, empty file called `lineup_harder.py` for you to edit.
+That creates a new folder called `lineup_more`, moves into it, and opens a
+new, empty file called `lineup_more.py` for you to edit.
 
 ## Starter Code
 
-Paste this into `lineup_harder.py` to start from. `enqueue` and `dequeue` are
+Paste this into `lineup_more.py` to start from. `enqueue` and `dequeue` are
 already filled in for you this time, the same logic as Lineup, just
 working on a `deque` instead of a list. `push` and `pop` are the new
 parts, stubbed out with `pass` and doctest examples; run
-`python3 -m doctest lineup_harder.py` from inside your `lineup_harder` folder to
+`python3 -m doctest lineup_more.py` from inside your `lineup_more` folder to
 check them.
 
 `main` is left as a comment on purpose, same as always: the command
@@ -147,10 +147,10 @@ also has to handle `BACK`.
 ```python
 # Student Initials:
 """
-Lineup (harder)
+Lineup (more comfortable)
 
-Slug: porttack/cs50/problems/py/lineup_harder
-Doctests: python3 -m doctest lineup_harder.py
+Slug: porttack/cs50/problems/py/lineup_more
+Doctests: python3 -m doctest lineup_more.py
 """
 
 from collections import deque
@@ -236,7 +236,7 @@ if __name__ == "__main__":
 
 ## Specification
 
-Implement a program, `lineup_harder.py`, that runs the song request line for
+Implement a program, `lineup_more.py`, that runs the song request line for
 the dance, same as Lineup, plus a history of what already played.
 
 - Keep the lineup itself in a `deque`, starting empty. `CAPACITY` is
@@ -311,10 +311,10 @@ Your program should behave like the demo below.
   <div class="terminal-demo-bar">
     <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
   </div>
-  <pre><code id="lineup-harder-usage-terminal"></code><span class="terminal-cursor">&nbsp;</span></pre>
+  <pre><code id="lineup-more-usage-terminal"></code><span class="terminal-cursor">&nbsp;</span></pre>
 </div>
 
-<pre class="terminal-demo-print">$ python lineup_harder.py
+<pre class="terminal-demo-print">$ python lineup_more.py
 Command: ADD Anti-Hero
 Added: Anti-Hero
 Command: ADD Flowers
@@ -333,7 +333,7 @@ Command: PLAY
 Nothing to play
 Command: DONE
 
-$ python lineup_harder.py
+$ python lineup_more.py
 Command: ADD A
 Added: A
 Command: ADD B
@@ -351,12 +351,12 @@ Command: DONE
 
 <script>
 (function () {
-  var el = document.getElementById('lineup-harder-usage-terminal');
+  var el = document.getElementById('lineup-more-usage-terminal');
   if (!el) return;
 
   var script = [
     { text: '$ ', type: false },
-    { text: 'python lineup_harder.py', type: true, speed: 90 },
+    { text: 'python lineup_more.py', type: true, speed: 90 },
     { text: '\n', type: false },
     { text: 'Command: ', type: false },
     { text: 'ADD Anti-Hero\n', type: true, speed: 70 },
@@ -383,7 +383,7 @@ Command: DONE
     { text: 'PLAY\n', type: true, speed: 90 },
     { text: 'Nothing to play\n\n', type: false },
     { text: '$ ', type: false },
-    { text: 'python lineup_harder.py', type: true, speed: 90 },
+    { text: 'python lineup_more.py', type: true, speed: 90 },
     { text: '\n', type: false },
     { text: 'Command: ', type: false },
     { text: 'ADD E\n', type: true, speed: 90 },
@@ -482,19 +482,19 @@ many times as you like.
 
 ## Style and Submission
 
-Run these one at a time, from inside your `lineup_harder` folder.
+Run these one at a time, from inside your `lineup_more` folder.
 
 Check your style:
 
-{% include copy-command.html command="style50 lineup_harder.py" %}
+{% include copy-command.html command="style50 lineup_more.py" %}
 
 Check your correctness:
 
-{% include copy-command.html command="check50 porttack/cs50/problems/py/lineup_harder" %}
+{% include copy-command.html command="check50 porttack/cs50/problems/py/lineup_more" %}
 
 Submit your work:
 
-{% include copy-command.html command="submit50 porttack/cs50/problems/py/lineup_harder" %}
+{% include copy-command.html command="submit50 porttack/cs50/problems/py/lineup_more" %}
 
 <hr>
 
