@@ -155,7 +155,7 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
     })
     .then(function (result) {
       if (!result) return;
-      var html = '<h2>Standards alignment</h2>';
+      var html = '';
       result.groups.forEach(function (g, i) {
         var meta = STANDARDS_FRAMEWORKS[g.fw];
         var catalogData = result.catalogs[i];
@@ -181,7 +181,7 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
           '<a href="' + mapUrl + '">See this pathway on the full standards map</a> &middot; ' +
           '<a href="' + reportUrl + '">View this lesson\'s own report</a></p>';
       }
-      section.innerHTML = html;
+      section.querySelector('.standards-alignment-body').innerHTML = html;
       section.hidden = false;
     })
     .catch(function () {});

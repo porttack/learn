@@ -1,3 +1,6 @@
 {% if page.chapter and pathway_meta.standards_carrier %}
-<section class="standards-alignment" data-chapter="{{ page.chapter }}" data-carrier-slug="{{ pathway_meta.standards_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ pathway_meta.standards_carrier }}.json" hidden></section>
+<details class="hint-toggle standards-alignment" data-chapter="{{ page.chapter }}" data-carrier-slug="{{ pathway_meta.standards_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ pathway_meta.standards_carrier }}.json" hidden>
+  <summary>Standards alignment</summary>
+  <div class="standards-alignment-body"></div>
+</details>
 {% endif %}
