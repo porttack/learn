@@ -311,7 +311,9 @@ is a solid general reference: [CS50P - Lecture 3 -
 Exceptions](https://www.youtube.com/watch?v=LW7g1169v7w). It's the
 same lecture that introduces the fuel tank problem mentioned above, so
 it covers try/except and raise from the ground up. The hints below are
-specific to this problem, not a substitute for it.
+specific to this problem, not a substitute for it, and they build on
+each other in order: if you're not sure where to start, work through
+them top to bottom rather than jumping to the last one.
 
 <details class="hint-toggle" markdown="1">
 <summary>Need a hint?</summary>
@@ -321,22 +323,59 @@ specific to this problem, not a substitute for it.
   `y`, then hands them off to a second function that just does the
   math and returns a string, is much easier to get right than one
   giant function that does both at once.
-- `"1.35/1.5".split("/")` gives you a list of two strings. Unpacking a
-  split into the wrong number of variables (say, if someone types
-  `1.35` with no slash at all) raises `ValueError` on its own; you
-  don't need to check the number of pieces yourself.
+
+  Here's the skeleton of that loop, with none of the battery-specific
+  logic filled in yet, just the shape:
+
+  ```python
+  while True:
+      try:
+          # Read the input, split it, convert both pieces to float,
+          # and check any rules that aren't exceptions on their own
+          # (see the third and fourth hints below).
+          break  # Only reached if nothing above raised or continued.
+      except (ValueError, ZeroDivisionError):
+          continue
+  ```
+
+  `break` immediately exits the `while` loop, so it belongs right
+  after the last check that could still reject the input, once you're
+  confident `x` and `y` are both good. `continue` jumps straight back
+  to the top of the loop and re-prompts, skipping over anything else
+  left in the `try` block, including that `break`.
+
+- `"1.35/1.5".split("/")` gives you a list of two strings,
+  `["1.35", "1.5"]`. Python lets you assign both pieces to two
+  variables in one line, called unpacking:
+
+  ```python
+  >>> x, y = "1.35/1.5".split("/")
+  >>> x
+  '1.35'
+  >>> y
+  '1.5'
+  ```
+
+  If the split doesn't produce exactly two pieces (say, someone types
+  `1.35` with no slash at all, or `1/2/3` with two slashes), that
+  unpacking line itself raises `ValueError`, before you ever call
+  `float()`. You don't need to count the pieces yourself; the
+  `except` block above already catches it.
 - `float()` works like `int()`, but accepts decimals: `float("1.35")`
   gives you `1.35`, and `float("abc")` raises `ValueError`, same as
-  `int()` would.
-- Dividing by zero raises `ZeroDivisionError`. A negative number
-  dividing another number, though, raises nothing at all; that's a
-  rule you have to enforce yourself, with a plain `if`, not an
-  exception.
-- If you want that rule to go through the `except` block too instead
-  of a plain `if`, `raise ValueError` (with nothing after it) is
-  enough to trigger it. You don't need a custom message for it to
-  work, and you don't need to do this at all if the plain `if` version
-  already reads fine to you.
+  `int("abc")` would.
+- Dividing by zero raises `ZeroDivisionError` on its own; you don't
+  have to check for it. A negative number dividing another number,
+  though, raises nothing at all, since there's nothing mathematically
+  wrong with it. That's a rule Python doesn't know about, so you have
+  to enforce it yourself, with a plain `if`, not an exception.
+- If you'd rather have that rule go through the same `except` block
+  instead of a separate `if`, you can trigger `ValueError` yourself
+  from inside the `try` block: `raise ValueError` (with nothing after
+  it, no message needed). Raising it there sends control straight to
+  the matching `except` below, exactly as if Python had raised it for
+  you. This is optional; a plain `if condition: continue` works just
+  as well, and reads more clearly to a lot of people.
 
 </details>
 
