@@ -3,6 +3,7 @@ title: "Square"
 order: 4
 chapter: 4
 source: original
+subtitle: "Print a hollow square of hash marks, validating a size between 2 and 8."
 ---
 
 <figure id="fig-square-spiral" class="pset-hero-compact">

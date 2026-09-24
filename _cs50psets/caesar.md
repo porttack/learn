@@ -4,6 +4,7 @@ order: 5
 chapter: 5
 source: cs50-ap
 source_url: "https://docs.cs50.net/2019/ap/problems/sentimental/caesar/caesar.html"
+subtitle: "Encrypt a message with a classic Caesar cipher, shifting each letter by a command-line key."
 ---
 
 <figure id="fig-caesar-bust" class="pset-hero-compact">

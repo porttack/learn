@@ -1,8 +1,9 @@
 ---
-title: "Lineup"
+title: "Lineup (more comfortable)"
 order: 8
 chapter: 8
 source: original
+subtitle: "Implement enqueue and dequeue on a plain list for a bounded song request line."
 ---
 
 <figure id="fig-lineup-queue" class="pset-hero">
@@ -399,10 +400,10 @@ Submit your work:
 
 <hr>
 
-Once this is working, try the harder version:
-[Lineup (harder)](/cs50-psets/lineup-harder/) picks up right where
-this leaves off, the same lineup, plus a history of everything that's
-already played.
+Once this is working, try the less comfortable version:
+[Lineup (less comfortable)](/cs50-psets/lineup-harder/) picks up right
+where this leaves off, the same lineup, plus a history of everything
+that's already played.
 
 ## Glossary
 

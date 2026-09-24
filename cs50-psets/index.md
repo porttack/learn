@@ -28,7 +28,10 @@ the same job and are what we use in class.
 <ol class="lesson-list">
 {% assign lessons = site.cs50psets | sort: "order" %}
 {% for lesson in lessons %}
-  <li><a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a></li>
+  <li>
+    <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
+    {% if lesson.subtitle %}<p class="lesson-subtitle">{{ lesson.subtitle }}</p>{% endif %}
+  </li>
 {% endfor %}
 </ol>
 

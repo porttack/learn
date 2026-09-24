@@ -3,6 +3,7 @@ title: "Pathfinder"
 order: 2
 chapter: 2
 source: original
+subtitle: "Decode a message from The Martian's rover-camera hex signal, one byte at a time."
 ---
 
 <figure id="fig-pathfinder-dial" class="pathfinder-hero">

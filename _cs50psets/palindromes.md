@@ -3,6 +3,7 @@ title: "Palindromes"
 order: 3
 chapter: 3
 source: original
+subtitle: "Count how many words in a sentence read the same forwards and backwards."
 ---
 
 <figure id="fig-palindrome-mirror" class="pset-hero">

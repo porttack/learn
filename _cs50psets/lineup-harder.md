@@ -1,8 +1,9 @@
 ---
-title: "Lineup (harder)"
+title: "Lineup (less comfortable)"
 order: 9
 chapter: 9
 source: original
+subtitle: "The same song request line, rebuilt with deque, plus a history stack behind a BACK command."
 ---
 
 <figure id="fig-lineup-harder-history" class="pset-hero-compact">
@@ -36,10 +37,11 @@ source: original
 
 ## Background
 
-This is the harder version of [Lineup](/cs50-psets/lineup/): same DJ
-booth, same song request line. If you haven't done Lineup yet, start
-there; this problem assumes you already have working `ADD` and `PLAY`
-commands, just rebuilt here with a different tool.
+This is the less comfortable version of
+[Lineup (more comfortable)](/cs50-psets/lineup/): same DJ booth, same
+song request line. If you haven't done that yet, start there; this
+problem assumes you already have working `ADD` and `PLAY` commands,
+just rebuilt here with a different tool.
 
 Two things are new. First, the lineup itself moves from a plain list
 to `deque`, the queue class built into Python's `collections` module.

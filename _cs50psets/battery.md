@@ -3,6 +3,7 @@ title: "Battery Gauge"
 order: 7
 chapter: 7
 source: original
+subtitle: "Read a battery's voltage and report whether it's low, good, or a plain percentage, validating input with try/except."
 ---
 
 <figure id="fig-battery-tester" class="pset-hero-compact">

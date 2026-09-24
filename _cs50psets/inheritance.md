@@ -4,6 +4,7 @@ order: 10
 chapter: 10
 source: cs50-ap
 source_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/5/inheritance/"
+subtitle: "Recursively build and print a random blood-type family tree as nested dictionaries."
 ---
 
 <figure id="fig-inheritance-tree" class="pset-hero">
