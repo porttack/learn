@@ -12,7 +12,11 @@
       "3": "/cs50-psets/palindromes/",
       "4": "/cs50-psets/square/",
       "5": "/cs50-psets/caesar/",
-      "6": "/cs50-psets/readability/"
+      "6": "/cs50-psets/readability/",
+      "7": "/cs50-psets/battery/",
+      "8": "/cs50-psets/lineup-less/",
+      "9": "/cs50-psets/lineup-more/",
+      "10": "/cs50-psets/inheritance/"
     },
     "locator_titles": {
       "1": "Mario (less comfortable)",
@@ -20,7 +24,11 @@
       "3": "Palindromes",
       "4": "Square",
       "5": "Caesar",
-      "6": "Readability"
+      "6": "Readability",
+      "7": "Battery Gauge",
+      "8": "Lineup (less comfortable)",
+      "9": "Lineup (more comfortable)",
+      "10": "Inheritance"
     },
     "caveat": "This is this repo's own _cs50psets pathway (a mix of CS50 AP-adapted and originally written problem sets), not Harvard's CS50 AP curriculum itself -- that's the separate cs50ap/cs50ap-extended carriers. Locators are this pathway's own order numbers (1-6), not CS50's own pset numbering. locator_slugs is still needed even though every page uses the collection's plain /cs50-psets/:name/ permalink, since a pset's filename slug (e.g. 'mario-less') isn't a predictable function of its locator number the way a zero-padded chapter number would be.",
     "alignment_log": [
@@ -29,126 +37,285 @@
         "by": "Claude Sonnet 5",
         "scope": "First pass, all 6 pset pages (mario-less, pathfinder, palindromes, square, caesar, readability) against all four frameworks",
         "note": "Transcribed from a prior hand-authored 'Standards Alignment' section already present on each page (2026-08-26 formula, done pset-by-pset against the working-in-python source repo's catalog files before this repo had its own carrier system). Every cited code re-confirmed against this repo's own _standards/*.json catalog copies. A code a page had flagged 'headers only' (present but not the point of the problem) is carried here as strength: related rather than strong."
+      },
+      {
+        "date": "2026-09-24",
+        "by": "Claude Sonnet 5",
+        "scope": "Second pass, extending coverage to the four psets added since the first pass (Battery Gauge, Lineup less/more comfortable, Inheritance) against all four frameworks",
+        "note": "Battery Gauge has no citable apcsp or csta2026 code: AP CSP's pseudocode has no try/except construct, and the closest csta2026 hits are cybersecurity-hygiene standards (input validation as one item in a script-safety or defense-in-depth list) too far from Battery's actual point to cite honestly. Its only new citation is an extension to the existing C4.9 entry. Lineup (less comfortable) similarly has thin coverage outside apcsp 3.10 (partial) and ca-ict-anchor C4.10 (not cited, see that entry's note) -- no catalog here names the queue/FIFO abstraction directly, only generic list operations or (in csta2026's S1-SWD-DD-01) library-provided structures its own scope note excludes hand-implemented internals from. Lineup (more comfortable) and Inheritance both had strong, direct hits across three of the four frameworks."
       }
     ]
   },
   "coverage": {
     "apcsp": {
       "2.1": {
-        "locators": [2],
+        "locators": [
+          2
+        ],
         "strength": "strong",
         "note": "Pathfinder: converting a two-digit hex byte into the character it represents, and back, is binary place-value one layer up -- hex digits are a compact stand-in for four bits at a time."
       },
       "3.3": {
-        "locators": [6],
+        "locators": [
+          6
+        ],
         "strength": "strong",
         "note": "Readability: turning the Coleman-Liau formula into code is this in its most direct form."
       },
       "3.4": {
-        "locators": [3, 5, 6],
+        "locators": [
+          3,
+          5,
+          6
+        ],
         "strength": "strong",
         "note": "Caesar and Readability walk a string one character at a time (rotating letters through ord()/chr(), or building up letter/word/sentence counts); Palindromes cleans a word down to its letters and compares it to its own reverse. All three treat a string as a sequence to be walked, not an opaque value."
       },
       "3.5": {
-        "locators": [3, 4],
+        "locators": [
+          3,
+          4
+        ],
         "strength": "strong",
         "note": "Palindromes tests a word against its own reverse in one Boolean expression; Square tests whether a cell sits on the border the same way -- a Boolean expression doing work a nested conditional would do more verbosely."
       },
       "3.6": {
-        "locators": [1],
+        "locators": [
+          1
+        ],
         "strength": "strong",
         "note": "Mario (less comfortable): the re-prompt loop until a valid height is entered."
       },
       "3.7": {
-        "locators": [4],
+        "locators": [
+          4
+        ],
         "strength": "related",
         "note": "Square: the border-cell test reads like a nested condition even though it's written as a single Boolean expression -- present in spirit, not in the code's actual structure."
       },
       "3.8": {
-        "locators": [1, 4, 5, 6],
+        "locators": [
+          1,
+          4,
+          5,
+          6
+        ],
         "strength": "strong",
         "note": "Mario's pyramid, Square's grid, Caesar's letter shift, and Readability's character scan are all iteration doing the actual work of the problem, not incidental to it."
       },
       "3.9": {
-        "locators": [1, 3],
+        "locators": [
+          1,
+          3
+        ],
         "strength": "related",
         "note": "Mario (less comfortable): building the pyramid row by row is a small case of start-rough-then-refine. Palindromes: same, in miniature. Neither problem's real point is algorithm development -- it's a side effect of how the solution reads."
       },
       "3.13": {
-        "locators": [2, 4, 5, 6],
+        "locators": [
+          2,
+          4,
+          5,
+          6
+        ],
         "strength": "strong",
         "note": "Pathfinder's optional helper function ('To Get Full Credit') is the thinnest instance -- headers only there. Square and Readability require a real helper function per sub-task; Caesar's shift-as-argument is the same decomposition idea applied to a command-line parameter."
       },
       "5.6": {
-        "locators": [5],
+        "locators": [
+          5
+        ],
         "strength": "related",
         "note": "Caesar: the cipher is a case study for why a tiny keyspace makes an encryption scheme breakable, even though the exam itself doesn't test encryption mechanics."
+      },
+      "3.10": {
+        "locators": [
+          8
+        ],
+        "strength": "partial",
+        "note": "Lineup (less comfortable): enqueue/dequeue are built directly from the core list operations this standard names (append at the end, remove at a given index), applied with a specific FIFO discipline. The standard itself is about list operations in general, not the queue abstraction, so this is real but partial overlap."
+      },
+      "3.15": {
+        "locators": [
+          10
+        ],
+        "strength": "strong",
+        "note": "Inheritance: every allele, at every generation, comes from random.choice() rather than being computed -- the program's entire output varies run to run by design."
+      },
+      "3.16": {
+        "locators": [
+          10
+        ],
+        "strength": "strong",
+        "note": "Inheritance builds a simulated family tree standing in for a real genetic process, trading biological realism (three alleles, uniform random inheritance, no linkage or dominance) for a repeatable, codeable model -- and EK AAP-3.F.8 (a simulation using a random number generator to mimic real-world unpredictability) is exactly create_family's mechanism."
+      },
+      "3.17": {
+        "locators": [
+          9
+        ],
+        "strength": "strong",
+        "note": "Lineup (more comfortable)'s whole point is this standard almost exactly: list.pop(0) and deque.popleft() solve the same problem at different speeds as the queue grows, discussed entirely in plain-language terms (shifting elements vs. not), matching this topic's own exclusion of formal Big-O analysis."
       }
     },
     "castandards": {
       "9-12.AP.14": {
-        "locators": [1, 3, 4, 6],
+        "locators": [
+          1,
+          3,
+          4,
+          6
+        ],
         "strength": "strong",
         "note": "Mario, Palindromes, Square, and Readability all turn on a deliberate control-structure choice (loop vs. conditional vs. helper function) made concrete in each solution."
       },
       "9-12.AP.16": {
-        "locators": [4, 6],
+        "locators": [
+          4,
+          6
+        ],
         "strength": "strong",
         "note": "Square and Readability both require breaking the problem into named, reusable functions rather than one long script."
       },
       "9-12.DA.8": {
-        "locators": [2, 5],
+        "locators": [
+          2,
+          5
+        ],
         "strength": "strong",
         "note": "Pathfinder and Caesar both convert between a character and a numeric representation of it -- the same letter can be written as a symbol or as a number, and moving between the two is the whole point of each problem."
       },
       "9-12.NI.6": {
-        "locators": [5],
+        "locators": [
+          5
+        ],
         "strength": "strong",
         "note": "Caesar's own cipher, and why a small keyspace makes it breakable, is a direct case study for this standard."
+      },
+      "9-12S.AP.13": {
+        "locators": [
+          9
+        ],
+        "strength": "strong",
+        "note": "Lineup (more comfortable)'s NOTE aside on deque vs. list is a plain-language version of exactly this: the same task (removing from the front) runs at very different speeds depending on the structure, without ever naming Big-O formally. This is the CA 9-12 Specialty (non-core) tier, one step beyond the core standards the earlier six psets cite."
+      },
+      "9-12S.AP.14": {
+        "locators": [
+          9
+        ],
+        "strength": "strong",
+        "note": "Lineup (more comfortable) makes the data-structure choice explicit and consequential: deque over list for the queue (fast at both ends), plain list over deque for the history stack (fast at one end already, so the extra machinery buys nothing). Same CA 9-12 Specialty (non-core) tier as 9-12S.AP.13."
+      },
+      "9-12S.AP.15": {
+        "locators": [
+          10
+        ],
+        "strength": "strong",
+        "note": "Inheritance's create_family is exactly this: a base case (generations == 1, no parents) and a recursive case (build both parents first, then choose alleles from them), and the Hints section explicitly walks through why the parents have to be built before this person's alleles can be chosen. Same CA 9-12 Specialty (non-core) tier as the two entries above."
       }
     },
     "csta2026": {
       "HS-ALG-PS-02": {
-        "locators": [1, 2, 3, 4, 5, 6],
+        "locators": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
         "strength": "strong",
-        "note": "Every pset in this pathway is, at bottom, an algorithmic problem broken into steps and translated into code -- this is the one standard all six currently share."
+        "note": "Every pset in this pathway is, at bottom, an algorithmic problem broken into steps and translated into code -- this is the one standard all ten currently share."
       },
       "HS-DAT-DC-24": {
-        "locators": [1],
+        "locators": [
+          1
+        ],
         "strength": "strong",
         "note": "Mario (less comfortable): the re-prompt loop is range-checking in practice -- is the value the right type, does it fall in a sensible range."
       },
       "HS-PRO-PD-12": {
-        "locators": [4, 6],
+        "locators": [
+          4,
+          6
+        ],
         "strength": "strong",
         "note": "Square and Readability both require decomposing the problem into a helper function per sub-task rather than inlining everything."
       },
       "HS-SYS-SE-33": {
-        "locators": [5],
+        "locators": [
+          5
+        ],
         "strength": "strong",
         "note": "Caesar's cipher is a case study in a system (the encryption scheme) whose security depends on its keyspace."
+      },
+      "S1-SWD-DD-01": {
+        "locators": [
+          9
+        ],
+        "strength": "strong",
+        "note": "Lineup (more comfortable) names both structures this standard uses as its own examples: a queue (the song lineup, now on deque) and a stack (the history, on a plain list). Its scope note expects library-provided structures and their methods, not hand-implemented internals, which is why this is cited for the more-comfortable version (built on deque and list's own append/pop) and not the less-comfortable one, which implements the FIFO discipline itself on a bare list."
+      },
+      "HS-ALG-PS-03": {
+        "locators": [
+          9
+        ],
+        "strength": "strong",
+        "note": "Lineup (more comfortable) compares list.pop(0) and deque.popleft() informally, by reasoning about what each has to do, not a formal proof -- exactly the comparison basis this standard's scope note allows."
+      },
+      "HS-ALG-PS-04": {
+        "locators": [
+          10
+        ],
+        "strength": "strong",
+        "note": "Inheritance's Usage section says outright that a student's own output won't match the example run, since alleles are chosen randomly every time -- the exact distinction this standard names, explained in plain terms with no probability calculation required."
       }
     },
     "ca-ict-anchor": {
       "C2.2": {
-        "locators": [5],
+        "locators": [
+          5
+        ],
         "strength": "related",
         "note": "Caesar: headers only -- the cipher touches basic security concepts without the problem asking students to reason about them directly."
       },
       "C4.4": {
-        "locators": [2, 5],
+        "locators": [
+          2,
+          5
+        ],
         "strength": "strong",
         "note": "Pathfinder and Caesar both convert data between representations (hex byte to character, letter to shift number) -- data has types, and those types get encoded in specific ways."
       },
       "C4.9": {
-        "locators": [1, 3, 4, 5, 6],
+        "locators": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          10
+        ],
         "strength": "strong",
-        "note": "Mario, Palindromes, Square, Caesar, and Readability all lean on the same programming toolkit (loops, conditionals, functions with parameters) this standard names."
+        "note": "Mario, Palindromes, Square, Caesar, and Readability all lean on the same programming toolkit (loops, conditionals, functions with parameters) this standard names. Battery Gauge adds the toolkit's \"ways to recover from errors\" clause (its try/except retry loop), not demonstrated by any of the first six psets; Inheritance adds \"a function that calls itself\" (create_family and print_family are both recursive)."
       },
       "C5.4": {
-        "locators": [4],
+        "locators": [
+          4
+        ],
         "strength": "strong",
         "note": "Square: running check50 against a solution makes testing a distinct, visible step rather than an afterthought."
+      },
+      "C4.10": {
+        "locators": [
+          9
+        ],
+        "strength": "strong",
+        "note": "Lineup (more comfortable)'s central point is exactly this trade-off: a queue built on deque instead of a plain list. Lineup (less comfortable) introduces the queue itself but doesn't compare it against an alternative implementation, so it isn't cited here."
       }
     }
   }
