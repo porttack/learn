@@ -334,7 +334,7 @@ them top to bottom rather than jumping to the last one.
           # and check any rules that aren't exceptions on their own
           # (see the third and fourth hints below).
           break  # Only reached if nothing above raised or continued.
-      except (ValueError, ZeroDivisionError):
+      except:
           continue
   ```
 
@@ -343,6 +343,18 @@ them top to bottom rather than jumping to the last one.
   confident `x` and `y` are both good. `continue` jumps straight back
   to the top of the loop and re-prompts, skipping over anything else
   left in the `try` block, including that `break`.
+
+  A bare `except:`, with no exception type named, catches anything
+  that goes wrong in the `try` block, which is exactly what you want
+  here: don't spend time trying to guess or look up every exception
+  type that could get raised. Naming the specific ones you expect,
+  `except (ValueError, ZeroDivisionError):`, is better habit for
+  bigger programs, since a bare `except:` will also silently swallow
+  an unrelated mistake elsewhere in your code, not just the input
+  errors you meant to catch. For a program this size, that risk is
+  low, and it's not something check50 checks for either way. Get it
+  working first with a bare `except:` if that's what's blocking you,
+  then narrow it later if you want the practice.
 
 - `"1.35/1.5".split("/")` gives you a list of two strings,
   `["1.35", "1.5"]`. Python lets you assign both pieces to two
