@@ -1,5 +1,5 @@
 ---
-title: "Lineup (more comfortable)"
+title: "Lineup (less comfortable)"
 order: 8
 chapter: 8
 source: original
@@ -400,8 +400,8 @@ Submit your work:
 
 <hr>
 
-Once this is working, try the less comfortable version:
-[Lineup (less comfortable)](/cs50-psets/lineup-harder/) picks up right
+Once this is working, try the more comfortable version:
+[Lineup (more comfortable)](/cs50-psets/lineup-harder/) picks up right
 where this leaves off, the same lineup, plus a history of everything
 that's already played.
 

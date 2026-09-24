@@ -1,5 +1,5 @@
 ---
-title: "Lineup (less comfortable)"
+title: "Lineup (more comfortable)"
 order: 9
 chapter: 9
 source: original
@@ -37,8 +37,8 @@ subtitle: "The same song request line, rebuilt with deque, plus a history stack 
 
 ## Background
 
-This is the less comfortable version of
-[Lineup (more comfortable)](/cs50-psets/lineup/): same DJ booth, same
+This is the more comfortable version of
+[Lineup (less comfortable)](/cs50-psets/lineup/): same DJ booth, same
 song request line. If you haven't done that yet, start there; this
 problem assumes you already have working `ADD` and `PLAY` commands,
 just rebuilt here with a different tool.
