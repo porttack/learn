@@ -399,9 +399,10 @@ Submit your work:
 
 <hr>
 
-Once this is working, [Encore](/cs50-psets/encore/) picks up right
-where this leaves off: the same lineup, plus a history of everything
-that's already played.
+Once this is working, try the harder version:
+[Lineup (harder)](/cs50-psets/lineup-harder/) picks up right where
+this leaves off, the same lineup, plus a history of everything that's
+already played.
 
 ## Glossary
 
