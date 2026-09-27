@@ -1,11 +1,12 @@
 {%- comment -%}
-One-line summary under an activity's title: who it's for, how long, how many
-people, what to gather. Renders only for pages that set at least `time:`.
+One-line summary under an activity's title: how long, how many people, what
+to gather. Renders only for pages that set at least `time:`. The grade level
+(level: ms/hs) is deliberately NOT shown: the teacher sometimes gives middle
+school sheets to high schoolers and doesn't want students to see a label.
+It appears only on the landing page's teacher-facing table.
 {%- endcomment -%}
 {%- if page.time -%}
-{%- assign levels = "ms:Middle school|hs:High school|both:Middle or high school" | split: "|" -%}
 <p class="activity-meta">
-  {%- for l in levels -%}{%- assign kv = l | split: ":" -%}{%- if kv[0] == page.level %}<span>{{ kv[1] }}</span>{% endif -%}{%- endfor -%}
   <span>About {{ page.time }} minutes</span>
   {%- if page.grouping %}<span>{{ page.grouping }}</span>{% endif -%}
   {%- if page.materials %}<span>{{ page.materials }}</span>{% endif -%}

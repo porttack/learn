@@ -52,6 +52,34 @@ const muddyData = loadYaml("muddy_city.yml");
 muddyData.maps.forEach((m, i) => checkMuddyCity(`muddy_city.yml map ${i + 1} (${m.label})`, m));
 console.log(`muddy_city.yml: ${muddyData.maps.length} maps checked`);
 
+// The book's graph version printed on the Muddy City sheet: its key states
+// the fewest paving stones, so prove it two ways.
+{
+  const book = loadYaml("muddy_city_book.yml");
+  const idx = Object.fromEntries(book.houses.map((h, i) => [h, i]));
+  const edges = book.roads.map(([a, b, w]) => ({ a: idx[a], b: idx[b], w }));
+  const n = book.houses.length;
+  const k = kruskalMST(n, edges).total;
+  const bfTotal = bruteForceMST(n, edges).total;
+  if (k !== book.fewest_stones || bfTotal !== book.fewest_stones) {
+    fail("muddy_city_book.yml", `key says ${book.fewest_stones}, Kruskal ${k}, brute force ${bfTotal}`);
+  } else console.log(`muddy_city_book.yml: fewest paving stones = ${k} (Kruskal and brute force agree)`);
+  // The key says the graph has more than one best answer: count them.
+  let best = 0;
+  const pick = [];
+  const walk = (start) => {
+    if (pick.length === n - 1) {
+      const chosen = pick.map((i) => edges[i]);
+      if (chosen.reduce((t, e) => t + e.w, 0) === book.fewest_stones && kruskalMST(n, chosen).spanning) best++;
+      return;
+    }
+    for (let i = start; i < edges.length; i++) { pick.push(i); walk(i + 1); pick.pop(); }
+  };
+  walk(0);
+  if (best < 2) fail("muddy_city_book.yml", `key says more than one best answer, found ${best}`);
+  else console.log(`muddy_city_book.yml: ${best} different best answers`);
+}
+
 // ---- The Poor Cartographer: graph coloring --------------------------------
 
 function checkCartographer(label, map) {

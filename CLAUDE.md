@@ -127,7 +127,14 @@ The AP robot (`robot*.js`) follows the exam reference sheet exactly:
 leaves the robot in place and ends the program.
 
 CS Unplugged (`source: cs-unplugged-2015`, CC BY-NC-SA 3.0) is adaptable
-like the Pico book, but its illustrations are not; redraw them. Math for
+like the Pico book, and so are its illustrations (Matt Powell): every page
+of the book reads "Licensed under Creative Commons" with no "except where
+otherwise noted" carve-out. Extract them from the PDF (`pdfimages`) into
+`assets/img/unplugged/<activity>/`. **Don't over-paraphrase CC sources:**
+where the book's student worksheet already works for a student alone, keep
+its wording and pictures nearly verbatim (the teacher prefers that) and
+change only what print-and-use requires (e.g. "counters" becomes "shade
+with a pencil"). Rewrite only the teacher-script parts. Math for
 Love and Bootstrap are inspiration only: nothing from them goes on the site.
 
 ### Mounted external pathways

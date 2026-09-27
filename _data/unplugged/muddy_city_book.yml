@@ -1,0 +1,27 @@
+# The graph version of the Muddy City map from the CS Unplugged book
+# (2015, p. 90), transcribed so tools/check_graphs.mjs can prove the
+# answer key's "fewest paving stones" total. Houses are lettered left to
+# right, top to bottom as they sit in the drawing (not shown on the page).
+#   A top-left, B inner-left, C top-middle, D top-right, E inner-right,
+#   F center, G bottom-left, H bottom-middle-left, I bottom-middle, J bottom-right
+houses: [A, B, C, D, E, F, G, H, I, J]
+roads:
+  - [A, C, 4]
+  - [A, B, 3]
+  - [A, G, 6]
+  - [B, C, 5]
+  - [B, G, 4]
+  - [B, H, 2]
+  - [C, D, 5]
+  - [C, E, 2]
+  - [C, F, 3]
+  - [E, D, 2]
+  - [E, F, 2]
+  - [E, J, 5]
+  - [D, J, 4]
+  - [F, H, 6]
+  - [F, I, 4]
+  - [G, H, 3]
+  - [H, I, 5]
+  - [I, J, 3]
+fewest_stones: 25

@@ -1,87 +1,170 @@
 ---
-title: "Muddy City"
+title: "The Muddy City"
 source: cs-unplugged-2015
 level: ms
 kind: [single, supplementary]
 topics: [Graphs, Algorithms]
-time: 20
+time: 30
 grouping: Solo
 materials: "Pencil"
-scripts: [/assets/js/unplugged/muddy-city-page.js]
 generator: /unplugged/muddy-city-generator/
 generator_presets:
   - { label: "Small towns", query: "size=small" }
   - { label: "Big towns", query: "size=big" }
 ---
 
-A city with no paved roads is a muddy mess after every rainstorm. The
-mayor wants every house connected to every other house by paved streets,
-but paving is expensive, so you'll find a way to connect the whole city
-using as few paving stones as possible. Power, phone, and internet
-companies solve this same problem when they decide which wires to run.
+Once upon a time there was a city that had no roads. Getting around the city
+was particularly difficult after rainstorms because the ground became very
+muddy—cars got stuck in the mud and people got their boots dirty. The
+mayor of the city decided that some of the streets must be paved, but didn't
+want to spend more money than necessary because the city also wanted to
+build a swimming pool. The mayor therefore specified two conditions:
 
-## How to read the map
+1. Enough streets must be paved so that it is possible for everyone to
+   travel from their house to anyone else's house only along paved roads,
+   and
+2. The paving should cost as little as possible.
 
-Each dot is a house. Each line is a muddy street, and the number on it is
-how many paving stones that street would take to pave. Here's a tiny
-three-house example, already solved:
+Here is the layout of the city. The number of paving stones between each
+house represents the cost of paving that route. Find the best route that
+connects all the houses, but uses as few paving stones as possible. Shade
+the stones you would pave with your pencil (lightly at first, so you can
+change your mind).
 
-<svg class="graphs-street" viewBox="0 0 200 140" width="200" height="140" role="img" aria-label="Three houses, A, B, and C. Street A-B costs 2 stones and is paved. Street B-C costs 3 stones and is paved. Street A-C costs 5 stones and is not paved.">
-  <line x1="40" y1="110" x2="160" y2="110" stroke="#999" stroke-width="2.5"/>
-  <rect x="90" y="99" width="20" height="18" fill="#fff" stroke="#bbb"/>
-  <text x="100" y="113" text-anchor="middle" font-size="13" font-family="system-ui, sans-serif">5</text>
-  <line x1="40" y1="110" x2="100" y2="20" stroke="#111" stroke-width="5"/>
-  <rect x="55" y="56" width="20" height="18" fill="#fff" stroke="#111"/>
-  <text x="65" y="70" text-anchor="middle" font-size="13" font-weight="700" font-family="system-ui, sans-serif">2</text>
-  <line x1="100" y1="20" x2="160" y2="110" stroke="#111" stroke-width="5"/>
-  <rect x="125" y="56" width="20" height="18" fill="#fff" stroke="#111"/>
-  <text x="135" y="70" text-anchor="middle" font-size="13" font-weight="700" font-family="system-ui, sans-serif">3</text>
-  <circle cx="40" cy="110" r="17" fill="#fff" stroke="#111" stroke-width="2.5"/>
-  <text x="40" y="115" text-anchor="middle" font-size="14" font-weight="700" font-family="system-ui, sans-serif">A</text>
-  <circle cx="100" cy="20" r="17" fill="#fff" stroke="#111" stroke-width="2.5"/>
-  <text x="100" y="25" text-anchor="middle" font-size="14" font-weight="700" font-family="system-ui, sans-serif">B</text>
-  <circle cx="160" cy="110" r="17" fill="#fff" stroke="#111" stroke-width="2.5"/>
-  <text x="160" y="115" text-anchor="middle" font-size="14" font-weight="700" font-family="system-ui, sans-serif">C</text>
-</svg>
+<figure id="fig-muddy-city">
+  <img src="{{ '/assets/img/unplugged/muddy-city/city.png' | relative_url }}" alt="The Muddy City: houses joined by muddy streets, each street drawn as a row of paving stones">
+  <figcaption>The Muddy City</figcaption>
+</figure>
 
-Streets A-B and B-C are paved (thick line), for 2 + 3 = **5 stones**.
-Every house can now reach every other house. Paving A-C too would work,
-but it would cost 5 more stones for nothing: A and C can already reach
-each other through B.
+Total paving stones I used: <span class="fill-line short"></span>
 
-## What to do
+<section class="muddy-graph" markdown="1">
+What strategies did you use to solve the problem?
+<p class="fill-line"></p>
+<p class="fill-line"></p>
 
-1. Pick a street and trace over it if you're paving it.
-2. Keep going until every house can reach every other house using only
-   paved streets.
-3. Add up the stones on the streets you traced. Write the total.
-4. Try again on scratch paper. Can you connect everyone for fewer stones?
-5. Do the same for the second, bigger map.
+## Variations and extensions
 
-<noscript><p class="callout warning">This worksheet draws its maps with JavaScript. Turn JavaScript on to see them.</p></noscript>
+Here is another way of representing the cities and roads:
 
-<div class="graphs-questions" id="q-muddy-city"></div>
+<figure id="fig-muddy-graph">
+  <img src="{{ '/assets/img/unplugged/muddy-city/graph.png' | relative_url }}" alt="A graph: ten circles joined by lines, each line labeled with a number from 2 to 6">
+  <figcaption>The same kind of problem drawn as a graph</figcaption>
+</figure>
+
+The houses are represented by circles, the muddy roads by lines, and the
+length of a road is given by the number beside the line.
+
+Computer scientists and mathematicians often use this sort of diagram to
+represent these problems. They call it a *graph*. This may be confusing at
+first because "graph" is sometimes used in statistics to mean a chart
+displaying numerical data, such as a bar graph, but the graphs that computer
+scientists use are not related to these. The lengths do not have to be drawn
+to scale.
+
+Find the cheapest set of roads for this graph too. Total: <span class="fill-line short"></span>
+
+Now try this method on the graph: start with no roads paved. Pave the
+cheapest road first, then the next cheapest, and so on, but **skip** any road
+that joins two houses that can already reach each other on paved roads. Did
+you get the same total as before? <span class="fill-line short"></span>
+
+Is there more than one best answer for the graph? How do you know?
+<p class="fill-line"></p>
+
+Can you find out a rule to describe how many roads or connections are
+needed for a best solution? Does it depend on how many houses there are in
+the city?
+<p class="fill-line"></p>
+
+A mail carrier has to walk to every house exactly once and end up back where
+they started. Could they always do that using only the roads you paved? Why
+or why not?
+<p class="fill-line"></p>
+</section>
+
+<section class="muddy-reading" markdown="1">
+## What's it all about?
+
+Suppose you are designing how a utility such as electricity, gas, or water
+should be delivered to a new community. A network of wires or pipes is
+needed to connect all the houses to the utility company. Every house needs
+to be connected into the network at some point, but the route taken by the
+utility to get to the house doesn't really matter, just so long as a route
+exists. The task of designing a network with a minimal total length is called
+the *minimal spanning tree* problem.
+
+Minimal spanning trees aren't only useful in gas and power networks; they
+also help us solve problems in computer networks, telephone networks, oil
+pipelines, and airline routes.
+
+There are efficient algorithms (methods) for solving minimal spanning tree
+problems. A simple method that gives an optimal solution is to start with no
+connections, and add them in increasing order of size, only adding
+connections that join up part of the network that wasn't previously
+connected. This is called Kruskal's algorithm after J.B. Kruskal, who
+published it in 1956.
+
+For many problems on graphs, including the "travelling salesperson problem",
+computer scientists are yet to find fast enough methods that find the best
+possible solution.
 
 <aside class="callout note" markdown="1">
-**STUCK?**
+**MUDDY CITY VS. THE TRAVELING SALESPERSON**
 
-Try paving the cheapest street on the whole map first. Then pave the next
-cheapest one, unless it just connects two houses that can already reach
-each other, in which case skip it. Keep going until every house connects.
+The two problems look alike, but they are very different for a computer.
+
+- **Muddy City:** connect every house as cheaply as possible. The method
+  above always finds the best answer, and a computer can run it on a map
+  with a million houses in the blink of an eye.
+- **Traveling salesperson:** find the shortest single trip that visits every
+  house once and comes back home. Nobody has ever found a fast method that
+  always gives the best trip. Trying every possible trip works for a few
+  houses, but the number of trips explodes: 10 houses have 181,440 different
+  round trips, and 20 houses have about 60 quadrillion.
+
+Computer scientists call the traveling salesperson problem **NP-complete**.
+It belongs to a big family of problems where checking an answer is easy but
+finding the best one seems to take forever. They are all linked: a fast
+method for any one of them would give a fast method for all of them. Whether
+such a method exists is one of the biggest unsolved questions in computer
+science, called **P versus NP**, and there is a million-dollar prize for
+the answer.
 </aside>
 
-<aside class="callout challenge" markdown="1">
-**CHALLENGE**
+Learn more: [minimum spanning trees](https://en.wikipedia.org/wiki/Minimum_spanning_tree),
+[the traveling salesperson problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem),
+and [P versus NP](https://en.wikipedia.org/wiki/P_versus_NP_problem).
+</section>
 
-Draw your own muddy city: a few houses, some streets, a stone count on
-each. Trade maps with a friend and race to find the cheapest way to
-connect every house.
-</aside>
+<section class="answer-key" markdown="1">
+## Answer key
 
-**Learn more:** this is called a [minimum spanning tree](https://en.wikipedia.org/wiki/Minimum_spanning_tree),
-one of the first problems computer scientists learned to solve quickly on
-any size of map.
+**The Muddy City.** Two possible best solutions (paved stones shown black):
 
-<section class="answer-key graphs-answer-key" id="key-muddy-city"></section>
+<div class="muddy-key">
+  <img src="{{ '/assets/img/unplugged/muddy-city/solution-1.png' | relative_url }}" alt="One best solution, with the paved stones shaded black">
+  <img src="{{ '/assets/img/unplugged/muddy-city/solution-2.png' | relative_url }}" alt="A second best solution, with the paved stones shaded black">
+</div>
 
-<script type="application/json" data-muddy-city-set data-questions="#q-muddy-city" data-key="#key-muddy-city">{{ site.data.unplugged.muddy_city.maps | jsonify }}</script>
+**The graph.** The fewest paving stones is
+**{{ site.data.unplugged.muddy_city_book.fewest_stones }}**. One way: pave
+every road of length 2, then add roads of length 3 and then 4 only when they
+join houses that aren't already connected.
+
+**The method.** Yes, it gives {{ site.data.unplugged.muddy_city_book.fewest_stones }}
+again: this method (Kruskal's algorithm) always finds a best answer.
+
+**More than one best answer?** Yes. In the graph, the two houses along the
+bottom right can join the rest by either of two different roads of length 4,
+and both choices give the same total. (The city picture also has more than one, as the two
+solutions above show.)
+
+**The rule.** A city with *n* houses always needs exactly *n* &minus; 1
+roads in a best solution: fewer can't connect every house, and one more
+would make a loop that isn't needed.
+
+**The mail carrier.** No. A best paving never contains a loop, so there is no
+way to get back home without walking some roads twice. The mail carrier's
+question is a different problem: the traveling salesperson problem.
+</section>

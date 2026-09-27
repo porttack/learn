@@ -68,8 +68,10 @@
   notes: >-
     2015 revision by Sam Jarman. The book says only "CC BY-NC-SA 3.0," so
     treat it like rpi-pico-2e: derivatives stay at 3.0, not 4.0.
-    Illustrations are by Matt Powell; don't reuse them. Redraw figures
-    (the dot cards are plain HTML). The book is written as teacher scripts,
+    Illustrations are by Matt Powell and are covered by the book's licence
+    (every page reads "Licensed under Creative Commons"; there is no
+    "except where otherwise noted" clause), so they may be reused with the
+    book's attribution. Extract them from the PDF with pdfimages. The book is written as teacher scripts,
     so adaptations here rewrite the activity for a student working alone.
 
 - id: cs-unplugged-web

@@ -102,3 +102,49 @@ svg.graphs-legend {
     height: auto;
   }
 }
+
+// Muddy City uses the book's own drawings (CS Unplugged, CC BY-NC-SA 3.0).
+#fig-muddy-city img,
+#fig-muddy-graph img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+#fig-muddy-graph img {
+  max-width: 34em;
+}
+
+.muddy-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+
+  img {
+    width: 48%;
+    min-width: 14em;
+    height: auto;
+  }
+}
+
+@media print {
+  #fig-muddy-city {
+    break-inside: avoid;
+    margin: 0.4em 0;
+
+    // Narrow enough to sit under the story on page 1.
+    img {
+      max-width: 5.6in;
+    }
+  }
+
+  .muddy-graph {
+    break-before: page;
+  }
+
+  #fig-muddy-graph img {
+    max-width: 4in;
+  }
+
+}
