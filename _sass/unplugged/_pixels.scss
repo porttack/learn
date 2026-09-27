@@ -1,0 +1,108 @@
+// Pixel pictures: run-length picture codes (assets/js/unplugged/pixel-render.js).
+.pixel-q,
+.pixel-key {
+  margin: 1.4em 0 1.8em;
+}
+
+.pixel-q-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1em 1.6em;
+  margin: 0.6em 0;
+}
+
+pre.pixel-code {
+  margin: 0;
+  padding: 0.5em 0.9em;
+  font-size: 0.95em;
+  line-height: 1.5;
+  background: #f6f7f8;
+  border: 1px solid $grey-color-light;
+  white-space: pre;
+}
+
+.pixel-grid-fig {
+  margin: 0;
+  text-align: center;
+
+  figcaption {
+    font-weight: 600;
+    font-size: 0.9em;
+    margin-top: 0.3em;
+  }
+}
+
+.pixel-grids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2em 2em;
+  align-items: flex-start;
+  margin-top: 0.6em;
+}
+
+.pixel-key-intro {
+  font-size: 0.9em;
+  color: $grey-color-dark;
+}
+
+// The two "draw your own" grids in the trade activity: a plain grid of
+// empty cells for pencil work, not driven by JS (there's no computed
+// answer to check, so no renderer needed).
+.pixel-blank-wrap {
+  margin: 1em 0 1.6em;
+}
+
+.pixel-blank-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2.4em;
+
+  .pixel-blank-wrap {
+    margin-bottom: 0.6em;
+  }
+}
+
+.pixel-blank-caption {
+  font-weight: 600;
+  font-size: 0.9em;
+  margin-bottom: 0.3em;
+}
+
+table.pixel-blank-grid {
+  border-collapse: collapse;
+  margin: 0 0 0.6em;
+
+  td {
+    width: 1.5em;
+    height: 1.5em;
+    border: 1px solid $grey-color;
+    padding: 0;
+  }
+}
+
+// A compact, two-column version of .checkoff-questions for a short list of
+// short answers (one per picture row), so it doesn't burn half a page.
+ol.pixel-code-blank {
+  column-count: 3;
+  column-gap: 2em;
+  margin: 0.6em 0 1.2em;
+  padding-left: 1.4em;
+
+  li {
+    break-inside: avoid;
+    margin: 0 0 0.5em;
+  }
+}
+
+@media print {
+  .pixel-q,
+  .pixel-key,
+  .pixel-blank-wrap {
+    break-inside: avoid;
+  }
+
+  pre.pixel-code {
+    background: none;
+  }
+}

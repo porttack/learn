@@ -1,0 +1,16 @@
+// Unplugged activity styles, one partial per activity family, so parallel
+// work on different games never touches the same file.
+@import "generator";
+@import "robot";
+@import "battleship";
+@import "binairo";
+@import "pixels";
+@import "creatures";
+@import "nim";
+@import "cipher";
+@import "ascii";
+@import "bimaru";
+@import "tlc";
+@import "search";
+@import "lmc";
+@import "othello";

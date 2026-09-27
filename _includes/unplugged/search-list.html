@@ -1,0 +1,50 @@
+{%- comment -%}
+Renders a row of numbered search boxes: one box per number, position 1
+through N on top, the number itself below.
+
+Params:
+  list  array of numbers (required)
+  mode  "display" (plain, the default), "mark" (an empty corner where a
+        student writes the order they checked that box), "solved" (a
+        worked example: the corner is pre-filled from `checks`), or "dual"
+        (a compact worked example showing BOTH searches on one row, from
+        `linear_checks` and `binary_checks`)
+  checks  used with mode "solved": an array of 1-indexed positions, in the
+          order a search checked them
+  linear_checks, binary_checks  used with mode "dual": same idea, one array
+          per search, so both fit in a single row of boxes
+  small  true for a compact size, used for worked examples so they don't
+         compete with the real activity for page space
+
+Used by _unplugged/search-trace.md and search-battleships.md. Keep in sync
+with the same markup in assets/js/unplugged/search-render.js (the generator
+draws the same boxes in JS so a generated set looks like the printed one).
+{%- endcomment -%}
+{%- assign mode = include.mode | default: "display" -%}
+{%- assign checks = include.checks -%}
+{%- assign lchecks = include.linear_checks -%}
+{%- assign bchecks = include.binary_checks -%}
+<div class="search-list{% if mode == 'mark' %} search-list-mark{% endif %}{% if mode == 'solved' %} search-list-solved{% endif %}{% if mode == 'dual' %} search-list-dual{% endif %}{% if include.small %} search-list-small{% endif %}">
+  {%- for v in include.list -%}
+    {%- assign pos = forloop.index -%}
+    {%- assign order = "" -%}
+    {%- assign lorder = "" -%}
+    {%- assign border = "" -%}
+    {%- if mode == "solved" -%}
+      {%- for c in checks -%}{%- if c == pos -%}{%- assign order = forloop.index -%}{%- endif -%}{%- endfor -%}
+    {%- elsif mode == "dual" -%}
+      {%- for c in lchecks -%}{%- if c == pos -%}{%- assign lorder = forloop.index -%}{%- endif -%}{%- endfor -%}
+      {%- for c in bchecks -%}{%- if c == pos -%}{%- assign border = forloop.index -%}{%- endif -%}{%- endfor -%}
+    {%- endif -%}
+  <div class="search-box{% if order != "" %} search-box-checked{% endif %}{% if lorder != "" or border != "" %} search-box-checked{% endif %}">
+    <span class="search-box-pos">{{ pos }}</span>
+    <span class="search-box-val">{{ v }}</span>
+    {%- if mode == "mark" -%}<span class="search-box-order"></span>
+    {%- elsif mode == "solved" and order != "" -%}<span class="search-box-order">{{ order }}</span>
+    {%- elsif mode == "dual" -%}<span class="search-box-dual">
+        <span class="search-box-dual-l">{% if lorder != "" %}L{{ lorder }}{% endif %}</span><span class="search-box-dual-b">{% if border != "" %}B{{ border }}{% endif %}</span>
+      </span>
+    {%- endif -%}
+  </div>
+  {%- endfor -%}
+</div>

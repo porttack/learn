@@ -1,0 +1,262 @@
+// Toolbar and seed label shared by every "New set" generator page
+// (assets/js/unplugged/generator-shell.js).
+.generator-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em 1.2em;
+  margin: 1em 0 1.5em;
+  padding: 0.7em 1em;
+  background: $grey-color-light;
+  border-radius: 6px;
+  font-size: 0.95em;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  input[name="seed"] {
+    width: 6em;
+  }
+
+  button {
+    font: inherit;
+    padding: 0.3em 0.9em;
+    cursor: pointer;
+  }
+}
+
+.generator-seed {
+  font-size: 0.85em;
+  color: $grey-color-dark;
+}
+
+@media print {
+  .generator-bar {
+    display: none !important;
+  }
+
+  // Trailing padding and margins after the last line can push a full page's
+  // worth of nothing onto a second sheet; paper has its own margins.
+  main.page-content {
+    padding-bottom: 0;
+  }
+
+  .lesson > :last-child,
+  .provenance {
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+// Answer keys are hidden on every unplugged page (the teacher's call:
+// students shouldn't have them). The key data still exists so the
+// tools/check_*.mjs scripts can verify every puzzle, and adding ?key=1 to a
+// page's URL shows it again. The class is set by _layouts/lesson.html.
+.answer-key {
+  display: none;
+}
+
+html.show-key .answer-key {
+  display: block;
+}
+
+// Two-player sheets: a reminder to print one-sided so each player's page is
+// its own sheet of paper. Screen only; the printed pages don't need it.
+.print-note {
+  padding: 0.5em 0.8em;
+  border: 1px dashed $grey-color;
+  border-radius: 6px;
+  font-size: 0.9em;
+}
+
+@media print {
+  .print-note {
+    display: none;
+  }
+}
+
+// Section banner on /unplugged/.
+.unplugged-banner {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  margin: 0.5em 0 0.2em;
+}
+
+// One player's sheet at a time (see _includes/unplugged/player-switch.html).
+.player-switch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em 0.9em;
+  margin: 0.8em 0 1.2em;
+  padding: 0.5em 0.9em;
+  border: 1px dashed $grey-color;
+  border-radius: 6px;
+  font-size: 0.95em;
+
+  a.current {
+    font-weight: 700;
+    text-decoration: none;
+    color: $text-color;
+  }
+
+  .player-switch-tip {
+    flex-basis: 100%;
+    font-size: 0.85em;
+    color: $grey-color-dark;
+  }
+}
+
+html.only-player-a [data-player="B"],
+html.only-player-b [data-player="A"] {
+  display: none !important;
+}
+
+@media print {
+  .player-switch {
+    display: none;
+  }
+
+  // Printing one player: their section follows the shared intro directly,
+  // no forced blank break needed before it.
+  html.only-player-a [data-player],
+  html.only-player-b [data-player] {
+    break-before: auto !important;
+  }
+}
+
+// The activity table on /unplugged/.
+.activity-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em 0.6em;
+  margin: 0.5em 0 0.8em;
+
+  button {
+    font: inherit;
+    font-size: 0.9em;
+    padding: 0.2em 0.8em;
+    border: 1px solid $grey-color;
+    border-radius: 1em;
+    background: #fff;
+    cursor: pointer;
+
+    &.current {
+      background: $text-color;
+      color: #fff;
+      border-color: $text-color;
+    }
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+table.activity-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+
+  th,
+  td {
+    padding: 0.35em 0.5em;
+    border-bottom: 1px solid $grey-color-light;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  thead th {
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    border-bottom: 2px solid $grey-color;
+  }
+
+  thead th:not(:first-child),
+  td.mark {
+    text-align: center;
+  }
+
+  tr.topic-row th {
+    padding-top: 1em;
+    font-size: 1em;
+    background: none;
+    border-bottom: 1px solid $grey-color;
+  }
+
+  // minima zebra-stripes tables; a flat list reads better here.
+  tr:nth-child(even) {
+    background: none;
+  }
+
+  tr[hidden] {
+    display: none;
+  }
+
+  .lesson-companion-link {
+    margin-left: 0;
+  }
+}
+
+@media print {
+  .activity-filters {
+    display: none;
+  }
+}
+
+// Name / Date / Period, printed at the top of every CS Unplugged sheet (and
+// each two-player page). Paper only.
+.name-line {
+  display: none;
+}
+
+.key-link {
+  font-size: 0.85em;
+  color: $grey-color-dark;
+}
+
+@media print {
+  .name-line {
+    display: flex;
+    gap: 1.2em;
+    margin: 0 0 0.8em;
+    font-size: 0.95em;
+
+    span {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.3em;
+    }
+
+    span:first-child {
+      flex: 1;
+    }
+
+    i {
+      display: inline-block;
+      min-width: 6em;
+      border-bottom: 1px solid $text-color;
+    }
+
+    span:first-child i {
+      flex: 1;
+    }
+  }
+
+  // Two-player sheets put a name line on each player's own page instead.
+  .lesson:has([data-player]) > .name-line {
+    display: none;
+  }
+
+  // The first sheet's name line sits above the "CS Unplugged activity" label.
+  .lesson > .name-line + .lesson-label {
+    margin-top: 0;
+  }
+}

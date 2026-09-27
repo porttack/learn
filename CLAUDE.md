@@ -54,6 +54,77 @@ has a landing page at `rovrobotics/index.md` with `permalink: /rovrobotics/`.
 `_data/pathways.yml` drives the site index. Add a pathway there when you
 create its collection, and add the collection to `_config.yml`.
 
+### Unplugged: sections are views over tags
+
+`_unplugged/` breaks the one-reading-order model. Its landing page
+(`unplugged/index.md`) is one table of every non-companion activity,
+grouped by first topic, with MS / HS / Solo / Pair columns and filter
+buttons, all built from front matter:
+
+    level: ms | hs | both            # MS / HS columns
+    grouping: "Solo or pair"         # free text; "solo", "pair", "trade" mark the columns
+    topics: [Binary, Lists]          # table groups by the first one
+    time: 30                         # minutes
+    materials: "Pencil"
+    generator: /unplugged/<slug>-generator/   # "New set" link, if any
+    supports: /working-in-python/chap09.html  # optional, with supports_title:
+
+(`kind:` is still set on older pages but no longer drives anything.)
+**Sequenced** tracks live in `_data/unplugged_sequences.yml`, which lists
+steps by filename, so order is kept there, not in `order:` front matter,
+and an activity can belong to several sequences. `nav: none` on the pathway
+in `_data/pathways.yml` turns off prev/next links on every activity page
+(the teacher doesn't want them, on screen or in print); sequences appear
+only on the landing page.
+
+**Two-player sheets** tag each player's section `data-player="A"`/`"B"` and
+include `_includes/unplugged/player-switch.html`, which lets a teacher show
+and print one player's sheet at a time (`?player=A`), so a student never
+gets a page with the other player's secret numbers on it.
+
+Section images: `assets/img/unplugged/` (the teacher's own logo and
+favicon; `_includes/head.html` swaps in the favicon for `/unplugged/`).
+
+**Aim at 6th/7th grade first, and no answer keys.** One printed page is
+the goal, two the maximum; an intro of 3 sentences or fewer; 5 numbered
+steps or fewer; a worked example right before the first question; one new
+idea per sheet (harder variants become a generator level, not more on the
+page). Prefer self-checking puzzles. Keys are hidden site-wide by
+`.answer-key { display: none }` in `_sass/unplugged/_generator.scss`
+(`?key=1` on the URL shows them); the key data stays so the checkers can
+verify every puzzle. Older sheets written before this rule are longer than
+this and may need trimming.
+
+**Print and use:** no scissors or cut-out cards (a Caesar cipher wheel is
+the one exception the teacher allowed), no activities that need a teacher
+running the room.
+
+**Puzzle generators.** Some activities have a `companion: true`
+`<slug>-generator` page that makes a fresh set on demand, linked from the
+activity's `generator:` front matter (the landing page shows it as a pill).
+Shared pieces in `assets/js/unplugged/`: `rng.js` (seeded RNG) and
+`generator-shell.js` (toolbar; seed and options live in the URL, and the
+set number prints on the sheet and its key so paper and key always match).
+Pages load their ES modules through a `scripts:` front matter list, which
+`_layouts/lesson.html` emits. Each activity family keeps its puzzle logic
+DOM-free in its own module so a `tools/check_<slug>.mjs` Node script can
+verify every answer key (`node tools/check_robot_sets.mjs` for the robot).
+Styles go in that family's own `_sass/unplugged/_<name>.scss` partial.
+
+**Fixed worksheets never depend on a live seed.** Generated puzzles used on
+a fixed page are frozen into `_data/unplugged/*.yml` (see
+`tools/freeze_robot_set.mjs`), so a later generator change can't silently
+break an answer key for a class set that's already printed.
+
+The AP robot (`robot*.js`) follows the exam reference sheet exactly:
+`CAN_MOVE` takes a direction relative to the robot (`left`, `right`,
+`forward`, `backward`), and moving into a black square or off the grid
+leaves the robot in place and ends the program.
+
+CS Unplugged (`source: cs-unplugged-2015`, CC BY-NC-SA 3.0) is adaptable
+like the Pico book, but its illustrations are not; redraw them. Math for
+Love and Bootstrap are inspiration only: nothing from them goes on the site.
+
 ### Mounted external pathways
 
 Not every pathway is a collection. `working-in-python/` is a git submodule

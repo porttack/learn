@@ -1,0 +1,32 @@
+# Fixed creature-sorting worksheet. Hand-curated (not frozen from a random
+# seed) so the progression matches the lesson: single traits, then AND, OR,
+# then the classic trap (compare partA #5 and #6, "NOT (a AND b)" vs
+# "NOT a AND NOT b" -- they are NOT the same set). Every answer is verified
+# against the expression evaluator by tools/check_creature_sorting.mjs.
+title: "Creature sorting"
+partA:
+  - kind: evaluate
+    expr: "round"
+    answer: [9, 10, 11, 12, 13, 14, 15, 16]
+  - kind: evaluate
+    expr: "NOT striped"
+    answer: [1, 3, 5, 7, 9, 11, 13, 15]
+  - kind: evaluate
+    expr: "round AND two_eyes"
+    answer: [11, 12, 15, 16]
+  - kind: evaluate
+    expr: "has_hat OR striped"
+    answer: [2, 4, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16]
+  - kind: evaluate
+    expr: "NOT (round AND has_hat)"
+    answer: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+  - kind: evaluate
+    expr: "NOT round AND NOT has_hat"
+    answer: [1, 2, 3, 4]
+partB:
+  - kind: reverse
+    marked: [7, 8, 15, 16]
+    key: "has_hat AND two_eyes"
+  - kind: reverse
+    marked: [5, 6, 7, 8]
+    key: "NOT round AND has_hat"

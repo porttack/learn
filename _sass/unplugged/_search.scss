@@ -1,0 +1,198 @@
+// Styles for the linear-vs-binary search activities:
+// _unplugged/search-trace.md, search-trace-generator.md, and
+// search-battleships.md (assets/js/unplugged/search-render.js draws the
+// same markup in JS for the generator).
+
+// ---- Numbered search boxes (Trace a Search) ---------------------------------
+
+.search-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin: 0.7em 0 1em;
+}
+
+.search-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 2.9em;
+  border: 1.5px solid $text-color;
+  border-radius: 4px;
+  padding: 0.25em 0.2em;
+}
+
+.search-box-pos {
+  font-size: 0.7em;
+  color: $grey-color-dark;
+}
+
+.search-box-val {
+  font-size: 1.15em;
+  font-weight: 700;
+  margin: 0.1em 0;
+}
+
+// A blank corner where a student writes 1st, 2nd, 3rd... as they check each
+// box. Big enough for a 6th grader's handwriting, and a dashed top border so
+// it reads as "write here," not part of the printed number.
+.search-list-mark .search-box-order {
+  display: block;
+  width: 100%;
+  min-height: 1.3em;
+  margin-top: 0.2em;
+  border-top: 1px dashed $grey-color;
+}
+
+// A worked example: boxes the search actually checked get a heavier border
+// and their check order printed, instead of color, so it still reads on a
+// black-and-white printer.
+.search-list-solved .search-box-checked {
+  border-width: 3px;
+}
+
+.search-list-solved .search-box-order {
+  display: block;
+  font-size: 0.75em;
+  font-weight: 700;
+  margin-top: 0.1em;
+}
+
+.search-list-label {
+  margin: 1em 0 0.2em;
+  font-weight: 600;
+}
+
+// A worked example showing both searches on the same row of boxes: "L2"
+// means linear search's 2nd check, "B1" means binary search's 1st. Text
+// labels, not color, so a box checked by both (or neither) search is still
+// unambiguous on a black-and-white printer.
+.search-list-dual .search-box-checked {
+  border-width: 3px;
+}
+
+.search-box-dual {
+  display: flex;
+  gap: 0.3em;
+  margin-top: 0.2em;
+  font-size: 0.7em;
+  font-weight: 700;
+}
+
+.search-box-dual-l,
+.search-box-dual-b {
+  min-width: 1.4em;
+}
+
+// A smaller variant for the "how it works" worked example: it's a teaching
+// diagram, not something to write on, so it can afford to be compact and
+// leave more of the page for the real activity.
+.search-list-small {
+  margin: 0.4em 0 0.6em;
+  gap: 0.35em;
+
+  .search-box {
+    width: 2.1em;
+    padding: 0.15em 0.15em;
+  }
+
+  .search-box-pos {
+    font-size: 0.6em;
+  }
+
+  .search-box-val {
+    font-size: 0.95em;
+    margin: 0.05em 0;
+  }
+
+  .search-box-order {
+    font-size: 0.7em;
+  }
+}
+
+// Shared explanation shown once, ahead of the private per-player sections:
+// tighter heading spacing keeps it from eating a whole page on its own.
+.search-intro {
+  h2, h3 {
+    margin: 0.5em 0 0.2em;
+  }
+
+  p {
+    margin: 0.3em 0;
+  }
+
+  ol {
+    margin: 0.3em 0;
+  }
+}
+
+.search-target {
+  font-size: 1.05em;
+}
+
+.search-fill {
+  margin: 0.3em 0 0.4em;
+}
+
+// ---- Lettered ship boxes (search-battleships) --------------------------------
+
+.ship-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin: 0.3em 0 0.5em;
+}
+
+.ship-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 3.4em;
+  border: 1.5px solid $text-color;
+  border-radius: 4px;
+  padding: 0.2em 0.2em;
+}
+
+.ship-letter {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: $grey-color-dark;
+}
+
+.ship-value {
+  font-size: 1.3em;
+  font-weight: 700;
+  margin-top: 0.15em;
+}
+
+// Each player's whole section always starts on its own page: they must
+// never see each other's secret ships, and once the sheet is printed a
+// forced page break is the only thing keeping that promise.
+html:not(.only-player-a):not(.only-player-b) .search-player + .search-player {
+  break-before: page;
+}
+
+.search-player {
+  margin-bottom: 0.6em;
+
+  h2 {
+    margin: 0.5em 0 0.2em;
+  }
+
+  p {
+    margin: 0.3em 0;
+  }
+}
+
+@media print {
+  .search-box,
+  .ship-box {
+    break-inside: avoid;
+  }
+
+  .search-list,
+  .ship-row {
+    break-inside: avoid;
+    gap: 0.4em;
+  }
+}

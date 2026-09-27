@@ -1,0 +1,43 @@
+# Fixed content for _unplugged/caesar-cipher-frequency.md. One original
+# passage from assets/js/unplugged/cipher-gen.js's PARAGRAPHS bank, encrypted
+# with a fixed key so the printed passage and its answer key always match.
+# tools/check_caesar_cipher.mjs re-derives cipher and counts from plain/key
+# and checks them against what's written here, and confirms the most common
+# letter really is a stand-in for E (so "guess the shift from the most
+# common letter" actually works for this passage).
+
+key: 11
+
+plain: "ROBOTS THAT EXPLORE THE OCEAN FACE A HARDER JOB THAN ROBOTS ON LAND THE WATER BLOCKS RADIO SIGNALS SO A ROV STAYS CONNECTED TO ITS PILOT WITH A LONG TETHER INSTEAD EVERY CAMERA EVERY THRUSTER AND EVERY SENSOR SENDS ITS DATA DOWN THAT SAME CABLE WHICH IS WHY ENGINEERS PLAN THE WIRING SO CAREFULLY BEFORE THE ROBOT EVER TOUCHES THE WATER"
+
+cipher: "CZMZED ESLE PIAWZCP ESP ZNPLY QLNP L SLCOPC UZM ESLY CZMZED ZY WLYO ESP HLEPC MWZNVD CLOTZ DTRYLWD DZ L CZG DELJD NZYYPNEPO EZ TED ATWZE HTES L WZYR EPESPC TYDEPLO PGPCJ NLXPCL PGPCJ ESCFDEPC LYO PGPCJ DPYDZC DPYOD TED OLEL OZHY ESLE DLXP NLMWP HSTNS TD HSJ PYRTYPPCD AWLY ESP HTCTYR DZ NLCPQFWWJ MPQZCP ESP CZMZE PGPC EZFNSPD ESP HLEPC"
+
+counts:
+  A: 3
+  B: 0
+  C: 23
+  D: 21
+  E: 29
+  F: 3
+  G: 5
+  H: 7
+  I: 1
+  J: 6
+  K: 0
+  L: 25
+  M: 7
+  N: 10
+  O: 9
+  P: 38
+  Q: 3
+  R: 4
+  S: 16
+  T: 12
+  U: 1
+  V: 1
+  W: 10
+  X: 2
+  Y: 17
+  Z: 23
+
+guess_letter: "P"

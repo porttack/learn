@@ -1,0 +1,26 @@
+# Fixed content for _unplugged/caesar-cipher.md. Hand-picked from the phrase
+# bank in assets/js/unplugged/cipher-gen.js, not generated at random, so the
+# same five messages and the same "crack it" puzzle print every time this
+# page is printed. tools/check_caesar_cipher.mjs verifies every cipher
+# string here really does decrypt back to its plain string under the given
+# key, and that the "crack it" ciphertext is unambiguous (only one of the 25
+# possible shifts turns it back into a real phrase).
+
+decode:
+  key: 7
+  messages:
+    - plain: "THE FIRST PROGRAMMER WAS ADA LOVELACE"
+      cipher: "AOL MPYZA WYVNYHTTLY DHZ HKH SVCLSHJL"
+    - plain: "THE FIRST EVER WEBSITE IS STILL ONLINE TODAY"
+      cipher: "AOL MPYZA LCLY DLIZPAL PZ ZAPSS VUSPUL AVKHF"
+    - plain: "WHY DO PROGRAMMERS PREFER DARK MODE BECAUSE LIGHT ATTRACTS BUGS"
+      cipher: "DOF KV WYVNYHTTLYZ WYLMLY KHYR TVKL ILJHBZL SPNOA HAAYHJAZ IBNZ"
+    - plain: "WHY DID THE LOOP NEVER FINISH IT DIDNT KNOW WHEN TO STOP"
+      cipher: "DOF KPK AOL SVVW ULCLY MPUPZO PA KPKUA RUVD DOLU AV ZAVW"
+    - plain: "WHAT HAS KEYS BUT CANNOT OPEN A SINGLE DOOR A KEYBOARD"
+      cipher: "DOHA OHZ RLFZ IBA JHUUVA VWLU H ZPUNSL KVVY H RLFIVHYK"
+
+crack:
+  key: 17
+  plain: "GOOD COMMENTS EXPLAIN WHY NOT JUST WHAT"
+  cipher: "XFFU TFDDVEKJ VOGCRZE NYP EFK ALJK NYRK"

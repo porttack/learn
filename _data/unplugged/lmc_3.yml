@@ -1,0 +1,53 @@
+# Reference solutions for _unplugged/lmc-3-write.md's three "write your own"
+# tasks. Never shown to students on the sheet itself (they write their own
+# program and trace it by hand), only in the answer key
+# (assets/js/unplugged/lmc-page.js's renderTaskKey) and in
+# tools/check_lmc.mjs, which assembles and runs each one to confirm it's a
+# real working program for the stated test input. Other programs can be
+# correct too; these are just one way to solve each task.
+tasks:
+  - title: "Output the input times 2"
+    source: |
+      INP
+      STA N
+      LDA N
+      ADD N
+      OUT
+      HLT
+      N DAT 0
+    inputs: [6]
+    expected: [12]
+  - title: "Subtract two inputs"
+    source: |
+      INP
+      STA A
+      INP
+      STA B
+      LDA A
+      SUB B
+      OUT
+      HLT
+      A DAT 0
+      B DAT 0
+    inputs: [9, 4]
+    expected: [5]
+  - title: "Output the numbers from 1 up to the input"
+    # Fits the 15-row blank listing form printed on the sheet (addresses 00-14).
+    source: |
+      INP
+      STA N
+      LDA ONE
+      LOOP STA I
+      OUT
+      LDA N
+      SUB I
+      BRZ DONE
+      LDA I
+      ADD ONE
+      BRA LOOP
+      DONE HLT
+      N DAT 0
+      I DAT 0
+      ONE DAT 1
+    inputs: [4]
+    expected: [1, 2, 3, 4]

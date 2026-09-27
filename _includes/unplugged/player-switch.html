@@ -1,0 +1,14 @@
+{%- comment -%}
+Two-player sheets: lets a teacher show (and print) one player's page at a
+time, so a player never gets a sheet with the other's secret numbers on it.
+Sections are tagged data-player="A"/"B"; ?player=A adds .only-player-a to
+<html> (see _layouts/lesson.html) and the CSS in _sass/unplugged/_generator.scss
+hides the other player. Screen only.
+{%- endcomment -%}
+<nav class="player-switch" aria-label="Which player's sheet to show">
+  <span>Show:</span>
+  <a href="?" data-show="">Both players</a>
+  <a href="?player=A" data-show="a">Player A only</a>
+  <a href="?player=B" data-show="b">Player B only</a>
+  <span class="player-switch-tip">Pick one player, print, then pick the other and print again.</span>
+</nav>

@@ -1,0 +1,244 @@
+# Frozen from: node tools/freeze_robot_set.mjs challenge 303 6
+title: "Sensing with CAN_MOVE"
+questions:
+  - kind: which-grids
+    grids:
+      - |
+        . . . . .
+        . . # . .
+        < # . # .
+        . G . . #
+      - |
+        . . . > #
+        . . # G .
+        . . . . #
+        . . . . .
+        . . . . .
+      - |
+        . . . v G
+        . # . . #
+        . # . # #
+        . . . . .
+        # # . . .
+    code: |
+      REPEAT UNTIL (GoalReached ())
+      {
+        IF (CAN_MOVE (left))
+        {
+          ROTATE_LEFT ()
+        }
+        MOVE_FORWARD ()
+      }
+    choices:
+      - "I only"
+      - "III only"
+      - "I and III only"
+      - "II and III only"
+    answer: [C]
+    notes:
+      - ""
+      - ""
+      - "Grid I: the robot reaches the gray square. Grid II: the robot tries to move into a black square or off the grid, so the program stops. Grid III: the robot reaches the gray square."
+      - ""
+  - kind: which-code
+    grid: |
+      . . . . . #
+      . # . . # #
+      # # . . . .
+      . G # . # .
+      . < . . . .
+    choices:
+      - |
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        ROTATE_RIGHT ()
+        MOVE_FORWARD ()
+      - |
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        ROTATE_RIGHT ()
+        MOVE_FORWARD ()
+        ROTATE_RIGHT ()
+        MOVE_FORWARD ()
+      - |
+        MOVE_FORWARD ()
+        ROTATE_RIGHT ()
+        MOVE_FORWARD ()
+        ROTATE_RIGHT ()
+        MOVE_FORWARD ()
+      - |
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        ROTATE_RIGHT ()
+        MOVE_FORWARD ()
+    answer: [C]
+    notes:
+      - "This one turns the wrong way at one of the turns. That sends the robot into a black square or off the grid, so the program stops."
+      - "This one moves one square too many. That sends the robot into a black square or off the grid, so the program stops."
+      - "Correct."
+      - "This one leaves out a turn. That sends the robot into a black square or off the grid, so the program stops."
+  - kind: which-grids
+    grids:
+      - |
+        . # . .
+        > # # .
+        . . . .
+        G . . #
+      - |
+        # # . . .
+        . . . . .
+        G # . . .
+        . # # # ^
+    code: |
+      REPEAT UNTIL (GoalReached ())
+      {
+        IF (CAN_MOVE (right))
+        {
+          ROTATE_RIGHT ()
+        }
+        IF (CAN_MOVE (forward))
+        {
+          MOVE_FORWARD ()
+        }
+        ELSE
+        {
+          ROTATE_LEFT ()
+        }
+      }
+    choices:
+      - "None of the grids"
+      - "I and II"
+      - "II only"
+      - "I only"
+    answer: [B]
+    notes:
+      - ""
+      - "Grid I: the robot reaches the gray square. Grid II: the robot reaches the gray square."
+      - ""
+      - ""
+  - kind: end-square
+    grid: |
+      . . . # . .
+      B . . . . .
+      . . . # . #
+      . . C . . .
+      D . # . . .
+      > . . A . #
+    code: |
+      PROCEDURE moveAndTurn (n)
+      {
+        REPEAT n TIMES
+        {
+          MOVE_FORWARD ()
+        }
+        ROTATE_LEFT ()
+      }
+      moveAndTurn (1)
+      moveAndTurn (1)
+      moveAndTurn (1)
+    answer: [D]
+    notes:
+      - "This is where the robot ends if it leaves out a turn."
+      - "The robot doesn't end here."
+      - "The robot doesn't end here."
+      - "Correct."
+  - kind: which-grids
+    grids:
+      - |
+        . G . .
+        . . . .
+        . # . .
+        ^ . # #
+      - |
+        # # . . .
+        . . # . .
+        . # . # .
+        . . . . v
+        . . G . .
+      - |
+        . . G # .
+        . v . . #
+        # # . . #
+        # # . . .
+        # # # . .
+    code: |
+      REPEAT UNTIL (GoalReached ())
+      {
+        IF (CAN_MOVE (forward))
+        {
+          MOVE_FORWARD ()
+        }
+        ELSE
+        {
+          ROTATE_LEFT ()
+        }
+      }
+    choices:
+      - "II and III only"
+      - "None of the grids"
+      - "I and II only"
+      - "III only"
+    answer: [B]
+    notes:
+      - ""
+      - "Grid I: the robot goes around in a loop forever and never reaches the gray square. Grid II: the robot goes around in a loop forever and never reaches the gray square. Grid III: the robot goes around in a loop forever and never reaches the gray square."
+      - ""
+      - ""
+  - kind: which-code
+    grid: |
+      . . . . .
+      . # # . .
+      > . . . .
+      # G . # .
+      # . . . .
+    choices:
+      - |
+        PROCEDURE moveAndTurn (n)
+        {
+          REPEAT n TIMES
+          {
+            MOVE_FORWARD ()
+          }
+        }
+        moveAndTurn (1)
+        moveAndTurn (1)
+      - |
+        PROCEDURE moveAndTurn (n)
+        {
+          REPEAT n TIMES
+          {
+            MOVE_FORWARD ()
+          }
+          ROTATE_RIGHT ()
+        }
+        moveAndTurn (1)
+        moveAndTurn (1)
+      - |
+        PROCEDURE moveAndTurn (n)
+        {
+          REPEAT n TIMES
+          {
+            MOVE_FORWARD ()
+          }
+          ROTATE_RIGHT ()
+        }
+        moveAndTurn (1)
+        moveAndTurn (2)
+      - |
+        PROCEDURE moveAndTurn (n)
+        {
+          REPEAT n TIMES
+          {
+            MOVE_FORWARD ()
+          }
+          ROTATE_LEFT ()
+        }
+        moveAndTurn (1)
+        moveAndTurn (1)
+    answer: [B]
+    notes:
+      - "This one leaves out a turn."
+      - "Correct."
+      - "This one moves one square too many."
+      - "This one turns the wrong way at one of the turns. That sends the robot into a black square or off the grid, so the program stops."

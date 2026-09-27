@@ -1,0 +1,94 @@
+# Frozen from: node tools/freeze_binary_puzzles.mjs 4200 "4:easy:Warm-up A" "4:easy:Warm-up B" "6:easy:Puzzle C" "6:easy:Puzzle D" "6:hard:Puzzle E" "8:hard:Puzzle F"
+puzzles:
+  - n: 4
+    label: "Warm-up A"
+    given: |
+      ...1
+      ....
+      .1.1
+      0...
+    solution: |
+      1001
+      1010
+      0101
+      0110
+  - n: 4
+    label: "Warm-up B"
+    given: |
+      ...1
+      ....
+      ..0.
+      1..1
+    solution: |
+      0011
+      0110
+      1100
+      1001
+  - n: 6
+    label: "Puzzle C"
+    given: |
+      .1...0
+      11.0..
+      ....0.
+      0.....
+      ..11..
+      0..0..
+    solution: |
+      110100
+      110010
+      001101
+      010011
+      101100
+      001011
+  - n: 6
+    label: "Puzzle D"
+    given: |
+      1..1..
+      1.1..1
+      .0....
+      ......
+      ..0...
+      .1....
+    solution: |
+      110100
+      101001
+      001011
+      010110
+      100101
+      011010
+  - n: 6
+    label: "Puzzle E"
+    given: |
+      1.....
+      1.1...
+      ..1...
+      ......
+      ....0.
+      .0..0.
+    solution: |
+      110010
+      101100
+      001011
+      010011
+      110100
+      001101
+  - n: 8
+    label: "Puzzle F"
+    given: |
+      .0..1...
+      ..1.....
+      ...1.0..
+      0.1..11.
+      ........
+      .......0
+      0..0.11.
+      .0......
+    solution: |
+      00101101
+      01101001
+      11010010
+      00110110
+      11001001
+      10011010
+      01100110
+      10010101

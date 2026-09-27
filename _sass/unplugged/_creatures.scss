@@ -1,0 +1,96 @@
+// Creature sorting (Boolean logic: AND, OR, NOT).
+// assets/js/unplugged/creatures-render.js draws the SVG creatures; this
+// file only lays them out. No color is ever used to carry a trait -- shape,
+// pattern, and border are the only signals, so a black-and-white printout
+// reads exactly like the screen.
+
+.creature-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em 0.5em;
+  margin: 1em 0 1.4em;
+}
+
+.creature {
+  margin: 0;
+  width: 4.4em;
+  text-align: center;
+  padding: 0.2em;
+  border: 2px solid transparent;
+  border-radius: 6px;
+
+  .creature-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  figcaption {
+    font-weight: 700;
+    font-size: 0.85em;
+  }
+}
+
+// The "these are marked" set in a Part B reverse question: a heavy border
+// instead of a color fill, so it survives grayscale printing.
+.creature-marked {
+  border-color: $text-color;
+  border-style: solid;
+  border-width: 2px;
+  background: $grey-color-light;
+}
+
+.creature-q,
+.creature-key {
+  margin: 1em 0;
+}
+
+.creature-q-prompt code,
+.creature-key code {
+  font-size: 0.95em;
+}
+
+// One box per creature number, for circling by hand. Not real checkboxes --
+// just a printable row a pencil can mark.
+.creature-answer-row {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em;
+  padding: 0;
+  margin: 0.6em 0 0;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.8em;
+    height: 1.8em;
+    border: 1px solid $grey-color;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+}
+
+// Bolder, thicker boxes than a plain answer row: these numbers are already
+// decided (marked for you), not something to circle yourself.
+.creature-marked-list li {
+  border-width: 2px;
+  border-color: $text-color;
+  font-weight: 700;
+}
+
+@media print {
+  .creature-q,
+  .creature-key {
+    break-inside: avoid;
+  }
+
+  .creature-grid {
+    break-inside: avoid;
+  }
+
+  .creature-marked {
+    background: none;
+  }
+}

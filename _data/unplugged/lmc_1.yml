@@ -1,0 +1,41 @@
+# Little Man Computer, sheet 1: straight-line programs only, no branches.
+# `expected` isn't rendered to students (no answer keys); tools/check_lmc.mjs
+# uses it to confirm the assembly still does what it's supposed to.
+worked:
+  title: "Add two numbers"
+  source: |
+    INP
+    STA FIRST
+    INP
+    ADD FIRST
+    OUT
+    HLT
+    FIRST DAT 0
+  inputs: [7, 5]
+  expected: [12]
+practice:
+  - title: "Double it"
+    source: |
+      INP
+      STA NUM
+      LDA NUM
+      ADD NUM
+      OUT
+      HLT
+      NUM DAT 0
+    inputs: [8]
+    expected: [16]
+  - title: "Add three numbers"
+    source: |
+      INP
+      STA A
+      INP
+      ADD A
+      STA A
+      INP
+      ADD A
+      OUT
+      HLT
+      A DAT 0
+    inputs: [3, 4, 5]
+    expected: [12]

@@ -3,6 +3,9 @@ layout: minimal
 ---
 {% assign pathway_meta = site.data.pathways | where: "id", page.pathway | first %}
 {% assign pathway_pages = site[page.pathway] | sort: "order" %}
+{% comment %}A pathway with no single reading order (nav: none in
+_data/pathways.yml) gets no prev/next links at all.{% endcomment %}
+{% if pathway_meta.nav == "none" %}{% assign pathway_pages = "" | split: "" %}{% endif %}
 {% assign current_index = -1 %}
 {% for p in pathway_pages %}
   {% if p.url == page.url %}{% assign current_index = forloop.index0 %}{% endif %}
@@ -11,6 +14,7 @@ layout: minimal
 {% assign next_index = current_index | plus: 1 %}
 
 <article class="lesson">
+  {% if pathway_meta.name_line %}{% include unplugged/name-line.html %}{% endif %}
   {% if pathway_meta %}
   <p class="pathway-back"><a href="{{ pathway_meta.url | relative_url }}">&larr; {{ pathway_meta.title }}</a></p>
   {% endif %}
@@ -25,6 +29,7 @@ layout: minimal
   {% if page.subtitle %}
   <p class="lesson-subtitle">{{ page.subtitle }}</p>
   {% endif %}
+  {% include activity-meta.html %}
   {% if page.unit %}
   <p class="lesson-card-hint">New to lesson cards? <a href="{{ '/rovrobotics/what-is-a-lesson-card/' | relative_url }}">See what a lesson card is</a>.</p>
   {% endif %}
@@ -46,6 +51,45 @@ layout: minimal
   {% include provenance.html %}
   {% include standards-alignment.html %}
 </article>
+
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var html = document.documentElement;
+  if (q.has("key")) html.classList.add("show-key");
+  // A quiet "answer key" link, only on pages that have one (screen only).
+  var key = document.querySelector(".answer-key");
+  var nav = document.querySelector(".lesson-nav");
+  if (key && nav) {
+    var a = document.createElement("a");
+    a.className = "key-link";
+    var next = new URLSearchParams(location.search);
+    if (q.has("key")) { next.delete("key"); a.textContent = "Hide answer key"; }
+    else { next.set("key", "1"); a.textContent = "Show answer key"; }
+    a.href = "?" + next.toString() + (q.has("key") ? "" : "#answer-key");
+    nav.appendChild(a);
+    if (!key.id) key.id = "answer-key";
+  }
+  var player = (q.get("player") || "").toLowerCase();
+  if (player === "a" || player === "b") html.classList.add("only-player-" + player);
+  // Build the link at click time, so a generator's current set number
+  // (added to the URL after load) carries over to the other player's view.
+  document.querySelectorAll(".player-switch a[data-show]").forEach(function (a) {
+    if (a.dataset.show === player) a.classList.add("current");
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var next = new URLSearchParams(location.search);
+      if (a.dataset.show) next.set("player", a.dataset.show.toUpperCase()); else next.delete("player");
+      location.search = next.toString();
+    });
+  });
+})();
+</script>
+
+{% comment %}Per-page ES modules (puzzle renderers and generators).{% endcomment %}
+{% for src in page.scripts %}
+<script type="module" src="{{ src | relative_url }}"></script>
+{% endfor %}
 
 <script>
 document.querySelectorAll('.language-python.highlighter-rouge').forEach(function (block) {

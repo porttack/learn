@@ -1,0 +1,42 @@
+# Fixed data for _unplugged/search-battleships.md.
+#
+# Each player has one set of six secret numbers ("sorted", their round 2
+# order). "round1_order" is the same six numbers shuffled -- a permutation,
+# not a fresh set -- so playing round 2 right after round 1 makes the point
+# that sorting the very same ships is what makes binary search possible.
+#
+# `targets` are told to each player by the activity, not chosen live, so a
+# pair with no teacher always gets a fair, working target: a_finds_on_b is
+# the number Player A is looking for on Player B's ships (in both rounds),
+# and b_finds_on_a is the number Player B is looking for on Player A's ships.
+#
+# linear_count/binary_count are this activity's own reference answers for
+# an optimal search strategy. They're rendered into the page's
+# hidden-by-default answer key (teacher-only, see assets/main.scss's
+# .answer-key rule) and read by tools/check_search.mjs to confirm the
+# round 1 vs. round 2 contrast is real and the targets actually exist.
+demo:
+  list: [5, 12, 19, 23, 31]
+  target: 31
+  linear_checks: [1, 2, 3, 4, 5]
+  binary_checks: [3, 4, 5]
+
+letters: [A, B, C, D, E, F]
+
+players:
+  A:
+    sorted: [11, 24, 38, 45, 63, 79]
+    round1_order: [63, 11, 45, 79, 24, 38]
+  B:
+    sorted: [9, 22, 34, 56, 65, 82]
+    round1_order: [56, 9, 65, 22, 82, 34]
+
+targets:
+  a_finds_on_b:
+    value: 82
+    linear_count: 5
+    binary_count: 3
+  b_finds_on_a:
+    value: 24
+    linear_count: 5
+    binary_count: 3

@@ -1,0 +1,251 @@
+# Frozen from: node tools/freeze_robot_set.mjs ap 202 6
+title: "Loops and procedures"
+questions:
+  - kind: end-square
+    grid: |
+      # . . . . .
+      . B . . # #
+      ^ . . . . .
+      A . D C # .
+      # . . # . .
+    code: |
+      PROCEDURE turnAndMove (n)
+      {
+        ROTATE_RIGHT ()
+        REPEAT n TIMES
+        {
+          MOVE_FORWARD ()
+        }
+      }
+      turnAndMove (1)
+      turnAndMove (1)
+      turnAndMove (1)
+    answer: [A]
+    notes:
+      - "Correct."
+      - "The robot doesn't end here."
+      - "The robot doesn't end here."
+      - "The robot doesn't end here."
+  - kind: which-code
+    grid: |
+      # . . . #
+      . . # # .
+      # . . . v
+      . . . . #
+      . . . . G
+    choices:
+      - |
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        ROTATE_RIGHT ()
+        REPEAT 2 TIMES
+        {
+          MOVE_FORWARD ()
+        }
+        ROTATE_RIGHT ()
+        MOVE_FORWARD ()
+      - |
+        ROTATE_RIGHT ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        ROTATE_LEFT ()
+        REPEAT 2 TIMES
+        {
+          MOVE_FORWARD ()
+        }
+        MOVE_FORWARD ()
+      - |
+        ROTATE_RIGHT ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        REPEAT 2 TIMES
+        {
+          MOVE_FORWARD ()
+        }
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+      - |
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        REPEAT 2 TIMES
+        {
+          MOVE_FORWARD ()
+        }
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+    answer: [C]
+    notes:
+      - "This one mixes up ROTATE_LEFT and ROTATE_RIGHT. That sends the robot into a black square or off the grid, so the program stops."
+      - "This one does two steps in the wrong order. That sends the robot into a black square or off the grid, so the program stops."
+      - "Correct."
+      - "This one leaves out a turn. That sends the robot into a black square or off the grid, so the program stops."
+  - kind: which-code
+    grid: |
+      . . # . .
+      . . . . G
+      . . . . #
+      . . . ^ #
+      # . . # .
+    choices:
+      - |
+        PROCEDURE moveAndTurn (n)
+        {
+          REPEAT n TIMES
+          {
+            MOVE_FORWARD ()
+          }
+          ROTATE_RIGHT ()
+        }
+        moveAndTurn (2)
+        moveAndTurn (1)
+      - |
+        PROCEDURE moveAndTurn (n)
+        {
+          REPEAT n TIMES
+          {
+            MOVE_FORWARD ()
+          }
+          ROTATE_RIGHT ()
+        }
+        moveAndTurn (3)
+        moveAndTurn (1)
+      - |
+        PROCEDURE moveAndTurn (n)
+        {
+          REPEAT n TIMES
+          {
+            MOVE_FORWARD ()
+          }
+          ROTATE_RIGHT ()
+        }
+        moveAndTurn (1)
+        moveAndTurn (2)
+      - |
+        PROCEDURE moveAndTurn (n)
+        {
+          REPEAT n TIMES
+          {
+            MOVE_FORWARD ()
+          }
+          ROTATE_LEFT ()
+        }
+        moveAndTurn (2)
+        moveAndTurn (1)
+    answer: [A]
+    notes:
+      - "Correct."
+      - "This one moves one square too many."
+      - "This one does two steps in the wrong order. That sends the robot into a black square or off the grid, so the program stops."
+      - "This one turns the wrong way at one of the turns."
+  - kind: end-square
+    grid: |
+      # B . D C #
+      . # A . < .
+      . # . # . #
+      # # . . . #
+      . . # . . .
+      . . . . . .
+    code: |
+      PROCEDURE moveAndTurn (n)
+      {
+        REPEAT n TIMES
+        {
+          MOVE_FORWARD ()
+        }
+        ROTATE_RIGHT ()
+      }
+      moveAndTurn (2)
+      moveAndTurn (1)
+      moveAndTurn (1)
+    answer: [D]
+    notes:
+      - "The robot doesn't end here."
+      - "The robot doesn't end here."
+      - "This is where the robot ends if it moves one square too few."
+      - "Correct."
+  - kind: end-square
+    grid: |
+      . . D . C B
+      . # . . . v
+      . . . . # #
+      . . . . # A
+      . . . . . .
+    code: |
+      PROCEDURE turnAndMove (n)
+      {
+        ROTATE_RIGHT ()
+        REPEAT n TIMES
+        {
+          MOVE_FORWARD ()
+        }
+      }
+      turnAndMove (3)
+      turnAndMove (1)
+      turnAndMove (3)
+    answer: [B]
+    notes:
+      - "The robot doesn't end here."
+      - "Correct."
+      - "This is where the robot ends if it moves one square too few."
+      - "The robot doesn't end here."
+  - kind: which-code
+    grid: |
+      . . . . . .
+      . # . # # .
+      . # # . . #
+      # # . . . .
+      # v . . G .
+      # # . . # .
+    choices:
+      - |
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+      - |
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+      - |
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+      - |
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+        ROTATE_LEFT ()
+        MOVE_FORWARD ()
+    answer: [C]
+    notes:
+      - "This one leaves out a turn. That sends the robot into a black square or off the grid, so the program stops."
+      - "This one does two steps in the wrong order."
+      - "Correct."
+      - "This one moves one square too few."

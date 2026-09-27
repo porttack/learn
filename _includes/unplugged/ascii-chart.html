@@ -1,0 +1,20 @@
+{%- comment -%}
+A-Z (and space) with decimal codes, plus a blank row for the student to
+fill in the same codes in binary or hex as they work them out.
+  include.fill     "binary" or "hex": label for the blank row
+  include.per_row  letters per table band (binary needs wider cells)
+Data: _data/unplugged/ascii_chart.yml.
+{%- endcomment -%}
+{%- assign rows = site.data.unplugged.ascii_chart.rows -%}
+{%- assign per = include.per_row | default: 9 -%}
+{%- assign bands = rows.size | plus: per | minus: 1 | divided_by: per -%}
+<table class="ascii-table ascii-chart fill-{{ include.fill }}">
+<tbody>
+{%- for b in (1..bands) -%}
+{%- assign offset = b | minus: 1 | times: per %}
+<tr class="chart-letters"><th class="row-label"></th>{% for r in rows limit: per offset: offset %}<th>{{ r.letter }}</th>{% endfor %}</tr>
+<tr class="chart-decimal"><th class="row-label">Decimal</th>{% for r in rows limit: per offset: offset %}<td>{{ r.decimal }}</td>{% endfor %}</tr>
+<tr class="chart-blank"><th class="row-label">{{ include.fill | capitalize }}</th>{% for r in rows limit: per offset: offset %}<td></td>{% endfor %}</tr>
+{%- endfor %}
+</tbody>
+</table>

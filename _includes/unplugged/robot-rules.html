@@ -1,0 +1,18 @@
+<aside class="callout note" markdown="1">
+**HOW THE ROBOT WORKS**
+
+These are the same rules as the AP CSP exam reference sheet.
+
+- The robot is the triangle. It points the way it's facing.
+- `MOVE_FORWARD ()` moves it one square the way it's facing.
+- `ROTATE_LEFT ()` and `ROTATE_RIGHT ()` turn it 90 degrees without moving it.
+- `CAN_MOVE (direction)` is true if the square next to the robot in that
+  direction is open. The direction is `forward`, `backward`, `left`, or
+  `right`, from the **robot's** point of view, not yours.
+- `GoalReached ()` is true when the robot is on the gray square.
+- Black squares are blocked. **If the robot tries to move into a black
+  square or off the grid, it stays where it is and the program stops.**
+
+Tip: turn the paper so the robot points up before you work out a left or
+right turn.
+</aside>

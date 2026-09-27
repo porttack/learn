@@ -1,0 +1,49 @@
+# Fixed data for _unplugged/search-trace.md.
+#
+# `demo` is the small, already-solved worked example shown before the real
+# exercise ("show before you tell"). `linear_checks`/`binary_checks` there
+# are 1-indexed positions, in the order a search actually checks them, using
+# the same middle rule as assets/js/unplugged/search.js (mid = lo + floor
+# ((hi - lo) / 2)).
+#
+# `main.targets` are the practice targets. The first (`mark: true`) is the
+# one the student marks by hand, box by box. The rest (`mark: false`) are
+# "just write the counts" follow-ups that reuse the same list. `linear_count`
+# and `binary_count` are this activity's own reference answers; `linear_checks`
+# and `binary_checks` are the 1-indexed positions each search checks, in
+# order, same rule as `demo` above. None of this is rendered to the plain
+# sheet (no answer keys on the printed page itself), but the answer key
+# section at the bottom of search-trace.md renders it via the same
+# _includes/unplugged/search-list.html "dual" mode used for the demo above.
+# tools/check_search.mjs confirms every field here matches a real
+# implementation (assets/js/unplugged/search.js).
+demo:
+  list: [5, 12, 19, 23, 31]
+  target: 31
+  linear_checks: [1, 2, 3, 4, 5]
+  binary_checks: [3, 4, 5]
+
+main:
+  list: [4, 9, 13, 18, 22, 27, 31, 36, 40, 45, 49, 54, 58, 63, 67]
+  targets:
+    - value: 45
+      mark: true
+      found: true
+      linear_count: 10
+      binary_count: 3
+      linear_checks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      binary_checks: [8, 12, 10]
+    - value: 67
+      mark: false
+      found: true
+      linear_count: 15
+      binary_count: 4
+      linear_checks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+      binary_checks: [8, 12, 14, 15]
+    - value: 51
+      mark: false
+      found: false
+      linear_count: 15
+      binary_count: 4
+      linear_checks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+      binary_checks: [8, 12, 10, 11]

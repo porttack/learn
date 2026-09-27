@@ -1,0 +1,30 @@
+{%- comment -%}
+Renders one Nim position's binary breakdown: one row per pile, plus the
+nim-sum row, under a place-value header. Pass the question hash as `q`
+(see _data/unplugged/nim_binary_secret.yml for the fields it expects:
+piles, width, binary, sum_binary).
+{%- endcomment -%}
+{%- assign q = include.q -%}
+{%- assign pile_labels = "A,B,C,D,E,F" | split: "," -%}
+{%- if q.width == 3 -%}{%- assign placevals = "4,2,1" | split: "," -%}
+{%- elsif q.width == 4 -%}{%- assign placevals = "8,4,2,1" | split: "," -%}
+{%- elsif q.width == 5 -%}{%- assign placevals = "16,8,4,2,1" | split: "," -%}
+{%- else -%}{%- assign placevals = "8,4,2,1" | split: "," -%}
+{%- endif -%}
+<table class="nim-binary-table">
+  <thead><tr><th>Pile</th>{% for v in placevals %}<th>{{ v }}</th>{% endfor %}</tr></thead>
+  <tbody>
+    {%- for p in q.piles -%}
+    {%- assign bits = q.binary[forloop.index0] | split: "" -%}
+    <tr>
+      <td>{{ pile_labels[forloop.index0] }} ({{ p }})</td>
+      {%- for b in bits %}<td>{{ b }}</td>{% endfor -%}
+    </tr>
+    {%- endfor -%}
+    {%- assign sumbits = q.sum_binary | split: "" -%}
+    <tr class="nim-sum-row">
+      <td>Nim-sum</td>
+      {%- for b in sumbits %}<td>{{ b }}</td>{% endfor -%}
+    </tr>
+  </tbody>
+</table>

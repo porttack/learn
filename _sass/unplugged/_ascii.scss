@@ -1,0 +1,217 @@
+// Styles for the ASCII messages activity family
+// (_unplugged/ascii-messages*.md, assets/js/unplugged/ascii-messages-generator.js).
+
+// The small reference table printed on every sheet: A-Z (and space) next to
+// their codes. table-layout: fixed means column widths come from the
+// colgroup each page declares, not from cell content.
+table.ascii-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 0.6em 0 1em;
+  font-size: 0.95em;
+
+  th,
+  td {
+    border: 1px solid $grey-color-light;
+    padding: 0.25em 0.3em;
+    text-align: center;
+  }
+
+  th {
+    background: $grey-color-light;
+    font-weight: 600;
+  }
+
+  td.ascii-letter {
+    font-weight: 700;
+  }
+}
+
+// One worked example or question: a row of codes, each with a write-in box
+// (or, in "encode" mode, a row of letters each with a write-in box for the
+// code). Print rule keeps a message from splitting across a page break.
+.code-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5em 0.35em;
+  margin: 0.5em 0 1.1em;
+
+  &.is-example {
+    background: $grey-color-light;
+    border-radius: 6px;
+    padding: 0.6em 0.7em;
+    margin: 0.6em 0 1.2em;
+  }
+}
+
+.code-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+}
+
+.code-num,
+.code-letter {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+// A big blank square: for a 6th grader's handwriting, and so a printed page
+// gives a real target to aim a pencil at.
+.code-box {
+  width: 1.7em;
+  height: 1.7em;
+  border: 1.5px solid $text-color;
+  border-radius: 4px;
+}
+
+// A wider box for writing a whole code (a decimal number, 8 bits, or 2 hex
+// digits) instead of a single letter.
+.value-box {
+  min-width: 3.6em;
+  height: 1.7em;
+  border: 1.5px solid $text-color;
+  border-radius: 4px;
+}
+
+// A space in the message. Never rely on color alone (black-and-white
+// printers): a diagonal hatch pattern marks it as "not a letter to look up."
+.code-cell.is-space .code-box {
+  background-image: repeating-linear-gradient(45deg, $grey-color 0, $grey-color 1.5px, transparent 1.5px, transparent 6px);
+  border-style: dashed;
+}
+
+// "Write your name in ASCII": a longer strip of paired boxes, letter on top
+// and code below, for a message the student supplies.
+.name-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  margin: 0.5em 0 1em;
+}
+
+.name-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+
+  .code-box {
+    width: 1.9em;
+    height: 1.9em;
+  }
+
+  .value-box {
+    min-width: 1.9em;
+  }
+}
+
+// Generator: the reference table swaps to match whichever format is picked,
+// and each question keeps its prompt line right above the boxes.
+.puzzle-generator {
+  .ascii-question {
+    margin: 1em 0 1.4em;
+  }
+
+  .ascii-prompt {
+    font-weight: 600;
+    margin: 0 0 0.4em;
+  }
+}
+
+@media print {
+  .code-row {
+    break-inside: avoid;
+    margin: 0.35em 0 0.7em;
+  }
+
+  .ascii-question {
+    break-inside: avoid;
+    margin: 0.7em 0 0.9em;
+  }
+
+  table.ascii-table {
+    font-size: 0.85em;
+    margin: 0.4em 0 0.7em;
+
+    th,
+    td {
+      padding: 0.15em 0.3em;
+    }
+  }
+
+  .name-strip {
+    margin: 0.3em 0 0.6em;
+  }
+
+  .code-box,
+  .value-box {
+    height: 1.4em;
+  }
+}
+
+// Chart with a blank row to fill in (binary or hex), used by the binary and
+// hex sheets and the generator's "fill in the chart" option.
+table.ascii-chart {
+  th.row-label {
+    width: 4.6em;
+    text-align: right;
+    font-size: 0.8em;
+    background: none;
+  }
+
+  tr.chart-letters th:not(.row-label) {
+    font-size: 1.05em;
+  }
+
+  tr.chart-blank td {
+    height: 1.9em;
+  }
+
+  // Last row of each band gets a gap before the next band's letters.
+  tr.chart-blank td,
+  tr.chart-blank th {
+    border-bottom: 2px solid $grey-color;
+  }
+
+  &.fill-binary tr.chart-blank td {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+}
+
+// Answer key: a plain numbered list of decoded answers, compact so the
+// whole key fits on one printed page.
+.ascii-key-list {
+  margin: 0.4em 0 0.8em;
+  padding-left: 1.4em;
+
+  li {
+    margin-bottom: 0.3em;
+    font-weight: 600;
+  }
+}
+
+.ascii-key-encode {
+  font-weight: 600;
+}
+
+.ascii-key-pair {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+// The anchors level: four clues instead of a table.
+.ascii-anchors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em 1.4em;
+  margin: 0.6em 0 1em;
+  padding: 0.6em 0.9em;
+  border: 2px solid $text-color;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.1em;
+  font-weight: 700;
+}

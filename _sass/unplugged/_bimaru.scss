@@ -1,0 +1,213 @@
+// Styles for the Solo Battleship (bimaru) unplugged activity
+// (assets/js/unplugged/bimaru-render.js), plus the static worked example on
+// the main worksheet.
+
+.bimaru-puzzles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1em 1.8em;
+  margin: 0.8em 0 1.2em;
+}
+
+.bimaru-puzzle {
+  margin: 0;
+
+  figcaption {
+    font-weight: 600;
+    font-size: 0.95em;
+    margin-bottom: 0.35em;
+  }
+}
+
+.bimaru-puzzle-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1em;
+}
+
+// The grid itself. --cell is set inline per puzzle size (bigger for a 5x5,
+// smaller for an 8x8) so cells stay big enough to shade with a pencil at
+// every size; .small (the static worked example) sets a fixed size instead.
+.bimaru-grid {
+  border-collapse: collapse;
+  margin: 0;
+
+  td {
+    width: var(--cell, 2.5em);
+    height: var(--cell, 2.5em);
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+    border: 1px solid $text-color;
+  }
+
+  .bimaru-corner {
+    border: none;
+  }
+
+  .bimaru-count-col,
+  .bimaru-count-row {
+    border: none;
+    background: $grey-color-light;
+    font-weight: 700;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.95em;
+  }
+
+  // A heavier line where the axis numbers meet the actual playing grid, so
+  // the two zones read as visually distinct without relying on color.
+  .bimaru-count-col {
+    border-bottom: 2px solid $text-color;
+  }
+
+  .bimaru-count-row {
+    border-right: 2px solid $text-color;
+  }
+
+  .blank {
+    background: $background-color;
+  }
+
+  .given-water {
+    background: $background-color;
+  }
+
+  .water-dot {
+    display: block;
+    line-height: 1;
+    font-size: 1.5em;
+    color: $text-color;
+  }
+
+  // A hatch pattern, not a solid color, so a given ship square still reads
+  // as "filled in" on a black and white printer.
+  .given-ship {
+    background-color: $grey-color-light;
+    background-image: repeating-linear-gradient(45deg, $text-color 0, $text-color 3px, transparent 3px, transparent 7px);
+  }
+
+  &.binary .bimaru-count-col,
+  &.binary .bimaru-count-row {
+    font-size: 0.8em;
+    letter-spacing: 0.02em;
+  }
+
+  // The static worked example: smaller, fixed-size cells (no --cell is set
+  // on these, since they're hand-authored HTML, not drawn by JS).
+  &.small td {
+    width: 1.5em;
+    height: 1.5em;
+  }
+
+  &.small .water-dot {
+    font-size: 1.2em;
+  }
+}
+
+// The fleet list next to a puzzle: one row per ship length, longest first,
+// a small strip of squares showing the ship's shape, and one checkbox-style
+// square per ship of that length to cross off.
+.fleet-key {
+  min-width: 6em;
+  font-size: 0.9em;
+}
+
+.fleet-key-title {
+  font-weight: 700;
+  margin: 0 0 0.3em;
+}
+
+.fleet-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.3em;
+}
+
+.fleet-ship {
+  display: inline-flex;
+
+  i {
+    width: 0.9em;
+    height: 0.9em;
+    display: inline-block;
+    background: $text-color;
+    border: 1px solid $text-color;
+
+    + i {
+      margin-left: 2px;
+    }
+  }
+}
+
+.fleet-boxes {
+  display: inline-flex;
+  gap: 0.35em;
+}
+
+.fleet-box {
+  width: 0.9em;
+  height: 0.9em;
+  display: inline-block;
+  border: 1px solid $text-color;
+  background: $background-color;
+}
+
+// Answer key: solved grids, deliberately smaller than the puzzle grids
+// (nobody writes on these) so a whole set still fits on one printed key
+// page. Overrides the per-puzzle --cell custom property set inline by
+// bimaru-render.js's puzzleTable.
+.bimaru-key .bimaru-grid {
+  --cell: 1.3em !important;
+}
+
+// The two small grids in "Try a small one first," shown side by side with
+// their captions underneath.
+.bimaru-example {
+  display: inline-block;
+  margin: 0.4em 1.2em 0.6em 0;
+  text-align: center;
+  vertical-align: top;
+}
+
+.bimaru-example-caption {
+  font-size: 0.85em;
+  color: $grey-color-dark;
+  margin: 0.3em 0 0;
+  max-width: 14em;
+}
+
+@media print {
+  .bimaru-puzzle {
+    break-inside: avoid;
+  }
+
+  .bimaru-grid td {
+    border-color: #000;
+  }
+
+  .bimaru-count-col,
+  .bimaru-count-row {
+    background: #eee;
+  }
+
+  .given-ship {
+    background-color: #eee;
+    background-image: repeating-linear-gradient(45deg, #000 0, #000 3px, transparent 3px, transparent 7px);
+  }
+
+  .fleet-box,
+  .fleet-ship i {
+    border-color: #000;
+  }
+
+  .fleet-ship i {
+    background: #000;
+  }
+
+  .bimaru-example {
+    break-inside: avoid;
+  }
+}

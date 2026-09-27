@@ -1,0 +1,82 @@
+# Sequenced tracks on the /unplugged/ landing page. Order lives here, not in
+# the activities' own front matter, so one activity can sit in more than one
+# sequence (say, a middle school track and a high school one) and reordering
+# is a one-line edit. `steps` lists _unplugged/ filenames without ".md".
+#
+# level: ms or hs. Decides which "Sequenced" subsection lists it.
+
+- id: ms-data
+  title: "How computers store information"
+  level: ms
+  blurb: >-
+    Everything on a computer is 0s and 1s. Start with numbers, then work up
+    to letters, pictures, and catching errors.
+  steps:
+    - count-the-dots
+    - binary-battleship
+    - pixel-pictures
+
+- id: hs-python-on-paper
+  title: "Python on paper"
+  level: hs
+  blurb: >-
+    Read code the way a computer does, one line at a time, before you ever
+    run it.
+  steps:
+    - trace-a-list
+
+- id: hs-ap-robot
+  title: "The AP robot"
+  level: hs
+  blurb: >-
+    The grid-and-robot questions from the AP CSP exam, from simple moves up
+    to programs that sense walls. Then make as many new sets as you want.
+  steps:
+    - robot-grid-1
+    - robot-grid-2
+    - robot-grid-3
+
+- id: hs-logic
+  title: "Logic and codes"
+  level: hs
+  blurb: >-
+    True and false, hidden messages, and a game you can always win once you
+    know its binary secret.
+  steps:
+    - creature-sorting
+    - creature-sorting-2
+    - caesar-cipher
+    - caesar-cipher-frequency
+    - nim
+    - nim-binary-secret
+
+- id: hs-lmc
+  title: "Little Man Computer"
+  level: hs
+  blurb: >-
+    A whole computer on paper: 100 mailboxes, one calculator, ten
+    instructions. Trace programs, then write your own.
+  steps:
+    - lmc-1-trace
+    - lmc-2-branches
+    - lmc-3-write
+
+- id: ms-search
+  title: "Finding things fast"
+  level: ms
+  blurb: >-
+    Search a messy list one item at a time, then a sorted list by jumping to
+    the middle. Count the difference.
+  steps:
+    - search-battleships
+    - search-trace
+
+- id: ms-heuristics
+  title: "Heuristics"
+  level: ms
+  blurb: >-
+    Play against a program written on paper. First one that never loses,
+    then one that can, and find out why.
+  steps:
+    - tlc-intelligent-paper
+    - paper-othello

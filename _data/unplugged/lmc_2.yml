@@ -1,0 +1,43 @@
+# Little Man Computer, sheet 2: branches and loops (BRA/BRZ/BRP).
+# `expected` isn't rendered to students (no answer keys); tools/check_lmc.mjs
+# uses it to confirm the assembly still does what it's supposed to.
+worked:
+  title: "Count down and stop"
+  source: |
+    INP
+    LOOP OUT
+    SUB ONE
+    BRZ DONE
+    BRA LOOP
+    DONE HLT
+    ONE DAT 1
+  inputs: [3]
+  expected: [3, 2, 1]
+practice:
+  - title: "Output the larger input"
+    source: |
+      INP
+      STA A
+      INP
+      SUB A
+      BRP BIGB
+      LDA A
+      OUT
+      HLT
+      BIGB ADD A
+      OUT
+      HLT
+      A DAT 0
+    inputs: [9, 6]
+    expected: [9]
+  - title: "Count down from your input"
+    source: |
+      INP
+      LOOP OUT
+      SUB ONE
+      BRZ DONE
+      BRA LOOP
+      DONE HLT
+      ONE DAT 1
+    inputs: [2]
+    expected: [2, 1]

@@ -1,0 +1,131 @@
+// AP CSP robot questions (assets/js/unplugged/robot-render.js).
+.robot-q {
+  margin: 1.8em 0 2.2em;
+}
+
+.robot-q-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.2em 2em;
+  margin: 0.8em 0;
+}
+
+.robot-grids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em 1.6em;
+  align-items: flex-start;
+}
+
+.robot-grid-fig {
+  margin: 0;
+  text-align: center;
+
+  figcaption {
+    font-weight: 600;
+    font-size: 0.9em;
+  }
+}
+
+pre.ap-code {
+  margin: 0;
+  padding: 0.5em 0.8em;
+  font-size: 0.85em;
+  line-height: 1.35;
+  background: #f6f7f8;
+  border: 1px solid $grey-color-light;
+}
+
+.robot-choices {
+  list-style: none;
+  padding: 0;
+  margin: 0.6em 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12em, 1fr));
+  gap: 0.6em 1em;
+
+  &.code-choices {
+    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+  }
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
+  }
+
+  pre.ap-code {
+    flex: 1;
+  }
+}
+
+.choice-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.7em;
+  height: 1.7em;
+  border: 1.5px solid $text-color;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9em;
+}
+
+.robot-key {
+  margin: 1.2em 0 1.8em;
+}
+
+.robot-key-notes {
+  font-size: 0.9em;
+  margin-top: 0.5em;
+}
+
+@media print {
+  .robot-q,
+  .robot-key {
+    break-inside: avoid;
+  }
+
+  .robot-q {
+    margin: 1em 0 1.4em;
+  }
+
+  pre.ap-code {
+    background: none;
+    font-size: 0.72em;
+    padding: 0.3em 0.5em;
+  }
+
+  // Paper is narrower and shorter than a screen; smaller grids let two
+  // questions share a page instead of each one starting a fresh page.
+  svg.robot-grid {
+    zoom: 0.8;
+  }
+
+  .robot-key svg.robot-grid {
+    zoom: 0.6;
+  }
+
+  .robot-key {
+    margin: 0.6em 0 1em;
+    font-size: 0.9em;
+  }
+
+  .robot-key-notes {
+    margin-bottom: 0;
+  }
+
+  .robot-choices {
+    gap: 0.4em 0.8em;
+  }
+
+  .robot-choices.code-choices {
+    grid-template-columns: repeat(4, 1fr);
+
+    &.wide {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}

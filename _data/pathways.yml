@@ -58,6 +58,19 @@
     students of this class. Same standards either way, checked and
     submitted with check50 and submit50.
 
+- id: unplugged
+  title: "CS Unplugged"
+  collection: unplugged
+  url: /unplugged/
+  image: /assets/img/unplugged/unplugged.png
+  nav: none
+  name_line: true
+  blurb: >-
+    Computer science with no computer. Printable activities and worksheets
+    you can work through on your own: quick one-off puzzles, practice on a
+    single topic like binary or lists, and short sequences for middle and
+    high school.
+
 - id: ap-csp-reference
   title: "AP CSP Reference"
   url: /ap-csp-reference/

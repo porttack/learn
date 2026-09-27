@@ -6,6 +6,9 @@
   <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
   {%- if page.pathway == "pico" or page.url contains "/pico/" -%}
   <link rel="icon" type="image/svg+xml" href="{{ '/assets/img/pico/favicon.svg' | relative_url }}">
+  {%- elsif page.pathway == "unplugged" or page.url contains "/unplugged/" -%}
+  <link rel="icon" type="image/png" href="{{ '/assets/img/unplugged/favicon.png' | relative_url }}">
+  <link rel="apple-touch-icon" href="{{ '/assets/img/unplugged/apple-touch-icon.png' | relative_url }}">
   {%- endif -%}
   {%- feed_meta -%}
   {%- if jekyll.environment == 'production' and site.google_analytics -%}

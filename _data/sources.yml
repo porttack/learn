@@ -55,6 +55,39 @@
     available in cs50.dev if a lesson mentions it. Each lesson links back to
     the original problem.
 
+- id: cs-unplugged-2015
+  use: adapt
+  link_label: "original activity"
+  title: "CS Unplugged"
+  author: "Tim Bell, Ian H. Witten and Mike Fellows; adapted for classroom use by Robyn Adams and Jane McKenzie"
+  publisher: "csunplugged.org"
+  year: 2015
+  licence: "CC BY-NC-SA 3.0"
+  licence_url: "https://creativecommons.org/licenses/by-nc-sa/3.0/"
+  dir: tmp/CSUnplugged_2015_v3.1.pdf
+  notes: >-
+    2015 revision by Sam Jarman. The book says only "CC BY-NC-SA 3.0," so
+    treat it like rpi-pico-2e: derivatives stay at 3.0, not 4.0.
+    Illustrations are by Matt Powell; don't reuse them. Redraw figures
+    (the dot cards are plain HTML). The book is written as teacher scripts,
+    so adaptations here rewrite the activity for a student working alone.
+
+- id: teaching-london-computing
+  use: adapt
+  link_label: "original activity"
+  title: "Teaching London Computing: Inspiring Unplugged Classroom Activities"
+  author: "Paul Curzon, Queen Mary University of London"
+  publisher: "teachinglondoncomputing.org"
+  licence: "CC BY-NC-SA"
+  licence_url: "https://teachinglondoncomputing.org/re-using-our-material/"
+  notes: >-
+    Their reuse page asks for credit to Prof Paul Curzon, Queen Mary
+    University of London, and a link back to teachinglondoncomputing.org.
+    No licence version is stated; treat derivatives as CC BY-NC-SA and link
+    each adapted page to its original with `source_url:` (the provenance
+    footer renders it). Most of their activities are teacher-led (magic
+    tricks, whole-class acting); only print-and-use ones get adapted here.
+
 - id: mate-rov-manuals
   use: reference
   title: "MATE ROV Competition Manuals"

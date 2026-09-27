@@ -1,0 +1,200 @@
+// Caesar cipher activities (assets/js/unplugged/cipher*.js and
+// _unplugged/caesar-cipher*.md). Shared by the two fixed worksheets and the
+// generator page, so classes here are used from both plain Markdown/Liquid
+// and cipher-render.js's generated markup.
+
+// ---- Shift table and worked example ---------------------------------------
+
+table.shift-example {
+  border-collapse: collapse;
+  margin: 1em 0;
+
+  th,
+  td {
+    border: 1px solid $grey-color;
+    padding: 0.3em 0.6em;
+    text-align: center;
+    font-family: monospace;
+    font-size: 1.1em;
+  }
+
+  th {
+    background: $grey-color-light;
+    font-family: inherit;
+    font-size: 0.85em;
+  }
+}
+
+table.shift-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-family: monospace;
+
+  th,
+  td {
+    border: 1px solid $grey-color;
+    text-align: center;
+    padding: 0.35em 0;
+    font-size: 0.95em;
+  }
+
+  th {
+    font-family: inherit;
+    font-size: 0.7em;
+    background: $grey-color-light;
+    white-space: nowrap;
+  }
+
+  td.fill-cell {
+    height: 1.6em;
+  }
+}
+
+// ---- Decode / crack messages ------------------------------------------------
+
+code.cipher-text {
+  display: inline-block;
+  font-size: 1.05em;
+  letter-spacing: 0.08em;
+  word-spacing: 0.3em;
+  background: #f6f7f8;
+  border: 1px solid $grey-color-light;
+  padding: 0.4em 0.6em;
+}
+
+ol.cipher-messages {
+  margin: 0.8em 0;
+  padding-left: 1.4em;
+
+  li {
+    margin-bottom: 0.9em;
+  }
+}
+
+p.cipher-crack-text,
+p.cipher-passage {
+  margin: 1em 0;
+}
+
+table.crack-grid {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.8em 0 1.2em;
+
+  td {
+    border: 1px solid $grey-color;
+    padding: 0.3em 0.5em;
+    white-space: nowrap;
+  }
+
+  .crack-key {
+    display: inline-block;
+    width: 1.6em;
+    font-weight: 700;
+    text-align: right;
+    margin-right: 0.4em;
+  }
+
+  .fill-line.short {
+    display: inline-block;
+    width: auto;
+    min-width: 6em;
+  }
+}
+
+// ---- Frequency tables --------------------------------------------------------
+
+.freq-tables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em 1.6em;
+  margin: 1em 0;
+
+  .freq-table {
+    flex: 1 1 18em;
+  }
+}
+
+table.freq-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.9em;
+
+  th,
+  td {
+    border: 1px solid $grey-color;
+    padding: 0.25em 0.4em;
+  }
+
+  th {
+    background: $grey-color-light;
+    font-size: 0.8em;
+  }
+
+  td:first-child {
+    text-align: center;
+    font-weight: 700;
+    font-family: monospace;
+  }
+
+  &.freq-answer-table td:last-child {
+    text-align: center;
+    font-weight: 700;
+  }
+}
+
+// A hatched bar instead of a solid color fill, so relative letter frequency
+// still reads correctly on a black-and-white printout.
+.freq-bar {
+  display: block;
+  height: 0.9em;
+  background: repeating-linear-gradient(45deg, #111, #111 2px, #fff 2px, #fff 4px);
+  border: 1px solid #111;
+  min-width: 2px;
+}
+
+// ---- The cipher wheel (the one cut-out page) --------------------------------
+
+.cipher-wheel-instructions {
+  margin: 0.8em 0;
+}
+
+.cipher-wheel-figs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.5em 2em;
+  margin: 1em 0;
+}
+
+.cipher-wheel-fig {
+  margin: 0;
+  text-align: center;
+
+  figcaption {
+    max-width: 18em;
+    margin: 0.5em auto 0;
+    font-size: 0.85em;
+    font-weight: 600;
+  }
+}
+
+@media print {
+  table.shift-table td.fill-cell {
+    height: 1.3em;
+  }
+
+  table.crack-grid,
+  table.freq-table,
+  table.shift-example {
+    break-inside: avoid;
+  }
+
+  .cipher-wheel-fig {
+    break-inside: avoid;
+  }
+}

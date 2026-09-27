@@ -1,0 +1,126 @@
+// Binary logic puzzle (Takuzu / Binairo) grids, worked-example strips, and
+// the small answer-key grids (assets/js/unplugged/binairo-render.js).
+.binairo-puzzles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.6em 2.2em;
+  margin: 1em 0 1.4em;
+}
+
+.binairo-puzzle {
+  margin: 0;
+  text-align: center;
+
+  figcaption {
+    font-weight: 600;
+    font-size: 0.95em;
+    margin-bottom: 0.4em;
+  }
+}
+
+// Shared by the real puzzles, the answer key, and the small worked
+// examples in the "how to solve it" section. --cell / --font are set
+// inline per grid size (assets/js/unplugged/binairo-render.js sizes the
+// real puzzles down as n grows; worked examples set them by hand).
+.binairo-grid {
+  border-collapse: collapse;
+  margin: 0 auto;
+
+  td {
+    width: var(--cell, 2em);
+    height: var(--cell, 2em);
+    font-size: var(--font, 1.1em);
+    line-height: 1;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+    border: 1px solid $text-color;
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  // A heavier outer border so the puzzle reads as one grid, not a sheet
+  // of loose squares -- doesn't rely on color, just line weight.
+  tr:first-child td {
+    border-top-width: 2px;
+  }
+
+  tr:last-child td {
+    border-bottom-width: 2px;
+  }
+
+  td:first-child {
+    border-left-width: 2px;
+  }
+
+  td:last-child {
+    border-right-width: 2px;
+  }
+
+  .given {
+    font-weight: 700;
+    background: $grey-color-light;
+  }
+
+  .blank {
+    background: $background-color;
+  }
+
+  .solved {
+    font-weight: 400;
+    background: $background-color;
+  }
+}
+
+.binairo-key {
+  .binairo-puzzle {
+    margin-bottom: 0.4em;
+  }
+}
+
+// Tiny inline strip grids used in the "how to solve it" worked examples.
+// .target marks the square being reasoned about with a "?" rather than a
+// color, so the point still reads in grayscale.
+.binairo-example {
+  display: block;
+  margin: 0.8em 0;
+
+  .binairo-grid {
+    margin: 0 auto 0.5em;
+  }
+
+  .binairo-grid td {
+    width: 1.9em;
+    height: 1.9em;
+    font-size: 1.1em;
+  }
+
+  .target {
+    font-style: italic;
+    color: $grey-color-dark;
+  }
+}
+
+.binairo-example-caption {
+  text-align: center;
+  font-size: 0.95em;
+  margin: 0;
+}
+
+@media print {
+  .binairo-puzzle {
+    break-inside: avoid;
+  }
+
+  .binairo-grid td {
+    border-color: #000;
+  }
+
+  .given {
+    background: #ddd;
+  }
+
+  .binairo-example {
+    break-inside: avoid;
+  }
+}

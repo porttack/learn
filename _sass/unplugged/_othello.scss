@@ -1,0 +1,182 @@
+// Styles for the paper Othello unplugged activity (_unplugged/paper-othello.md).
+//
+// Boards are plain HTML tables, letters (not colored fill), so they print
+// cleanly on a black-and-white printer: "B" and "W" for the discs, and a
+// heavier border (not a color) marks the one square that flips in the
+// worked example, the same "border weight instead of color" trick
+// _tlc.scss already uses for its tic-tac-toe boards.
+
+.othello-boards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.4em 1.6em;
+  margin: 0.3em 0 0.4em;
+}
+
+.othello-board-wrap {
+  text-align: center;
+}
+
+.othello-board-label {
+  margin: 0 0 0.25em;
+  font-weight: 600;
+}
+
+table.othello-board {
+  // minima's base table rule sets width: 100%; override it back to auto so
+  // table-layout: fixed sizes the table from the colgroup below instead of
+  // stretching (and proportionally blowing up) to the full column width.
+  width: auto;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin: 0 auto;
+  color: $text-color;
+
+  th, td {
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  // Column-letter header row and row-number header column: light, not
+  // part of the playing grid itself.
+  thead th, tbody th {
+    border: none;
+    font-weight: 600;
+    font-size: 0.85em;
+    color: $grey-color-dark;
+  }
+
+  tbody th {
+    padding-right: 0.2em;
+  }
+
+  // Column widths come from an explicit <colgroup> in the markup, not from
+  // a width set here: table-layout: fixed sizes columns from the table's
+  // first row (the lettered header row of <th>s here), so a width set only
+  // on a body <td> and never the matching header cell would be ignored.
+  td {
+    height: 1.75em;
+    border: 1px solid $text-color;
+    font-size: 1.1em;
+    font-weight: 700;
+  }
+
+  // Heavier outer border so the 6x6 reads as one board, not loose squares
+  // (a border-weight cue works in grayscale, a color one wouldn't). The
+  // labeled boards have a row-number <th> as their first cell, so the
+  // heavy left border falls on the second cell (column a); the bare
+  // worked-example boards have no header column, so column a is the first
+  // cell instead -- see .othello-board-bare below.
+  tbody tr:first-child td { border-top-width: 2px; }
+  tbody tr:last-child td { border-bottom-width: 2px; }
+  tbody tr td:nth-child(2) { border-left-width: 2px; }
+  tbody tr td:last-child { border-right-width: 2px; }
+
+  // Bare variant for the worked example: no header row or column at all,
+  // just the 6x6 grid, since the surrounding prose already names the
+  // squares (c2, c3, c4). Column widths come from equal <td> widths
+  // (there's no header row of <th>s for table-layout: fixed to read
+  // instead, so the <td> width here is honored directly).
+  &.othello-board-bare {
+    tbody tr td:nth-child(2) { border-left-width: 1px; }
+    tbody tr td:first-child { border-left-width: 2px; }
+
+    td {
+      width: 1em;
+    }
+  }
+
+  // The one square that flips in the worked example: a thicker border
+  // instead of a fill color, so it still reads on a black-and-white print.
+  td.flip {
+    border-width: 3px;
+  }
+
+  &.othello-board-mini {
+    td {
+      height: 1.15em;
+      font-size: 0.8em;
+    }
+
+    thead th, tbody th {
+      font-size: 0.65em;
+    }
+  }
+}
+
+// ---- Worked capture example ------------------------------------------------
+
+.othello-example {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em 0.8em;
+  margin: 0.3em 0 0.4em;
+}
+
+.othello-example-arrow {
+  font-size: 1.6em;
+  font-weight: 700;
+  padding: 0 0.2em;
+}
+
+// ---- "Your turn" note about reusing a board --------------------------------
+
+.othello-reuse-note {
+  font-size: 0.92em;
+  color: $grey-color-dark;
+}
+
+// ---- Whole-sheet compaction -------------------------------------------------
+//
+// This activity has more required parts (rules, worked example, program,
+// instructions, two boards, a callout, a reflection) than a typical single-
+// idea worksheet, so it needs a tighter rhythm than the site default to
+// hold to the 1-2 page budget. Scoped to .othello-sheet (this page's own
+// wrapper) so it never touches spacing on any other page.
+.othello-sheet {
+  font-size: 0.92em;
+  line-height: 1.32;
+
+  h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.15em;
+  }
+
+  p, ol, ul, table {
+    margin-bottom: 0.45em;
+  }
+
+  li {
+    margin-bottom: 0.1em;
+  }
+
+  // The shared .callout box (main.scss) is sized for a stand-alone aside;
+  // this sheet already has several other components competing for the
+  // same 1-2 page budget, so its callout gets a tighter margin and padding
+  // here, scoped to this page only.
+  .callout {
+    margin: 0.6em 0;
+    padding: 0.6em 0.9em;
+  }
+}
+
+@media print {
+  .othello-board-wrap,
+  .othello-example {
+    break-inside: avoid;
+  }
+
+  .othello-sheet {
+    font-size: 0.88em;
+  }
+
+  // The shared .provenance footer (main.scss) budgets a 2em top margin for
+  // a page where it's the only trailing element; on this page it follows
+  // a full sheet already close to the 2-page limit, so trim it back, but
+  // only when it's this page's own wrapper right before it.
+  .othello-sheet + .lesson-nav + .provenance {
+    margin-top: 0.5em;
+  }
+}

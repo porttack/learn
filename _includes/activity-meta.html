@@ -1,0 +1,13 @@
+{%- comment -%}
+One-line summary under an activity's title: who it's for, how long, how many
+people, what to gather. Renders only for pages that set at least `time:`.
+{%- endcomment -%}
+{%- if page.time -%}
+{%- assign levels = "ms:Middle school|hs:High school|both:Middle or high school" | split: "|" -%}
+<p class="activity-meta">
+  {%- for l in levels -%}{%- assign kv = l | split: ":" -%}{%- if kv[0] == page.level %}<span>{{ kv[1] }}</span>{% endif -%}{%- endfor -%}
+  <span>About {{ page.time }} minutes</span>
+  {%- if page.grouping %}<span>{{ page.grouping }}</span>{% endif -%}
+  {%- if page.materials %}<span>{{ page.materials }}</span>{% endif -%}
+</p>
+{%- endif -%}

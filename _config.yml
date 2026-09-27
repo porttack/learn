@@ -26,6 +26,9 @@ collections:
   cs50psets:
     output: true
     permalink: /cs50-psets/:name/
+  unplugged:
+    output: true
+    permalink: /unplugged/:name/
 
 defaults:
   - scope: { path: "", type: "pico" }
@@ -44,6 +47,11 @@ defaults:
     values:
       layout: lesson
       pathway: cs50psets
+  - scope: { path: "", type: "unplugged" }
+    values:
+      layout: lesson
+      pathway: unplugged
+      label: "CS Unplugged activity"
 
 header_pages:
   - index.md

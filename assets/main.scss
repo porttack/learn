@@ -5,6 +5,7 @@
 $content-width: 900px;
 
 @import "minima";
+@import "unplugged/index";
 
 .site-menu {
   // absolute, not fixed: it should scroll away with the page, not hover
@@ -1305,6 +1306,114 @@ table.checkoff {
   line-height: 2.4;
 }
 
+// ---- Unplugged activities -------------------------------------------------
+
+// One-line "Middle school · About 30 minutes · Solo" under an activity title.
+.activity-meta {
+  margin: 0.3em 0 1em;
+  font-size: 0.9em;
+  color: $grey-color-dark;
+
+  span + span::before {
+    content: "\00B7";
+    margin: 0 0.5em;
+  }
+}
+
+.sequence-list li {
+  margin-bottom: 0.4em;
+}
+
+// Trace tables and fill-in tables: empty cells need a real row height to
+// write in, and Parsons-problem lines keep their indentation.
+table.checkoff.trace-table {
+  td {
+    height: 2.2em;
+  }
+
+  code {
+    white-space: pre;
+  }
+}
+
+table.checkoff.light-message td {
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+
+  &:first-child {
+    font-size: 1.2em;
+    letter-spacing: 0.15em;
+  }
+}
+
+// Binary dot cards. Dots are bordered circles, not background fills, so they
+// print even when the browser drops background colors.
+.dot-row,
+.dot-cards-cutout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8em;
+  margin: 1em 0;
+}
+
+.dot-card {
+  width: 5.5em;
+  padding: 0.5em;
+  border: 2px solid $text-color;
+  border-radius: 6px;
+  text-align: center;
+
+  .dots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: center;
+    gap: 0.25em;
+    width: 3.9em;
+    margin: 0 auto;
+    min-height: 3.9em;
+  }
+
+  .dot {
+    width: 0.7em;
+    height: 0.7em;
+    border-radius: 50%;
+    border: 0.35em solid $text-color;
+    box-sizing: border-box;
+  }
+
+  .dot-count {
+    display: block;
+    margin-top: 0.3em;
+    font-weight: 600;
+  }
+
+  &.cutout {
+    width: 9em;
+    border: 2px dashed $grey-color;
+    padding: 1em;
+
+    .dots {
+      width: 6.6em;
+      min-height: 6.6em;
+      gap: 0.5em;
+    }
+
+    .dot {
+      width: 1.2em;
+      height: 1.2em;
+      border-width: 0.6em;
+    }
+  }
+}
+
+.answer-key {
+  margin-top: 2.5em;
+  padding-top: 1em;
+  border-top: 2px solid $grey-color-light;
+}
+
+
 @media print {
   .site-menu,
   .pathway-back,
@@ -1370,8 +1479,21 @@ table.checkoff {
     break-after: avoid;
   }
 
-  .print-unit-divider {
+  .print-unit-divider,
+  .answer-key,
+  .cutout-page {
     break-before: page;
+  }
+
+  .answer-key {
+    border-top: none;
+    margin-top: 0;
+  }
+
+  .dot-card,
+  .keep-together,
+  div.highlighter-rouge {
+    break-inside: avoid;
   }
 
   a[href^="http"]:after {

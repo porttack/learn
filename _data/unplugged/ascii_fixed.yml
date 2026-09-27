@@ -1,0 +1,74 @@
+# Frozen puzzles for the three fixed ASCII messages worksheets. Rendered
+# straight into each page with Liquid (no JavaScript needed to read them),
+# so a printed sheet can never drift from a later change to the generator.
+#
+# `text` is the intended decoded answer. It's rendered into each page's
+# hidden-by-default answer key (see assets/main.scss's .answer-key rule),
+# and used by tools/check_ascii_messages.mjs to verify the `codes` below
+# really do decode to it (and that encoding `text` produces those codes).
+decimal:
+  example:
+    text: "HI"
+    codes: [72, 73]
+  messages:
+    - prompt: "A computer stores every letter as a ___."
+      text: "NUMBER"
+      codes: [78, 85, 77, 66, 69, 82]
+    - prompt: "Binary only uses two digits: zero and ___."
+      text: "ONE"
+      codes: [79, 78, 69]
+    - prompt: "A group of eight bits is called a ___."
+      text: "BYTE"
+      codes: [66, 89, 84, 69]
+    - prompt: "Fun fact: the first computer bug was a real ___."
+      text: "TINY MOTH"
+      codes: [84, 73, 78, 89, 32, 77, 79, 84, 72]
+
+binary:
+  example:
+    text: "HI"
+    codes: ["01001000", "01001001"]
+  messages:
+    - prompt: "A single 0 or 1 is called a ___."
+      text: "BIT"
+      codes: ["01000010", "01001001", "01010100"]
+    - prompt: "Code that repeats itself is called a ___."
+      text: "LOOP"
+      codes: ["01001100", "01001111", "01001111", "01010000"]
+    - prompt: "Underwater robots stay connected with a cable called a ___."
+      text: "TETHER"
+      codes: ["01010100", "01000101", "01010100", "01001000", "01000101", "01010010"]
+
+hex:
+  example:
+    text: "HI"
+    codes: ["48", "49"]
+  messages:
+    - prompt: "Web colors and error codes often use ___ instead of decimal."
+      text: "HEX"
+      codes: ["48", "45", "58"]
+    - prompt: "Fixing a mistake in code is called doing this."
+      text: "DEBUG"
+      codes: ["44", "45", "42", "55", "47"]
+  encode:
+    - prompt: "Now go the other way. Find each letter's decimal code in the chart, divide it by 16, and write the answer then the remainder as two hex digits."
+      text: "BOT"
+      codes: ["42", "4F", "54"]
+
+# Harder sheet: only four anchor codes are given (ascii-messages-anchors.md),
+# and messages mix capitals, lowercase, digits, and spaces (extended: true).
+anchors:
+  example:
+    text: "Hi 5"
+    codes: ["48", "69", "20", "35"]
+  messages:
+    - prompt: "The first program most coders write prints this:"
+      text: "Hello world"
+      codes: ["48", "65", "6C", "6C", "6F", "20", "77", "6F", "72", "6C", "64"]
+    - prompt: "You clicked a link to a page that isn't there. You see:"
+      text: "Error 404"
+      codes: ["45", "72", "72", "6F", "72", "20", "34", "30", "34"]
+    - prompt: "In 1969 the first message sent over the early internet crashed after two letters. It said:"
+      text: "Lo"
+      codes: ["4C", "6F"]
+

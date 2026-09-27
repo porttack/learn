@@ -1,0 +1,282 @@
+// Teaching London Computing adaptations (_unplugged/tlc-*.md):
+//   tlc-intelligent-paper.md  -- tic-tac-toe boards + a small corner key
+//   tlc-spit-not-so.md        -- the same tic-tac-toe board, plus a word list
+//   tlc-swap-puzzle.md        -- a row-of-squares strip board
+//
+// All three are plain HTML/markdown, no JS, so every grid here is a plain
+// table: it prints exactly as it renders on screen, no risk of a canvas or
+// SVG going blank on a printer driver.
+
+// ---- Tic-tac-toe board (shared by Intelligent Paper and Spit-Not-So) ------
+//
+// Big cells: this is meant to be written on in pencil by hand, X's and O's
+// (or a word plus an X/O for Spit-Not-So), so cells are large rather than
+// compact. Border-only, no fill, so it costs nothing on a black-and-white
+// printer.
+
+.tlc-boards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.9em 1.6em;
+  margin: 0.6em 0 0.9em;
+
+  // A tighter variant for the Intelligent Paper's Part 2 test boards --
+  // that page's print budget is tight, and this row sits right below a
+  // table rather than a heading, so it needs less breathing room. These
+  // boards print with no label (see the page itself), just the grids.
+  &.tlc-test-boards {
+    margin: 0.05em 0 0.4em;
+  }
+}
+
+.tlc-board-wrap {
+  text-align: center;
+}
+
+.tlc-board-label {
+  margin: 0 0 0.4em;
+  font-weight: 600;
+}
+
+table.tlc-board {
+  border-collapse: collapse;
+  margin: 0 auto;
+  border: none;
+  color: $text-color;
+
+  // Cancel minima's default table.scss zebra striping (tr:nth-child(even))
+  // -- these boards must stay plain white, both because a tic-tac-toe grid
+  // reads as one shape, not alternating rows, and because "never rely on
+  // color to carry meaning" rules out incidental shading too.
+  tr, tr:nth-child(even) {
+    background: none;
+  }
+
+  td {
+    width: 1.9em;
+    height: 1.9em;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid $text-color;
+    font-size: 1.25em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  // Heavier outer border so the 3x3 reads as one board, not nine loose
+  // squares -- a border-weight cue works in grayscale, a color one wouldn't.
+  tr:first-child td { border-top-width: 2px; }
+  tr:last-child td { border-bottom-width: 2px; }
+  td:first-child { border-left-width: 2px; }
+  td:last-child { border-right-width: 2px; }
+
+  // Spit-Not-So's grid carries a word in each cell as well as room to mark
+  // an X or O over it.
+  &.tlc-board-words td {
+    width: 3.6em;
+    height: 2.4em;
+    font-size: 0.95em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  // A smaller illustrative copy for "here's what a move looks like"
+  // examples -- nobody writes on these, so they don't need handwriting
+  // room, just to read clearly at a glance.
+  &.tlc-board-mini td {
+    width: 1.15em;
+    height: 1.15em;
+    font-size: 0.85em;
+  }
+
+  // A smaller but still writable copy, for the Intelligent Paper's Part 2
+  // "test your own program" boards -- students do pencil in an X or O here,
+  // just on a quick throwaway game rather than the main worksheet, so a
+  // size between tlc-board and tlc-board-mini lets 2-3 sit across a page.
+  &.tlc-board-small td {
+    width: 1.25em;
+    height: 1.25em;
+    font-size: 0.9em;
+  }
+}
+
+// ---- Spit-Not-So's plain word list ----------------------------------------
+
+.tlc-word-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em 1em;
+  margin: 0.8em 0 1.2em;
+  padding: 0;
+  list-style: none;
+
+  li {
+    border: 1px solid $grey-color;
+    border-radius: 4px;
+    padding: 0.35em 0.9em;
+    font-size: 1.15em;
+    font-weight: 600;
+  }
+}
+
+// ---- Swap puzzle strip board -----------------------------------------------
+//
+// One row of big square cells, a letter (H/T) or nothing (the empty
+// square) printed inside, and a square number above each so a written
+// move ("square 2 to square 1") is unambiguous.
+
+.tlc-strip-wrap {
+  margin: 0.8em 0 1em;
+}
+
+.tlc-strip-label {
+  margin: 0 0 0.3em;
+  font-weight: 600;
+}
+
+table.tlc-strip {
+  border-collapse: collapse;
+  margin: 0 0 0.3em;
+  border: none;
+  color: $text-color;
+
+  tr, tr:nth-child(even) {
+    background: none;
+  }
+
+  td {
+    width: 2.4em;
+    height: 2.4em;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid $text-color;
+    font-size: 1.2em;
+    font-weight: 700;
+  }
+
+  tr:first-child td {
+    border-top-width: 2px;
+  }
+
+  tr:last-child td {
+    border-bottom-width: 2px;
+  }
+
+  td:first-child { border-left-width: 2px; }
+  td:last-child { border-right-width: 2px; }
+
+  .tlc-strip-index {
+    height: auto;
+    border: none;
+    font-size: 0.7em;
+    font-weight: 400;
+    color: $grey-color-dark;
+    vertical-align: bottom;
+  }
+
+  .tlc-strip-empty {
+    color: $grey-color;
+  }
+
+  // A smaller illustrative copy for the worked example's move-by-move
+  // progression -- nobody writes on these, just reads them.
+  &.tlc-strip-mini td {
+    width: 1.6em;
+    height: 1.6em;
+    font-size: 1em;
+  }
+}
+
+.tlc-strip-target {
+  font-size: 0.95em;
+}
+
+// The blank "write your moves" table: a plain checkoff table, just with
+// tighter rows than the site default so 8 or so of them don't run long.
+table.checkoff.tlc-move-table {
+  margin: 0.8em 0;
+
+  th, td {
+    padding: 0.4em 0.6em;
+  }
+
+  // A shorter copy for the Intelligent Paper's Part 2 (only 4 rows, but the
+  // page's 2-page print budget is tight): a bit less padding than the
+  // 8-row swap-puzzle version above uses.
+  &.tlc-move-table-tight {
+    margin: 0.2em 0;
+
+    th, td {
+      padding: 0.1em 0.6em;
+    }
+  }
+}
+
+// A tighter callout box, just for the Intelligent Paper's "what's a
+// heuristic" note -- that page packs a lot in for its 2-page budget, and
+// this box's own text is unusually long for a callout, so it gets a
+// smaller margin/padding than main.scss's default .callout to help the
+// page fit. Extra specificity (two classes) beats main.scss's plain
+// .callout regardless of stylesheet order.
+.callout.tlc-heuristic {
+  margin: 0.4em 0;
+  padding: 0.4em 1em;
+  font-size: 0.9em;
+}
+
+// ---- Answer keys (swap puzzle move lists, spit-not-so line table) --------
+
+.tlc-key-puzzle {
+  margin: 0 0 1.2em;
+  break-inside: avoid;
+
+  h3 {
+    margin: 0 0 0.3em;
+  }
+}
+
+.tlc-key-moves {
+  margin: 0.3em 0;
+  padding-left: 1.4em;
+  font-size: 0.92em;
+
+  li {
+    margin-bottom: 0.15em;
+  }
+}
+
+.tlc-key-count {
+  margin: 0.2em 0 0;
+}
+
+table.checkoff.tlc-key-lines {
+  margin: 0.6em 0 1em;
+  font-size: 0.92em;
+
+  th, td {
+    padding: 0.35em 0.6em;
+  }
+}
+
+@media print {
+  .tlc-board-wrap,
+  .tlc-strip-wrap {
+    break-inside: avoid;
+  }
+
+  // The Intelligent Paper's Part 2 packs a move table and test boards in
+  // after the heuristic callout, so the page's default 2em provenance
+  // margin-top (main.scss) needs trimming too, just for print -- on screen
+  // there's no page budget, so the footer keeps its normal size there. No
+  // page-specific hook exists to target just this footer, so this uses the
+  // general sibling combinator: only a page with a .tlc-heuristic callout
+  // earlier in article.lesson matches.
+  .tlc-heuristic ~ .provenance {
+    margin-top: 0;
+    font-size: 0.66em;
+
+    p {
+      margin-bottom: 0.05em;
+    }
+  }
+}

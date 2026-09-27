@@ -1,0 +1,20 @@
+{%- comment -%}
+Renders one player's row of lettered "ship" boxes: a letter on top, a number
+(that player's own secret number for that ship) below. Plain boxes, not
+illustrations -- see CLAUDE.md's note on not reusing the CS Unplugged book's
+own ship art.
+
+Params:
+  letters  array of letters, e.g. ["A", "B", "C", "D", "E", "F"]
+  values   array of numbers, same length as letters
+
+Used by _unplugged/search-battleships.md, once per player per round.
+{%- endcomment -%}
+<div class="ship-row">
+  {%- for v in include.values -%}
+  <div class="ship-box">
+    <span class="ship-letter">{{ include.letters[forloop.index0] }}</span>
+    <span class="ship-value">{{ v }}</span>
+  </div>
+  {%- endfor -%}
+</div>

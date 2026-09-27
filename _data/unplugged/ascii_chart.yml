@@ -1,0 +1,31 @@
+# A-Z plus space in every format, for the printed charts in
+# _includes/unplugged/ascii-chart.html. Generated from assets/js/unplugged/ascii.js;
+# tools/check_ascii_messages.mjs fails if this ever drifts from it.
+rows:
+  - { letter: "A", decimal: 65, binary: "01000001", hex: "41" }
+  - { letter: "B", decimal: 66, binary: "01000010", hex: "42" }
+  - { letter: "C", decimal: 67, binary: "01000011", hex: "43" }
+  - { letter: "D", decimal: 68, binary: "01000100", hex: "44" }
+  - { letter: "E", decimal: 69, binary: "01000101", hex: "45" }
+  - { letter: "F", decimal: 70, binary: "01000110", hex: "46" }
+  - { letter: "G", decimal: 71, binary: "01000111", hex: "47" }
+  - { letter: "H", decimal: 72, binary: "01001000", hex: "48" }
+  - { letter: "I", decimal: 73, binary: "01001001", hex: "49" }
+  - { letter: "J", decimal: 74, binary: "01001010", hex: "4A" }
+  - { letter: "K", decimal: 75, binary: "01001011", hex: "4B" }
+  - { letter: "L", decimal: 76, binary: "01001100", hex: "4C" }
+  - { letter: "M", decimal: 77, binary: "01001101", hex: "4D" }
+  - { letter: "N", decimal: 78, binary: "01001110", hex: "4E" }
+  - { letter: "O", decimal: 79, binary: "01001111", hex: "4F" }
+  - { letter: "P", decimal: 80, binary: "01010000", hex: "50" }
+  - { letter: "Q", decimal: 81, binary: "01010001", hex: "51" }
+  - { letter: "R", decimal: 82, binary: "01010010", hex: "52" }
+  - { letter: "S", decimal: 83, binary: "01010011", hex: "53" }
+  - { letter: "T", decimal: 84, binary: "01010100", hex: "54" }
+  - { letter: "U", decimal: 85, binary: "01010101", hex: "55" }
+  - { letter: "V", decimal: 86, binary: "01010110", hex: "56" }
+  - { letter: "W", decimal: 87, binary: "01010111", hex: "57" }
+  - { letter: "X", decimal: 88, binary: "01011000", hex: "58" }
+  - { letter: "Y", decimal: 89, binary: "01011001", hex: "59" }
+  - { letter: "Z", decimal: 90, binary: "01011010", hex: "5A" }
+  - { letter: "space", decimal: 32, binary: "00100000", hex: "20" }
