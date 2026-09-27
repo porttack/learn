@@ -40,3 +40,14 @@ the hidden answer key.
 - [ ] Trim the older first-batch sheets to one idea each? (Preference so
       far: simple to understand, but 15+ minutes of work.)
 - [ ] Keep the Muddy City "New set" generator page?
+
+## General TODOs
+
+- [ ] Mark/tag unreviewed items as draft or unreviewed
+- [ ] Standards alignment
+- [ ] Have individual worksheets link to source / 3rd party page(s)
+- [ ] Support export to DOCX - Makes it much easier for other teachers to modify
+- [ ] Create teacher slide decks if appropriate for the important projects
+- [ ] Tag AP CSP applicable
+- [ ] Add k5 section
+- [ ] Better show sequencing
