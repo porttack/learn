@@ -66,6 +66,9 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  # Section READMEs are developer notes. A plain file in a collection folder
+  # is otherwise published at the site root as /README.md.
+  - _unplugged/README.md
   - CLAUDE.md
   - LICENSE
   - tools/
