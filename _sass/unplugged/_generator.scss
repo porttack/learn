@@ -311,3 +311,16 @@ table.activity-table {
     display: none;
   }
 }
+
+// "Suggest an edit" / "Request a change or fix" (screen only; .lesson-nav
+// is already hidden in print).
+.suggest-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.2em 1em;
+  font-size: 0.85em;
+
+  a {
+    color: $grey-color-dark;
+  }
+}

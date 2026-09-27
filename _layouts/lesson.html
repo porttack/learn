@@ -48,6 +48,23 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
       {% assign next_page = pathway_pages[next_index] %}
       <a class="lesson-next" href="{{ next_page.url | relative_url }}">{{ next_page.title }} &rarr;</a>
     {% endif %}
+    {% comment %}Feedback links (screen only), for pathways with
+    suggest_edits: true. "Suggest an edit" opens this page's source in
+    GitHub's web editor (non-collaborators get a fork and a pull request);
+    "Request a change or fix" opens a prefilled issue. Both need a GitHub
+    account (13+).{% endcomment %}
+    {% if pathway_meta.suggest_edits and site.repository %}
+    {% capture issue_body %}Page: {{ page.title }}
+{{ site.url }}{{ page.url }}
+
+What should change, and why?
+
+{% endcapture %}
+    <span class="suggest-links">
+      <a href="https://github.com/{{ site.repository }}/edit/main/{{ page.path }}">Suggest an edit</a>
+      <a href="https://github.com/{{ site.repository }}/issues/new?title={{ page.title | prepend: '[Unplugged] ' | url_encode }}&amp;body={{ issue_body | url_encode }}">Request a change or fix</a>
+    </span>
+    {% endif %}
   </nav>
 
   {% include provenance.html %}

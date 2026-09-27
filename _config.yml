@@ -3,6 +3,8 @@ description: >-
   Learning pathways in computer science and robotics for middle and
   high school students.
 url: "https://learn.porttack.com"
+# GitHub repo for the "Suggest an edit" / "Request a change or fix" links.
+repository: porttack/learn
 baseurl: ""
 author: "Eric Brown"
 author_url: "https://porttack.com"

@@ -89,6 +89,12 @@ Book images: `pdfimages -png -f P -l P tmp/CSUnplugged_2015_v3.1.pdf out`
   (screen only; don't write "Want more?" links in page text).
 - A **"Show answer key"** link on any page containing `.answer-key`.
 - No prev/next links (`nav: none`): the teacher doesn't want them.
+- **"Suggest an edit"** (opens the page's source in GitHub's web editor;
+  non-collaborators get a fork and a pull request) and **"Request a change
+  or fix"** (a prefilled GitHub issue), from `suggest_edits: true` and
+  `repository:` in `_config.yml`. Screen only. Both need a GitHub account,
+  which GitHub limits to ages 13+. An edit to a sheet's text won't change
+  puzzles or keys that live in `_data/` or JS.
 
 ## Answer keys
 
