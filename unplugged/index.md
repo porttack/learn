@@ -144,13 +144,13 @@ tricks) rather than print-and-use.
   [printable resources](https://www.csunplugged.org/en/resources/).
 - [Teaching London Computing: unplugged activities](https://teachinglondoncomputing.org/resources/inspiring-unplugged-classroom-activities/)
   by Paul Curzon, Queen Mary University of London.
-- [Code.org unplugged lessons](https://code.org/curriculum/unplugged).
+- [Code.org unplugged lessons](https://code.org/curriculum/unplugged). (Free / not public domain or share alike)
 - [Bootstrap](https://www.bootstrapworld.org/): algebra and programming,
   with a paper-and-pencil workbook before the computer.
 - [Hello World: The Big Book of Computing Pedagogy](https://helloworld.raspberrypi.org/books/big_book_of_pedagogy)
   from the Raspberry Pi Foundation.
 - [Math for Love](https://www.mathforlove.com/): math games that play well
-  alongside these.
+  alongside these. (Many free resources / not public domain or share alike)
 
 <footer class="unplugged-footer">
   <a href="{{ '/' | relative_url }}">{{ site.title }}</a> &middot;
