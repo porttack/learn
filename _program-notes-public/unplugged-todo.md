@@ -51,3 +51,4 @@ the hidden answer key.
 - [ ] Tag AP CSP applicable
 - [ ] Add k5 section
 - [ ] Better show sequencing
+- [ ] Get rid of border around home-page logo
