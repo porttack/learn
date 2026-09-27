@@ -8,6 +8,10 @@ time: 20
 grouping: Solo
 materials: "Pencil"
 generator: /unplugged/search-trace-generator/
+generator_presets:
+  - { label: "15 numbers", query: "level=15&mode=sorted" }
+  - { label: "31 numbers", query: "level=31&mode=sorted" }
+  - { label: "Unsorted list", query: "level=15&mode=unsorted" }
 ---
 
 <div class="search-intro" markdown="1">

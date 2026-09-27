@@ -36,6 +36,8 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
 
   {{ content }}
 
+  {% if pathway_meta.name_line %}{% include unplugged/new-set-bar.html %}{% endif %}
+
   <nav class="lesson-nav">
     {% if current_index > 0 %}
       {% assign prev_page = pathway_pages[prev_index] %}

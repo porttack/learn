@@ -1,0 +1,17 @@
+# Fixed content for _unplugged/vigenere-cipher.md. Hand-picked from the
+# phrase bank in assets/js/unplugged/cipher-gen.js (shared with the Caesar
+# cipher activities; re-exported by assets/js/unplugged/vigenere-gen.js), not
+# generated at random, so the same keyword and messages print every time
+# this page is printed. tools/check_vigenere_cipher.mjs verifies every
+# cipher string here really does decrypt back to its plain string under the
+# given keyword.
+
+decode:
+  keyword: "OCEAN"
+  messages:
+    - plain: "A BYTE IS EIGHT BITS"
+      cipher: "O DCTR WU IITVV FIGG"
+    - plain: "THE FIRST PROGRAMMER WAS ADA LOVELACE"
+      cipher: "HJI FVFUX PECIVAZAGV WNG CHA YCXILNQG"
+    - plain: "A GOOD PASSWORD IS LONG RANDOM AND NEVER REUSED"
+      cipher: "O ISOQ DCWSJCTH IF ZQRG EOPHOZ OPH NRJGV RRIUID"

@@ -80,3 +80,45 @@
   steps:
     - tlc-intelligent-paper
     - paper-othello
+
+- id: ms-modulo
+  title: "Modulo: clock math"
+  level: ms
+  blurb: >-
+    Counting around a clock that wraps back to zero, then the same idea as
+    the % operator in code.
+  steps:
+    - modulo-clocks
+    - modulo-in-code
+
+- id: hs-modulo
+  title: "Modulo in the real world"
+  level: hs
+  blurb: >-
+    Where % shows up in programs, then how check digits catch typos in
+    barcodes and book numbers.
+  steps:
+    - modulo-in-code
+    - modulo-check-digits
+
+- id: ms-bst
+  title: "Binary search trees"
+  level: ms
+  blurb: >-
+    A tree where everything smaller goes left and bigger goes right. Search
+    one, play the hidden-number game, then build your own.
+  steps:
+    - bst-search
+    - bst-hidden
+    - bst-build
+
+- id: ms-graphs
+  title: "Graph puzzles"
+  level: ms
+  blurb: >-
+    Towns, streets, and maps: pave the fewest roads, place the fewest ice
+    cream vans, and color a map with the fewest colors.
+  steps:
+    - muddy-city
+    - tourist-town
+    - poor-cartographer

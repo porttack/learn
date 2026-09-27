@@ -7,8 +7,11 @@ topics: [Computer architecture]
 time: 20
 grouping: Solo
 materials: "Pencil"
-generator: /unplugged/lmc-generator/
 scripts: [/assets/js/unplugged/lmc-page.js]
+generator: /unplugged/lmc-generator/
+generator_presets:
+  - { label: "Straight-line programs", query: "level=straight" }
+  - { label: "Loops", query: "level=branch" }
 ---
 
 Every computer, from a phone to a supercomputer, runs the same basic loop: read one instruction, do exactly what it says, move to the next one. The Little Man Computer (LMC) is a paper model of that loop, invented by Stuart Madnick in 1965, small enough to trace with a pencil. If you can trace one of these programs by hand, you understand what a processor actually does.
@@ -76,7 +79,7 @@ Every instruction is a 3-digit number: the first digit says what to do, the last
     <tr><td>901</td><td>INP</td><td>Take the next number from the input tray.</td></tr>
     <tr><td>902</td><td>OUT</td><td>Send the accumulator to the output tray.</td></tr>
     <tr><td>000</td><td>HLT</td><td>Stop. The program is over.</td></tr>
-    <tr><td>&mdash;</td><td>DAT</td><td>Not an instruction. Just a number sitting in its own mailbox.</td></tr>
+    <tr><td>(none)</td><td>DAT</td><td>Not an instruction. Just a number sitting in its own mailbox.</td></tr>
   </tbody>
 </table>
 
@@ -98,7 +101,6 @@ For each program below: start at address 00, follow the program counter one inst
 <div id="lmc-practice-1"></div>
 <script type="application/json" data-lmc-practice data-root="#lmc-practice-1">{{ site.data.unplugged.lmc_1.practice | jsonify }}</script>
 
-Want more practice? [Make a new set of LMC programs]({{ '/unplugged/lmc-generator/' | relative_url }}).
 
 <section class="answer-key" id="lmc-key-1"></section>
 <script type="application/json" data-lmc-practice-key data-root="#lmc-key-1">{{ site.data.unplugged.lmc_1.practice | jsonify }}</script>

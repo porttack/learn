@@ -7,8 +7,11 @@ topics: [Computer architecture]
 time: 20
 grouping: Solo
 materials: "Pencil"
-generator: /unplugged/lmc-generator/
 scripts: [/assets/js/unplugged/lmc-page.js]
+generator: /unplugged/lmc-generator/
+generator_presets:
+  - { label: "Loops", query: "level=branch" }
+  - { label: "Straight-line programs", query: "level=straight" }
 ---
 
 On the [tracing sheet]({{ '/unplugged/lmc-1-trace/' | relative_url }}), the little man always worked straight down the list, one line after the next. Real programs loop and make decisions instead, and that only takes one new trick: an instruction that changes the program counter to something other than "the next line." That's a branch.
@@ -47,7 +50,6 @@ Same routine as the tracing sheet: start at address 00, follow the program count
 <div id="lmc-practice-2"></div>
 <script type="application/json" data-lmc-practice data-root="#lmc-practice-2">{{ site.data.unplugged.lmc_2.practice | jsonify }}</script>
 
-Want more practice? [Make a new set of LMC programs]({{ '/unplugged/lmc-generator/' | relative_url }}).
 
 <section class="answer-key" id="lmc-key-2"></section>
 <script type="application/json" data-lmc-practice-key data-root="#lmc-key-2">{{ site.data.unplugged.lmc_2.practice | jsonify }}</script>

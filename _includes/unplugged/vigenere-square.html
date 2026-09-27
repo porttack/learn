@@ -1,0 +1,31 @@
+{%- comment -%}
+The Vigenere square (a "tabula recta"): the lookup tool for every
+_unplugged/vigenere-cipher* page and the generator page. Row label = a
+keyword letter, column label = a plain letter, and the cell where a row and
+column meet is the matching cipher letter -- a plain Caesar shift, where the
+row's letter sets the shift amount (A shifts 0, B shifts 1, and so on,
+matching assets/js/unplugged/vigenere.js's keywordShifts).
+
+To encode: find the keyword letter's row, run your finger along it to the
+column under your plain letter, and read off the cipher letter there.
+To decode: find the keyword letter's row, run along it until you spot the
+cipher letter, then read the plain letter off the top of that column.
+{%- endcomment -%}
+{%- assign letters = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z" | split: "," -%}
+<div class="vigenere-square-wrap">
+<table class="vigenere-square">
+  <tr>
+    <th class="corner">key&nbsp;&darr;<br>plain&nbsp;&rarr;</th>
+    {%- for c in letters -%}<th>{{ c }}</th>{%- endfor -%}
+  </tr>
+  {%- for r in (0..25) -%}
+  <tr>
+    <th>{{ letters[r] }}</th>
+    {%- for c in (0..25) -%}
+    {%- assign idx = r | plus: c | modulo: 26 -%}
+    <td>{{ letters[idx] }}</td>
+    {%- endfor -%}
+  </tr>
+  {%- endfor -%}
+</table>
+</div>

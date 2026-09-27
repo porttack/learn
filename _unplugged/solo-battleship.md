@@ -7,8 +7,13 @@ topics: [Logic puzzles]
 time: 20
 grouping: Solo
 materials: "Pencil"
-generator: /unplugged/solo-battleship-generator/
 scripts: [/assets/js/unplugged/bimaru-page.js]
+generator: /unplugged/solo-battleship-generator/
+generator_presets:
+  - { label: "5x5 easy", query: "level=5-easy" }
+  - { label: "6x6", query: "level=6x6" }
+  - { label: "8x8", query: "level=8x8" }
+  - { label: "6x6, binary counts", query: "level=6-binary" }
 ---
 
 A fleet of ships is hiding on the grid, but you can't see them. The numbers
@@ -75,7 +80,6 @@ row or column where the count already matches what's shaded, or one where
 every remaining blank square has to be a ship.
 </aside>
 
-Want more? [Make a new set of puzzles]({{ '/unplugged/solo-battleship-generator/' | relative_url }}), including a version with the counts written in binary.
 
 <section class="answer-key" id="key-solo-battleship"></section>
 

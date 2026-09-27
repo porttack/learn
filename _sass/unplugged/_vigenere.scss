@@ -1,0 +1,145 @@
+// Vigenere cipher activities (assets/js/unplugged/vigenere*.js and
+// _unplugged/vigenere-cipher*.md). Shared by the fixed worksheet and the
+// generator page, so classes here are used from both plain Markdown/Liquid
+// (the worked example, the square, the fixed messages) and
+// vigenere-render.js's generated markup.
+
+// ---- Worked example --------------------------------------------------------
+
+table.vigenere-example {
+  border-collapse: collapse;
+  margin: 1em 0;
+
+  th,
+  td {
+    border: 1px solid $grey-color;
+    padding: 0.3em 0.6em;
+    text-align: center;
+    font-family: monospace;
+    font-size: 1.05em;
+  }
+
+  th {
+    background: $grey-color-light;
+    font-family: inherit;
+    font-size: 0.8em;
+    white-space: nowrap;
+  }
+}
+
+// ---- The Vigenere square (a "tabula recta"): 26 rows x 26 columns, kept ---
+// small and monospaced on purpose so the whole thing fits on one printed
+// page next to everything else on the sheet.
+
+.vigenere-square-wrap {
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+table.vigenere-square {
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin: 0;
+  font-family: monospace;
+  font-size: 0.62em;
+
+  th,
+  td {
+    width: 1.7em;
+    height: 1.5em;
+    border: 1px solid $grey-color-light;
+    text-align: center;
+    padding: 0;
+  }
+
+  th {
+    background: $grey-color-light;
+    font-weight: 700;
+  }
+
+  th.corner {
+    font-family: inherit;
+    font-size: 0.6em;
+    line-height: 1.1;
+    font-weight: 400;
+    white-space: nowrap;
+    background: #fff;
+    border: none;
+  }
+
+  // The row and column a student is actually using stand out a little more
+  // than the rest of the grid once every cell already looks alike.
+  tr:first-child th,
+  th:first-child {
+    border-color: $grey-color;
+  }
+}
+
+// ---- Decode / encode messages ----------------------------------------------
+
+code.vigenere-text {
+  display: inline-block;
+  font-size: 1.05em;
+  letter-spacing: 0.08em;
+  word-spacing: 0.3em;
+  background: #f6f7f8;
+  border: 1px solid $grey-color-light;
+  padding: 0.4em 0.6em;
+}
+
+ol.vigenere-messages {
+  margin: 0.8em 0;
+  padding-left: 1.4em;
+
+  li {
+    margin-bottom: 0.9em;
+  }
+}
+
+p.vigenere-set-key {
+  margin: 0.6em 0;
+}
+
+@media print {
+  table.vigenere-example {
+    break-inside: avoid;
+    margin: 0.4em 0;
+
+    th,
+    td {
+      padding: 0.15em 0.45em;
+    }
+  }
+
+  // The square gets a page to itself, big enough to read and to run a
+  // finger along a row: 27 columns across the printable width.
+  .vigenere-square-page {
+    break-before: page;
+  }
+
+  table.vigenere-square {
+    width: 100%;
+    font-size: 0.78em;
+
+    th,
+    td {
+      width: auto;
+      height: 1.55em;
+      border-color: $grey-color;
+    }
+  }
+
+  .vigenere-square-wrap {
+    break-inside: avoid;
+    overflow: visible;
+    margin: 0.3em 0;
+  }
+
+  ol.vigenere-messages li {
+    margin-bottom: 0.15em;
+  }
+
+  code.vigenere-text {
+    padding: 0.1em 0.35em;
+  }
+}

@@ -7,8 +7,12 @@ topics: [Robot programs]
 time: 30
 grouping: Solo, then compare with a partner
 materials: "Pencil"
-generator: /unplugged/robot-grid-generator/
 scripts: [/assets/js/unplugged/robot-page.js]
+generator: /unplugged/robot-grid-generator/
+generator_presets:
+  - { label: "Moves and turns", query: "level=starter" }
+  - { label: "Loops and procedures", query: "level=ap" }
+  - { label: "CAN_MOVE", query: "level=challenge" }
 ---
 
 On the AP CSP exam, a robot on a grid gets used to test whether you can read code exactly the way a computer does. Nothing here needs a computer. You just need to keep track of where the robot is and which way it's facing. This first set uses only three commands: move, turn left, and turn right.
@@ -22,7 +26,6 @@ right on the grid, one line of code at a time.
 
 <div class="robot-questions" id="q-robot_1"></div>
 
-Want more? [Make a new set of robot questions]({{ '/unplugged/robot-grid-generator/' | relative_url }}).
 
 <section class="answer-key robot-answer-key" id="key-robot_1"></section>
 

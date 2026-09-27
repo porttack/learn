@@ -38,6 +38,10 @@ binary:
     - prompt: "Underwater robots stay connected with a cable called a ___."
       text: "TETHER"
       codes: ["01010100", "01000101", "01010100", "01001000", "01000101", "01010010"]
+  encode:
+    - prompt: "Now go the other way. Add up the place values for each letter, then write its binary code, one bit per box."
+      text: "ROV"
+      codes: ["01010010", "01001111", "01010110"]
 
 hex:
   example:

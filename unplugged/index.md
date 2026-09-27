@@ -8,8 +8,16 @@ permalink: /unplugged/
 
 # CS Unplugged
 
-Computer science with no computer. Every activity here is a printable page
-you can work through on your own or with a partner.
+Computer science with no computer. Every activity here is a printable
+worksheet or pair game you can do on your own or with a partner: for a brain
+break, a day the computers are down, or extra practice on one idea.
+
+Many of these are classic unplugged activities, shared under Creative
+Commons licenses or in the public domain, rewritten as ready-to-print
+worksheets so a teacher can hand them out and a student can work through
+them alone. Inspired by, and partly adapted from,
+[CS Unplugged](https://www.csunplugged.org/en/) (not affiliated); each
+adapted sheet credits its source at the bottom.
 
 {% comment %}
 The table is a view over front matter, not folders. Each activity sets:
@@ -118,15 +126,33 @@ Short tracks that build from one activity to the next. Do them in order.
 
 ## For teachers
 
-Two collections this section draws on. Both have many more activities,
-mostly teacher-led ones (whole-class games, magic tricks) that don't fit the
-print-and-use format here.
+Every sheet with a **New set** button can make as many fresh versions as you
+need; the set number prints on the sheet so you can reprint the same one.
+Answer keys are hidden from students: use the **Show answer key** link at
+the bottom of a sheet (or add `?key=1` to its address), then print.
 
-- [CS Unplugged](https://www.csunplugged.org/) by Tim Bell, Ian H. Witten
-  and Mike Fellows.
+## Other unplugged resources
+
+Sources this section draws on, and more places doing unplugged computer
+science. Many of their activities are teacher-led (whole-class games, magic
+tricks) rather than print-and-use.
+
+- [CS Unplugged](https://www.csunplugged.org/en/) by Tim Bell, Ian H. Witten
+  and Mike Fellows, University of Canterbury, and its
+  [printable resources](https://www.csunplugged.org/en/resources/).
 - [Teaching London Computing: unplugged activities](https://teachinglondoncomputing.org/resources/inspiring-unplugged-classroom-activities/)
   by Paul Curzon, Queen Mary University of London.
+- [Code.org unplugged lessons](https://code.org/curriculum/unplugged).
+- [Bootstrap](https://www.bootstrapworld.org/): algebra and programming,
+  with a paper-and-pencil workbook before the computer.
+- [Hello World: The Big Book of Computing Pedagogy](https://helloworld.raspberrypi.org/books/big_book_of_pedagogy)
+  from the Raspberry Pi Foundation.
+- [Math for Love](https://www.mathforlove.com/): math games that play well
+  alongside these.
 
-Every sheet with a **New set** page can make as many fresh versions as you
-need. Answer keys are hidden; add `?key=1` to a page's address to see one.
-
+<footer class="unplugged-footer">
+  <a href="{{ '/' | relative_url }}">{{ site.title }}</a> &middot;
+  <a href="{{ site.author_url }}">Managed by {{ site.author }}</a> &middot;
+  <a href="{{ '/privacy/' | relative_url }}">Privacy Policy</a> &middot;
+  <a href="{{ '/license/' | relative_url }}">Licensing (Creative Commons)</a>
+</footer>

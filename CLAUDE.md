@@ -82,6 +82,11 @@ include `_includes/unplugged/player-switch.html`, which lets a teacher show
 and print one player's sheet at a time (`?player=A`), so a student never
 gets a page with the other player's secret numbers on it.
 
+Fenced ```python blocks inside an HTML list only render if both the `<ol>`
+and each `<li>` carry `markdown="1"`; otherwise the backticks print literally.
+Give `table`s inside unplugged sheets `width: auto` when cells must stay
+square: minima makes every table 100% wide.
+
 Section images: `assets/img/unplugged/` (the teacher's own logo and
 favicon; `_includes/head.html` swaps in the favicon for `/unplugged/`).
 

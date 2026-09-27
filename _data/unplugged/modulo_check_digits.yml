@@ -1,0 +1,21 @@
+# Fixed content for _unplugged/modulo-check-digits.md. tools/check_modulo.mjs
+# recomputes check_digit(data) for every code here and confirms "valid"
+# matches whether the last digit equals it.
+
+worked:
+  data: [4, 1, 7, 2, 9]
+  check: 7
+  full: "417297"
+
+validate:
+  - { full: "417297", valid: true }
+  - { full: "930822", valid: false }
+  - { full: "155260", valid: false }
+  - { full: "803311", valid: true }
+  - { full: "225601", valid: true }
+  - { full: "614479", valid: false }
+
+find_missing:
+  - { data: [3, 7, 0, 5, 4], check: 7 }
+  - { data: [9, 1, 2, 6, 8], check: 6 }
+  - { data: [5, 0, 4, 4, 3], check: 0 }

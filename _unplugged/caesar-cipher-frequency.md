@@ -8,6 +8,8 @@ time: 30
 grouping: "Solo or pair"
 materials: "Pencil"
 generator: /unplugged/caesar-cipher-generator/
+generator_presets:
+  - { label: "Long passage", query: "mode=frequency" }
 ---
 
 If you have done the first [Caesar cipher activity]({{ '/unplugged/caesar-cipher/' | relative_url }}),
@@ -108,6 +110,8 @@ the rest, the same way E stood out in the reference chart.
 If the first few words look like nonsense, the second most common letter
 is worth a try instead. E is usually the most common letter, but a short
 passage can occasionally have T or A edge it out.
+
+**[Learn more about the Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).**
 
 ## Decode the rest
 

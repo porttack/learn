@@ -1,0 +1,201 @@
+// Styles for the modulo activity family (_unplugged/modulo-*.md and its
+// generator, assets/js/unplugged/modulo-render.js).
+
+.modulo-clock-fig {
+  margin: 0.6em auto 1em;
+  text-align: center;
+  max-width: 100%;
+
+  svg.modulo-clock {
+    max-width: 100%;
+    height: auto;
+  }
+
+  figcaption {
+    font-weight: 600;
+    font-size: 0.85em;
+    margin-top: 0.2em;
+  }
+}
+
+.modulo-clock-main {
+  text-align: center;
+}
+
+// A plain table (not a flex/grid layout), so its rows paginate the same
+// reliable way table.checkoff does elsewhere on this site.
+table.modulo-other-clocks {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.8em 0 1.2em;
+
+  td {
+    padding: 0.5em 0.6em;
+    border-bottom: 1px solid $grey-color-light;
+    vertical-align: middle;
+  }
+
+  td:first-child {
+    width: 5.5em;
+    text-align: center;
+  }
+
+  // These are reference icons sitting in a table cell, not full-size
+  // standalone figures; without a cap each one renders at its natural
+  // (much larger) size and blows up every row's height.
+  .modulo-clock-fig svg.modulo-clock {
+    width: 2.8em;
+    height: 2.8em;
+  }
+
+  .modulo-clock-fig figcaption {
+    display: none;
+  }
+}
+
+.modulo-no-fig {
+  font-size: 0.85em;
+  color: $grey-color-dark;
+}
+
+table.modulo-table {
+  margin: 0.5em 0 1em;
+  font-size: 0.95em;
+
+  code {
+    font-size: 0.95em;
+  }
+}
+
+.modulo-code {
+  font-family: monospace;
+  font-size: 1.1em;
+  letter-spacing: 0.06em;
+  padding: 0.1em 0.4em;
+  background: $grey-color-light;
+  border-radius: 3px;
+}
+
+.modulo-trace-list {
+  padding-left: 1.4em;
+
+  li {
+    margin: 0 0 1.3em;
+  }
+
+  pre {
+    margin: 0.3em 0;
+  }
+}
+
+.modulo-key-answer {
+  margin: 0.4em 0;
+}
+
+// Generated question sets (assets/js/unplugged/modulo-render.js).
+.modulo-q {
+  margin: 1em 0 1.4em;
+}
+
+.modulo-q-clock .modulo-q-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1em 1.4em;
+  margin-top: 0.4em;
+}
+
+@media print {
+  table.modulo-other-clocks {
+    margin: 0.5em 0 0.8em;
+
+    td {
+      padding: 0.3em 0.5em;
+    }
+
+    td:first-child {
+      width: 3.5em;
+    }
+  }
+
+  .modulo-clock-fig {
+    margin: 0 auto;
+  }
+
+  .modulo-clock-fig,
+  .modulo-q,
+  table.modulo-other-clocks tr {
+    break-inside: avoid;
+  }
+
+  // The table itself is free to split across a page boundary (its
+  // <thead> repeats automatically, and table.checkoff tr already keeps
+  // individual rows from splitting); only avoid breaking inside one row.
+  table.modulo-table {
+    margin: 0.4em 0 0.3em;
+
+    th,
+    td {
+      padding: 0.2em 0.5em;
+    }
+  }
+
+  .modulo-trace-list li {
+    break-inside: avoid;
+    margin: 0 0 0.4em;
+
+    p {
+      margin: 0.1em 0 !important;
+    }
+  }
+
+  // !important: a same-page rule (.language-python.highlighter-rouge pre)
+  // reserves padding-right for the screen-only copy button and otherwise
+  // outranks this on specificity.
+  .modulo-trace-list pre,
+  .modulo-sheet pre {
+    margin: 0.15em 0 !important;
+    padding: 0.35em 0.5em !important;
+  }
+
+  // Scoped to this family's own wrapper (.modulo-sheet, set on each fixed
+  // worksheet's body) so these never touch spacing on other pages. A small
+  // site-wide font shrink compounds across the whole sheet, which closes
+  // the last bit of a stubborn one- or two-line overflow far more reliably
+  // than chasing individual margins.
+  .modulo-sheet {
+    font-size: 0.82em;
+  }
+
+  .modulo-sheet p {
+    margin: 0.3em 0;
+  }
+
+  .modulo-sheet h2 {
+    margin-top: 0.5em;
+    margin-bottom: 0.15em;
+  }
+
+  .modulo-sheet .callout {
+    margin: 0.6em 0;
+    padding: 0.5em 0.8em;
+  }
+
+  // The provenance footer sits just after .modulo-sheet as a sibling, not
+  // inside it, so it needs its own (still page-scoped) selector. Its two
+  // paragraphs (citation, then the source link) flow as one line instead
+  // of two: on a tightly-fit sheet, that lone trailing link line was
+  // enough by itself to spill onto an otherwise-empty extra page.
+  article.lesson:has(> .modulo-sheet) .provenance {
+    margin-top: 0;
+
+    p {
+      display: inline;
+      margin: 0;
+    }
+
+    p:first-child::after {
+      content: " ";
+    }
+  }
+}

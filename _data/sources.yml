@@ -72,6 +72,20 @@
     (the dot cards are plain HTML). The book is written as teacher scripts,
     so adaptations here rewrite the activity for a student working alone.
 
+- id: cs-unplugged-web
+  use: adapt
+  link_label: "original activity"
+  title: "CS Unplugged"
+  author: "Tim Bell and the CS Unplugged team, University of Canterbury"
+  publisher: "csunplugged.org"
+  licence: "CC BY-SA 4.0"
+  licence_url: "https://creativecommons.org/licenses/by-sa/4.0/"
+  notes: >-
+    The csunplugged.org WEBSITE (not the 2015 book, which is cs-unplugged-2015
+    and NC). No NonCommercial term, but ShareAlike means a page adapted from
+    it stays CC BY-SA 4.0; keep each such page entirely adapted from it.
+    Link each page to its original unit with source_url.
+
 - id: teaching-london-computing
   use: adapt
   link_label: "original activity"

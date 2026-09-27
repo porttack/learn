@@ -1,0 +1,104 @@
+// Styles for the three graph activities (Muddy City, the Poor Cartographer,
+// Tourist Town): assets/js/unplugged/graphs-render.js draws the SVG, this
+// file only lays it out on the page.
+
+.graphs-questions,
+.graphs-answer-key .graphs-key-item + .graphs-key-item {
+  margin-top: 0;
+}
+
+.graphs-fig {
+  margin: 0 0 1.6em;
+  text-align: center;
+
+  figcaption {
+    font-weight: 600;
+    font-size: 0.95em;
+    margin-top: 0.4em;
+  }
+}
+
+svg.graphs-street,
+svg.graphs-map {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.graphs-legend-label {
+  font-size: 0.9em;
+  color: $grey-color-dark;
+  margin-bottom: 0.3em;
+}
+
+svg.graphs-legend {
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 1.4em;
+}
+
+.graphs-key-item {
+  margin: 0 0 1.6em;
+
+  p {
+    margin: 0.4em 0 0;
+  }
+}
+
+.graphs-map-note {
+  font-size: 0.9em;
+  font-style: italic;
+  max-width: 32em;
+  margin: 0.5em auto 0;
+}
+
+.graphs-key-intro {
+  font-size: 0.9em;
+  color: $grey-color-dark;
+}
+
+@media print {
+  .graphs-fig,
+  .graphs-key-item {
+    break-inside: avoid;
+  }
+
+  .graphs-fig {
+    margin: 0 0 0.3em;
+
+    figcaption {
+      margin-top: 0.1em;
+    }
+  }
+
+  .graphs-map-note {
+    margin: 0.2em auto 0;
+  }
+
+  .graphs-legend-label {
+    margin-bottom: 0.15em;
+  }
+
+  svg.graphs-legend {
+    margin: 0 0 0.6em;
+    zoom: 0.85;
+  }
+
+  // Puzzle maps must be big enough to trace streets, write stone counts,
+  // and shade countries with a pencil: nearly full width, even if that
+  // costs a page. The answer key's copies stay small.
+  .graphs-questions svg.graphs-street,
+  .graphs-questions svg.graphs-map {
+    width: 100%;
+    max-width: 5in;
+    height: auto;
+  }
+
+  .graphs-key-item svg.graphs-street,
+  .graphs-key-item svg.graphs-map {
+    width: 100%;
+    max-width: 3.2in;
+    height: auto;
+  }
+}

@@ -7,7 +7,11 @@ topics: [Binary, Data representation]
 time: 20
 grouping: Solo
 materials: "Pencil"
-generator: /unplugged/ascii-messages-generator/?chart=anchors&format=hex
+generator: /unplugged/ascii-messages-generator/
+generator_presets:
+  - { label: "Hex, four clues", query: "format=hex&direction=decode&chart=anchors" }
+  - { label: "Binary, four clues", query: "format=binary&direction=decode&chart=anchors" }
+  - { label: "Decimal, four clues", query: "format=decimal&direction=decode&chart=anchors" }
 ---
 
 No code chart this time. ASCII puts the letters and digits in order, so four

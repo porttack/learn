@@ -7,8 +7,12 @@ topics: [Binary]
 time: 35
 grouping: Pair
 materials: "Pencil"
-generator: /unplugged/binary-battleship-generator/
 scripts: [/assets/js/unplugged/battleship-page.js]
+generator: /unplugged/binary-battleship-generator/
+generator_presets:
+  - { label: "New 16x16 fleets", query: "level=harder" }
+  - { label: "Hex", query: "level=hex" }
+  - { label: "8x8", query: "level=easy" }
 ---
 
 {% include unplugged/player-switch.html %}

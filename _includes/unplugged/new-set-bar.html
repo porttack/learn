@@ -1,0 +1,22 @@
+{%- comment -%}
+Bottom-of-sheet "make a new set" buttons (screen only). Each fixed sheet
+with a generator sets:
+  generator: /unplugged/<slug>-generator/
+  generator_presets:              # optional; each opens the generator preset
+    - { label: "Binary, chart to fill in", query: "format=binary&chart=fill" }
+Without presets it shows a single button.
+{%- endcomment -%}
+{%- if page.generator and page.companion != true -%}
+{%- assign gen = page.generator | relative_url -%}
+<aside class="new-set-bar">
+  <span class="new-set-title">Make a new set:</span>
+  {%- if page.generator_presets -%}
+  {%- for p in page.generator_presets %}
+  <a class="new-set-btn" href="{{ gen }}?{{ p.query }}">{{ p.label }}</a>
+  {%- endfor %}
+  <a class="new-set-more" href="{{ gen }}">more options</a>
+  {%- else %}
+  <a class="new-set-btn" href="{{ gen }}">New set</a>
+  {%- endif %}
+</aside>
+{%- endif -%}

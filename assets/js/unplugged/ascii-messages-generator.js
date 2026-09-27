@@ -20,8 +20,13 @@ const GROUPS = [
 // Three kinds of help, from most to least:
 //   full     letter and code side by side: pure lookup
 //   fill     letter and decimal, plus a blank row to fill in binary/hex
+//            (decimal has no separate code to fill in, so it falls back to
+//            the full chart below)
 //   anchors  just A, a, 0, and space; messages use lowercase and digits too
-function referenceTable(format, chart) {
+// `rng` picks which one letter of the fill-in row comes pre-filled, forked
+// off the main draw so toggling Help never changes which joke/word the rest
+// of the sheet draws.
+function referenceTable(format, chart, rng) {
   if (chart === "anchors") {
     const clues = ANCHORS.map((a) => `<span>${a.label} = ${a.code}</span>`).join("");
     return `<div class="ascii-anchors">${clues}</div>
@@ -32,14 +37,18 @@ function referenceTable(format, chart) {
     const label = format === "binary" ? "Binary" : "Hex";
     const per = format === "binary" ? 7 : 9;
     const letters = GROUPS.flat();
+    const prefill = rng.fork(101).pick(letters.filter((l) => l !== "space"));
     const bands = [];
     for (let i = 0; i < letters.length; i += per) {
       const group = letters.slice(i, i + per);
       bands.push(`<tr class="chart-letters"><th class="row-label"></th>${group.map((l) => `<th>${l}</th>`).join("")}</tr>
         <tr class="chart-decimal"><th class="row-label">Decimal</th>${group.map((l) => `<td>${byLetter[l].decimal}</td>`).join("")}</tr>
-        <tr class="chart-blank"><th class="row-label">${label}</th>${group.map(() => "<td></td>").join("")}</tr>`);
+        <tr class="chart-blank"><th class="row-label">${label}</th>${group
+          .map((l) => (l === prefill ? `<td class="is-given">${esc(byLetter[l][format])}</td>` : "<td></td>"))
+          .join("")}</tr>`);
     }
-    return `<table class="ascii-table ascii-chart fill-${format}"><tbody>${bands.join("")}</tbody></table>`;
+    return `<table class="ascii-table ascii-chart fill-${format}"><tbody>${bands.join("")}</tbody></table>
+      <p class="ascii-chart-hint">One is done for you. Count forward or back from it.</p>`;
   }
   const blocks = GROUPS.map((group) => {
     const heads = group.map((l) => `<th>${l}</th>`).join("");
@@ -54,8 +63,21 @@ function codeCell(ch, code) {
   return `<div class="code-cell${spaceClass}"><span class="code-num">${esc(code)}</span><span class="code-box"></span></div>`;
 }
 
-function letterCell(ch) {
-  return `<div class="code-cell"><span class="code-letter">${esc(ch)}</span><span class="value-box"></span></div>`;
+// Encode direction: one box per whole code (decimal, wide enough for three
+// digits), or one small box per digit for binary (8 bits) and hex (2
+// digits), so there's real room to write the code out instead of squeezing
+// it into a single narrow box.
+function letterCell(ch, format) {
+  const letter = `<span class="code-letter">${esc(ch)}</span>`;
+  if (format === "binary") {
+    const bits = Array.from({ length: 8 }, () => `<span class="bit-box"></span>`).join("");
+    return `<div class="code-cell">${letter}<div class="bit-row">${bits}</div></div>`;
+  }
+  if (format === "hex") {
+    const digits = `<span class="hex-box"></span><span class="hex-box"></span>`;
+    return `<div class="code-cell">${letter}<div class="hex-row">${digits}</div></div>`;
+  }
+  return `<div class="code-cell">${letter}<span class="value-box"></span></div>`;
 }
 
 function decodeQuestion(format, chart, joke) {
@@ -72,10 +94,10 @@ function decodeQuestion(format, chart, joke) {
   </div>`;
 }
 
-function encodeQuestion(word) {
+function encodeQuestion(word, format) {
   const cells = word
     .split("")
-    .map((ch) => letterCell(ch))
+    .map((ch) => letterCell(ch, format))
     .join("");
   return `<div class="ascii-question">
     <p class="ascii-prompt">Write the code under each letter of this word.</p>
@@ -109,13 +131,13 @@ mountGenerator({
   options: [
     { name: "format", label: "Format", default: "decimal", choices: [["decimal", "Decimal"], ["binary", "Binary"], ["hex", "Hex"]] },
     { name: "direction", label: "Direction", default: "decode", choices: [["decode", "Decode a message"], ["encode", "Encode a word"]] },
-    { name: "chart", label: "Help", default: "full", choices: [["full", "Full chart"], ["fill", "Chart to fill in"], ["anchors", "Only four clues (harder)"]] },
+    { name: "chart", label: "Help", default: "fill", choices: [["full", "Full chart"], ["fill", "Chart to fill in"], ["anchors", "Only four clues (harder)"]] },
   ],
   render(rng, opts) {
-    root.querySelector(".puzzle-reference").innerHTML = referenceTable(opts.format, opts.chart);
+    root.querySelector(".puzzle-reference").innerHTML = referenceTable(opts.format, opts.chart, rng);
     if (opts.direction === "encode") {
       const word = rng.pick(bank.words);
-      root.querySelector(".puzzle-questions").innerHTML = encodeQuestion(word);
+      root.querySelector(".puzzle-questions").innerHTML = encodeQuestion(word, opts.format);
       root.querySelector(".puzzle-key").innerHTML = `<h2>Answer key</h2>${encodeKeyHtml(word, opts.format)}`;
     } else {
       const jokes = rng.shuffle(bank.jokes).slice(0, 3);

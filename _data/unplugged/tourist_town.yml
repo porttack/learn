@@ -1,0 +1,52 @@
+# Frozen from: node tools/freeze_graphs.mjs tourist-town <seed> <sizeKey> <label>
+title: "Tourist Town"
+maps:
+- label: "Warm-up town"
+  width: 288
+  height: 192
+  nodes:
+    - { x: 54, y: 23 }
+    - { x: 145, y: 72 }
+    - { x: 263, y: 37 }
+    - { x: 54, y: 155 }
+    - { x: 140, y: 169 }
+    - { x: 238, y: 143 }
+  edges:
+    - { a: 0, b: 1 }
+    - { a: 0, b: 3 }
+    - { a: 1, b: 2 }
+    - { a: 2, b: 5 }
+    - { a: 1, b: 4 }
+- label: "Tourist Town"
+  width: 384
+  height: 384
+  nodes:
+    - { x: 33, y: 66 }
+    - { x: 126, y: 64 }
+    - { x: 251, y: 57 }
+    - { x: 324, y: 69 }
+    - { x: 30, y: 151 }
+    - { x: 154, y: 148 }
+    - { x: 229, y: 166 }
+    - { x: 325, y: 155 }
+    - { x: 55, y: 233 }
+    - { x: 146, y: 260 }
+    - { x: 258, y: 238 }
+    - { x: 355, y: 225 }
+    - { x: 57, y: 328 }
+    - { x: 121, y: 355 }
+  edges:
+    - { a: 2, b: 3 }
+    - { a: 2, b: 6 }
+    - { a: 1, b: 2 }
+    - { a: 6, b: 10 }
+    - { a: 6, b: 7 }
+    - { a: 1, b: 5 }
+    - { a: 0, b: 1 }
+    - { a: 5, b: 9 }
+    - { a: 4, b: 5 }
+    - { a: 9, b: 13 }
+    - { a: 7, b: 11 }
+    - { a: 8, b: 9 }
+    - { a: 12, b: 13 }
+    - { a: 3, b: 7 }

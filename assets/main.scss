@@ -146,6 +146,7 @@ figure {
 // not a full-width banner, just a little visual anchor near the intro text.
 .pathway-hero-image {
   display: block;
+  width: fit-content;
   max-width: 280px;
   margin: 1.2em 0;
 

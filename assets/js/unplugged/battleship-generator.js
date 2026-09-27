@@ -39,7 +39,7 @@ mountGenerator({
     const qroot = root.querySelector(".puzzle-questions");
     qroot.innerHTML = ["A", "B"]
       .map(
-        (p) => `<section class="battleship-player" data-player="${p}"><div class="name-line" aria-hidden="true"><span>Name <i></i></span><span>Date <i></i></span><span>Period <i></i></span></div>
+        (p) => `<section class="battleship-player" data-player="${p}"><div class="name-line" aria-hidden="true"><span>Name <i></i></span><span>Date <i></i></span><span>Period <i></i></span><img class="name-line-logo" src="/assets/img/unplugged/apple-touch-icon.png" alt=""></div>
           <h3>Player ${p}</h3>
           ${playerBoardsHtml(set.level, set.players[p].ships, `gen-${p}`)}
         </section>`,

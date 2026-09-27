@@ -7,8 +7,13 @@ topics: [Binary, Logic puzzles]
 time: 30
 grouping: Solo
 materials: "Pencil"
-generator: /unplugged/binary-puzzles-generator/
 scripts: [/assets/js/unplugged/binairo-page.js]
+generator: /unplugged/binary-puzzles-generator/
+generator_presets:
+  - { label: "6x6 easy", query: "level=6-easy" }
+  - { label: "6x6 harder", query: "level=6-hard" }
+  - { label: "8x8", query: "level=8" }
+  - { label: "10x10", query: "level=10" }
 ---
 
 A binary puzzle is a grid of empty squares. Your job is to fill every
@@ -107,7 +112,6 @@ use the exact same three rules as the bigger ones.
 
 <div class="binairo-questions" id="q-binary_puzzles"></div>
 
-Want more? [Make a new set of binary puzzles]({{ '/unplugged/binary-puzzles-generator/' | relative_url }}).
 
 <section class="answer-key binairo-answer-key" id="key-binary_puzzles"></section>
 

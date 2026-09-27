@@ -1,0 +1,41 @@
+# Frozen from: node tools/freeze_graphs.mjs muddy-city <seed> <sizeKey> <label>
+title: "Muddy City"
+maps:
+- label: "Warm-up town"
+  width: 288
+  height: 192
+  nodes:
+    - { x: 54, y: 23 }
+    - { x: 145, y: 72 }
+    - { x: 263, y: 37 }
+    - { x: 54, y: 155 }
+    - { x: 140, y: 169 }
+  edges:
+    - { a: 1, b: 2, w: 5 }
+    - { a: 0, b: 1, w: 1 }
+    - { a: 0, b: 3, w: 4 }
+    - { a: 1, b: 4, w: 7 }
+    - { a: 3, b: 4, w: 3 }
+- label: "Main town"
+  width: 288
+  height: 288
+  nodes:
+    - { x: 48, y: 69 }
+    - { x: 154, y: 63 }
+    - { x: 238, y: 45 }
+    - { x: 33, y: 123 }
+    - { x: 121, y: 169 }
+    - { x: 261, y: 125 }
+    - { x: 43, y: 234 }
+    - { x: 141, y: 261 }
+  edges:
+    - { a: 2, b: 5, w: 5 }
+    - { a: 4, b: 5, w: 1 }
+    - { a: 1, b: 2, w: 5 }
+    - { a: 3, b: 4, w: 1 }
+    - { a: 3, b: 6, w: 1 }
+    - { a: 4, b: 7, w: 2 }
+    - { a: 0, b: 1, w: 2 }
+    - { a: 0, b: 3, w: 1 }
+    - { a: 1, b: 4, w: 2 }
+    - { a: 6, b: 7, w: 7 }

@@ -1,0 +1,7 @@
+# Build a Tree (_unplugged/bst-build.md). Same five numbers, two insertion
+# orders: `values` as given, then `sorted` (always the same five numbers,
+# ascending). tools/check_bst.mjs confirms the sorted order really does
+# build a chain (every node has at most one child).
+
+values: [12, 5, 18, 2, 9]
+sorted: [2, 5, 9, 12, 18]

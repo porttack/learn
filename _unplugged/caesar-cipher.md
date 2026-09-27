@@ -8,6 +8,9 @@ time: 30
 grouping: "Solo, or pair up to trade coded messages"
 materials: "Pencil (scissors and a brad or pencil point, only if you build the wheel)"
 generator: /unplugged/caesar-cipher-generator/
+generator_presets:
+  - { label: "Key given", query: "mode=key" }
+  - { label: "Crack it (no key)", query: "mode=crack" }
 ---
 
 ## Why hide a message?
@@ -149,6 +152,11 @@ only 25 possible keys has almost no protection against a machine, which is
 exactly why real security today depends on keys with far more
 possibilities than anyone, or anything, could ever try one by one.
 </aside>
+
+**[Learn more about the Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher).**
+
+**Next step:** try a [Vigenère cipher]({{ '/unplugged/vigenere-cipher/' | relative_url }}),
+which uses a whole keyword instead of one shift.
 
 <section class="cutout-page" markdown="1">
 {% include unplugged/caesar-cipher-wheel.html %}

@@ -24,6 +24,8 @@
 // inline per grid size (assets/js/unplugged/binairo-render.js sizes the
 // real puzzles down as n grows; worked examples set them by hand).
 .binairo-grid {
+  // minima makes every table 100% wide; these must stay square-celled.
+  width: auto;
   border-collapse: collapse;
   margin: 0 auto;
 

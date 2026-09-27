@@ -8,6 +8,9 @@ time: 20
 grouping: Solo
 materials: "Pencil"
 generator: /unplugged/ascii-messages-generator/
+generator_presets:
+  - { label: "Hex, decode", query: "format=hex&direction=decode&chart=fill" }
+  - { label: "Hex, encode", query: "format=hex&direction=encode&chart=fill" }
 ---
 
 Computers also write numbers in base 16, called hex. You will see it in web
@@ -30,7 +33,7 @@ A two-digit hex code means (first digit &times; 16) + second digit. So
 
 ## Your chart
 
-{% include unplugged/ascii-chart.html fill="hex" per_row=9 %}
+{% include unplugged/ascii-chart.html fill="hex" per_row=9 prefill="M" %}
 
 ## What to do
 
@@ -78,7 +81,10 @@ Together: **HI**.
 {% for ch in chars %}
 <div class="code-cell">
   <span class="code-letter">{{ ch }}</span>
-  <span class="value-box"></span>
+  <div class="hex-row">
+    <span class="hex-box"></span>
+    <span class="hex-box"></span>
+  </div>
 </div>
 {% endfor %}
 </div>

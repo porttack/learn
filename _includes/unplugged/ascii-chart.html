@@ -1,8 +1,11 @@
 {%- comment -%}
 A-Z (and space) with decimal codes, plus a blank row for the student to
-fill in the same codes in binary or hex as they work them out.
+fill in the same codes in binary or hex as they work them out. One letter
+in that blank row is already filled in and marked, so a student can count
+forward or backward from a known point instead of starting from zero.
   include.fill     "binary" or "hex": label for the blank row
   include.per_row  letters per table band (binary needs wider cells)
+  include.prefill  the one letter to fill in already, e.g. "M"
 Data: _data/unplugged/ascii_chart.yml.
 {%- endcomment -%}
 {%- assign rows = site.data.unplugged.ascii_chart.rows -%}
@@ -14,7 +17,10 @@ Data: _data/unplugged/ascii_chart.yml.
 {%- assign offset = b | minus: 1 | times: per %}
 <tr class="chart-letters"><th class="row-label"></th>{% for r in rows limit: per offset: offset %}<th>{{ r.letter }}</th>{% endfor %}</tr>
 <tr class="chart-decimal"><th class="row-label">Decimal</th>{% for r in rows limit: per offset: offset %}<td>{{ r.decimal }}</td>{% endfor %}</tr>
-<tr class="chart-blank"><th class="row-label">{{ include.fill | capitalize }}</th>{% for r in rows limit: per offset: offset %}<td></td>{% endfor %}</tr>
+<tr class="chart-blank"><th class="row-label">{{ include.fill | capitalize }}</th>{% for r in rows limit: per offset: offset %}{% if r.letter == include.prefill %}<td class="is-given">{{ r[include.fill] }}</td>{% else %}<td></td>{% endif %}{% endfor %}</tr>
 {%- endfor %}
 </tbody>
 </table>
+{%- if include.prefill %}
+<p class="ascii-chart-hint">One is done for you. Count forward or back from it.</p>
+{%- endif %}

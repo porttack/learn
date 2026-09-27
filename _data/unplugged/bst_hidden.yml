@@ -1,0 +1,13 @@
+# The Hidden Number Tree (_unplugged/bst-hidden.md), a two-player pair
+# game. tree1 is dealt to Player A in Round 1 (A holds the numbers, B
+# hunts); tree2 is dealt to Player B in Round 2 (roles swap). Each target
+# is a value that really is in its tree -- tools/check_bst.mjs confirms
+# that and recomputes the fewest-possible-reveals count for the hidden key.
+
+tree1:
+  values: [50, 25, 75, 10, 35, 60, 90]
+  target: 35
+
+tree2:
+  values: [40, 20, 65, 5, 30, 55, 80]
+  target: 80

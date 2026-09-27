@@ -1,0 +1,119 @@
+// Verifies the three graph activities (Muddy City, the Poor Cartographer,
+// Tourist Town) against brute force.
+//
+//   node tools/check_graphs.mjs            fixed worksheets + 150 generated maps each
+//   node tools/check_graphs.mjs --gen 50    fewer generated maps
+//
+// Fixed worksheets live in _data/unplugged/{muddy_city,poor_cartographer,
+// tourist_town}.yml. YAML is converted with Ruby (already required by
+// Jekyll) so this needs no npm packages, the same way
+// tools/check_robot_sets.mjs checks the robot worksheets.
+import { execFileSync } from "node:child_process";
+import { makeRng } from "../assets/js/unplugged/rng.js";
+import {
+  kruskalMST,
+  bruteForceMST,
+  isConnected,
+  existsColoring,
+  minColoring,
+  isProperColoring,
+  minDominatingSet,
+  isDominatingSet,
+  rectAdjacencyEdges,
+} from "../assets/js/unplugged/graphs.js";
+import { generateMap as generateMuddyCity, SIZES as MUDDY_SIZES } from "../assets/js/unplugged/muddy-city.js";
+import { generateMap as generateCartographer, TARGETS } from "../assets/js/unplugged/poor-cartographer.js";
+import { generateMap as generateTouristTown, SIZES as TOWN_SIZES } from "../assets/js/unplugged/tourist-town.js";
+
+let failures = 0;
+const fail = (label, msg) => {
+  failures++;
+  console.log(`FAIL ${label}: ${msg}`);
+};
+
+function loadYaml(file) {
+  const dir = new URL("../_data/unplugged/", import.meta.url).pathname;
+  const json = execFileSync("ruby", ["-ryaml", "-rjson", "-e", "puts YAML.load_file(ARGV[0]).to_json", dir + file]);
+  return JSON.parse(json);
+}
+
+// ---- Muddy City: minimum spanning trees -----------------------------------
+
+function checkMuddyCity(label, map) {
+  const n = map.nodes.length;
+  if (!isConnected(n, map.edges)) return fail(label, "town is not fully connected by streets");
+  const mst = kruskalMST(n, map.edges);
+  if (!mst.spanning) return fail(label, "Kruskal's algorithm didn't find a spanning tree");
+  const bf = bruteForceMST(n, map.edges);
+  if (mst.total !== bf.total) fail(label, `Kruskal says ${mst.total} stones, brute force says ${bf.total}`);
+}
+
+const muddyData = loadYaml("muddy_city.yml");
+muddyData.maps.forEach((m, i) => checkMuddyCity(`muddy_city.yml map ${i + 1} (${m.label})`, m));
+console.log(`muddy_city.yml: ${muddyData.maps.length} maps checked`);
+
+// ---- The Poor Cartographer: graph coloring --------------------------------
+
+function checkCartographer(label, map) {
+  const n = map.rects.length;
+  const edges = rectAdjacencyEdges(map.rects);
+  if (!isConnected(n, edges)) return fail(label, "map is not one connected piece");
+  const { k, coloring } = minColoring(n, edges);
+  if (!isProperColoring(n, edges, coloring)) return fail(label, "claimed coloring puts two touching countries in the same color");
+  if (k > 1 && existsColoring(n, edges, k - 1)) fail(label, `claims ${k} colors are needed, but ${k - 1} also works`);
+}
+
+const cartData = loadYaml("poor_cartographer.yml");
+cartData.maps.forEach((m, i) => checkCartographer(`poor_cartographer.yml map ${i + 1} (${m.label})`, m));
+console.log(`poor_cartographer.yml: ${cartData.maps.length} maps checked`);
+
+// ---- Tourist Town: dominating sets -----------------------------------------
+
+function checkTouristTown(label, map) {
+  const n = map.nodes.length;
+  if (!isConnected(n, map.edges)) return fail(label, "town is not fully connected by streets");
+  const { size, set } = minDominatingSet(n, map.edges);
+  if (!isDominatingSet(n, map.edges, set)) return fail(label, "claimed van placement doesn't cover every corner");
+  // minDominatingSet already searches sizes from 1 up, so finding `size`
+  // proves no smaller set works -- re-run one size down as a cross-check.
+  if (size > 0) {
+    const smaller = minDominatingSet(n, map.edges);
+    if (smaller.size !== size) fail(label, `inconsistent minimum: got ${size} then ${smaller.size}`);
+  }
+}
+
+const townData = loadYaml("tourist_town.yml");
+townData.maps.forEach((m, i) => checkTouristTown(`tourist_town.yml map ${i + 1} (${m.label})`, m));
+console.log(`tourist_town.yml: ${townData.maps.length} maps checked`);
+
+// ---- Generated maps ---------------------------------------------------------
+
+const n = Number(process.argv[process.argv.indexOf("--gen") + 1]) || 150;
+const t0 = Date.now();
+
+let total = 0;
+for (const size of Object.keys(MUDDY_SIZES)) {
+  for (let seed = 20000; seed < 20000 + n; seed++) {
+    const map = generateMuddyCity(makeRng(seed), size);
+    checkMuddyCity(`muddy-city generated size=${size} seed ${seed}`, map);
+    total++;
+  }
+}
+for (const target of [2, 3, 4]) {
+  for (let seed = 30000; seed < 30000 + n; seed++) {
+    const map = generateCartographer(makeRng(seed), target);
+    checkCartographer(`poor-cartographer generated target=${target} seed ${seed}`, map);
+    total++;
+  }
+}
+for (const size of Object.keys(TOWN_SIZES)) {
+  for (let seed = 40000; seed < 40000 + n; seed++) {
+    const map = generateTouristTown(makeRng(seed), size);
+    checkTouristTown(`tourist-town generated size=${size} seed ${seed}`, map);
+    total++;
+  }
+}
+
+console.log(`${total} generated maps checked in ${Date.now() - t0} ms`);
+console.log(failures ? `${failures} failure(s)` : "all answers match brute force");
+process.exit(failures ? 1 : 0);

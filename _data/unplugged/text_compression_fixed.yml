@@ -1,0 +1,160 @@
+# Frozen from: node tools/freeze_text_compression.mjs
+{
+  "title": "Pease Porridge Hot",
+  "original": "Pease porridge hot,\nPease porridge cold,\nPease porridge in the pot,\nNine days old.\nSome like it hot,\nSome like it cold,\nSome like it in the pot,\nNine days old.",
+  "tokens": [
+    {
+      "type": "word",
+      "text": "Pease",
+      "defines": 1
+    },
+    {
+      "type": "word",
+      "text": "porridge"
+    },
+    {
+      "type": "word",
+      "text": "hot,"
+    },
+    {
+      "type": "break"
+    },
+    {
+      "type": "ptr",
+      "box": 1
+    },
+    {
+      "type": "word",
+      "text": "cold,"
+    },
+    {
+      "type": "break"
+    },
+    {
+      "type": "ptr",
+      "box": 1
+    },
+    {
+      "type": "word",
+      "text": "in",
+      "defines": 3
+    },
+    {
+      "type": "word",
+      "text": "the"
+    },
+    {
+      "type": "word",
+      "text": "pot,"
+    },
+    {
+      "type": "break"
+    },
+    {
+      "type": "word",
+      "text": "Nine"
+    },
+    {
+      "type": "word",
+      "text": "days"
+    },
+    {
+      "type": "word",
+      "text": "old."
+    },
+    {
+      "type": "break",
+      "defines": 2
+    },
+    {
+      "type": "word",
+      "text": "Some"
+    },
+    {
+      "type": "word",
+      "text": "like"
+    },
+    {
+      "type": "word",
+      "text": "it"
+    },
+    {
+      "type": "word",
+      "text": "hot,"
+    },
+    {
+      "type": "ptr",
+      "box": 2
+    },
+    {
+      "type": "word",
+      "text": "cold,"
+    },
+    {
+      "type": "ptr",
+      "box": 2
+    },
+    {
+      "type": "ptr",
+      "box": 3
+    }
+  ],
+  "boxContent": {
+    "1": [
+      {
+        "type": "word",
+        "text": "Pease"
+      },
+      {
+        "type": "word",
+        "text": "porridge"
+      }
+    ],
+    "2": [
+      {
+        "type": "break"
+      },
+      {
+        "type": "word",
+        "text": "Some"
+      },
+      {
+        "type": "word",
+        "text": "like"
+      },
+      {
+        "type": "word",
+        "text": "it"
+      }
+    ],
+    "3": [
+      {
+        "type": "word",
+        "text": "in"
+      },
+      {
+        "type": "word",
+        "text": "the"
+      },
+      {
+        "type": "word",
+        "text": "pot,"
+      },
+      {
+        "type": "break"
+      },
+      {
+        "type": "word",
+        "text": "Nine"
+      },
+      {
+        "type": "word",
+        "text": "days"
+      },
+      {
+        "type": "word",
+        "text": "old."
+      }
+    ]
+  }
+}

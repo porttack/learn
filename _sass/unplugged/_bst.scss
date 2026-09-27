@@ -1,0 +1,201 @@
+// Styles for the binary search tree activities: bst-search.md,
+// bst-hidden.md, bst-build.md, and their shared generator, bst-generator.md
+// (assets/js/unplugged/bst-render.js draws the same SVG markup for the
+// generator as for the fixed pages).
+
+// Wraps bst-search.md's whole body, so its own headings and paragraphs can
+// run tighter than the site default without touching any shared layout
+// file: it's a one-page-goal worksheet with several small sections, not a
+// long-form reading page.
+.bst-page {
+  h2 {
+    margin: 0.6em 0 0.15em;
+  }
+
+  p,
+  ol {
+    margin: 0.3em 0;
+  }
+}
+
+@media print {
+  .bst-page {
+    h2 {
+      margin: 0.4em 0 0.1em;
+    }
+
+    p,
+    ol {
+      margin: 0.2em 0;
+    }
+  }
+}
+
+.bst-tree-wrap {
+  margin: 0.3em 0 0.4em;
+}
+
+.bst-fig {
+  margin: 0.6em 0;
+  text-align: center;
+
+  figcaption {
+    font-size: 0.85em;
+    color: $grey-color-dark;
+    max-width: 26em;
+    margin: 0.4em auto 0;
+  }
+}
+
+svg.bst-tree {
+  max-width: 100%;
+  height: auto;
+}
+
+.bst-empty {
+  font-style: italic;
+  color: $grey-color-dark;
+}
+
+// ---- Practice: trace searches ----------------------------------------------
+
+.bst-sorted-label {
+  margin: 0.5em 0 0.2em;
+  font-weight: 600;
+}
+
+.bst-sorted-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em;
+  margin: 0 0 0.6em;
+}
+
+.bst-sorted-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2em;
+  padding: 0.25em 0.35em;
+  border: 1.5px solid $text-color;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+// One row per target: a lot more compact on paper than a card per target,
+// and the ruled cells double as the write-in lines.
+table.bst-target-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5em 0 0;
+  font-size: 0.95em;
+
+  th,
+  td {
+    padding: 0.35em 0.5em;
+    border-bottom: 1px solid $grey-color-light;
+    text-align: left;
+    vertical-align: bottom;
+  }
+
+  thead th {
+    font-size: 0.85em;
+    color: $grey-color-dark;
+    border-bottom: 2px solid $grey-color;
+    vertical-align: bottom;
+  }
+
+  td {
+    height: 2em;
+  }
+}
+
+.bst-target-value {
+  font-weight: 700;
+  font-size: 1.05em;
+}
+
+// ---- Worked example ---------------------------------------------------------
+
+.bst-example-note {
+  font-size: 0.95em;
+  background: $grey-color-light;
+  padding: 0.5em 0.8em;
+  border-radius: 6px;
+}
+
+// ---- Hidden-number pair game -------------------------------------------------
+
+.bst-hidden-rounds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8em 1.4em;
+  align-items: flex-start;
+}
+
+.bst-hidden-round {
+  flex: 1 1 15em;
+  min-width: 15em;
+  margin: 0.4em 0 0.6em;
+
+  h3 {
+    margin: 0.3em 0 0.15em;
+  }
+
+  p {
+    margin: 0.2em 0;
+  }
+}
+
+@media print {
+  .bst-hidden-round {
+    margin: 0.3em 0 0.4em;
+  }
+}
+
+// Each player's whole section starts its own printed page, the same reason
+// and the same scoping as _search.scss's .search-player rule: on the
+// single-player print views (?player=A or ?player=B) there's only one
+// section left, so a forced break here would just push it onto a blank
+// second sheet for no reason.
+html:not(.only-player-a):not(.only-player-b) .bst-player + .bst-player {
+  break-before: page;
+}
+
+.bst-player {
+  margin-bottom: 0.6em;
+
+  h2 {
+    margin: 0.5em 0 0.2em;
+  }
+}
+
+// ---- Build a tree -------------------------------------------------------------
+
+.bst-build-step {
+  margin: 0.8em 0 1.4em;
+}
+
+.bst-build-label {
+  margin: 0 0 0.4em;
+}
+
+// ---- Answer key ---------------------------------------------------------------
+
+.bst-key-item {
+  margin: 0 0 1.2em;
+
+  p {
+    margin: 0.3em 0;
+  }
+}
+
+@media print {
+  table.bst-target-table tr,
+  .bst-key-item,
+  .bst-hidden-round,
+  .bst-build-step,
+  .bst-fig {
+    break-inside: avoid;
+  }
+}

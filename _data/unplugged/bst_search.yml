@@ -1,0 +1,18 @@
+# Binary Search Trees: Find the Number (_unplugged/bst-search.md).
+#
+# Every tree here is a list of numbers in insertion order, never a
+# hand-drawn shape: assets/js/unplugged/bst.js turns the list into a tree
+# with insertAll(), and tools/check_bst.mjs recomputes every search path,
+# comparison count, and dead end from that same list, so the printed page
+# and its hidden answer key can never drift apart.
+
+vocab:
+  values: [8, 3, 10, 1, 6, 14, 13]
+
+example:
+  values: [8, 3, 10, 1, 6, 14, 13]
+  target: 6
+
+practice:
+  values: [15, 7, 22, 3, 11, 19, 27, 9, 13]
+  targets: [22, 9, 17]

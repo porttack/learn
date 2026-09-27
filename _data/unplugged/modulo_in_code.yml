@@ -1,0 +1,22 @@
+# Fixed content for _unplugged/modulo-in-code.md. tools/check_modulo.mjs
+# recomputes every "answer" here from assets/js/unplugged/modulo.js.
+
+examples:
+  even_odd: { kind: even_odd, n: 17, answer: 1 }
+  wrap: { kind: wrap, colors: ["red", "green", "blue"], i: 2, answer_index: 0, answer_word: "red" }
+  robot: { kind: robot, facing: 3, turns: 6, answer: 1, answer_word: "right" }
+  minutes: { kind: minutes, total: 135, hours: 2, minutes: 15 }
+  cipher: { kind: cipher, letter: 24, shift: 5, answer: 3 }
+  negative_even_odd: { kind: even_odd, n: -4, answer: 0, answer_word: "even" }
+
+practice:
+  - kind: wrap
+    colors: ["red", "green", "blue", "yellow"]
+    i: 3
+    answer_index: 0
+    answer_word: "red"
+  - kind: robot
+    facing: 1
+    turns: 9
+    answer: 2
+    answer_word: "down"

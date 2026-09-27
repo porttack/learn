@@ -8,6 +8,9 @@ time: 20
 grouping: Solo
 materials: "Pencil"
 generator: /unplugged/ascii-messages-generator/
+generator_presets:
+  - { label: "Binary, decode", query: "format=binary&direction=decode&chart=fill" }
+  - { label: "Binary, encode", query: "format=binary&direction=encode&chart=fill" }
 ---
 
 Every letter's ASCII code can be written in binary too: 8 boxes of 0s and
@@ -21,7 +24,7 @@ Each binary code has 8 boxes. Left to right, the boxes are worth:
 
 <p class="place-values"><strong>128 &nbsp; 64 &nbsp; 32 &nbsp; 16 &nbsp; 8 &nbsp; 4 &nbsp; 2 &nbsp; 1</strong></p>
 
-{% include unplugged/ascii-chart.html fill="binary" per_row=7 %}
+{% include unplugged/ascii-chart.html fill="binary" per_row=7 prefill="M" %}
 
 ## What to do
 
@@ -61,19 +64,31 @@ Shortcut: every capital letter starts `010`, so only the last five boxes change.
 </div>
 {% endfor %}
 
+## Now go the other way
+
+{% assign enc = site.data.unplugged.ascii_fixed.binary.encode | first %}
+<div class="ascii-question">
+<p class="ascii-prompt">{{ enc.prompt }}</p>
+<div class="code-row">
+{% assign chars = enc.text | split: "" %}
+{% for ch in chars %}
+<div class="code-cell">
+  <span class="code-letter">{{ ch }}</span>
+  <div class="bit-row">
+    {% for i in (1..8) %}<span class="bit-box"></span>{% endfor %}
+  </div>
+</div>
+{% endfor %}
+</div>
+</div>
+
 Want the whole table, including lowercase letters? See the
 [full ASCII / Hex table]({{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}).
-
-<aside class="callout challenge" markdown="1">
-**CHALLENGE**
-
-Add 1 to `01000001`. You get `01000010`. Both are letters. Which two, and
-what does that tell you about counting up in binary?
-</aside>
 
 <section class="answer-key">
 <h2>Answer key</h2>
 <ol class="ascii-key-list">
 {% for m in msgs %}<li>{{ m.text }}</li>
 {% endfor %}</ol>
+<p class="ascii-key-encode"><strong>Now go the other way:</strong> {{ enc.text }} &rarr; {{ enc.codes | join: " " }}</p>
 </section>

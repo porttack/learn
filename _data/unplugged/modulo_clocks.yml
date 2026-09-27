@@ -1,0 +1,31 @@
+# Fixed content for _unplugged/modulo-clocks.md. Hand-picked, not generated,
+# so the same problems print every time. tools/check_modulo.mjs recomputes
+# every "answer" here from assets/js/unplugged/modulo.js and fails if one
+# doesn't match.
+
+forward:
+  worked: { start: 7, steps: 4, answer: 1 }
+  problems:
+    - { start: 2, steps: 3, answer: 5 }
+    - { start: 6, steps: 5, answer: 1 }
+    - { start: 3, steps: 47, answer: 0 }
+
+backward:
+  worked: { start: 2, steps: 5, answer: 7 }
+  problems:
+    - { start: 3, steps: 5, answer: 8 }
+    - { start: 5, steps: 13, answer: 2 }
+
+other_clocks:
+  - { n: 12, name: "12-hour clock", start: 9, steps: 6, answer: 3, question: "It is 9 o'clock. What time is it 6 hours later?", answer_text: "3 o'clock" }
+  - { n: 24, name: "24-hour clock", start: 22, steps: 3, answer: 1, question: "A movie starts at 22:00 and runs for 3 hours. What time does it end?", answer_text: "01:00" }
+  - { n: 7, name: "days of the week", start: 4, steps: 10, answer: 0, question: "Today is Thursday (day 4). What day is it 10 days from now?", answer_text: "Sunday" }
+  - { n: 360, name: "degrees in a circle", start: 0, steps: 370, answer: 10, question: "You spin a dial 370 degrees, starting at 0. Where does it point, as a number from 0 to 359?", answer_text: "10 degrees" }
+  - { n: 2, name: "even and odd", start: 0, steps: 17, answer: 1, question: "Is 17 even or odd?", answer_text: "Odd (position 1)" }
+
+predict:
+  worked: { a: 17, n: 5, answer: 2 }
+  problems:
+    - { a: 20, n: 7, answer: 6 }
+    - { a: 5, n: 8, answer: 5 }
+    - { a: 7, n: 2, answer: 1 }

@@ -8,6 +8,9 @@ time: 20
 grouping: Solo
 materials: "Pencil"
 generator: /unplugged/ascii-messages-generator/
+generator_presets:
+  - { label: "Decimal, decode", query: "format=decimal&direction=decode&chart=full" }
+  - { label: "Decimal, encode", query: "format=decimal&direction=encode&chart=full" }
 ---
 
 Computers do not store letters. They store numbers. ASCII is the code that
@@ -80,7 +83,6 @@ going on the back of the page.
 
 Want the whole table, with lowercase letters and punctuation too? See the
 [full ASCII / Hex table]({{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}).
-Want more practice? [Make a new set]({{ '/unplugged/ascii-messages-generator/' | relative_url }}).
 
 <section class="answer-key">
 <h2>Answer key</h2>

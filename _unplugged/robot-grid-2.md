@@ -7,8 +7,12 @@ topics: [Robot programs]
 time: 30
 grouping: Solo, then compare with a partner
 materials: "Pencil"
-generator: /unplugged/robot-grid-generator/
 scripts: [/assets/js/unplugged/robot-page.js]
+generator: /unplugged/robot-grid-generator/
+generator_presets:
+  - { label: "Loops and procedures", query: "level=ap" }
+  - { label: "Moves and turns", query: "level=starter" }
+  - { label: "CAN_MOVE", query: "level=challenge" }
 ---
 
 Real programs don't write `MOVE_FORWARD ()` six times in a row. This set adds `REPEAT n TIMES` and procedures with a parameter, the two shortcuts the AP exam uses most. The trick is the same as before: follow the code one step at a time, and count every time around a loop.
@@ -22,7 +26,6 @@ right on the grid, one line of code at a time.
 
 <div class="robot-questions" id="q-robot_2"></div>
 
-Want more? [Make a new set of robot questions]({{ '/unplugged/robot-grid-generator/' | relative_url }}).
 
 <section class="answer-key robot-answer-key" id="key-robot_2"></section>
 

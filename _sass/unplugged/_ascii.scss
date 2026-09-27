@@ -69,13 +69,37 @@ table.ascii-table {
   border-radius: 4px;
 }
 
-// A wider box for writing a whole code (a decimal number, 8 bits, or 2 hex
-// digits) instead of a single letter.
+// A wider box for writing a whole decimal code (up to three digits) instead
+// of a single letter.
 .value-box {
   min-width: 3.6em;
   height: 1.7em;
   border: 1.5px solid $text-color;
   border-radius: 4px;
+}
+
+// Encode direction, binary or hex format: one small box per digit instead
+// of squeezing a whole 8-bit byte (or 2-digit hex code) into one narrow
+// box. Sized for a 6th grader's handwriting even at eight-to-a-letter.
+.bit-row,
+.hex-row {
+  display: flex;
+  gap: 0.2em;
+  margin-top: 0.25em;
+}
+
+.bit-box,
+.hex-box {
+  width: 1.2em;
+  height: 1.6em;
+  border: 1.5px solid $text-color;
+  border-radius: 3px;
+}
+
+// A small gap between the two nibbles of a byte, so it reads as two groups
+// of four the way the place-value header above the chart does.
+.bit-row .bit-box:nth-child(4) {
+  margin-right: 0.3em;
 }
 
 // A space in the message. Never rely on color alone (black-and-white
@@ -105,7 +129,7 @@ table.ascii-table {
   }
 
   .value-box {
-    min-width: 1.9em;
+    min-width: 2.5em;
   }
 }
 
@@ -151,6 +175,11 @@ table.ascii-table {
   .value-box {
     height: 1.4em;
   }
+
+  .bit-box,
+  .hex-box {
+    height: 1.35em;
+  }
 }
 
 // Chart with a blank row to fill in (binary or hex), used by the binary and
@@ -180,6 +209,19 @@ table.ascii-chart {
   &.fill-binary tr.chart-blank td {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
+
+  // The one letter already filled in: bold plus a shaded background so it
+  // reads as "given" without relying on color (black-and-white printers).
+  tr.chart-blank td.is-given {
+    background: $grey-color-light;
+    font-weight: 700;
+  }
+}
+
+.ascii-chart-hint {
+  margin: -0.4em 0 1em;
+  font-size: 0.9em;
+  color: $grey-color-dark;
 }
 
 // Answer key: a plain numbered list of decoded answers, compact so the

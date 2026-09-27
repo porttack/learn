@@ -50,3 +50,20 @@ publisher for its terms.
 
 This site carries no ads, sponsor logos, or donation links, in keeping
 with the NonCommercial terms above.
+
+## CS Unplugged activities
+
+The [CS Unplugged]({{ '/unplugged/' | relative_url }}) section mixes original
+sheets with adaptations, and each sheet names its own source and license at
+the bottom. Adaptations keep their source's license, page by page:
+
+- From the *CS Unplugged* book (2015) by Tim Bell, Ian H. Witten and Mike
+  Fellows: [CC BY-NC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+- From the [csunplugged.org](https://www.csunplugged.org/en/) website:
+  [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+- From [Teaching London Computing](https://teachinglondoncomputing.org/re-using-our-material/)
+  by Paul Curzon, Queen Mary University of London: CC BY-NC-SA.
+
+Traditional games such as Nim are in the public domain; our write-ups of
+them are original.
+

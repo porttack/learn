@@ -7,8 +7,12 @@ topics: [Boolean logic]
 time: 30
 grouping: Solo
 materials: "Pencil"
-generator: /unplugged/creature-sorting-generator/
 scripts: [/assets/js/unplugged/creature-page.js]
+generator: /unplugged/creature-sorting-generator/
+generator_presets:
+  - { label: "One operator", query: "level=one" }
+  - { label: "Two operators", query: "level=two" }
+  - { label: "Parentheses and NOT", query: "level=parens" }
 ---
 
 Every time a program makes a decision, it's asking a yes-or-no question.
@@ -45,7 +49,6 @@ anything.
 
 <div class="creature-questions" id="q-creature_sorting"></div>
 
-Want more? [Make a new set of creature-sorting questions]({{ '/unplugged/creature-sorting-generator/' | relative_url }}).
 
 <section class="answer-key creature-answer-key" id="key-creature_sorting"></section>
 

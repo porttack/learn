@@ -1,0 +1,44 @@
+// Sorting network trace (assets/js/unplugged/sortnet-render.js).
+// The fixed worksheet's own containers -- lays its three rounds out two
+// per row instead of stacked full-width, since each diagram is tall and
+// narrow.
+.sortnet-problems,
+.sortnet-key {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 1.2em;
+}
+
+.sortnet-fig {
+  flex: 0 0 auto;
+  margin: 0.4em 0 1.2em;
+  text-align: center;
+
+  figcaption {
+    font-weight: 700;
+    font-size: 0.9em;
+    margin-top: 0.2em;
+  }
+}
+
+svg.sortnet-diagram {
+  width: 11em;
+  height: auto;
+}
+
+@media print {
+  .sortnet-problems,
+  .sortnet-key {
+    gap: 0 0.6em;
+  }
+
+  .sortnet-fig {
+    break-inside: avoid;
+    margin: 0.1em 0 0.6em;
+  }
+
+  svg.sortnet-diagram {
+    width: 9.5em;
+  }
+}

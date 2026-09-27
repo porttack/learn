@@ -7,8 +7,11 @@ topics: [Data representation]
 time: 30
 grouping: Solo, or trade with a partner
 materials: "Pencil"
-generator: /unplugged/pixel-pictures-generator/
 scripts: [/assets/js/unplugged/pixel-pictures-page.js]
+generator: /unplugged/pixel-pictures-generator/
+generator_presets:
+  - { label: "Small pictures", query: "size=small" }
+  - { label: "Large pictures", query: "size=large" }
 ---
 
 Every picture on a screen, every photo, every icon, every letter you're
@@ -114,7 +117,6 @@ the same information with less writing.
 Want the harder version of this, with real numbers to work out? See
 [Pixel pictures: how much do you save?]({{ '/unplugged/pixel-pictures-compression/' | relative_url }}).
 
-Want more pictures to decode? [Make a new set]({{ '/unplugged/pixel-pictures-generator/' | relative_url }}).
 
 <section class="answer-key pixel-answer-key" markdown="1">
 <div id="key-pixel-pictures"></div>

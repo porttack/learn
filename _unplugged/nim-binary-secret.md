@@ -8,6 +8,9 @@ time: 25
 grouping: Solo or pair
 materials: "Pencil"
 generator: /unplugged/nim-binary-secret-generator/
+generator_presets:
+  - { label: "3 piles", query: "piles=3" }
+  - { label: "4 piles", query: "piles=4" }
 ---
 
 {% assign labels = "A,B,C,D,E,F" | split: "," %}

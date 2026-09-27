@@ -7,8 +7,12 @@ topics: [Robot programs]
 time: 30
 grouping: Solo, then compare with a partner
 materials: "Pencil"
-generator: /unplugged/robot-grid-generator/
 scripts: [/assets/js/unplugged/robot-page.js]
+generator: /unplugged/robot-grid-generator/
+generator_presets:
+  - { label: "CAN_MOVE", query: "level=challenge" }
+  - { label: "Loops and procedures", query: "level=ap" }
+  - { label: "Moves and turns", query: "level=starter" }
 ---
 
 Now the robot can look before it moves. `CAN_MOVE` and `REPEAT UNTIL` let one program handle many different grids, but they also let a program get stuck, crash, or walk right past the goal. For each program, work out what really happens, not what the programmer hoped would happen.
@@ -22,7 +26,6 @@ right on the grid, one line of code at a time.
 
 <div class="robot-questions" id="q-robot_3"></div>
 
-Want more? [Make a new set of robot questions]({{ '/unplugged/robot-grid-generator/' | relative_url }}).
 
 <section class="answer-key robot-answer-key" id="key-robot_3"></section>
 
