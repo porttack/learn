@@ -4,8 +4,8 @@
 //   node tools/check_text_compression.mjs            frozen sheet + bank + 300 generated sets
 //   node tools/check_text_compression.mjs --gen 50   fewer generated sets
 import { execFileSync } from "node:child_process";
-import { compress, decode } from "../assets/js/unplugged/compression.js";
-import { RHYMES, FIXED_POEM, generateSet } from "../assets/js/unplugged/compression-gen.js";
+import { compress, decode, letterCounts } from "../assets/js/unplugged/compression.js";
+import { RHYMES, FIXED_POEM, SHORT_AND_SWEET_POEM, generateSet } from "../assets/js/unplugged/compression-gen.js";
 import { makeRng } from "../assets/js/unplugged/rng.js";
 
 let failures = 0;
@@ -29,6 +29,31 @@ console.log(`frozen sheet: ${frozen.tokens.length} tokens, ${Object.keys(frozen.
 if (frozen.original !== FIXED_POEM.text) {
   failures++;
   console.log("FAIL frozen sheet: _data/unplugged/text_compression_fixed.yml is stale -- re-run tools/freeze_text_compression.mjs");
+}
+
+// The "Short and Sweet" poem (a paper cross-out exercise, no rendered
+// boxes): confirm the frozen letter counts the hidden key quotes are
+// actually what compress() gets for the book's poem text, not hand-typed.
+const sas = frozen.short_and_sweet;
+if (!sas || sas.original !== SHORT_AND_SWEET_POEM.text) {
+  failures++;
+  console.log("FAIL short_and_sweet: frozen original text doesn't match SHORT_AND_SWEET_POEM -- re-run tools/freeze_text_compression.mjs");
+} else {
+  const fresh = compress(SHORT_AND_SWEET_POEM.text);
+  check("short_and_sweet", SHORT_AND_SWEET_POEM.text, fresh);
+  const counts = letterCounts(SHORT_AND_SWEET_POEM.text, fresh);
+  if (
+    counts.original !== sas.letters_original ||
+    counts.kept !== sas.letters_kept ||
+    counts.saved !== sas.letters_saved
+  ) {
+    failures++;
+    console.log("FAIL short_and_sweet: frozen letter counts are stale -- re-run tools/freeze_text_compression.mjs");
+    console.log(`  want: ${JSON.stringify(counts)}`);
+    console.log(`  got:  ${JSON.stringify({ original: sas.letters_original, kept: sas.letters_kept, saved: sas.letters_saved })}`);
+  } else {
+    console.log(`short_and_sweet: ${counts.saved}/${counts.original} letters saved, matches frozen key`);
+  }
 }
 
 // Every rhyme in the generator's bank, compressed fresh.

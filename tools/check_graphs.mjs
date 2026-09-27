@@ -4,9 +4,14 @@
 //   node tools/check_graphs.mjs            fixed worksheets + 150 generated maps each
 //   node tools/check_graphs.mjs --gen 50    fewer generated maps
 //
-// Fixed worksheets live in _data/unplugged/{muddy_city,poor_cartographer,
-// tourist_town}.yml. YAML is converted with Ruby (already required by
-// Jekyll) so this needs no npm packages, the same way
+// The Muddy City and Tourist Town fixed pages now use the CS Unplugged
+// book's own worksheet, transcribed into _data/unplugged/{muddy_city_book,
+// tourist_town_book}.yml so their answer keys can be proven here. The Poor
+// Cartographer page also uses the book's own (hand-illustrated) worksheets
+// and solution images; those maps' borders are too intricate to transcribe
+// reliably, so there is no computed check for them here -- the hidden key
+// is just the book's own solution page images. YAML is converted with Ruby
+// (already required by Jekyll) so this needs no npm packages, the same way
 // tools/check_robot_sets.mjs checks the robot worksheets.
 import { execFileSync } from "node:child_process";
 import { makeRng } from "../assets/js/unplugged/rng.js";
@@ -91,9 +96,11 @@ function checkCartographer(label, map) {
   if (k > 1 && existsColoring(n, edges, k - 1)) fail(label, `claims ${k} colors are needed, but ${k - 1} also works`);
 }
 
-const cartData = loadYaml("poor_cartographer.yml");
-cartData.maps.forEach((m, i) => checkCartographer(`poor_cartographer.yml map ${i + 1} (${m.label})`, m));
-console.log(`poor_cartographer.yml: ${cartData.maps.length} maps checked`);
+// No fixed-worksheet check here: the page uses the book's own hand-drawn
+// "Graph Coloring 1-4" worksheets, whose wobbly borders can't be traced
+// into an adjacency list with confidence. The hidden key is the book's own
+// solution page images instead. checkCartographer (above) still runs
+// against the generated maps below, which come from known rectangles.
 
 // ---- Tourist Town: dominating sets -----------------------------------------
 
@@ -110,9 +117,22 @@ function checkTouristTown(label, map) {
   }
 }
 
-const townData = loadYaml("tourist_town.yml");
-townData.maps.forEach((m, i) => checkTouristTown(`tourist_town.yml map ${i + 1} (${m.label})`, m));
-console.log(`tourist_town.yml: ${townData.maps.length} maps checked`);
+// The book's own "Ice Cream Vans" map printed on the Tourist Town sheet:
+// its key states six vans are the fewest possible, so prove it.
+{
+  const book = loadYaml("tourist_town_book.yml");
+  const idx = Object.fromEntries(book.corners.map((c, i) => [c, i]));
+  const edges = book.streets.map(([a, b]) => ({ a: idx[a], b: idx[b] }));
+  const n = book.corners.length;
+  if (!isConnected(n, edges)) fail("tourist_town_book.yml", "town is not fully connected by streets");
+  const { size, set } = minDominatingSet(n, edges);
+  if (!isDominatingSet(n, edges, set)) fail("tourist_town_book.yml", "claimed van placement doesn't cover every corner");
+  if (size !== book.min_vans) {
+    fail("tourist_town_book.yml", `key says ${book.min_vans} vans, minDominatingSet says ${size}`);
+  } else {
+    console.log(`tourist_town_book.yml: fewest vans = ${size} (matches the key), e.g. at ${set.map((i) => book.corners[i]).join(", ")}`);
+  }
+}
 
 // ---- Generated maps ---------------------------------------------------------
 

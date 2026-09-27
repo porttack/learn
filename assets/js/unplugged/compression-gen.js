@@ -61,6 +61,11 @@ const HS_BANK = ["baa", "row", "hickory", "rain", "twinkle"];
 // The main worksheet's own decode puzzle -- frozen into
 // _data/unplugged/text_compression_fixed.yml by
 // tools/freeze_text_compression.mjs, not part of the "new set" bank above.
+// This is the CS Unplugged book's own worksheet poem (2015 ed., p.29); the
+// printed page shows the book's own hand-drawn box-and-arrow diagram
+// (assets/img/unplugged/text-compression/pease-porridge-worksheet.png), so
+// this text is used only to freeze and verify the hidden key, never rendered
+// as our own boxes.
 export const FIXED_POEM = {
   title: "Pease Porridge Hot",
   text:
@@ -72,6 +77,23 @@ export const FIXED_POEM = {
     "Some like it cold,\n" +
     "Some like it in the pot,\n" +
     "Nine days old.",
+};
+
+// The book's "Short and Sweet" worksheet poem (2015 ed., p.31-32): a student
+// crosses out repeats by hand on paper, so we never render boxes for it
+// either. Frozen letter counts give the hidden key a "how good was that"
+// benchmark, computed here rather than hand-typed.
+export const SHORT_AND_SWEET_POEM = {
+  title: "I Know an Old Lady",
+  text:
+    "I know an old lady who swallowed a bird.\n" +
+    "How absurd! She swallowed a bird!\n" +
+    "She swallowed the bird to catch the spider\n" +
+    "That wriggled and jiggled\n" +
+    "and tickled inside her.\n" +
+    "She swallowed the spider to catch the fly.\n" +
+    "I don't know why she swallowed a fly.\n" +
+    "Perhaps she'll die...",
 };
 
 // One puzzle: a title, the original text (kept only for the checker/key),

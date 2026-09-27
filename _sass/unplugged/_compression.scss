@@ -58,6 +58,20 @@
   }
 }
 
+// The book's own hand-drawn worksheet diagram (assets/img/unplugged/
+// text-compression/pease-porridge-worksheet.png): give it a sensible cap so
+// it doesn't dominate the page on a wide screen, but stays big enough to
+// read the tiny per-letter boxes once print shrinks everything down.
+#fig-compression-worksheet img {
+  max-width: 620px;
+}
+
+// The "compressing my bananas" bonus cartoon is just a smile, not something
+// to study -- keep it modest.
+.compress-bonus img {
+  max-width: 260px;
+}
+
 @media print {
   .compress-line {
     line-height: 1.35;
@@ -77,5 +91,17 @@
       width: 190px;
       height: auto;
     }
+  }
+
+  #fig-compression-worksheet img {
+    max-width: 380px;
+  }
+
+  .compress-bonus img {
+    max-width: 170px;
+  }
+
+  .compress-bonus {
+    margin: 0.4em 0;
   }
 }

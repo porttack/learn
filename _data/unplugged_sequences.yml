@@ -122,3 +122,13 @@
     - muddy-city
     - tourist-town
     - poor-cartographer
+
+- id: ms-instructions
+  title: "Computers follow instructions"
+  level: ms
+  blurb: >-
+    Give exact instructions to a partner who has to follow them to the
+    letter, then follow a map that works just like a simple machine.
+  steps:
+    - marching-orders
+    - treasure-island

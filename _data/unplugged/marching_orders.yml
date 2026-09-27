@@ -1,0 +1,27 @@
+# CS Unplugged (2015), Activity 13 "Marching Orders: Programming Languages."
+# Six pictures on the book's own photocopy master (p.124, lettered A-F) split
+# between two players so neither sees the other's pictures. Picture E (a
+# dot-grid shape) is deliberately left out here: connect the dots as drawn
+# and it traces a stepped, swastika-like figure, which isn't something to
+# put in front of middle schoolers regardless of the book's intent. See the
+# final report for this note in full.
+#
+# tools/check_marching_orders.mjs checks this file for internal consistency
+# (no picture used twice, both main rounds balanced, every referenced image
+# file actually exists) -- there's no "correct answer" to verify here the
+# way the other unplugged puzzles have one.
+players:
+  A:
+    pictures: [a, c]
+  B:
+    pictures: [b, d]
+challenge:
+  player: A
+  picture: f
+
+pictures:
+  a: "a person: a circle head, a square body, a triangle base"
+  b: "three round faces in a row: happy, blank, and sad"
+  c: "a square with rings inside it, above a circle with rings inside it"
+  d: "a large square split into a big rectangle and several smaller pieces"
+  f: "a phone keypad, 12 buttons in 4 rows"

@@ -1,0 +1,122 @@
+// Styles for the marching unplugged activity (_unplugged/marching-orders.md).
+
+.marching-demo,
+.marching-howto,
+.marching-check,
+.marching-reading {
+  h2 {
+    margin: 1em 0 0.3em;
+  }
+}
+
+#fig-demo-result {
+  max-width: 200px;
+  margin: 0.6em 0;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid $grey-color-light;
+    border-radius: 4px;
+  }
+
+  figcaption {
+    font-size: 0.85em;
+    color: $grey-color-dark;
+    margin-top: 0.3em;
+  }
+}
+
+// Each player's own pictures, shown side by side.
+.marching-pictures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin: 0.8em 0 1.2em;
+}
+
+.marching-pic {
+  width: 220px;
+  margin: 0;
+  text-align: center;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid $grey-color-light;
+    border-radius: 4px;
+  }
+
+  figcaption {
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-top: 0.3em;
+  }
+}
+
+.marching-round-label {
+  font-weight: 600;
+  margin: 0.8em 0 0.2em;
+}
+
+// A player's drawing space needs real room for a 6th grader's pencil, not
+// the graphic-organizer default.
+.marching-player .draw-box {
+  min-height: 8em;
+}
+
+// Every player's whole section always starts on its own page: they must
+// never see each other's secret pictures, and once the sheet is printed a
+// forced page break is the only thing keeping that promise. Matches the
+// same rule in _search.scss for search-battleships.
+html:not(.only-player-a):not(.only-player-b) .marching-player + .marching-player {
+  break-before: page;
+}
+
+.marching-player {
+  h2 {
+    margin: 0.5em 0 0.2em;
+  }
+
+  h3 {
+    margin: 0.8em 0 0.2em;
+  }
+}
+
+@media print {
+  .marching-pic,
+  #fig-demo-result {
+    break-inside: avoid;
+  }
+
+  .marching-pictures {
+    break-inside: avoid;
+    margin: 0.5em 0 0.8em;
+  }
+
+  .marching-round-label {
+    break-after: avoid;
+    margin: 0.6em 0 0.15em;
+  }
+
+  .marching-demo,
+  .marching-howto,
+  .marching-check,
+  .marching-reading {
+    h2 {
+      margin: 0.6em 0 0.2em;
+    }
+
+    p {
+      margin: 0.4em 0;
+    }
+
+    ol {
+      margin: 0.4em 0;
+    }
+  }
+
+  .draw-box {
+    margin: 0.5em 0;
+  }
+}

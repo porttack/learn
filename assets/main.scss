@@ -1481,8 +1481,13 @@ table.checkoff.light-message td {
   }
 
   .print-unit-divider,
-  .answer-key,
   .cutout-page {
+    break-before: page;
+  }
+
+  // Only a SHOWN key starts a new page: a hidden one (the default) must not
+  // leave a blank trailing sheet behind.
+  html.show-key .answer-key {
     break-before: page;
   }
 

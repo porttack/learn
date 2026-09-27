@@ -11,24 +11,17 @@ generator: /unplugged/text-compression-generator/
 generator_presets:
   - { label: "One rhyme", query: "level=ms" }
   - { label: "Two rhymes", query: "level=hs" }
-scripts: [/assets/js/unplugged/compression-page.js]
 ---
 
-Computers can only hold so much data, so they squeeze repeated text down
-before storing it. Instead of writing the same words twice, they write the
-words once, then a short **box** that says "copy those same words again."
+Computers can only store and send a limited amount of data, so they
+compress text before they save it. Instead of writing repeated words
+again, a computer writes the words once, then a short box that points
+back to where they first appeared.
 
 ## How a box works
 
-1. Read the poem from top to bottom, left to right, like normal.
-2. The first time words appear, just read them.
-3. A small circled number is a **box**. It means "these exact words already
-   showed up earlier, next to the same number."
-4. Find that number's first appearance, then write those same words on the
-   blank line inside the box.
-5. Keep going. The same number always means the same words.
-
-**Worked example:**
+Look for patterns in this poem. Can you find groups of two or more
+letters that are repeated, or even whole words or phrases?
 
 <figure class="compress-example">
 <svg viewBox="0 0 260 120" width="260" height="120" role="img" aria-label="Line one reads Pitter patter. Line two has a numbered box, with an arrow curving back up to Pitter patter, and a blank line after the box.">
@@ -43,39 +36,47 @@ words once, then a short **box** that says "copy those same words again."
     </marker>
   </defs>
 </svg>
-<figcaption>Box <strong>1</strong> points back to "Pitter patter." You write "Pitter patter" on the blank line next to box 1.</figcaption>
+<figcaption>"Pitter patter" repeats, so the second time it is replaced by a
+box. The box's number always matches the number by the words it stands
+for.</figcaption>
 </figure>
 
 ## Decode the poem
 
-This old rhyme has three repeated parts, boxed as 1, 2, and 3. Box 1 is
-short (two words). Box 3 is long (a whole line and a half). Long repeats
-save the most space, which is exactly why computers look for them.
+Many of the words and letters are missing in this poem. Can you fill in
+the missing letters and words to complete it correctly? You will find
+each one in the box that its arrow is pointing to.
 
-<noscript><p class="callout warning">This puzzle draws its boxes with JavaScript. Turn JavaScript on to see it.</p></noscript>
+<figure id="fig-compression-worksheet">
+  <img src="{{ '/assets/img/unplugged/text-compression/pease-porridge-worksheet.png' | relative_url }}" alt="A hand drawn poem with several words missing letters. Small numbered boxes with arrows point back to the earlier place in the poem where the missing letters or words already appear, so the reader can copy them in.">
+  <figcaption>From the CS Unplugged book. Follow each arrow back to find what belongs in its box.</figcaption>
+</figure>
 
-<div class="compress-puzzle" id="q-compression"></div>
+Write out the whole poem here once you have decoded it:
 
-<script type="application/json" data-compression-set data-puzzle="#q-compression" data-key="#key-compression">{{ site.data.unplugged.text_compression_fixed | jsonify }}</script>
+<p class="fill-line"></p>
+<p class="fill-line"></p>
+<p class="fill-line"></p>
+<p class="fill-line"></p>
 
 ## Now compress one yourself
 
-Here is another rhyme, written out in full with nothing hidden.
+Pretend you are a computer trying to fit as much into your disk as
+possible. Cross out all the groups of two or more letters that have
+already occurred. These are no longer needed, since they could be
+replaced by a pointer. Your goal is to get as many letters crossed out
+as possible.
 
 <div class="compress-poem">
-<p class="compress-line">Twinkle, twinkle, little star,</p>
-<p class="compress-line">How I wonder what you are.</p>
-<p class="compress-line">Up above the world so high,</p>
-<p class="compress-line">Like a diamond in the sky.</p>
-<p class="compress-line">Twinkle, twinkle, little star,</p>
-<p class="compress-line">How I wonder what you are.</p>
+<p class="compress-line">I know an old lady who swallowed a bird.</p>
+<p class="compress-line">How absurd! She swallowed a bird!</p>
+<p class="compress-line">She swallowed the bird to catch the spider</p>
+<p class="compress-line">That wriggled and jiggled</p>
+<p class="compress-line">and tickled inside her.</p>
+<p class="compress-line">She swallowed the spider to catch the fly.</p>
+<p class="compress-line">I don't know why she swallowed a fly.</p>
+<p class="compress-line">Perhaps she'll die...</p>
 </div>
-
-On your own paper, or right over these lines, **cross out every group of 2
-or more letters that is an exact repeat of something earlier in this same
-poem.** A repeat can be a whole line, a few words, or just part of a word.
-Anything crossed out could be replaced by a box, the same way the poem
-above was.
 
 | | |
 |---|---|
@@ -88,7 +89,7 @@ above was.
 order. If it still says the poem, your compression works.
 
 <aside class="callout challenge" markdown="1">
-**CHALLENGE**
+**EXTRA FOR EXPERTS**
 
 Computers do not draw boxes. They write two numbers instead: *(back,
 copy)*. "BAN(2,3)" means: from here, go back 2 letters, then copy 3
@@ -97,14 +98,39 @@ short word with a repeated ending, like "MOMMY," and figure out its own
 (back, copy) pair.
 </aside>
 
+<figure class="compress-bonus">
+  <img src="{{ '/assets/img/unplugged/text-compression/compressing-bananas.png' | relative_url }}" alt="A cartoon of two monkeys on a branch. One asks, 'What are you doing?' The other, holding a peeled banana, answers, 'I'm compressing my bananas!'">
+</figure>
+
+## What's it all about?
+
+Computer storage keeps growing, but we always find more to fill it:
+whole libraries, photos, songs, and video all need somewhere to live,
+and big files are slow to send over the internet. Compressing data lets
+a computer store more, and send files faster, without buying more
+storage or a faster connection.
+
+The method in this activity, pointing back to an earlier repeat, is
+called **LZ compression**, after Lempel and Ziv, the two people who
+invented it in the 1970s. It works for any language and can often cut a
+file's size in half. You have already used it without knowing it: it is
+part of what makes a ZIP file, or a PNG or GIF picture, smaller than the
+raw data inside it.
+
 **Learn more:** this trick is called
-[LZ77 compression](https://en.wikipedia.org/wiki/LZ77_and_LZ78), and it is
-still used inside ZIP files and PNG images today.
+[LZ77 compression](https://en.wikipedia.org/wiki/LZ77_and_LZ78).
 
 <section class="answer-key" markdown="1">
+## Answer key
 
-## Decoded poem
+**Decode the poem.** The poem reads:
 
-<div class="compress-key" id="key-compression"></div>
+<p>{{ site.data.unplugged.text_compression_fixed.original | newline_to_br }}</p>
 
+**Now compress one yourself.** A computer finds
+**{{ site.data.unplugged.text_compression_fixed.short_and_sweet.letters_saved }}**
+letters worth crossing out here, out of
+**{{ site.data.unplugged.text_compression_fixed.short_and_sweet.letters_original }}**
+in the whole poem. Getting close to that is a good compression; you do
+not need to match it exactly, since more than one set of boxes can work.
 </section>

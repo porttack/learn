@@ -156,5 +156,12 @@
         "text": "old."
       }
     ]
+  },
+  "short_and_sweet": {
+    "title": "I Know an Old Lady",
+    "original": "I know an old lady who swallowed a bird.\nHow absurd! She swallowed a bird!\nShe swallowed the bird to catch the spider\nThat wriggled and jiggled\nand tickled inside her.\nShe swallowed the spider to catch the fly.\nI don't know why she swallowed a fly.\nPerhaps she'll die...",
+    "letters_original": 210,
+    "letters_kept": 153,
+    "letters_saved": 57
   }
 }

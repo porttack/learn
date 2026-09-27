@@ -197,4 +197,11 @@ table.freq-table {
   .cipher-wheel-fig {
     break-inside: avoid;
   }
+
+  // Scale both wheels together (they must stay in proportion to fit once
+  // cut out) so the licence line fits on the wheel page instead of
+  // spilling onto a page of its own.
+  .cipher-wheel-figs {
+    zoom: 0.88;
+  }
 }

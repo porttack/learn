@@ -1,0 +1,81 @@
+# CS Unplugged (2015), Activity 12 "Treasure Hunt: Finite-State Automata."
+# Transcribed from "The complete map looks like this:" (book p.112, the
+# teacher's answer version of the student map on p.113). Each island has
+# exactly two ships leaving it, A and B; Treasure Island is the end of the
+# line and has none.
+#
+# Verified against the book's own worked examples (p.112): starting at
+# Pirates' Island, both BBBABAB and BBBABBABAB land on Treasure Island. See
+# tools/check_treasure_island.mjs, which recomputes every field below from
+# `routes` alone (nothing here is hand-typed without a check).
+start: pirates
+treasure: treasure
+
+islands:
+  - id: pirates
+    name: "Pirates' Island"
+  - id: shipwreck
+    name: "Shipwreck Bay"
+  - id: deadman
+    name: "Dead Man's Island"
+  - id: musket
+    name: "Musket Hill"
+  - id: mutineers
+    name: "Mutineers' Island"
+  - id: smugglers
+    name: "Smugglers' Cove"
+  - id: treasure
+    name: "Treasure Island"
+
+# island: { A: <ship A's destination>, B: <ship B's destination> }
+routes:
+  pirates: { A: shipwreck, B: musket }
+  shipwreck: { A: musket, B: deadman }
+  deadman: { A: musket, B: shipwreck }
+  musket: { A: pirates, B: mutineers }
+  mutineers: { A: smugglers, B: deadman }
+  smugglers: { A: pirates, B: treasure }
+
+# The worked example printed on the sheet: the book's own BBBABAB, starting
+# at Pirates' Island. `path` is every island visited, start to finish.
+worked_example:
+  route: "BBBABAB"
+  path: [pirates, musket, mutineers, deadman, musket, mutineers, smugglers, treasure]
+
+# A second book example, checked but not printed on the sheet (both are
+# claimed to reach Treasure Island; only one needs to be walked step by step
+# for the student).
+book_example_2:
+  route: "BBBABBABAB"
+  end: treasure
+
+# "Follow the route" practice questions, all starting at Pirates' Island.
+practice_routes:
+  - route: "AA"
+    end: musket
+  - route: "BBA"
+    end: smugglers
+  - route: "AAA"
+    end: pirates
+    note: "a loop back to the start"
+
+# Shortest route from Pirates' Island to Treasure Island (breadth-first
+# search over the map above -- there is only one route this short).
+shortest_route:
+  sequence: "BBAB"
+  length: 4
+  path: [pirates, musket, mutineers, smugglers, treasure]
+
+# The pattern question: once you're standing on Musket Hill, ship B then
+# ship A then ship B always finishes the trip.
+musket_finish:
+  start: musket
+  route: "BAB"
+  path: [musket, mutineers, smugglers, treasure]
+
+# The challenge callout's hidden-key example: a route from Pirates' Island
+# that visits Dead Man's Island twice before finishing at Treasure Island.
+challenge_example:
+  route: "ABBBABAB"
+  path: [pirates, shipwreck, deadman, shipwreck, deadman, musket, mutineers, smugglers, treasure]
+  visits_twice: deadman

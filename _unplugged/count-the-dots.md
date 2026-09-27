@@ -9,10 +9,11 @@ grouping: Solo or pair
 materials: "Pencil, and a few coins or scraps of paper (optional)"
 ---
 
-Everything on a computer (words, photos, songs, games, even the apps
-themselves) is stored using just two symbols: **0** and **1**. In this
-activity you'll find out how two symbols are enough to write any number,
-using five cards and some dots.
+So you thought you knew how to count? Here is a new way to do it.
+Everything you see or hear on a computer (words, pictures, numbers,
+movies, and even sound) is stored using just two symbols: **0** and
+**1**. In this activity you'll find out how, using five cards and some
+dots.
 
 ## Why only two?
 
@@ -93,36 +94,47 @@ For example, **01001** means: 16 down, 8 up, 4 down, 2 down, 1 up. That's
 
 ## Part 4: A message in lights
 
-Tom is stuck on the top floor of a department store after closing. He has
-tried calling and yelling, but no one can hear him. Across the street, one
-person is still working late at a computer. Tom plugs in a row of five
-strings of holiday lights and switches them on and off to send her a
-message in binary. Each row below is one letter.
+Tom is trapped on the top floor of a department store. It's just before
+Christmas, and he wants to get home. He has tried calling, even yelling,
+but there is no one around. Across the street, someone is still working
+late at a computer. How can he get her attention?
 
-Use the code **1 = a, 2 = b, 3 = c, …, 26 = z**. A lit bulb (●) is a 1. A
-dark bulb (○) is a 0.
+Then he has an idea: he can use the Christmas tree lights to send her a
+message! He plugs them in so he can turn them on and off, using the same
+binary code you just learned.
 
-<table class="checkoff light-message">
-  <colgroup><col style="width: 50%"><col style="width: 25%"><col style="width: 25%"></colgroup>
-  <thead><tr><th>Lights (16 8 4 2 1)</th><th>Number</th><th>Letter</th></tr></thead>
+Each row in the picture is one letter, read top to bottom in the order
+**16 8 4 2 1**. A lit tree is a 1. A dark square is a 0. Use the code
+**1 = a, 2 = b, 3 = c, …, 26 = z** to work out Tom's message.
+
+<div style="display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1.2em;">
+<figure id="fig-secret-message" style="flex: none; margin: 0.5em 0;">
+  <img src="{{ '/assets/img/unplugged/count-the-dots/secret-message-grid.png' | relative_url }}" alt="A grid of fifteen rows and five columns. Some cells are dark and empty; others show a small lit Christmas tree. Two rows are entirely dark, splitting the grid into three groups of letters." style="width: 170px; max-width: 170px;">
+  <figcaption>Tom's message, from the CS Unplugged book.</figcaption>
+</figure>
+
+<table class="checkoff light-message" style="flex: 1 1 260px; margin-top: 0.5em;">
+  <colgroup><col style="width: 20%"><col style="width: 40%"><col style="width: 40%"></colgroup>
+  <thead><tr><th>Row</th><th>Number</th><th>Letter</th></tr></thead>
   <tbody>
-    <tr><td>○ ● ○ ○ ○</td><td></td><td></td></tr>
-    <tr><td>○ ○ ● ○ ●</td><td></td><td></td></tr>
-    <tr><td>○ ● ● ○ ○</td><td></td><td></td></tr>
-    <tr><td>● ○ ○ ○ ○</td><td></td><td></td></tr>
-    <tr><td colspan="3"><em>(space)</em></td></tr>
-    <tr><td>○ ● ○ ○ ●</td><td></td><td></td></tr>
-    <tr><td>○ ● ● ○ ●</td><td></td><td></td></tr>
-    <tr><td colspan="3"><em>(space)</em></td></tr>
-    <tr><td>● ○ ● ○ ○</td><td></td><td></td></tr>
-    <tr><td>● ○ ○ ● ○</td><td></td><td></td></tr>
-    <tr><td>○ ○ ○ ○ ●</td><td></td><td></td></tr>
-    <tr><td>● ○ ○ ○ ○</td><td></td><td></td></tr>
-    <tr><td>● ○ ○ ○ ○</td><td></td><td></td></tr>
-    <tr><td>○ ○ ● ○ ●</td><td></td><td></td></tr>
-    <tr><td>○ ○ ● ○ ○</td><td></td><td></td></tr>
+    <tr><td>1</td><td></td><td></td></tr>
+    <tr><td>2</td><td></td><td></td></tr>
+    <tr><td>3</td><td></td><td></td></tr>
+    <tr><td>4</td><td></td><td></td></tr>
+    <tr><td colspan="3"><em>(row 5 is dark: space)</em></td></tr>
+    <tr><td>6</td><td></td><td></td></tr>
+    <tr><td>7</td><td></td><td></td></tr>
+    <tr><td colspan="3"><em>(row 8 is dark: space)</em></td></tr>
+    <tr><td>9</td><td></td><td></td></tr>
+    <tr><td>10</td><td></td><td></td></tr>
+    <tr><td>11</td><td></td><td></td></tr>
+    <tr><td>12</td><td></td><td></td></tr>
+    <tr><td>13</td><td></td><td></td></tr>
+    <tr><td>14</td><td></td><td></td></tr>
+    <tr><td>15</td><td></td><td></td></tr>
   </tbody>
 </table>
+</div>
 
 Tom's message: <span class="fill-line"></span>
 

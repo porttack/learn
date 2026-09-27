@@ -1,0 +1,98 @@
+// Styles for the treasure unplugged activity (_unplugged/treasure-island.md).
+
+#fig-treasure-map {
+  margin: 1em 0;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  figcaption {
+    font-size: 0.9em;
+    color: $grey-color-dark;
+    margin-top: 0.4em;
+  }
+}
+
+// The worked example: ship on the left, island landed on on the right.
+table.route-trace {
+  border-collapse: collapse;
+  margin: 0.8em 0 1.2em;
+
+  th,
+  td {
+    border: 1px solid $grey-color-light;
+    padding: 0.3em 0.8em;
+    text-align: left;
+  }
+
+  th {
+    background: $grey-color-light;
+    font-weight: 600;
+  }
+
+  td:first-child {
+    font-weight: 700;
+    text-align: center;
+  }
+}
+
+.route-questions {
+  margin: 0.8em 0 1em;
+
+  p {
+    margin: 0.5em 0;
+  }
+}
+
+.treasure-own-map {
+  margin-top: 1em;
+
+  h2 {
+    margin-bottom: 0.3em;
+  }
+}
+
+.treasure-reading {
+  h2 {
+    margin: 1em 0 0.3em;
+  }
+
+  p {
+    margin: 0.6em 0;
+  }
+}
+
+@media print {
+  #fig-treasure-map {
+    break-inside: avoid;
+    margin: 0.5em 0;
+  }
+
+  table.route-trace {
+    break-inside: avoid;
+    margin: 0.5em 0 0.8em;
+
+    th,
+    td {
+      padding: 0.15em 0.6em;
+    }
+  }
+
+  .route-questions {
+    margin: 0.5em 0 0.6em;
+
+    p {
+      margin: 0.3em 0;
+    }
+  }
+
+  .treasure-reading p {
+    margin: 0.4em 0;
+  }
+
+  .draw-box {
+    min-height: 7em;
+  }
+}

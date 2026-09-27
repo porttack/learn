@@ -3,21 +3,23 @@ title: "Tourist Town"
 source: cs-unplugged-2015
 level: ms
 kind: [single, supplementary]
-topics: [Graphs, Logic puzzles]
-time: 20
+topics: [Graphs, Algorithms]
+time: 30
 grouping: Solo
 materials: "Pencil"
-scripts: [/assets/js/unplugged/tourist-town-page.js]
 generator: /unplugged/tourist-town-generator/
 generator_presets:
   - { label: "Small town", query: "size=small" }
   - { label: "Big town", query: "size=big" }
 ---
 
-Tourist Town is hot, and every summer ice-cream vans park at street
-corners to sell to visitors. A visitor will walk to the end of their
-street, and one block further, but no farther. You'll place vans so every
-corner can reach one, using as few vans as possible.
+The map below shows the streets of Tourist Town. The lines are streets
+and the dots are street corners. Tourist Town is in a very hot country,
+and in summer, ice-cream vans park at street corners and sell ice-cream
+to visitors. You want to place vans so that everyone can reach one by
+walking to the end of their street, and then at most one block further.
+The question is: how many vans are needed, and which corners should they
+go on?
 
 ## The one rule
 
@@ -47,22 +49,22 @@ directly.
 
 ## What to do
 
-1. Circle a corner to place a van there.
-2. Check every other corner: covered if it has a van, or a street runs
-   straight to one that does.
-3. Keep adding vans until every corner is covered.
-4. Try to use as few vans as possible.
-5. Do the same for the second, bigger map.
+Work out how to place ice-cream vans on the street intersections below
+so that every other intersection is connected to one that has a van on
+it. Circle a corner to mark a van. Use as few vans as possible.
 
-<noscript><p class="callout warning">This worksheet draws its maps with JavaScript. Turn JavaScript on to see them.</p></noscript>
+<figure id="fig-tourist-town">
+  <img src="{{ '/assets/img/unplugged/tourist-town/ice-cream-vans.png' | relative_url }}" alt="Ice Cream Vans: a round map of Tourist Town's street corners and the streets connecting them, ready to mark with van locations.">
+  <figcaption>Ice Cream Vans</figcaption>
+</figure>
 
-<div class="graphs-questions" id="q-tourist-town"></div>
+Number of vans you used: <span class="fill-line short"></span>
 
 <aside class="callout note" markdown="1">
 **STUCK?**
 
-The corner with the most streets meeting it isn't always a good place for
-a van; it might cover a lot of corners that already had another way to be
+The corner with the most streets meeting it isn't always a good place
+for a van; it might cover corners that already had another way to be
 covered. Try starting from a corner near the edge of the map instead.
 </aside>
 
@@ -77,6 +79,33 @@ smallest. Could every corner still be covered with one fewer van?
 dominating set](https://en.wikipedia.org/wiki/Dominating_set), and towns
 use the same idea to place the fewest mailboxes or fire stations.
 
-<section class="answer-key graphs-answer-key" id="key-tourist-town"></section>
+## What's it all about?
 
-<script type="application/json" data-tourist-town-set data-questions="#q-tourist-town" data-key="#key-tourist-town">{{ site.data.unplugged.tourist_town.maps | jsonify }}</script>
+Nobody knows a fast way to find the smallest set of van locations for a
+map like this one, and nobody has proved that a fast way is impossible
+either. The slow, sure way is to check every possible set of corners: with
+the 26 corners in Tourist Town, there are 2<sup>26</sup>, or about 67
+million, ways to place vans at all. Checking one setup a second, that's
+around two years of checking, just for a town this size.
+
+That's the same shape of problem as the [Poor
+Cartographer]({{ '/unplugged/poor-cartographer/' | relative_url }})'s map
+coloring, and [Muddy City]({{ '/unplugged/muddy-city/' | relative_url }})'s
+harder cousin, the traveling salesperson: computer scientists call this
+whole family **NP-complete**. Nobody has found a fast method for any of
+them, and a fast method for one would give a fast method for all of them.
+
+<section class="answer-key" markdown="1">
+## Solution
+
+The minimum number of vans for Tourist Town is six, but it's genuinely
+hard to find them. This solution shows how the puzzle above was built:
+start with the six small starred groups at the bottom, each of which
+obviously needs only one van (its open circle), then those get linked up
+with extra streets between the *other* corners to disguise where the
+vans belong.
+
+<figure>
+  <img src="{{ '/assets/img/unplugged/tourist-town/ice-cream-vans-solution.png' | relative_url }}" alt="Ice Cream Vans Solution: the same map with the six van corners marked as open circles, plus the six starting groups the map was built from.">
+</figure>
+</section>
