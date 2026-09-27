@@ -95,6 +95,12 @@ Book images: `pdfimages -png -f P -l P tmp/CSUnplugged_2015_v3.1.pdf out`
   `repository:` in `_config.yml`. Screen only. Both need a GitHub account,
   which GitHub limits to ages 13+. An edit to a sheet's text won't change
   puzzles or keys that live in `_data/` or JS.
+- **"History"**: opens a version-history list under the page (the same idea
+  as porttack.com's), loaded from GitHub's public API only when clicked (or
+  with `?history` in the URL), because unauthenticated API calls are limited
+  to 60 an hour per IP and a school shares one. The link itself goes to the
+  file's history on GitHub if the API refuses. It tracks the page's own file,
+  not its `_data/` or JS.
 
 ## Answer keys
 

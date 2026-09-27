@@ -324,3 +324,35 @@ table.activity-table {
     color: $grey-color-dark;
   }
 }
+
+// Version history list (opened by the History link).
+.git-history {
+  margin-top: 1.2em;
+  font-size: 0.88em;
+  color: $grey-color-dark;
+
+  .git-history-title {
+    font-size: 1.05em;
+    margin: 0 0 0.4em;
+  }
+
+  .git-history-list {
+    margin: 0;
+    padding-left: 1.2em;
+  }
+
+  .git-history-date {
+    white-space: nowrap;
+  }
+
+  .git-history-status {
+    list-style: none;
+    margin-left: -1.2em;
+  }
+}
+
+@media print {
+  .git-history {
+    display: none !important;
+  }
+}

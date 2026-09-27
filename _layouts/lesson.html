@@ -63,9 +63,24 @@ What should change, and why?
     <span class="suggest-links">
       <a href="https://github.com/{{ site.repository }}/edit/main/{{ page.path }}">Suggest an edit</a>
       <a href="https://github.com/{{ site.repository }}/issues/new?title={{ page.title | prepend: '[Unplugged] ' | url_encode }}&amp;body={{ issue_body | url_encode }}">Request a change or fix</a>
+      <a class="history-link" href="https://github.com/{{ site.repository }}/commits/main/{{ page.path }}">History</a>
     </span>
     {% endif %}
   </nav>
+
+  {% if pathway_meta.suggest_edits and site.repository %}
+  {% comment %}Version history, the same idea as porttack.com's: hidden until
+  the History link is clicked (or ?history is in the URL), then filled from
+  GitHub's public API. Loading only on demand matters: unauthenticated
+  requests are limited to 60 an hour per IP, and a whole school shares one
+  IP. The link's href is the GitHub history page, so it still works if the
+  API refuses. Only this page's own file is tracked, not its _data/ or JS.{% endcomment %}
+  <section id="git-history" class="git-history" hidden
+           data-repo="{{ site.repository }}" data-path="{{ page.path }}">
+    <h2 class="git-history-title">Version history</h2>
+    <ol class="git-history-list"><li class="git-history-status">Loading commit history&hellip;</li></ol>
+  </section>
+  {% endif %}
 
   {% include provenance.html %}
   {% include standards-alignment.html %}
@@ -91,6 +106,43 @@ What should change, and why?
   }
   var player = (q.get("player") || "").toLowerCase();
   if (player === "a" || player === "b") html.classList.add("only-player-" + player);
+  // Version history: load on demand (see the comment on #git-history).
+  var hist = document.getElementById("git-history");
+  var histLink = document.querySelector(".history-link");
+  function loadHistory() {
+    if (!hist || hist.dataset.loaded) return;
+    hist.dataset.loaded = "1";
+    var list = hist.querySelector(".git-history-list");
+    var api = "https://api.github.com/repos/" + hist.dataset.repo + "/commits?per_page=50&path=" + encodeURIComponent(hist.dataset.path);
+    var esc = function (t) { var d = document.createElement("div"); d.textContent = t; return d.innerHTML; };
+    fetch(api, { headers: { Accept: "application/vnd.github+json" } })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (commits) {
+        if (!Array.isArray(commits) || !commits.length) {
+          list.innerHTML = '<li class="git-history-status">No history found for this file yet.</li>';
+          return;
+        }
+        list.innerHTML = commits.map(function (c) {
+          var date = new Date(c.commit.author.date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+          var subject = (c.commit.message || "").split("\n")[0];
+          return '<li><span class="git-history-date">' + date + '</span>: <a href="' + c.html_url + '" target="_blank" rel="noopener">' + esc(subject) + "</a></li>";
+        }).join("");
+      })
+      .catch(function (err) {
+        list.innerHTML = '<li class="git-history-status">Could not load the history here (' + esc(err.message) +
+          '). <a href="' + histLink.href + '">See it on GitHub</a>.</li>';
+      });
+  }
+  if (hist && histLink) {
+    histLink.addEventListener("click", function (e) {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;  // new tab: go to GitHub
+      e.preventDefault();
+      hist.hidden = !hist.hidden;
+      if (!hist.hidden) { loadHistory(); hist.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+    });
+    if (q.has("history")) { hist.hidden = false; loadHistory(); }
+  }
+
   // Build the link at click time, so a generator's current set number
   // (added to the URL after load) carries over to the other player's view.
   document.querySelectorAll(".player-switch a[data-show]").forEach(function (a) {
