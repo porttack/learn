@@ -19,6 +19,8 @@ them alone. Inspired by, and partly adapted from,
 [CS Unplugged](https://www.csunplugged.org/en/) (not affiliated); each
 adapted sheet credits its source at the bottom.
 
+*Warning: 9/27/2026: This is a work in progress. I have only reviewed a few of these worksheets. I expect to make many changes, fixes, and improvements in the next 2 to 12 months. Locations where you can find other free unplugged material are listed at the bottom of this page.*
+
 {% comment %}
 The table is a view over front matter, not folders. Each activity sets:
   level:    ms | hs | both        (MS / HS columns)
