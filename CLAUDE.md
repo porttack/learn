@@ -51,7 +51,11 @@ a sequence prefix, so inserting a lesson later never forces a rename cascade;
 `order:` front matter alone drives sort and prev/next nav. Each pathway also
 has a landing page at `rovrobotics/index.md` with `permalink: /rovrobotics/`.
 
-`_data/pathways.yml` drives the site index. Add a pathway there when you
+`_data/pathways.yml` drives the site index. `suggest_edits: true` on a
+pathway there adds "Suggest an edit" / "Request a change or fix" / "History"
+links to the bottom of its lesson pages (GitHub web editor, a prefilled
+issue, and on-demand version history; see `_layouts/lesson.html`). On for
+CS Unplugged, CS50 Problem Sets, and ROV Robotics. Add a pathway there when you
 create its collection, and add the collection to `_config.yml`.
 
 ### CS Unplugged (`_unplugged/`)

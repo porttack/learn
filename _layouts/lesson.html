@@ -62,7 +62,7 @@ What should change, and why?
 {% endcapture %}
     <span class="suggest-links">
       <a href="https://github.com/{{ site.repository }}/edit/main/{{ page.path }}">Suggest an edit</a>
-      <a href="https://github.com/{{ site.repository }}/issues/new?title={{ page.title | prepend: '[Unplugged] ' | url_encode }}&amp;body={{ issue_body | url_encode }}">Request a change or fix</a>
+      <a href="https://github.com/{{ site.repository }}/issues/new?title={{ page.title | prepend: '] ' | prepend: pathway_meta.title | prepend: '[' | url_encode }}&amp;body={{ issue_body | url_encode }}">Request a change or fix</a>
       <a class="history-link" href="https://github.com/{{ site.repository }}/commits/main/{{ page.path }}">History</a>
     </span>
     {% endif %}

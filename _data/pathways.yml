@@ -32,6 +32,7 @@
   title: "ROV Robotics"
   collection: rovrobotics
   url: /rovrobotics/
+  suggest_edits: true
   blurb: >-
     The curriculum and working practices behind a MATE ROV team run as an
     engineering company. Sprints, pool days, design decision records, and a
@@ -50,6 +51,7 @@
   title: "CS50 Problem Sets"
   collection: cs50psets
   url: /cs50-psets/
+  suggest_edits: true
   item_label: "Problem"
   standards_carrier: cs50psets
   blurb: >-
