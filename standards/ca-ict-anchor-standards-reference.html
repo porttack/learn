@@ -50,6 +50,13 @@ h1 { margin-top: 0; }
   border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
 }
 .weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.weight-toggle {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem;
+  color: var(--muted); margin: 0 0 1rem; float: right;
+}
+.weight-toggle input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
 .anchor-link {
   color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
   opacity: .5;
@@ -163,6 +170,7 @@ Curriculum Standards, ICT sector (2013): the 11 cross-sector anchor standards pl
 Pathway C (Software and Systems Development). <strong>What this is not.</strong> Original
 paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+
 <h2 id="anchors">Anchor Standards</h2>
 <div class="topic" id="T-1.0">
 <h3><a class="anchor-link" href="#T-1.0">#</a><span class="code-badge">1.0</span> Academics</h3>
@@ -792,6 +800,15 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
       });
       topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
     });
+  });
+})();
+</script>
+<script>
+(function() {
+  var input = document.getElementById('topic-weight-toggle');
+  if (!input) return;
+  input.addEventListener('change', function() {
+    document.body.classList.toggle('hide-topic-weights', !input.checked);
   });
 })();
 </script>

@@ -131,6 +131,13 @@ h1 { margin-top: 0; }
   border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
 }
 .weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.weight-toggle {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem;
+  color: var(--muted); margin: 0 0 1rem; float: right;
+}
+.weight-toggle input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
 .anchor-link {
   color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
   opacity: .5;
@@ -206,6 +213,16 @@ SEARCH_JS = """
       });
       topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
     });
+  });
+})();
+"""
+
+TOGGLE_JS = """
+(function() {
+  var input = document.getElementById('topic-weight-toggle');
+  if (!input) return;
+  input.addEventListener('change', function() {
+    document.body.classList.toggle('hide-topic-weights', !input.checked);
   });
 })();
 """
@@ -414,12 +431,33 @@ def load_carrier_files(carriers_dir, sources):
 
 # ---------- AP CSP ----------
 
+def _ek_count(topic):
+    return sum(len(lo.get("eks", [])) for lo in topic.get("los", []))
+
+
 def render_apcsp(catalog, cov, scope_label):
     big_ideas = {b["id"]: b for b in catalog["big_ideas"]}
     practices = catalog["practices"]
     topics_by_bi = {}
     for t in catalog["topics"]:
         topics_by_bi.setdefault(t["big_idea"], []).append(t)
+
+    # College Board publishes MCQ weight only at the Big Idea and Practice
+    # level -- there is no official per-topic number. This estimates one by
+    # splitting a Big Idea's published range across its topics in proportion
+    # to each topic's share of Essential Knowledge statements (the finest-
+    # grained unit the catalog has), so a denser topic shows a larger slice.
+    # Always label it "est." and explain the method via a title attribute --
+    # never let it read as if College Board published it.
+    topic_weight = {}
+    for bi_id, topics in topics_by_bi.items():
+        bi = big_ideas[bi_id]
+        total_eks = sum(_ek_count(t) for t in topics)
+        if not total_eks or bi.get("mcq_weight_low") is None:
+            continue
+        for t in topics:
+            share = _ek_count(t) / total_eks
+            topic_weight[t["code"]] = (bi["mcq_weight_low"] * share, bi["mcq_weight_high"] * share)
 
     toc = ['<h2>Practices</h2>', "<ul>"]
     for p in practices:
@@ -443,7 +481,16 @@ def render_apcsp(catalog, cov, scope_label):
         body.append(f'<h2><a class="anchor-link" href="#{bi["id"]}">#</a><span class="code-badge">{bi["id"]}</span> Big Idea {bi["number"]}: {esc(bi["name"])} <span class="weight">({bi["mcq_weight_low"]}–{bi["mcq_weight_high"]}% MCQ)</span></h2>')
         for t in topics_by_bi.get(bi["id"], []):
             body.append(f'<div class="topic" id="T-{t["code"]}">')
-            body.append(f'<h3><a class="anchor-link" href="#T-{t["code"]}">#</a><span class="code-badge">{t["code"]}</span> {esc(t["title"])}</h3>')
+            weight_span = ""
+            if t["code"] in topic_weight:
+                low, high = topic_weight[t["code"]]
+                weight_span = (
+                    f' <span class="weight topic-weight-estimate" '
+                    f'title="Estimated from this topic’s share of Essential Knowledge statements '
+                    f'within Big Idea {bi["number"]}. College Board does not publish an official '
+                    f'per-topic weight.">(~{low:.1f}–{high:.1f}% MCQ, est.)</span>'
+                )
+            body.append(f'<h3><a class="anchor-link" href="#T-{t["code"]}">#</a><span class="code-badge">{t["code"]}</span> {esc(t["title"])}{weight_span}</h3>')
             body.append(f'<p class="paraphrase">{esc(t["paraphrase"])}</p>')
             line = cov.carrier_html(t["code"])
             if line:
@@ -469,8 +516,17 @@ for linking from standards-alignment work ({esc(catalog['meta']['ced_version'])}
 paraphrase, not College Board's text. Only the AP-assigned codes are reproduced as-is."""
     if scope_label:
         provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
+    if topic_weight:
+        provenance += (" <strong>Topic weights.</strong> The “~…% MCQ, est.” figure next to each "
+                        "topic is this page’s own estimate (a Big Idea’s published range, split by "
+                        "each topic’s share of Essential Knowledge statements), not a College Board number.")
 
-    return page("AP CSP Standards Reference", "\n".join(toc), "\n".join(body), provenance)
+    toolbar = ""
+    if topic_weight:
+        toolbar = ('<label class="weight-toggle"><input type="checkbox" id="topic-weight-toggle" checked> '
+                    'Show estimated topic weights</label>')
+
+    return page("AP CSP Standards Reference", "\n".join(toc), "\n".join(body), provenance, toolbar)
 
 
 # ---------- California 9-12 ----------
@@ -704,7 +760,7 @@ paraphrases, not the CDE's text; only codes are reproduced as-is."""
     return page("CA ICT & Anchor Standards Reference", "\n".join(toc), "\n".join(body), provenance)
 
 
-def page(title, toc_html, body_html, provenance_html):
+def page(title, toc_html, body_html, provenance_html, toolbar_html=""):
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -723,11 +779,13 @@ def page(title, toc_html, body_html, provenance_html):
 <h1>{esc(title)}</h1>
 <div class="provenance">{provenance_html}</div>
 <input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+{toolbar_html}
 {body_html}
 <footer>Generated by build_alignment.py. Not an official framework document.</footer>
 </main>
 </div>
 <script>{SEARCH_JS}</script>
+<script>{TOGGLE_JS}</script>
 </body>
 </html>
 """

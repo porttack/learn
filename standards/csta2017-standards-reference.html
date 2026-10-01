@@ -50,6 +50,13 @@ h1 { margin-top: 0; }
   border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
 }
 .weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.weight-toggle {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem;
+  color: var(--muted); margin: 0 0 1rem; float: right;
+}
+.weight-toggle input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
 .anchor-link {
   color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
   opacity: .5;
@@ -234,6 +241,7 @@ as-is. See _standards/crosswalk-castandards-csta2017.json for how these compare 
 K-12 CS standards -- most match closely, but a few diverge in wording or don't correspond to any
 single CA standard.</div>
 <input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+
 <section class="big-idea" id="AP">
 <h2><a class="anchor-link" href="#AP">#</a><span class="code-badge">AP</span> Algorithms &amp; Programming</h2>
 <div class="topic" id="S-2-AP-10">
@@ -716,6 +724,15 @@ single CA standard.</div>
       });
       topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
     });
+  });
+})();
+</script>
+<script>
+(function() {
+  var input = document.getElementById('topic-weight-toggle');
+  if (!input) return;
+  input.addEventListener('change', function() {
+    document.body.classList.toggle('hide-topic-weights', !input.checked);
   });
 })();
 </script>
