@@ -51,12 +51,14 @@ h1 { margin-top: 0; }
 }
 .weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
 .topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
-.weight-toggle {
-  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem;
-  color: var(--muted); margin: 0 0 1rem; float: right;
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
 }
-.weight-toggle input { margin: 0; }
+.page-toggle-label input { margin: 0; }
 body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
 .anchor-link {
   color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
   opacity: .5;
@@ -201,7 +203,7 @@ for linking from standards-alignment work (AP CSP Course and Exam Description, e
 <strong>What this is not.</strong> Every sentence of description below is an original
 paraphrase, not College Board's text. Only the AP-assigned codes are reproduced as-is. <strong>Topic weights.</strong> The “~…% MCQ, est.” figure next to each topic is this page’s own estimate (a Big Idea’s published range, split by each topic’s share of Essential Knowledge statements), not a College Board number.</div>
 <input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
-<label class="weight-toggle"><input type="checkbox" id="topic-weight-toggle" checked> Show estimated topic weights</label>
+<div class="page-toggles"><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-topic-weights" checked> Show estimated topic weights</label><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-carriers" checked> Show which curricula cover each item</label><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-los" checked> Show learning objectives &amp; essential knowledge</label></div>
 <section id="practices"><h2>Computational Thinking Practices</h2>
 <table class="practice-table"><thead><tr><th>Code</th><th>Name</th><th>MCQ weight</th></tr></thead><tbody>
 <tr id="P1"><td><a class="anchor-link" href="#P1">#</a><span class="code-badge">P1</span></td><td>Computational Solution Design</td><td>18–25%</td></tr>
@@ -1043,10 +1045,12 @@ paraphrase, not College Board's text. Only the AP-assigned codes are reproduced 
 </script>
 <script>
 (function() {
-  var input = document.getElementById('topic-weight-toggle');
-  if (!input) return;
-  input.addEventListener('change', function() {
-    document.body.classList.toggle('hide-topic-weights', !input.checked);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
   });
 })();
 </script>

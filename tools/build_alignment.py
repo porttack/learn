@@ -132,12 +132,14 @@ h1 { margin-top: 0; }
 }
 .weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
 .topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
-.weight-toggle {
-  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem;
-  color: var(--muted); margin: 0 0 1rem; float: right;
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
 }
-.weight-toggle input { margin: 0; }
+.page-toggle-label input { margin: 0; }
 body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
 .anchor-link {
   color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
   opacity: .5;
@@ -219,13 +221,20 @@ SEARCH_JS = """
 
 TOGGLE_JS = """
 (function() {
-  var input = document.getElementById('topic-weight-toggle');
-  if (!input) return;
-  input.addEventListener('change', function() {
-    document.body.classList.toggle('hide-topic-weights', !input.checked);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
   });
 })();
 """
+
+# Every framework page lists, per standard, which curricula/carriers cover it
+# (cov.carrier_html()) -- the same toggle makes sense on all five pages.
+CARRIER_TOGGLE = ("hide-carriers", "Show which curricula cover each item", True)
+
 
 def esc(s):
     return htmlmod.escape(s, quote=False) if s else ""
@@ -521,12 +530,11 @@ paraphrase, not College Board's text. Only the AP-assigned codes are reproduced 
                         "topic is this page’s own estimate (a Big Idea’s published range, split by "
                         "each topic’s share of Essential Knowledge statements), not a College Board number.")
 
-    toolbar = ""
+    toggles = [CARRIER_TOGGLE, ("hide-los", "Show learning objectives & essential knowledge", True)]
     if topic_weight:
-        toolbar = ('<label class="weight-toggle"><input type="checkbox" id="topic-weight-toggle" checked> '
-                    'Show estimated topic weights</label>')
+        toggles.insert(0, ("hide-topic-weights", "Show estimated topic weights", True))
 
-    return page("AP CSP Standards Reference", "\n".join(toc), "\n".join(body), provenance, toolbar)
+    return page("AP CSP Standards Reference", "\n".join(toc), "\n".join(body), provenance, toggles)
 
 
 # ---------- California 9-12 ----------
@@ -584,7 +592,7 @@ Science core standards (adopted 2018), for linking from standards-alignment work
 are reproduced as-is."""
     if scope_label:
         provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
-    return page("CA CS Standards Reference", "\n".join(toc), "\n".join(body), provenance)
+    return page("CA CS Standards Reference", "\n".join(toc), "\n".join(body), provenance, [CARRIER_TOGGLE])
 
 
 # ---------- CSTA 2017 ----------
@@ -630,7 +638,7 @@ K-12 CS standards -- most match closely, but a few diverge in wording or don't c
 single CA standard."""
     if scope_label:
         provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
-    return page("CSTA 2017 Standards Reference", "\n".join(toc), "\n".join(body), provenance)
+    return page("CSTA 2017 Standards Reference", "\n".join(toc), "\n".join(body), provenance, [CARRIER_TOGGLE])
 
 
 # ---------- CSTA 2026 ----------
@@ -700,7 +708,7 @@ Science Standards (high-school level), for linking from standards-alignment work
 reproduced as-is."""
     if scope_label:
         provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
-    return page("CSTA 2026 Standards Reference", "\n".join(toc), "\n".join(body), provenance)
+    return page("CSTA 2026 Standards Reference", "\n".join(toc), "\n".join(body), provenance, [CARRIER_TOGGLE])
 
     provenance = """<strong>What this is.</strong> A locally built index of the CSTA 2026 K-12 Computer
 Science Standards (high-school level), for linking from standards-alignment work.
@@ -708,7 +716,7 @@ Science Standards (high-school level), for linking from standards-alignment work
 reproduced as-is."""
     if scope_label:
         provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
-    return page("CSTA 2026 Standards Reference", "\n".join(toc), "\n".join(body), provenance)
+    return page("CSTA 2026 Standards Reference", "\n".join(toc), "\n".join(body), provenance, [CARRIER_TOGGLE])
 
 
 # ---------- CA CTE ICT ----------
@@ -757,10 +765,22 @@ Pathway C (Software and Systems Development). <strong>What this is not.</strong>
 paraphrases, not the CDE's text; only codes are reproduced as-is."""
     if scope_label:
         provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
-    return page("CA ICT & Anchor Standards Reference", "\n".join(toc), "\n".join(body), provenance)
+    return page("CA ICT & Anchor Standards Reference", "\n".join(toc), "\n".join(body), provenance, [CARRIER_TOGGLE])
 
 
-def page(title, toc_html, body_html, provenance_html, toolbar_html=""):
+def page(title, toc_html, body_html, provenance_html, toggles=None):
+    """toggles: list of (hide_class, label, checked_by_default) -- each renders as a
+    checkbox that adds/removes `hide_class` on <body> (see TOGGLE_JS), paired with a
+    `body.<hide_class> ...` CSS rule in CSS. The same mechanism as the search box: a
+    static page, interactive without a backend."""
+    toggles_html = ""
+    if toggles:
+        items = "".join(
+            f'<label class="page-toggle-label"><input type="checkbox" class="page-toggle" '
+            f'data-hide-class="{hide_class}"{" checked" if checked else ""}> {esc(label)}</label>'
+            for hide_class, label, checked in toggles
+        )
+        toggles_html = f'<div class="page-toggles">{items}</div>'
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -779,7 +799,7 @@ def page(title, toc_html, body_html, provenance_html, toolbar_html=""):
 <h1>{esc(title)}</h1>
 <div class="provenance">{provenance_html}</div>
 <input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
-{toolbar_html}
+{toggles_html}
 {body_html}
 <footer>Generated by build_alignment.py. Not an official framework document.</footer>
 </main>

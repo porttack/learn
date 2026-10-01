@@ -51,12 +51,14 @@ h1 { margin-top: 0; }
 }
 .weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
 .topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
-.weight-toggle {
-  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem;
-  color: var(--muted); margin: 0 0 1rem; float: right;
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
 }
-.weight-toggle input { margin: 0; }
+.page-toggle-label input { margin: 0; }
 body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
 .anchor-link {
   color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
   opacity: .5;
@@ -170,7 +172,7 @@ Curriculum Standards, ICT sector (2013): the 11 cross-sector anchor standards pl
 Pathway C (Software and Systems Development). <strong>What this is not.</strong> Original
 paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 <input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
-
+<div class="page-toggles"><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-carriers" checked> Show which curricula cover each item</label></div>
 <h2 id="anchors">Anchor Standards</h2>
 <div class="topic" id="T-1.0">
 <h3><a class="anchor-link" href="#T-1.0">#</a><span class="code-badge">1.0</span> Academics</h3>
@@ -805,10 +807,12 @@ paraphrases, not the CDE's text; only codes are reproduced as-is.</div>
 </script>
 <script>
 (function() {
-  var input = document.getElementById('topic-weight-toggle');
-  if (!input) return;
-  input.addEventListener('change', function() {
-    document.body.classList.toggle('hide-topic-weights', !input.checked);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
   });
 })();
 </script>
