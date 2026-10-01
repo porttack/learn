@@ -221,9 +221,19 @@ SEARCH_JS = """
 
 TOGGLE_JS = """
 (function() {
+  var params = new URLSearchParams(window.location.search);
   document.querySelectorAll('.page-toggle').forEach(function(input) {
     var hideClass = input.dataset.hideClass;
     if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
     function sync() { document.body.classList.toggle(hideClass, !input.checked); }
     input.addEventListener('change', sync);
     sync();
@@ -530,7 +540,7 @@ paraphrase, not College Board's text. Only the AP-assigned codes are reproduced 
                         "topic is this page’s own estimate (a Big Idea’s published range, split by "
                         "each topic’s share of Essential Knowledge statements), not a College Board number.")
 
-    toggles = [CARRIER_TOGGLE, ("hide-los", "Show learning objectives & essential knowledge", True)]
+    toggles = [CARRIER_TOGGLE, ("hide-los", "Show learning objectives & essential knowledge", False)]
     if topic_weight:
         toggles.insert(0, ("hide-topic-weights", "Show estimated topic weights", True))
 
