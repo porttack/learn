@@ -6,6 +6,8 @@ order: 4
 chapter: 4
 source: rpi-pico-2e
 subtitle: "Start connecting basic electronic components to Raspberry Pi Pico and writing programs to control and sense them"
+organizer: /pico/04-graphic-organizer/
+slides: /pico/04-intro-slides/
 ---
 
 *Start connecting basic electronic components to Raspberry Pi Pico and writing programs to control and sense them*

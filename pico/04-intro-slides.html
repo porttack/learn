@@ -1,12 +1,12 @@
 ---
-title: "Chapter 3 Slides"
-permalink: /pico/03-intro-slides/
+title: "Chapter 4 Slides"
+permalink: /pico/04-intro-slides/
 ---
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Chapter 3: Physical Computing -- Slides</title>
+<title>Chapter 4: Physical Computing with Raspberry Pi Pico -- Slides</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="/assets/img/pico/favicon.svg">
 <style>
@@ -339,137 +339,143 @@ const { useState, useEffect, useRef, useCallback } = React;
 // A top-level slide can carry a `down` array of extra slides reachable with
 // the down arrow / "More" button -- optional detail (more pictures, a deeper
 // dive) that the fast path (left/right, space) skips right over.
+//
+// Chapter 4 is a long, hands-on chapter (onboard LED, breadboards, an
+// external LED, then a button). Today's class is specifically about
+// breadboards, LEDs, and resistors, so this deck moves fast through the
+// onboard-LED recap and only teases the button section at the end, rather
+// than giving every section equal weight.
 const SLIDES = [
   {
     kind: "title",
-    kicker: "Chapter 3",
-    title: "Physical Computing",
-    subtitle: "How your Pico reaches out and touches the real world",
-    notes: "Chapter 3 is concepts and vocabulary, not a build: nothing gets wired up today, that's Chapter 4. The job today is to get the vocabulary and the mental model in place before they read, and to make them comfortable with the idea that 'coding' can mean more than software on a screen."
-  },
-  {
-    kind: "bullets",
-    kicker: "Big idea",
-    title: "More Than Just a Screen",
-    bullets: [
-      "Coding usually makes you think: software",
-      "Physical computing means code that reaches into the real world",
-      "A crosswalk button. A thermostat. Your Pico."
-    ],
-    notes: "This is the chapter's own opening idea. Ask the class for their own examples of a computer controlling something physical before revealing these -- most kids have never thought about how many everyday objects have a tiny computer inside them."
+    kicker: "Chapter 4",
+    title: "Physical Computing with Pico",
+    subtitle: "Today: your first real circuit, a breadboard, an LED, and a resistor",
+    notes: "Chapter 3 was all vocabulary and concepts; today is the hands-on payoff. The chapter actually covers four things: the onboard LED, breadboards, an external LED circuit, and reading a button. This class period is scoped to the first three -- breadboards, LEDs, and resistors -- so move quickly through the onboard-LED recap and save real time for the external LED build. The button section gets teased at the end, not taught today."
   },
   {
     kind: "image",
-    kicker: "Meet the pins",
-    title: "Your Pico's Pins",
-    image: "/assets/img/pico/fig-3-1.png",
+    kicker: "Quick recap",
+    title: "Hello, LED!",
+    image: "/assets/img/pico/fig-4-1.jpg",
     bullets: [
-      "Pins run along both edges",
-      "Most are GPIO: general purpose, you decide their job",
-      "A few have one specific job, like power or reset"
+      "machine.Pin() turns a GPIO pin into something you control",
+      ".value(1) and .value(0) turn it on and off",
+      ".toggle() flips whatever state it's already in",
+      "The onboard LED has no pin number: you use the string \"LED\""
     ],
-    notes: "This is the full pinout diagram from the chapter, the same one Appendix B expands on later. Don't try to explain every label, that's what the reading and the organizer are for -- the goal here is just orientation: GPIO pins in green, power/ground/special pins called out separately."
+    notes: "This is reading they may have already done, or can do as homework: the onboard LED, to the left of the micro USB port. Don't dwell here. The point of this slide is just to get the vocabulary (Pin, value, toggle) active in their heads before they touch a breadboard, since the external LED code is identical except for the pin number."
   },
   {
-    kind: "bullets",
-    kicker: "Words you'll need",
-    title: "New Vocabulary",
+    kind: "safety",
+    kicker: "Before you touch a breadboard",
+    title: "Three Rules",
     bullets: [
-      "GPIO, PIO, ADC",
-      "VBUS, VSYS, GND, RUN",
-      "You'll define these yourself in the organizer"
+      "Unplug your Pico from USB before you wire anything",
+      "Never let two pins touch directly: that's a short circuit",
+      "Be gentle with the header pins when seating your Pico"
     ],
-    notes: "Deliberately don't define these here. The graphic organizer specifically has students write these in their own words rather than just repeating a spelled-out acronym, so defining them on a slide would undercut that. Just make the words themselves familiar before they read."
-  },
-  {
-    kind: "bullets",
-    kicker: "Easy to mix up",
-    title: "VBUS vs. VSYS",
-    bullets: [
-      "VBUS: 5V straight from the USB port",
-      "VSYS: powers your whole Pico, 1.8V to 5.5V",
-      "One is basically an output, the other is an input"
-    ],
-    notes: "This is content added to Chapter 3 beyond the original book: two callouts on VBUS/VSYS and on powering the Pico. Worth spending real time here since it's genuinely confusing, and it directly sets up the organizer's own pin-number question.",
-    down: [
-      {
-        kind: "safety",
-        kicker: "Other ways to power it",
-        title: "Powering Your Pico Off USB",
-        bullets: [
-          "A breadboard power supply module (3.3V or 5V)",
-          "2 to 3 alkaline AA batteries (about 3V to 4.5V)",
-          "2 to 4 NiMH AA batteries (about 2.4V to 4.8V)",
-          "Going over 5.5V can permanently damage your Pico"
-        ],
-        notes: "Matches the chapter's own callout. Worth mentioning brownouts too if there's time: a brownout is usually a current problem more than a pure voltage one -- a power source that can't supply enough current sags under load, and a motor or servo drawing a big burst of current is a common real-world cause."
-      }
-    ]
+    notes: "Worth saying out loud before anyone picks up a breadboard. A short circuit between the wrong two pins can permanently damage the Pico, and bent header pins are hard to fix once it happens. This is the same warning the chapter gives right before the breadboard section."
   },
   {
     kind: "image",
-    kicker: "Parts you'll use",
-    title: "Nine Components to Know",
-    image: "/assets/img/pico/fig-3-2.png",
+    kicker: "New tool",
+    title: "Meet the Breadboard",
+    image: "/assets/img/pico/fig-4-2.png",
     bullets: [
-      "Resistor, LED, push-button: the basics",
-      "PIR sensor, potentiometer, OLED display: a bit fancier",
-      "You'll match each letter in the organizer"
+      "Holes in the same numbered column are secretly connected",
+      "No soldering: just push components into the holes",
+      "Power rails along the top and bottom give every component a common ground"
     ],
-    notes: "This is the chapter's own labeled figure (A through I), which the organizer asks students to match to names and categories. Don't give away which letter is which here -- that matching is the whole point of the organizer activity."
+    notes: "The key idea is the hidden metal strips: A1 and B1 are connected to each other, but A1 and A2 are not, unless you add a jumper wire. The power rails are the exception, running the full length of the board instead of in short columns. This is genuinely confusing the first time; expect questions."
   },
   {
     kind: "image",
-    kicker: "A useful skill",
-    title: "Reading Resistor Colors",
-    image: "/assets/img/pico/fig-3-3.png",
+    kicker: "Step one",
+    title: "Seating Your Pico",
+    image: "/assets/img/pico/fig-4-3.jpg",
     bullets: [
-      "Resistors don't print their value as a number",
-      "Colored bands encode it instead",
-      "Useful, but don't stress over it"
+      "Straddle the middle gap of the breadboard",
+      "Micro USB port faces the edge of the board",
+      "Push down gently until the header pins are fully seated"
     ],
-    notes: "This chapter's resistor color code content is a nice-to-have skill, not something to spend the whole period on. The organizer only asks two short questions on it, deliberately light. Keep this slide brief.",
+    notes: "Straddling the gap matters: it means the left and right rows of pins land in electrically separate halves of the board, which is what lets you wire to either side independently. Watch for students forcing it in crooked, which is how pins get bent."
+  },
+  {
+    kind: "bullets",
+    kicker: "Today's build",
+    title: "Wiring an External LED",
+    bullets: [
+      "You'll need: a breadboard, M2M jumper wires, an LED, and a 330 Ω resistor",
+      "The longer leg of the LED is the anode (positive)",
+      "The shorter leg is the cathode (negative)"
+    ],
+    notes: "This is the main event for today. Have components distributed before this slide if possible so students can hold the LED while you talk about anode vs. cathode -- it's much easier to see the leg-length difference in hand than in a photo."
+  },
+  {
+    kind: "bullets",
+    kicker: "Why it matters",
+    title: "Resistance Is Vital",
+    bullets: [
+      "The resistor limits how much current the LED can draw",
+      "Without it, the LED (or even the Pico) can burn out",
+      "330 Ω works for most common LEDs",
+      "Higher value = dimmer; lower value = brighter"
+    ],
+    notes: "This is the chapter's own 'Resistance Is Vital' callout. Worth emphasizing as a rule, not just a suggestion: never connect an LED straight to a GPIO pin without a current-limiting resistor in the path, unless the LED has one built in."
+  },
+  {
+    kind: "image",
+    kicker: "The finished circuit",
+    title: "Anode In, Cathode Out",
+    image: "/assets/img/pico/fig-4-4.png",
+    bullets: [
+      "GPIO pin → resistor → anode → LED → cathode → ground",
+      "Same code as the onboard LED, just a different pin number",
+      "Rename the variable too: led_external, not led_onboard"
+    ],
+    notes: "This is the order of connections students should be able to trace with a finger: pin, through the resistor, into the anode, through the LED, out the cathode, to ground. That's exactly what the graphic organizer's draw-a-circuit question asks them to label. The code change from the onboard LED version is genuinely just the pin number and a variable rename -- worth pointing out how little changed, since it reinforces that the GPIO API works the same way regardless of what's on the other end of the wire.",
     down: [
       {
         kind: "bullets",
-        kicker: "Try it",
-        title: "Decode This Resistor",
+        kicker: "If you finish early",
+        title: "Push Further",
         bullets: [
-          "Look at the resistor at the top of the chart",
-          "Two orange bands: the digits 3 and 3",
-          "One brown band: multiply by 10",
-          "33 times 10 = 330 ohms"
+          "Can you light the onboard LED and the external LED at once?",
+          "Can you make one turn on exactly when the other turns off?",
+          "Every extra LED needs its own current-limiting resistor"
         ],
-        notes: "This is the book's own worked example, and it matches the fill-in-the-blank on the graphic organizer word for word. Walk through it together if you want a quick win before moving on."
+        notes: "This is the chapter's own 'Multiple LEDs' challenge, for anyone who finishes wiring and testing early. Not required."
       }
     ]
+  },
+  {
+    kind: "bullets",
+    kicker: "Next time",
+    title: "Coming Up: Reading a Button",
+    bullets: [
+      "Today was outputs: making something happen",
+      "Next: inputs; reading whether a button is pressed",
+      "Same breadboard, one more component"
+    ],
+    notes: "Deliberately a tease, not a lesson. The button section introduces pull-up resistors and is its own chunk of new vocabulary, so it's getting its own class period rather than being rushed in after the LED build."
   },
   {
     kind: "bullets",
     kicker: "Plan",
-    title: "Chapter 3 Plan",
+    title: "Today's Plan",
     bullets: [
-      { text: "Read Chapter 3", href: "/pico/03-physical-computing/" },
-      { text: "Fill out the graphic organizer as you go", href: "/pico/03-graphic-organizer/" }
+      { text: "Read through \"Using a breadboard\" and \"Next steps: an external LED\"", href: "/pico/04-physical-computing-with-pico/" },
+      { text: "Wire your LED circuit and get it blinking", href: "/pico/04-physical-computing-with-pico/" },
+      { text: "Fill out Parts 1 through 3 of the graphic organizer", href: "/pico/04-graphic-organizer/" }
     ],
-    notes: "Same as Chapter 1: this might be homework rather than today's in-class work, adjust as needed. There's no soldering or building today, so Chapter 3 often moves faster in class than Chapter 1 did."
-  },
-  {
-    kind: "bullets",
-    kicker: "Coming up",
-    title: "Next: You Actually Build Something",
-    bullets: [
-      "Chapter 3 was ideas and vocabulary",
-      "Chapter 4 you wire your first LED",
-      "Chapter 4 you read your first button"
-    ],
-    notes: "Optional hype slide -- skip it if you're short on time, it's not required content. The idea is to promise them the hands-on part starts next chapter, since Chapter 3 itself is deliberately concept-only."
+    notes: "Parts 1 through 3 of the organizer match today's scope (onboard LED recap, breadboards, external LED). Part 4, on reading a button, can wait until that lesson happens."
   },
   {
     kind: "title",
     title: "Questions?",
-    subtitle: "Let's get started.",
-    notes: "Open the floor briefly, then transition into independent reading time."
+    subtitle: "Let's build.",
+    notes: "Open the floor briefly, then get components into hands."
   }
 ];
 
@@ -582,7 +588,7 @@ function OutlineCard({ slide, heading, nested }) {
 function Outline() {
   return (
     <div className="outline">
-      <h1>Chapter 3: Physical Computing</h1>
+      <h1>Chapter 4: Physical Computing with Pico</h1>
       <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
       {SLIDES.map((s, i) => (
         <React.Fragment key={i}>
@@ -657,7 +663,7 @@ function App() {
     return (
       <div className="app">
         <div className="toolbar">
-          <a className="back-link" href="/pico/03-physical-computing/">&larr; Chapter 3</a>
+          <a className="back-link" href="/pico/04-physical-computing-with-pico/">&larr; Chapter 4</a>
           <div className="spacer"></div>
           <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
           <button onClick={() => window.print()}>Print</button>
@@ -691,7 +697,7 @@ function App() {
         </div>
       )}
       <div className="toolbar">
-        <a className="back-link" href="/pico/03-physical-computing/">&larr; Chapter 3</a>
+        <a className="back-link" href="/pico/04-physical-computing-with-pico/">&larr; Chapter 4</a>
         <div className="spacer"></div>
         <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
         <span className="counter">{index + 1} / {SLIDES.length}</span>

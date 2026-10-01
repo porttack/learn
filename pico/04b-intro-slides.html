@@ -1,12 +1,12 @@
 ---
-title: "Chapter 3 Slides"
-permalink: /pico/03-intro-slides/
+title: "Interlude B.1 Slides"
+permalink: /pico/04b-intro-slides/
 ---
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Chapter 3: Physical Computing -- Slides</title>
+<title>Interlude B.1: Wiring Three LEDs -- Slides</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="/assets/img/pico/favicon.svg">
 <style>
@@ -336,140 +336,148 @@ const { useState, useEffect, useRef, useCallback } = React;
 // slide (keep it short, they're reading fast); `notes` is only ever shown in
 // the notes panel or the printable outline, so it can be a full paragraph.
 // A bullet can be a plain string, or { text, href } to render as a link.
-// A top-level slide can carry a `down` array of extra slides reachable with
-// the down arrow / "More" button -- optional detail (more pictures, a deeper
-// dive) that the fast path (left/right, space) skips right over.
+//
+// This is a pure wiring day: no computer, no code, and deliberately no
+// mention of what the circuit will eventually do -- just the physical
+// build (wire color, which rail, how to find a cathode once the legs are
+// trimmed). No DIP switch today either; that's a separate future session.
 const SLIDES = [
   {
     kind: "title",
-    kicker: "Chapter 3",
-    title: "Physical Computing",
-    subtitle: "How your Pico reaches out and touches the real world",
-    notes: "Chapter 3 is concepts and vocabulary, not a build: nothing gets wired up today, that's Chapter 4. The job today is to get the vocabulary and the mental model in place before they read, and to make them comfortable with the idea that 'coding' can mean more than software on a screen."
+    kicker: "Interlude B.1",
+    title: "Wiring Three LEDs",
+    subtitle: "Your own wire, no code yet",
+    notes: "Pure wiring day: no simulator, no computer required yet, and no code or future-use talk either, just the physical build. This is also a class neatness competition, judging details to come from the teacher separately."
   },
   {
     kind: "bullets",
-    kicker: "Big idea",
-    title: "More Than Just a Screen",
+    kicker: "Why hand-wired?",
+    title: "Not Jumper Wires Today",
     bullets: [
-      "Coding usually makes you think: software",
-      "Physical computing means code that reaches into the real world",
-      "A crosswalk button. A thermostat. Your Pico."
+      "Dupont connectors are famously fragile",
+      "They pull loose easily and never look as neat",
+      "You'll cut and strip your own 22-gauge wire instead"
     ],
-    notes: "This is the chapter's own opening idea. Ask the class for their own examples of a computer controlling something physical before revealing these -- most kids have never thought about how many everyday objects have a tiny computer inside them."
-  },
-  {
-    kind: "image",
-    kicker: "Meet the pins",
-    title: "Your Pico's Pins",
-    image: "/assets/img/pico/fig-3-1.png",
-    bullets: [
-      "Pins run along both edges",
-      "Most are GPIO: general purpose, you decide their job",
-      "A few have one specific job, like power or reset"
-    ],
-    notes: "This is the full pinout diagram from the chapter, the same one Appendix B expands on later. Don't try to explain every label, that's what the reading and the organizer are for -- the goal here is just orientation: GPIO pins in green, power/ground/special pins called out separately."
+    notes: "This is the actual reason for hand-wiring, not just 'because it's more advanced.' Fragile, loose connectors are a real source of mystery bugs, and a hand-wired board is also simply neater, which matters for today's competition framing."
   },
   {
     kind: "bullets",
-    kicker: "Words you'll need",
-    title: "New Vocabulary",
+    kicker: "On purpose",
+    title: "Wire Color Rules",
     bullets: [
-      "GPIO, PIO, ADC",
-      "VBUS, VSYS, GND, RUN",
-      "You'll define these yourself in the organizer"
+      "Red: 3V3 power, nothing else",
+      "Green: ground (GND), always, in this room",
+      "White: every GPIO signal wire"
     ],
-    notes: "Deliberately don't define these here. The graphic organizer specifically has students write these in their own words rather than just repeating a spelled-out acronym, so defining them on a slide would undercut that. Just make the words themselves familiar before they read."
+    notes: "One consistent signal color keeps a board readable to a neighbor or a teacher checking it at a glance. Mixing colors for signal wires defeats the point; white is the only signal color in use today. Green for ground is a standing classroom convention, not just a suggestion for this unit."
+  },
+  {
+    kind: "safety",
+    kicker: "Check first",
+    title: "Three Rails, Two Sides",
+    bullets: [
+      "Pin 36 (3V3 OUT): your power rail",
+      "Pin 38 (GND): a separate main ground rail, same side as pin 36",
+      "Pin 18 (GND): a spare ground rail, on the other side",
+      "Only the power rail carries power today"
+    ],
+    notes: "Power and main ground are two separate rails that happen to sit on the same side of the board, not two sides of one rail, worth being precise about since it's an easy thing to mentally merge. The spare ground rail (pin 18) isn't needed yet, it's just wired and ready for later."
+  },
+  {
+    kind: "image",
+    kicker: "A trick that survives cutting",
+    title: "Finding the Cathode",
+    image: "/assets/img/pico/led-cathode-identification.svg",
+    bullets: [
+      "You'll trim each LED's legs short for neatness",
+      "Leg length won't help you identify it anymore",
+      "Look for the flat edge on the LED's case",
+      "Or look through the dome: the bigger flag is the cathode"
+    ],
+    notes: "This is the key new skill for today. Have students check the flat edge and the internal flag against the longer leg BEFORE they cut anything, so they trust those two signs once every LED's legs are trimmed to match."
   },
   {
     kind: "bullets",
-    kicker: "Easy to mix up",
-    title: "VBUS vs. VSYS",
+    kicker: "Today's build",
+    title: "Three LEDs, One Circuit",
     bullets: [
-      "VBUS: 5V straight from the USB port",
-      "VSYS: powers your whole Pico, 1.8V to 5.5V",
-      "One is basically an output, the other is an input"
+      "Each LED: a resistor, then the LED, cathode toward the resistor",
+      "Anode wire (white) to GP13, GP14, or GP15",
+      "All three LEDs the same color: red",
+      { text: "Check a resistor's value by its color bands", href: "/pico/03-physical-computing/#reading-resistor-colour-codes" }
     ],
-    notes: "This is content added to Chapter 3 beyond the original book: two callouts on VBUS/VSYS and on powering the Pico. Worth spending real time here since it's genuinely confusing, and it directly sets up the organizer's own pin-number question.",
-    down: [
-      {
-        kind: "safety",
-        kicker: "Other ways to power it",
-        title: "Powering Your Pico Off USB",
-        bullets: [
-          "A breadboard power supply module (3.3V or 5V)",
-          "2 to 3 alkaline AA batteries (about 3V to 4.5V)",
-          "2 to 4 NiMH AA batteries (about 2.4V to 4.8V)",
-          "Going over 5.5V can permanently damage your Pico"
-        ],
-        notes: "Matches the chapter's own callout. Worth mentioning brownouts too if there's time: a brownout is usually a current problem more than a pure voltage one -- a power source that can't supply enough current sags under load, and a motor or servo drawing a big burst of current is a common real-world cause."
-      }
-    ]
+    notes: "330 ohm resistors, or 220 if the LEDs look too dim. The last bullet links to Chapter 3's resistor color code guide, same as the lesson page, for anyone whose resistors aren't printed with a readable value."
   },
   {
     kind: "image",
-    kicker: "Parts you'll use",
-    title: "Nine Components to Know",
-    image: "/assets/img/pico/fig-3-2.png",
+    kicker: "Exemplar 1",
+    title: "What You're Building",
+    image: "/assets/img/pico/interlude-b-exemplar-1.jpg",
     bullets: [
-      "Resistor, LED, push-button: the basics",
-      "PIR sensor, potentiometer, OLED display: a bit fancier",
-      "You'll match each letter in the organizer"
+      "Power and ground run to one rail",
+      "Three LEDs, each with its own resistor",
+      "Compare your board against this, and the one at the front of the room"
     ],
-    notes: "This is the chapter's own labeled figure (A through I), which the organizer asks students to match to names and categories. Don't give away which letter is which here -- that matching is the whole point of the organizer activity."
+    notes: "Deliberately no pin numbers called out on the photo itself; point those out live against the real exemplar at the front of the room rather than trying to label a projected photo."
   },
   {
-    kind: "image",
-    kicker: "A useful skill",
-    title: "Reading Resistor Colors",
-    image: "/assets/img/pico/fig-3-3.png",
+    kind: "bullets",
+    kicker: "Get it checked",
+    title: "Sign-Off: Two Stages",
     bullets: [
-      "Resistors don't print their value as a number",
-      "Colored bands encode it instead",
-      "Useful, but don't stress over it"
+      "Neighbor check first",
+      "Then a teacher check",
+      "Compare carefully against the exemplar at the front of the room"
     ],
-    notes: "This chapter's resistor color code content is a nice-to-have skill, not something to spend the whole period on. The organizer only asks two short questions on it, deliberately light. Keep this slide brief.",
+    notes: "Matches the two physical exemplars built ahead of time. Neighbor-then-teacher keeps the teacher from being the only bottleneck with limited class time and limited tools to go around."
+  },
+  {
+    kind: "bullets",
+    kicker: "Before you call a teacher over",
+    title: "What Workmanship Counts",
+    bullets: [
+      "Wired correctly: right pins, right polarity, right color",
+      "LEDs and resistors both trimmed short and neat",
+      "Wires lie flat, not arched above the board",
+      "Pico fully seated in the breadboard"
+    ],
+    notes: "This is the graded rubric baseline, not a scale for who tried hardest; it's printed in full on the graphic organizer. Going further than this is rewarded separately, through peer voting for extra credit, not through this grade.",
     down: [
       {
         kind: "bullets",
-        kicker: "Try it",
-        title: "Decode This Resistor",
+        kicker: "Full rubric, part 1",
+        title: "Rubric: Wiring",
         bullets: [
-          "Look at the resistor at the top of the chart",
-          "Two orange bands: the digits 3 and 3",
-          "One brown band: multiply by 10",
-          "33 times 10 = 330 ohms"
+          "Passed sign-off within the first or second check",
+          "Power rail wired correctly (pin 36)",
+          "Main ground rail wired correctly (pin 38)",
+          "Spare ground rail wired correctly (pin 18)",
+          "All 3 LEDs present and connected",
+          "LEDs wired with correct polarity"
         ],
-        notes: "This is the book's own worked example, and it matches the fill-in-the-blank on the graphic organizer word for word. Walk through it together if you want a quick win before moving on."
+        notes: "First half of the rubric table printed on the graphic organizer, one point each."
+      },
+      {
+        kind: "bullets",
+        kicker: "Full rubric, part 2",
+        title: "Rubric: Trim, Color, Seating",
+        bullets: [
+          "LEDs connected to the correct GPIO pins",
+          "LED legs trimmed short and neat",
+          "Resistor leads trimmed short and neat",
+          "Wires lie flat: no more than 2mm above the breadboard",
+          "Correct wire color used throughout (red, green, white)",
+          "Pico fully and correctly seated in the breadboard"
+        ],
+        notes: "Second half, 12 points total. Exact match to the organizer; pull this up if a student wants the full list instead of flipping to their printed sheet."
       }
     ]
-  },
-  {
-    kind: "bullets",
-    kicker: "Plan",
-    title: "Chapter 3 Plan",
-    bullets: [
-      { text: "Read Chapter 3", href: "/pico/03-physical-computing/" },
-      { text: "Fill out the graphic organizer as you go", href: "/pico/03-graphic-organizer/" }
-    ],
-    notes: "Same as Chapter 1: this might be homework rather than today's in-class work, adjust as needed. There's no soldering or building today, so Chapter 3 often moves faster in class than Chapter 1 did."
-  },
-  {
-    kind: "bullets",
-    kicker: "Coming up",
-    title: "Next: You Actually Build Something",
-    bullets: [
-      "Chapter 3 was ideas and vocabulary",
-      "Chapter 4 you wire your first LED",
-      "Chapter 4 you read your first button"
-    ],
-    notes: "Optional hype slide -- skip it if you're short on time, it's not required content. The idea is to promise them the hands-on part starts next chapter, since Chapter 3 itself is deliberately concept-only."
   },
   {
     kind: "title",
     title: "Questions?",
-    subtitle: "Let's get started.",
-    notes: "Open the floor briefly, then transition into independent reading time."
+    subtitle: "Let's build.",
+    notes: "Open the floor briefly, then get wire and cutters into hands."
   }
 ];
 
@@ -582,7 +590,7 @@ function OutlineCard({ slide, heading, nested }) {
 function Outline() {
   return (
     <div className="outline">
-      <h1>Chapter 3: Physical Computing</h1>
+      <h1>Interlude B.1: Wiring Three LEDs</h1>
       <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
       {SLIDES.map((s, i) => (
         <React.Fragment key={i}>
@@ -657,7 +665,7 @@ function App() {
     return (
       <div className="app">
         <div className="toolbar">
-          <a className="back-link" href="/pico/03-physical-computing/">&larr; Chapter 3</a>
+          <a className="back-link" href="/pico/04b-binary-counter-circuit/">&larr; Interlude B.1</a>
           <div className="spacer"></div>
           <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
           <button onClick={() => window.print()}>Print</button>
@@ -691,7 +699,7 @@ function App() {
         </div>
       )}
       <div className="toolbar">
-        <a className="back-link" href="/pico/03-physical-computing/">&larr; Chapter 3</a>
+        <a className="back-link" href="/pico/04b-binary-counter-circuit/">&larr; Interlude B.1</a>
         <div className="spacer"></div>
         <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
         <span className="counter">{index + 1} / {SLIDES.length}</span>
