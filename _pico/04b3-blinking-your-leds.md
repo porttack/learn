@@ -8,9 +8,7 @@ source: original
 subtitle: "Write your first programs for the circuit you built"
 ---
 
-*Write your first programs for the circuit you built*
-
-This is for after your three-LED circuit from [Interlude B.1](/pico/04b-binary-counter-circuit/) is signed off, and after [Interlude B.3](/pico/04b3-flashing-with-thonny/) has MicroPython running on your Pico and Thonny connected to it. If you finish early and your teacher is ready for you to move on, this is what comes next.
+This is for after your three-LED circuit from [Interlude B.1](/pico/04b-wiring-three-leds/) is signed off, and after [Interlude B.3](/pico/04b3-flashing-with-thonny/) has MicroPython running on your Pico and Thonny connected to it. If you finish early and your teacher is ready for you to move on, this is what comes next.
 
 <aside class="callout warning" markdown="1">
 **ONLY AFTER SIGN-OFF**
@@ -63,6 +61,8 @@ while True:
 ```
 
 Use whichever pin number you actually wired, 13, 14, or 15, not necessarily 13. Save and run it. If it doesn't light up, double check that pin number against what you wrote down, and that the LED is wired the way Interlude B.1 described.
+
+Every time `.toggle()` runs, it's opening and closing a valve on that GPIO pin, exactly like the valve in [The Water Analogy](/pico/water-analogy/): open, and the 3.3V side connects through your LED and resistor to ground; closed, and nothing flows.
 
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: ALL THREE, IN A ROW**

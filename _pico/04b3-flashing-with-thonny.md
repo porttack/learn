@@ -8,8 +8,6 @@ source: original
 subtitle: "Get MicroPython running on your Pico for the first time, using Thonny"
 ---
 
-*Get MicroPython running on your Pico for the first time, using Thonny*
-
 <aside class="callout warning" markdown="1">
 **ONLY AFTER SIGN-OFF**
 

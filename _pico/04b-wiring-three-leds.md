@@ -10,8 +10,6 @@ organizer: /pico/04b-graphic-organizer/
 slides: /pico/04b-intro-slides/
 ---
 
-*Build a three-LED circuit on your breadboard, by hand*
-
 Today you're building real hardware: no simulator, no code yet, just a breadboard, some wire, and your own hands. Your Pico is already seated in your breadboard. Read through this whole page once before you touch anything, so you know where you're headed.
 
 If you want to double check a physical pin number for yourself, [Appendix B, Pinout guide](/pico/14-pinout-guide/) has the full reference.
@@ -76,6 +74,13 @@ Use red for all three LEDs in this circuit.
 Not every LED works well at 3.3V. "True green," blue, and white LEDs typically need more forward voltage than red, yellow, or amber ones, and can end up dim or unreliable here. Stick to red for this build.
 </aside>
 
+If it would help to see why the resistor matters, [The Water Analogy](/pico/water-analogy/) is an interactive page that walks through voltage, current, and resistance as water pressure, flow, and a narrow pipe.
+
 ### Get it signed off
 
-Once your three LEDs are wired, compare your breadboard to the exemplar at the front of the room. Ask a neighbor to check it against the exemplar first. Once they agree it matches, call a teacher over for the real sign-off. Keep your Pico unplugged until then, even if you're confident it's right.
+<figure id="fig-interlude-b-exemplar-1">
+  <img src="{{ '/assets/img/pico/interlude-b-exemplar-1.jpg' | relative_url }}" alt="Exemplar 1: a Pico 2 W seated in a breadboard with power and ground wires run to a rail, and three red LEDs each paired with a resistor">
+  <figcaption>Exemplar 1: the finished LED circuit</figcaption>
+</figure>
+
+Once your three LEDs are wired, compare your breadboard to the exemplar at the front of the room (and to the photo above). Ask a neighbor to check it against the exemplar first. Once they agree it matches, call a teacher over for the real sign-off. Keep your Pico unplugged until then, even if you're confident it's right.

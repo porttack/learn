@@ -132,7 +132,9 @@ figure {
   text-align: center;
 
   img {
+    display: block;
     max-width: 100%;
+    margin: 0 auto;
   }
 
   figcaption {
@@ -1156,6 +1158,24 @@ figure {
   padding: 0.1em 0.7em;
 }
 
+// Same pill links as the pathway index's contents list, but shown directly
+// on the lesson page itself, so a reader who landed here straight from a
+// link doesn't have to go back to the pathway index to find the organizer
+// or slides. Right-aligned to sit near the title without competing with it.
+.lesson-companions {
+  text-align: right;
+  margin: 0.3em 0 1em;
+
+  .lesson-companion-link {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .lesson-companion-link + .lesson-companion-link {
+    margin-left: 0.6em;
+  }
+}
+
 .lesson-sublist {
   list-style: none;
   padding-left: 1.2em;
@@ -1442,6 +1462,15 @@ table.checkoff.light-message td {
   table.checkoff tr,
   .organizer-photo,
   .draw-box {
+    break-inside: avoid;
+  }
+
+  // table.checkoff tr (above) only keeps a single row from splitting
+  // mid-row; it doesn't stop the table itself from breaking between rows
+  // across a page boundary. Opt a specific table into staying whole with
+  // this class, e.g. a rubric that should land entirely on one page
+  // rather than split across two.
+  .no-split-table {
     break-inside: avoid;
   }
 

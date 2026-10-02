@@ -27,7 +27,7 @@ Fill this in once your circuit is built. It's kept at the top so your teacher ca
   </tbody>
 </table>
 
-*Fill this out as you build [Interlude B.1, Wiring Three LEDs](/pico/04b-binary-counter-circuit/). Check off each stage as you finish it. You can write your answers in your own words: you do not need full sentences.*
+*Fill this out as you build [Interlude B.1, Wiring Three LEDs](/pico/04b-wiring-three-leds/). Check off each stage as you finish it. You can write your answers in your own words: you do not need full sentences.*
 
 <aside class="callout warning" markdown="1">
 **DO NOT CONNECT TO USB TODAY**
@@ -104,7 +104,7 @@ Fill in the physical pin number and GPIO name you used for each LED.
 
 This is the baseline every circuit is expected to meet, not a scale for who tried hardest. Going beyond this is its own reward, separate from this grade.
 
-<table class="checkoff">
+<table class="checkoff no-split-table">
   <thead>
     <tr><th>Criterion</th><th>Possible</th><th>Earned</th></tr>
   </thead>

@@ -1,0 +1,407 @@
+---
+title: "The Water Analogy"
+permalink: /pico/water-analogy/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Water Analogy: Voltage, Current, and a Valve Named GPIO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/pico/favicon.svg">
+<style>
+  :root {
+    --accent: #2a7ae2;
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #57606a;
+    --border: #d0d7de;
+    --water: #8ec6f5;
+    --water-dark: #2a7ae2;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: #e9edf1;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  .page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+  .back-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  h1 {
+    margin: 10px 0 4px;
+    font-size: 34px;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 17px;
+    margin: 0 0 24px;
+  }
+
+  .layout {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .diagram-card {
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+    padding: 20px;
+    flex: 0 0 auto;
+  }
+
+  svg#diagram {
+    width: 260px;
+    height: auto;
+    display: block;
+  }
+
+  .controls-card {
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+    padding: 24px;
+    flex: 1 1 280px;
+    min-width: 260px;
+  }
+
+  #gate-toggle {
+    display: block;
+    width: 100%;
+    font-size: 17px;
+    font-weight: 600;
+    padding: 14px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+  #gate-toggle:hover { background: #1e63bf; }
+  #gate-toggle.is-open { background: #2e8b3d; }
+  #gate-toggle.is-open:hover { background: #256f31; }
+
+  .controls-card label {
+    display: block;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .controls-card input[type="range"] {
+    width: 100%;
+    margin: 6px 0 4px;
+  }
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 22px;
+  }
+
+  .readout {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+  .readout p {
+    margin: 6px 0;
+    font-size: 18px;
+  }
+  .readout .formula {
+    font-size: 15px;
+    color: var(--muted);
+  }
+  #current-value {
+    font-weight: 700;
+    color: var(--water-dark);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .explainer {
+    margin-top: 36px;
+  }
+  .explainer h2 {
+    font-size: 22px;
+  }
+  .explainer ul {
+    line-height: 1.7;
+    padding-left: 1.2em;
+  }
+  .explainer .note {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  /* --- Diagram --- */
+  .reservoir { fill: var(--water); stroke: var(--water-dark); stroke-width: 2; }
+  .pipe { fill: var(--water); }
+  .reservoir-label { font-size: 13px; fill: var(--ink); text-anchor: middle; font-weight: 600; }
+  .part-label { font-size: 11px; fill: var(--muted); text-anchor: middle; }
+
+  .valve-body { fill: #616161; }
+  .valve-handle {
+    fill: #c62828;
+    stroke: #7f0000;
+    stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: center;
+    transform: rotate(90deg);
+    transition: transform 0.4s ease, fill 0.3s ease;
+  }
+  #diagram.is-open .valve-handle {
+    fill: #2e8b3d;
+    stroke: #1d5c27;
+    transform: rotate(0deg);
+  }
+
+  .bit-label { font-size: 11px; fill: var(--muted); text-anchor: middle; }
+  .bit-value {
+    font-size: 26px;
+    font-weight: 700;
+    fill: var(--water-dark);
+    text-anchor: middle;
+    transition: fill 0.3s ease;
+  }
+
+  .led-body { transition: fill 0.4s ease, filter 0.4s ease; }
+  .led-spinner {
+    stroke: #7f0000;
+    stroke-width: 3;
+    stroke-linecap: round;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  #diagram.is-open .led-spinner {
+    animation: spin 1.4s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .pebble { fill: #a1887f; }
+
+  /* Particles: count tied to current (more electrons), never speed. LED
+     brightness also tied to current. Neither one is ever tied to how fast
+     a single particle moves; see the JS comment on updateCurrent(). */
+  .particle {
+    fill: #0d47a1;
+    opacity: 0;
+  }
+  #diagram.is-open .particle.is-active {
+    opacity: 0.85;
+    animation-name: flow-down;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: 2s;
+  }
+  @keyframes flow-down {
+    0%   { transform: translateY(0px); opacity: 0; }
+    6%   { opacity: 0.85; }
+    90%  { opacity: 0.85; }
+    100% { transform: translateY(280px); opacity: 0; }
+  }
+
+  @media (max-width: 600px) {
+    .layout { flex-direction: column; }
+    .diagram-card { align-self: center; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <a class="back-link" href="/pico/">&larr; MicroPython on Pi Pico</a>
+  <h1>The Water Analogy</h1>
+  <p class="subtitle">Voltage, current, and resistance, as water pressure, flow, and a narrow, choked pipe</p>
+
+  <div class="layout">
+    <div class="diagram-card">
+      <svg id="diagram" viewBox="0 0 300 440" xmlns="http://www.w3.org/2000/svg">
+        <!-- HIGH reservoir: 3.3V -->
+        <rect class="reservoir" x="70" y="8" width="160" height="56" rx="4"/>
+        <text class="reservoir-label" x="150" y="32">3.3V</text>
+        <text class="reservoir-label" x="150" y="48">HIGH</text>
+
+        <!-- Pipe runs continuously top to bottom; the valve sits in it. -->
+        <rect class="pipe" x="135" y="64" width="30" height="306"/>
+
+        <!-- Valve: a plain on/off valve, not a lock. This is the GPIO pin. -->
+        <polygon class="valve-body" points="135,104 160,124 135,144"/>
+        <polygon class="valve-body" points="165,104 140,124 165,144"/>
+        <rect class="valve-handle" x="144" y="94" width="12" height="28" rx="2"/>
+        <text class="bit-label" x="230" y="118">GP13</text>
+        <text class="bit-value" id="bit-value" x="230" y="142">0</text>
+
+        <!-- LED, drawn as a one-way turbine: the line inside spins while
+             current flows, stays still when it doesn't. -->
+        <circle class="led-body" id="led-body" cx="150" cy="212" r="26"/>
+        <g class="led-spinner" id="led-spinner">
+          <line x1="150" y1="194" x2="150" y2="230"/>
+          <line x1="132" y1="212" x2="168" y2="212"/>
+        </g>
+        <text class="part-label" x="150" y="250">LED (one-way turbine)</text>
+
+        <!-- Resistor: a narrow, pebble-choked stretch of pipe. Narrower =
+             fewer gaps between pebbles = more resistance. -->
+        <polygon id="funnel-in" class="pipe" points="120,264 180,264 165,280 135,280"/>
+        <rect id="narrow-pipe" class="pipe" x="139" y="280" width="22" height="50"/>
+        <polygon id="funnel-out" class="pipe" points="139,330 161,330 165,346 135,346"/>
+        <circle class="pebble" cx="146" cy="292" r="3.5"/>
+        <circle class="pebble" cx="156" cy="300" r="3"/>
+        <circle class="pebble" cx="144" cy="310" r="3"/>
+        <circle class="pebble" cx="155" cy="318" r="3.5"/>
+        <circle class="pebble" cx="147" cy="326" r="3"/>
+
+        <!-- Pipe: resistor down to the low reservoir, with room for its label -->
+        <rect class="pipe" x="135" y="346" width="30" height="12"/>
+        <text class="part-label" x="150" y="366">Resistor (narrow, choked pipe)</text>
+        <rect class="pipe" x="135" y="370" width="30" height="16"/>
+
+        <!-- LOW reservoir: GND -->
+        <rect class="reservoir" x="70" y="386" width="160" height="40" rx="4"/>
+        <text class="reservoir-label" x="150" y="410">GND &middot; LOW (0V)</text>
+
+        <!-- Flowing particles: a straight drop, count tied to current -->
+        <circle class="particle" cx="150" cy="76" r="4" style="animation-delay: 0s;"/>
+        <circle class="particle" cx="150" cy="76" r="4" style="animation-delay: 0.33s;"/>
+        <circle class="particle" cx="150" cy="76" r="4" style="animation-delay: 0.66s;"/>
+        <circle class="particle" cx="150" cy="76" r="4" style="animation-delay: 1s;"/>
+        <circle class="particle" cx="150" cy="76" r="4" style="animation-delay: 1.33s;"/>
+        <circle class="particle" cx="150" cy="76" r="4" style="animation-delay: 1.66s;"/>
+      </svg>
+    </div>
+
+    <div class="controls-card">
+      <button id="gate-toggle" type="button">GPIO: LOW (0) &mdash; click to set HIGH (1)</button>
+
+      <label for="resistor-slider">Resistor pipe width</label>
+      <input type="range" id="resistor-slider" min="4" max="24" value="12" step="1">
+      <div class="slider-labels">
+        <span>&larr; Narrow: more resistance</span>
+        <span>Wide: less resistance &rarr;</span>
+      </div>
+
+      <div class="readout">
+        <p>Current: <span id="current-value">0.0</span> mA</p>
+        <p class="formula">I = (V &minus; V<sub>f</sub>) &divide; R, same formula as Electronics 101</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="explainer">
+    <h2>How the analogy maps</h2>
+    <ul>
+      <li><strong>Voltage</strong> is water pressure: the height difference between the high reservoir (3.3V) and the low one (GND, 0V). No height difference, no push.</li>
+      <li><strong>The GPIO pin is a valve.</strong> Setting it HIGH in your code opens the valve and connects the pipe to the high reservoir's pressure. Setting it LOW closes it again. No pressure gets through either way until it's open.</li>
+      <li><strong>The LED is a one-way turbine.</strong> Water only spins it in one direction, and it needs enough pressure (forward voltage) before it starts turning and lighting up at all.</li>
+      <li><strong>The resistor is a narrow pipe choked with pebbles.</strong> It doesn't care which direction, it just limits how much water can squeeze past no matter how much pressure is pushing.</li>
+      <li><strong>More current isn't faster water, it's more of it.</strong> A narrower, more choked pipe doesn't speed the flow up or slow it down, it lets less through at all, same as fewer electrons passing by each second rather than the same electrons moving faster. Watch the dots and the LED's brightness, not their speed, as you move the resistor slider.</li>
+    </ul>
+    <p class="note">Real valves, turbines, and pebble-choked pipes don't look exactly like this, but the relationships hold: pressure pushes, a valve decides whether it can push at all, and a narrow enough passage limits how much gets through regardless of pressure.</p>
+  </div>
+</div>
+
+<script>
+  var diagram = document.getElementById('diagram');
+  var gateToggle = document.getElementById('gate-toggle');
+  var bitValue = document.getElementById('bit-value');
+  var ledBody = document.getElementById('led-body');
+  var slider = document.getElementById('resistor-slider');
+  var currentValue = document.getElementById('current-value');
+  var narrowPipe = document.getElementById('narrow-pipe');
+  var funnelIn = document.getElementById('funnel-in');
+  var funnelOut = document.getElementById('funnel-out');
+  var particles = document.querySelectorAll('.particle');
+
+  var isOpen = false;
+  var SUPPLY_V = 3.3;
+  var FORWARD_V = 2.0;
+  var MIN_OHM = 150, MAX_OHM = 1000;
+
+  // Slider is a stand-in "pipe width" from 4 (narrow, high resistance) to 24
+  // (wide, low resistance). Mapped onto a plausible ohm range so the current
+  // readout lands in the same ballpark as Electronics 101's own example.
+  function widthToOhms(w) {
+    var minW = 4, maxW = 24;
+    var t = (w - minW) / (maxW - minW);
+    return Math.round(MAX_OHM - t * (MAX_OHM - MIN_OHM));
+  }
+
+  function updateResistor() {
+    var w = parseInt(slider.value, 10);
+    var cx = 150, topY = 264, bottomY = 346, neckTop = 280, neckBottom = 330;
+    narrowPipe.setAttribute('x', cx - w / 2);
+    narrowPipe.setAttribute('width', w);
+    funnelIn.setAttribute('points',
+      (cx - 30) + ',' + topY + ' ' + (cx + 30) + ',' + topY + ' ' +
+      (cx + w / 2) + ',' + neckTop + ' ' + (cx - w / 2) + ',' + neckTop);
+    funnelOut.setAttribute('points',
+      (cx - w / 2) + ',' + neckBottom + ' ' + (cx + w / 2) + ',' + neckBottom + ' ' +
+      (cx + 30) + ',' + bottomY + ' ' + (cx - 30) + ',' + bottomY);
+    updateCurrent();
+  }
+
+  // Current changes how MANY particles are visible (more electrons) and how
+  // bright the LED glows, never how fast any single particle moves. Speed
+  // stays fixed (see flow-down's animation-duration in CSS); only count and
+  // brightness track the resistor slider.
+  function updateCurrent() {
+    var ohms = widthToOhms(parseInt(slider.value, 10));
+    var ma = isOpen ? ((SUPPLY_V - FORWARD_V) / ohms) * 1000 : 0;
+    currentValue.textContent = ma.toFixed(1);
+
+    var minMa = (SUPPLY_V - FORWARD_V) / MAX_OHM * 1000;
+    var maxMa = (SUPPLY_V - FORWARD_V) / MIN_OHM * 1000;
+    var intensity = isOpen ? (ma - minMa) / (maxMa - minMa) : 0;
+
+    var activeCount = isOpen ? Math.max(1, Math.round(1 + intensity * (particles.length - 1))) : 0;
+    particles.forEach(function (p, i) {
+      p.classList.toggle('is-active', i < activeCount);
+    });
+
+    if (isOpen) {
+      // Even the dimmest current (narrowest resistor) must look clearly lit,
+      // never identical to "off" -- so these ranges start well above the
+      // off-state color/glow, not at them, with a floor plus intensity on
+      // top rather than intensity alone.
+      var r = Math.round(214 + intensity * (255 - 214));
+      var g = Math.round(58 + intensity * (110 - 58));
+      var b = Math.round(58 + intensity * (90 - 58));
+      ledBody.style.fill = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+      var glowBlur = 8 + intensity * 16;
+      var glowOpacity = 0.55 + intensity * 0.45;
+      ledBody.style.filter = 'drop-shadow(0 0 ' + glowBlur + 'px rgba(255, 100, 60, ' + glowOpacity + '))';
+    } else {
+      ledBody.style.fill = '#6b1414';
+      ledBody.style.filter = 'none';
+    }
+  }
+
+  gateToggle.addEventListener('click', function () {
+    isOpen = !isOpen;
+    diagram.classList.toggle('is-open', isOpen);
+    gateToggle.classList.toggle('is-open', isOpen);
+    gateToggle.textContent = isOpen ? 'GPIO: HIGH (1) — click to set LOW (0)' : 'GPIO: LOW (0) — click to set HIGH (1)';
+    bitValue.textContent = isOpen ? '1' : '0';
+    updateCurrent();
+  });
+
+  slider.addEventListener('input', updateResistor);
+
+  updateResistor();
+</script>
+</body>
+</html>

@@ -29,6 +29,12 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
   {% if page.subtitle %}
   <p class="lesson-subtitle">{{ page.subtitle }}</p>
   {% endif %}
+  {% if page.organizer or page.slides %}
+  <p class="lesson-companions">
+    {% if page.organizer %}<a class="lesson-companion-link" href="{{ page.organizer | relative_url }}">Graphic organizer</a>{% endif %}
+    {% if page.slides %}<a class="lesson-companion-link" href="{{ page.slides | relative_url }}">{% if page.label %}{{ page.label }} slides{% else %}Chapter {{ page.chapter }} slides{% endif %}</a>{% endif %}
+  </p>
+  {% endif %}
   {% include activity-meta.html %}
   {% if page.unit %}
   <p class="lesson-card-hint">New to lesson cards? <a href="{{ '/rovrobotics/what-is-a-lesson-card/' | relative_url }}">See what a lesson card is</a>.</p>
