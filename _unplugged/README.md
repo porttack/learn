@@ -97,6 +97,16 @@ Book images: `pdfimages -png -f P -l P tmp/CSUnplugged_2015_v3.1.pdf out`
   `repository:` in `_config.yml`. Screen only. Both need a GitHub account,
   which GitHub limits to ages 13+. An edit to a sheet's text won't change
   puzzles or keys that live in `_data/` or JS.
+- **"Download as Word (.docx)"** (`docx_export: true` in
+  `_data/pathways.yml`): `assets/js/docx-export.js` converts the sheet as it
+  is showing (current "New set", `?player=`, `?key=1`) into a real .docx in
+  the browser, using the `docx` and `html-to-image` libraries from jsdelivr
+  (loaded on click). Text, headings, lists, tables, and code stay editable;
+  flex/grid widgets, SVG, and images become pictures. Google Docs opens the
+  same file when it's uploaded to Drive. To test without clicking, load a
+  page with `?docx=selftest`: the file appears base64 in
+  `<pre id="docx-selftest">` (headless Chrome's virtual clock won't wait for
+  the CDN; drive it over the DevTools protocol instead).
 - **"History"**: opens a version-history list under the page (the same idea
   as porttack.com's), loaded from GitHub's public API only when clicked (or
   with `?history` in the URL), because unauthenticated API calls are limited

@@ -68,6 +68,7 @@
   nav: none
   name_line: true
   suggest_edits: true
+  docx_export: true
   blurb: >-
     Computer science with no computer: printable worksheets and pair games
     for brain breaks, computers-down days, or practice on one idea. Many are

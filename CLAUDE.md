@@ -55,7 +55,9 @@ has a landing page at `rovrobotics/index.md` with `permalink: /rovrobotics/`.
 pathway there adds "Suggest an edit" / "Request a change or fix" / "History"
 links to the bottom of its lesson pages (GitHub web editor, a prefilled
 issue, and on-demand version history; see `_layouts/lesson.html`). On for
-CS Unplugged, CS50 Problem Sets, and ROV Robotics. Add a pathway there when you
+CS Unplugged, CS50 Problem Sets, and ROV Robotics. `docx_export: true` adds a
+"Download as Word (.docx)" button (in-browser conversion of the page as
+shown; `assets/js/docx-export.js`); on for CS Unplugged. Add a pathway there when you
 create its collection, and add the collection to `_config.yml`.
 
 ### CS Unplugged (`_unplugged/`)
