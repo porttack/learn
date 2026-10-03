@@ -24,13 +24,16 @@ export const ANCHORS = [
 // True only for a non-empty message in this activity's alphabet: capital
 // letters and spaces, plus lowercase letters and digits when extended.
 export function isValidMessage(text, { extended = false } = {}) {
-  const re = extended ? /^[A-Za-z0-9 ]+$/ : /^[A-Z ]+$/;
+  const re = extended ? /^[A-Za-z0-9 !,.?]+$/ : /^[A-Z ]+$/;
   return typeof text === "string" && text.length > 0 && re.test(text);
 }
 
 const inRange = (code, lo, hi) => code >= lo && code <= hi;
+// The four punctuation marks the sheets teach: ! , . ?
+export const PUNCTUATION = { "!": 33, ",": 44, ".": 46, "?": 63 };
 const isKnownCode = (code) =>
-  code === SPACE_CODE || inRange(code, 65, 90) || inRange(code, 97, 122) || inRange(code, 48, 57);
+  code === SPACE_CODE || inRange(code, 65, 90) || inRange(code, 97, 122) || inRange(code, 48, 57) ||
+  Object.values(PUNCTUATION).includes(code);
 
 function codeOfChar(ch) {
   const code = ch.charCodeAt(0);

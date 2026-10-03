@@ -64,6 +64,45 @@ turns each letter into a number, and you are about to crack it.
 </div>
 {% endfor %}
 
+## Lowercase and punctuation
+
+Real messages need more than capital letters. Every lowercase letter's code
+is **32 more** than its capital: A is 65, so a is 97.
+
+{% assign lower = "a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z" | split: "," %}
+<table class="ascii-table">
+<tbody>
+{% for band in (0..2) %}{% assign off = band | times: 9 %}
+<tr>{% for l in lower limit: 9 offset: off %}<th>{{ l }}</th>{% endfor %}</tr>
+<tr>{% for l in lower limit: 9 offset: off %}<td>{{ forloop.index0 | plus: off | plus: 97 }}</td>{% endfor %}</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<table class="ascii-table ascii-punct">
+<tbody>
+<tr><th>space</th><th>!</th><th>,</th><th>.</th><th>?</th></tr>
+<tr><td>32</td><td>33</td><td>44</td><td>46</td><td>63</td></tr>
+</tbody>
+</table>
+
+{% assign more = site.data.unplugged.ascii_fixed.decimal_more %}
+For example, {{ more.example.codes | join: " " }} is **{{ more.example.text }}**
+
+{% for m in more.messages %}
+<div class="ascii-question">
+<p class="ascii-prompt">{{ m.prompt }}</p>
+<div class="code-row">
+{% for code in m.codes %}
+<div class="code-cell{% if code == 32 %} is-space{% endif %}">
+  <span class="code-num">{{ code }}</span>
+  <span class="code-box"></span>
+</div>
+{% endfor %}
+</div>
+</div>
+{% endfor %}
+
 ## Write your name in ASCII
 
 Now go the other way. Write one letter of your name in each top box, then
@@ -81,7 +120,41 @@ use the table to write its code underneath.
 Short name? Leave the extra boxes blank. Longer than eight letters? Keep
 going on the back of the page.
 
-Want the whole table, with lowercase letters and punctuation too? See the
+## Secret messages for a friend
+
+Think of two short messages (up to 16 letters, spaces, and marks each) and
+write them on the lines **below the fold line**. Then write each message's
+codes in its boxes, one character per box. Fold the bottom strip under so
+only the **codes** show, and trade with a friend. Can they read your
+messages?
+
+{% for k in (1..2) %}
+<div class="ascii-secret">
+<p>Message {{ k }} codes:</p>
+<div class="ascii-secret-boxes">{% for i in (1..16) %}<span class="value-box"></span>{% endfor %}</div>
+</div>
+{% endfor %}
+
+<div class="ascii-fold">
+<p class="ascii-fold-line">fold here</p>
+<p>Message 1: <span class="fill-line"></span></p>
+<p>Message 2: <span class="fill-line"></span></p>
+</div>
+
+<section class="ascii-friend" markdown="1">
+## Your friend's messages
+
+Decode your friend's codes, one character in each box.
+
+{% for k in (1..2) %}
+<div class="ascii-secret">
+<p>Friend's message {{ k }}:</p>
+<div class="ascii-secret-boxes">{% for i in (1..16) %}<span class="code-box"></span>{% endfor %}</div>
+</div>
+{% endfor %}
+</section>
+
+Want every character, digits and all? See the
 [full ASCII / Hex table]({{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}).
 
 <section class="answer-key">
@@ -89,4 +162,5 @@ Want the whole table, with lowercase letters and punctuation too? See the
 <ol class="ascii-key-list">
 {% for m in msgs %}<li>{{ m.text }}</li>
 {% endfor %}</ol>
+<p><strong>Lowercase and punctuation:</strong> {% for m in site.data.unplugged.ascii_fixed.decimal_more.messages %}{{ m.text }}{% endfor %}</p>
 </section>

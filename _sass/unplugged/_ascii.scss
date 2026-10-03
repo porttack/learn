@@ -257,3 +257,77 @@ table.ascii-chart {
   font-size: 1.1em;
   font-weight: 700;
 }
+
+// Punctuation table: five columns, not full width.
+table.ascii-table.ascii-punct {
+  width: auto;
+
+  th, td {
+    min-width: 3.2em;
+  }
+}
+
+// Secret messages: a line for the message, then a row of boxes (wraps to
+// two rows of 8), one character per box.
+.ascii-secret {
+  margin: 0.6em 0 1.2em;
+
+  p {
+    margin-bottom: 0.4em;
+  }
+}
+
+.ascii-secret-boxes {
+  display: grid;
+  grid-template-columns: repeat(8, 3.6em);
+  gap: 0.45em 0.35em;
+
+  .code-box {
+    width: 2.2em;
+    height: 2.2em;
+  }
+}
+
+@media print {
+  .ascii-secret {
+    break-inside: avoid;
+  }
+}
+
+// Fold line: messages below it get tucked under, so only codes show.
+.ascii-fold {
+  margin: 0.8em 0 1.2em;
+
+  .ascii-fold-line {
+    border-top: 2px dashed $grey-color;
+    padding-top: 0.2em;
+    font-size: 0.8em;
+    color: $grey-color-dark;
+    text-align: center;
+    margin-bottom: 0.6em;
+  }
+
+  .fill-line {
+    min-width: 22em;
+  }
+}
+
+@media print {
+  // The secret-message boxes, fold line, and messages stay on one page.
+  .ascii-fold {
+    break-inside: avoid;
+  }
+
+  .ascii-secret-boxes {
+    gap: 0.35em 0.3em;
+  }
+}
+
+@media print {
+  // Friends decode on a fresh page, so folding the message strip under (at
+  // the bottom of the previous page) never hides this section.
+  .ascii-friend {
+    break-before: page;
+    break-inside: avoid;
+  }
+}

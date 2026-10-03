@@ -118,6 +118,21 @@ for (const item of anchors ? [anchors.example, ...(anchors.messages || [])] : []
   }
 }
 
+// Decimal sheet's "Lowercase and punctuation" section.
+const more = fixed.decimal_more;
+if (!more) fail("ascii_fixed.yml", 'missing "decimal_more"');
+for (const item of more ? [more.example, ...(more.messages || [])] : []) {
+  const label = `decimal_more: "${item.text}"`;
+  try {
+    const decoded = decodeCodes(item.codes.map(String), "decimal");
+    const encoded = encodeText(item.text, "decimal", { extended: true });
+    if (decoded !== item.text) fail(label, `the printed codes decode to "${decoded}"`);
+    if (encoded.join(",") !== item.codes.join(",")) fail(label, `encoding gives [${encoded.join(", ")}]`);
+  } catch (e) {
+    fail(label, e.message);
+  }
+}
+
 // The generator's anchors level sentence-cases every punchline.
 for (const [i, joke] of (bank.jokes || []).entries()) {
   const text = sentenceCase(joke.punchline);

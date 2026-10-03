@@ -76,3 +76,14 @@ anchors:
       text: "Lo"
       codes: ["4C", "6F"]
 
+
+# Decimal sheet, "Lowercase and punctuation": capitals, lowercase, and
+# ! , . ? (checked in extended mode by tools/check_ascii_messages.mjs).
+decimal_more:
+  example:
+    text: "Hi!"
+    codes: [72, 105, 33]
+  messages:
+    - prompt: "Decode this friendly question."
+      text: "Hi, how are you?"
+      codes: [72, 105, 44, 32, 104, 111, 119, 32, 97, 114, 101, 32, 121, 111, 117, 63]
