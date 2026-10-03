@@ -4,7 +4,7 @@ source: original
 level: ms
 kind: [single]
 topics: [Logic puzzles]
-time: 20
+time: 25
 grouping: Solo
 materials: "Pencil"
 scripts: [/assets/js/unplugged/bimaru-page.js]
@@ -65,8 +65,9 @@ Working the same way through every row and column finishes the grid:
 
 ## The puzzles
 
-The fleet list is printed next to each grid so you can cross off a ship the
-moment you find it.
+The puzzles get harder as you go. The fleet list is printed next to each
+grid so you can cross off a ship the moment you find it. The last one writes
+its counts in **binary** (4, 2, 1 places): convert each count first.
 
 <noscript><p class="callout warning">This worksheet draws its puzzle grids with JavaScript. Turn JavaScript on to see them.</p></noscript>
 
