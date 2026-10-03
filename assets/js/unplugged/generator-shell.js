@@ -79,12 +79,21 @@ export function mountGenerator({ root, options = [], render }) {
     const keys = document.createElement("div");
     keys.className = "class-set-keys";
     const nameLine = document.querySelector(".name-line");
+    // Each copy gets the sheet's short title ("Robot grid: make a new set"
+    // -> "Robot grid"); the page's own title is hidden in print (see CSS).
+    const pageTitle = (document.querySelector("article h1")?.textContent || "").split(":")[0].trim();
     for (let i = 0; i < copies; i++) {
       const s = seed + i;
       drawOne(s);
       const copy = document.createElement("section");
       copy.className = "class-set-copy";
       if (nameLine) copy.appendChild(nameLine.cloneNode(true));
+      if (pageTitle) {
+        const h = document.createElement("h2");
+        h.className = "class-set-title";
+        h.textContent = pageTitle;
+        copy.appendChild(h);
+      }
       for (const p of parts()) copy.appendChild(p.cloneNode(true));
       // Pull the answer keys out so they print together at the end.
       copy.querySelectorAll(".answer-key").forEach((k) => {

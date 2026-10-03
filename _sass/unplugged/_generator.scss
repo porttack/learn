@@ -392,7 +392,9 @@ table.activity-table {
 
 @media print {
   // A class set carries a Name line on every copy; drop the page's own.
-  .lesson:has(.class-set) > .name-line {
+  .lesson:has(.class-set) > .name-line,
+  .lesson:has(.class-set) > h1,
+  .lesson:has(.class-set) > .lesson-label {
     display: none !important;
   }
 }
@@ -408,4 +410,10 @@ table.activity-table {
   .lesson:has(.puzzle-generator) > :not(.puzzle-generator):not(.name-line):not(.lesson-label):not(h1):not(.provenance) {
     display: none !important;
   }
+}
+
+// Each class-set copy's own title, sized like a sheet title.
+.class-set-title {
+  font-size: 1.6em;
+  margin: 0.2em 0 0.6em;
 }
