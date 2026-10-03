@@ -331,3 +331,27 @@ table.ascii-table.ascii-punct {
     break-inside: avoid;
   }
 }
+
+// Full 32-122 reference table: five code/char column pairs.
+table.ascii-full-table {
+  font-size: 0.9em;
+
+  td.ascii-char {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 700;
+    font-size: 1.1em;
+  }
+
+  // A heavier line between each code/char pair.
+  th:nth-child(2n + 1):not(:first-child),
+  td:nth-child(2n + 1):not(:first-child) {
+    border-left: 2px solid $grey-color;
+  }
+}
+
+@media print {
+  .ascii-full {
+    break-before: page;
+    break-inside: avoid;
+  }
+}

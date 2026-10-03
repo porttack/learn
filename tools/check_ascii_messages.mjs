@@ -159,5 +159,14 @@ else chart.forEach((row, i) => {
 });
 console.log(`anchors sheet, sentence-case bank, and ${chart ? chart.length : 0}-row chart checked`);
 
+// Full 32-122 reference table on the decimal sheet.
+const full = loadYaml("../_data/unplugged/ascii_full.yml").rows || [];
+full.forEach((r, i) => {
+  const want = r.code === 32 ? "space" : String.fromCharCode(r.code);
+  if (r.code !== 32 + i || r.char !== want) fail("ascii_full.yml", `row ${i + 1}: ${r.code} -> ${JSON.stringify(r.char)}`);
+});
+if (full.length !== 91) fail("ascii_full.yml", `expected 91 rows, found ${full.length}`);
+console.log(`ascii_full.yml: ${full.length} rows checked`);
+
 console.log(failures ? `${failures} failure(s)` : "all ASCII messages check out");
 process.exit(failures ? 1 : 0);

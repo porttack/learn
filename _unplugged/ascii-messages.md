@@ -166,7 +166,22 @@ Decode your friend's codes, one character in each box.
 {% endfor %}
 </section>
 
-Want every character? See the
+<section class="ascii-full" markdown="1">
+## ASCII table: 32 to 122
+
+Every character from code 32 to 122. Use it for your secret messages.
+
+{% assign full = site.data.unplugged.ascii_full.rows %}
+<table class="ascii-table ascii-full-table">
+<thead><tr>{% for k in (1..5) %}<th>Code</th><th>Char</th>{% endfor %}</tr></thead>
+<tbody>
+{% for r in (0..18) %}<tr>{% for k in (0..4) %}{% assign i = k | times: 19 | plus: r %}{% if i < full.size %}{% assign row = full[i] %}<td>{{ row.code }}</td><td class="ascii-char">{{ row.char | escape }}</td>{% else %}<td></td><td></td>{% endif %}{% endfor %}</tr>
+{% endfor %}
+</tbody>
+</table>
+</section>
+
+Want even more (codes 0 to 127, in hex too)? See the
 [full ASCII / Hex table]({{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}).
 
 <section class="answer-key">
