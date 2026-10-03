@@ -80,6 +80,21 @@ row or column where the count already matches what's shaded, or one where
 every remaining blank square has to be a ship.
 </aside>
 
+<aside class="callout note" markdown="1">
+**COMPUTER SCIENCE CONNECTION**
+
+Computers solve puzzles like this the same way you just did. They follow
+rules that must all be true at once (the counts, the fleet, no touching),
+work out what's forced, and when they're stuck, try a guess and back up if
+it breaks a rule. That's called **backtracking**, and it's how computers
+schedule classes, plan delivery routes, and pack trucks.
+
+Some of your moves were sure things: "a row with 0 is all water" is always
+true. Others were **heuristics**, rules of thumb that usually help but
+promise nothing, like "start with the biggest ship." Heuristics don't change
+the answer; they just help you (or a computer) find it faster.
+</aside>
+
 
 <section class="answer-key" id="key-solo-battleship"></section>
 
