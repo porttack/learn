@@ -1,5 +1,6 @@
 ---
 title: "Secret Messages in ASCII"
+reviewed: 2026-10-03
 source: original
 level: ms
 kind: [single, supplementary]
