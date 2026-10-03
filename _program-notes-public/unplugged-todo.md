@@ -54,7 +54,7 @@ the hidden answer key.
 
 ## General TODOs
 
-- [ ] Mark/tag unreviewed items as draft or unreviewed
+- [x] Mark/tag unreviewed items as draft or unreviewed (`reviewed:` date + Reviewed column/filter; first to review for sub days: Muddy City, Pixel Pictures, Secret Messages in ASCII; backups: Count the Dots, Poor Cartographer, Solo Battleship)
 - [ ] Standards alignment
 - [x] Have individual worksheets link to source / 3rd party page(s) (source_url + original_print)
 - [x] Support export to DOCX - Makes it much easier for other teachers to modify (in-browser, any variation; opens in Google Docs too)

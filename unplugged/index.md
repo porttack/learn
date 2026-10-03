@@ -28,6 +28,7 @@ The table is a view over front matter, not folders. Each activity sets:
   grouping: free text; "solo" / "pair" / "trade" in it mark the Solo / Pair columns
   topics:   [Binary, Lists, ...]  (the table groups by the first topic)
   time, materials                 (shown on the page)
+  reviewed: 2026-10-03            (Reviewed column: set ONLY by the teacher after checking the sheet)
   kind:     [single, supplementary] is kept in front matter but no longer
             drives the landing page
 Sequences live in _data/unplugged_sequences.yml, so one activity can appear
@@ -46,19 +47,20 @@ in several sections at once without being copied.
   <button type="button" data-filter="hs">High school</button>
   <button type="button" data-filter="solo">Solo</button>
   <button type="button" data-filter="pair">Pair</button>
+  <button type="button" data-filter="reviewed">Reviewed</button>
   <button type="button" data-filter="" class="current">Everything</button>
 </div>
 
 <table class="activity-table">
   <colgroup>
-    <col style="width: 42%"><col><col><col><col><col><col><col>
+    <col style="width: 38%"><col><col><col><col><col><col><col><col>
   </colgroup>
   <thead>
-    <tr><th>Activity</th><th>K-5</th><th>MS</th><th>HS</th><th>Solo</th><th>Pair</th><th>Min</th><th></th></tr>
+    <tr><th>Activity</th><th>K-5</th><th>MS</th><th>HS</th><th>Solo</th><th>Pair</th><th>Min</th><th title="Checked by the teacher">Reviewed</th><th></th></tr>
   </thead>
   <tbody>
   {%- for g in groups %}
-    <tr class="topic-row"><th colspan="8">{{ g.name }}</th></tr>
+    <tr class="topic-row"><th colspan="9">{{ g.name }}</th></tr>
     {%- assign items = g.items | sort: "title" %}
     {%- for a in items %}
     {%- assign ms = false %}{% assign hs = false %}
@@ -67,7 +69,7 @@ in several sections at once without being copied.
     {%- assign solo = false %}{% assign pair = false %}
     {%- if a.grouping contains "olo" %}{% assign solo = true %}{% endif %}
     {%- if a.grouping contains "air" or a.grouping contains "trade" %}{% assign pair = true %}{% endif %}
-    <tr class="activity-row{% if a.k5 %} is-k5{% endif %}{% if ms %} is-ms{% endif %}{% if hs %} is-hs{% endif %}{% if solo %} is-solo{% endif %}{% if pair %} is-pair{% endif %}">
+    <tr class="activity-row{% if a.k5 %} is-k5{% endif %}{% if ms %} is-ms{% endif %}{% if hs %} is-hs{% endif %}{% if solo %} is-solo{% endif %}{% if pair %} is-pair{% endif %}{% if a.reviewed %} is-reviewed{% endif %}">
       <td><a href="{{ a.url | relative_url }}">{{ a.title }}</a></td>
       <td class="mark">{% if a.k5 %}&#10003;{% endif %}</td>
       <td class="mark">{% if ms %}&#10003;{% endif %}</td>
@@ -75,6 +77,7 @@ in several sections at once without being copied.
       <td class="mark">{% if solo %}&#10003;{% endif %}</td>
       <td class="mark">{% if pair %}&#10003;{% endif %}</td>
       <td class="mark">{{ a.time }}</td>
+      <td class="mark">{% if a.reviewed %}<span title="Reviewed {{ a.reviewed | date: '%B %-d, %Y' }}">&#10003;</span>{% endif %}</td>
       <td>{% if a.generator %}<a class="lesson-companion-link" href="{{ a.generator | relative_url }}" aria-label="New set: {{ a.title }}">New set</a>{% endif %}</td>
     </tr>
     {%- endfor %}

@@ -76,6 +76,7 @@ Book images: `pdfimages -png -f P -l P tmp/CSUnplugged_2015_v3.1.pdf out`
     source_url: https://...    # link to the original activity (web sources, and book activities on classic.csunplugged.org)
     original_print: https://...  # the original printable PDF, when there is one
     k5: true                   # K-5 column: only when the source's own age range is 10 or under
+    reviewed: 2026-10-03       # Reviewed column: the teacher has checked this sheet. Only the teacher sets it.
     supports: /working-in-python/chap09.html         # optional, with supports_title:
 
 `layout`, `pathway`, and `label` come from `_config.yml` defaults. Don't set
