@@ -4,6 +4,7 @@ source: cs-unplugged-2015
 source_url: "https://classic.csunplugged.org/activities/image-representation/"
 original_print: "https://classic.csunplugged.org/documents/activities/image-representation/unplugged-02-image_representation.pdf"
 k5: true
+reviewed: 2026-10-03
 level: ms
 kind: [single, supplementary]
 topics: [Data representation]
