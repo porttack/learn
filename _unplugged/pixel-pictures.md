@@ -27,6 +27,23 @@ to store a picture, it needs a way to turn a grid of pixels into a list of
 numbers, and back again. This activity walks you through one simple way to
 do exactly that, for a picture that only uses black and white.
 
+<aside class="callout note" markdown="1">
+**WHY THIS MATTERS: SENDING PICTURES OVER A PHONE LINE**
+
+Before email, offices sent documents with **fax machines**, and many
+hospitals and law offices still do. A fax scans a page into about 4 million
+tiny black and white dots and sends them over an ordinary phone line, which
+can carry only about 9,600 bits (0s and 1s) per second. Sending every dot
+one by one would take about 7 minutes a page. But most of a page is white
+paper, so the fax sends the *runs* instead ("200 white, 3 black, 150
+white..."), the same trick you're about to learn, and the page goes
+through in under a minute.
+
+<figure id="fig-fax">
+  <img src="{{ '/assets/img/unplugged/pixel-pictures/fax-steps.png' | relative_url }}" alt="How a fax works: 1. the page goes into the fax machine; 2. it is scanned into digital data; 3. the data travels over the phone line; 4. the receiving fax decodes it; 5. the receiving fax prints the page.">
+</figure>
+</aside>
+
 ## The rule
 
 Look at one row of a black and white picture at a time, left to right.
