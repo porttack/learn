@@ -12,6 +12,9 @@ twice so you can try two different strategies and compare them. The set
 number prints on the sheet. To reprint the same set later, type its number
 back into the **Set #** box.
 
+
+<div class="puzzle-generator" markdown="1">
+
 <aside class="callout note" markdown="1">
 **WHAT TO DO**
 
@@ -24,7 +27,6 @@ back into the **Set #** box.
    then compare your two totals.
 </aside>
 
-<div class="puzzle-generator" markdown="1">
 <p class="generator-seed"></p>
 <div class="puzzle-questions"></div>
 

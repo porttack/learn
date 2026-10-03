@@ -400,3 +400,12 @@ table.activity-table {
 .class-set-original {
   display: none !important;
 }
+
+@media print {
+  // A "New set" page prints only its title and what the generator drew
+  // (which repeats per copy in a class set), plus the credit footer. Intro
+  // text and reminders around it are for the person at the screen.
+  .lesson:has(.puzzle-generator) > :not(.puzzle-generator):not(.name-line):not(.lesson-label):not(h1):not(.provenance) {
+    display: none !important;
+  }
+}
