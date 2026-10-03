@@ -1,0 +1,88 @@
+# "Early finishers" towns for the main Muddy City sheet. Frozen (not a live
+# generator seed) so a printed class set never drifts from its key. Each
+# town was made with:
+#   node tools/freeze_graphs.mjs muddy-city <seed> small "<label>"
+# then this file added `double`, `note`, and `answer` by hand. `stones:
+# true` draws each road as stepping stones (the generator's default for
+# small towns). Every town here has at least 4 roads more than a bare
+# spanning tree (checked in tools/check_graphs.mjs) so there's a real
+# choice to make, not just one forced path. The fewest-stones total and
+# best road set are never stored here -- they are computed fresh by
+# muddy-city-render.js (kruskalMST) and proven by tools/check_graphs.mjs,
+# the same way the rest of this family works.
+towns:
+  # seed 601
+  - label: "Early finisher town 1"
+    stones: true
+    double: true
+    width: 450
+    height: 300
+    nodes:
+      - { x: 111, y: 93 }
+      - { x: 256, y: 48 }
+      - { x: 376, y: 52 }
+      - { x: 96, y: 244 }
+      - { x: 186, y: 229 }
+      - { x: 346, y: 195 }
+    edges:
+      - { a: 4, b: 5, w: 4 }
+      - { a: 1, b: 4, w: 5 }
+      - { a: 0, b: 1, w: 4 }
+      - { a: 0, b: 3, w: 3 }
+      - { a: 2, b: 5, w: 4 }
+      - { a: 1, b: 2, w: 1 }
+      - { a: 3, b: 4, w: 2 }
+      - { a: 0, b: 4, w: 3 }
+      - { a: 2, b: 4, w: 3 }
+  # seed 602 -- the cheapest road in town (B-C, 1 stone) is always part of
+  # the best answer; B-D (cost 3, tied with two roads that ARE used) is
+  # left out only because it closes a loop, not because it's expensive.
+  - label: "Early finisher town 2"
+    stones: true
+    note: "Is the cheapest road ever left out of a best answer?"
+    answer: "No. The cheapest road in town, B-C (1 stone), is always part of a best answer. The road left out here, B-D (3 stones), is left out only because it would close a loop, not because it's the most expensive -- two other roads that cost the same (A-B and B-E) are used."
+    width: 450
+    height: 300
+    nodes:
+      - { x: 49, y: 102 }
+      - { x: 209, y: 42 }
+      - { x: 394, y: 84 }
+      - { x: 94, y: 210 }
+      - { x: 255, y: 214 }
+      - { x: 390, y: 191 }
+    edges:
+      - { a: 2, b: 5, w: 5 }
+      - { a: 4, b: 5, w: 6 }
+      - { a: 1, b: 2, w: 1 }
+      - { a: 0, b: 1, w: 3 }
+      - { a: 0, b: 3, w: 4 }
+      - { a: 1, b: 4, w: 3 }
+      - { a: 1, b: 3, w: 3 }
+      - { a: 1, b: 5, w: 4 }
+      - { a: 3, b: 4, w: 2 }
+  # seed 603 -- starting at A and always taking the cheapest road that
+  # reaches a new house (Prim's algorithm) finds the same 12 stones as
+  # Kruskal's "cheapest road first" method (verified in check_graphs.mjs).
+  - label: "Early finisher town 3"
+    stones: true
+    note: "Start at house A and always pave the cheapest road that reaches a new house. Did you get the fewest stones?"
+    answer: "Yes, 12 stones, the fewest: A-D, D-E, B-F, C-F, E-F. Starting anywhere and always reaching for the cheapest new house works every time, not just on this town."
+    width: 450
+    height: 300
+    nodes:
+      - { x: 113, y: 64 }
+      - { x: 216, y: 112 }
+      - { x: 404, y: 53 }
+      - { x: 73, y: 199 }
+      - { x: 192, y: 241 }
+      - { x: 389, y: 212 }
+    edges:
+      - { a: 2, b: 5, w: 2 }
+      - { a: 1, b: 2, w: 4 }
+      - { a: 4, b: 5, w: 4 }
+      - { a: 3, b: 4, w: 1 }
+      - { a: 0, b: 1, w: 5 }
+      - { a: 0, b: 3, w: 4 }
+      - { a: 2, b: 4, w: 4 }
+      - { a: 1, b: 5, w: 1 }
+      - { a: 1, b: 3, w: 4 }

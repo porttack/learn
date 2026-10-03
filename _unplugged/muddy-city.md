@@ -14,6 +14,7 @@ generator: /unplugged/muddy-city-generator/
 generator_presets:
   - { label: "Small towns", query: "size=small" }
   - { label: "Big towns", query: "size=big" }
+scripts: [/assets/js/unplugged/muddy-city-extra-page.js]
 ---
 
 Once upon a time there was a city that had no roads. Getting around the city
@@ -127,17 +128,57 @@ The two problems look alike, but they are very different for a computer.
   round trips, and 20 houses have about 60 quadrillion.
 
 Computer scientists call the traveling salesperson problem **NP-complete**.
-It belongs to a big family of problems where checking an answer is easy but
-finding the best one seems to take forever. They are all linked: a fast
-method for any one of them would give a fast method for all of them. Whether
-such a method exists is one of the biggest unsolved questions in computer
-science, called **P versus NP**, and there is a million-dollar prize for
-the answer.
+Curious what that actually means? Math fans, keep reading below.
+</aside>
+
+<aside class="callout challenge" markdown="1">
+**NP-COMPLETE (for math fans and AP students)**
+
+Some problems are **easy to check** but **hard to solve**. A filled-in
+Sudoku is quick to check; a giant empty one can take forever to solve.
+
+- **P** problems are easy to *solve*: as the problem grows, the work grows
+  like *n*<sup>2</sup> or *n*<sup>3</sup> (that's "polynomial"). Muddy City
+  is in P: pave the cheapest road unless it makes a loop.
+- **NP** problems are easy to *check*: hand someone an answer and they can
+  verify it fast. NP stands for "nondeterministic polynomial," **not** "not
+  polynomial." Every P problem is in NP too.
+- **NP-complete** problems are the hardest ones in NP, and they're all
+  linked: a fast way to solve any one of them would solve all of them.
+
+The traveling salesperson problem, asked as a yes or no question ("is there
+a round trip shorter than 100 miles?"), is NP-complete. Checking a trip is
+easy: add up the miles. Finding one seems to need trying trip after trip,
+and the number of trips grows like *n*! instead of *n*<sup>2</sup>:
+
+| Houses (*n*) | *n*<sup>2</sup> | *n*! |
+|---|---|---|
+| 5 | 25 | 120 |
+| 10 | 100 | 3,628,800 |
+| 20 | 400 | about 2.4 quintillion |
+
+Nobody has found a fast way to solve any NP-complete problem, and nobody
+has proven there isn't one. That question is called **P versus NP**, and
+there's a million-dollar prize for the answer.
 </aside>
 
 Learn more: [minimum spanning trees](https://en.wikipedia.org/wiki/Minimum_spanning_tree),
 [the traveling salesperson problem](https://en.wikipedia.org/wiki/Travelling_salesman_problem),
 and [P versus NP](https://en.wikipedia.org/wiki/P_versus_NP_problem).
+</section>
+
+<section class="muddy-extra" markdown="1">
+## Early finishers
+
+Finished already? Here are three more towns. Same two rules as before:
+pave enough roads to connect every house, and use as few paving stones as
+possible.
+
+<noscript><p class="callout warning">These extra towns draw with JavaScript. Turn JavaScript on to see them.</p></noscript>
+
+<div class="muddy-extra-towns" id="muddy-extra-towns"></div>
+
+<script type="application/json" data-muddy-extra-set data-towns="#muddy-extra-towns" data-key="#muddy-extra-towns-key">{{ site.data.unplugged.muddy_city_extra.towns | jsonify }}</script>
 </section>
 
 <section class="answer-key" markdown="1">
@@ -170,4 +211,9 @@ would make a loop that isn't needed.
 **The mail carrier.** No. A best paving never contains a loop, so there is no
 way to get back home without walking some roads twice. The mail carrier's
 question is a different problem: the traveling salesperson problem.
+
+**Early finisher towns.** Minimum stones and one best set of roads for
+each extra town:
+
+<div class="muddy-extra-towns-key" id="muddy-extra-towns-key"></div>
 </section>

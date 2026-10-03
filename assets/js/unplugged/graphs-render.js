@@ -2,16 +2,95 @@
 // graphs.js (the DOM-free puzzle logic) so this file can safely assume it's
 // only ever used in a browser, the same split robot.js/robot-render.js use.
 
+import { LETTERS } from "./graphs.js";
+
 export const esc = (s) =>
   String(s).replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[ch]);
+
+// A small house outline (roof + walls as one five-point polygon), used in
+// place of a plain circle for Muddy City so a "house" reads as a house at a
+// glance. Bigger than a circle would be (not just matching R=17 below) --
+// pencil-and-paper shading needs a label and a wall big enough to write
+// next to, not a minimal glyph.
+function houseIconSvg(x, y, filled) {
+  const halfW = 20;
+  const top = y - 21;
+  const roofBottom = y - 4;
+  const bottom = y + 21;
+  const left = x - halfW;
+  const right = x + halfW;
+  const fill = filled ? "#111" : "#fff";
+  return `<polygon points="${left},${bottom} ${left},${roofBottom} ${x},${top} ${right},${roofBottom} ${right},${bottom}" fill="${fill}" stroke="#111" stroke-width="2.5" stroke-linejoin="round"/>`;
+}
+
+// A street's cost drawn as a row of little rounded "stepping stones" (the
+// book's own picture for Muddy City) instead of a number: a student counts
+// and shades them. Kept clear of the houses at each end with `inset`, and
+// given a real minimum gap so neighboring stones never touch (that's a
+// grid-spacing job too -- see SPACING in muddy-city.js -- but the floor
+// here is the last line of defense).
+function stoneRoadSvg(ax, ay, bx, by, count, paved) {
+  const dx = bx - ax;
+  const dy = by - ay;
+  const len = Math.hypot(dx, dy) || 1;
+  const ux = dx / len;
+  const uy = dy / len;
+  const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+  // The inset shrinks on a short road (instead of staying a fixed amount)
+  // so stones are never pushed past the segment's own ends and over a
+  // house icon -- usable is always the real room between the two insets,
+  // never padded out past it.
+  const inset = Math.min(26, len * 0.22);
+  const usable = Math.max(len - inset * 2, 8);
+  const minGap = 3;
+  let stoneLen = (usable - minGap * (count - 1)) / count;
+  stoneLen = Math.max(5, Math.min(18, stoneLen));
+  // Last-resort clamp: even at the smallest readable size, `count` stones
+  // in a row might still be too wide for a very short road. Shrink further
+  // rather than let them spill past `usable` and over a house icon.
+  if (stoneLen * count > usable) stoneLen = usable / count;
+  const gap = count > 1 ? Math.max(0, (usable - stoneLen * count) / (count - 1)) : 0;
+  const thick = 12;
+  // Center the row of stones in the usable stretch rather than anchoring it
+  // to the first house: a low-cost road (one or two stones, capped well
+  // under `usable`) would otherwise read as "a plain line with a stone
+  // stuck on the end", easy to mistake for a road with no stones at all.
+  const span = stoneLen * count + gap * (count - 1);
+  const extra = Math.max(0, (usable - span) / 2);
+  const startX = ax + ux * (inset + extra);
+  const startY = ay + uy * (inset + extra);
+  const fill = paved ? "#111" : "#fff";
+  const stroke = paved ? "#111" : "#444";
+  const parts = [];
+  for (let k = 0; k < count; k++) {
+    const d = k * (stoneLen + gap) + stoneLen / 2;
+    const cx = (startX + ux * d).toFixed(1);
+    const cy = (startY + uy * d).toFixed(1);
+    parts.push(
+      `<rect x="${(-stoneLen / 2).toFixed(1)}" y="${-thick / 2}" width="${stoneLen.toFixed(1)}" height="${thick}" rx="3" ry="3" fill="${fill}" stroke="${stroke}" stroke-width="${paved ? 1.3 : 1.6}" transform="translate(${cx},${cy}) rotate(${angle.toFixed(1)})"/>`,
+    );
+  }
+  return parts.join("");
+}
 
 // ---- Streets: houses or corners joined by lines (Muddy City, Tourist Town) --
 
 // nodes: [{x, y}]. edges: [{a, b, w?}].
 //   weighted:  show each street's paving-stone count.
-//   chosen:    a Set of edge indices to draw as paved (thick, dashed black).
+//   chosen:    a Set of edge indices to draw as paved (thick black, or
+//              shaded stepping stones when `stones` is on).
 //   vans:      a Set of node indices to draw as filled ("has a van").
-export function streetGraphSvg(nodes, edges, { width, height, weighted = false, chosen = null, vans = null, pad = 26 } = {}) {
+//   houses:    draw each node as a little house instead of a plain circle
+//              (Muddy City only -- Tourist Town keeps circles/corners).
+//   labels:    "numbers" (default) or "letters" (A, B, C, ... never
+//              confusable with a road's paving-stone count).
+//   stones:    when `weighted`, draw each street's cost as a row of
+//              stepping stones instead of a number box.
+export function streetGraphSvg(
+  nodes,
+  edges,
+  { width, height, weighted = false, chosen = null, vans = null, houses = false, pad = houses ? 34 : 26, labels = "numbers", stones = false } = {},
+) {
   const R = 17;
   const W = width + pad * 2;
   const H = height + pad * 2;
@@ -22,10 +101,13 @@ export function streetGraphSvg(nodes, edges, { width, height, weighted = false, 
     const [ax, ay] = at(nodes[e.a]);
     const [bx, by] = at(nodes[e.b]);
     const paved = chosen && chosen.has(i);
-    parts.push(
-      `<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="${paved ? "#111" : "#999"}" stroke-width="${paved ? 5 : 2.5}" ${paved ? 'stroke-dasharray="1 0"' : ""}/>`,
-    );
-    if (weighted) {
+    const stoneRoad = weighted && stones;
+    const lineColor = stoneRoad ? "#bbb" : paved ? "#111" : "#999";
+    const lineWidth = stoneRoad ? 1 : paved ? 5 : 2.5;
+    parts.push(`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="${lineColor}" stroke-width="${lineWidth}"/>`);
+    if (stoneRoad) {
+      parts.push(stoneRoadSvg(ax, ay, bx, by, e.w, paved));
+    } else if (weighted) {
       const mx = (ax + bx) / 2;
       const my = (ay + by) / 2;
       parts.push(
@@ -38,13 +120,20 @@ export function streetGraphSvg(nodes, edges, { width, height, weighted = false, 
   nodes.forEach((n, i) => {
     const [x, y] = at(n);
     const isVan = vans && vans.has(i);
-    parts.push(
-      `<circle cx="${x}" cy="${y}" r="${R}" fill="${isVan ? "#111" : "#fff"}" stroke="#111" stroke-width="2.5"/>` +
-      `<text x="${x}" y="${y + 5}" text-anchor="middle" font-size="14" font-weight="700" fill="${isVan ? "#fff" : "#111"}" font-family="system-ui, sans-serif">${i + 1}</text>`,
-    );
+    const label = esc(labels === "letters" ? LETTERS[i] || String(i + 1) : String(i + 1));
+    const fontSize = houses ? 18 : 14;
+    const text = `<text x="${x}" y="${y + (houses ? 6 : 5)}" text-anchor="middle" font-size="${fontSize}" font-weight="700" fill="${isVan ? "#fff" : "#111"}" font-family="system-ui, sans-serif">${label}</text>`;
+    if (houses) {
+      parts.push(houseIconSvg(x, y, isVan) + text);
+    } else {
+      parts.push(
+        `<circle cx="${x}" cy="${y}" r="${R}" fill="${isVan ? "#111" : "#fff"}" stroke="#111" stroke-width="2.5"/>` + text,
+      );
+    }
   });
 
-  return `<svg class="graphs-street" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Map with ${nodes.length} ${weighted ? "houses" : "corners"}">${parts.join("")}</svg>`;
+  const nounPlural = houses ? "lettered houses" : weighted ? "houses" : "corners";
+  return `<svg class="graphs-street" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Map with ${nodes.length} ${nounPlural}">${parts.join("")}</svg>`;
 }
 
 // ---- Country maps (the Poor Cartographer) ---------------------------------

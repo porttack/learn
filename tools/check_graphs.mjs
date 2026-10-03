@@ -18,6 +18,7 @@ import { makeRng } from "../assets/js/unplugged/rng.js";
 import {
   kruskalMST,
   bruteForceMST,
+  primMST,
   isConnected,
   existsColoring,
   minColoring,
@@ -44,18 +45,60 @@ function loadYaml(file) {
 
 // ---- Muddy City: minimum spanning trees -----------------------------------
 
-function checkMuddyCity(label, map) {
+// `minExtra`, when given, asserts the town has real choices: at least that
+// many roads beyond a bare spanning tree, so a best answer always has to
+// leave several out (not just the one a sparse town happens to offer).
+// Also checks that Prim's algorithm, started from house 0, always lands on
+// the same minimum as Kruskal and brute force -- "always take the cheapest
+// road that reaches somewhere new" is a real algorithm, not a lucky guess,
+// for any connected town.
+function checkMuddyCity(label, map, minExtra = null) {
   const n = map.nodes.length;
   if (!isConnected(n, map.edges)) return fail(label, "town is not fully connected by streets");
   const mst = kruskalMST(n, map.edges);
   if (!mst.spanning) return fail(label, "Kruskal's algorithm didn't find a spanning tree");
   const bf = bruteForceMST(n, map.edges);
   if (mst.total !== bf.total) fail(label, `Kruskal says ${mst.total} stones, brute force says ${bf.total}`);
+  const prim = primMST(n, map.edges, 0);
+  if (!prim.spanning || prim.total !== bf.total) {
+    fail(label, `Prim's algorithm from house 0 gives ${prim.total}, not the minimum ${bf.total}`);
+  }
+  if (minExtra !== null) {
+    const extra = map.edges.length - (n - 1);
+    if (extra < minExtra) {
+      fail(label, `only ${map.edges.length} roads for ${n} houses (a spanning tree alone needs ${n - 1}; wanted at least ${minExtra} more so there's a real choice, got ${extra})`);
+    }
+  }
 }
 
 const muddyData = loadYaml("muddy_city.yml");
 muddyData.maps.forEach((m, i) => checkMuddyCity(`muddy_city.yml map ${i + 1} (${m.label})`, m));
 console.log(`muddy_city.yml: ${muddyData.maps.length} maps checked`);
+
+// The main sheet's "early finishers" towns (frozen geometry; the hidden key
+// computes fewest-stones and a best road set fresh, same as every other
+// Muddy City worksheet). Each must have real choices too.
+const muddyExtra = loadYaml("muddy_city_extra.yml");
+muddyExtra.towns.forEach((t, i) => checkMuddyCity(`muddy_city_extra.yml town ${i + 1} (${t.label})`, t, 3));
+console.log(`muddy_city_extra.yml: ${muddyExtra.towns.length} towns checked`);
+
+// Early finisher town 3's "notice" question asks a student to start at
+// house A and always pave the cheapest road that reaches a new house, then
+// check whether that also found the fewest stones. Prove it for that
+// specific town and start house (not just the general Prim's-always-works
+// fact checked above), so the key's answer is backed by something.
+{
+  const t = muddyExtra.towns[2];
+  const letters = "ABCDEFGHIJ";
+  const startIdx = letters.indexOf("A");
+  const bf = bruteForceMST(t.nodes.length, t.edges).total;
+  const prim = primMST(t.nodes.length, t.edges, startIdx);
+  if (!prim.spanning || prim.total !== bf) {
+    fail("muddy_city_extra.yml town 3 (start at A)", `got ${prim.total}, fewest is ${bf}`);
+  } else {
+    console.log(`muddy_city_extra.yml town 3: starting at A and always taking the cheapest new-reaching road also gives ${prim.total} (the fewest)`);
+  }
+}
 
 // The book's graph version printed on the Muddy City sheet: its key states
 // the fewest paving stones, so prove it two ways.
@@ -141,10 +184,22 @@ const t0 = Date.now();
 
 let total = 0;
 for (const size of Object.keys(MUDDY_SIZES)) {
+  const minExtra = MUDDY_SIZES[size].minExtraEdges;
   for (let seed = 20000; seed < 20000 + n; seed++) {
     const map = generateMuddyCity(makeRng(seed), size);
-    checkMuddyCity(`muddy-city generated size=${size} seed ${seed}`, map);
+    checkMuddyCity(`muddy-city generated size=${size} seed ${seed}`, map, minExtra);
     total++;
+  }
+  // Both road styles are just a weight-range choice at generation time --
+  // check each explicitly too, since the generator lets a teacher pick
+  // either style for any town size.
+  for (const style of ["stones", "numbers"]) {
+    for (let seed = 21000; seed < 21000 + Math.min(n, 40); seed++) {
+      const map = generateMuddyCity(makeRng(seed), size, style);
+      if (map.stones !== (style === "stones")) fail(`muddy-city size=${size} style=${style} seed ${seed}`, "map.stones didn't match the requested road style");
+      checkMuddyCity(`muddy-city generated size=${size} style=${style} seed ${seed}`, map, minExtra);
+      total++;
+    }
   }
 }
 for (const target of [2, 3, 4]) {

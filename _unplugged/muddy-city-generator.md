@@ -6,13 +6,23 @@ companion: true
 scripts: [/assets/js/unplugged/muddy-city-generator.js]
 ---
 
-More towns to practice on, after the main Muddy City sheet. Once you've
-found a method that works (maybe "pave the cheapest roads first, but skip
-any road that makes a loop"), try it on towns you've never seen to check it
-really works every time. You get a fresh warm-up town and main town every
-time you click **New set**. The
-set number prints on the sheet. To reprint the same set later, type its
-number back into the **Set #** box.
+More towns to practice on, after the main Muddy City sheet. You get a fresh
+warm-up town and main town every time you click **New set**, each one drawn
+twice so you can try two different strategies and compare them. The set
+number prints on the sheet. To reprint the same set later, type its number
+back into the **Set #** box.
+
+<aside class="callout note" markdown="1">
+**WHAT TO DO**
+
+1. On **Try 1**, pave roads using any strategy you like.
+2. Pave enough roads that every house can reach every other house, only
+   using paved roads.
+3. Try to use as few paving stones as possible. Shade the stones you pave.
+4. Write your total under **Stones used**.
+5. On **Try 2**, do it again on the same town with a different strategy,
+   then compare your two totals.
+</aside>
 
 <div class="puzzle-generator" markdown="1">
 <p class="generator-seed"></p>

@@ -103,6 +103,114 @@ svg.graphs-legend {
   }
 }
 
+// "Invent your own strategy" town sets (assets/js/unplugged/
+// muddy-city-render.js renderTownSet / renderTownSetKey): the generator's
+// two towns, and the main sheet's early-finisher towns. A "doubled" town
+// draws the same blank map twice, side by side, so a student tries one
+// strategy and then a different one.
+.muddy-town {
+  margin: 0 0 2em;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.muddy-town-label {
+  font-weight: 700;
+  font-size: 1.05em;
+  margin: 0 0 0.5em;
+}
+
+.muddy-attempts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.2em;
+  margin-bottom: 0.6em;
+}
+
+.muddy-attempt {
+  flex: 1 1 260px;
+  min-width: 220px;
+}
+
+.muddy-attempt-label {
+  font-weight: 600;
+  margin: 0 0 0.3em;
+}
+
+.muddy-town-questions p {
+  margin: 0.4em 0;
+}
+
+.muddy-town-note {
+  font-weight: 600;
+  margin: 0.8em 0 0.2em;
+}
+
+@media print {
+  // Not break-inside: avoid -- a doubled town's label and two maps are
+  // tall enough on their own that forcing the whole block (plus its
+  // strategy lines and closing questions) to stay together just pushes it
+  // to its own page, wasting whatever room was left on the one before.
+  // Each individual map is still protected from splitting mid-image by
+  // the shared .graphs-fig rule below.
+  .muddy-town {
+    margin: 0 0 1em;
+  }
+
+  .muddy-attempts {
+    gap: 0.5em;
+    margin-bottom: 0.3em;
+  }
+
+  .muddy-attempt .graphs-fig {
+    margin: 0 0 0.3em;
+  }
+
+  .muddy-town-questions p,
+  .muddy-town-note {
+    margin: 0.25em 0;
+  }
+
+  // Two side-by-side attempts need to share a page width -- each gets
+  // about half the printable ~6.5in content width, big enough that
+  // houses, letters, and stepping stones are easy to see and shade. A
+  // single (undoubled) early-finisher town gets more room since it isn't
+  // sharing a row.
+  .muddy-attempt svg.graphs-street {
+    width: 100%;
+    max-width: 3.3in;
+    height: auto;
+  }
+
+  .muddy-town-single svg.graphs-street {
+    width: 100%;
+    max-width: 4.6in;
+    height: auto;
+  }
+
+  .muddy-town-single {
+    margin-bottom: 0.4em;
+  }
+
+  // The early-finisher key packs three solved towns plus the usual
+  // attribution footer onto one page; a little smaller than the student
+  // side (shading isn't needed here, just checking) keeps that from
+  // spilling a near-empty trailing page.
+  .muddy-extra-towns-key .graphs-key-item {
+    margin: 0 0 0.4em;
+
+    p {
+      margin: 0.3em 0 0;
+    }
+  }
+
+  .muddy-extra-towns-key svg.graphs-street {
+    max-width: 2.4in;
+  }
+}
+
 // Muddy City uses the book's own drawings (CS Unplugged, CC BY-NC-SA 3.0).
 #fig-muddy-city img,
 #fig-muddy-graph img {

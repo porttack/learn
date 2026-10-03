@@ -77,6 +77,39 @@ export function kruskalMST(n, edges) {
   return { chosen, total, spanning: chosen.length === n - 1 };
 }
 
+// Prim's algorithm: grow one tree from `start`, always adding the cheapest
+// street that reaches a house not yet connected. Used to check a specific
+// "start here and always take the cheapest road that reaches somewhere
+// new" strategy against the real minimum (it always finds one, for any
+// start and any connected town -- this just proves it for a given one).
+export function primMST(n, edges, start = 0) {
+  if (n <= 1) return { chosen: [], total: 0, spanning: true };
+  const inTree = new Array(n).fill(false);
+  inTree[start] = true;
+  const chosen = [];
+  let total = 0;
+  let count = 1;
+  while (count < n) {
+    let bestIdx = -1;
+    let bestW = Infinity;
+    edges.forEach((e, i) => {
+      const touches = inTree[e.a] !== inTree[e.b];
+      if (touches && e.w < bestW) {
+        bestW = e.w;
+        bestIdx = i;
+      }
+    });
+    if (bestIdx === -1) break; // not connected
+    const e = edges[bestIdx];
+    inTree[e.a] = true;
+    inTree[e.b] = true;
+    chosen.push(bestIdx);
+    total += e.w;
+    count++;
+  }
+  return { chosen, total, spanning: count === n };
+}
+
 // Exhaustive check: try every subset of (n - 1) streets and keep the
 // cheapest one that connects every house. Only sane for small graphs --
 // callers keep generated towns small enough that this stays fast.
@@ -205,7 +238,7 @@ export function isDominatingSet(n, edges, set) {
 // there's more than one way to connect things -- otherwise the "cheapest
 // way to connect everyone" puzzle has only one possible answer.
 
-export function buildGridGraph(rng, { n, cols, extraEdgeProb = 0.35, weightRange = null, spacing = 96, jitter = 0.26 }) {
+export function buildGridGraph(rng, { n, cols, extraEdgeProb = 0.35, weightRange = null, spacing = 96, jitter = 0.26, minExtraEdges = 0 }) {
   const rows = Math.ceil(n / cols);
   const idOf = new Map();
   const nodes = [];
@@ -249,6 +282,48 @@ export function buildGridGraph(rng, { n, cols, extraEdgeProb = 0.35, weightRange
     const key = a < b ? `${a}-${b}` : `${b}-${a}`;
     return !treeKeys.has(key) && rng.chance(extraEdgeProb);
   });
+
+  // Guarantee a real choice of roads: a bare grid can leave almost no slack
+  // beyond its spanning tree (a small town especially), which means almost
+  // every road is forced and there's nothing to decide. Top up to
+  // `minExtraEdges` extra roads first from any leftover grid-adjacent pair,
+  // then from one diagonal per grid cell (a single crossing inside one
+  // square reads fine on paper -- the book's own picture crosses roads
+  // too), then, only if a tiny town still can't reach the minimum, any
+  // remaining pair of houses at all.
+  if (extraPairs.length < minExtraEdges) {
+    const usedKeys = new Set([...treeKeys, ...extraPairs.map(([a, b]) => (a < b ? `${a}-${b}` : `${b}-${a}`))]);
+    const candidates = [];
+    const tryAdd = (a, b) => {
+      const key = a < b ? `${a}-${b}` : `${b}-${a}`;
+      if (usedKeys.has(key)) return;
+      usedKeys.add(key);
+      candidates.push([a, b]);
+    };
+    for (const [a, b] of allPairs) tryAdd(a, b);
+    for (let r = 0; r < rows - 1; r++) {
+      for (let c = 0; c < cols - 1; c++) {
+        const tl = idOf.get(`${r},${c}`);
+        const tr = idOf.get(`${r},${c + 1}`);
+        const bl = idOf.get(`${r + 1},${c}`);
+        const br = idOf.get(`${r + 1},${c + 1}`);
+        if (tl === undefined || tr === undefined || bl === undefined || br === undefined) continue;
+        tryAdd(tl, br);
+        tryAdd(tr, bl);
+      }
+    }
+    // Last resort: any remaining pair of houses at all, so even a very
+    // small or sparse town can still reach the minimum.
+    if (candidates.length < minExtraEdges - extraPairs.length) {
+      for (let a = 0; a < nodes.length; a++) {
+        for (let b = a + 1; b < nodes.length; b++) tryAdd(a, b);
+      }
+    }
+    for (const pair of rng.shuffle(candidates)) {
+      if (extraPairs.length >= minExtraEdges) break;
+      extraPairs.push(pair);
+    }
+  }
 
   const pairs = [...treePairs, ...extraPairs];
   const edges = weightRange
