@@ -117,6 +117,7 @@ each run of one color is. Fax machines send pictures exactly this way, one
 scan line at a time, and some image files (like TIFF and BMP) can be stored
 this way too.
 
+<section class="pixel-make-own" markdown="1">
 ## Make your own
 
 Now you be the computer. Draw a simple black and white picture on each
@@ -143,6 +144,7 @@ check, square by square.
 {% endfor %}</ol>
 </div>
 {% endfor %}
+</section>
 
 ## Your partner's pictures
 

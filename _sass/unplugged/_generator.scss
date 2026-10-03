@@ -356,3 +356,47 @@ table.activity-table {
     display: none !important;
   }
 }
+
+// Class sets (Copies > 1): each copy is its own printed sheet.
+.class-set-copy {
+  border-top: 2px dashed $grey-color;
+  padding-top: 1em;
+  margin-top: 1.5em;
+}
+
+.class-set-copy:first-child {
+  border-top: none;
+  margin-top: 0;
+}
+
+.class-set-key-label {
+  margin: 1em 0 0.3em;
+}
+
+@media print {
+  .class-set-copy {
+    break-before: page;
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .class-set-copy:first-child {
+    break-before: auto;
+  }
+
+  html.show-key .class-set-answer-key {
+    break-before: page;
+  }
+}
+
+@media print {
+  // A class set carries a Name line on every copy; drop the page's own.
+  .lesson:has(.class-set) > .name-line {
+    display: none !important;
+  }
+}
+
+.class-set-original {
+  display: none !important;
+}

@@ -139,6 +139,11 @@ A `companion: true` page `_unplugged/<slug>-generator.md` makes a fresh set
 on demand. Shared pieces in `assets/js/unplugged/`: `rng.js` (seeded RNG)
 and `generator-shell.js` (toolbar; the seed and options live in the URL, and
 the set number prints on the sheet and its key so paper and key match).
+**Class sets:** the toolbar's "Copies" option (in `generator-shell.js`)
+draws N different sets (#seed, #seed+1, ...) by calling `render()` once per
+copy and snapshotting the result; each copy starts a new printed page with
+its own Name line, and with `?key=1` all keys print together at the end. It
+works for any generator that draws into its root element.
 **Fixed sheets never depend on a live seed:** generated puzzles used on a
 fixed page are frozen into `_data/unplugged/*.yml` (see
 `tools/freeze_*.mjs`), so a later generator change can't break a printed

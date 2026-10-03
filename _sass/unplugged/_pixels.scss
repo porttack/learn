@@ -178,3 +178,12 @@ ol.pixel-encode-lines {
     break-inside: avoid;
   }
 }
+
+@media print {
+  // Instructions and all three draw-and-encode grids on ONE page, so the
+  // "fold so only your codes show" step works.
+  .pixel-make-own {
+    break-before: page;
+    break-inside: avoid;
+  }
+}
