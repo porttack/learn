@@ -64,7 +64,7 @@ turns each letter into a number, and you are about to crack it.
 </div>
 {% endfor %}
 
-## Lowercase and punctuation
+## Lowercase, punctuation, and digits
 
 Real messages need more than capital letters. Every lowercase letter's code
 is **32 more** than its capital: A is 65, so a is 97.
@@ -85,6 +85,18 @@ is **32 more** than its capital: A is 65, so a is 97.
 <tr><td>32</td><td>33</td><td>44</td><td>46</td><td>63</td></tr>
 </tbody>
 </table>
+
+<table class="ascii-table ascii-punct">
+<tbody>
+<tr>{% for d in (0..9) %}<th>{{ d }}</th>{% endfor %}</tr>
+<tr>{% for d in (0..9) %}<td>{{ d | plus: 48 }}</td>{% endfor %}</tr>
+</tbody>
+</table>
+
+Notice that the digit **7** is stored as **55**, not 7. To a computer, the
+character "7" and the number 7 are different things. (That's why a program
+that reads typed text has to convert "12" into the number 12 before it can
+do math with it.)
 
 {% assign more = site.data.unplugged.ascii_fixed.decimal_more %}
 For example, {{ more.example.codes | join: " " }} is **{{ more.example.text }}**
@@ -154,7 +166,7 @@ Decode your friend's codes, one character in each box.
 {% endfor %}
 </section>
 
-Want every character, digits and all? See the
+Want every character? See the
 [full ASCII / Hex table]({{ '/ap-csp-reference/ascii-hex-table/' | relative_url }}).
 
 <section class="answer-key">
@@ -162,5 +174,5 @@ Want every character, digits and all? See the
 <ol class="ascii-key-list">
 {% for m in msgs %}<li>{{ m.text }}</li>
 {% endfor %}</ol>
-<p><strong>Lowercase and punctuation:</strong> {% for m in site.data.unplugged.ascii_fixed.decimal_more.messages %}{{ m.text }}{% endfor %}</p>
+<p><strong>Lowercase, punctuation, and digits:</strong> {% for m in site.data.unplugged.ascii_fixed.decimal_more.messages %}{{ m.text }}{% unless forloop.last %} / {% endunless %}{% endfor %}</p>
 </section>

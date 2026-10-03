@@ -87,3 +87,6 @@ decimal_more:
     - prompt: "Decode this friendly question."
       text: "Hi, how are you?"
       codes: [72, 105, 44, 32, 104, 111, 119, 32, 97, 114, 101, 32, 121, 111, 117, 63]
+    - prompt: "Now with digits. Decode this one."
+      text: "I am 12 years old."
+      codes: [73, 32, 97, 109, 32, 49, 50, 32, 121, 101, 97, 114, 115, 32, 111, 108, 100, 46]
