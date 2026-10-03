@@ -143,7 +143,11 @@ the set number prints on the sheet and its key so paper and key match).
 draws N different sets (#seed, #seed+1, ...) by calling `render()` once per
 copy and snapshotting the result; each copy starts a new printed page with
 its own Name line, and with `?key=1` all keys print together at the end. It
-works for any generator that draws into its root element.
+works for any generator that draws into its root element. "Sets per
+student" (1-3) puts that many different sets in each copy, each starting a
+new page, so a two-sided print gives one student a set on the front and back
+(it lines up only when each set fills exactly one page; Chrome ignores
+`break-before: right`, so the browser can't force a copy onto a front side).
 **Fixed sheets never depend on a live seed:** generated puzzles used on a
 fixed page are frozen into `_data/unplugged/*.yml` (see
 `tools/freeze_*.mjs`), so a later generator change can't break a printed

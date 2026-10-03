@@ -417,3 +417,20 @@ table.activity-table {
   font-size: 1.6em;
   margin: 0.2em 0 0.6em;
 }
+
+// Sets per student > 1: each further set in a copy starts a new page
+// (the back of the sheet when printed two-sided).
+.class-set-part + .class-set-part {
+  border-top: 1px dashed $grey-color-light;
+  margin-top: 1em;
+  padding-top: 1em;
+}
+
+@media print {
+  .class-set-part + .class-set-part {
+    break-before: page;
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+  }
+}

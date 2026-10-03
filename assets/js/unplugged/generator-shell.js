@@ -24,6 +24,10 @@ export function mountGenerator({ root, options = [], render }) {
   let seed = Number(params.get("seed")) || randomSeed();
   const COPIES = [1, 5, 10, 20, 25, 30, 35];
   let copies = COPIES.includes(Number(params.get("copies"))) ? Number(params.get("copies")) : 1;
+  // Sets per student: 2 or 3 different sets in one student's copy, each on a
+  // new page (front and back when printed two-sided).
+  const PER = [1, 2, 3];
+  let per = PER.includes(Number(params.get("per"))) ? Number(params.get("per")) : 1;
   const opts = {};
   for (const o of options) {
     const v = params.get(o.name);
@@ -42,6 +46,7 @@ export function mountGenerator({ root, options = [], render }) {
       )
       .join("") +
     `<label>Copies <select name="copies">${COPIES.map((c) => `<option value="${c}"${c === copies ? " selected" : ""}>${c === 1 ? "1" : c + " (class set)"}</option>`).join("")}</select></label>
+     <label title="Each set starts a new page. Printed two-sided, 2 sets fill the front and back of one sheet when each set fits one page.">Sets per student <select name="per">${PER.map((c) => `<option value="${c}"${c === per ? " selected" : ""}>${c}</option>`).join("")}</select></label>
      <button type="button" class="generator-new">New set</button>
      <button type="button" class="generator-print">Print</button>
      <label class="generator-seed-label">Set #<input name="seed" type="number" min="1" inputmode="numeric"></label>`;
@@ -65,11 +70,12 @@ export function mountGenerator({ root, options = [], render }) {
     q.set("seed", seed);
     for (const [k, v] of Object.entries(opts)) q.set(k, v);
     if (copies > 1) q.set("copies", copies); else q.delete("copies");
+    if (per > 1) q.set("per", per); else q.delete("per");
     history.replaceState(null, "", `${location.pathname}?${q}`);
 
     root.querySelector(":scope > .class-set")?.remove();
     parts().forEach((p) => p.classList.remove("class-set-original"));
-    if (copies === 1) {
+    if (copies === 1 && per === 1) {
       drawOne(seed);
       return;
     }
@@ -83,8 +89,6 @@ export function mountGenerator({ root, options = [], render }) {
     // -> "Robot grid"); the page's own title is hidden in print (see CSS).
     const pageTitle = (document.querySelector("article h1")?.textContent || "").split(":")[0].trim();
     for (let i = 0; i < copies; i++) {
-      const s = seed + i;
-      drawOne(s);
       const copy = document.createElement("section");
       copy.className = "class-set-copy";
       if (nameLine) copy.appendChild(nameLine.cloneNode(true));
@@ -94,16 +98,24 @@ export function mountGenerator({ root, options = [], render }) {
         h.textContent = pageTitle;
         copy.appendChild(h);
       }
-      for (const p of parts()) copy.appendChild(p.cloneNode(true));
-      // Pull the answer keys out so they print together at the end.
-      copy.querySelectorAll(".answer-key").forEach((k) => {
-        const holder = document.createElement("div");
-        holder.className = "class-set-key";
-        holder.innerHTML = `<p class="class-set-key-label"><strong>Set #${s}</strong></p>`;
-        holder.append(...k.childNodes);
-        keys.appendChild(holder);
-        k.remove();
-      });
+      for (let j = 0; j < per; j++) {
+        // Sets never repeat across the class: student i gets i*per .. i*per+per-1.
+        const s = seed + i * per + j;
+        drawOne(s);
+        const part = document.createElement("div");
+        part.className = "class-set-part";
+        for (const p of parts()) part.appendChild(p.cloneNode(true));
+        // Pull the answer keys out so they print together at the end.
+        part.querySelectorAll(".answer-key").forEach((k) => {
+          const holder = document.createElement("div");
+          holder.className = "class-set-key";
+          holder.innerHTML = `<p class="class-set-key-label"><strong>Set #${s}</strong></p>`;
+          holder.append(...k.childNodes);
+          keys.appendChild(holder);
+          k.remove();
+        });
+        copy.appendChild(part);
+      }
       set.appendChild(copy);
     }
     if (keys.children.length) {
@@ -122,6 +134,7 @@ export function mountGenerator({ root, options = [], render }) {
   bar.addEventListener("change", (e) => {
     if (e.target.name === "seed") seed = Number(e.target.value) || seed;
     else if (e.target.name === "copies") copies = Number(e.target.value) || 1;
+    else if (e.target.name === "per") per = Number(e.target.value) || 1;
     else opts[e.target.name] = e.target.value;
     draw();
   });
