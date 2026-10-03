@@ -1,10 +1,10 @@
 ---
 layout: lesson
-title: "Interlude A: Writing and running code with ViperIDE"
+title: "Chapter 2b: Writing and running code with ViperIDE"
 pathway: pico
 order: 2.5
 chapter: 2
-label: "Interlude A"
+label: "Chapter 2b"
 source: original
 subtitle: "Connect your Pico to ViperIDE and write your first MicroPython programs: no software to install, no admin rights needed."
 ---

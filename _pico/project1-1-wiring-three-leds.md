@@ -1,13 +1,16 @@
 ---
 layout: lesson
-title: "Interlude B.1: Wiring Three LEDs"
+title: "Project 1.1: Wiring Three LEDs (Day 1)"
 pathway: pico
-order: 4.5
-label: "Interlude B.1"
+order: 100
+project: 1
+project_part: 1
+project_name: "Three LEDs"
+label: "Project 1.1"
 source: original
 subtitle: "Build a three-LED circuit on your breadboard, by hand"
-organizer: /pico/04b-graphic-organizer/
-slides: /pico/04b-intro-slides/
+organizer: /pico/project1-1-graphic-organizer/
+slides: /pico/project1-1-intro-slides/
 ---
 
 Today you're building real hardware: no simulator, no code yet, just a breadboard, some wire, and your own hands. Your Pico is already seated in your breadboard. Read through this whole page once before you touch anything, so you know where you're headed.

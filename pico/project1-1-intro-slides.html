@@ -1,12 +1,12 @@
 ---
-title: "Interlude B.1 Slides"
-permalink: /pico/04b-intro-slides/
+title: "Project 1.1 Slides"
+permalink: /pico/project1-1-intro-slides/
 ---
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Interlude B.1: Wiring Three LEDs -- Slides</title>
+<title>Project 1.1: Wiring Three LEDs -- Slides</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="/assets/img/pico/favicon.svg">
 <style>
@@ -344,7 +344,7 @@ const { useState, useEffect, useRef, useCallback } = React;
 const SLIDES = [
   {
     kind: "title",
-    kicker: "Interlude B.1",
+    kicker: "Project 1.1",
     title: "Wiring Three LEDs",
     subtitle: "Your own wire, no code yet",
     notes: "Pure wiring day: no simulator, no computer required yet, and no code or future-use talk either, just the physical build. This is also a class neatness competition, judging details to come from the teacher separately."
@@ -590,7 +590,7 @@ function OutlineCard({ slide, heading, nested }) {
 function Outline() {
   return (
     <div className="outline">
-      <h1>Interlude B.1: Wiring Three LEDs</h1>
+      <h1>Project 1.1: Wiring Three LEDs</h1>
       <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
       {SLIDES.map((s, i) => (
         <React.Fragment key={i}>
@@ -665,7 +665,7 @@ function App() {
     return (
       <div className="app">
         <div className="toolbar">
-          <a className="back-link" href="/pico/04b-wiring-three-leds/">&larr; Interlude B.1</a>
+          <a className="back-link" href="/pico/project1-1-wiring-three-leds/">&larr; Project 1.1</a>
           <div className="spacer"></div>
           <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
           <button onClick={() => window.print()}>Print</button>
@@ -699,7 +699,7 @@ function App() {
         </div>
       )}
       <div className="toolbar">
-        <a className="back-link" href="/pico/04b-wiring-three-leds/">&larr; Interlude B.1</a>
+        <a className="back-link" href="/pico/project1-1-wiring-three-leds/">&larr; Project 1.1</a>
         <div className="spacer"></div>
         <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
         <span className="counter">{index + 1} / {SLIDES.length}</span>

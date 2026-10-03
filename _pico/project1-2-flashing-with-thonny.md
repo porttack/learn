@@ -1,9 +1,11 @@
 ---
 layout: lesson
-title: "Interlude B.3: Flashing MicroPython with Thonny"
+title: "Project 1.2: Flashing MicroPython with Thonny (Day 2)"
 pathway: pico
-order: 4.7
-label: "Interlude B.3"
+order: 101
+project: 1
+project_part: 2
+label: "Project 1.2"
 source: original
 subtitle: "Get MicroPython running on your Pico for the first time, using Thonny"
 ---
@@ -11,12 +13,12 @@ subtitle: "Get MicroPython running on your Pico for the first time, using Thonny
 <aside class="callout warning" markdown="1">
 **ONLY AFTER SIGN-OFF**
 
-Do not connect your Pico to USB until a teacher has checked your circuit against the exemplar. Plugging in before then is exactly the mistake Interlude B.1 warned about.
+Do not connect your Pico to USB until a teacher has checked your circuit against the exemplar. Plugging in before then is exactly the mistake Project 1.1 warned about.
 </aside>
 
 ### Check whether you even need this
 
-Open Thonny and look at the bottom-right corner of the window. If it already shows **MicroPython (Raspberry Pi Pico)** with your Pico connected, MicroPython is already installed. Skip ahead to [Interlude B.4](/pico/04b3-blinking-your-leds/).
+Open Thonny and look at the bottom-right corner of the window. If it already shows **MicroPython (Raspberry Pi Pico)** with your Pico connected, MicroPython is already installed. Skip ahead to [Project 1.3](/pico/project1-3-blinking-your-leds/).
 
 If it doesn't, or your Pico shows up as a plain removable drive instead, keep going. This is likely the first time your specific Pico has had MicroPython put on it.
 
@@ -41,4 +43,4 @@ When it finishes, Thonny should reconnect automatically and show **MicroPython (
 Thonny's menus shift a little between versions, so ask your teacher if you can't find this option. [Chapter 1's installing MicroPython section](/pico/01-get-to-know-your-pico/#installing-micropython) covers the manual way, downloading the firmware file yourself and dragging it onto your Pico's drive, which does the exact same thing and works no matter what Thonny's interface looks like.
 </aside>
 
-Once Thonny shows MicroPython connected, move on to [Interlude B.4](/pico/04b3-blinking-your-leds/).
+Once Thonny shows MicroPython connected, move on to [Project 1.3](/pico/project1-3-blinking-your-leds/).

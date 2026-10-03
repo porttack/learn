@@ -1,19 +1,21 @@
 ---
 layout: lesson
-title: "Interlude B.4: Blinking Your LEDs"
+title: "Project 1.3: Blinking Your LEDs (Day 2)"
 pathway: pico
-order: 4.8
-label: "Interlude B.4"
+order: 102
+project: 1
+project_part: 3
+label: "Project 1.3"
 source: original
 subtitle: "Write your first programs for the circuit you built"
 ---
 
-This is for after your three-LED circuit from [Interlude B.1](/pico/04b-wiring-three-leds/) is signed off, and after [Interlude B.3](/pico/04b3-flashing-with-thonny/) has MicroPython running on your Pico and Thonny connected to it. If you finish early and your teacher is ready for you to move on, this is what comes next.
+This is for after your three-LED circuit from [Project 1.1](/pico/project1-1-wiring-three-leds/) is signed off, and after [Project 1.2](/pico/project1-2-flashing-with-thonny/) has MicroPython running on your Pico and Thonny connected to it. If you finish early and your teacher is ready for you to move on, this is what comes next.
 
 <aside class="callout warning" markdown="1">
 **ONLY AFTER SIGN-OFF**
 
-Do not connect your Pico to USB until a teacher has checked your circuit against the exemplar. Plugging in before then is exactly the mistake Interlude B.1 warned about.
+Do not connect your Pico to USB until a teacher has checked your circuit against the exemplar. Plugging in before then is exactly the mistake Project 1.1 warned about.
 </aside>
 
 ### Blink the onboard LED
@@ -47,7 +49,7 @@ If anything here looks unfamiliar, [Chapter 4](/pico/04-physical-computing-with-
 
 Controlling an LED you wired yourself takes exactly one change: swap the pin.
 
-Check your Interlude B.1 graphic organizer for the GPIO pin number you recorded for one of your LEDs, then edit your program so the `Pin` line uses that number instead of `"LED"`:
+Check your Project 1.1 graphic organizer for the GPIO pin number you recorded for one of your LEDs, then edit your program so the `Pin` line uses that number instead of `"LED"`:
 
 ```python
 import machine
@@ -60,7 +62,7 @@ while True:
     time.sleep(1)
 ```
 
-Use whichever pin number you actually wired, 13, 14, or 15, not necessarily 13. Save and run it. If it doesn't light up, double check that pin number against what you wrote down, and that the LED is wired the way Interlude B.1 described.
+Use whichever pin number you actually wired, 13, 14, or 15, not necessarily 13. Save and run it. If it doesn't light up, double check that pin number against what you wrote down, and that the LED is wired the way Project 1.1 described.
 
 Every time `.toggle()` runs, it's opening and closing a valve on that GPIO pin, exactly like the valve in [The Water Analogy](/pico/water-analogy/): open, and the 3.3V side connects through your LED and resistor to ground; closed, and nothing flows.
 

@@ -1,9 +1,9 @@
 ---
 layout: lesson
-title: "Interlude B.1 Wiring Three LEDs"
+title: "Project 1.1 Wiring Three LEDs"
 pathway: pico
-order: 4.6
-label: "Interlude B.1 Companion"
+order: 100.1
+label: "Project 1.1 Companion"
 source: original
 companion: true
 ---
@@ -27,7 +27,7 @@ Fill this in once your circuit is built. It's kept at the top so your teacher ca
   </tbody>
 </table>
 
-*Fill this out as you build [Interlude B.1, Wiring Three LEDs](/pico/04b-wiring-three-leds/). Check off each stage as you finish it. You can write your answers in your own words: you do not need full sentences.*
+*Fill this out as you build [Project 1.1: Wiring Three LEDs](/pico/project1-1-wiring-three-leds/). Check off each stage as you finish it. You can write your answers in your own words: you do not need full sentences.*
 
 <aside class="callout warning" markdown="1">
 **DO NOT CONNECT TO USB TODAY**

@@ -1142,6 +1142,26 @@ figure {
   margin-bottom: 0.9em;
 }
 
+// "Projects" section on a pathway index (e.g. pico/index.md): a native
+// <details>/<summary> disclosure per project, so one collapsed row can
+// expand into its parts with no JS. Kept separate from the book's own
+// Contents list on purpose -- see that file's own comments.
+.project-list {
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+
+    a {
+      font-weight: inherit;
+    }
+  }
+
+  .project-parts {
+    margin: 0.7em 0 0 1.4em;
+    padding-left: 0;
+  }
+}
+
 .lesson-subtitle {
   margin: 0.15em 0 0;
   font-size: 0.9em;
