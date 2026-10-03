@@ -35,6 +35,17 @@ the hidden answer key.
       Orders (5). Most are long on purpose (full-page maps, one page per
       player); revisit only if they're a problem in class.
 
+- [ ] **Improve the Word (.docx) export** (`assets/js/docx-export.js`).
+      Good enough for a start (QA'd 2026-10-03 by rendering 15 sheets through
+      Pages), but:
+      - Drawn widgets (robot grids, ship rows, bit boxes, dot cards) export as
+        pictures; editable tables would be better where the layout allows.
+      - Not yet checked in Word or Google Docs themselves, only Pages.
+      - The licence line can still spill onto its own last page after a
+        full-page picture (e.g. the Vigenère square).
+      - The teacher saw letter boxes missing on a Battleship export before
+        per-cell borders were added; confirm in Word/Google Docs.
+
 ## Open questions for the teacher
 
 - [ ] Trim the older first-batch sheets to one idea each? (Preference so
