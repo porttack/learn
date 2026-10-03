@@ -125,7 +125,9 @@ write its code on the lines to the right, one line per row, top to bottom.
 Check each row: its numbers should add up to 8.
 
 When you finish, fold the page so only your codes show, and trade with a
-partner. Can they draw your picture from just the numbers?
+partner. Can they draw your picture from just the numbers? They draw it on
+the **Partner's picture** grids on their own sheet, then unfold yours to
+check, square by square.
 
 {% for k in (1..3) %}
 <div class="pixel-encode">
@@ -141,6 +143,18 @@ partner. Can they draw your picture from just the numbers?
 {% endfor %}</ol>
 </div>
 {% endfor %}
+
+## Your partner's pictures
+
+Draw your partner's pictures here, using only their codes. Then compare
+with their original: every square should match. If a row is off, check
+that its numbers add up to 8.
+
+<div class="pixel-blank-row pixel-partner-row">
+{% include unplugged/pixel-pictures-blank-grid.html size=8 label="Partner's picture 1" %}
+{% include unplugged/pixel-pictures-blank-grid.html size=8 label="Partner's picture 2" %}
+{% include unplugged/pixel-pictures-blank-grid.html size=8 label="Partner's picture 3" %}
+</div>
 
 ## Thinking about compression
 

@@ -163,3 +163,18 @@ ol.pixel-encode-lines {
     break-inside: avoid;
   }
 }
+
+// Three partner grids side by side; they print together.
+.pixel-partner-row {
+  gap: 0 1.6em;
+
+  table.pixel-blank-grid {
+    width: auto;
+  }
+}
+
+@media print {
+  .pixel-partner-row {
+    break-inside: avoid;
+  }
+}
