@@ -77,7 +77,7 @@ in several sections at once without being copied.
       <td class="mark">{% if solo %}&#10003;{% endif %}</td>
       <td class="mark">{% if pair %}&#10003;{% endif %}</td>
       <td class="mark">{{ a.time }}</td>
-      <td class="mark">{% if a.reviewed %}<span title="Reviewed {{ a.reviewed | date: '%B %-d, %Y' }}">&#10003;</span>{% endif %}</td>
+      <td class="mark">{% if a.reviewed %}<span title="Reviewed {{ a.reviewed | date: '%B %-d, %Y' }}">&#9733;</span>{% endif %}</td>
       <td>{% if a.generator %}<a class="lesson-companion-link" href="{{ a.generator | relative_url }}" aria-label="New set: {{ a.title }}">New set</a>{% endif %}</td>
     </tr>
     {%- endfor %}
