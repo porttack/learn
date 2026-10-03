@@ -72,6 +72,33 @@ with JavaScript. Turn JavaScript on to see the codes and grids.</p></noscript>
 
 <script type="application/json" data-pixel-set data-questions="#q-pixel-pictures" data-key="#key-pixel-pictures">{{ site.data.unplugged.pixel_pictures | jsonify }}</script>
 
+## Now encode one
+
+Go the other way: here is a finished picture. Write the code for each row
+on the line next to it. Remember, every code starts with a count of
+**white** squares, so a row that starts with black begins with **0**.
+
+{% assign enc = site.data.unplugged.pixel_pictures.encode %}
+<div class="pixel-encode">
+<table class="pixel-blank-grid pixel-encode-grid" role="img" aria-label="An 8 by 8 black and white picture of a house">
+  <tbody>
+  {%- assign rows = enc.art | strip | newline_to_br | split: "<br />" -%}
+  {%- for row in rows -%}
+    {%- assign cells = row | strip | split: "" %}
+    <tr>{% for c in cells %}<td{% if c == "#" %} class="on"{% endif %}></td>{% endfor %}</tr>
+  {%- endfor %}
+  </tbody>
+</table>
+<ol class="pixel-encode-lines">
+{% for row in rows %}<li><span class="fill-line"></span></li>
+{% endfor %}</ol>
+</div>
+
+This trick has a name: **run-length encoding**, because it records how long
+each run of one color is. Fax machines send pictures exactly this way, one
+scan line at a time, and some image files (like TIFF and BMP) can be stored
+this way too.
+
 ## Make your own, and trade
 
 Now try it the other direction. Draw a small black and white picture of
@@ -123,6 +150,12 @@ Want the harder version of this, with real numbers to work out? See
 
 <section class="answer-key pixel-answer-key" markdown="1">
 <div id="key-pixel-pictures"></div>
+
+### Now encode one (the house)
+
+{% assign enc = site.data.unplugged.pixel_pictures.encode %}
+{% for c in enc.codes %}{{ forloop.index }}. {{ c | join: ", " }}
+{% endfor %}
 
 ### Compression questions
 

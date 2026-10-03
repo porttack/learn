@@ -106,3 +106,41 @@ ol.pixel-code-blank {
     background: none;
   }
 }
+
+// "Now encode one": a shaded picture beside a write-in line per row.
+.pixel-encode {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5em;
+  margin: 0.8em 0 1.2em;
+}
+
+// minima makes tables 100% wide; this grid must keep square cells.
+table.pixel-encode-grid {
+  width: auto;
+  flex: none;
+}
+
+table.pixel-encode-grid td.on {
+  background: #111;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+// One line per grid row, spaced to sit level with that row.
+ol.pixel-encode-lines {
+  margin: 0;
+  padding-left: 1.6em;
+  flex: 1;
+
+  li {
+    height: calc(1.5em + 1px); // one grid row
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .fill-line {
+    flex: 1;
+    min-width: 8em;
+  }
+}

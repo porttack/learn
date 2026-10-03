@@ -9,7 +9,7 @@
 // every row's code must sum to the picture's width. YAML is converted with
 // Ruby (already required by Jekyll) so this needs no npm packages.
 import { execFileSync } from "node:child_process";
-import { parsePicture, encodeRow, decodeRow, runSum, rowsEqual } from "../assets/js/unplugged/pixels.js";
+import { parsePicture, encodeRow, decodeRow, runSum, rowsEqual, encodePicture } from "../assets/js/unplugged/pixels.js";
 import { LIBRARY } from "../assets/js/unplugged/pixel-library.js";
 import { generateSet } from "../assets/js/unplugged/pixel-gen.js";
 import { makeRng } from "../assets/js/unplugged/rng.js";
@@ -65,6 +65,17 @@ for (const entry of frozen.pictures || []) {
   }
 }
 console.log(`${(frozen.pictures || []).length} frozen worksheet pictures checked`);
+
+// The "Now encode one" picture: the key's codes must match the encoder.
+if (frozen.encode) {
+  const pic = parsePicture(frozen.encode.art);
+  const want = JSON.stringify(frozen.encode.codes);
+  const got = JSON.stringify(encodePicture(pic));
+  if (want !== got) {
+    failures++;
+    console.log(`FAIL encode/${frozen.encode.name}: key says ${want}, encoder says ${got}`);
+  } else console.log(`encode/${frozen.encode.name}: key matches the encoder`);
+}
 
 const n = Number(process.argv[process.argv.indexOf("--gen") + 1]) || 200;
 let genChecked = 0;

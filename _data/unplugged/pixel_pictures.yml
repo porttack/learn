@@ -51,3 +51,27 @@ pictures:
       #.######.#
       #........#
       ##########
+
+# "Now encode one": shown shaded on the sheet; students write each row's
+# code. `codes` is what the hidden key prints; tools/check_pixel_pictures.mjs
+# fails if it ever stops matching encodeRow() on the art.
+encode:
+  name: "House"
+  art: |
+    ...##...
+    ..####..
+    .######.
+    ########
+    .#....#.
+    .#.##.#.
+    .#.##.#.
+    .######.
+  codes:
+    - [3, 2, 3]
+    - [2, 4, 2]
+    - [1, 6, 1]
+    - [0, 8]
+    - [1, 1, 4, 1, 1]
+    - [1, 1, 1, 2, 1, 1, 1]
+    - [1, 1, 1, 2, 1, 1, 1]
+    - [1, 6, 1]
