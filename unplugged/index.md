@@ -24,6 +24,7 @@ adapted sheet credits its source at the bottom.
 {% comment %}
 The table is a view over front matter, not folders. Each activity sets:
   level:    ms | hs | both        (MS / HS columns)
+  k5:       true                  (K-5 column: only when the source says ages 10 or under)
   grouping: free text; "solo" / "pair" / "trade" in it mark the Solo / Pair columns
   topics:   [Binary, Lists, ...]  (the table groups by the first topic)
   time, materials                 (shown on the page)
@@ -40,6 +41,7 @@ in several sections at once without being copied.
 
 <div class="activity-filters" hidden>
   <span>Show only:</span>
+  <button type="button" data-filter="k5">K-5</button>
   <button type="button" data-filter="ms">Middle school</button>
   <button type="button" data-filter="hs">High school</button>
   <button type="button" data-filter="solo">Solo</button>
@@ -49,14 +51,14 @@ in several sections at once without being copied.
 
 <table class="activity-table">
   <colgroup>
-    <col style="width: 46%"><col><col><col><col><col><col>
+    <col style="width: 42%"><col><col><col><col><col><col><col>
   </colgroup>
   <thead>
-    <tr><th>Activity</th><th>MS</th><th>HS</th><th>Solo</th><th>Pair</th><th>Min</th><th></th></tr>
+    <tr><th>Activity</th><th>K-5</th><th>MS</th><th>HS</th><th>Solo</th><th>Pair</th><th>Min</th><th></th></tr>
   </thead>
   <tbody>
   {%- for g in groups %}
-    <tr class="topic-row"><th colspan="7">{{ g.name }}</th></tr>
+    <tr class="topic-row"><th colspan="8">{{ g.name }}</th></tr>
     {%- assign items = g.items | sort: "title" %}
     {%- for a in items %}
     {%- assign ms = false %}{% assign hs = false %}
@@ -65,8 +67,9 @@ in several sections at once without being copied.
     {%- assign solo = false %}{% assign pair = false %}
     {%- if a.grouping contains "olo" %}{% assign solo = true %}{% endif %}
     {%- if a.grouping contains "air" or a.grouping contains "trade" %}{% assign pair = true %}{% endif %}
-    <tr class="activity-row{% if ms %} is-ms{% endif %}{% if hs %} is-hs{% endif %}{% if solo %} is-solo{% endif %}{% if pair %} is-pair{% endif %}">
+    <tr class="activity-row{% if a.k5 %} is-k5{% endif %}{% if ms %} is-ms{% endif %}{% if hs %} is-hs{% endif %}{% if solo %} is-solo{% endif %}{% if pair %} is-pair{% endif %}">
       <td><a href="{{ a.url | relative_url }}">{{ a.title }}</a></td>
+      <td class="mark">{% if a.k5 %}&#10003;{% endif %}</td>
       <td class="mark">{% if ms %}&#10003;{% endif %}</td>
       <td class="mark">{% if hs %}&#10003;{% endif %}</td>
       <td class="mark">{% if solo %}&#10003;{% endif %}</td>

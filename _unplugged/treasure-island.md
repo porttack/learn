@@ -1,6 +1,9 @@
 ---
 title: "Treasure Island"
 source: cs-unplugged-2015
+source_url: "https://classic.csunplugged.org/activities/finite-state-automata/"
+original_print: "https://classic.csunplugged.org/documents/activities/finite-state-automata/unplugged-11-finite_state_automata.pdf"
+k5: true
 level: ms
 kind: [single, supplementary]
 topics: [Algorithms, Graphs]

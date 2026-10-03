@@ -1,6 +1,9 @@
 ---
 title: "The Muddy City"
 source: cs-unplugged-2015
+source_url: "https://classic.csunplugged.org/activities/minimal-spanning-trees/"
+original_print: "https://classic.csunplugged.org/documents/activities/minimal-spanning-trees/unplugged-09-minimal_spanning_trees.pdf"
+k5: true
 level: ms
 kind: [single, supplementary]
 topics: [Graphs, Algorithms]

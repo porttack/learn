@@ -1,6 +1,9 @@
 ---
 title: "Battleships: Searching"
 source: cs-unplugged-2015
+source_url: "https://classic.csunplugged.org/activities/searching-algorithms/"
+original_print: "https://classic.csunplugged.org/documents/activities/searching-algorithms/unplugged-06-searching_algorithms.pdf"
+k5: true
 level: ms
 kind: [single, supplementary]
 topics: [Algorithms, Searching]

@@ -45,10 +45,10 @@ the hidden answer key.
 
 - [ ] Mark/tag unreviewed items as draft or unreviewed
 - [ ] Standards alignment
-- [ ] Have individual worksheets link to source / 3rd party page(s)
+- [x] Have individual worksheets link to source / 3rd party page(s) (source_url + original_print)
 - [ ] Support export to DOCX - Makes it much easier for other teachers to modify
 - [ ] Create teacher slide decks if appropriate for the important projects
 - [ ] Tag AP CSP applicable
-- [ ] Add k5 section
+- [x] Add k5 section (K-5 column + filter; `k5: true` from the source's age range)
 - [ ] Better show sequencing
 - [ ] Get rid of border around home-page logo

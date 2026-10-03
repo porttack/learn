@@ -1,6 +1,8 @@
 ---
 title: "Tourist Town"
 source: cs-unplugged-2015
+source_url: "https://classic.csunplugged.org/activities/dominating-sets/"
+k5: true
 level: ms
 kind: [single, supplementary]
 topics: [Graphs, Algorithms]

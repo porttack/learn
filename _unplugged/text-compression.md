@@ -1,6 +1,9 @@
 ---
 title: "You Can Say That Again! Text Compression"
 source: cs-unplugged-2015
+source_url: "https://classic.csunplugged.org/activities/text-compression/"
+original_print: "https://classic.csunplugged.org/documents/activities/text-compression/unplugged-03-text_compression.pdf"
+k5: true
 level: ms
 kind: [single, supplementary]
 topics: [Data compression, Data representation]

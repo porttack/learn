@@ -1,6 +1,9 @@
 ---
 title: "Beat the Clock: A Sorting Network"
 source: cs-unplugged-2015
+source_url: "https://classic.csunplugged.org/activities/sorting-networks/"
+original_print: "https://classic.csunplugged.org/documents/activities/sorting-network/unplugged-08-sorting_networks-2010.pdf"
+k5: true
 level: ms
 kind: [single, supplementary]
 topics: [Sorting, Algorithms]

@@ -1,6 +1,9 @@
 ---
 title: "The Poor Cartographer"
 source: cs-unplugged-2015
+source_url: "https://classic.csunplugged.org/activities/graph-colouring/"
+original_print: "https://classic.csunplugged.org/documents/activities/graph-colouring/unplugged-13-graph_colouring_0.pdf"
+k5: true
 level: ms
 kind: [single, supplementary]
 topics: [Graphs, Algorithms]
