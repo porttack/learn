@@ -156,3 +156,10 @@ ol.pixel-encode-lines {
     margin: 0 auto;
   }
 }
+
+@media print {
+  // A grid and its code lines always print together.
+  .pixel-encode {
+    break-inside: avoid;
+  }
+}

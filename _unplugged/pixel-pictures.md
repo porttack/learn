@@ -37,7 +37,8 @@ can carry only about 9,600 bits (0s and 1s) per second. Sending every dot
 one by one would take about 7 minutes a page. But most of a page is white
 paper, so the fax sends the *runs* instead ("200 white, 3 black, 150
 white..."), the same trick you're about to learn, and the page goes
-through in under a minute.
+through in under a minute. Storing or sending the same information in
+fewer bits is called **compression**.
 
 <figure id="fig-fax">
   <img src="{{ '/assets/img/unplugged/pixel-pictures/fax-steps.png' | relative_url }}" alt="How a fax works: 1. the page goes into the fax machine; 2. it is scanned into digital data; 3. the data travels over the phone line; 4. the receiving fax decodes it; 5. the receiving fax prints the page.">
@@ -116,38 +117,36 @@ each run of one color is. Fax machines send pictures exactly this way, one
 scan line at a time, and some image files (like TIFF and BMP) can be stored
 this way too.
 
-## Make your own, and trade
+## Make your own
 
-Now try it the other direction. Draw a small black and white picture of
-your own on the **Your picture** grid below. Keep it simple, nothing
-fancy, just solid black or white squares. Then write down its code, row by
-row, on the lines underneath, the same way you just decoded the pictures
-above.
+Now you be the computer. Draw a simple black and white picture on each
+grid below: a letter, an arrow, a face, anything with solid squares. Then
+write its code on the lines to the right, one line per row, top to bottom.
+Check each row: its numbers should add up to 8.
 
-Trade codes with a partner, or read yours out loud to someone nearby.
-Decode their code onto the **Decode here** grid, then compare grids square
-by square. Every square should match. If two of you disagree on a square,
-check that row's numbers add up to 6 first; that's where most mistakes
-hide.
+When you finish, fold the page so only your codes show, and trade with a
+partner. Can they draw your picture from just the numbers?
 
-<div class="pixel-blank-row">
-{% include unplugged/pixel-pictures-blank-grid.html size=6 label="Your picture" %}
-{% include unplugged/pixel-pictures-blank-grid.html size=6 label="Decode here" %}
+{% for k in (1..3) %}
+<div class="pixel-encode">
+<table class="pixel-blank-grid pixel-encode-grid" role="presentation">
+  <tbody>
+  {%- for r in (1..8) %}
+    <tr>{% for c in (1..8) %}<td></td>{% endfor %}</tr>
+  {%- endfor %}
+  </tbody>
+</table>
+<ol class="pixel-encode-lines">
+{% for r in (1..8) %}<li><span class="fill-line"></span></li>
+{% endfor %}</ol>
 </div>
-
-Your code, one row at a time:
-
-<ol class="pixel-code-blank">
-{% for i in (1..6) %}<li><span class="fill-line"></span></li>
 {% endfor %}
-</ol>
 
 ## Thinking about compression
 
 Writing a whole picture as a short list of numbers, instead of writing
-down all one hundred pixels one at a time, is already a kind of
-shortening trick. Computer scientists call this **compression**: storing
-the same information with less writing.
+down all one hundred pixels one at a time, is **compression**, just like
+the fax machine: the same information, with less to write or send.
 
 1. Look back at the four pictures you decoded. Which ones took the fewest
    numbers to write? Which took the most? <span class="fill-line"></span>
