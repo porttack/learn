@@ -88,26 +88,15 @@ Write down which cards are face up.
 Now write your cards down as digits. A face-down card is a **0**. A face-up
 card is a **1**. Always write all five, starting with the 16 card.
 
-For example, here are the cards showing **9**. The 8 card and the 1 card
-are face up; the others are covered:
+The binary system uses zero and one to show whether a card is face up or
+not. **0** shows that a card is hidden, and **1** means that you can see the
+dots. For example:
 
-<div class="dot-row dot-example">
-  {%- assign counts = "16,8,4,2,1" | split: "," -%}
-  {%- assign bits = "0,1,0,0,1" | split: "," -%}
-  {%- for c in counts -%}
-  {%- assign n = c | plus: 0 %}
-  {%- assign b = bits[forloop.index0] %}
-  <div class="dot-card-wrap">
-    <div class="dot-card{% if b == '0' %} covered{% endif %}">
-      <div class="dots">{% if b == '1' %}{% for i in (1..n) %}<span class="dot"></span>{% endfor %}{% endif %}</div>
-      <span class="dot-count">{{ n }}</span>
-    </div>
-    <span class="dot-bit">{{ b }}</span>
-  </div>
-  {%- endfor %}
-</div>
+<figure id="fig-cards-9">
+  <img src="{{ '/assets/img/unplugged/count-the-dots/cards-9.png' | relative_url }}" alt="Five cards: 16 hidden, 8 showing, 4 hidden, 2 hidden, 1 showing, written 0 1 0 0 1 = 9.">
+</figure>
 
-Face up is 1 and covered is 0, so 9 is written **01001**. Check it:
+The 8 card and the 1 card are showing, so 9 is written **01001**. Check it:
 8 + 1 = 9.
 
 | Binary | Number |
@@ -119,7 +108,18 @@ Face up is 1 and covered is 0, so 9 is written **01001**. Check it:
 | | the day of the month you were born: <span class="fill-line short"></span> |
 {: .checkoff .trace-table}
 
-## Part 4: A message in lights
+## Part 4: Coded numbers
+
+Any two symbols can be binary: one stands for 1, the other for 0. Try to
+work out these coded numbers. Each row has its own key underneath it (for
+example, ☑=1 and ☒=0). Write each number after its **=** sign. If a row
+has fewer than five symbols, the missing ones on the left are 0s.
+
+<figure id="fig-coded-numbers">
+  <img src="{{ '/assets/img/unplugged/count-the-dots/coded-numbers.png' | relative_url }}" alt="Ten coded numbers written with pairs of symbols: check boxes, arrows, circles, mailboxes, faces, thumbs, plus and times signs, curved arrows, triangles, and card suits, each with its own key.">
+</figure>
+
+## Part 5: A message in lights
 
 Tom is trapped on the top floor of a department store. It's just before
 Christmas, and he wants to get home. He has tried calling, even yelling,
@@ -166,15 +166,29 @@ Each row in the picture is one letter, read top to bottom in the order
 Tom's message: <span class="fill-line"></span>
 
 <aside class="callout challenge" markdown="1">
-**CHALLENGE**
+**CHALLENGE: COUNTING HIGHER THAN 31**
 
-1. **Counting up by one.** Make 0, then 1, 2, 3, 4, 5 in order. Which
-   card flips every single time?
-2. **Adding them up.** Work out 1 + 2 + 4. Then 1 + 2 + 4 + 8. Look at the
-   next card in the row each time. What do you notice?
-3. **Counting on your fingers.** Each finger on one hand is one card:
-   finger up is 1, finger down is 0. What is the biggest number you can show
-   on one hand?
+Try adding: 1 + 2 + 4 = <span class="fill-line short"></span>
+
+Now try 1 + 2 + 4 + 8 = <span class="fill-line short"></span>
+
+What happens if you add all the numbers up from the beginning?
+<span class="fill-line"></span>
+
+Have you ever heard of "let your fingers do the walking"? Well now you can
+let your fingers do the counting, but you can get much higher than ten. If
+you use the binary system and let each finger on one hand be one of the
+cards with dots, you can count from 0 to 31. That's 32 numbers. (Don't
+forget that zero is a number too!) Try counting in order using your
+fingers. If a finger is up it is a one, and if it is down it is a zero.
+
+You can actually get from 0 to 1023 if you use both hands! If you had
+really bendy toes too, what is the biggest number Miss Flexi-Toes could
+reach? <span class="fill-line short"></span>
+
+<figure id="fig-fingers">
+  <img src="{{ '/assets/img/unplugged/count-the-dots/fingers.png' | relative_url }}" alt="Cartoon: Miss Flexi-Toes counting in binary on her fingers asks a many-fingered creature, Ah, but can you count up to 741,014?">
+</figure>
 </aside>
 
 ## What's it all about?
@@ -201,12 +215,14 @@ down), and every number in between works.
 **Part 3.** 10101 = 21. 11111 = 31. 00110 = 6. 17 = 10001. For your
 birthday, check it the other way: add up the cards you wrote as 1.
 
-**Part 4.** 8 5 12 16, 9 13, 20 18 1 16 16 5 4: **HELP IM TRAPPED**.
+**Part 4.** Left column, top to bottom: 9, 5, 0, 2, 0. Right column, top
+to bottom: 10, 13, 17, 20, 31.
 
-**Challenge.**
-1. The 1 card flips every time. (The 2 card flips every other time, the
-   4 card every fourth time, and so on.)
-2. Each total is one less than the next card: 1 + 2 + 4 = 7 (next card is
-   8), and 1 + 2 + 4 + 8 = 15 (next card is 16).
-3. 31, with all five fingers up (16 + 8 + 4 + 2 + 1).
+**Part 5.** 8 5 12 16, 9 13, 20 18 1 16 16 5 4: **HELP IM TRAPPED**.
+
+**Challenge.** 1 + 2 + 4 = 7 and 1 + 2 + 4 + 8 = 15: adding all the cards
+from the beginning always gives one less than the next card. One hand
+counts 0 to 31; two hands, 0 to 1023 (32 &times; 32 = 1,024 numbers). With
+fingers and toes, 20 cards: 1,024 &times; 1,024 = 1,048,576 numbers, so
+the biggest is 1,048,575.
 </section>
