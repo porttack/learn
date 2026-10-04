@@ -1,5 +1,6 @@
 ---
 title: "Count the Dots: binary numbers"
+slides: /unplugged/count-the-dots-slides/
 source: cs-unplugged-2015
 source_url: "https://classic.csunplugged.org/activities/binary-numbers/"
 original_print: "https://classic.csunplugged.org/documents/activities/binary-numbers/unplugged-01-binary_numbers.pdf"
