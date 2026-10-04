@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Chapter 3 Graphic Organizer"
+title: "Chapter 3 Notes Page"
 pathway: pico
 order: 3.1
 label: "Chapter 3 Companion"

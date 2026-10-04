@@ -31,7 +31,7 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
   {% endif %}
   {% if page.organizer or page.slides or page.lesson_plan %}
   <p class="lesson-companions">
-    {% if page.organizer %}<a class="lesson-companion-link" href="{{ page.organizer | relative_url }}">Graphic organizer</a>{% endif %}
+    {% if page.organizer %}<a class="lesson-companion-link" href="{{ page.organizer | relative_url }}">Notes page</a>{% endif %}
     {% if page.slides %}<a class="lesson-companion-link" href="{{ page.slides | relative_url }}">{% if page.label %}{{ page.label }} slides{% else %}Chapter {{ page.chapter }} slides{% endif %}</a>{% endif %}
     {% if page.lesson_plan %}<a class="lesson-companion-link" href="{{ page.lesson_plan | relative_url }}">Lesson plan (and sub notes)</a>{% endif %}
   </p>

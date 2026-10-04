@@ -345,7 +345,7 @@ const SLIDES = [
     kicker: "Chapter 1",
     title: "Get to Know Your Raspberry Pi Pico",
     subtitle: "A tiny board that can control real things in the real world",
-    notes: "Welcome them in. This is the first day of the Pico unit. Today is mostly about building excitement and vocabulary before they read the chapter themselves -- don't over-explain anything yet, that's what the reading and the graphic organizer are for."
+    notes: "Welcome them in. This is the first day of the Pico unit. Today is mostly about building excitement and vocabulary before they read the chapter themselves -- don't over-explain anything yet, that's what the reading and the Notes page are for."
   },
   {
     kind: "bullets",
@@ -390,7 +390,7 @@ const SLIDES = [
       "A chip in the middle: the actual computer",
       "A micro USB port and a tiny BOOTSEL button"
     ],
-    notes: "Quick tour only, don't lecture on every part yet. The chapter and the graphic organizer cover these in detail with real photos. The goal here is just to pre-load the vocabulary (GPIO, chip, BOOTSEL) so it's familiar when they hit it in the reading.",
+    notes: "Quick tour only, don't lecture on every part yet. The chapter and the Notes page cover these in detail with real photos. The goal here is just to pre-load the vocabulary (GPIO, chip, BOOTSEL) so it's familiar when they hit it in the reading.",
     down: [
       {
         kind: "gallery",
@@ -401,7 +401,7 @@ const SLIDES = [
           { src: "/assets/img/pico/fig-1-5.jpg", caption: "BOOTSEL: hold this to load firmware" },
           { src: "/assets/img/pico/fig-1-6.jpg", caption: "Debug pads, for later, more advanced work" }
         ],
-        notes: "Only go here if you have time or a genuinely curious class. These photos match what's in the reading and the graphic organizer, so this is an early look, not new information -- don't let it turn into the whole lecture."
+        notes: "Only go here if you have time or a genuinely curious class. These photos match what's in the reading and the Notes page, so this is an early look, not new information -- don't let it turn into the whole lecture."
       }
     ]
   },
@@ -436,7 +436,7 @@ const SLIDES = [
           { src: "/assets/img/pico/fig-1-14.jpg", caption: "A well-soldered pin: neat, shiny, volcano-shaped" },
           { src: "/assets/img/pico/fig-1-15.png", caption: "Five common mistakes, and how to fix each one" }
         ],
-        notes: "This is a preview, not a substitute for the chapter's own step-by-step instructions. Use it to set expectations for what 'good' looks like before they start, then have them actually follow the written steps and the graphic organizer's sequencing and troubleshooting activities, rather than trying to solder from this slide alone. That's the line worth holding: a hook or a heads-up here is fine, replacing the reading is not."
+        notes: "This is a preview, not a substitute for the chapter's own step-by-step instructions. Use it to set expectations for what 'good' looks like before they start, then have them actually follow the written steps and the Notes page's sequencing and troubleshooting activities, rather than trying to solder from this slide alone. That's the line worth holding: a hook or a heads-up here is fine, replacing the reading is not."
       }
     ]
   },
@@ -458,11 +458,11 @@ const SLIDES = [
     title: "Chapter 1 Plan",
     bullets: [
       { text: "Read Chapter 1", href: "/pico/01-get-to-know-your-pico/" },
-      { text: "Fill out the graphic organizer as you go", href: "/pico/01-graphic-organizer/" },
+      { text: "Fill out the Notes page as you go", href: "/pico/01-graphic-organizer/" },
       "Solder your headers, if you need to",
       "Install MicroPython"
     ],
-    notes: "Set expectations for pacing, and be honest that this might not all happen today -- reading and the graphic organizer are sometimes homework, and soldering or installing MicroPython might land on a separate day depending on your schedule. Remind them the graphic organizer gets checked for completeness, not perfection, and that it's meant to be filled out WHILE reading, not after."
+    notes: "Set expectations for pacing, and be honest that this might not all happen today -- reading and the Notes page are sometimes homework, and soldering or installing MicroPython might land on a separate day depending on your schedule. Remind them the Notes page gets checked for completeness, not perfection, and that it's meant to be filled out WHILE reading, not after."
   },
   {
     kind: "bullets",
@@ -485,7 +485,7 @@ const SLIDES = [
 ];
 
 // A bullet is either a plain string, or { text, href } to render as a link
-// (used for pointing straight at the chapter or the graphic organizer).
+// (used for pointing straight at the chapter or the Notes page).
 function renderBullets(bullets) {
   return (
     <ul>

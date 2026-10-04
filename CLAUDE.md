@@ -260,10 +260,12 @@ to that chapter's title. **The link text must include the chapter number**
 (`Chapter {{ lesson.chapter }} slides`, not a bare "Intro slides") — every
 row would otherwise show identical, ambiguous link text.
 
-**The graphic organizer** is a printable fill-in-as-you-read worksheet:
-`_pico/NN-graphic-organizer.md`, a real collection member (`layout: lesson`,
-`order: N.1`, `label: "Chapter N Companion"`, `source: original`,
-`companion: true`). The `companion: true` flag excludes it from
+**The graphic organizer** (shown to readers as "Notes page" -- non-educators
+don't reliably know the term "graphic organizer", so the front matter key,
+filename pattern, and this doc keep it, but reader-facing text doesn't) is a
+printable fill-in-as-you-read worksheet: `_pico/NN-graphic-organizer.md`, a
+real collection member (`layout: lesson`, `order: N.1`,
+`label: "Chapter N Companion"`, `source: original`, `companion: true`). The `companion: true` flag excludes it from
 `pico/index.md`'s contents list and `pico/print.md`'s full-pathway printout
 (both loops skip anything with that flag) while still giving it a working
 permalink and correct prev/next nav via the collection.

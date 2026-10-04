@@ -434,7 +434,7 @@ const SLIDES = [
       "Same code as the onboard LED, just a different pin number",
       "Rename the variable too: led_external, not led_onboard"
     ],
-    notes: "This is the order of connections students should be able to trace with a finger: pin, through the resistor, into the anode, through the LED, out the cathode, to ground. That's exactly what the graphic organizer's draw-a-circuit question asks them to label. The code change from the onboard LED version is genuinely just the pin number and a variable rename -- worth pointing out how little changed, since it reinforces that the GPIO API works the same way regardless of what's on the other end of the wire.",
+    notes: "This is the order of connections students should be able to trace with a finger: pin, through the resistor, into the anode, through the LED, out the cathode, to ground. That's exactly what the Notes page's draw-a-circuit question asks them to label. The code change from the onboard LED version is genuinely just the pin number and a variable rename -- worth pointing out how little changed, since it reinforces that the GPIO API works the same way regardless of what's on the other end of the wire.",
     down: [
       {
         kind: "bullets",
@@ -467,7 +467,7 @@ const SLIDES = [
     bullets: [
       { text: "Read through \"Using a breadboard\" and \"Next steps: an external LED\"", href: "/pico/04-physical-computing-with-pico/" },
       { text: "Wire your LED circuit and get it blinking", href: "/pico/04-physical-computing-with-pico/" },
-      { text: "Fill out Parts 1 through 3 of the graphic organizer", href: "/pico/04-graphic-organizer/" }
+      { text: "Fill out Parts 1 through 3 of the Notes page", href: "/pico/04-graphic-organizer/" }
     ],
     notes: "Parts 1 through 3 of the organizer match today's scope (onboard LED recap, breadboards, external LED). Part 4, on reading a button, can wait until that lesson happens."
   },
@@ -480,7 +480,7 @@ const SLIDES = [
 ];
 
 // A bullet is either a plain string, or { text, href } to render as a link
-// (used for pointing straight at the chapter or the graphic organizer).
+// (used for pointing straight at the chapter or the Notes page).
 function renderBullets(bullets) {
   return (
     <ul>

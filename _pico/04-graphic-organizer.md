@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Chapter 4 Graphic Organizer"
+title: "Chapter 4 Notes Page"
 pathway: pico
 order: 4.1
 label: "Chapter 4 Companion"

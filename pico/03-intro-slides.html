@@ -379,7 +379,7 @@ const SLIDES = [
       "VBUS, VSYS, GND, RUN",
       "You'll define these yourself in the organizer"
     ],
-    notes: "Deliberately don't define these here. The graphic organizer specifically has students write these in their own words rather than just repeating a spelled-out acronym, so defining them on a slide would undercut that. Just make the words themselves familiar before they read."
+    notes: "Deliberately don't define these here. The Notes page specifically has students write these in their own words rather than just repeating a spelled-out acronym, so defining them on a slide would undercut that. Just make the words themselves familiar before they read."
   },
   {
     kind: "bullets",
@@ -440,7 +440,7 @@ const SLIDES = [
           "One brown band: multiply by 10",
           "33 times 10 = 330 ohms"
         ],
-        notes: "This is the book's own worked example, and it matches the fill-in-the-blank on the graphic organizer word for word. Walk through it together if you want a quick win before moving on."
+        notes: "This is the book's own worked example, and it matches the fill-in-the-blank on the Notes page word for word. Walk through it together if you want a quick win before moving on."
       }
     ]
   },
@@ -450,7 +450,7 @@ const SLIDES = [
     title: "Chapter 3 Plan",
     bullets: [
       { text: "Read Chapter 3", href: "/pico/03-physical-computing/" },
-      { text: "Fill out the graphic organizer as you go", href: "/pico/03-graphic-organizer/" }
+      { text: "Fill out the Notes page as you go", href: "/pico/03-graphic-organizer/" }
     ],
     notes: "Same as Chapter 1: this might be homework rather than today's in-class work, adjust as needed. There's no soldering or building today, so Chapter 3 often moves faster in class than Chapter 1 did."
   },
@@ -474,7 +474,7 @@ const SLIDES = [
 ];
 
 // A bullet is either a plain string, or { text, href } to render as a link
-// (used for pointing straight at the chapter or the graphic organizer).
+// (used for pointing straight at the chapter or the Notes page).
 function renderBullets(bullets) {
   return (
     <ul>

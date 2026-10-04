@@ -49,7 +49,7 @@ If anything here looks unfamiliar, [Chapter 4](/pico/04-physical-computing-with-
 
 Controlling an LED you wired yourself takes exactly one change: swap the pin.
 
-Check your Project 1.1 graphic organizer for the GPIO pin number you recorded for one of your LEDs, then edit your program so the `Pin` line uses that number instead of `"LED"`:
+Check your Project 1.1 Notes page for the GPIO pin number you recorded for one of your LEDs, then edit your program so the `Pin` line uses that number instead of `"LED"`:
 
 ```python
 import machine

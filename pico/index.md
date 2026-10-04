@@ -5,6 +5,18 @@ permalink: /pico/
 source: original
 ---
 
+<div class="pathway-banner-row" markdown="0">
+<img class="pathway-banner" src="{{ '/assets/img/pico/fig-1-1.jpg' | relative_url }}" alt="MicroPython on Pi Pico and Projects">
+<a href="#projects" class="projects-cta">
+  <svg class="projects-cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M5 18 L5 11 L13 11 L13 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="13" cy="6" r="2.2" fill="currentColor"/>
+  </svg>
+  Go to Projects
+</a>
+</div>
+<script src="{{ '/assets/js/pico-projects-jump.js' | relative_url }}" defer></script>
+
 # MicroPython on Pi Pico and Projects
 
 {% assign book = site.data.sources | where: "id", "rpi-pico-2e" | first %}
@@ -17,14 +29,20 @@ Get acquainted with the Raspberry Pi Pico and MicroPython: wiring,
 flashing firmware, and physical computing fundamentals. Foundational
 material shared across courses, not specific to any one class.
 
-<div class="pathway-hero-image">
-  <img src="{{ '/assets/img/pico/fig-1-1.jpg' | relative_url }}" alt="The top of a Raspberry Pi Pico 2 board">
-</div>
+<cite>{{ book.title }}</cite> is a genuinely great book, and because it's
+Creative Commons licensed, it's also a fantastic resource if you want to
+keep learning MicroPython well past this class, on your own. For some
+chapters we've added our own slides or a Notes page to go with the reading.
+
+Chapters 1 through 4 are the fundamentals: getting to know the board,
+programming it, and physical computing basics. Chapters 5 through 12 are
+the book's own hands-on projects, built on that foundation. Some of these
+take more than one class or block period to finish, so plan accordingly.
 
 <aside class="callout note" markdown="1">
-**LOOKING FOR THIS CLASS'S PROJECTS?**
+**KEEP THIS HANDY**
 
-The book's own chapters are listed below exactly as the book has them. The hands-on projects built specifically for this class are original material, not part of the book, and live in their own section further down the page: [jump to Projects](#projects).
+[Appendix B]({{ '/pico/14-pinout-guide/' | relative_url }})'s Raspberry Pi Pico pinout diagram is one you'll want to check constantly while wiring, not just read once when you happen to reach it. Keep it open in another tab from day one.
 </aside>
 
 ## Contents
@@ -35,7 +53,7 @@ The book's own chapters are listed below exactly as the book has them. The hands
   {% unless lesson.companion or lesson.project %}
   <li>
     <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
-    {% if lesson.organizer %}<a class="lesson-companion-link" href="{{ lesson.organizer | relative_url }}">Graphic organizer</a>{% endif %}
+    {% if lesson.organizer %}<a class="lesson-companion-link" href="{{ lesson.organizer | relative_url }}">Notes page</a>{% endif %}
     {% if lesson.slides %}<a class="lesson-companion-link" href="{{ lesson.slides | relative_url }}">{% if lesson.label %}{{ lesson.label }} slides{% else %}Chapter {{ lesson.chapter }} slides{% endif %}</a>{% endif %}
     {% if lesson.subtitle %}<p class="lesson-subtitle">{{ lesson.subtitle }}</p>{% endif %}
   </li>
@@ -61,7 +79,7 @@ High school classroom lessons strongly related to MicroPython on Pi Pico. Not pa
       {% for part in parts %}
         <li>
           <a href="{{ part.url | relative_url }}">{{ part.title }}</a>
-          {% if part.organizer %}<a class="lesson-companion-link" href="{{ part.organizer | relative_url }}">Graphic organizer</a>{% endif %}
+          {% if part.organizer %}<a class="lesson-companion-link" href="{{ part.organizer | relative_url }}">Notes page</a>{% endif %}
           {% if part.slides %}<a class="lesson-companion-link" href="{{ part.slides | relative_url }}">{{ part.label }} slides</a>{% endif %}
           {% if part.subtitle %}<p class="lesson-subtitle">{{ part.subtitle }}</p>{% endif %}
         </li>
