@@ -1,0 +1,7 @@
+<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+  <rect width="16" height="16" rx="2" fill="#0A0A0A" />
+  <path d="M3,2 h2 v1 h-2 z M2,3 h1 v4 h-1 z M5,3 h1 v4 h-1 z M3,7 h2 v1 h-2 z" fill="#00FF66" />
+  <path d="M10,2 h1 v5 h-1 z M9,3 h1 v1 h-1 z M9,7 h3 v1 h-3 z" fill="#00FF66" />
+  <path d="M3,9 h1 v5 h-1 z M2,10 h1 v1 h-1 z M2,14 h3 v1 h-3 z" fill="#00FF66" />
+  <path d="M10,9 h2 v1 h-2 z M9,10 h1 v4 h-1 z M12,10 h1 v4 h-1 z M10,14 h2 v1 h-2 z" fill="#00FF66" />
+</svg>

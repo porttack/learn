@@ -22,6 +22,7 @@
 - id: working-in-python
   title: "Working in Python"
   url: /working-in-python/
+  image: /assets/img/working-in-python/banner.png
   blurb: >-
     An AP CSP-oriented adaptation of Allen Downey's <em>Think Python</em>,
     3rd edition (CC BY-NC-SA 4.0). Mirrored here from its own book repo,

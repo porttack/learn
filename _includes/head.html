@@ -11,6 +11,8 @@
   <link rel="apple-touch-icon" href="{{ '/assets/img/unplugged/apple-touch-icon.png' | relative_url }}">
   {%- elsif page.url contains "/standards/" -%}
   <link rel="icon" type="image/svg+xml" href="{{ '/assets/img/standards/favicon.svg' | relative_url }}">
+  {%- elsif page.url == "/" -%}
+  <link rel="icon" type="image/svg+xml" href="{{ '/assets/img/favicon.svg' | relative_url }}">
   {%- endif -%}
   {%- feed_meta -%}
   {%- if jekyll.environment == 'production' and site.google_analytics -%}

@@ -13,6 +13,7 @@
 
 - title: Home (learn.porttack.com)
   url: /
+  icon: /assets/img/favicon.svg
 - title: MicroPython on Pi Pico
   url: /pico/
   icon: /assets/img/pico/favicon.svg
@@ -20,6 +21,7 @@
   url: /electronics101/
 - title: Working in Python
   url: /working-in-python/
+  icon: /assets/img/working-in-python/favicon.svg
 - title: Python in 3D
   url: /python3d/
 - title: CS Unplugged
