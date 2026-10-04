@@ -62,20 +62,25 @@ Look at the dots on each card, from right to left: 1, 2, 4, 8, 16.
 Cover cards until the dots still showing add up to the number.
 Write down which cards are face up.
 
-| Make this many dots | Cards face up |
-|---|---|
-| 5 | |
-| 3 | |
-| 12 | |
-| 19 | |
-{: .checkoff .trace-table}
+<table class="checkoff trace-table">
+  <colgroup><col style="width: 28%"><col style="width: 72%"></colgroup>
+  <thead><tr><th>Make this many dots</th><th>Cards face up</th></tr></thead>
+  <tbody>
+    <tr><td>5</td><td></td></tr>
+    <tr><td>3</td><td></td></tr>
+    <tr><td>12</td><td></td></tr>
+    <tr><td>19</td><td></td></tr>
+  </tbody>
+</table>
 
-3. Is there more than one way to make any of these numbers?
+3. Try to make 5 again, but with **different** cards than you used in the
+   table. Can you? Does any number have two different ways to make it?
    <span class="fill-line"></span>
 4. What is the **biggest** number you can make? <span class="fill-line short"></span>
    The **smallest**? <span class="fill-line short"></span>
-5. Is there any number between the smallest and biggest that you *can't*
-   make? <span class="fill-line"></span>
+5. Pick three numbers between 0 and 31 (for example 23, 30, and 14) and
+   make each one with your cards. Did any number **not** work?
+   My numbers: <span class="fill-line short"></span> <span class="fill-line short"></span> <span class="fill-line short"></span>
 {: start="3"}
 
 ## Part 3: Write it in binary
@@ -83,8 +88,27 @@ Write down which cards are face up.
 Now write your cards down as digits. A face-down card is a **0**. A face-up
 card is a **1**. Always write all five, starting with the 16 card.
 
-For example, **01001** means: 16 down, 8 up, 4 down, 2 down, 1 up. That's
-8 + 1 = **9**.
+For example, here are the cards showing **9**. The 8 card and the 1 card
+are face up; the others are covered:
+
+<div class="dot-row dot-example">
+  {%- assign counts = "16,8,4,2,1" | split: "," -%}
+  {%- assign bits = "0,1,0,0,1" | split: "," -%}
+  {%- for c in counts -%}
+  {%- assign n = c | plus: 0 %}
+  {%- assign b = bits[forloop.index0] %}
+  <div class="dot-card-wrap">
+    <div class="dot-card{% if b == '0' %} covered{% endif %}">
+      <div class="dots">{% if b == '1' %}{% for i in (1..n) %}<span class="dot"></span>{% endfor %}{% endif %}</div>
+      <span class="dot-count">{{ n }}</span>
+    </div>
+    <span class="dot-bit">{{ b }}</span>
+  </div>
+  {%- endfor %}
+</div>
+
+Face up is 1 and covered is 0, so 9 is written **01001**. Check it:
+8 + 1 = 9.
 
 | Binary | Number |
 |---|---|
@@ -144,19 +168,13 @@ Tom's message: <span class="fill-line"></span>
 <aside class="callout challenge" markdown="1">
 **CHALLENGE**
 
-1. **Counting up by one.** Make 0, then 1, 2, 3, 4 in order. Find a rule
-   for flipping cards that always adds exactly one.
-2. **Adding them up.** Work out 1 + 2 + 4, then 1 + 2 + 4 + 8. How does
-   each total compare to the *next* card in the row?
-3. **Counting on your fingers.** Let each finger on one hand be one card.
-   Finger up is a 1, finger down is a 0. How high can you count on one hand?
-   On two hands (ten cards)?
-4. **Add a zero.** In normal numbers, putting a 0 on the right multiplies
-   by ten: 9 becomes 90. What happens when you put a 0 on the right of a
-   binary number? Try 1001 → 10010. Why does that happen?
-5. **Keyboards.** Count roughly how many different characters a keyboard
-   can type (capitals, lowercase, digits, punctuation). How many binary
-   digits would a computer need to give each one its own code?
+1. **Counting up by one.** Make 0, then 1, 2, 3, 4, 5 in order. Which
+   card flips every single time?
+2. **Adding them up.** Work out 1 + 2 + 4. Then 1 + 2 + 4 + 8. Look at the
+   next card in the row each time. What do you notice?
+3. **Counting on your fingers.** Each finger on one hand is one card:
+   finger up is 1, finger down is 0. What is the biggest number you can show
+   on one hand?
 </aside>
 
 ## What's it all about?
@@ -176,9 +194,9 @@ group of eight bits is a **byte**, and it can stand for any number from
 sixth card would have 32 dots, the seventh 64.
 
 **Part 2.** 5 = 4 + 1. 3 = 2 + 1. 12 = 8 + 4. 19 = 16 + 2 + 1. There is
-only ever one way to make each number. The biggest is 31 (all face up) and
-the smallest is 0 (all face down), and you can make every number in
-between.
+only ever one way to make each number, so 5 can't be made with different
+cards. The biggest is 31 (all face up) and the smallest is 0 (all face
+down), and every number in between works.
 
 **Part 3.** 10101 = 21. 11111 = 31. 00110 = 6. 17 = 10001. For your
 birthday, check it the other way: add up the cards you wrote as 1.
@@ -186,15 +204,9 @@ birthday, check it the other way: add up the cards you wrote as 1.
 **Part 4.** 8 5 12 16, 9 13, 20 18 1 16 16 5 4: **HELP IM TRAPPED**.
 
 **Challenge.**
-1. Start at the right. Flip each card; stop as soon as you flip one face
-   *up*.
-2. The total is always one less than the next card: 1 + 2 + 4 = 7 (next
-   card is 8), and 1 + 2 + 4 + 8 = 15 (next card is 16).
-3. One hand counts 0 to 31, which is 32 numbers. Two hands count 0 to 1023,
-   which is 1,024 numbers.
-4. The number doubles. Every card slides one place left, so every 1 is now
-   worth twice as much.
-5. There are around 100 characters. Six bits gives only 64 codes, seven
-   gives 128, so you need 7. Computers usually store each one in an 8-bit
-   byte.
+1. The 1 card flips every time. (The 2 card flips every other time, the
+   4 card every fourth time, and so on.)
+2. Each total is one less than the next card: 1 + 2 + 4 = 7 (next card is
+   8), and 1 + 2 + 4 + 8 = 15 (next card is 16).
+3. 31, with all five fingers up (16 + 8 + 4 + 2 + 1).
 </section>

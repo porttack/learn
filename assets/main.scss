@@ -1461,6 +1461,27 @@ table.checkoff.light-message td {
   }
 }
 
+// Count the Dots, Part 3 example: covered cards are blank and shaded, with
+// each card's binary digit printed underneath.
+.dot-example .dot-card-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.dot-card.covered {
+  background: repeating-linear-gradient(45deg, #fff 0 6px, #d4d4d4 6px 8px);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.dot-bit {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1.6em;
+  font-weight: 700;
+}
+
 .answer-key {
   margin-top: 2.5em;
   padding-top: 1em;
