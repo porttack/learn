@@ -5,6 +5,7 @@
   <p>
     Adapted from <cite>{{ src.title }}</cite>{% if src.year %}, {{ src.year }}{% endif %},
     by {{ src.author }}{% if src.publisher %} ({{ src.publisher }}){% endif %}.
+    This version by <a href="{{ site.author_url }}">{{ site.author }}</a>.
     Licensed under <a href="{{ src.licence_url }}">{{ src.licence }}</a>.
   </p>
   {% if page.source_url or page.original_print %}<p class="provenance-link">
@@ -13,7 +14,7 @@
     {%- if page.original_print %}<a href="{{ page.original_print }}">original printable (PDF)</a>{% endif -%}
   </p>{% endif %}
   {% elsif src.use == "original" %}
-  <p>{{ src.licence }}.</p>
+  <p>By <a href="{{ site.author_url }}">{{ site.author }}</a>. Licensed under {% if src.licence_url %}<a href="{{ src.licence_url }}">{{ src.licence }}</a>{% else %}{{ src.licence }}{% endif %}.</p>
   {% else %}
   <p>Source: {{ src.title }}{% if src.author %}, {{ src.author }}{% endif %}.</p>
   {% endif %}
