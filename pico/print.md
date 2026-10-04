@@ -1,6 +1,6 @@
 ---
 layout: minimal
-title: "MicroPython on Pi Pico"
+title: "MicroPython on Pi Pico and Projects"
 permalink: /pico/print/
 ---
 

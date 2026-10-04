@@ -9,6 +9,8 @@
   {%- elsif page.pathway == "unplugged" or page.url contains "/unplugged/" -%}
   <link rel="icon" type="image/png" href="{{ '/assets/img/unplugged/favicon.png' | relative_url }}">
   <link rel="apple-touch-icon" href="{{ '/assets/img/unplugged/apple-touch-icon.png' | relative_url }}">
+  {%- elsif page.pathway == "cs50psets" or page.url contains "/cs50-psets/" -%}
+  <link rel="icon" type="image/svg+xml" href="{{ '/assets/img/cs50psets/favicon.svg' | relative_url }}">
   {%- elsif page.url contains "/standards/" -%}
   <link rel="icon" type="image/svg+xml" href="{{ '/assets/img/standards/favicon.svg' | relative_url }}">
   {%- elsif page.url == "/" -%}

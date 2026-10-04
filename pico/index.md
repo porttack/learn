@@ -1,11 +1,11 @@
 ---
 layout: minimal
-title: "MicroPython on Pi Pico"
+title: "MicroPython on Pi Pico and Projects"
 permalink: /pico/
 source: original
 ---
 
-# MicroPython on Pi Pico
+# MicroPython on Pi Pico and Projects
 
 {% assign book = site.data.sources | where: "id", "rpi-pico-2e" | first %}
 <p class="provenance">

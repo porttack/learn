@@ -111,6 +111,16 @@ $content-width: 900px;
   }
 }
 
+// .site-header is minima's own class (layout: default pages only, via our
+// _includes/header.html override). It sets position: relative, which makes
+// it the containing block for our .site-menu above -- so on these pages the
+// hamburger lands in the same top-right corner minima's own nav already
+// occupies. Push that nav left to leave it room, both expanded (page-link
+// text) and collapsed to minima's own mobile menu-icon.
+.site-header .site-nav {
+  margin-right: 3em;
+}
+
 .pathway-back {
   font-size: 0.9em;
   margin-bottom: 0.5em;
@@ -155,6 +165,17 @@ figure {
     color: $grey-color-dark;
     margin-top: 0.4em;
   }
+}
+
+// A wide section banner above the H1, the way /unplugged/ has used its own
+// one-off .unplugged-banner (_sass/unplugged/_generator.scss) -- same spec,
+// generalized so another pathway can reuse it instead of copying the rule.
+.pathway-banner {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  margin: 0.5em 0 0.2em;
 }
 
 // A small, deliberately modest hero image on a pathway's own landing page --

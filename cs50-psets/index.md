@@ -1,10 +1,12 @@
 ---
 layout: minimal
-title: "CS50 Problem Sets"
+title: "CS50 Problems"
 permalink: /cs50-psets/
 ---
 
-# CS50 Problem Sets
+<img class="pathway-banner" src="{{ '/assets/img/cs50psets/banner.png' | relative_url }}" alt="CS50 Problems">
+
+# CS50 Problems
 
 A mix of problem sets: some adapted from [Harvard's CS50
 AP](https://cs50.harvard.edu/ap) curriculum, some from [CS50's

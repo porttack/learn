@@ -5,22 +5,7 @@
 
   <body>
 
-    <div class="site-menu">
-      <input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
-      <label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
-      <label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
-      <nav class="site-menu-panel">
-        {% for item in site.data.site_menu %}
-        <a href="{{ item.url | relative_url }}">
-          {%- if item.icon -%}
-          <img src="{{ item.icon | relative_url }}" class="site-menu-item-icon" alt="">
-          {%- else -%}
-          <span class="site-menu-item-icon" aria-hidden="true"></span>
-          {%- endif -%}
-          {{ item.title }}</a>
-        {% endfor %}
-      </nav>
-    </div>
+    {%- include site-menu.html -%}
 
     <main class="page-content" aria-label="Content">
       <div class="wrapper">

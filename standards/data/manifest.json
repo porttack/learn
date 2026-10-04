@@ -150,7 +150,7 @@
   {
    "slug": "pico",
    "file": "pico.json",
-   "title": "MicroPython on Pi Pico",
+   "title": "MicroPython on Pi Pico and Projects",
    "abbrev": "Pico",
    "hue_light": "#4169e1",
    "hue_dark": "#5c7cfa"
@@ -158,7 +158,7 @@
   {
    "slug": "cs50psets",
    "file": "cs50psets.json",
-   "title": "CS50 Problem Sets",
+   "title": "CS50 Problems",
    "abbrev": "CS50PS",
    "hue_light": "#22a048",
    "hue_dark": "#30a654"
