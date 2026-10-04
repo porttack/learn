@@ -162,6 +162,14 @@
    "abbrev": "CS50PS",
    "hue_light": "#22a048",
    "hue_dark": "#30a654"
+  },
+  {
+   "slug": "unplugged",
+   "file": "unplugged.json",
+   "title": "CS Unplugged",
+   "abbrev": "UNPLUG",
+   "hue_light": "#c2185b",
+   "hue_dark": "#e0457b"
   }
  ],
  "crosswalks": [

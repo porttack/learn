@@ -210,7 +210,8 @@ document.addEventListener('click', function (event) {
 // apcsp topics/csta2026/ca-ict-anchor).
 var STANDARDS_FRAMEWORKS = {
   apcsp: { file: 'apcsp-standards-reference.html', prefix: 'T', name: 'AP Computer Science Principles', catalog: 'apcsp' },
-  castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California 9-12 Computer Science', catalog: 'castandards' },
+  castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California Computer Science', catalog: 'castandards' },
+  csta2017: { file: 'csta2017-standards-reference.html', prefix: 'S', name: 'CSTA 2017', catalog: 'csta2017' },
   csta2026: { file: 'csta2026-standards-reference.html', prefix: 'T', name: 'CSTA 2026', catalog: 'csta2026' },
   'ca-ict-anchor': { file: 'ca-ict-anchor-standards-reference.html', prefix: 'T', name: 'CA CTE (ICT)', catalog: 'ca-ict-anchor' },
   'iste-digital-citizen': { file: 'iste-digital-citizen-standards-reference.html', prefix: 'T', name: 'ISTE Digital Citizen', catalog: 'iste-digital-citizen' },
@@ -237,7 +238,7 @@ function catalogLabel(fw, catalogData, code) {
     var topic = (catalogData.topics || []).filter(function (t) { return t.code === code; })[0];
     return topic ? (topic.title || topic.paraphrase) : null;
   }
-  if (fw === 'castandards' || fw === 'csta2026') {
+  if (fw === 'castandards' || fw === 'csta2026' || fw === 'csta2017') {
     var std = (catalogData.standards || []).filter(function (s) { return s.code === code; })[0];
     return std ? std.paraphrase : null;
   }
@@ -267,7 +268,9 @@ function catalogLabel(fw, catalogData, code) {
 }
 
 document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(function (section) {
-  var chapter = Number(section.getAttribute('data-chapter'));
+  // Compared as text: pico's locators are chapter numbers, unplugged's are
+  // page slugs.
+  var chapter = section.getAttribute('data-chapter');
   var carrierSlug = section.getAttribute('data-carrier-slug');
   fetch(section.getAttribute('data-carrier-url'))
     .then(function (r) { return r.ok ? r.json() : null; })
@@ -279,8 +282,11 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
         var items = [];
         Object.keys(coverage).forEach(function (code) {
           var entry = coverage[code];
-          if (entry.locators && entry.locators.indexOf(chapter) !== -1) {
-            items.push({ code: code, note: entry.note });
+          if (entry.locators && entry.locators.some(function (l) { return String(l) === chapter; })) {
+            // locator_notes (optional) says how *this* page covers the code,
+            // when the shared note describes several pages at once.
+            var own = (entry.locator_notes || {})[chapter];
+            items.push({ code: code, note: own || entry.note });
           }
         });
         if (items.length) groups.push({ fw: fw, items: items });

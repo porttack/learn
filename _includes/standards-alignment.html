@@ -1,5 +1,12 @@
-{% if page.chapter and pathway_meta.standards_carrier %}
-<details class="hint-toggle standards-alignment" data-chapter="{{ page.chapter }}" data-carrier-slug="{{ pathway_meta.standards_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ pathway_meta.standards_carrier }}.json" hidden>
+{% comment %}
+  Locator for this page in its pathway's carrier: `chapter:` front matter
+  (pico), or, for a pathway with `standards_locator: slug` in
+  _data/pathways.yml (unplugged), the page's own URL slug. Renders nothing
+  until the carrier actually lists that locator.
+{% endcomment %}
+{% if pathway_meta.standards_locator == "slug" %}{% assign std_locator = page.slug %}{% else %}{% assign std_locator = page.chapter %}{% endif %}
+{% if std_locator and pathway_meta.standards_carrier %}
+<details class="hint-toggle standards-alignment" data-chapter="{{ std_locator }}" data-carrier-slug="{{ pathway_meta.standards_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ pathway_meta.standards_carrier }}.json" hidden>
   <summary>Standards alignment</summary>
   <div class="standards-alignment-body"></div>
 </details>

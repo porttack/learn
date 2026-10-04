@@ -206,3 +206,13 @@ time to render):
 
 Look at the pages, not just the count. Never use port 4000 (the teacher's
 own `jekyll serve`) and only stop servers you started.
+
+## Standards alignment
+
+Starred (reviewed) sheets are aligned in `_standards/carriers/unplugged.json`.
+Locators are the sheet's URL slug (`count-the-dots`), enabled by
+`standards_locator: slug` on the pathway in `_data/pathways.yml`. Give each
+page its own sentence in `locator_notes` when an entry covers several sheets.
+After editing, run `bash tools/publish_standards.sh` and commit the
+regenerated `standards/` files with it. A sheet not listed in the carrier
+shows no "Standards alignment" section at all.

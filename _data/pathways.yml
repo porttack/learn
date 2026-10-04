@@ -64,6 +64,8 @@
   title: "CS Unplugged"
   collection: unplugged
   url: /unplugged/
+  standards_carrier: unplugged
+  standards_locator: slug
   image: /assets/img/unplugged/unplugged.png
   nav: none
   name_line: true

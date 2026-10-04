@@ -194,14 +194,14 @@
     var text;
     if (interludeLetter) {
       text = 'Interlude ' + interludeLetter;
-    } else if (meta.locator_kind === 'none') {
+    } else if ((meta.locator_kind === 'none' || meta.locator_kind === 'activity')) {
       text = locatorTitle || 'the source';
     } else {
       text = (meta.locator_kind === 'chapter' ? 'Chapter ' : 'Unit ') + locator;
     }
     var sectionTitle = anchor && anchor.title;
     if (sectionTitle) text += ' – ' + sectionTitle;
-    else if (locatorTitle && meta.locator_kind !== 'none') text += ' (' + locatorTitle + ')';
+    else if (locatorTitle && !(meta.locator_kind === 'none' || meta.locator_kind === 'activity')) text += ' (' + locatorTitle + ')';
     var url = locatorUrlFor(meta, locator, anchor && anchor.slug);
     return url ? '<a href="' + esc(url) + '">' + esc(text) + '</a>' : esc(text);
   }

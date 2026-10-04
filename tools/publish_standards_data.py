@@ -82,6 +82,7 @@ HUES = [
     ("#5ba72a", "#4ab00a"),  # 17 spring green
     ("#4169e1", "#5c7cfa"),  # 18 royal blue
     ("#22a048", "#30a654"),  # 19 jade
+    ("#c2185b", "#e0457b"),  # 20 raspberry (unplugged; not yet run through validate_palette.js)
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -186,6 +187,7 @@ SOURCE_ORDER = [
     "kagan_classbuilding",
     "pico",
     "cs50psets",
+    "unplugged",
 ]
 
 

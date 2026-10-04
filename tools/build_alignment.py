@@ -360,7 +360,7 @@ class Coverage:
         locator_title = meta.get("locator_titles", {}).get(str(locator))
         if interlude_letter:
             text = f"Interlude {interlude_letter}"
-        elif meta.get("locator_kind") == "none":
+        elif meta.get("locator_kind") in ("none", "activity"):
             text = locator_title or "the source"
         else:
             noun = "Chapter" if meta.get("locator_kind") == "chapter" else "Unit"
@@ -368,7 +368,7 @@ class Coverage:
         section_title = anchor.get("title") if anchor else None
         if section_title:
             text += f" – {section_title}"
-        elif locator_title and meta.get("locator_kind") != "none":
+        elif locator_title and meta.get("locator_kind") not in ("none", "activity"):
             text += f" ({locator_title})"
         url = self._locator_url(source, locator, anchor.get("slug") if anchor else None)
         return f'<a href="{esc(url)}">{esc(text)}</a>' if url else esc(text)

@@ -1,0 +1,277 @@
+{
+  "meta": {
+    "title": "CS Unplugged",
+    "abbrev": "UNPLUG",
+    "source": "unplugged",
+    "base_url": "https://learn.porttack.com",
+    "locator_kind": "activity",
+    "locator_url_template": "{base_url}/unplugged/{locator}/",
+    "locator_titles": {
+      "count-the-dots": "Count the Dots: binary numbers",
+      "ascii-messages": "Secret Messages in ASCII",
+      "pixel-pictures": "Pixel Pictures",
+      "caesar-cipher": "Caesar Cipher",
+      "muddy-city": "The Muddy City",
+      "solo-battleship": "Solo Battleship"
+    },
+    "caveat": "Only the teacher-reviewed (starred) CS Unplugged sheets are aligned so far; the rest of the section makes no claim yet. Locators are the sheets' own URL slugs (/unplugged/<slug>/). These are short, printable, mostly middle-school sheets, so most entries are partial or related rather than strong: a 20 to 30 minute worksheet introduces an idea, it rarely covers a whole standard. The digital citizenship frameworks were not examined. CSTA 2026 has no core middle or high school standard for binary or data encoding (only in specialty strands), so the binary sheets carry CSTA 2017 instead.",
+    "alignment_log": [
+      {
+        "date": "2026-10-04",
+        "by": "Claude Opus 5.5",
+        "scope": "First pass: the six starred sheets (count-the-dots, ascii-messages, pixel-pictures, caesar-cipher, muddy-city, solo-battleship) against apcsp, castandards, and csta2026",
+        "note": "Read each sheet's own student-facing text and matched it against this repo's catalog paraphrases. CSTA 2026 has no middle-school code for binary or encryption, so those sheets carry only AP CSP and California codes."
+      },
+      {
+        "date": "2026-10-04",
+        "by": "Claude Opus 5.5",
+        "scope": "Second pass after teacher review: full-text search of every catalog (castandards, csta2017, csta2026, ca-ict-anchor, apcsp)",
+        "note": "First pass had keyword-filtered paraphrases and skipped csta2017 and ca-ict-anchor. Added csta2017 2-DA-07, 3A-DA-09, 2-NI-06, 3B-AP-11; ca-ict-anchor 5.11, C4.4, 10.6, C6.2, C6.5, 10.8; csta2026 MS-SYS-SE-32; extended castandards 9-12.DA.8 to count-the-dots; raised 6-8.NI.6 to partial."
+      }
+    ]
+  },
+  "coverage": {
+    "apcsp": {
+      "2.1": {
+        "locators": [
+          "count-the-dots",
+          "ascii-messages",
+          "pixel-pictures"
+        ],
+        "strength": "strong",
+        "note": "Count the Dots builds binary place values (1, 2, 4, 8, 16) from dot cards and converts both ways; Secret Messages in ASCII uses bit patterns to stand for letters, digits, and punctuation, the same bits meaning a number or a character depending on how they're read. Pixel Pictures shows a black-and-white image as rows of pixels and counts the bits a fax would need, a lighter touch (related) on its own.",
+        "locator_notes": {
+          "count-the-dots": "Binary place values (1, 2, 4, 8, 16) from dot cards, converting numbers to binary and back, and a message hidden in lights.",
+          "ascii-messages": "Bit patterns stand for letters, digits, and punctuation: the same bits can be a number or a character depending on how they're read.",
+          "pixel-pictures": "A black-and-white picture stored as rows of pixels, each one a 0 or a 1 (a lighter touch; the sheet's focus is compression)."
+        }
+      },
+      "2.2": {
+        "locators": [
+          "pixel-pictures"
+        ],
+        "strength": "strong",
+        "note": "Pixel Pictures teaches run-length encoding (the fax machine's trick) by decoding and encoding pictures, then asks when compression saves space and when it doesn't. Lossless only; lossy compression isn't covered.",
+        "locator_notes": {
+          "pixel-pictures": "Run-length encoding (the fax machine's trick): decode and encode pictures, then decide when compression saves space. Lossless only."
+        }
+      },
+      "5.6": {
+        "locators": [
+          "caesar-cipher"
+        ],
+        "strength": "partial",
+        "note": "Caesar Cipher: encrypting and decrypting with a shared key (symmetric encryption) and cracking a message by trying all 25 keys, which shows why a real cipher needs a huge key space. Public-key encryption, passwords, and other parts of safe computing aren't covered.",
+        "locator_notes": {
+          "caesar-cipher": "Encrypting and decrypting with a shared key, then cracking a message by trying all 25 keys, which shows why real ciphers need far more keys. Public-key encryption isn't covered."
+        }
+      },
+      "3.9": {
+        "locators": [
+          "muddy-city"
+        ],
+        "strength": "partial",
+        "note": "The Muddy City has students invent their own strategy for the cheapest paving, then follow a given method (Kruskal's algorithm: cheapest road first, skip any that makes a loop) and compare results.",
+        "locator_notes": {
+          "muddy-city": "Invent your own strategy for the cheapest paving, then follow a given method (cheapest road first, skip any that makes a loop) and compare."
+        }
+      },
+      "3.17": {
+        "locators": [
+          "muddy-city",
+          "solo-battleship"
+        ],
+        "strength": "partial",
+        "note": "The Muddy City contrasts a problem with a fast exact method (minimal spanning tree) with the traveling salesperson problem, where trying every trip grows too fast (n! vs n squared), plus an optional NP-complete box. Solo Battleship names heuristics directly: rules of thumb that help find an answer faster without guaranteeing anything (related on its own).",
+        "locator_notes": {
+          "muddy-city": "A problem with a fast exact method (connecting every house) next to one with no known fast method (the traveling salesperson), with an optional NP-complete box.",
+          "solo-battleship": "Heuristics, named directly: rules of thumb that help find an answer faster without guaranteeing anything (related, not a full treatment)."
+        }
+      }
+    },
+    "castandards": {
+      "6-8.DA.7": {
+        "locators": [
+          "count-the-dots",
+          "ascii-messages",
+          "pixel-pictures"
+        ],
+        "strength": "partial",
+        "note": "Each sheet shows one thing in more than one form: a number as decimal, binary, or a row of lights (Count the Dots); a letter as a number and as bits (ASCII); a picture as a grid of pixels and as run-length numbers (Pixel Pictures).",
+        "locator_notes": {
+          "count-the-dots": "One number shown as decimal, as binary, and as a row of lights.",
+          "ascii-messages": "One letter shown as a character, a number, and a pattern of bits.",
+          "pixel-pictures": "One picture shown as a grid of pixels and as a list of run-length numbers."
+        }
+      },
+      "9-12.DA.8": {
+        "locators": [
+          "count-the-dots",
+          "ascii-messages",
+          "pixel-pictures"
+        ],
+        "strength": "partial",
+        "note": "The California standard names characters, numbers, and images: Count the Dots converts numbers between decimal and binary, ASCII converts characters to numbers and bits, Pixel Pictures converts an image to pixels and run-length numbers. Color isn't covered.",
+        "locator_notes": {
+          "ascii-messages": "Characters represented as numbers and bits, converted by hand in both directions.",
+          "pixel-pictures": "An image represented as pixels and as run-length numbers, converted by hand in both directions. Color isn't covered.",
+          "count-the-dots": "Numbers converted between decimal and binary by hand, in both directions."
+        }
+      },
+      "9-12.NI.7": {
+        "locators": [
+          "caesar-cipher"
+        ],
+        "strength": "related",
+        "note": "Caesar Cipher is a simple symmetric cipher: one shared key both scrambles and unscrambles. It doesn't reach asymmetric encryption or the tradeoffs the standard asks about."
+      },
+      "6-8.NI.6": {
+        "locators": [
+          "caesar-cipher"
+        ],
+        "strength": "partial",
+        "note": "The California version of CSTA 2-NI-06 (apply encryption methods to model secure transmission). Caesar Cipher is one simple method, encrypted, decrypted, and cracked; public-key encryption isn't modeled."
+      },
+      "9-12.IC.25": {
+        "locators": [
+          "muddy-city",
+          "solo-battleship"
+        ],
+        "strength": "related",
+        "note": "Both sheets point out where the same method turns up elsewhere: minimal spanning trees in power, water, phone, and airline networks (Muddy City); constraint solving and backtracking in class scheduling, delivery routes, and truck packing (Solo Battleship).",
+        "locator_notes": {
+          "muddy-city": "The same method connects power, water, phone, and airline networks.",
+          "solo-battleship": "The same rule-following and backtracking schedules classes, plans delivery routes, and packs trucks."
+        }
+      }
+    },
+    "csta2017": {
+      "2-DA-07": {
+        "locators": [
+          "count-the-dots",
+          "ascii-messages",
+          "pixel-pictures"
+        ],
+        "strength": "strong",
+        "note": "Representing data with more than one encoding: numbers as decimal, binary, and lights (Count the Dots); letters as numbers and bits (ASCII); pictures as pixels and run-length numbers (Pixel Pictures). Color (RGB, hex) isn't covered.",
+        "locator_notes": {
+          "count-the-dots": "A number written as decimal, as binary, and as a row of lights.",
+          "ascii-messages": "A letter written as a character, a number, and bits.",
+          "pixel-pictures": "A picture written as a pixel grid and as run-length numbers."
+        }
+      },
+      "3A-DA-09": {
+        "locators": [
+          "count-the-dots",
+          "ascii-messages",
+          "pixel-pictures"
+        ],
+        "strength": "strong",
+        "note": "Translating between bit-level representations of numbers (Count the Dots), letters (ASCII), and black-and-white images (Pixel Pictures), by hand in both directions.",
+        "locator_notes": {
+          "count-the-dots": "Numbers translated to bits and back, including the largest number five cards (bits) can show.",
+          "ascii-messages": "Letters, digits, and punctuation translated to bits and back.",
+          "pixel-pictures": "A black-and-white image translated to bits and run-length numbers and back."
+        }
+      },
+      "2-NI-06": {
+        "locators": [
+          "caesar-cipher"
+        ],
+        "strength": "partial",
+        "note": "The standard's own starting point, a letter-substitution cipher: encrypt, decrypt, and crack by trying every key. Doesn't go on to model public-key encryption."
+      },
+      "3B-AP-11": {
+        "locators": [
+          "muddy-city"
+        ],
+        "strength": "related",
+        "note": "Muddy City compares approaches (trying every possibility vs. a smart method) by how fast the work grows, without measuring real code."
+      }
+    },
+    "csta2026": {
+      "MS-SOC-CE-44": {
+        "locators": [
+          "muddy-city",
+          "solo-battleship"
+        ],
+        "strength": "related",
+        "note": "Pattern-spotting and rule-following in a puzzle connected to real uses: utility networks (Muddy City), scheduling and route planning (Solo Battleship).",
+        "locator_notes": {
+          "muddy-city": "Puzzle strategy connected to planning real utility networks.",
+          "solo-battleship": "Puzzle strategy connected to scheduling and route planning."
+        }
+      },
+      "HS-ALG-PS-03": {
+        "locators": [
+          "muddy-city"
+        ],
+        "strength": "related",
+        "note": "Muddy City compares two approaches to a routing problem (trying every possibility vs. a smart method) by how fast the work grows, though students don't time or measure real algorithms."
+      },
+      "MS-ALG-PS-04": {
+        "locators": [
+          "solo-battleship"
+        ],
+        "strength": "related",
+        "note": "Solo Battleship is solved by following rules (row and column counts, the fleet, no touching), with backtracking when stuck, a rules-based approach rather than a fixed recipe."
+      },
+      "MS-SYS-SE-32": {
+        "locators": [
+          "caesar-cipher"
+        ],
+        "strength": "related",
+        "note": "Why hide a message (confidentiality), and how quickly a weak cipher fails once someone tries every key."
+      }
+    },
+    "ca-ict-anchor": {
+      "5.11": {
+        "locators": [
+          "count-the-dots",
+          "ascii-messages"
+        ],
+        "strength": "strong",
+        "note": "Numbers in base 10 and base 2 (Count the Dots); hexadecimal isn't covered. ASCII uses the same binary numbers for character codes (partial on its own).",
+        "locator_notes": {
+          "count-the-dots": "Numbers converted between base 10 and base 2. Hexadecimal isn't covered.",
+          "ascii-messages": "Character codes written in decimal and binary (partial; the sheet's focus is text)."
+        }
+      },
+      "C4.4": {
+        "locators": [
+          "ascii-messages"
+        ],
+        "strength": "partial",
+        "note": "Text is encoded as numbers and then bits; the same bits can be read as a number or a letter."
+      },
+      "10.6": {
+        "locators": [
+          "pixel-pictures"
+        ],
+        "strength": "related",
+        "note": "Counting how many bits a page of pixels takes, and how many fewer run-length encoding needs."
+      },
+      "C6.2": {
+        "locators": [
+          "pixel-pictures"
+        ],
+        "strength": "related",
+        "note": "A bitmap (one bit per pixel) image encoded two ways, as raw pixels and as run lengths. Vector graphics and bit depth beyond black and white aren't covered."
+      },
+      "C6.5": {
+        "locators": [
+          "pixel-pictures"
+        ],
+        "strength": "related",
+        "note": "Deciding when run-length compression helps and when it makes a picture bigger."
+      },
+      "10.8": {
+        "locators": [
+          "caesar-cipher"
+        ],
+        "strength": "related",
+        "note": "Encryption with a shared key, at an introductory level."
+      }
+    }
+  }
+}

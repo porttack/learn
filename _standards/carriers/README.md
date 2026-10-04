@@ -110,6 +110,15 @@ combined with other sources, which is honest. But marking something
 `checked: true` when you *haven't* actually verified it is a false claim of
 rigor — don't do that to look complete.
 
+### `locator_notes` (optional)
+
+When one entry's `locators` lists several pages and its `note` describes all
+of them at once, `locator_notes` gives each page its own sentence:
+`{"count-the-dots": "...", "ascii-messages": "..."}`. The per-lesson
+"Standards alignment" widget (`_layouts/lesson.html`) shows a page's own
+`locator_notes` entry when there is one and falls back to `note`. The
+cross-source reports keep using `note`. See `unplugged.json`.
+
 ### `anchors` (optional, rare)
 
 If you know a specific locator points to a specific labeled section (not
