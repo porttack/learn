@@ -87,6 +87,7 @@
 - id: standards
   title: "Standards"
   url: /standards/
+  image: /assets/img/standards/standards.png
   blurb: >-
     A visual coverage map across every course and curriculum reviewed here,
     against AP CSP, California 9-12 CS, CSTA 2026, and CA CTE (ICT)

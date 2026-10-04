@@ -864,6 +864,7 @@ def page(title, toc_html, body_html, provenance_html, toggles=None):
 <meta charset="utf-8">
 <title>{esc(title)}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
 <style>{CSS}</style>
 </head>
 <body>
