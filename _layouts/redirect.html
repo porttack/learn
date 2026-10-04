@@ -1,0 +1,21 @@
+<!doctype html>
+{% comment %}
+  Short-link forwarder for /go/<word>/ pages (go/*.md): a tiny page that
+  sends the browser on to `redirect_to`. Plain HTML, no plugin, so it works
+  on GitHub Pages and under `jekyll serve` alike. Short links exist so a sub
+  can type an address off a printed page.
+{% endcomment %}
+{% assign target = page.redirect_to | relative_url %}
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ page.title }}</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="{{ target }}">
+<meta http-equiv="refresh" content="0; url={{ target }}">
+<script>location.replace("{{ target }}");</script>
+</head>
+<body>
+<p>Opening <a href="{{ target }}">{{ page.title }}</a>&hellip;</p>
+</body>
+</html>

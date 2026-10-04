@@ -10,6 +10,12 @@
     generator   New set page URL
     setup       optional: what to say instead of "Nothing to set up"
     note        optional: one extra instruction (e.g. a section to skip)
+    slides      optional: slide deck path; adds a projector note with the
+                address spelled out, since this box is read on paper
+    slides_stop with slides: title of the slide to stop on before handing
+                out sheets (later slides are meant for after the sheet)
+    go          optional: short-link word (go/<word>.md); the box then prints
+                learn.porttack.com/go/<word> instead of the long address
 
   "Keep going," never "extra" or "early finishers": the next sheet is just
   the next thing to do, not a bonus or a sign the first one was optional.
@@ -19,6 +25,13 @@
 
 Skip everything below this box. {{ include.setup | default: "Nothing to set up." }}
 
+{% if include.slides %}{% if include.go %}{% assign deck = site.print_host | append: "/go/" | append: include.go %}{% else %}{% assign deck = site.print_host | append: include.slides %}{% endif %}
+**Optional, if you can project:** type [https://{{ deck }}]({{ include.slides | relative_url }})
+into the browser's address bar (not a search box), press Enter, then use
+the right arrow key to step through. Stop at the slide titled
+**{{ include.slides_stop }}**, then hand out the sheets. Unsure about a slide?
+Skip the slides: the sheet explains everything.
+{% endif %}
 1. **Hand out** the [worksheet]({{ include.sheet | relative_url }}), one per
    student. Names on top.
 2. **Say:** "{{ include.say }}"

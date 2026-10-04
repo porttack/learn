@@ -216,3 +216,11 @@ page its own sentence in `locator_notes` when an entry covers several sheets.
 After editing, run `bash tools/publish_standards.sh` and commit the
 regenerated `standards/` files with it. A sheet not listed in the carrier
 shows no "Standards alignment" section at all.
+
+## Short links for subs
+
+`go/<word>.md` pages (layout `redirect`) forward `learn.porttack.com/go/<word>`
+to a longer address, so a sub can type it off a printed sub box. Pass
+`go="<word>"` to `_includes/unplugged/sub-box.html` along with `slides=` and
+the box prints the short address. Use a plain lowercase word, not an
+abbreviation: addresses are case-sensitive and typed from paper.

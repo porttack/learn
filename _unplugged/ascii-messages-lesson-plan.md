@@ -14,6 +14,9 @@ Leaving it for a sub? Use the box below.
 
 {% include unplugged/sub-box.html
    sheet="/unplugged/ascii-messages/"
+   slides="/unplugged/ascii-messages-slides/"
+   go="ascii"
+   slides_stop="On Your Sheet"
    generator="/unplugged/ascii-messages-generator/"
    keep_going="new set of secret messages"
    say="Computers store every letter as a number. Use the code table at the top of the sheet to decode the messages, then write your own for a friend." %}
@@ -29,13 +32,17 @@ Leaving it for a sub? Use the box below.
 - Print one [worksheet]({{ '/unplugged/ascii-messages/' | relative_url }}) per student.
 - Print keep-going sheets from the [New set page]({{ '/unplugged/ascii-messages-generator/' | relative_url }}):
   Copies = class size, Sets per student = 2 (front and back).
+- Optional: the [slides]({{ '/unplugged/ascii-messages-slides/' | relative_url }}).
 
 ## The lesson
 
 ### 1. Hook (5 minutes)
 
-Write **72 73** on the board. Ask: *"If computers can only store numbers,
-how do they store this text message?"* Reveal that 72 73 spells **HI**.
+Show the slides through **67 79 79 76** (or write **72 73** on the board).
+Ask: *"If computers can only store numbers, how do they store a text
+message?"* Decode 72 73 (**HI**) together, then let students try 67 79 79 76
+(**COOL**) before you reveal it. The slides stop before the sheet's own
+messages.
 
 ### 2. The sheet (20 minutes)
 

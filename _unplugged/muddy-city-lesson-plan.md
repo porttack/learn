@@ -14,6 +14,9 @@ About **50 minutes**. Leaving it for a sub? Use the box below.
 
 {% include unplugged/sub-box.html
    sheet="/unplugged/muddy-city/"
+   slides="/unplugged/muddy-city-slides/"
+   go="muddy"
+   slides_stop="Now the Whole City"
    generator="/unplugged/muddy-city-generator/"
    keep_going="new muddy town to pave"
    note="**Slides are optional.** The sheet explains everything. The NP-complete box near the end is optional reading for curious students."

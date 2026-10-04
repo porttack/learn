@@ -14,6 +14,9 @@ About **50 minutes**. Leaving it for a sub? Use the box below.
 
 {% include unplugged/sub-box.html
    sheet="/unplugged/caesar-cipher/"
+   slides="/unplugged/caesar-cipher-slides/"
+   go="caesar"
+   slides_stop="Decode, Then Encode"
    generator="/unplugged/caesar-cipher-generator/"
    keep_going="new set of coded messages"
    note="**Stuck on Crack it?** Tell students to try key 1, then key 2, and so on until real words appear. That really is the method."

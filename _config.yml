@@ -3,6 +3,9 @@ description: >-
   Learning pathways in computer science and robotics for middle and
   high school students.
 url: "https://learn.porttack.com"
+# The address printed on paper (sub boxes). Not `url`: `jekyll serve`
+# replaces that with localhost, and a printout should always show the real site.
+print_host: "learn.porttack.com"
 # GitHub repo for the "Suggest an edit" / "Request a change or fix" links.
 repository: porttack/learn
 baseurl: ""

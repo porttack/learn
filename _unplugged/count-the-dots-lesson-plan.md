@@ -19,6 +19,9 @@ box below instead.
 
 {% include unplugged/sub-box.html
    sheet="/unplugged/count-the-dots/"
+   slides="/unplugged/count-the-dots-slides/"
+   go="dots"
+   slides_stop="On Your Sheet"
    generator="/unplugged/count-the-dots-generator/"
    keep_going="message-in-lights puzzle (a joke whose punchline is hidden in binary)"
    setup="No cards, scissors, or slides needed."
