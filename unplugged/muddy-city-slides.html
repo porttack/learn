@@ -345,7 +345,7 @@ const SLIDES = [
     kicker: "CS Unplugged",
     title: "The Muddy City",
     subtitle: "Connect every house for as few paving stones as possible",
-    notes: "A 5-minute launch for the Muddy City worksheet. The goal is the hook and one tiny example done together; the worksheet does the rest. Students can work alone or in pairs."
+    notes: "A 5-minute launch for the Muddy City worksheet: the hook and one tiny example done together, then students work. The deck deliberately stops before any strategy or algorithm, so students invent their own first."
   },
   {
     kind: "image",
@@ -430,66 +430,6 @@ const SLIDES = [
       "Did two different strategies tie?"
     ],
     notes: "Collect strategies on the board before revealing the next slide. Common ones: cheapest street first; start at one house and keep adding the cheapest street to a new house; start with everything paved and remove the most expensive streets that aren't needed. All three can work."
-  },
-  {
-    kind: "bullets",
-    kicker: "An algorithm",
-    title: "A Strategy That Always Works",
-    bullets: [
-      "Pave the cheapest street",
-      "Then the next cheapest, and the next",
-      "Skip any street that would make a loop",
-      "Kruskal's algorithm, 1956"
-    ],
-    notes: "This always finds a best answer, and it's fast even for a city with millions of houses. Power companies, phone networks, and internet providers solve exactly this problem.",
-    down: [
-      {
-        kind: "gallery",
-        kicker: "Check your city",
-        title: "Two Best Answers",
-        images: [
-          { src: "/assets/img/unplugged/muddy-city/solution-1.png", caption: "One best answer" },
-          { src: "/assets/img/unplugged/muddy-city/solution-2.png", caption: "Another best answer" }
-        ],
-        notes: "From the book's solutions. More than one best answer can exist: ties in street costs give you choices."
-      }
-    ]
-  },
-  {
-    kind: "bullets",
-    kicker: "Looks easy, but",
-    title: "A Very Similar Problem",
-    bullets: [
-      "Muddy City: computers solve it fast",
-      "Visit every house once and return home: no fast method known",
-      "10 houses: 181,440 trips. 20 houses: about 60 quadrillion"
-    ],
-    notes: "This is the traveling salesperson problem. Two problems that look alike can be wildly different for a computer. Use the down arrow for the NP-complete slide for AP and math-minded students.",
-    down: [
-      {
-        kind: "bullets",
-        kicker: "For AP students and math fans",
-        title: "NP-Complete",
-        bullets: [
-          "P: easy to solve (the work grows like n²)",
-          "NP: easy to check (NOT \"not polynomial\")",
-          "NP-complete: the hardest of NP; crack one, crack them all",
-          "P vs NP: unsolved, $1 million prize"
-        ],
-        notes: "NP stands for nondeterministic polynomial time: problems where a proposed answer can be checked quickly. The yes/no version of the traveling salesperson problem (is there a trip shorter than k?) is NP-complete. Nobody has proven whether fast methods exist for these; most experts believe they don't."
-      }
-    ]
-  },
-  {
-    kind: "bullets",
-    kicker: "Keep going",
-    title: "Your Turn",
-    bullets: [
-      { text: "The Muddy City worksheet", href: "/unplugged/muddy-city/" },
-      { text: "Make a new set of towns", href: "/unplugged/muddy-city-generator/" },
-      "Early finishers: the extra towns on the last page"
-    ],
-    notes: "The generator page draws each town twice so students can compare two of their own strategies."
   },
   {
     kind: "title",
