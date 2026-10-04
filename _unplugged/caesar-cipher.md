@@ -126,6 +126,8 @@ a time:
 The key was 3. If it hadn't worked by 3, you would keep going: 4, 5, 6,
 all the way to 25 if you had to.
 
+<div class="keep-together" markdown="1">
+
 **Now crack this message:**
 
 <p class="cipher-crack-text"><code class="cipher-text">{{ site.data.unplugged.cipher_fixed.crack.cipher }}</code></p>
@@ -144,6 +146,8 @@ is real words or nonsense. You can stop as soon as one works.
 </tr>
 {%- endfor -%}
 </table>
+
+</div>
 
 <aside class="callout note" markdown="1">
 **WHY THIS MATTERS**
