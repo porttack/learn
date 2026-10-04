@@ -441,3 +441,49 @@ table.activity-table {
     display: none;
   }
 }
+
+// Message-in-lights generator (lights-generator.js).
+table.lights-table,
+table.lights-encode {
+  width: auto;
+
+  td, th {
+    padding: 0.3em 0.7em;
+  }
+
+  td:empty {
+    min-width: 4em;
+  }
+}
+
+td.lights-cell {
+  font-size: 1.35em;
+  letter-spacing: 0.2em;
+  white-space: nowrap;
+}
+
+td.lights-key {
+  font-size: 0.85em;
+  white-space: nowrap;
+}
+
+td.lights-box {
+  width: 2.2em;
+  height: 2em;
+}
+
+td.lights-letter {
+  font-weight: 700;
+  text-align: center;
+}
+
+.lights-setup {
+  font-size: 1.1em;
+}
+
+@media print {
+  table.lights-table tr,
+  table.lights-encode tr {
+    break-inside: avoid;
+  }
+}

@@ -1,6 +1,11 @@
 ---
 title: "Count the Dots: binary numbers"
 slides: /unplugged/count-the-dots-slides/
+generator: /unplugged/count-the-dots-generator/
+generator_presets:
+  - { label: "Message in lights", query: "theme=lights&direction=decode" }
+  - { label: "Mixed symbols", query: "theme=mixed&direction=decode" }
+  - { label: "Encode a word", query: "theme=lights&direction=encode" }
 source: cs-unplugged-2015
 source_url: "https://classic.csunplugged.org/activities/binary-numbers/"
 original_print: "https://classic.csunplugged.org/documents/activities/binary-numbers/unplugged-01-binary_numbers.pdf"
