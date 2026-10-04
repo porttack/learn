@@ -55,7 +55,7 @@ out twice: once in order, and once shifted. Fill in the second row for
 whatever key you are using right now by counting forward that many
 letters for every blank, wrapping from Z back to A.
 
-No key yet? Use the number of the month you were born in (1 to 12).
+No key yet? Use the number of the month you were born in (a number between 1 and 12).
 
 {% include unplugged/caesar-shift-table.html %}
 
@@ -105,9 +105,7 @@ message.
 
 ## Crack it: no key given
 
-This time, nobody tells you the key. All you get is the message below.
-
-<p class="cipher-crack-text"><code class="cipher-text">{{ site.data.unplugged.cipher_fixed.crack.cipher }}</code></p>
+This time, nobody tells you the key. All you get is a scrambled message.
 
 That sounds harder, but think about what a key actually is: just a whole
 number from 1 to 25. There is no key 26, because shifting every letter by
@@ -128,7 +126,11 @@ a time:
 The key was 3. If it hadn't worked by 3, you would keep going: 4, 5, 6,
 all the way to 25 if you had to.
 
-Now try it on the real message. Use the grid below to keep track. For each key, shift the message back
+**Now crack this message:**
+
+<p class="cipher-crack-text"><code class="cipher-text">{{ site.data.unplugged.cipher_fixed.crack.cipher }}</code></p>
+
+Use the grid below to keep track. For each key, shift the message back
 that many places and jot down just enough of the result to tell whether it
 is real words or nonsense. You can stop as soon as one works.
 
