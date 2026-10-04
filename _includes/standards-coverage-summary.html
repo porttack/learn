@@ -1,0 +1,12 @@
+{% comment %}
+  Pathway-level "Standards covered so far" disclosure: the same client-side
+  widget as the per-lesson one (_includes/standards-alignment.html,
+  assets/js/standards-alignment.js), but with no data-chapter, so it lists
+  every code the carrier covers anywhere rather than one locator's. Include
+  from a pathway's own index page with carrier="<standards_carrier slug>".
+{% endcomment %}
+<details class="hint-toggle standards-alignment" data-carrier-slug="{{ include.carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ include.carrier }}.json" hidden>
+  <summary>Standards covered so far</summary>
+  <div class="standards-alignment-body"></div>
+</details>
+<script src="{{ '/assets/js/standards-alignment.js' | relative_url }}"></script>

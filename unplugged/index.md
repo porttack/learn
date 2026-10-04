@@ -147,9 +147,9 @@ the bottom of a sheet (or add `?key=1` to its address), then print.
 
 **Standards.** Each reviewed sheet lists the standards it supports under
 **Standards alignment** at the bottom of the page, with a link to that
-sheet's own report. See [everything the aligned Unplugged sheets cover]({{ '/standards/?report=unplugged&view=open-all' | relative_url }})
-(AP CSP, California CS, and CSTA 2026), or [compare them with the program's
-other sources on the standards map]({{ '/standards/?only=unplugged&view=open-all' | relative_url }}).
+sheet's own report. Everything aligned so far, across every reviewed sheet:
+
+{% include standards-coverage-summary.html carrier="unplugged" %}
 
 ## Other unplugged resources
 
