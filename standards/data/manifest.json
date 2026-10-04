@@ -4,7 +4,11 @@
   "castandards",
   "csta2026",
   "csta2017",
-  "ca-ict-anchor"
+  "ca-ict-anchor",
+  "iste-digital-citizen",
+  "unesco-mil",
+  "unesco-ai-cfs",
+  "aasl-engage"
  ],
  "sources": [
   {

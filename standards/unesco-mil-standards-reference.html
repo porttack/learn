@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UNESCO Media and Information Literacy Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
+}
+.page-toggle-label input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: block; padding: .5em 1em; color: var(--fg); text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/">Home (learn.porttack.com)</a>
+<a href="/pico/">MicroPython on Pi Pico</a>
+<a href="/electronics101/">Electronics 101</a>
+<a href="/working-in-python/">Working in Python</a>
+<a href="/standards/">Standards</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<ul>
+<li class="topic-link"><a href="#grp-group-0">Broad MIL Learning Outcomes and Competencies</a></li>
+<li class="topic-link"><a href="#grp-group-1">Values and Attitudes</a></li>
+</ul>
+</nav>
+<main>
+<h1>UNESCO Media and Information Literacy Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of <em>UNESCO Global Standards for Media and Information Literacy Curricula Development Guidelines (2022), Table 1</em> (2022). <strong>Scope.</strong> Table 1 offers 19 broad MIL learning outcomes/competencies plus 6 social values/attitudes as guidance, not a rigid checklist; codes here are just this table's own row numbers (1-25), not an official numbering scheme the Guidelines themselves assign. <strong>What this is not.</strong> Codes and short outcome titles are UNESCO's own; every paraphrase here is written for this project, never the Guidelines' own text, matching this repo's policy for every other catalog regardless of a source's own licence. <strong>See also.</strong> <a href="/standards/">The full standards map</a> has more on why formal standards are sparse here, plus related codes scattered across AP CSP, CSTA, and California's own CS standards.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<div class="page-toggles"><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-carriers" checked> Show which curricula cover each item</label></div>
+<div class="topic" id="grp-group-0">
+<h3><a class="anchor-link" href="#grp-group-0">#</a>Broad MIL Learning Outcomes and Competencies</h3>
+<ul class="ek-list">
+<li id="T-1"><a class="anchor-link" href="#T-1">#</a><span class="code-badge">1</span> <strong>Recognize an information need</strong> Knowing what information or communication you actually need, for yourself or for your community, comes before searching for anything.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-2"><a class="anchor-link" href="#T-2">#</a><span class="code-badge">2</span> <strong>Understand information providers</strong> Libraries, publishers, media outlets, and tech platforms each play a different role in how information reaches people, and knowing those roles helps you use them well.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-3"><a class="anchor-link" href="#T-3">#</a><span class="code-badge">3</span> <strong>Understand conditions of use</strong> A platform's own rules, ownership, and profit motives shape what you see and share there, and understanding those conditions, along with how to spot and counter misinformation, is part of using it responsibly.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-4"><a class="anchor-link" href="#T-4">#</a><span class="code-badge">4</span> <strong>Locate and assess content</strong> Finding good information takes real search skill, including understanding where results come from and why a search engine ranked them the way it did.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-5"><a class="anchor-link" href="#T-5">#</a><span class="code-badge">5</span> <strong>Critically evaluate content</strong> Judging whether a source is authentic, credible, and currently accurate, including spotting conspiracy theories, is its own skill, separate from just finding information.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-6"><a class="anchor-link" href="#T-6">#</a><span class="code-badge">6</span> <strong>Protect oneself from online risks</strong> Protecting your accounts and devices from real online risks, like phishing, identity theft, or spyware, and knowing how to respond to threats like bullying, is a basic digital safety skill.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-7"><a class="anchor-link" href="#T-7">#</a><span class="code-badge">7</span> <strong>Analyse, share, organize, store content</strong> Organizing, storing, and sharing content well means choosing methods and categories that actually fit your own needs.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-8"><a class="anchor-link" href="#T-8">#</a><span class="code-badge">8</span> <strong>Synthesise ideas from content</strong> Pulling together and summarizing what you've gathered, then using those ideas to build something new, goes beyond just collecting information.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-9"><a class="anchor-link" href="#T-9">#</a><span class="code-badge">9</span> <strong>Ethically communicate</strong> Communicating what you've learned honestly, and choosing the right form and method for your audience, is itself an ethical act, not just a stylistic choice.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-10"><a class="anchor-link" href="#T-10">#</a><span class="code-badge">10</span> <strong>Apply ICT skills to produce content</strong> Real digital literacy includes the technical skill to actually use software to find, evaluate, and create content, not just the conceptual understanding of it.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-11"><a class="anchor-link" href="#T-11">#</a><span class="code-badge">11</span> <strong>Apply ICT skills to create value</strong> Beyond personal use, digital skills can be used to build things of real value to other people, which is its own kind of literacy.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-12"><a class="anchor-link" href="#T-12">#</a><span class="code-badge">12</span> <strong>Use ICT with critical capacities</strong> Understanding how technology itself develops, who owns it, and what constraints shape it goes beyond just using it well.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-13"><a class="anchor-link" href="#T-13">#</a><span class="code-badge">13</span> <strong>Engage as an active digital citizen</strong> Being a full digital citizen means actively pushing institutions toward open, accessible, and fair practices, not just consuming what they offer.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-14"><a class="anchor-link" href="#T-14">#</a><span class="code-badge">14</span> <strong>Manage privacy online and offline</strong> Privacy is a right worth actively managing, which means adjusting your own settings, understanding how your data gets used and monetized, and respecting other people's privacy too.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-15"><a class="anchor-link" href="#T-15">#</a><span class="code-badge">15</span> <strong>Manage interactions with AI in games</strong> Games that use AI carry their own benefits and risks, like addiction or biased content, and engaging with them critically means weighing both sides.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-16"><a class="anchor-link" href="#T-16">#</a><span class="code-badge">16</span> <strong>Promote access and dialogue</strong> Participating online can be a form of civic engagement: using it to promote free expression, dialogue, and equality, and to push back against intolerance.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-17"><a class="anchor-link" href="#T-17">#</a><span class="code-badge">17</span> <strong>Apply MIL to other literacies</strong> The same critical thinking that underlies media literacy also applies directly to understanding health, financial, and scientific information.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-18"><a class="anchor-link" href="#T-18">#</a><span class="code-badge">18</span> <strong>Apply MIL for problem-solving</strong> Combining information and collaborating with others, in person and through technology, is how media and information literacy actually gets used to solve real problems.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-19"><a class="anchor-link" href="#T-19">#</a><span class="code-badge">19</span> <strong>Respond to hate speech and extremism</strong> Knowing how content can spread hate or promote extremism, and what to do when you encounter it, is part of being a responsible user of media.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-1">
+<h3><a class="anchor-link" href="#grp-group-1">#</a>Values and Attitudes</h3>
+<ul class="ek-list">
+<li id="T-20"><a class="anchor-link" href="#T-20">#</a><span class="code-badge">20</span> <strong>Intercultural and interreligious dialogue</strong> Valuing dialogue across cultures and religions is an attitude MIL education aims to build, not just a skill.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-21"><a class="anchor-link" href="#T-21">#</a><span class="code-badge">21</span> <strong>Freedom of expression and information</strong> Respecting free expression and the free flow of information is a core value underlying media and information literacy.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-22"><a class="anchor-link" href="#T-22">#</a><span class="code-badge">22</span> <strong>Tolerance and respect for others</strong> Media and information literacy also means holding an attitude of tolerance and respect for other people's rights and dignity.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-23"><a class="anchor-link" href="#T-23">#</a><span class="code-badge">23</span> <strong>Willingness to question one's own beliefs</strong> Being willing to question your own beliefs, not just other people's, is part of thinking critically about media and information.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-24"><a class="anchor-link" href="#T-24">#</a><span class="code-badge">24</span> <strong>Awareness of human rights standards</strong> Media and information literacy connects to a broader understanding of international human rights.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-25"><a class="anchor-link" href="#T-25">#</a><span class="code-badge">25</span> <strong>Solidarity, sustainability, and peace</strong> These competencies ultimately aim to support sustainable development, solidarity, and peace, not just individual skill-building.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

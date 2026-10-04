@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AASL Engage Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
+}
+.page-toggle-label input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: block; padding: .5em 1em; color: var(--fg); text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/">Home (learn.porttack.com)</a>
+<a href="/pico/">MicroPython on Pi Pico</a>
+<a href="/electronics101/">Electronics 101</a>
+<a href="/working-in-python/">Working in Python</a>
+<a href="/standards/">Standards</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<ul>
+<li class="topic-link"><a href="#grp-group-0">Think</a></li>
+<li class="topic-link"><a href="#grp-group-1">Create</a></li>
+<li class="topic-link"><a href="#grp-group-2">Share</a></li>
+<li class="topic-link"><a href="#grp-group-3">Grow</a></li>
+</ul>
+</nav>
+<main>
+<h1>AASL Engage Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of <em>AASL National School Library Standards (2018), VI. Engage (Learner Framework)</em> (2018). <strong>Scope.</strong> Only the VI. Engage Shared Foundation is indexed here, out of AASL's six (Inquire, Include, Collaborate, Curate, Explore, Engage). Include is about inclusiveness and diversity in the learning community generally, not digital citizenship; Engage is the one squarely about safe, legal, and ethical use of information, technology, and media. AASL is a school-library standard, not a CS-specific one: it's indexed here because it's the most directly on-topic coded US standard found for this gap, not because it's computer-science curriculum. <strong>Codes.</strong> Codes are AASL's own: VI.&lt;domain letter&gt;.&lt;n&gt;, where VI is the Engage Shared Foundation and the domain letter is A=Think, B=Create, C=Share, D=Grow. <strong>What this is not.</strong> AASL/ALA copyright (c) 2018. Codes, domain names, and the Key Commitment are official; every paraphrase here is written for this project, never ALA's own text. <strong>See also.</strong> <a href="/standards/">The full standards map</a> has more on why formal standards are sparse here, plus related codes scattered across AP CSP, CSTA, and California's own CS standards.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<div class="page-toggles"><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-carriers" checked> Show which curricula cover each item</label></div>
+<div class="topic" id="grp-group-0">
+<h3><a class="anchor-link" href="#grp-group-0">#</a>Think</h3>
+<p class="paraphrase">Learners follow ethical and legal guidelines for gathering and using information.</p>
+<ul class="ek-list">
+<li id="T-VI.A.1"><a class="anchor-link" href="#T-VI.A.1">#</a><span class="code-badge">VI.A.1</span> <strong>Responsible Use</strong> Using information, technology, and media responsibly is part of learning with them, not separate from it.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-VI.A.2"><a class="anchor-link" href="#T-VI.A.2">#</a><span class="code-badge">VI.A.2</span> <strong>Ethical Use</strong> Understanding what counts as ethical use of information, technology, and media comes before using them well.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-VI.A.3"><a class="anchor-link" href="#T-VI.A.3">#</a><span class="code-badge">VI.A.3</span> <strong>Evaluating Information</strong> Judging a piece of information means checking its accuracy and validity, but also its social and cultural context and whether it actually fits what you need it for.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-1">
+<h3><a class="anchor-link" href="#grp-group-1">#</a>Create</h3>
+<p class="paraphrase">Learners use valid information and reasoned conclusions to make ethical decisions in the creation of knowledge.</p>
+<ul class="ek-list">
+<li id="T-VI.B.1"><a class="anchor-link" href="#T-VI.B.1">#</a><span class="code-badge">VI.B.1</span> <strong>Ethical Reuse</strong> Reusing someone else's work ethically is a real skill, not just a matter of avoiding getting caught.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-VI.B.2"><a class="anchor-link" href="#T-VI.B.2">#</a><span class="code-badge">VI.B.2</span> <strong>Attribution</strong> Giving credit for authorship and respecting other people's intellectual property is part of creating something new, not an afterthought.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-VI.B.3"><a class="anchor-link" href="#T-VI.B.3">#</a><span class="code-badge">VI.B.3</span> <strong>Creditable Products</strong> Building your own work so that others can properly credit and cite it back is part of responsible creation.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-2">
+<h3><a class="anchor-link" href="#grp-group-2">#</a>Share</h3>
+<p class="paraphrase">Learners responsibly, ethically, and legally share new information with a global community.</p>
+<ul class="ek-list">
+<li id="T-VI.C.1"><a class="anchor-link" href="#T-VI.C.1">#</a><span class="code-badge">VI.C.1</span> <strong>Reuse Policies</strong> Sharing something you found means actually following its own rules about modifying, reusing, or remixing it, not just assuming it's free to use however you want.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-VI.C.2"><a class="anchor-link" href="#T-VI.C.2">#</a><span class="code-badge">VI.C.2</span> <strong>Audience-Appropriate Sharing</strong> Choosing how to share new knowledge should depend on who the audience actually is, not just on what's easiest.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-3">
+<h3><a class="anchor-link" href="#grp-group-3">#</a>Grow</h3>
+<p class="paraphrase">Learners engage with information to extend personal learning.</p>
+<ul class="ek-list">
+<li id="T-VI.D.1"><a class="anchor-link" href="#T-VI.D.1">#</a><span class="code-badge">VI.D.1</span> <strong>Personalizing Use</strong> Making information and information technology genuinely useful means adapting how you use them to your own needs, not just using them the default way.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-VI.D.2"><a class="anchor-link" href="#T-VI.D.2">#</a><span class="code-badge">VI.D.2</span> <strong>Ethical Reflection</strong> Thinking back on how you created something, and whether you did it ethically, is part of actually learning from the process.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-VI.D.3"><a class="anchor-link" href="#T-VI.D.3">#</a><span class="code-badge">VI.D.3</span> <strong>Modeling Good Behavior</strong> Being a model for safe, responsible, ethical, and legal information behavior means helping other people practice it too, not just doing it yourself.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

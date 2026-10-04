@@ -18,6 +18,10 @@ Outputs, into --out:
   csta2026-standards-reference.html
   csta2017-standards-reference.html
   ca-ict-anchor-standards-reference.html
+  iste-digital-citizen-standards-reference.html
+  unesco-mil-standards-reference.html
+  unesco-ai-cfs-standards-reference.html
+  aasl-engage-standards-reference.html
   standards-alignment.md   (by-locator, by-standard, and gap views, plus a
                              per-framework coverage summary)
 
@@ -778,6 +782,69 @@ paraphrases, not the CDE's text; only codes are reproduced as-is."""
     return page("CA ICT & Anchor Standards Reference", "\n".join(toc), "\n".join(body), provenance, [CARRIER_TOGGLE])
 
 
+# ---------- Grouped shape (ISTE Digital Citizen, UNESCO MIL, UNESCO AI CFS) ----------
+
+# Shared by all three digital-literacy catalogs added 2026-10-03: {meta, groups:
+# [{code?, name, paraphrase?, items: [{code, name?, level?, paraphrase}]}]}. A
+# group without a code (UNESCO MIL's two groups) renders its name only, no
+# badge or anchor on the group itself -- only its items get real anchors. An
+# item's optional `level` (UNESCO AI CFS's Understand/Apply/Create) renders as
+# a small tag next to its name since the code alone (e.g. "4.1.1") doesn't
+# convey it.
+def render_grouped(title, catalog, cov, scope_label, provenance_html):
+    def render_item(item):
+        out = [f'<li id="T-{item["code"]}"><a class="anchor-link" href="#T-{item["code"]}">#</a><span class="code-badge">{item["code"]}</span>']
+        if item.get("name"):
+            out.append(f' <strong>{esc(item["name"])}</strong>')
+        if item.get("level"):
+            out.append(f' <span class="weight">({esc(item["level"])})</span>')
+        out.append(f' {esc(item["paraphrase"])}')
+        line = cov.carrier_html(item["code"])
+        if line:
+            out.append(f'<div class="item-meta">{line}</div>')
+        for note in cov.notes(item["code"]):
+            out.append(f'<div class="item-note">{esc(note)}</div>')
+        out.append("</li>")
+        return "".join(out)
+
+    def render_group(grp, idx):
+        anchor = grp.get("code") or f"group-{idx}"
+        out = [f'<div class="topic" id="grp-{anchor}">']
+        heading = f'<span class="code-badge">{grp["code"]}</span> ' if grp.get("code") else ""
+        out.append(f'<h3><a class="anchor-link" href="#grp-{anchor}">#</a>{heading}{esc(grp["name"])}</h3>')
+        if grp.get("paraphrase"):
+            out.append(f'<p class="paraphrase">{esc(grp["paraphrase"])}</p>')
+        out.append('<ul class="ek-list">')
+        for item in grp["items"]:
+            out.append(render_item(item))
+        out.append("</ul></div>")
+        return out
+
+    toc = ["<ul>"]
+    for i, grp in enumerate(catalog["groups"]):
+        label = f'{grp["code"]} {esc(grp["name"])}' if grp.get("code") else esc(grp["name"])
+        toc.append(f'<li class="topic-link"><a href="#grp-{grp.get("code") or f"group-{i}"}">{label}</a></li>')
+    toc.append("</ul>")
+
+    body = []
+    for i, grp in enumerate(catalog["groups"]):
+        body += render_group(grp, i)
+
+    return page(title, "\n".join(toc), "\n".join(body), provenance_html, [CARRIER_TOGGLE])
+
+
+def grouped_provenance(meta, scope_label):
+    parts = [f'<strong>What this is.</strong> A locally built index of <em>{esc(meta["source"])}</em> ({meta["year"]}).']
+    if meta.get("scope_note"):
+        parts.append(f'<strong>Scope.</strong> {esc(meta["scope_note"])}')
+    if meta.get("codes_note"):
+        parts.append(f'<strong>Codes.</strong> {esc(meta["codes_note"])}')
+    parts.append(f'<strong>What this is not.</strong> {esc(meta["license_note"])}')
+    if scope_label:
+        parts.append(f'<strong>This carrier.</strong> This copy shows only what {esc(scope_label)} carries.')
+    return " ".join(parts)
+
+
 def page(title, toc_html, body_html, provenance_html, toggles=None):
     """toggles: list of (hide_class, label, checked_by_default) -- each renders as a
     checkbox that adds/removes `hide_class` on <body> (see TOGGLE_JS), paired with a
@@ -847,6 +914,10 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
         "csta2026": [s["code"] for s in catalogs["csta2026"]["standards"]],
         "csta2017": [s["code"] for s in catalogs["csta2017"]["standards"]],
         "ca-ict-anchor": [i["code"] for grp in catalogs["ca-ict-anchor"]["anchor_standards"] + catalogs["ca-ict-anchor"]["pathway"]["standards"] for i in grp.get("items", [])],
+        "iste-digital-citizen": [i["code"] for grp in catalogs["iste-digital-citizen"]["groups"] for i in grp["items"]],
+        "unesco-mil": [i["code"] for grp in catalogs["unesco-mil"]["groups"] for i in grp["items"]],
+        "unesco-ai-cfs": [i["code"] for grp in catalogs["unesco-ai-cfs"]["groups"] for i in grp["items"]],
+        "aasl-engage": [i["code"] for grp in catalogs["aasl-engage"]["groups"] for i in grp["items"]],
     }
     for fw, codes in fw_entries.items():
         carried = sum(1 for c in codes if covs[fw].get(c))
@@ -886,7 +957,10 @@ def main():
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
 
-    catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in ["apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor"]}
+    catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in [
+        "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
+        "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
+    ]}
     sources = set(args.source) if args.source else None
     carrier_files = load_carrier_files(args.carriers, sources)
 
@@ -897,9 +971,25 @@ def main():
     (out / "csta2026-standards-reference.html").write_text(render_csta2026(catalogs["csta2026"], covs["csta2026"], args.scope_label))
     (out / "csta2017-standards-reference.html").write_text(render_csta2017(catalogs["csta2017"], covs["csta2017"], args.scope_label))
     (out / "ca-ict-anchor-standards-reference.html").write_text(render_ca_ict(catalogs["ca-ict-anchor"], covs["ca-ict-anchor"], args.scope_label))
+
+    see_also = (
+        ' <strong>See also.</strong> <a href="/standards/">The full standards map</a> has more on why '
+        "formal standards are sparse here, plus related codes scattered across AP CSP, CSTA, and "
+        "California's own CS standards."
+    )
+    for fw, title in [
+        ("iste-digital-citizen", "ISTE Digital Citizen Standards Reference"),
+        ("unesco-mil", "UNESCO Media and Information Literacy Standards Reference"),
+        ("unesco-ai-cfs", "UNESCO AI Competency Framework for Students Reference"),
+        ("aasl-engage", "AASL Engage Standards Reference"),
+    ]:
+        provenance = grouped_provenance(catalogs[fw]["meta"], args.scope_label) + see_also
+        (out / f"{fw}-standards-reference.html").write_text(render_grouped(title, catalogs[fw], covs[fw], args.scope_label, provenance))
+
     (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))
 
-    print(f"Wrote 6 files to {out}/ from {len(carrier_files)} carrier source(s): {sorted(carrier_files)}")
+    html_count = len(list(out.glob("*-standards-reference.html")))
+    print(f"Wrote {html_count + 1} files to {out}/ from {len(carrier_files)} carrier source(s): {sorted(carrier_files)}")
 
 
 if __name__ == "__main__":

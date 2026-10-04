@@ -2,11 +2,59 @@
 
 Canonical catalog of standard codes and original paraphrases: `apcsp.json`,
 `castandards.json`, `csta2026.json`, `csta2017.json`, `ca-ict-anchor.json`,
-`crosswalk.json`, `crosswalk-castandards-csta2017.json`. Each contains only
-official codes and paraphrases written for this project — never verbatim
-framework text. The third-party framework documents these are built from (the
-AP CSP CED, California K-12 CS Standards, CSTA 2026, CSTA 2017, CA CTE ICT)
-are never committed here.
+`iste-digital-citizen.json`, `unesco-mil.json`, `unesco-ai-cfs.json`,
+`aasl-engage.json`, `crosswalk.json`, `crosswalk-castandards-csta2017.json`.
+Each contains only official codes and paraphrases written for this project —
+never verbatim framework text. The third-party framework documents these are
+built from (the AP CSP CED, California K-12 CS Standards, CSTA 2026, CSTA
+2017, CA CTE ICT, ISTE Standards for Students, UNESCO's MIL Curricula
+Guidelines, UNESCO's AI Competency Framework for Students, AASL's National
+School Library Standards) are never committed here.
+
+## The "grouped" shape
+
+The four digital-literacy catalogs (`iste-digital-citizen.json`,
+`unesco-mil.json`, `unesco-ai-cfs.json` added 2026-10-03, `aasl-engage.json`
+added the same week once the first three turned up thin enough to go looking
+for more — together covering password safety, terms-of-service literacy,
+media literacy, and AI literacy, gaps the other five frameworks barely touch)
+share one simpler shape instead of each getting its own, since all four are
+small, flat-ish frameworks:
+
+```json
+{ "meta": { "source", "url", "year", "extracted", "scope_note"?, "codes_note"?, "license_note" },
+  "groups": [ { "code"?, "name", "paraphrase"?, "items": [ { "code", "name"?, "level"?, "paraphrase" } ] } ] }
+```
+
+A group's `code` is optional (UNESCO MIL's two groups, "Broad MIL Learning
+Outcomes" and "Values and Attitudes," have none; AASL's four groups are named
+by domain — Think/Create/Share/Grow — with no code of their own either, only
+their items do). An item's `name` is the official short indicator/competency
+name where the framework has one; `level` is UNESCO AI CFS's
+Understand/Apply/Create tag. One render function handles all four in both
+`../tools/build_alignment.py` (`render_grouped`) and
+`../assets/js/standards-coverage.js` (`renderGroupedPanel` /
+`reportGroupedSection`), instead of one per catalog shape like the original
+five frameworks need. On `/standards/` these four nest under one shared
+"Digital Citizenship, Media Literacy & AI Literacy" chevron rather than
+appearing as four more flat top-level panels, since on their own none of them
+reads as a major framework the way AP CSP or CSTA does.
+
+UNESCO's AI Competency Framework for Students is CC BY-SA 3.0 IGO, more
+permissive than ISTE's, College Board's, or AASL/ALA's all-rights-reserved
+text, but it's still paraphrased rather than quoted, both to match every
+other catalog here and to sidestep any ShareAlike question about mixing it
+into a site that also carries CC BY-NC-SA 3.0 Unported adapted content
+elsewhere (see the root `CLAUDE.md`'s Licensing section).
+
+`aasl-engage.json` indexes only AASL's VI. Engage Shared Foundation, not all
+six (Inquire, Include, Collaborate, Curate, Explore, Engage) — Engage is the
+one actually about safe/legal/ethical use of information, technology, and
+media; the others are about inquiry, diversity/inclusion, collaboration,
+curation, and exploratory learning. An earlier pass summarized this
+incorrectly as the *Include* foundation before checking AASL's own framework
+PDF directly — a reminder to verify a secondary summary against the primary
+source before cataloging it.
 
 `csta2017.json`'s paraphrases are written directly from CSTA's own 2017 text,
 independently of `castandards.json` — even for the Level 2 (6-8) standards

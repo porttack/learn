@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "source": "UNESCO Global Standards for Media and Information Literacy Curricula Development Guidelines (2022), Table 1",
+    "url": "https://www.unesco.org/sites/default/files/medias/files/2022/02/Global%20Standards%20for%20Media%20and%20Information%20Literacy%20Curricula%20Development%20Guidelines_EN.pdf",
+    "year": 2022,
+    "extracted": "2026-10-03",
+    "license_note": "Codes and short outcome titles are UNESCO's own; every paraphrase here is written for this project, never the Guidelines' own text, matching this repo's policy for every other catalog regardless of a source's own licence.",
+    "scope_note": "Table 1 offers 19 broad MIL learning outcomes/competencies plus 6 social values/attitudes as guidance, not a rigid checklist; codes here are just this table's own row numbers (1-25), not an official numbering scheme the Guidelines themselves assign."
+  },
+  "groups": [
+    {
+      "name": "Broad MIL Learning Outcomes and Competencies",
+      "items": [
+        { "code": "1", "name": "Recognize an information need", "paraphrase": "Knowing what information or communication you actually need, for yourself or for your community, comes before searching for anything." },
+        { "code": "2", "name": "Understand information providers", "paraphrase": "Libraries, publishers, media outlets, and tech platforms each play a different role in how information reaches people, and knowing those roles helps you use them well." },
+        { "code": "3", "name": "Understand conditions of use", "paraphrase": "A platform's own rules, ownership, and profit motives shape what you see and share there, and understanding those conditions, along with how to spot and counter misinformation, is part of using it responsibly." },
+        { "code": "4", "name": "Locate and assess content", "paraphrase": "Finding good information takes real search skill, including understanding where results come from and why a search engine ranked them the way it did." },
+        { "code": "5", "name": "Critically evaluate content", "paraphrase": "Judging whether a source is authentic, credible, and currently accurate, including spotting conspiracy theories, is its own skill, separate from just finding information." },
+        { "code": "6", "name": "Protect oneself from online risks", "paraphrase": "Protecting your accounts and devices from real online risks, like phishing, identity theft, or spyware, and knowing how to respond to threats like bullying, is a basic digital safety skill." },
+        { "code": "7", "name": "Analyse, share, organize, store content", "paraphrase": "Organizing, storing, and sharing content well means choosing methods and categories that actually fit your own needs." },
+        { "code": "8", "name": "Synthesise ideas from content", "paraphrase": "Pulling together and summarizing what you've gathered, then using those ideas to build something new, goes beyond just collecting information." },
+        { "code": "9", "name": "Ethically communicate", "paraphrase": "Communicating what you've learned honestly, and choosing the right form and method for your audience, is itself an ethical act, not just a stylistic choice." },
+        { "code": "10", "name": "Apply ICT skills to produce content", "paraphrase": "Real digital literacy includes the technical skill to actually use software to find, evaluate, and create content, not just the conceptual understanding of it." },
+        { "code": "11", "name": "Apply ICT skills to create value", "paraphrase": "Beyond personal use, digital skills can be used to build things of real value to other people, which is its own kind of literacy." },
+        { "code": "12", "name": "Use ICT with critical capacities", "paraphrase": "Understanding how technology itself develops, who owns it, and what constraints shape it goes beyond just using it well." },
+        { "code": "13", "name": "Engage as an active digital citizen", "paraphrase": "Being a full digital citizen means actively pushing institutions toward open, accessible, and fair practices, not just consuming what they offer." },
+        { "code": "14", "name": "Manage privacy online and offline", "paraphrase": "Privacy is a right worth actively managing, which means adjusting your own settings, understanding how your data gets used and monetized, and respecting other people's privacy too." },
+        { "code": "15", "name": "Manage interactions with AI in games", "paraphrase": "Games that use AI carry their own benefits and risks, like addiction or biased content, and engaging with them critically means weighing both sides." },
+        { "code": "16", "name": "Promote access and dialogue", "paraphrase": "Participating online can be a form of civic engagement: using it to promote free expression, dialogue, and equality, and to push back against intolerance." },
+        { "code": "17", "name": "Apply MIL to other literacies", "paraphrase": "The same critical thinking that underlies media literacy also applies directly to understanding health, financial, and scientific information." },
+        { "code": "18", "name": "Apply MIL for problem-solving", "paraphrase": "Combining information and collaborating with others, in person and through technology, is how media and information literacy actually gets used to solve real problems." },
+        { "code": "19", "name": "Respond to hate speech and extremism", "paraphrase": "Knowing how content can spread hate or promote extremism, and what to do when you encounter it, is part of being a responsible user of media." }
+      ]
+    },
+    {
+      "name": "Values and Attitudes",
+      "items": [
+        { "code": "20", "name": "Intercultural and interreligious dialogue", "paraphrase": "Valuing dialogue across cultures and religions is an attitude MIL education aims to build, not just a skill." },
+        { "code": "21", "name": "Freedom of expression and information", "paraphrase": "Respecting free expression and the free flow of information is a core value underlying media and information literacy." },
+        { "code": "22", "name": "Tolerance and respect for others", "paraphrase": "Media and information literacy also means holding an attitude of tolerance and respect for other people's rights and dignity." },
+        { "code": "23", "name": "Willingness to question one's own beliefs", "paraphrase": "Being willing to question your own beliefs, not just other people's, is part of thinking critically about media and information." },
+        { "code": "24", "name": "Awareness of human rights standards", "paraphrase": "Media and information literacy connects to a broader understanding of international human rights." },
+        { "code": "25", "name": "Solidarity, sustainability, and peace", "paraphrase": "These competencies ultimately aim to support sustainable development, solidarity, and peace, not just individual skill-building." }
+      ]
+    }
+  ]
+}

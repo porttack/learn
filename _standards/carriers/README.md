@@ -60,16 +60,26 @@ want it; you don't need it to write a carrier file.
 }
 ```
 
-**Framework keys** (only use these four, spelled exactly): `apcsp`,
-`castandards`, `csta2026`, `ca-ict-anchor`.
+**Framework keys** (spelled exactly): `apcsp`, `castandards`, `csta2017`,
+`csta2026`, `ca-ict-anchor`, plus four added 2026-10-03 for digital
+citizenship / media literacy / AI literacy: `iste-digital-citizen`,
+`unesco-mil`, `unesco-ai-cfs`, `aasl-engage`.
 
 **Codes** must match the catalog exactly, including any grade-band prefix:
 `castandards` codes look like `9-12.AP.14` or `6-8.CS.1` (the grade band is
 part of the code string, not a separate field). `apcsp` codes are bare like
 `3.8`. `csta2026` codes look like `HS-ALG-PS-02`. `ca-ict-anchor` codes look
-like `5.12` (anchor standards) or `C4.9` (Pathway C). **Only include a code
-if it actually exists in that framework's catalog file** — if you have the
-catalog file, grep it; if you don't, ask rather than guess a code.
+like `5.12` (anchor standards) or `C4.9` (Pathway C). `iste-digital-citizen`
+codes look like `1.2.a`. `unesco-mil` codes are bare numbers `1`-`25` (the
+table's own row numbers, not an official numbering scheme). `unesco-ai-cfs`
+codes look like `4.1.1` (UNESCO's own `4.<level>.<dimension>` scheme: level
+1=Understand/2=Apply/3=Create, dimension 1=Human-centred mindset/2=Ethics of
+AI/3=AI techniques and applications/4=AI system design). `aasl-engage` codes
+look like `VI.A.1` (AASL's own `VI.<domain letter>.<n>` scheme, all under the
+VI. Engage Shared Foundation: A=Think, B=Create, C=Share, D=Grow). **Only
+include a code if it actually exists in that framework's catalog file** — if
+you have the catalog file, grep it; if you don't, ask rather than guess a
+code.
 
 ## Coverage entry fields
 

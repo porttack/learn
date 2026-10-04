@@ -21,6 +21,72 @@
 
   var DATA_BASE = 'data/';
   var STRAND_ORDER = ['CS', 'NI', 'DA', 'AP', 'IC'];
+
+  // Explainer shown inside the "Digital Citizenship, Media Literacy & AI
+  // Literacy" group (added 2026-10-03), above its four nested panels.
+  // Written once here rather than duplicated per catalog's own static
+  // reference page -- those get a one-line pointer back to this page instead
+  // (see tools/build_alignment.py's `see_also` in main()). The six "related
+  // codes elsewhere" links were each confirmed to resolve against the
+  // generated reference pages before being hardcoded here; re-check them if
+  // any of those five frameworks' catalogs are ever restructured.
+  var LIT_EXPLAINER_HTML =
+    '<p>None of the five frameworks above has a dedicated digital-citizenship ' +
+    'strand. The four small frameworks nested below are the most directly ' +
+    'on-topic <em>coded</em> standards found for password/account safety, ' +
+    'terms-of-service literacy, media literacy, and AI literacy specifically, ' +
+    'and each one is genuinely thin: 4, 25, 12, and 11 items. These read as ' +
+    'guidance, not exam-style standards, so don’t expect the depth the ' +
+    'panels above have.</p>' +
+    '<p><strong>Related codes elsewhere on this map</strong> touch pieces of ' +
+    'this without naming it directly: AP CSP ' +
+    '<a href="apcsp-standards-reference.html#T-5.6">5.6 Safe Computing</a> ' +
+    '(passwords, multifactor login, phishing, malware); CSTA 2017 ' +
+    '<a href="csta2017-standards-reference.html#S-3A-IC-29">3A-IC-29</a> ' +
+    '(data collected automatically, without a user noticing); CSTA 2017 ' +
+    '<a href="csta2017-standards-reference.html#S-2-IC-21">2-IC-21</a> ' +
+    '(bias in a technology tested on one kind of user); CSTA 2026 ' +
+    '<a href="csta2026-standards-reference.html#T-S1-AIN-HR-08">S1-AIN-HR-08</a> ' +
+    '(a human checkpoint in an AI workflow); California CTE ICT ' +
+    '<a href="ca-ict-anchor-standards-reference.html#T-2.6">2.6</a> ' +
+    '(safe, legal, and responsible use of digital media); and California CTE ' +
+    'ICT <a href="ca-ict-anchor-standards-reference.html#T-3.8">3.8</a> ' +
+    '(a candidate’s digital footprint). None of these are dedicated ' +
+    'digital-citizenship codes on their own, just the closest adjacent ' +
+    'coverage.</p>' +
+    '<p>What’s actually taught in practice, nationally, is usually ' +
+    '<a href="https://www.commonsense.org/education/digital-citizenship" ' +
+    'target="_blank" rel="noopener">Common Sense Education’s free K-12 ' +
+    'Digital Citizenship Curriculum</a>, which isn’t a coded standard, but ' +
+    'the California Department of Education promotes it every October for ' +
+    'Digital Citizenship Week.</p>' +
+    '<p>California does <em>not</em> have a law requiring this be taught, ' +
+    'though it has been building toward one since 2023. Education Code ' +
+    '<a href="https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=33548.&amp;lawCode=EDC" ' +
+    'target="_blank" rel="noopener">§33548</a> (added by AB 873 in 2023, ' +
+    'expanded by AB 2876 in 2024) is the one real find here: it actually ' +
+    '<em>defines</em> "media literacy," "digital citizenship," and "AI ' +
+    'literacy" in California statute. But the verb throughout is "shall ' +
+    'consider incorporating" them into the ELA, math, science, and ' +
+    'history-social science curriculum frameworks the next time each one is ' +
+    'revised, not "shall teach." <a ' +
+    'href="https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=202520260AB2298" ' +
+    'target="_blank" rel="noopener">AB 2298</a> (chaptered September 10, ' +
+    '2026) does the same soft "consider incorporating" for cybersecurity in ' +
+    'the state’s computer science content standards. The firmest deadline ' +
+    'so far belongs to <a ' +
+    'href="https://leginfo.legislature.ca.gov/faces/billNavClient.xhtml?bill_id=202520260AB2071" ' +
+    'target="_blank" rel="noopener">AB 2071</a>, the Digital Wellness ' +
+    'Education Act, also chaptered September 10, 2026: it requires CDE to ' +
+    'publish an actual digital-wellness instruction plan, including AI ' +
+    'considerations, by January 1, 2028. A real date, but still a ' +
+    'plan-development deadline, not a classroom mandate. (An older ' +
+    'provision, Education Code §51871.5 on internet safety instruction, has ' +
+    'since been repealed; the only live requirement in that space now is ' +
+    'federal, CIPA’s E-rate internet-safety-<em>policy</em> condition, not a ' +
+    'curriculum-content one.) Nothing here amounts to "California requires ' +
+    'this be taught," which is exactly why this corner of the standards ' +
+    'landscape stays this sparse.</p>';
   var CHAP_REF_RE = /\bchap(\d{2})([a-z]?)\b/g;
 
   // The sources panel is a <details>, closed by default in the markup --
@@ -438,6 +504,24 @@
     return body.join('\n');
   }
 
+  // Shared by the three digital-literacy catalogs (iste-digital-citizen,
+  // unesco-mil, unesco-ai-cfs) added 2026-10-03: {groups: [{code?, name,
+  // items: [{code, name?, level?, paraphrase}]}]}. A group without a code
+  // (UNESCO MIL's two groups) just uses its name as the group label. An
+  // item's optional `level` (UNESCO AI CFS's Understand/Apply/Create) is
+  // folded into the badge title alongside its name since renderGroupGrid's
+  // entries only carry one title string.
+  function renderGroupedPanel(catalog, framework) {
+    return catalog.groups.map(function (grp, i) {
+      var label = grp.code ? grp.code + ' ' + grp.name : grp.name;
+      var entries = grp.items.map(function (item) {
+        var title = item.name ? (item.level ? item.name + ' (' + item.level + ')' : item.name) : null;
+        return { code: item.code, displayCode: item.code, title: title, paraphrase: item.paraphrase };
+      });
+      return renderGroupGrid(label, entries, framework, groupHue(i, catalog.groups.length));
+    }).join('\n');
+  }
+
   // ---------- Per-source report: everything one carrier covers, rendered
   // live from the same fetched catalogs/carrierFiles as the badge grid above
   // -- no separate build step, no pre-generated file to go stale. Same
@@ -607,6 +691,20 @@
     return reportSection('ca-ict', 'California CTE (ICT)', 'ca-ict-anchor-standards-reference.html', subs);
   }
 
+  // Shared report-mode counterpart to renderGroupedPanel, for the same three
+  // digital-literacy catalogs.
+  function reportGroupedSection(catalog, coveredDict, meta, category, heading, refHref) {
+    var subs = catalog.groups.map(function (grp, i) {
+      var items = grp.items.map(function (item) {
+        var title = item.name ? (item.level ? item.name + ' (' + item.level + ')' : item.name) : null;
+        return { code: item.code, title: title, paraphrase: item.paraphrase, scopeNote: null };
+      });
+      var label = grp.code ? grp.code + ' ' + grp.name : grp.name;
+      return reportSubsection('rep-' + refHref + '-' + i, label, items, coveredDict, 'T', meta);
+    });
+    return reportSection(category, heading, refHref, subs);
+  }
+
   // Narrows one source's own coverage dict down to just the codes a single
   // locator covers -- e.g. cs50psets is one carrier file for the whole
   // pathway (the user deliberately doesn't want a separate JSON/source per
@@ -651,7 +749,11 @@
       reportCsta2026Section(catalogs.csta2026, covered('csta2026'), meta),
       reportCaIctSection(catalogs['ca-ict-anchor'], covered('ca-ict-anchor'), meta),
       reportStrandSection(catalogs.castandards, '6-8', covered('castandards'), meta, 'California 6-8 Computer Science', 'ca-cs-standards-reference.html', 'ca-ms', 'S'),
-      reportStrandSection(catalogs.csta2017, '6-8', covered('csta2017'), meta, 'CSTA 2017 (Grades 6-8)', 'csta2017-standards-reference.html', 'csta', 'S')
+      reportStrandSection(catalogs.csta2017, '6-8', covered('csta2017'), meta, 'CSTA 2017 (Grades 6-8)', 'csta2017-standards-reference.html', 'csta', 'S'),
+      reportGroupedSection(catalogs['iste-digital-citizen'], covered('iste-digital-citizen'), meta, 'lit', 'ISTE Digital Citizen', 'iste-digital-citizen-standards-reference.html'),
+      reportGroupedSection(catalogs['unesco-mil'], covered('unesco-mil'), meta, 'lit', 'UNESCO Media and Information Literacy', 'unesco-mil-standards-reference.html'),
+      reportGroupedSection(catalogs['unesco-ai-cfs'], covered('unesco-ai-cfs'), meta, 'lit', 'UNESCO AI Competency Framework for Students', 'unesco-ai-cfs-standards-reference.html'),
+      reportGroupedSection(catalogs['aasl-engage'], covered('aasl-engage'), meta, 'lit', 'AASL Engage (National School Library Standards)', 'aasl-engage-standards-reference.html')
     ].join('\n');
   }
 
@@ -1213,13 +1315,37 @@
       // no custom JS toggle logic needed, same mechanism as the sources
       // sidebar. <summary> may contain a single heading element per spec, so
       // the reference link goes inside that heading rather than beside it.
-      document.getElementById('panels').innerHTML = panels
-        .map(function (p) {
-          var annotation = p[4] ? ' <span class="panel-annotation">(' + esc(p[4]) + ')</span>' : '';
-          var heading = '<h2><a class="panel-ref-link" href="' + esc(p[3]) + '">' + esc(p[0]) + '</a>' + annotation + '</h2>';
-          return '<div class="cov-panel" data-panel-category="' + esc(p[2]) + '"><details open><summary>' + heading + '</summary>' + p[1] + '</details></div>';
-        })
-        .join('\n');
+      function panelHtml(p) {
+        var annotation = p[4] ? ' <span class="panel-annotation">(' + esc(p[4]) + ')</span>' : '';
+        var heading = '<h2><a class="panel-ref-link" href="' + esc(p[3]) + '">' + esc(p[0]) + '</a>' + annotation + '</h2>';
+        return '<div class="cov-panel" data-panel-category="' + esc(p[2]) + '"><details open><summary>' + heading + '</summary>' + p[1] + '</details></div>';
+      }
+
+      // Added 2026-10-03: digital citizenship / media literacy / AI literacy,
+      // the gap found when the five frameworks above turned out to have
+      // almost nothing on passwords, terms of service, or AI. Nested one
+      // level inside a single shared panel (rather than four more flat
+      // top-level ones) since none of these four reads as a major framework
+      // on its own the way AP CSP or CSTA does -- grouping them together
+      // also makes room for the explainer text below about just how sparse
+      // this corner of the standards landscape actually is. Nesting needs no
+      // change to wirePanelActions()/VIEW_PRESETS: querySelectorAll('.cov-panel')
+      // picks up the outer wrapper and the four inner panels independently,
+      // each toggled by its own <details>, same as any other panel.
+      var litPanels = [
+        ['ISTE Digital Citizen', renderGroupedPanel(catalogs['iste-digital-citizen'], 'iste-digital-citizen'), 'lit', 'iste-digital-citizen-standards-reference.html', '2024'],
+        ['UNESCO Media and Information Literacy', renderGroupedPanel(catalogs['unesco-mil'], 'unesco-mil'), 'lit', 'unesco-mil-standards-reference.html', '2022'],
+        ['UNESCO AI Competency Framework for Students', renderGroupedPanel(catalogs['unesco-ai-cfs'], 'unesco-ai-cfs'), 'lit', 'unesco-ai-cfs-standards-reference.html', '2024'],
+        ['AASL Engage (National School Library Standards)', renderGroupedPanel(catalogs['aasl-engage'], 'aasl-engage'), 'lit', 'aasl-engage-standards-reference.html', '2018'],
+      ];
+      var litGroupHtml =
+        '<div class="cov-panel" data-panel-category="lit"><details open>' +
+        '<summary><h2>Digital Citizenship, Media Literacy &amp; AI Literacy</h2></summary>' +
+        '<div class="cov-group-explainer">' + LIT_EXPLAINER_HTML + '</div>' +
+        litPanels.map(panelHtml).join('\n') +
+        '</details></div>';
+
+      document.getElementById('panels').innerHTML = panels.map(panelHtml).join('\n') + '\n' + litGroupHtml;
       // Without this, a click on the link bubbles up to <summary> and also
       // toggles the panel open/closed -- the same fix already applied to the
       // sidebar's source-title links, needed here for the same reason.

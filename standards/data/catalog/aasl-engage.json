@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "source": "AASL National School Library Standards (2018), VI. Engage (Learner Framework)",
+    "url": "https://standards.aasl.org/engage/",
+    "year": 2018,
+    "extracted": "2026-10-03",
+    "license_note": "AASL/ALA copyright (c) 2018. Codes, domain names, and the Key Commitment are official; every paraphrase here is written for this project, never ALA's own text.",
+    "scope_note": "Only the VI. Engage Shared Foundation is indexed here, out of AASL's six (Inquire, Include, Collaborate, Curate, Explore, Engage). Include is about inclusiveness and diversity in the learning community generally, not digital citizenship; Engage is the one squarely about safe, legal, and ethical use of information, technology, and media. AASL is a school-library standard, not a CS-specific one: it's indexed here because it's the most directly on-topic coded US standard found for this gap, not because it's computer-science curriculum.",
+    "codes_note": "Codes are AASL's own: VI.<domain letter>.<n>, where VI is the Engage Shared Foundation and the domain letter is A=Think, B=Create, C=Share, D=Grow.",
+    "key_commitment": "Demonstrate safe, legal, and ethical creating and sharing of knowledge products independently while engaging in a community of practice and an interconnected world."
+  },
+  "groups": [
+    {
+      "name": "Think",
+      "paraphrase": "Learners follow ethical and legal guidelines for gathering and using information.",
+      "items": [
+        { "code": "VI.A.1", "name": "Responsible Use", "paraphrase": "Using information, technology, and media responsibly is part of learning with them, not separate from it." },
+        { "code": "VI.A.2", "name": "Ethical Use", "paraphrase": "Understanding what counts as ethical use of information, technology, and media comes before using them well." },
+        { "code": "VI.A.3", "name": "Evaluating Information", "paraphrase": "Judging a piece of information means checking its accuracy and validity, but also its social and cultural context and whether it actually fits what you need it for." }
+      ]
+    },
+    {
+      "name": "Create",
+      "paraphrase": "Learners use valid information and reasoned conclusions to make ethical decisions in the creation of knowledge.",
+      "items": [
+        { "code": "VI.B.1", "name": "Ethical Reuse", "paraphrase": "Reusing someone else's work ethically is a real skill, not just a matter of avoiding getting caught." },
+        { "code": "VI.B.2", "name": "Attribution", "paraphrase": "Giving credit for authorship and respecting other people's intellectual property is part of creating something new, not an afterthought." },
+        { "code": "VI.B.3", "name": "Creditable Products", "paraphrase": "Building your own work so that others can properly credit and cite it back is part of responsible creation." }
+      ]
+    },
+    {
+      "name": "Share",
+      "paraphrase": "Learners responsibly, ethically, and legally share new information with a global community.",
+      "items": [
+        { "code": "VI.C.1", "name": "Reuse Policies", "paraphrase": "Sharing something you found means actually following its own rules about modifying, reusing, or remixing it, not just assuming it's free to use however you want." },
+        { "code": "VI.C.2", "name": "Audience-Appropriate Sharing", "paraphrase": "Choosing how to share new knowledge should depend on who the audience actually is, not just on what's easiest." }
+      ]
+    },
+    {
+      "name": "Grow",
+      "paraphrase": "Learners engage with information to extend personal learning.",
+      "items": [
+        { "code": "VI.D.1", "name": "Personalizing Use", "paraphrase": "Making information and information technology genuinely useful means adapting how you use them to your own needs, not just using them the default way." },
+        { "code": "VI.D.2", "name": "Ethical Reflection", "paraphrase": "Thinking back on how you created something, and whether you did it ethically, is part of actually learning from the process." },
+        { "code": "VI.D.3", "name": "Modeling Good Behavior", "paraphrase": "Being a model for safe, responsible, ethical, and legal information behavior means helping other people practice it too, not just doing it yourself." }
+      ]
+    }
+  ]
+}

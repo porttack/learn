@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "source": "ISTE Standards for Students, 2024 edition (International Society for Technology in Education)",
+    "url": "https://iste.org/standards/students",
+    "year": 2024,
+    "extracted": "2026-10-03",
+    "license_note": "ISTE Standards (c) 2024, ISTE, all rights reserved. Codes and the short indicator names are official; every paraphrase here is written for this project, never ISTE's own text.",
+    "scope_note": "Only Standard 1.2 (Digital Citizen) is indexed here, the one ISTE student standard squarely about safe, legal, and private online behavior. ISTE's other six student standards (Empowered Learner, Knowledge Constructor, Innovative Designer, Computational Thinker, Creative Communicator, Global Collaborator) aren't digital-citizenship-specific and are out of scope for this catalog."
+  },
+  "groups": [
+    {
+      "code": "1.2",
+      "name": "Digital Citizen",
+      "paraphrase": "Students recognize the responsibilities and opportunities for positively contributing to their digital communities.",
+      "items": [
+        {
+          "code": "1.2.a",
+          "name": "Digital Footprint",
+          "paraphrase": "A student's online choices build a lasting record, and managing that record well means making safe, legal, and ethical decisions on purpose, not by accident."
+        },
+        {
+          "code": "1.2.b",
+          "name": "Online Interactions",
+          "paraphrase": "Being a good digital citizen means treating people online with empathy and inclusion, and using technology to actually help a community rather than just consume it."
+        },
+        {
+          "code": "1.2.c",
+          "name": "Safeguard Well-being",
+          "paraphrase": "How much time a student spends online, and what they do with that time, affects their own well-being, so managing it on purpose is a real skill."
+        },
+        {
+          "code": "1.2.d",
+          "name": "Digital Privacy",
+          "paraphrase": "Protecting your own privacy online takes active steps, like managing what personal data gets collected and how your devices and accounts are secured."
+        }
+      ]
+    }
+  ]
+}

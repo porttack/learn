@@ -231,6 +231,22 @@ noscript p {
 }
 .cov-panel > details[open] > summary::before { content: "▼"; }
 .cov-panel > details[open] > summary { margin-bottom: 1rem; }
+/* Nested panels (the digital-citizenship/media-literacy/AI-literacy group's
+   four sub-frameworks, added 2026-10-03) -- indented and sized down a step
+   so they read as sub-items of the panel they sit inside, not four more
+   top-level panels. Each still has its own working chevron; `position:
+   relative` already sits on every <summary>, so a nested panel's own
+   ::before anchors to its own summary regardless of nesting depth. */
+.cov-panel .cov-panel { margin: 1.2rem 0 1.2rem 1.5rem; }
+.cov-panel .cov-panel h2 { font-size: 1.15rem; }
+.cov-group-explainer {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted); margin: 0 0 1.5rem;
+}
+.cov-group-explainer p { margin: 0 0 .8rem; }
+.cov-group-explainer p:last-child { margin-bottom: 0; }
+.cov-group-explainer strong { color: var(--fg); }
+.cov-group-explainer a { color: var(--accent); }
 .cov-group { margin: 1.3rem 0; }
 .cov-group-title { font-size: .9rem; font-weight: 600; margin: 0 0 .5rem; }
 .cov-subpanel-heading { font-size: 1.1rem; margin: 1.8rem 0 .3rem; padding-top: .8rem; border-top: 1px solid var(--border); }
