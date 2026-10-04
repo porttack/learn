@@ -725,20 +725,38 @@ def render_csta2026(catalog, cov, scope_label):
         body.append("</section>")
 
     provenance = """<strong>What this is.</strong> A locally built index of the CSTA 2026 K-12 Computer
-Science Standards (high-school level), for linking from standards-alignment work.
+Science Standards (Middle School, High School, and High School Specialty I/II), for linking from standards-alignment work.
 <strong>What this is not.</strong> Original paraphrases, not CSTA's text; only codes are
 reproduced as-is."""
     if scope_label:
         provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
-    return page("CSTA 2026 Standards Reference", "\n".join(toc), "\n".join(body), provenance, [CARRIER_TOGGLE])
+    return page("CSTA 2026 Standards Reference", "\n".join(toc), "\n".join(changes_from_2017_html(catalog) + body), provenance, [CARRIER_TOGGLE])
 
-    provenance = """<strong>What this is.</strong> A locally built index of the CSTA 2026 K-12 Computer
-Science Standards (high-school level), for linking from standards-alignment work.
-<strong>What this is not.</strong> Original paraphrases, not CSTA's text; only codes are
-reproduced as-is."""
-    if scope_label:
-        provenance += f' <strong>Scope.</strong> This copy shows only what {esc(scope_label)} carries.'
-    return page("CSTA 2026 Standards Reference", "\n".join(toc), "\n".join(body), provenance, [CARRIER_TOGGLE])
+
+def changes_from_2017_html(catalog):
+    """A collapsible "What changed from CSTA 2017" section for the top of the
+    CSTA 2026 page, from catalog meta.changes_from_2017. Standard codes in the
+    text become links: 2026 codes to this page's own #T- anchors, 2017 codes
+    to csta2017-standards-reference.html's #S- anchors."""
+    changes = catalog.get("meta", {}).get("changes_from_2017")
+    if not changes:
+        return []
+
+    def link_codes(text):
+        def repl(m):
+            code = m.group(0)
+            if re.match(r"^(MS|HS|S[12])-", code):
+                return f'<a href="#T-{code}">{code}</a>'
+            return f'<a href="csta2017-standards-reference.html#S-{code}">{code}</a>'
+        return re.sub(r"\b(?:(?:MS|HS|S[12])-[A-Z]{3}-[A-Z]{2}-\d{2}|(?:2|3A|3B)-[A-Z]{2}-\d{2})\b", repl, esc(text))
+
+    out = ['<details class="changes-from-2017"><summary><strong>What changed from CSTA 2017</strong></summary>']
+    for item in changes.get("items", []):
+        out.append(f'<p><strong>{esc(item["heading"])}.</strong> {link_codes(item["text"])}</p>')
+    if changes.get("basis"):
+        out.append(f'<p class="note">{esc(changes["basis"])}</p>')
+    out.append("</details>")
+    return out
 
 
 # ---------- CA CTE ICT ----------
