@@ -1,5 +1,7 @@
 ---
 title: "Caesar Cipher: hiding a message in plain sight"
+reviewed: 2026-10-03
+slides: /unplugged/caesar-cipher-slides/
 source: original
 level: both
 kind: [single, supplementary]

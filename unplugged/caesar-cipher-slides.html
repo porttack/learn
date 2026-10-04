@@ -1,0 +1,697 @@
+---
+title: "Caesar Cipher Slides"
+permalink: /unplugged/caesar-cipher-slides/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Caesar Cipher: Slides</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/assets/img/unplugged/favicon.png">
+<style>
+  :root {
+    --accent: #2a7ae2;
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #57606a;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #e9edf1;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  #root { height: 100%; }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .stage-outer {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* Fixed-size design canvas, scaled to fit via a JS-computed transform --
+     lets every slide be authored at generous, fixed pixel sizes ("bigger
+     type") without hand-tuning responsive font sizes per breakpoint. */
+  .stage {
+    width: 1280px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.18);
+    padding: 80px 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .stage.ar-16-9 { height: 720px; }
+  .stage.ar-4-3 { height: 960px; }
+
+  .kicker {
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 18px;
+  }
+
+  .slide-title {
+    font-size: 64px;
+    line-height: 1.1;
+    margin: 0 0 40px;
+    font-weight: 700;
+  }
+
+  .slide-body {
+    font-size: 36px;
+    line-height: 1.5;
+  }
+
+  .slide-body ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+
+  .slide-body li {
+    margin-bottom: 22px;
+  }
+
+  .slide-body li:last-child { margin-bottom: 0; }
+
+  .slide-image-row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .slide-image-row img {
+    max-height: 260px;
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-image-row .slide-body {
+    flex: 1 1 auto;
+    font-size: 30px;
+  }
+
+  .slide-image-row .slide-body li {
+    margin-bottom: 16px;
+  }
+
+  .slide-body a, .slide-image-row .slide-body a {
+    color: var(--accent);
+  }
+
+  .slide-wide-image {
+    display: block;
+    width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    margin: 10px 0 18px;
+  }
+  .slide-gallery-row {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    align-items: flex-start;
+  }
+
+  .slide-gallery-item {
+    flex: 1 1 0;
+    text-align: center;
+  }
+
+  .slide-gallery-item img {
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-gallery-item .caption {
+    margin-top: 14px;
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .depth-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 14px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  .depth-nav.depth-up {
+    bottom: auto;
+    top: 14px;
+  }
+
+  .depth-nav:hover {
+    background: rgba(0,0,0,0.75);
+  }
+
+  .title-slide {
+    text-align: left;
+    justify-content: center;
+  }
+
+  .title-slide .slide-title {
+    font-size: 76px;
+    margin-bottom: 16px;
+  }
+
+  .title-slide .slide-subtitle {
+    font-size: 34px;
+    color: var(--muted);
+  }
+
+  .safety-slide {
+    background: #fff7e6;
+  }
+
+  .safety-slide .kicker {
+    color: #b25e00;
+  }
+
+  .slide-counter-badge {
+    position: absolute;
+    bottom: 18px;
+    right: 24px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  /* --- Toolbar (not part of the scaled stage, so it stays a readable,
+     fixed size regardless of projector distance / zoom level) --- */
+  .toolbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #1b1f23;
+    color: #fff;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar button {
+    background: #333a42;
+    color: #fff;
+    border: 1px solid #4a545e;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .toolbar button:hover { background: #444e58; }
+  .toolbar button.active { background: var(--accent); border-color: var(--accent); }
+  .toolbar button:disabled { opacity: 0.4; cursor: default; }
+
+  .toolbar .spacer { flex: 1 1 auto; }
+  .toolbar .counter { min-width: 4.5em; text-align: center; }
+  .toolbar a.back-link { color: #9db8e8; text-decoration: none; font-size: 14px; }
+  .toolbar a.back-link:hover { text-decoration: underline; }
+
+  /* --- Speaker notes panel: docked below the stage, plain readable text,
+     hidden by default so a mirrored/projected display shows a clean deck. --- */
+  .notes-panel {
+    flex: 0 0 auto;
+    background: #f6f8fa;
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    max-height: 26vh;
+    overflow-y: auto;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .notes-panel h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+
+  .click-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30%;
+    cursor: pointer;
+  }
+  .click-zone.left { left: 0; }
+  .click-zone.right { right: 0; }
+
+  /* --- Outline / print-notes view: a plain scrollable page listing every
+     slide with its full speaker notes, meant for printing ahead of class. --- */
+  .outline {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .outline h1 { margin-bottom: 4px; }
+  .outline .outline-sub { color: var(--muted); margin-top: 0; }
+
+  .outline-slide {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    break-inside: avoid;
+  }
+
+  .outline-slide h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+  }
+
+  .outline-slide.outline-nested {
+    margin: 12px 0 12px 32px;
+    background: #f6f8fa;
+    border-style: dashed;
+  }
+
+  .outline-slide h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: var(--muted);
+  }
+
+  .outline-slide .outline-bullets {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 14px;
+  }
+
+  .outline-slide .outline-notes {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .outline-slide .outline-notes p:first-child { margin-top: 0; }
+
+  @media print {
+    .toolbar { display: none !important; }
+    .outline { height: auto; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+<script type="text/babel" data-type="module">
+{% raw %}
+const { useState, useEffect, useRef, useCallback } = React;
+
+// Edit this array to change the deck. `bullets` is what students see on the
+// slide (keep it short, they're reading fast); `notes` is only ever shown in
+// the notes panel or the printable outline, so it can be a full paragraph.
+// A bullet can be a plain string, or { text, href } to render as a link.
+// A top-level slide can carry a `down` array of extra slides reachable with
+// the down arrow / "More" button -- optional detail (more pictures, a deeper
+// dive) that the fast path (left/right, space) skips right over.
+const SLIDES = [
+  {
+    kind: "title",
+    kicker: "CS Unplugged",
+    title: "Caesar Cipher",
+    subtitle: "Hiding a message in plain sight",
+    notes: "A 5-minute launch for the Caesar Cipher worksheet. Show how a shift works and do one together; stop before the 'crack it' section so students discover the 25-key trick themselves."
+  },
+  {
+    kind: "bullets",
+    kicker: "Why hide a message?",
+    title: "Secret Orders",
+    bullets: [
+      "Over 2,000 years ago, Julius Caesar sent orders to his generals",
+      "If an enemy grabbed a message, it had to look like nonsense",
+      "His trick: shift every letter the same amount"
+    ],
+    notes: "Ask: where do people hide messages today? (Passwords, banking, texting apps: every one uses much stronger versions of this idea.)"
+  },
+  {
+    kind: "wide",
+    kicker: "How a shift works",
+    title: "Pick a Key, Shift Every Letter",
+    image: "/assets/img/unplugged/caesar-cipher/shift-key-3.svg",
+    bullets: [
+      "The key is a number: here, 3",
+      "Each letter moves 3 places forward",
+      "Past Z, wrap around to A"
+    ],
+    notes: "Point to H in the top row and K below it. The shaded letters are the ones in HELLO. Ask: what does Z become with key 3? (C: wrap around.)"
+  },
+  {
+    kind: "image",
+    kicker: "Same idea, as a dial",
+    title: "A Cipher Wheel",
+    image: "/assets/img/unplugged/caesar-cipher/wheel-key-3.svg",
+    imageMax: 430,
+    bullets: [
+      "Turn the small wheel so its arrow points at the key (3)",
+      "Find your letter on the small wheel",
+      "Read the letter next to it on the big wheel"
+    ],
+    notes: "The worksheet uses a fill-in shift table instead, so no cutting is needed. If you want students to build a wheel, print the optional wheel page (scissors and a brad or pencil point).",
+    down: [
+      {
+        kind: "bullets",
+        kicker: "Optional",
+        title: "Build Your Own Wheel",
+        bullets: [
+          { text: "Print the optional cipher wheel page", href: "/unplugged/caesar-cipher-wheel/" },
+          "Cut out both wheels",
+          "Pin the centers with a brad or pencil point"
+        ],
+        notes: "Only if you have time and scissors. The shift table on the worksheet does the same job."
+      }
+    ]
+  },
+  {
+    kind: "bullets",
+    kicker: "Try it together",
+    title: "Encode HELLO with Key 3",
+    bullets: [
+      "H moves 3 to ...",
+      "E moves 3 to ...",
+      "L, L, O ..."
+    ],
+    notes: "Take answers letter by letter. Use the down arrow for the answer.",
+    down: [
+      {
+        kind: "bullets",
+        kicker: "Answer",
+        title: "HELLO becomes KHOOR",
+        bullets: [
+          "H to K, E to H, L to O, L to O, O to R",
+          "To decode, shift BACK 3",
+          "Same key both ways"
+        ],
+        notes: "Decoding is the same move in reverse. That's the whole cipher."
+      }
+    ]
+  },
+  {
+    kind: "bullets",
+    kicker: "Your turn",
+    title: "Decode, Then Encode",
+    bullets: [
+      "Fill in your shift table for the key",
+      "Decode the five messages (key 7)",
+      "Write your own secret message and trade"
+    ],
+    notes: "Hand out the worksheet here. The last part, cracking a message with no key, is for students to figure out; don't give away the 25-keys idea."
+  },
+  {
+    kind: "title",
+    kicker: "Bonus",
+    title: "No Key at All?",
+    subtitle: "The last part of the sheet gives you a message with no key. How could you crack it?",
+    notes: "Leave this as a question. The worksheet walks them through it."
+  }
+];
+
+// A bullet is either a plain string, or { text, href } to render as a link
+// (used for pointing straight at the chapter or the graphic organizer).
+function renderBullets(bullets) {
+  return (
+    <ul>
+      {bullets.map((b, i) => (
+        <li key={i}>{typeof b === "string" ? b : <a href={b.href}>{b.text}</a>}</li>
+      ))}
+    </ul>
+  );
+}
+
+function Stage({ slide, aspect }) {
+  const arClass = aspect === "4:3" ? "ar-4-3" : "ar-16-9";
+  if (slide.kind === "title") {
+    return (
+      <div className={"stage title-slide " + arClass}>
+        {slide.kicker && <p className="kicker">{slide.kicker}</p>}
+        <h1 className="slide-title">{slide.title}</h1>
+        {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+      </div>
+    );
+  }
+  if (slide.kind === "image") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-image-row">
+          <img src={slide.image} alt="" style={slide.imageMax ? { maxHeight: slide.imageMax + "px" } : undefined} />
+          <div className="slide-body">{renderBullets(slide.bullets)}</div>
+        </div>
+      </div>
+    );
+  }
+  if (slide.kind === "wide") {
+    // A wide image (like a shift table) across the slide, bullets below.
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <img className="slide-wide-image" src={slide.image} alt="" />
+        <div className="slide-body">{renderBullets(slide.bullets)}</div>
+      </div>
+    );
+  }
+  if (slide.kind === "gallery") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-gallery-row">
+          {slide.images.map((im, i) => (
+            <div className="slide-gallery-item" key={i}>
+              <img src={im.src} alt="" />
+              <p className="caption">{im.caption}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  const extraClass = slide.kind === "safety" ? " safety-slide" : "";
+  return (
+    <div className={"stage " + arClass + extraClass}>
+      <p className="kicker">{slide.kicker}</p>
+      <h1 className="slide-title">{slide.title}</h1>
+      <div className="slide-body">{renderBullets(slide.bullets)}</div>
+    </div>
+  );
+}
+
+function ScaledStage({ slide, aspect }) {
+  const outerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const designW = 1280;
+  const designH = aspect === "4:3" ? 960 : 720;
+
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const recompute = () => {
+      const rect = el.getBoundingClientRect();
+      const s = Math.min((rect.width * 0.98) / designW, (rect.height * 0.98) / designH);
+      setScale(s > 0 ? s : 1);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => { ro.disconnect(); window.removeEventListener("resize", recompute); };
+  }, [designH]);
+
+  return (
+    <div className="stage-outer" ref={outerRef}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}>
+        <Stage slide={slide} aspect={aspect} />
+      </div>
+    </div>
+  );
+}
+
+function bulletsToText(bullets) {
+  return bullets.map(b => (typeof b === "string" ? b : b.text)).join(" / ");
+}
+
+function OutlineCard({ slide, heading, nested }) {
+  return (
+    <div className={"outline-slide" + (nested ? " outline-nested" : "")}>
+      {nested ? <h3>{heading}</h3> : <h2>{heading}</h2>}
+      {slide.bullets && <p className="outline-bullets">On slide: {bulletsToText(slide.bullets)}</p>}
+      {slide.images && <p className="outline-bullets">Photos: {slide.images.map(im => im.caption).join(" / ")}</p>}
+      <div className="outline-notes"><p>{slide.notes}</p></div>
+    </div>
+  );
+}
+
+function Outline() {
+  return (
+    <div className="outline">
+      <h1>Caesar Cipher</h1>
+      <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
+      {SLIDES.map((s, i) => (
+        <React.Fragment key={i}>
+          <OutlineCard slide={s} heading={`${i + 1}. ${s.title}`} />
+          {(s.down || []).map((d, j) => (
+            <OutlineCard slide={d} heading={`Extra: ${d.title}`} nested key={j} />
+          ))}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+// Deep-linking: ?slide=3 opens on that slide (1-indexed, to match the
+// on-screen counter), ?extra=1 additionally drops into that slide's Nth
+// "down" slide if it has any, ?outline=1 opens straight into the
+// speaker-notes outline -- handy for linking straight to a specific slide,
+// or handing a substitute teacher the notes view without them finding the
+// button.
+function initialStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const slideParam = parseInt(params.get("slide"), 10);
+  const index = Number.isInteger(slideParam) ? Math.min(Math.max(slideParam - 1, 0), SLIDES.length - 1) : 0;
+  const maxExtra = (SLIDES[index].down || []).length;
+  const extraParam = parseInt(params.get("extra"), 10);
+  const subIndex = Number.isInteger(extraParam) ? Math.min(Math.max(extraParam, 0), maxExtra) : 0;
+  const mode = params.get("outline") ? "outline" : "deck";
+  return { index, subIndex, mode };
+}
+
+function App() {
+  const initial = initialStateFromUrl();
+  const [index, setIndex] = useState(initial.index);
+  const [subIndex, setSubIndex] = useState(initial.subIndex);
+  const [showNotes, setShowNotes] = useState(false);
+  const [aspect, setAspect] = useState("16:9");
+  const [mode, setMode] = useState(initial.mode); // "deck" | "outline"
+
+  const topSlide = SLIDES[index];
+  const downSlides = topSlide.down || [];
+  const slide = subIndex === 0 ? topSlide : downSlides[subIndex - 1];
+
+  const next = useCallback(() => { setIndex(i => Math.min(i + 1, SLIDES.length - 1)); setSubIndex(0); }, []);
+  const prev = useCallback(() => { setIndex(i => Math.max(i - 1, 0)); setSubIndex(0); }, []);
+  const goDown = useCallback(() => setSubIndex(s => Math.min(s + 1, downSlides.length)), [downSlides.length]);
+  const goUp = useCallback(() => setSubIndex(s => Math.max(s - 1, 0)), []);
+
+  useEffect(() => {
+    function onKey(e) {
+      if (mode !== "deck") {
+        if (e.key === "Escape") setMode("deck");
+        return;
+      }
+      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); goDown(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); goUp(); }
+      else if (e.key === "n" || e.key === "N") setShowNotes(v => !v);
+      else if (e.key === "f" || e.key === "F") toggleFullscreen();
+      else if (e.key === "o" || e.key === "O") setMode("outline");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mode, next, prev, goDown, goUp]);
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+
+  if (mode === "outline") {
+    return (
+      <div className="app">
+        <div className="toolbar">
+          <a className="back-link" href="/unplugged/caesar-cipher/">&larr; Caesar Cipher</a>
+          <div className="spacer"></div>
+          <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
+          <button onClick={() => window.print()}>Print</button>
+        </div>
+        <Outline />
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      <div className="stage-outer" style={{ position: "relative" }}>
+        <ScaledStage slide={slide} aspect={aspect} />
+        <div className="click-zone left" onClick={prev} title="Previous slide"></div>
+        <div className="click-zone right" onClick={next} title="Next slide"></div>
+        {subIndex > 0 && (
+          <button className="depth-nav depth-up" onClick={goUp} title="Back to the main flow">&#9650; Back</button>
+        )}
+        {subIndex < downSlides.length && (
+          <button className="depth-nav depth-down" onClick={goDown} title="More about this slide">&#9660; More</button>
+        )}
+        <div className="slide-counter-badge">
+          {index + 1} / {SLIDES.length}
+          {subIndex > 0 && <span> &middot; extra {subIndex}/{downSlides.length}</span>}
+        </div>
+      </div>
+      {showNotes && (
+        <div className="notes-panel">
+          <h3>Speaker notes</h3>
+          <p>{slide.notes}</p>
+        </div>
+      )}
+      <div className="toolbar">
+        <a className="back-link" href="/unplugged/caesar-cipher/">&larr; Caesar Cipher</a>
+        <div className="spacer"></div>
+        <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
+        <span className="counter">{index + 1} / {SLIDES.length}</span>
+        <button onClick={next} disabled={index === SLIDES.length - 1}>Next &rarr;</button>
+        <button className={showNotes ? "active" : ""} onClick={() => setShowNotes(v => !v)}>Notes (N)</button>
+        <button onClick={() => setMode("outline")}>Print notes (O)</button>
+        <button onClick={() => setAspect(a => a === "16:9" ? "4:3" : "16:9")}>{aspect}</button>
+        <button onClick={toggleFullscreen}>Fullscreen (F)</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+{% endraw %}
+</script>
+</body>
+</html>
