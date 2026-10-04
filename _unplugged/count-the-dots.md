@@ -78,9 +78,14 @@ Write down which cards are face up.
    <span class="fill-line"></span>
 4. What is the **biggest** number you can make? <span class="fill-line short"></span>
    The **smallest**? <span class="fill-line short"></span>
-5. Pick three numbers between 0 and 31 (for example 23, 30, and 14) and
-   make each one with your cards. Did any number **not** work?
-   My numbers: <span class="fill-line short"></span> <span class="fill-line short"></span> <span class="fill-line short"></span>
+5. Pick three numbers between 0 and 31 and make each one with your cards.
+   Write the number, then the cards you used.
+
+   Number <span class="fill-line short"></span> Cards: <span class="fill-line"></span>
+
+   Number <span class="fill-line short"></span> Cards: <span class="fill-line"></span>
+
+   Number <span class="fill-line short"></span> Cards: <span class="fill-line"></span>
 {: start="3"}
 
 ## Part 3: Write it in binary
@@ -164,33 +169,6 @@ Each row in the picture is one letter, read top to bottom in the order
 </div>
 
 Tom's message: <span class="fill-line"></span>
-
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: COUNTING HIGHER THAN 31**
-
-Try adding: 1 + 2 + 4 = <span class="fill-line short"></span>
-
-Now try 1 + 2 + 4 + 8 = <span class="fill-line short"></span>
-
-What happens if you add all the numbers up from the beginning?
-<span class="fill-line"></span>
-
-Have you ever heard of "let your fingers do the walking"? Well now you can
-let your fingers do the counting, but you can get much higher than ten. If
-you use the binary system and let each finger on one hand be one of the
-cards with dots, you can count from 0 to 31. That's 32 numbers. (Don't
-forget that zero is a number too!) Try counting in order using your
-fingers. If a finger is up it is a one, and if it is down it is a zero.
-
-You can actually get from 0 to 1023 if you use both hands! If you had
-really bendy toes too, what is the biggest number Miss Flexi-Toes could
-reach? <span class="fill-line short"></span>
-
-<figure id="fig-fingers">
-  <img src="{{ '/assets/img/unplugged/count-the-dots/fingers.png' | relative_url }}" alt="Cartoon: Miss Flexi-Toes counting in binary on her fingers asks a many-fingered creature, Ah, but can you count up to 741,014?">
-</figure>
-</aside>
-
 ## What's it all about?
 
 Each 0 or 1 is called a **bit**, short for *binary digit*. Normal numbers
@@ -219,10 +197,4 @@ birthday, check it the other way: add up the cards you wrote as 1.
 to bottom: 10, 13, 17, 20, 31.
 
 **Part 5.** 8 5 12 16, 9 13, 20 18 1 16 16 5 4: **HELP IM TRAPPED**.
-
-**Challenge.** 1 + 2 + 4 = 7 and 1 + 2 + 4 + 8 = 15: adding all the cards
-from the beginning always gives one less than the next card. One hand
-counts 0 to 31; two hands, 0 to 1023 (32 &times; 32 = 1,024 numbers). With
-fingers and toes, 20 cards: 1,024 &times; 1,024 = 1,048,576 numbers, so
-the biggest is 1,048,575.
 </section>
