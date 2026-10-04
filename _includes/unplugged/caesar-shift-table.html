@@ -1,0 +1,19 @@
+{%- comment -%}
+A two-row shift table: the alphabet, and a blank row to fill with the
+shifted letters. The key sits ABOVE the table (a narrow label column inside
+it broke the layout). Params: key (prefilled number, or blank line).
+{%- endcomment -%}
+{%- assign shift_letters = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z" | split: "," -%}
+<p class="shift-table-key"><strong>Key:</strong> {% if include.key %}<strong>{{ include.key }}</strong>{% else %}<span class="fill-line short"></span>{% endif %}</p>
+<table class="shift-table">
+  <tr>
+    {%- for l in shift_letters -%}
+    <td>{{ l }}</td>
+    {%- endfor -%}
+  </tr>
+  <tr>
+    {%- for l in shift_letters -%}
+    <td class="fill-cell"></td>
+    {%- endfor -%}
+  </tr>
+</table>

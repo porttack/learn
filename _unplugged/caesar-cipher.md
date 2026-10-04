@@ -55,22 +55,9 @@ out twice: once in order, and once shifted. Fill in the second row for
 whatever key you are using right now by counting forward that many
 letters for every blank, wrapping from Z back to A.
 
-{% assign shift_letters = "A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z" | split: "," %}
+No key yet? Use the number of the month you were born in (1 to 12).
 
-<table class="shift-table">
-  <tr>
-    <th></th>
-    {%- for l in shift_letters -%}
-    <td>{{ l }}</td>
-    {%- endfor -%}
-  </tr>
-  <tr>
-    <th>Key __</th>
-    {%- for l in shift_letters -%}
-    <td class="fill-cell"></td>
-    {%- endfor -%}
-  </tr>
-</table>
+{% include unplugged/caesar-shift-table.html %}
 
 Once that row is filled in, encoding and decoding are the same move: find
 a letter in one row and read off whatever is below or above it in the
@@ -82,6 +69,10 @@ so do it in pencil.
 Here are five messages, all encoded with the same key.
 
 **Key: {{ site.data.unplugged.cipher_fixed.decode.key }}**
+
+Want a table for this key? Fill this one in first (it's optional):
+
+{% include unplugged/caesar-shift-table.html key=site.data.unplugged.cipher_fixed.decode.key %}
 
 <ol class="cipher-messages">
 {%- for m in site.data.unplugged.cipher_fixed.decode.messages -%}
@@ -124,7 +115,20 @@ number from 1 to 25. There is no key 26, because shifting every letter by
 hide anything. **That is only 25 possibilities in total.** You can simply
 try every one of them until a real message falls out.
 
-Use the grid below to keep track. For each key, shift the message back
+For example, suppose the message were **KHOOR**. Shift it back one key at
+a time:
+
+| Key | KHOOR shifted back |
+|---|---|
+| 1 | JGNNQ (nonsense) |
+| 2 | IFMMP (nonsense) |
+| 3 | **HELLO** (a real word!) |
+{: .crack-example}
+
+The key was 3. If it hadn't worked by 3, you would keep going: 4, 5, 6,
+all the way to 25 if you had to.
+
+Now try it on the real message. Use the grid below to keep track. For each key, shift the message back
 that many places and jot down just enough of the result to tell whether it
 is real words or nonsense. You can stop as soon as one works.
 
