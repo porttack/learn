@@ -30,6 +30,7 @@ The table is a view over front matter, not folders. Each activity sets:
   time, materials                 (shown on the page)
   reviewed: 2026-10-03            (Reviewed column: set ONLY by the teacher after checking the sheet)
   slides: /unplugged/<slug>-slides/  (optional intro deck; "Slides" link here and on the sheet)
+  table_order: 1                  (optional: order within a topic; unset sheets follow, by title)
   kind:     [single, supplementary] is kept in front matter but no longer
             drives the landing page
 Sequences live in _data/unplugged_sequences.yml, so one activity can appear
@@ -62,7 +63,11 @@ in several sections at once without being copied.
   <tbody>
   {%- for g in groups %}
     <tr class="topic-row"><th colspan="9">{{ g.name }}</th></tr>
-    {%- assign items = g.items | sort: "title" %}
+    {%- comment -%}Sheets with table_order come first in that order (e.g.
+    hiding a Caesar message before cracking one); the rest by title.{%- endcomment -%}
+    {%- assign ordered = g.items | where_exp: "a", "a.table_order" | sort: "table_order" %}
+    {%- assign unordered = g.items | where_exp: "a", "a.table_order == nil" | sort: "title" %}
+    {%- assign items = ordered | concat: unordered %}
     {%- for a in items %}
     {%- assign ms = false %}{% assign hs = false %}
     {%- if a.level == "ms" or a.level == "both" %}{% assign ms = true %}{% endif %}

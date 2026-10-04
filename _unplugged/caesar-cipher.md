@@ -6,7 +6,8 @@ kind: [single, supplementary]
 topics: [Codes and ciphers]
 time: 30
 grouping: "Solo, or pair up to trade coded messages"
-materials: "Pencil (scissors and a brad or pencil point, only if you build the wheel)"
+materials: "Pencil"
+table_order: 1
 generator: /unplugged/caesar-cipher-generator/
 generator_presets:
   - { label: "Key given", query: "mode=key" }
@@ -74,9 +75,7 @@ letters for every blank, wrapping from Z back to A.
 Once that row is filled in, encoding and decoding are the same move: find
 a letter in one row and read off whatever is below or above it in the
 other row. You will fill this row in again every time you use a new key,
-so do it in pencil. (If you would rather turn a dial than rewrite the
-alphabet, there is a cut-out wheel that does the same job near the end of
-this page. It is entirely optional.)
+so do it in pencil.
 
 ## Decode these
 
@@ -93,8 +92,7 @@ Here are five messages, all encoded with the same key.
 ## Encode one of your own
 
 On a separate scrap of paper, pick your own key from 1 to 25 and write a
-short message in capital letters, no punctuation. Use your shift table (or
-the wheel) to encode it letter by letter, checking each one as you go.
+short message in capital letters, no punctuation. Use your shift table to encode it letter by letter, checking each one as you go.
 
 Copy just the finished, encoded message onto the line below, then swap
 papers with a partner.
@@ -158,9 +156,9 @@ possibilities than anyone, or anything, could ever try one by one.
 **Next step:** try a [Vigenère cipher]({{ '/unplugged/vigenere-cipher/' | relative_url }}),
 which uses a whole keyword instead of one shift.
 
-<section class="cutout-page" markdown="1">
-{% include unplugged/caesar-cipher-wheel.html %}
-</section>
+<p class="screen-only-note">Teachers: there is also an
+<a href="{{ '/unplugged/caesar-cipher-wheel/' | relative_url }}">optional cut-out cipher wheel</a>
+that does the same job as the shift table.</p>
 
 <section class="answer-key" markdown="1">
 ## Check your answers

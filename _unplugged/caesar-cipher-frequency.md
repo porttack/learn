@@ -1,5 +1,6 @@
 ---
 title: "Caesar Cipher: cracking it with letter frequency"
+table_order: 2
 source: original
 level: hs
 kind: [single, supplementary]
