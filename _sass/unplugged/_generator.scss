@@ -487,3 +487,8 @@ td.lights-letter {
     break-inside: avoid;
   }
 }
+
+// Emoji themes (pizza, pets, ...) need a color emoji font.
+td.lights-cell {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui, sans-serif;
+}

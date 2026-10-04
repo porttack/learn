@@ -10,6 +10,7 @@ source: cs-unplugged-2015
 source_url: "https://classic.csunplugged.org/activities/binary-numbers/"
 original_print: "https://classic.csunplugged.org/documents/activities/binary-numbers/unplugged-01-binary_numbers.pdf"
 k5: true
+reviewed: 2026-10-03
 level: both
 kind: [single, supplementary]
 topics: [Binary]

@@ -10,6 +10,12 @@ export const THEMES = {
   stars: { label: "Stars (★ / ☆)", on: "★", off: "☆" },
   boxes: { label: "Boxes (☑ / ☐)", on: "☑", off: "☐" },
   triangles: { label: "Triangles (▲ / ▽)", on: "▲", off: "▽" },
+  // The funny ones (emoji; they print fine in black and white).
+  pizza: { label: "Pizza = 1, broccoli = 0", on: "\u{1F355}", off: "\u{1F966}" },
+  pets: { label: "Dog = 1, cat = 0", on: "\u{1F436}", off: "\u{1F431}" },
+  sleepy: { label: "Awake = 1, asleep = 0", on: "\u{1F600}", off: "\u{1F634}" },
+  thumbs: { label: "Thumbs up = 1, down = 0", on: "\u{1F44D}", off: "\u{1F44E}" },
+  sky: { label: "Sun = 1, moon = 0", on: "\u2600\uFE0F", off: "\u{1F319}" },
 };
 
 // "c" -> [0, 0, 0, 1, 1]

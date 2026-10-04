@@ -10,23 +10,31 @@ const root = document.querySelector(".puzzle-generator");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const header = `<th>${PLACES.join(" &nbsp; ")}</th>`;
 
+// "random": one surprise pair for the whole set.
+const resolveTheme = (rng, themeKey) => (themeKey === "random" ? rng.pick(Object.keys(THEMES)) : themeKey);
+
 function decodeHtml(rng, themeKey) {
+  themeKey = resolveTheme(rng, themeKey);
   const joke = rng.pick(bank.jokes);
   const rows = encodeMessage(joke.punchline);
   const mixed = themeKey === "mixed";
   const keys = Object.keys(THEMES);
-  const body = rows
+  const trs = rows
     .map((r) => {
       if (r === null) return `<tr class="lights-space"><td colspan="${mixed ? 4 : 3}"><em>(space)</em></td></tr>`;
       const t = THEMES[mixed ? rng.pick(keys) : themeKey];
       const lights = r.bits.map((b) => (b ? t.on : t.off)).join(" ");
       return `<tr><td class="lights-cell">${lights}</td>${mixed ? `<td class="lights-key">${t.on}=1 ${t.off}=0</td>` : ""}<td></td><td></td></tr>`;
-    })
-    .join("");
+    });
+  // One table, shrunk to fit one printed page: full size up to 9 rows,
+  // then smaller as the message gets longer.
+  const scale = Math.min(1, 9 / trs.length);
+  const head = `<thead><tr>${header}${mixed ? "<th>Key</th>" : ""}<th>Number</th><th>Letter</th></tr></thead>`;
+  const tables = `<table class="checkoff lights-table" style="zoom: ${scale.toFixed(2)}">${head}<tbody>${trs.join("")}</tbody></table>`;
   const legend = mixed ? "Each row has its own key." : `${THEMES[themeKey].on} = 1 (on) and ${THEMES[themeKey].off} = 0 (off).`;
   const html = `<p class="lights-setup"><strong>${esc(joke.setup)}</strong></p>
     <p>The answer is in lights. ${legend} Use the code <strong>1 = a, 2 = b, 3 = c, &hellip;, 26 = z</strong>.</p>
-    <table class="checkoff lights-table"><thead><tr>${header}${mixed ? "<th>Key</th>" : ""}<th>Number</th><th>Letter</th></tr></thead><tbody>${body}</tbody></table>
+    ${tables}
     <p>Answer: <span class="fill-line"></span></p>`;
   const key = `<p><strong>${esc(joke.setup)}</strong> ${esc(joke.punchline)}</p>
     <p class="lights-key-nums">${rows.map((r) => (r === null ? "/" : r.n)).join(" ")}</p>`;
@@ -34,6 +42,7 @@ function decodeHtml(rng, themeKey) {
 }
 
 function encodeHtml(rng, themeKey) {
+  themeKey = resolveTheme(rng, themeKey);
   const word = rng.pick(bank.words);
   const t = THEMES[themeKey === "mixed" ? "lights" : themeKey];
   const rows = encodeMessage(word);
@@ -51,7 +60,7 @@ function encodeHtml(rng, themeKey) {
 mountGenerator({
   root,
   options: [
-    { name: "theme", label: "Symbols", default: "lights", choices: [...Object.entries(THEMES).map(([k, v]) => [k, v.label]), ["mixed", "Mixed (a new pair every row)"]] },
+    { name: "theme", label: "Symbols", default: "lights", choices: [["random", "Random (a surprise pair)"], ...Object.entries(THEMES).map(([k, v]) => [k, v.label]), ["mixed", "Mixed (a new pair every row)"]] },
     { name: "direction", label: "Direction", default: "decode", choices: [["decode", "Decode a message"], ["encode", "Encode a word"]] },
   ],
   render(rng, opts) {
