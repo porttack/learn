@@ -23,13 +23,15 @@ adapted sheet credits its source at the bottom.
 
 {% comment %}
 The table is a view over front matter, not folders. Each activity sets:
-  level:    ms | hs | both        (MS / HS columns)
-  k5:       true                  (K-5 column: only when the source says ages 10 or under)
+  level:    ms | hs | both        (with k5, sets the Grades badge: 6-8, 9-12, 6-12,
+                                   or K-8 / K-12 when k5 is also true)
+  k5:       true                  (only when the source says ages 10 or under)
   grouping: free text; "solo" / "pair" / "trade" in it mark the Solo / Pair columns
   topics:   [Binary, Lists, ...]  (the table groups by the first topic)
   time, materials                 (shown on the page)
-  reviewed: 2026-10-03            (Reviewed column: set ONLY by the teacher after checking the sheet)
+  reviewed: 2026-10-03            (a star in the last column: set ONLY by the teacher after checking the sheet)
   slides: /unplugged/<slug>-slides/  (optional intro deck; "Slides" link here and on the sheet)
+  lesson_plan: /unplugged/<slug>-lesson-plan/  (optional teacher-led plan; "Plan" link here)
   table_order: 1                  (optional: order within a topic; unset sheets follow, by title)
   kind:     [single, supplementary] is kept in front matter but no longer
             drives the landing page
@@ -55,14 +57,14 @@ in several sections at once without being copied.
 
 <table class="activity-table">
   <colgroup>
-    <col style="width: 38%"><col><col><col><col><col><col><col><col>
+    <col style="width: 40%"><col><col><col><col><col>
   </colgroup>
   <thead>
-    <tr><th>Activity</th><th>K-5</th><th>MS</th><th>HS</th><th>Solo</th><th>Pair</th><th>Min</th><th title="Checked by the teacher">Reviewed</th><th></th></tr>
+    <tr><th>Activity</th><th>Grades</th><th>Solo</th><th>Pair</th><th>Min</th><th><span title="&#9733; = reviewed by the teacher">&#9733;</span> Extras</th></tr>
   </thead>
   <tbody>
   {%- for g in groups %}
-    <tr class="topic-row"><th colspan="9">{{ g.name }}</th></tr>
+    <tr class="topic-row"><th colspan="6">{{ g.name }}</th></tr>
     {%- comment -%}Sheets with table_order come first in that order (e.g.
     hiding a Caesar message before cracking one); the rest by title.{%- endcomment -%}
     {%- assign ordered = g.items | where_exp: "a", "a.table_order" | sort: "table_order" %}
@@ -72,19 +74,17 @@ in several sections at once without being copied.
     {%- assign ms = false %}{% assign hs = false %}
     {%- if a.level == "ms" or a.level == "both" %}{% assign ms = true %}{% endif %}
     {%- if a.level == "hs" or a.level == "both" %}{% assign hs = true %}{% endif %}
+    {%- if a.k5 and hs %}{% assign grades = "K-12" %}{% elsif a.k5 %}{% assign grades = "K-8" %}{% elsif ms and hs %}{% assign grades = "6-12" %}{% elsif hs %}{% assign grades = "9-12" %}{% else %}{% assign grades = "6-8" %}{% endif %}
     {%- assign solo = false %}{% assign pair = false %}
     {%- if a.grouping contains "olo" %}{% assign solo = true %}{% endif %}
     {%- if a.grouping contains "air" or a.grouping contains "trade" %}{% assign pair = true %}{% endif %}
     <tr class="activity-row{% if a.k5 %} is-k5{% endif %}{% if ms %} is-ms{% endif %}{% if hs %} is-hs{% endif %}{% if solo %} is-solo{% endif %}{% if pair %} is-pair{% endif %}{% if a.reviewed %} is-reviewed{% endif %}">
       <td><a href="{{ a.url | relative_url }}">{{ a.title }}</a></td>
-      <td class="mark">{% if a.k5 %}&#10003;{% endif %}</td>
-      <td class="mark">{% if ms %}&#10003;{% endif %}</td>
-      <td class="mark">{% if hs %}&#10003;{% endif %}</td>
+      <td class="mark"><span class="grade-badge">{{ grades }}</span></td>
       <td class="mark">{% if solo %}&#10003;{% endif %}</td>
       <td class="mark">{% if pair %}&#10003;{% endif %}</td>
       <td class="mark">{{ a.time }}</td>
-      <td class="mark">{% if a.reviewed %}<span title="Reviewed {{ a.reviewed | date: '%B %-d, %Y' }}">&#9733;</span>{% endif %}</td>
-      <td>{% if a.generator %}<a class="lesson-companion-link" href="{{ a.generator | relative_url }}" aria-label="New set: {{ a.title }}">New set</a>{% endif %}{% if a.slides %} <a class="lesson-companion-link" href="{{ a.slides | relative_url }}" aria-label="Slides: {{ a.title }}">Slides</a>{% endif %}</td>
+      <td class="extras">{% if a.reviewed %}<span class="reviewed-star" title="Reviewed by the teacher {{ a.reviewed | date: '%B %-d, %Y' }}" aria-label="Reviewed">&#9733;</span> {% endif %}{% if a.generator %}<a class="lesson-companion-link" href="{{ a.generator | relative_url }}" aria-label="New set: {{ a.title }}">New set</a>{% endif %}{% if a.slides %} <a class="lesson-companion-link" href="{{ a.slides | relative_url }}" aria-label="Slides: {{ a.title }}">Slides</a>{% endif %}{% if a.lesson_plan %} <a class="lesson-companion-link" href="{{ a.lesson_plan | relative_url }}" aria-label="Lesson plan: {{ a.title }}">Plan</a>{% endif %}</td>
     </tr>
     {%- endfor %}
   {%- endfor %}
@@ -138,7 +138,8 @@ Short tracks that build from one activity to the next. Do them in order.
 {% if seqs.size == 0 %}<p class="lesson-subtitle">Coming soon.</p>{% endif %}
 {% endfor %}
 
-## For teachers
+<aside class="teacher-box" id="for-teachers" markdown="1">
+## Just For Teachers:
 
 Every sheet with a **New set** button can make as many fresh versions as you
 need; the set number prints on the sheet so you can reprint the same one.
@@ -150,6 +151,7 @@ the bottom of a sheet (or add `?key=1` to its address), then print.
 sheet's own report. Everything aligned so far, across every reviewed sheet:
 
 {% include standards-coverage-summary.html carrier="unplugged" %}
+</aside>
 
 ## Other unplugged resources
 

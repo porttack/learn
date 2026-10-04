@@ -1,0 +1,72 @@
+// "Just for teachers" box (modeled on CMU CS Academy's teacher-only
+// panels: lavender background, purple border). Screen only: never printed,
+// never in the Word export (docx-export.js SKIP list).
+.teacher-box {
+  background: #f5f3fd;
+  border: 3px solid #9d94e8;
+  border-radius: 6px;
+  padding: 0.6em 1.4em 1em;
+  margin: 0 0 2em;
+
+  > h2:first-child {
+    font-weight: 400;
+    margin: 0.6em 0 0.1em;
+  }
+
+  .teacher-box-hint {
+    font-size: 0.85em;
+    color: #555;
+    margin-bottom: 0.6em;
+  }
+
+  h3 {
+    font-size: 1.15em;
+    font-weight: 600;
+    margin: 1em 0 0.3em;
+  }
+
+  a {
+    color: #3d34d6;
+  }
+
+  .teacher-box-key {
+    color: #4a3fe0;
+    font-weight: 700;
+  }
+}
+
+@media print {
+  .teacher-box {
+    display: none !important;
+  }
+}
+
+// Cut-out dot cards (count-the-dots-cards.md): one student set per page,
+// then one big demonstration card per page.
+.dot-cards-page img {
+  display: block;
+  width: 100%;
+  max-width: 7in;
+  margin: 0 auto;
+}
+
+.dot-cards-demo img {
+  display: block;
+  width: 100%;
+  max-width: 24em;
+  margin: 1em auto;
+}
+
+@media print {
+  .dot-cards-demo {
+    break-before: page;
+  }
+
+  // Portrait cards: sized by height so each fills one letter page.
+  .dot-cards-demo img {
+    width: auto;
+    max-width: none;
+    height: 8in;
+    margin: 0 auto;
+  }
+}

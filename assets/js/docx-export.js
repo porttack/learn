@@ -22,7 +22,7 @@ const SKIP = [
   "script", "style", "noscript", "nav", "button", "form",
   ".pathway-back", ".lesson-nav", ".new-set-bar", ".player-switch",
   ".generator-bar", ".git-history", ".standards-alignment", ".copy-btn",
-  ".suggest-links", ".key-link", ".activity-filters",
+  ".suggest-links", ".key-link", ".activity-filters", ".teacher-box",
 ].join(",");
 
 const MAX_W = 624; // 6.5in of usable width at 96 px per inch

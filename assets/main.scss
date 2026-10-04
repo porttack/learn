@@ -1145,6 +1145,22 @@ figure {
   }
 }
 
+// standards_open: an ordinary section in the page's own body text (a lesson
+// plan), not the small grey footer widget, and it prints.
+.standards-alignment.standards-alignment-open {
+  font-size: 1em;
+  color: inherit;
+
+  h3 {
+    font-size: 1.05em;
+    color: inherit;
+  }
+
+  a {
+    color: inherit;
+  }
+}
+
 .pathway-list,
 .lesson-list {
   list-style: none;
@@ -1474,7 +1490,8 @@ table.checkoff.light-message td {
   .lesson-nav,
   .print-button,
   .copy-btn,
-  .standards-alignment,
+  .standards-alignment:not(.standards-alignment-open),
+  .standards-alignment-links,
   .video-embed,
   .pset-demo,
   .terminal-demo,

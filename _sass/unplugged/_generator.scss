@@ -203,6 +203,45 @@ table.activity-table {
   .lesson-companion-link {
     margin-left: 0;
   }
+
+  // Grades: one small badge (K-5 ... 9-12) instead of a column per band.
+  .grade-badge {
+    display: inline-block;
+    padding: 0.05em 0.45em;
+    border: 1px solid $grey-color;
+    border-radius: 0.8em;
+    font-size: 0.82em;
+    white-space: nowrap;
+  }
+
+  .reviewed-star {
+    color: #b8860b;
+    margin-right: 0.15em;
+  }
+}
+
+// Phones: tighter cells so all six columns fit without sideways scrolling;
+// the star and link pills stack in their own column.
+@media (max-width: 600px) {
+  table.activity-table {
+    font-size: 0.85em;
+
+    th,
+    td {
+      padding: 0.3em 0.25em;
+    }
+
+    thead th {
+      font-size: 0.75em;
+      letter-spacing: 0;
+    }
+
+    .extras .lesson-companion-link {
+      display: block;
+      margin: 0.15em 0;
+      text-align: center;
+    }
+  }
 }
 
 @media print {

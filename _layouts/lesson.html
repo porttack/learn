@@ -14,7 +14,7 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
 {% assign next_index = current_index | plus: 1 %}
 
 <article class="lesson">
-  {% if pathway_meta.name_line %}{% include unplugged/name-line.html %}{% endif %}
+  {% if pathway_meta.name_line and page.name_line != false %}{% include unplugged/name-line.html %}{% endif %}
   {% if pathway_meta %}
   <p class="pathway-back"><a href="{{ pathway_meta.url | relative_url }}">&larr; {{ pathway_meta.title }}</a></p>
   {% endif %}
@@ -91,7 +91,7 @@ What should change, and why?
   {% endif %}
 
   {% include provenance.html %}
-  {% include standards-alignment.html %}
+  {% unless page.standards_open %}{% include standards-alignment.html %}{% endunless %}
 </article>
 
 <script>

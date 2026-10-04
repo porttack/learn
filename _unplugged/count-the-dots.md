@@ -1,6 +1,7 @@
 ---
 title: "Count the Dots: binary numbers"
 slides: /unplugged/count-the-dots-slides/
+lesson_plan: /unplugged/count-the-dots-lesson-plan/
 generator: /unplugged/count-the-dots-generator/
 generator_presets:
   - { label: "Message in lights", query: "theme=lights&direction=decode" }
@@ -18,6 +19,63 @@ time: 30
 grouping: Solo or pair
 materials: "Pencil, and a few coins or scraps of paper (optional)"
 ---
+
+<aside class="teacher-box" markdown="1">
+## Just For Teachers:
+
+<p class="teacher-box-hint">This box never prints and isn't in the Word copy. Students who open this page online can still see it.</p>
+
+### Printing
+
+Use **Print this lesson** (or Ctrl+P / &#8984;P). Printed sheets get a
+**Name, Date, and Period** line at the top, and the site menu, buttons, and
+this box are left off. For the answer key, click **Show answer key** at the
+bottom of the page (or add `?key=1` to the address), then print.
+
+### Word or Google Docs
+
+**Download as Word (.docx)** makes an editable copy you can change. For a
+Google Doc, upload that file to Google Drive and open it with Google Docs.
+
+### Make new sets
+
+The [**New set** page]({{ page.generator | relative_url }}) makes fresh
+message-in-lights puzzles for early finishers, extra practice, or just fun.
+Pick the symbols (lights, stars, pizza and broccoli, poo and toilet, a
+surprise pair, or a new pair on every row), decode or encode, and how many
+**copies**: a class set gives every student a different puzzle. **Sets per
+student: 2** prints one set on the front and one on the back. Every set
+fits on one page and prints its set number, so you can reprint the same
+one later.
+
+### Slides
+
+- [Count the Dots slides]({{ page.slides | relative_url }}): project these
+  to introduce the cards. They stop before giving away the sheet's answers.
+- [Teaching Binary With Coins](https://porttack.com/2026/08/31/teaching-binary-with-coins.html):
+  another way into the same idea, using coins that are heads or tails.
+
+### Full lesson plan
+
+Want to teach this live instead of as a sub-day sheet? The
+[lesson plan]({{ '/unplugged/count-the-dots-lesson-plan/' | relative_url }})
+follows CS Unplugged's original classroom version, where every student cuts
+out a set of [dot cards]({{ '/unplugged/count-the-dots-cards/' | relative_url }}).
+
+### Another great way to start
+
+The [Teaching Binary With Coins](https://porttack.com/2026/08/31/teaching-binary-with-coins.html)
+lesson plan is just as good: a hands-on, interactive way to begin teaching
+binary, with students flipping coins heads or tails. Use it to start, use
+the dot cards to start, or use both.
+
+### Standards
+
+This sheet's standards are listed under **Standards alignment** at the
+bottom of the page.
+
+{% include unplugged/binary-standards-note.html %}
+</aside>
 
 So you thought you knew how to count? Here is a new way to do it.
 Everything you see or hear on a computer (words, pictures, numbers,

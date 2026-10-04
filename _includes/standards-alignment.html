@@ -1,13 +1,30 @@
 {% comment %}
   Locator for this page in its pathway's carrier: `chapter:` front matter
   (pico), or, for a pathway with `standards_locator: slug` in
-  _data/pathways.yml (unplugged), the page's own URL slug. Renders nothing
-  until the carrier actually lists that locator.
+  _data/pathways.yml (unplugged), the page's own URL slug. A page can borrow
+  another page's locator with its own `standards_locator:` front matter (a
+  lesson plan showing its worksheet's standards). Renders nothing until the
+  carrier actually lists that locator.
+
+  `standards_note: binary` adds the binary heads-up callout under the heading.
+
+  `standards_open: true` on a page shows the list as a plain section (no
+  chevron) that also prints; the page then places this include itself, and
+  _layouts/lesson.html skips its own copy at the bottom.
 {% endcomment %}
-{% if pathway_meta.standards_locator == "slug" %}{% assign std_locator = page.slug %}{% else %}{% assign std_locator = page.chapter %}{% endif %}
+{% unless pathway_meta %}{% assign pathway_meta = site.data.pathways | where: "id", page.pathway | first %}{% endunless %}
+{% if page.standards_locator %}{% assign std_locator = page.standards_locator %}{% elsif pathway_meta.standards_locator == "slug" %}{% assign std_locator = page.slug %}{% else %}{% assign std_locator = page.chapter %}{% endif %}
 {% if std_locator and pathway_meta.standards_carrier %}
+{% if page.standards_open %}
+<section class="standards-alignment standards-alignment-open" data-chapter="{{ std_locator }}" data-carrier-slug="{{ pathway_meta.standards_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ pathway_meta.standards_carrier }}.json" hidden>
+  <h2>Standards alignment</h2>
+  {% if page.standards_note == "binary" %}{% include unplugged/binary-standards-note.html %}{% endif %}
+  <div class="standards-alignment-body"></div>
+</section>
+{% else %}
 <details class="hint-toggle standards-alignment" data-chapter="{{ std_locator }}" data-carrier-slug="{{ pathway_meta.standards_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ pathway_meta.standards_carrier }}.json" hidden>
   <summary>Standards alignment</summary>
   <div class="standards-alignment-body"></div>
 </details>
+{% endif %}
 {% endif %}

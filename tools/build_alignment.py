@@ -750,9 +750,15 @@ def changes_from_2017_html(catalog):
             return f'<a href="csta2017-standards-reference.html#S-{code}">{code}</a>'
         return re.sub(r"\b(?:(?:MS|HS|S[12])-[A-Z]{3}-[A-Z]{2}-\d{2}|(?:2|3A|3B)-[A-Z]{2}-\d{2})\b", repl, esc(text))
 
-    out = ['<details class="changes-from-2017"><summary><strong>What changed from CSTA 2017</strong></summary>']
+    out = ['<details class="changes-from-2017" id="changes-from-2017" open><summary><strong>What changed from CSTA 2017</strong></summary>']
     for item in changes.get("items", []):
-        out.append(f'<p><strong>{esc(item["heading"])}.</strong> {link_codes(item["text"])}</p>')
+        more = "".join(
+            f' <a href="{esc(l["href"])}">{esc(l["text"])}</a>.' for l in item.get("links", [])
+        )
+        if more:
+            more = " Further reading:" + more
+        heading = item["heading"] if item["heading"][-1:] in "?!." else item["heading"] + "."
+        out.append(f'<p><strong>{esc(heading)}</strong> {link_codes(item["text"])}{more}</p>')
     if changes.get("basis"):
         out.append(f'<p class="note">{esc(changes["basis"])}</p>')
     out.append("</details>")
