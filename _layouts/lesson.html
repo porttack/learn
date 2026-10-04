@@ -51,6 +51,7 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
     {% endif %}
     <button class="print-button" onclick="window.print()">Print this lesson</button>
     {% if pathway_meta.docx_export %}<button class="print-button docx-button" type="button">Download as Word (.docx)</button>{% endif %}
+    {% if page.slides %}<a class="print-button slides-button" href="{{ page.slides | relative_url }}">Slides</a>{% endif %}
     {% if next_index < pathway_pages.size %}
       {% assign next_page = pathway_pages[next_index] %}
       <a class="lesson-next" href="{{ next_page.url | relative_url }}">{{ next_page.title }} &rarr;</a>
@@ -211,7 +212,11 @@ var STANDARDS_FRAMEWORKS = {
   apcsp: { file: 'apcsp-standards-reference.html', prefix: 'T', name: 'AP Computer Science Principles', catalog: 'apcsp' },
   castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California 9-12 Computer Science', catalog: 'castandards' },
   csta2026: { file: 'csta2026-standards-reference.html', prefix: 'T', name: 'CSTA 2026', catalog: 'csta2026' },
-  'ca-ict-anchor': { file: 'ca-ict-anchor-standards-reference.html', prefix: 'T', name: 'CA CTE (ICT)', catalog: 'ca-ict-anchor' }
+  'ca-ict-anchor': { file: 'ca-ict-anchor-standards-reference.html', prefix: 'T', name: 'CA CTE (ICT)', catalog: 'ca-ict-anchor' },
+  'iste-digital-citizen': { file: 'iste-digital-citizen-standards-reference.html', prefix: 'T', name: 'ISTE Digital Citizen', catalog: 'iste-digital-citizen' },
+  'unesco-mil': { file: 'unesco-mil-standards-reference.html', prefix: 'T', name: 'UNESCO Media and Information Literacy', catalog: 'unesco-mil' },
+  'unesco-ai-cfs': { file: 'unesco-ai-cfs-standards-reference.html', prefix: 'T', name: 'UNESCO AI Competency Framework for Students', catalog: 'unesco-ai-cfs' },
+  'aasl-engage': { file: 'aasl-engage-standards-reference.html', prefix: 'T', name: 'AASL Engage (National School Library Standards)', catalog: 'aasl-engage' }
 };
 
 function escapeHtml(s) {
@@ -245,6 +250,18 @@ function catalogLabel(fw, catalogData, code) {
       });
     });
     return label;
+  }
+  if (catalogData.groups) {
+    // Shared shape for iste-digital-citizen/unesco-mil/unesco-ai-cfs: {groups:
+    // [{items: [{code, paraphrase}]}]}. See tools/build_alignment.py's
+    // render_grouped for the full shape.
+    var label2 = null;
+    catalogData.groups.forEach(function (g) {
+      (g.items || []).forEach(function (item) {
+        if (item.code === code) label2 = item.paraphrase;
+      });
+    });
+    return label2;
   }
   return null;
 }

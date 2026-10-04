@@ -29,6 +29,7 @@ The table is a view over front matter, not folders. Each activity sets:
   topics:   [Binary, Lists, ...]  (the table groups by the first topic)
   time, materials                 (shown on the page)
   reviewed: 2026-10-03            (Reviewed column: set ONLY by the teacher after checking the sheet)
+  slides: /unplugged/<slug>-slides/  (optional intro deck; "Slides" link here and on the sheet)
   kind:     [single, supplementary] is kept in front matter but no longer
             drives the landing page
 Sequences live in _data/unplugged_sequences.yml, so one activity can appear
@@ -78,7 +79,7 @@ in several sections at once without being copied.
       <td class="mark">{% if pair %}&#10003;{% endif %}</td>
       <td class="mark">{{ a.time }}</td>
       <td class="mark">{% if a.reviewed %}<span title="Reviewed {{ a.reviewed | date: '%B %-d, %Y' }}">&#9733;</span>{% endif %}</td>
-      <td>{% if a.generator %}<a class="lesson-companion-link" href="{{ a.generator | relative_url }}" aria-label="New set: {{ a.title }}">New set</a>{% endif %}</td>
+      <td>{% if a.generator %}<a class="lesson-companion-link" href="{{ a.generator | relative_url }}" aria-label="New set: {{ a.title }}">New set</a>{% endif %}{% if a.slides %} <a class="lesson-companion-link" href="{{ a.slides | relative_url }}" aria-label="Slides: {{ a.title }}">Slides</a>{% endif %}</td>
     </tr>
     {%- endfor %}
   {%- endfor %}

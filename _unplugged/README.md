@@ -77,6 +77,7 @@ Book images: `pdfimages -png -f P -l P tmp/CSUnplugged_2015_v3.1.pdf out`
     original_print: https://...  # the original printable PDF, when there is one
     k5: true                   # K-5 column: only when the source's own age range is 10 or under
     reviewed: 2026-10-03       # Reviewed column: the teacher has checked this sheet. Only the teacher sets it.
+    slides: /unplugged/<slug>-slides/  # optional intro deck (pattern: unplugged/muddy-city-slides.html, copied from the Pico decks)
     supports: /working-in-python/chap09.html         # optional, with supports_title:
 
 `layout`, `pathway`, and `label` come from `_config.yml` defaults. Don't set

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" width="420" height="300" role="img" aria-label="Three houses A, B, and C. Street A to B costs 2 stones, B to C costs 3, and A to C costs 5.">
+  <style>
+    .street { stroke: #333; stroke-width: 4; }
+    .cost { font: 700 30px system-ui, sans-serif; fill: #111; }
+    .costbox { fill: #fff; stroke: #333; stroke-width: 2; }
+    .house { fill: #fff; stroke: #111; stroke-width: 3; stroke-linejoin: round; }
+    .label { font: 700 26px system-ui, sans-serif; fill: #111; }
+  </style>
+  <line class="street" x1="80" y1="220" x2="210" y2="70"/>
+  <line class="street" x1="210" y1="70" x2="340" y2="220"/>
+  <line class="street" x1="80" y1="220" x2="340" y2="220"/>
+  <rect class="costbox" x="118" y="118" width="40" height="40" rx="6"/><text class="cost" x="138" y="149" text-anchor="middle">2</text>
+  <rect class="costbox" x="262" y="118" width="40" height="40" rx="6"/><text class="cost" x="282" y="149" text-anchor="middle">3</text>
+  <rect class="costbox" x="190" y="200" width="40" height="40" rx="6"/><text class="cost" x="210" y="231" text-anchor="middle">5</text>
+  <g transform="translate(80 220)"><path class="house" d="M-26 -4 L0 -30 L26 -4 L26 26 L-26 26 Z"/><text class="label" x="0" y="20" text-anchor="middle">A</text></g>
+  <g transform="translate(210 70)"><path class="house" d="M-26 -4 L0 -30 L26 -4 L26 26 L-26 26 Z"/><text class="label" x="0" y="20" text-anchor="middle">B</text></g>
+  <g transform="translate(340 220)"><path class="house" d="M-26 -4 L0 -30 L26 -4 L26 26 L-26 26 Z"/><text class="label" x="0" y="20" text-anchor="middle">C</text></g>
+</svg>

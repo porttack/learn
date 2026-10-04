@@ -5,6 +5,7 @@ source_url: "https://classic.csunplugged.org/activities/minimal-spanning-trees/"
 original_print: "https://classic.csunplugged.org/documents/activities/minimal-spanning-trees/unplugged-09-minimal_spanning_trees.pdf"
 k5: true
 reviewed: 2026-10-03
+slides: /unplugged/muddy-city-slides/
 level: ms
 kind: [single, supplementary]
 topics: [Graphs, Algorithms]
