@@ -14,8 +14,15 @@ standards_note: binary
 A teacher-led version of [Count the Dots]({{ '/unplugged/count-the-dots/' | relative_url }}),
 following CS Unplugged's original classroom activity: a demonstration at the
 front of the room, then every student cuts out and works with their own
-set of five dot cards. About **50 minutes**. On a sub day, skip all of this
-and hand out the worksheet: it stands on its own.
+set of five dot cards. About **50 minutes**. Leaving it for a sub? Use the
+box below instead.
+
+{% include unplugged/sub-box.html
+   sheet="/unplugged/count-the-dots/"
+   generator="/unplugged/count-the-dots-generator/"
+   keep_going="message-in-lights puzzle (a joke whose punchline is hidden in binary)"
+   setup="No cards, scissors, or slides needed."
+   say="Today you're learning how computers count using only 0 and 1. Read the sheet and work on your own. Stuck? Cover cards with a coin or your finger and count the dots you can still see." %}
 
 ## Students will be able to
 
@@ -34,7 +41,8 @@ and hand out the worksheet: it stands on its own.
   one per student, plus the answer key (click **Show answer key** at the
   bottom of the sheet, or add `?key=1` to its address).
 - **The [slides]({{ '/unplugged/count-the-dots-slides/' | relative_url }})** (optional).
-- **Early finishers:** a class set from the [New set page]({{ '/unplugged/count-the-dots-generator/' | relative_url }}).
+- **Keep-going sheets:** a class set from the [New set page]({{ '/unplugged/count-the-dots-generator/' | relative_url }}),
+  two sets per student (front and back), so nobody runs out of work.
 
 ## Before class
 
@@ -118,7 +126,7 @@ Hand out the [worksheet]({{ '/unplugged/count-the-dots/' | relative_url }}).
 Students can keep their cards on the desk while they work. Show the "On
 your sheet" slide so everyone knows where to start.
 
-Early finishers: a [message in lights]({{ '/unplugged/count-the-dots-generator/' | relative_url }})
+When a student finishes, hand them the next sheet: a [message in lights]({{ '/unplugged/count-the-dots-generator/' | relative_url }})
 from a class set, so neighbors get different puzzles.
 
 ## 6. Wrap-up (5 minutes)

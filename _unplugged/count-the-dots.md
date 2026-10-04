@@ -40,7 +40,8 @@ Google Doc, upload that file to Google Drive and open it with Google Docs.
 ### Make new sets
 
 The [**New set** page]({{ page.generator | relative_url }}) makes fresh
-message-in-lights puzzles for early finishers, extra practice, or just fun.
+message-in-lights puzzles, so a student who finishes always has a next
+sheet to start.
 Pick the symbols (lights, stars, pizza and broccoli, poo and toilet, a
 surprise pair, or a new pair on every row), decode or encode, and how many
 **copies**: a class set gives every student a different puzzle. **Sets per

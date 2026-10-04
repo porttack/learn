@@ -1,5 +1,6 @@
 ---
 title: "Solo Battleship"
+lesson_plan: /unplugged/solo-battleship-lesson-plan/
 reviewed: 2026-10-03
 source: original
 level: ms

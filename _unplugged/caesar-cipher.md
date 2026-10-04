@@ -1,5 +1,6 @@
 ---
 title: "Caesar Cipher: hiding a message in plain sight"
+lesson_plan: /unplugged/caesar-cipher-lesson-plan/
 reviewed: 2026-10-03
 slides: /unplugged/caesar-cipher-slides/
 source: original

@@ -36,8 +36,15 @@
 }
 
 @media print {
-  .teacher-box {
+  .teacher-box:not(.sub-box) {
     display: none !important;
+  }
+
+  // The sub box is meant to be printed and left on the desk.
+  .teacher-box.sub-box {
+    background: none;
+    border-width: 2px;
+    break-inside: avoid;
   }
 }
 

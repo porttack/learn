@@ -1,5 +1,6 @@
 ---
 title: "Pixel Pictures"
+lesson_plan: /unplugged/pixel-pictures-lesson-plan/
 source: cs-unplugged-2015
 source_url: "https://classic.csunplugged.org/activities/image-representation/"
 original_print: "https://classic.csunplugged.org/documents/activities/image-representation/unplugged-02-image_representation.pdf"

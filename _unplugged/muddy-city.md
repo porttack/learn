@@ -1,5 +1,6 @@
 ---
 title: "The Muddy City"
+lesson_plan: /unplugged/muddy-city-lesson-plan/
 source: cs-unplugged-2015
 source_url: "https://classic.csunplugged.org/activities/minimal-spanning-trees/"
 original_print: "https://classic.csunplugged.org/documents/activities/minimal-spanning-trees/unplugged-09-minimal_spanning_trees.pdf"
@@ -170,9 +171,9 @@ and [P versus NP](https://en.wikipedia.org/wiki/P_versus_NP_problem).
 </section>
 
 <section class="muddy-extra" markdown="1">
-## Early finishers
+## Keep going
 
-Finished already? Here are three more towns. Same two rules as before:
+Here are three more towns to pave. Same two rules as before:
 pave enough roads to connect every house, and use as few paving stones as
 possible.
 
@@ -214,7 +215,7 @@ would make a loop that isn't needed.
 way to get back home without walking some roads twice. The mail carrier's
 question is a different problem: the traveling salesperson problem.
 
-**Early finisher towns.** Minimum stones and one best set of roads for
+**Keep-going towns.** Minimum stones and one best set of roads for
 each extra town:
 
 <div class="muddy-extra-towns-key" id="muddy-extra-towns-key"></div>

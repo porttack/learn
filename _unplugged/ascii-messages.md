@@ -1,5 +1,6 @@
 ---
 title: "Secret Messages in ASCII"
+lesson_plan: /unplugged/ascii-messages-lesson-plan/
 reviewed: 2026-10-03
 source: original
 level: ms
