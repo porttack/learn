@@ -1017,23 +1017,55 @@ figure {
 
 .lesson-nav {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.9em;
   margin-top: 2.5em;
-  padding-top: 1em;
+  padding-top: 1.2em;
   border-top: 1px solid $grey-color-light;
 
   a {
     text-decoration: none;
   }
+}
+
+.lesson-nav-pager {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+
+  .lesson-next {
+    margin-left: auto;
+    text-align: right;
+  }
+}
+
+// One row of same-size buttons: Print, Word, Slides, answer key.
+.lesson-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5em;
 
   .print-button {
+    display: inline-flex;
+    align-items: center;
     font: inherit;
-    background: none;
-    border: 1px solid $grey-color;
-    border-radius: 4px;
-    padding: 0.4em 0.9em;
+    font-size: 0.9em;
+    line-height: 1.2;
+    white-space: nowrap;
+    color: $text-color;
+    background: #fff;
+    border: 1px solid #c8c8c8;
+    border-radius: 6px;
+    padding: 0.45em 0.95em;
     cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+      background: $grey-color-light;
+      border-color: $grey-color;
+      text-decoration: none;
+    }
   }
 }
 

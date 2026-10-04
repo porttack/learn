@@ -256,10 +256,6 @@ table.activity-table {
   display: none;
 }
 
-.key-link {
-  font-size: 0.85em;
-  color: $grey-color-dark;
-}
 
 @media print {
   .name-line {
@@ -351,16 +347,30 @@ table.activity-table {
   }
 }
 
-// "Suggest an edit" / "Request a change or fix" (screen only; .lesson-nav
-// is already hidden in print).
+// "Suggest an edit" / "Request a change or fix" / "History": one quiet,
+// dot-separated line under the action buttons (screen only; .lesson-nav is
+// already hidden in print).
 .suggest-links {
-  display: inline-flex;
+  display: flex;
   flex-wrap: wrap;
-  gap: 0.2em 1em;
-  font-size: 0.85em;
+  align-items: center;
+  font-size: 0.82em;
 
   a {
-    color: $grey-color-dark;
+    color: $grey-color;
+
+    &:hover {
+      color: $grey-color-dark;
+      text-decoration: underline;
+    }
+  }
+
+  a + a::before {
+    content: "\00b7";
+    display: inline-block;
+    margin: 0 0.6em;
+    color: $grey-color;
+    text-decoration: none;
   }
 }
 

@@ -45,17 +45,26 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
   {% if pathway_meta.name_line %}{% include unplugged/new-set-bar.html %}{% endif %}
 
   <nav class="lesson-nav">
+    {% comment %}Three rows: prev/next (only pathways that use them), one row
+    of same-size action buttons (the answer-key link joins it from the script
+    below), then a quiet line of feedback links.{% endcomment %}
+    {% if current_index > 0 or next_index < pathway_pages.size %}
+    <div class="lesson-nav-pager">
     {% if current_index > 0 %}
       {% assign prev_page = pathway_pages[prev_index] %}
       <a class="lesson-prev" href="{{ prev_page.url | relative_url }}">&larr; {{ prev_page.title }}</a>
     {% endif %}
-    <button class="print-button" onclick="window.print()">Print this lesson</button>
-    {% if pathway_meta.docx_export %}<button class="print-button docx-button" type="button">Download as Word (.docx)</button>{% endif %}
-    {% if page.slides %}<a class="print-button slides-button" href="{{ page.slides | relative_url }}">Slides</a>{% endif %}
     {% if next_index < pathway_pages.size %}
       {% assign next_page = pathway_pages[next_index] %}
       <a class="lesson-next" href="{{ next_page.url | relative_url }}">{{ next_page.title }} &rarr;</a>
     {% endif %}
+    </div>
+    {% endif %}
+    <div class="lesson-actions">
+      <button class="print-button" onclick="window.print()">Print this lesson</button>
+      {% if pathway_meta.docx_export %}<button class="print-button docx-button" type="button">Download as Word (.docx)</button>{% endif %}
+      {% if page.slides %}<a class="print-button slides-button" href="{{ page.slides | relative_url }}">Slides</a>{% endif %}
+    </div>
     {% comment %}Feedback links (screen only), for pathways with
     suggest_edits: true. "Suggest an edit" opens this page's source in
     GitHub's web editor (non-collaborators get a fork and a pull request);
@@ -68,11 +77,11 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
 What should change, and why?
 
 {% endcapture %}
-    <span class="suggest-links">
+    <div class="suggest-links">
       <a href="https://github.com/{{ site.repository }}/edit/main/{{ page.path }}">Suggest an edit</a>
       <a href="https://github.com/{{ site.repository }}/issues/new?title={{ page.title | prepend: '] ' | prepend: pathway_meta.title | prepend: '[' | url_encode }}&amp;body={{ issue_body | url_encode }}">Request a change or fix</a>
       <a class="history-link" href="https://github.com/{{ site.repository }}/commits/main/{{ page.path }}">History</a>
-    </span>
+    </div>
     {% endif %}
   </nav>
 
@@ -101,10 +110,10 @@ What should change, and why?
   if (q.has("key")) html.classList.add("show-key");
   // A quiet "answer key" link, only on pages that have one (screen only).
   var key = document.querySelector(".answer-key");
-  var nav = document.querySelector(".lesson-nav");
+  var nav = document.querySelector(".lesson-actions") || document.querySelector(".lesson-nav");
   if (key && nav) {
     var a = document.createElement("a");
-    a.className = "key-link";
+    a.className = "print-button key-link";
     var next = new URLSearchParams(location.search);
     if (q.has("key")) { next.delete("key"); a.textContent = "Hide answer key"; }
     else { next.set("key", "1"); a.textContent = "Show answer key"; }
