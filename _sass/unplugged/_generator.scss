@@ -444,7 +444,9 @@ table.activity-table {
 
 // Message-in-lights generator (lights-generator.js).
 table.lights-table,
-table.lights-encode {
+table.lights-encode,
+table.checkoff.lights-table,
+table.checkoff.lights-encode {
   width: auto;
 
   td, th {
@@ -470,6 +472,12 @@ td.lights-key {
 td.lights-box {
   width: 2.2em;
   height: 2em;
+}
+
+// Narrow Number and Letter columns sit right next to the lights, so each
+// answer is easy to line up with its row.
+table.lights-table td:not(.lights-cell):not(.lights-key) {
+  width: 4.5em;
 }
 
 td.lights-letter {

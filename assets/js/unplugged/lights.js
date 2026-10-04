@@ -10,10 +10,19 @@ export const THEMES = {
   stars: { label: "Stars (★ / ☆)", on: "★", off: "☆" },
   boxes: { label: "Boxes (☑ / ☐)", on: "☑", off: "☐" },
   triangles: { label: "Triangles (▲ / ▽)", on: "▲", off: "▽" },
-  // The funny ones (emoji; they print fine in black and white).
+  // The funny ones. Each pair must differ in *shape*, not just color, so it
+  // still reads on a black-and-white copy (no two round faces).
   pizza: { label: "Pizza = 1, broccoli = 0", on: "\u{1F355}", off: "\u{1F966}" },
-  pets: { label: "Dog = 1, cat = 0", on: "\u{1F436}", off: "\u{1F431}" },
-  sleepy: { label: "Awake = 1, asleep = 0", on: "\u{1F600}", off: "\u{1F634}" },
+  poo: { label: "Poo = 1, toilet = 0", on: "\u{1F4A9}", off: "\u{1F6BD}" },
+  dino: { label: "Dinosaur = 1, egg = 0", on: "\u{1F996}", off: "\u{1F95A}" },
+  ghost: { label: "Ghost = 1, pumpkin = 0", on: "\u{1F47B}", off: "\u{1F383}" },
+  unicorn: { label: "Unicorn = 1, rainbow = 0", on: "\u{1F984}", off: "\u{1F308}" },
+  cactus: { label: "Cactus = 1, balloon = 0", on: "\u{1F335}", off: "\u{1F388}" },
+  rocket: { label: "Rocket = 1, planet = 0", on: "\u{1F680}", off: "\u{1FA90}" },
+  socks: { label: "Sock = 1, sneaker = 0", on: "\u{1F9E6}", off: "\u{1F45F}" },
+  banana: { label: "Banana = 1, donut = 0", on: "\u{1F34C}", off: "\u{1F369}" },
+  dog: { label: "Dog = 1, bone = 0", on: "\u{1F436}", off: "\u{1F9B4}" },
+  sleepy: { label: "Awake = 1, zzz = 0", on: "\u{1F600}", off: "\u{1F4A4}" },
   thumbs: { label: "Thumbs up = 1, down = 0", on: "\u{1F44D}", off: "\u{1F44E}" },
   sky: { label: "Sun = 1, moon = 0", on: "\u2600\uFE0F", off: "\u{1F319}" },
 };
