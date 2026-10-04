@@ -1,5 +1,6 @@
 ---
 title: "LMC: make a new set"
+source: original
 level: hs
 companion: true
 scripts: [/assets/js/unplugged/lmc-generator.js]

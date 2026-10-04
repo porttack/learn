@@ -1,5 +1,6 @@
 ---
 title: "Trace a search: make a new list"
+source: original
 level: ms
 companion: true
 scripts: [/assets/js/unplugged/search-trace-generator.js]

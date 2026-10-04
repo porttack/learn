@@ -1,5 +1,6 @@
 ---
 title: "Secret Messages: make a new set"
+source: original
 level: both
 companion: true
 scripts: [/assets/js/unplugged/ascii-messages-generator.js]
