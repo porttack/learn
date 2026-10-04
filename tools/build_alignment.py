@@ -80,26 +80,34 @@ SITE_MENU_CSS = """
   background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
 }
 .site-menu .site-menu-panel a {
-  display: block; padding: .5em 1em; color: var(--fg); text-decoration: none; white-space: nowrap;
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
 }
 .site-menu .site-menu-panel a:hover { background: var(--code-bg); }
 .site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
 .site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
 """
 
 # Items must match _data/site_menu.yml exactly -- that file is the real
 # source of truth for the site's nav; this is a hand-kept copy for pages
-# Jekyll doesn't render.
+# Jekyll doesn't render. Items without their own favicon get an empty
+# same-size <span> (see _layouts/minimal.html) so every title still lines
+# up at the same left edge.
 SITE_MENU_HTML = """<div class="site-menu">
 <input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
 <label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
 <label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
 <nav class="site-menu-panel">
-<a href="/">Home (learn.porttack.com)</a>
-<a href="/pico/">MicroPython on Pi Pico</a>
-<a href="/electronics101/">Electronics 101</a>
-<a href="/working-in-python/">Working in Python</a>
-<a href="/standards/">Standards</a>
+<a href="/"><span class="site-menu-item-icon" aria-hidden="true"></span>Home (learn.porttack.com)</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico</a>
+<a href="/electronics101/"><span class="site-menu-item-icon" aria-hidden="true"></span>Electronics 101</a>
+<a href="/working-in-python/"><span class="site-menu-item-icon" aria-hidden="true"></span>Working in Python</a>
+<a href="/python3d/"><span class="site-menu-item-icon" aria-hidden="true"></span>Python in 3D</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
 </nav>
 </div>"""
 

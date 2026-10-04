@@ -1,11 +1,21 @@
 # Links shown in the hamburger menu on every page using _layouts/minimal.html
 # (_includes are per-page; this is the one place that controls the whole
 # site's nav menu). Order here is the order they render in.
+#
+# icon: is optional -- only set for pathways with their own dedicated
+# favicon file (see _includes/head.html's pathway-scoped favicon branches).
+# Items without one still line up, via an empty same-size placeholder in the
+# menu markup (_layouts/minimal.html) -- see that file's comment.
+#
+# tools/build_alignment.py's SITE_MENU_HTML/SITE_MENU_CSS is a hand-kept
+# copy of this same menu for pages Jekyll doesn't render (the generated
+# standards reference pages) -- keep both in sync by hand.
 
 - title: Home (learn.porttack.com)
   url: /
 - title: MicroPython on Pi Pico
   url: /pico/
+  icon: /assets/img/pico/favicon.svg
 - title: Electronics 101
   url: /electronics101/
 - title: Working in Python
@@ -14,5 +24,7 @@
   url: /python3d/
 - title: CS Unplugged
   url: /unplugged/
+  icon: /assets/img/unplugged/favicon.png
 - title: Standards
   url: /standards/
+  icon: /assets/img/standards/favicon.svg

@@ -11,7 +11,13 @@
       <label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
       <nav class="site-menu-panel">
         {% for item in site.data.site_menu %}
-        <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+        <a href="{{ item.url | relative_url }}">
+          {%- if item.icon -%}
+          <img src="{{ item.icon | relative_url }}" class="site-menu-item-icon" alt="">
+          {%- else -%}
+          <span class="site-menu-item-icon" aria-hidden="true"></span>
+          {%- endif -%}
+          {{ item.title }}</a>
         {% endfor %}
       </nav>
     </div>

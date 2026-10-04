@@ -77,7 +77,9 @@ $content-width: 900px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 
     a {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 0.6em;
       padding: 0.5em 1em;
       color: $text-color;
       text-decoration: none;
@@ -86,6 +88,17 @@ $content-width: 900px;
       &:hover {
         background: $grey-color-light;
       }
+    }
+
+    // Reserved even for items with no icon (an empty same-size <span>, see
+    // _layouts/minimal.html), so every item's title lines up at the same
+    // left edge instead of icon-having items alone being indented.
+    .site-menu-item-icon {
+      width: 1.1em;
+      height: 1.1em;
+      flex: 0 0 auto;
+      display: inline-block;
+      object-fit: contain;
     }
   }
 

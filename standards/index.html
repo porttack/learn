@@ -362,11 +362,15 @@ noscript p {
   background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
 }
 .site-menu .site-menu-panel a {
-  display: block; padding: .5em 1em; color: var(--fg); text-decoration: none; white-space: nowrap;
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
 }
 .site-menu .site-menu-panel a:hover { background: var(--code-bg); }
 .site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
 .site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
 </style>
 </head>
 <body>
@@ -376,7 +380,13 @@ noscript p {
 <label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
 <nav class="site-menu-panel">
 {% for item in site.data.site_menu %}
-<a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+<a href="{{ item.url | relative_url }}">
+  {%- if item.icon -%}
+  <img src="{{ item.icon | relative_url }}" class="site-menu-item-icon" alt="">
+  {%- else -%}
+  <span class="site-menu-item-icon" aria-hidden="true"></span>
+  {%- endif -%}
+  {{ item.title }}</a>
 {% endfor %}
 </nav>
 </div>
