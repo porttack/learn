@@ -90,4 +90,12 @@ High school classroom lessons strongly related to MicroPython on Pi Pico. Not pa
 {% endfor %}
 </ol>
 
+## Standards alignment
+
+Every chapter lists the standards it supports under **Standards alignment**
+at the bottom of its own page. Everything aligned so far, across the whole
+book:
+
+{% include standards-coverage-summary.html carrier="pico" %}
+
 {% include provenance.html %}
