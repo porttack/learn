@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 335" font-family="-apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+  <!-- Simple, original diagram (not a photo) of the three buoyancy states a
+       fully submerged object can be in, each shown as weight vs. buoyant
+       force. Same object, same tank, only the ballast changes. Drawn, not
+       photographed, so there is no licensing question about the source. -->
+  <rect x="0" y="0" width="720" height="335" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow-down-2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#1b1f23"/>
+    </marker>
+    <marker id="arrow-up-2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 Z" fill="#0d47a1"/>
+    </marker>
+  </defs>
+
+  <!-- Three tanks -->
+  <g>
+    <!-- Panel 1: Sinks -->
+    <rect x="20" y="60" width="200" height="220" fill="#bfe3f0" stroke="#7fb8cf" stroke-width="2"/>
+    <text x="120" y="40" text-anchor="middle" font-size="18" font-weight="bold" fill="#1b1f23">Sinks</text>
+    <circle cx="120" cy="245" r="22" fill="#616161" stroke="#333" stroke-width="2"/>
+    <line x1="80" y1="200" x2="80" y2="238" stroke="#1b1f23" stroke-width="3" marker-end="url(#arrow-down-2)"/>
+    <line x1="160" y1="238" x2="160" y2="215" stroke="#0d47a1" stroke-width="3" marker-end="url(#arrow-up-2)"/>
+    <text x="120" y="300" text-anchor="middle" font-size="13" fill="#5f6368">weight &gt; buoyant force</text>
+
+    <!-- Panel 2: Hovers -->
+    <rect x="260" y="60" width="200" height="220" fill="#bfe3f0" stroke="#7fb8cf" stroke-width="2"/>
+    <text x="360" y="40" text-anchor="middle" font-size="18" font-weight="bold" fill="#1b1f23">Hovers (neutral)</text>
+    <line x1="260" y1="170" x2="460" y2="170" stroke="#90a4ae" stroke-width="2" stroke-dasharray="5 5"/>
+    <circle cx="360" cy="170" r="22" fill="#616161" stroke="#333" stroke-width="2"/>
+    <line x1="320" y1="130" x2="320" y2="165" stroke="#1b1f23" stroke-width="3" marker-end="url(#arrow-down-2)"/>
+    <line x1="400" y1="210" x2="400" y2="175" stroke="#0d47a1" stroke-width="3" marker-end="url(#arrow-up-2)"/>
+    <text x="360" y="300" text-anchor="middle" font-size="13" fill="#5f6368">weight = buoyant force</text>
+
+    <!-- Panel 3: Floats -->
+    <rect x="500" y="60" width="200" height="220" fill="#bfe3f0" stroke="#7fb8cf" stroke-width="2"/>
+    <text x="600" y="40" text-anchor="middle" font-size="18" font-weight="bold" fill="#1b1f23">Floats</text>
+    <circle cx="600" cy="95" r="22" fill="#616161" stroke="#333" stroke-width="2"/>
+    <line x1="560" y1="60" x2="560" y2="90" stroke="#1b1f23" stroke-width="3" marker-end="url(#arrow-down-2)"/>
+    <line x1="640" y1="130" x2="640" y2="100" stroke="#0d47a1" stroke-width="3" marker-end="url(#arrow-up-2)"/>
+    <text x="600" y="300" text-anchor="middle" font-size="13" fill="#5f6368">rises until it only needs</text>
+    <text x="600" y="316" text-anchor="middle" font-size="13" fill="#5f6368">to displace its own weight</text>
+  </g>
+</svg>

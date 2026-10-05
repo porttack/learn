@@ -1040,6 +1040,62 @@ figure {
   .rw-walk * { transition: none !important; }
 }
 
+// Buoyancy demo: a one-slider interactive embedded directly in
+// _rovrobotics/card-1-1-archimedes-and-buoyancy.md, screen-only (see
+// .buoy-demo in the print media query above) since fig-buoyancy-states.svg
+// already covers the printed page.
+.buoy-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5em;
+  align-items: center;
+  margin: 1.5em 0;
+  padding: 1em;
+  border: 1px solid $grey-color-light;
+  border-radius: 6px;
+
+  .buoy-tank {
+    width: 180px;
+    height: 160px;
+    flex-shrink: 0;
+  }
+
+  .buoy-water { fill: #bfe3f0; stroke: #7fb8cf; stroke-width: 2; }
+
+  .buoy-hover-line {
+    stroke: #90a4ae;
+    stroke-width: 2;
+    stroke-dasharray: 5 5;
+  }
+
+  .buoy-object {
+    fill: #616161;
+    stroke: #333;
+    stroke-width: 2;
+    transition: cy 0.4s ease;
+  }
+
+  .buoy-controls {
+    flex: 1 1 260px;
+    min-width: 240px;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    margin: 0.4em 0 0.8em;
+  }
+
+  .buoy-readout {
+    font-size: 0.92em;
+    line-height: 1.5;
+  }
+
+  .buoy-state {
+    font-size: 1.05em;
+    margin-top: 0.6em;
+  }
+}
+
 .callout {
   margin: 1.5em 0;
   padding: 1em 1.2em;
@@ -1618,7 +1674,8 @@ table.checkoff.light-message td {
   .video-embed,
   .pset-demo,
   .terminal-demo,
-  .rw-walk {
+  .rw-walk,
+  .buoy-demo {
     display: none !important;
   }
 

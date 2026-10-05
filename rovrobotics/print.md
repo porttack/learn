@@ -6,7 +6,7 @@ permalink: /rovrobotics/print/
 
 <div class="print-pathway">
 {% assign all = site.rovrobotics | sort: "order" %}
-{% assign reference = all | where_exp: "l", "l.unit == nil" %}
+{% assign reference = all | where_exp: "l", "l.unit == nil" | where_exp: "l", "l.companion != true" %}
 {% assign cards = all | where_exp: "l", "l.unit != nil" %}
 {% assign units = cards | group_by: "unit" | sort: "name" %}
 
