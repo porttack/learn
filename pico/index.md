@@ -79,7 +79,7 @@ High school classroom lessons strongly related to MicroPython on Pi Pico. Not pa
       {% for part in parts %}
         <li>
           <a href="{{ part.url | relative_url }}">{{ part.title }}</a>
-          {% if part.organizer %}<a class="lesson-companion-link" href="{{ part.organizer | relative_url }}">Notes page</a>{% endif %}
+          {% if part.organizer %}<a class="lesson-companion-link" href="{{ part.organizer | relative_url }}">{{ part.organizer_label | default: "Notes page" }}</a>{% endif %}
           {% if part.slides %}<a class="lesson-companion-link" href="{{ part.slides | relative_url }}">{{ part.label }} slides</a>{% endif %}
           {% if part.subtitle %}<p class="lesson-subtitle">{{ part.subtitle }}</p>{% endif %}
         </li>

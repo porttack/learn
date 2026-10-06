@@ -1,16 +1,16 @@
 ---
 layout: lesson
-title: "Project 1.3: Blinking Your LEDs (Day 2)"
+title: "Project 1.4: Blinking Your LEDs (Day 3)"
 pathway: pico
-order: 102
+order: 103
 project: 1
-project_part: 3
-label: "Project 1.3"
+project_part: 4
+label: "Project 1.4"
 source: original
 subtitle: "Write your first programs for the circuit you built"
 ---
 
-This is for after your three-LED circuit from [Project 1.1](/pico/project1-1-wiring-three-leds/) is signed off, and after [Project 1.2](/pico/project1-2-flashing-with-thonny/) has MicroPython running on your Pico and Thonny connected to it. If you finish early and your teacher is ready for you to move on, this is what comes next.
+This is for after your three-LED circuit from [Project 1.1](/pico/project1-1-wiring-three-leds/) is signed off, [Project 1.2](/pico/project1-2-flashing-with-thonny/) has MicroPython running on your Pico, and [Project 1.3](/pico/project1-3-files-and-the-repl/) has you comfortable saving a file to your Pico and typing commands straight into the REPL. If you finish early and your teacher is ready for you to move on, this is what comes next.
 
 <aside class="callout warning" markdown="1">
 **ONLY AFTER SIGN-OFF**
@@ -20,7 +20,9 @@ Do not connect your Pico to USB until a teacher has checked your circuit against
 
 ### Blink the onboard LED
 
-Not sure where that is? [Chapter 4's photo](/pico/04-physical-computing-with-pico/#fig-4-1) shows exactly where to look: it's the small component to the left of the micro USB port.
+In Project 1.3 you turned the onboard LED on and off by typing commands straight into the REPL, one at a time. Now you'll write those same commands into a script that does the on-off-on-off switching for you, automatically, forever.
+
+Not sure where the onboard LED is? [Chapter 4's photo](/pico/04-physical-computing-with-pico/#fig-4-1) shows exactly where to look: it's the small component to the left of the micro USB port.
 
 Click in Thonny's script area and type the following:
 

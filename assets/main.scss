@@ -167,6 +167,12 @@ figure {
   }
 }
 
+// A small screenshot (a dialog, a menu) that shouldn't stretch to the full
+// article width the way a photo or diagram does.
+figure.figure-small img {
+  max-width: 420px;
+}
+
 // A wide section banner above the H1, the way /unplugged/ has used its own
 // one-off .unplugged-banner (_sass/unplugged/_generator.scss) -- same spec,
 // generalized so another pathway can reuse it instead of copying the rule.
@@ -1740,7 +1746,8 @@ table.checkoff.light-message td {
   }
 
   .print-unit-divider,
-  .cutout-page {
+  .cutout-page,
+  .print-page-break {
     break-before: page;
   }
 
@@ -1779,6 +1786,12 @@ table.checkoff.light-message td {
 
 #fig-cards-9 img { max-width: 26em; }
 #fig-coded-numbers img { max-width: 34em; }
+
+// Project 1.2: the "Allow accessory" dialog is a small square screenshot --
+// .figure-small's 420px still reads oversized on a wide desktop window.
+@media (min-width: 641px) {
+  #fig-project1-2-allow-accessory img { max-width: 280px; }
+}
 
 
 @media print {
