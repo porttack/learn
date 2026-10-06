@@ -102,18 +102,38 @@ permalink: /pico/project1-2-3-intro-slides/
 
   .slide-image-row img {
     max-height: 260px;
-    max-width: 100%;
+    max-width: 620px;
+    flex: 0 1 auto;
+    min-width: 0;
     border-radius: 8px;
     border: 1px solid var(--border);
   }
 
   .slide-image-row .slide-body {
     flex: 1 1 auto;
+    min-width: 0;
     font-size: 30px;
   }
 
   .slide-image-row .slide-body li {
     margin-bottom: 16px;
+  }
+
+  /* A few screenshots (a cropped Shell exchange) are very wide and short --
+     squeezed into the side-by-side row above, they either overflow past the
+     card or shrink the text column to one word per line. Stack those full
+     width instead, image on top, so the wide image reads at a legible size. */
+  .slide-image-stack img {
+    display: block;
+    max-width: 100%;
+    max-height: 240px;
+    margin: 0 auto 28px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-image-stack .slide-body {
+    font-size: 32px;
   }
 
   .slide-body a, .slide-image-row .slide-body a {
@@ -396,6 +416,7 @@ const SLIDES = [
   },
   {
     kind: "image",
+    wide: true,
     kicker: "Confirm it worked",
     title: "MicroPython Connected",
     image: "/assets/img/pico/micropython-connected-menu.png",
@@ -474,6 +495,7 @@ const SLIDES = [
   },
   {
     kind: "image",
+    wide: true,
     kicker: "One line at a time",
     title: "Flip an LED From the REPL",
     image: "/assets/img/pico/repl-led-myled-created.png",
@@ -552,11 +574,12 @@ function Stage({ slide, aspect }) {
     );
   }
   if (slide.kind === "image") {
+    const rowClass = slide.wide ? "slide-image-stack" : "slide-image-row";
     return (
       <div className={"stage " + arClass}>
         <p className="kicker">{slide.kicker}</p>
         <h1 className="slide-title">{slide.title}</h1>
-        <div className="slide-image-row">
+        <div className={rowClass}>
           <img src={slide.image} alt="" />
           <div className="slide-body">{renderBullets(slide.bullets)}</div>
         </div>
