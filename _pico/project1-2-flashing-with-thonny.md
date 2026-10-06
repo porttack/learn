@@ -9,7 +9,7 @@ label: "Project 1.2"
 source: original
 subtitle: "Get MicroPython running on your Pico for the first time, using Thonny"
 organizer: /pico/project1-2-3-checklist/
-organizer_label: "Checklist"
+organizer_label: "Checklist (covers 1.2 & 1.3)"
 slides: /pico/project1-2-3-intro-slides/
 ---
 
