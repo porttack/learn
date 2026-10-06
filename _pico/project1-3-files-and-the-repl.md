@@ -9,7 +9,6 @@ label: "Project 1.3"
 source: original
 subtitle: "See where your code actually lives, save a script to your Pico, and control an LED straight from the REPL"
 hide_copy_buttons: true
-slides: /pico/project1-2-3-intro-slides/
 ---
 
 This is for after [Project 1.2](/pico/project1-2-flashing-with-thonny/) has MicroPython running on your Pico and Thonny connected to it.

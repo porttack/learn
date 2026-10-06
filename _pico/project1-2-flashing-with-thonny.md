@@ -11,6 +11,7 @@ subtitle: "Get MicroPython running on your Pico for the first time, using Thonny
 organizer: /pico/project1-2-3-checklist/
 organizer_label: "Checklist (covers 1.2 & 1.3)"
 slides: /pico/project1-2-3-intro-slides/
+slides_label: "Slides (covers 1.2 & 1.3)"
 ---
 
 <aside class="callout warning" markdown="1">
