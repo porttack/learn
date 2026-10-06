@@ -94,41 +94,19 @@ Three LEDs can do more than blink one at a time, in turn: together, they can cou
   </tbody>
 </table>
 
-It doesn't matter which of your three LEDs you pick for each place value, as long as you keep track of which pin is which. Check your Project 1.1 Notes page for your pin numbers; this example uses GP15 for the 4s place, GP14 for the 2s place, and GP13 for the 1s place, swap in your own:
-
-```python
-import machine
-import time
-
-led_four = machine.Pin(15, machine.Pin.OUT)
-led_two = machine.Pin(14, machine.Pin.OUT)
-led_one = machine.Pin(13, machine.Pin.OUT)
-
-patterns = [
-    (0, 0, 0),
-    (0, 0, 1),
-    (0, 1, 0),
-    (0, 1, 1),
-    (1, 0, 0),
-    (1, 0, 1),
-    (1, 1, 0),
-    (1, 1, 1),
-]
-
-while True:
-    for four, two, one in patterns:
-        led_four.value(four)
-        led_two.value(two)
-        led_one.value(one)
-        time.sleep(1)
-```
-
-Run it, and watch your three LEDs count from 0 to 7 in binary, over and over. Check a couple of patterns against the table above to confirm you're really seeing the numbers you think you are.
+It doesn't matter which of your three LEDs you pick for each place value, as long as you keep track of which pin is which. Check your Project 1.1 Notes page for your pin numbers.
 
 <aside class="callout challenge" markdown="1">
-**CHALLENGE: SKIP THE LOOKUP TABLE**
+**CHALLENGE: COUNT IN BINARY**
 
-The `patterns` list above was typed out by hand, all 8 combinations. Python has two operators that can calculate each LED's state directly from the count instead, without listing every combination yourself: `%` (modulo, the remainder after division) and `//` (floor division, division that drops the remainder). Look up what each one does, then see if you can rewrite the loop without a `patterns` list at all.
+Write a program that counts from 0 to 7, forever, showing each number on your three LEDs as the pattern in the table above: each LED's place value on or off, matching that number's binary representation. You already know everything you need for the loop itself; the real problem is figuring out, for any given number, which of your three LEDs should be on.
+
+Do not write out all 8 patterns by hand. Two operators will do the actual work of converting the number for you:
+
+- `%` (modulo) gives you the remainder after dividing by something.
+- `//` (floor division) divides by something and throws away the remainder, keeping only the whole number part.
+
+Used together, on the same number, over and over, they can peel off one binary digit at a time. Figure out how.
 </aside>
 
 Once you're comfortable blinking and counting, move on to [Project 1.5](/pico/project1-5-fading-an-led-with-pwm/), where your LEDs stop being just on or off.

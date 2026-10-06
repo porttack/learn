@@ -54,36 +54,23 @@ Try each of these one at a time in the REPL and watch the LED's brightness chang
 
 ### Make it breathe
 
-Put the pieces together into a script that fades an LED up to full brightness and back down, over and over:
+You've just set the duty cycle by hand, three times, in the REPL. A real "breathing" effect means changing it automatically and continuously: brighter, brighter, brighter, then dimmer, dimmer, dimmer, forever, with no typing after you click Run.
 
-```python
-import machine
-import time
+<aside class="callout challenge" markdown="1">
+**CHALLENGE: MAKE IT BREATHE**
 
-led = machine.PWM(machine.Pin(13))
-led.freq(1000)
+Write a script that fades your LED continuously: ramping the duty cycle up to full brightness, then back down to off, over and over, forever. You already know every piece you need: a loop that never ends, `duty_u16()`, and `time.sleep()`.
 
-steps = range(0, 65536, 2000)
+A couple of things worth knowing before you start:
 
-while True:
-    for brightness in steps:
-        led.duty_u16(brightness)
-        time.sleep(0.02)
-    for brightness in reversed(steps):
-        led.duty_u16(brightness)
-        time.sleep(0.02)
-```
+- `range()` can count by more than 1 at a time: `range(0, 10, 2)` counts 0, 2, 4, 6, 8. You don't need to visit all 65,536 possible duty cycle values one at a time; your eye can't tell most of them apart anyway.
+- `range()` can also count downward, if you give it a negative step, instead of only ever counting up.
 
-Use whichever pin number you actually wired. Run it, and watch your LED breathe: brighter, brighter, brighter, then dimmer, dimmer, dimmer, forever.
-
-<aside class="callout note" markdown="1">
-**WHY STEP BY 2000, NOT 1**
-
-`duty_u16()` accepts 65,536 different values, far more than your eye can actually distinguish, and far more than you'd want to wait through one at a time. Stepping by 2000 gives about 33 visibly different brightness levels per fade, smooth enough to look continuous, without 65,536 lines of waiting.
+Figure out how to combine these into a loop that rises, then falls, then repeats.
 </aside>
 
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: TWO LEDS, OUT OF SYNC**
 
-Can you fade two of your LEDs at once, each with its own `PWM` object, so one is brightening while the other is dimming? [Chapter 8](/pico/08-temperature-gauge/#fading-an-led-with-pwm) covers PWM in more depth, including how to avoid two pins fighting over the same PWM hardware.
+Once your first LED is breathing, can you fade two of your LEDs at once, each with its own `PWM` object, so one is brightening while the other is dimming? [Chapter 8](/pico/08-temperature-gauge/#fading-an-led-with-pwm) covers PWM in more depth, including how to avoid two pins fighting over the same PWM hardware.
 </aside>
