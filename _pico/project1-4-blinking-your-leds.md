@@ -7,7 +7,7 @@ project: 1
 project_part: 4
 label: "Project 1.4"
 source: original
-subtitle: "Write your first programs for the circuit you built"
+subtitle: "Write your first programs for the circuit you built, then make your three LEDs count in binary"
 ---
 
 This is for after your three-LED circuit from [Project 1.1](/pico/project1-1-wiring-three-leds/) is signed off, [Project 1.2](/pico/project1-2-flashing-with-thonny/) has MicroPython running on your Pico, and [Project 1.3](/pico/project1-3-files-and-the-repl/) has you comfortable saving a file to your Pico and typing commands straight into the REPL. If you finish early and your teacher is ready for you to move on, this is what comes next.
@@ -73,3 +73,62 @@ Every time `.toggle()` runs, it's opening and closing a valve on that GPIO pin, 
 
 Can you light all three LEDs one at a time, in order, each one on for a second before the next one takes over? You'll need a `Pin` object for each LED. Think about what has to happen, in what order, inside your loop.
 </aside>
+
+### Counting in binary
+
+Three LEDs can do more than blink one at a time, in turn: together, they can count. Give each LED a place value, the same idea as the place values in [Secret Messages in Binary](/unplugged/ascii-messages-binary/) if you've done that worksheet: 4, 2, and 1. Any number from 0 to 7 is just some combination of those three, each one either on or off.
+
+<table>
+  <thead>
+    <tr><th>Number</th><th>4s place</th><th>2s place</th><th>1s place</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>0</td><td>off</td><td>off</td><td>off</td></tr>
+    <tr><td>1</td><td>off</td><td>off</td><td>on</td></tr>
+    <tr><td>2</td><td>off</td><td>on</td><td>off</td></tr>
+    <tr><td>3</td><td>off</td><td>on</td><td>on</td></tr>
+    <tr><td>4</td><td>on</td><td>off</td><td>off</td></tr>
+    <tr><td>5</td><td>on</td><td>off</td><td>on</td></tr>
+    <tr><td>6</td><td>on</td><td>on</td><td>off</td></tr>
+    <tr><td>7</td><td>on</td><td>on</td><td>on</td></tr>
+  </tbody>
+</table>
+
+It doesn't matter which of your three LEDs you pick for each place value, as long as you keep track of which pin is which. Check your Project 1.1 Notes page for your pin numbers; this example uses GP15 for the 4s place, GP14 for the 2s place, and GP13 for the 1s place, swap in your own:
+
+```python
+import machine
+import time
+
+led_four = machine.Pin(15, machine.Pin.OUT)
+led_two = machine.Pin(14, machine.Pin.OUT)
+led_one = machine.Pin(13, machine.Pin.OUT)
+
+patterns = [
+    (0, 0, 0),
+    (0, 0, 1),
+    (0, 1, 0),
+    (0, 1, 1),
+    (1, 0, 0),
+    (1, 0, 1),
+    (1, 1, 0),
+    (1, 1, 1),
+]
+
+while True:
+    for four, two, one in patterns:
+        led_four.value(four)
+        led_two.value(two)
+        led_one.value(one)
+        time.sleep(1)
+```
+
+Run it, and watch your three LEDs count from 0 to 7 in binary, over and over. Check a couple of patterns against the table above to confirm you're really seeing the numbers you think you are.
+
+<aside class="callout challenge" markdown="1">
+**CHALLENGE: SKIP THE LOOKUP TABLE**
+
+The `patterns` list above was typed out by hand, all 8 combinations. Python has two operators that can calculate each LED's state directly from the count instead, without listing every combination yourself: `%` (modulo, the remainder after division) and `//` (floor division, division that drops the remainder). Look up what each one does, then see if you can rewrite the loop without a `patterns` list at all.
+</aside>
+
+Once you're comfortable blinking and counting, move on to [Project 1.5](/pico/project1-5-fading-an-led-with-pwm/), where your LEDs stop being just on or off.
