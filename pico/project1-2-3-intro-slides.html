@@ -1,0 +1,767 @@
+---
+title: "Project 1.2 & 1.3 Slides"
+permalink: /pico/project1-2-3-intro-slides/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Projects 1.2 &amp; 1.3: Flashing, Then the REPL -- Slides</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/pico/favicon.svg">
+<style>
+  :root {
+    --accent: #2a7ae2;
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #57606a;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #e9edf1;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  #root { height: 100%; }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .stage-outer {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* Fixed-size design canvas, scaled to fit via a JS-computed transform --
+     lets every slide be authored at generous, fixed pixel sizes ("bigger
+     type") without hand-tuning responsive font sizes per breakpoint. */
+  .stage {
+    width: 1280px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.18);
+    padding: 80px 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .stage.ar-16-9 { height: 720px; }
+  .stage.ar-4-3 { height: 960px; }
+
+  .kicker {
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 18px;
+  }
+
+  .slide-title {
+    font-size: 64px;
+    line-height: 1.1;
+    margin: 0 0 40px;
+    font-weight: 700;
+  }
+
+  .slide-body {
+    font-size: 36px;
+    line-height: 1.5;
+  }
+
+  .slide-body ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+
+  .slide-body li {
+    margin-bottom: 22px;
+  }
+
+  .slide-body li:last-child { margin-bottom: 0; }
+
+  .slide-image-row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .slide-image-row img {
+    max-height: 260px;
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-image-row .slide-body {
+    flex: 1 1 auto;
+    font-size: 30px;
+  }
+
+  .slide-image-row .slide-body li {
+    margin-bottom: 16px;
+  }
+
+  .slide-body a, .slide-image-row .slide-body a {
+    color: var(--accent);
+  }
+
+  .slide-gallery-row {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    align-items: flex-start;
+  }
+
+  .slide-gallery-item {
+    flex: 1 1 0;
+    text-align: center;
+  }
+
+  .slide-gallery-item img {
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-gallery-item .caption {
+    margin-top: 14px;
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .depth-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 14px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  .depth-nav.depth-up {
+    bottom: auto;
+    top: 14px;
+  }
+
+  .depth-nav:hover {
+    background: rgba(0,0,0,0.75);
+  }
+
+  .title-slide {
+    text-align: left;
+    justify-content: center;
+  }
+
+  .title-slide .slide-title {
+    font-size: 76px;
+    margin-bottom: 16px;
+  }
+
+  .title-slide .slide-subtitle {
+    font-size: 34px;
+    color: var(--muted);
+  }
+
+  .safety-slide {
+    background: #fff7e6;
+  }
+
+  .safety-slide .kicker {
+    color: #b25e00;
+  }
+
+  .slide-counter-badge {
+    position: absolute;
+    bottom: 18px;
+    right: 24px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  /* --- Toolbar (not part of the scaled stage, so it stays a readable,
+     fixed size regardless of projector distance / zoom level) --- */
+  .toolbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #1b1f23;
+    color: #fff;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar button {
+    background: #333a42;
+    color: #fff;
+    border: 1px solid #4a545e;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .toolbar button:hover { background: #444e58; }
+  .toolbar button.active { background: var(--accent); border-color: var(--accent); }
+  .toolbar button:disabled { opacity: 0.4; cursor: default; }
+
+  .toolbar .spacer { flex: 1 1 auto; }
+  .toolbar .counter { min-width: 4.5em; text-align: center; }
+  .toolbar a.back-link { color: #9db8e8; text-decoration: none; font-size: 14px; }
+  .toolbar a.back-link:hover { text-decoration: underline; }
+
+  /* --- Speaker notes panel: docked below the stage, plain readable text,
+     hidden by default so a mirrored/projected display shows a clean deck. --- */
+  .notes-panel {
+    flex: 0 0 auto;
+    background: #f6f8fa;
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    max-height: 26vh;
+    overflow-y: auto;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .notes-panel h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+
+  .click-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30%;
+    cursor: pointer;
+  }
+  .click-zone.left { left: 0; }
+  .click-zone.right { right: 0; }
+
+  /* --- Outline / print-notes view: a plain scrollable page listing every
+     slide with its full speaker notes, meant for printing ahead of class. --- */
+  .outline {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .outline h1 { margin-bottom: 4px; }
+  .outline .outline-sub { color: var(--muted); margin-top: 0; }
+
+  .outline-slide {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    break-inside: avoid;
+  }
+
+  .outline-slide h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+  }
+
+  .outline-slide.outline-nested {
+    margin: 12px 0 12px 32px;
+    background: #f6f8fa;
+    border-style: dashed;
+  }
+
+  .outline-slide h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: var(--muted);
+  }
+
+  .outline-slide .outline-bullets {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 14px;
+  }
+
+  .outline-slide .outline-notes {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .outline-slide .outline-notes p:first-child { margin-top: 0; }
+
+  @media print {
+    .toolbar { display: none !important; }
+    .outline { height: auto; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+<script type="text/babel" data-type="module">
+{% raw %}
+const { useState, useEffect, useRef, useCallback } = React;
+
+// Edit this array to change the deck. `bullets` is what students see on the
+// slide (keep it short, they're reading fast); `notes` is only ever shown in
+// the notes panel or the printable outline, so it can be a full paragraph.
+// A bullet can be a plain string, or { text, href } to render as a link.
+//
+// One deck covering both Project 1.2 (flashing MicroPython) and Project 1.3
+// (files on the Pico, then the REPL), since both happen the same class day.
+// A mid-deck "title" slide marks the handoff between the two.
+const SLIDES = [
+  {
+    kind: "title",
+    kicker: "Projects 1.2 & 1.3",
+    title: "Flashing MicroPython, Then the REPL",
+    subtitle: "Day 2: get code running on your Pico for the first time",
+    notes: "Two projects, one class day. 1.2 gets MicroPython onto the Pico; 1.3 explores where files actually live and tries commands straight in the REPL before anyone writes a saved script."
+  },
+  {
+    kind: "bullets",
+    kicker: "First, check",
+    title: "Already Done?",
+    bullets: [
+      "Look at Thonny's bottom-right corner",
+      "Shows MicroPython (Raspberry Pi Pico), connected?",
+      "If so, skip straight to Project 1.3"
+    ],
+    notes: "Some Picos may already have MicroPython from a previous session or a pre-flashed cart. No need to reflash a board that's already set up."
+  },
+  {
+    kind: "bullets",
+    kicker: "Project 1.2",
+    title: "Put Your Pico Into BOOTSEL Mode",
+    bullets: [
+      "Hold down BOOTSEL",
+      "Plug in micro USB while still holding it",
+      "Count to three, then let go",
+      "Pico shows up as a plain removable drive"
+    ],
+    notes: "Not a MicroPython device yet at this point, just a drive. That's expected and means BOOTSEL mode worked."
+  },
+  {
+    kind: "image",
+    kicker: "Permission prompt",
+    title: "Allow the Accessory",
+    image: "/assets/img/pico/allow-accessory-connect.png",
+    bullets: [
+      "Your Mac asks this the first time",
+      "Click Allow, not Don't Allow"
+    ],
+    notes: "A macOS-level USB permission dialog, not a Thonny one. Easy to accidentally dismiss without reading."
+  },
+  {
+    kind: "bullets",
+    kicker: "Install",
+    title: "Install MicroPython From Thonny",
+    bullets: [
+      "Click the interpreter indicator, bottom-right",
+      "Choose Install MicroPython...",
+      "Pick Raspberry Pi Pico 2 W, not plain Pico 2",
+      "Click Install, and wait"
+    ],
+    notes: "Picking the wrong board variant is the single most common mistake here. Don't unplug while it runs."
+  },
+  {
+    kind: "image",
+    kicker: "Confirm it worked",
+    title: "MicroPython Connected",
+    image: "/assets/img/pico/micropython-connected-menu.png",
+    bullets: [
+      "Bottom-right now shows MicroPython (Raspberry Pi Pico)",
+      "If not, reopen the interpreter menu and pick it from the list"
+    ],
+    notes: "Thonny usually reconnects automatically once the install finishes; this is what to check if it doesn't.",
+    down: [
+      {
+        kind: "bullets",
+        kicker: "If Thonny doesn't offer this",
+        title: "The Manual Way Still Works",
+        bullets: [
+          "Thonny's menus shift a little between versions",
+          { text: "Chapter 1 covers downloading the firmware file by hand", href: "/pico/01-get-to-know-your-pico/#installing-micropython" },
+          "Drag it onto the Pico's drive, same result either way"
+        ],
+        notes: "Worth pulling up live if a student's Thonny version doesn't show an obvious install option."
+      }
+    ]
+  },
+  {
+    kind: "title",
+    kicker: "Project 1.3",
+    title: "Files and the REPL",
+    subtitle: "Where does your code actually live?",
+    notes: "Section handoff. 1.2 was all about getting MicroPython installed; 1.3 is about understanding the Pico as its own small computer with its own storage."
+  },
+  {
+    kind: "image",
+    kicker: "Two places",
+    title: "This Computer vs. Raspberry Pi Pico",
+    image: "/assets/img/pico/hello-world-saved-to-pico.png",
+    bullets: [
+      "This computer: files on your Mac",
+      "Raspberry Pi Pico: files on the board itself",
+      "Your LEDs only care about what's on the Pico"
+    ],
+    notes: "Two completely separate storage devices. A file saved to This computer never touches the Pico, no matter how many times you click Run."
+  },
+  {
+    kind: "image",
+    kicker: "Save As",
+    title: "Save a Script to Your Pico",
+    image: "/assets/img/pico/save-destination-dialog.png",
+    bullets: [
+      "File > Save As",
+      "Choose Raspberry Pi Pico, not This computer",
+      "It should now show up in the Pico's own file panel"
+    ],
+    notes: "This is the single most common mistake in Project 1.3: saving to the wrong place and wondering why nothing happens on the board."
+  },
+  {
+    kind: "bullets",
+    kicker: "Built-in",
+    title: "import machine",
+    bullets: [
+      "Already part of the firmware from Project 1.2",
+      "Nothing to download or install",
+      "dir(machine) lists everything it offers"
+    ],
+    notes: "Worth normalizing that a silent import is a successful one. Students often expect some confirmation output."
+  },
+  {
+    kind: "image",
+    kicker: "Not magic",
+    title: "Pin.OUT and Pin.IN Are Just Numbers",
+    image: "/assets/img/pico/repl-pin-out-in.png",
+    bullets: [
+      "print(machine.Pin.OUT) is 1",
+      "print(machine.Pin.IN) is 0",
+      "machine.Pin(13, 1) works exactly the same way"
+    ],
+    notes: "This is the single most useful demystifying moment in the whole project: a constant with a readable name is still just a plain value underneath."
+  },
+  {
+    kind: "image",
+    kicker: "One line at a time",
+    title: "Flip an LED From the REPL",
+    image: "/assets/img/pico/repl-led-myled-created.png",
+    bullets: [
+      "led = machine.Pin(\"LED\", machine.Pin.OUT)",
+      "myled = machine.Pin(13, 1)",
+      "led.value(1) / led.value(0)",
+      ".toggle() flips whichever state it's already in"
+    ],
+    notes: "Emphasize typing one line at a time and watching it react immediately, rather than pasting a whole block. That immediacy is the entire point of the REPL."
+  },
+  {
+    kind: "bullets",
+    kicker: "Pausing",
+    title: "import time",
+    bullets: [
+      "Another built-in library",
+      "time.sleep(5) waits five seconds",
+      "Combine with .toggle() to blink by hand, one step at a time"
+    ],
+    notes: "The Shell sits still with no new prompt while sleep() runs. That's expected, not a freeze."
+  },
+  {
+    kind: "bullets",
+    kicker: "Challenge",
+    title: "Write blink.py",
+    bullets: [
+      "Create a Pin, flip it with .toggle(), pause with time.sleep()",
+      "Save it to Raspberry Pi Pico as blink.py",
+      "Make an LED blink on its own, forever, after you click Run"
+    ],
+    notes: "This is a real challenge, not a warm-up: give students time to struggle with it before offering the skeleton. Project 1.4 walks through the exact same program from scratch if they don't finish here.",
+    down: [
+      {
+        kind: "image",
+        kicker: "If a hint is needed",
+        title: "A Starting Skeleton",
+        image: "/assets/img/pico/blink-skeleton-saved.png",
+        bullets: [
+          "Imports and the while True: loop already in place",
+          "Two TODOs left: define the Pin, then blink inside the loop"
+        ],
+        notes: "Keep this hidden behind the down arrow until a student is genuinely stuck. Showing it too early turns the challenge into copy-and-fill-in."
+      }
+    ]
+  },
+  {
+    kind: "title",
+    title: "Questions?",
+    subtitle: "Let's flash some Picos.",
+    notes: "Open the floor briefly, then get Picos plugged in."
+  }
+];
+
+// A bullet is either a plain string, or { text, href } to render as a link
+// (used for pointing straight at the chapter or the Notes page).
+function renderBullets(bullets) {
+  return (
+    <ul>
+      {bullets.map((b, i) => (
+        <li key={i}>{typeof b === "string" ? b : <a href={b.href}>{b.text}</a>}</li>
+      ))}
+    </ul>
+  );
+}
+
+function Stage({ slide, aspect }) {
+  const arClass = aspect === "4:3" ? "ar-4-3" : "ar-16-9";
+  if (slide.kind === "title") {
+    return (
+      <div className={"stage title-slide " + arClass}>
+        {slide.kicker && <p className="kicker">{slide.kicker}</p>}
+        <h1 className="slide-title">{slide.title}</h1>
+        {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+      </div>
+    );
+  }
+  if (slide.kind === "image") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-image-row">
+          <img src={slide.image} alt="" />
+          <div className="slide-body">{renderBullets(slide.bullets)}</div>
+        </div>
+      </div>
+    );
+  }
+  if (slide.kind === "gallery") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-gallery-row">
+          {slide.images.map((im, i) => (
+            <div className="slide-gallery-item" key={i}>
+              <img src={im.src} alt="" />
+              <p className="caption">{im.caption}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  const extraClass = slide.kind === "safety" ? " safety-slide" : "";
+  return (
+    <div className={"stage " + arClass + extraClass}>
+      <p className="kicker">{slide.kicker}</p>
+      <h1 className="slide-title">{slide.title}</h1>
+      <div className="slide-body">{renderBullets(slide.bullets)}</div>
+    </div>
+  );
+}
+
+function ScaledStage({ slide, aspect }) {
+  const outerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const designW = 1280;
+  const designH = aspect === "4:3" ? 960 : 720;
+
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const recompute = () => {
+      const rect = el.getBoundingClientRect();
+      const s = Math.min((rect.width * 0.98) / designW, (rect.height * 0.98) / designH);
+      setScale(s > 0 ? s : 1);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => { ro.disconnect(); window.removeEventListener("resize", recompute); };
+  }, [designH]);
+
+  return (
+    <div className="stage-outer" ref={outerRef}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}>
+        <Stage slide={slide} aspect={aspect} />
+      </div>
+    </div>
+  );
+}
+
+function bulletsToText(bullets) {
+  return bullets.map(b => (typeof b === "string" ? b : b.text)).join(" / ");
+}
+
+function OutlineCard({ slide, heading, nested }) {
+  return (
+    <div className={"outline-slide" + (nested ? " outline-nested" : "")}>
+      {nested ? <h3>{heading}</h3> : <h2>{heading}</h2>}
+      {slide.bullets && <p className="outline-bullets">On slide: {bulletsToText(slide.bullets)}</p>}
+      {slide.images && <p className="outline-bullets">Photos: {slide.images.map(im => im.caption).join(" / ")}</p>}
+      <div className="outline-notes"><p>{slide.notes}</p></div>
+    </div>
+  );
+}
+
+function Outline() {
+  return (
+    <div className="outline">
+      <h1>Projects 1.2 &amp; 1.3: Flashing, Then the REPL</h1>
+      <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
+      {SLIDES.map((s, i) => (
+        <React.Fragment key={i}>
+          <OutlineCard slide={s} heading={`${i + 1}. ${s.title}`} />
+          {(s.down || []).map((d, j) => (
+            <OutlineCard slide={d} heading={`Extra: ${d.title}`} nested key={j} />
+          ))}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+// Deep-linking: ?slide=3 opens on that slide (1-indexed, to match the
+// on-screen counter), ?extra=1 additionally drops into that slide's Nth
+// "down" slide if it has any, ?outline=1 opens straight into the
+// speaker-notes outline -- handy for linking straight to a specific slide,
+// or handing a substitute teacher the notes view without them finding the
+// button.
+function initialStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const slideParam = parseInt(params.get("slide"), 10);
+  const index = Number.isInteger(slideParam) ? Math.min(Math.max(slideParam - 1, 0), SLIDES.length - 1) : 0;
+  const maxExtra = (SLIDES[index].down || []).length;
+  const extraParam = parseInt(params.get("extra"), 10);
+  const subIndex = Number.isInteger(extraParam) ? Math.min(Math.max(extraParam, 0), maxExtra) : 0;
+  const mode = params.get("outline") ? "outline" : "deck";
+  return { index, subIndex, mode };
+}
+
+function App() {
+  const initial = initialStateFromUrl();
+  const [index, setIndex] = useState(initial.index);
+  const [subIndex, setSubIndex] = useState(initial.subIndex);
+  const [showNotes, setShowNotes] = useState(false);
+  const [aspect, setAspect] = useState("16:9");
+  const [mode, setMode] = useState(initial.mode); // "deck" | "outline"
+
+  const topSlide = SLIDES[index];
+  const downSlides = topSlide.down || [];
+  const slide = subIndex === 0 ? topSlide : downSlides[subIndex - 1];
+
+  const next = useCallback(() => { setIndex(i => Math.min(i + 1, SLIDES.length - 1)); setSubIndex(0); }, []);
+  const prev = useCallback(() => { setIndex(i => Math.max(i - 1, 0)); setSubIndex(0); }, []);
+  const goDown = useCallback(() => setSubIndex(s => Math.min(s + 1, downSlides.length)), [downSlides.length]);
+  const goUp = useCallback(() => setSubIndex(s => Math.max(s - 1, 0)), []);
+
+  useEffect(() => {
+    function onKey(e) {
+      if (mode !== "deck") {
+        if (e.key === "Escape") setMode("deck");
+        return;
+      }
+      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); goDown(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); goUp(); }
+      else if (e.key === "n" || e.key === "N") setShowNotes(v => !v);
+      else if (e.key === "f" || e.key === "F") toggleFullscreen();
+      else if (e.key === "o" || e.key === "O") setMode("outline");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mode, next, prev, goDown, goUp]);
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+
+  if (mode === "outline") {
+    return (
+      <div className="app">
+        <div className="toolbar">
+          <a className="back-link" href="/pico/project1-2-flashing-with-thonny/">&larr; Projects 1.2 &amp; 1.3</a>
+          <div className="spacer"></div>
+          <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
+          <button onClick={() => window.print()}>Print</button>
+        </div>
+        <Outline />
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      <div className="stage-outer" style={{ position: "relative" }}>
+        <ScaledStage slide={slide} aspect={aspect} />
+        <div className="click-zone left" onClick={prev} title="Previous slide"></div>
+        <div className="click-zone right" onClick={next} title="Next slide"></div>
+        {subIndex > 0 && (
+          <button className="depth-nav depth-up" onClick={goUp} title="Back to the main flow">&#9650; Back</button>
+        )}
+        {subIndex < downSlides.length && (
+          <button className="depth-nav depth-down" onClick={goDown} title="More about this slide">&#9660; More</button>
+        )}
+        <div className="slide-counter-badge">
+          {index + 1} / {SLIDES.length}
+          {subIndex > 0 && <span> &middot; extra {subIndex}/{downSlides.length}</span>}
+        </div>
+      </div>
+      {showNotes && (
+        <div className="notes-panel">
+          <h3>Speaker notes</h3>
+          <p>{slide.notes}</p>
+        </div>
+      )}
+      <div className="toolbar">
+        <a className="back-link" href="/pico/project1-2-flashing-with-thonny/">&larr; Projects 1.2 &amp; 1.3</a>
+        <div className="spacer"></div>
+        <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
+        <span className="counter">{index + 1} / {SLIDES.length}</span>
+        <button onClick={next} disabled={index === SLIDES.length - 1}>Next &rarr;</button>
+        <button className={showNotes ? "active" : ""} onClick={() => setShowNotes(v => !v)}>Notes (N)</button>
+        <button onClick={() => setMode("outline")}>Print notes (O)</button>
+        <button onClick={() => setAspect(a => a === "16:9" ? "4:3" : "16:9")}>{aspect}</button>
+        <button onClick={toggleFullscreen}>Fullscreen (F)</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+{% endraw %}
+</script>
+</body>
+</html>

@@ -10,6 +10,7 @@ source: original
 subtitle: "Get MicroPython running on your Pico for the first time, using Thonny"
 organizer: /pico/project1-2-3-checklist/
 organizer_label: "Checklist"
+slides: /pico/project1-2-3-intro-slides/
 ---
 
 <aside class="callout warning" markdown="1">
