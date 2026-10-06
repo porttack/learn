@@ -1,0 +1,659 @@
+---
+title: "Project 1.4 & 1.5 Slides"
+permalink: /pico/project1-4-5-intro-slides/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Projects 1.4 &amp; 1.5: From Blinking to Breathing -- Slides</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/pico/favicon.svg">
+<style>
+  :root {
+    --accent: #2a7ae2;
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #57606a;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #e9edf1;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  #root { height: 100%; }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .stage-outer {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* Fixed-size design canvas, scaled to fit via a JS-computed transform --
+     lets every slide be authored at generous, fixed pixel sizes ("bigger
+     type") without hand-tuning responsive font sizes per breakpoint. */
+  .stage {
+    width: 1280px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.18);
+    padding: 80px 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .stage.ar-16-9 { height: 720px; }
+  .stage.ar-4-3 { height: 960px; }
+
+  .kicker {
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 18px;
+  }
+
+  .slide-title {
+    font-size: 64px;
+    line-height: 1.1;
+    margin: 0 0 40px;
+    font-weight: 700;
+  }
+
+  .slide-body {
+    font-size: 36px;
+    line-height: 1.5;
+  }
+
+  .slide-body ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+
+  .slide-body li {
+    margin-bottom: 22px;
+  }
+
+  .slide-body li:last-child { margin-bottom: 0; }
+
+  .slide-body a {
+    color: var(--accent);
+  }
+
+  .depth-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 14px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  .depth-nav.depth-up {
+    bottom: auto;
+    top: 14px;
+  }
+
+  .depth-nav:hover {
+    background: rgba(0,0,0,0.75);
+  }
+
+  .title-slide {
+    text-align: left;
+    justify-content: center;
+  }
+
+  .title-slide .slide-title {
+    font-size: 76px;
+    margin-bottom: 16px;
+  }
+
+  .title-slide .slide-subtitle {
+    font-size: 34px;
+    color: var(--muted);
+  }
+
+  .challenge-slide {
+    background: #f3edff;
+  }
+
+  .challenge-slide .kicker {
+    color: #6b3fd4;
+  }
+
+  .slide-counter-badge {
+    position: absolute;
+    bottom: 18px;
+    right: 24px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  /* --- Toolbar (not part of the scaled stage, so it stays a readable,
+     fixed size regardless of projector distance / zoom level) --- */
+  .toolbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #1b1f23;
+    color: #fff;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar button {
+    background: #333a42;
+    color: #fff;
+    border: 1px solid #4a545e;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .toolbar button:hover { background: #444e58; }
+  .toolbar button.active { background: var(--accent); border-color: var(--accent); }
+  .toolbar button:disabled { opacity: 0.4; cursor: default; }
+
+  .toolbar .spacer { flex: 1 1 auto; }
+  .toolbar .counter { min-width: 4.5em; text-align: center; }
+  .toolbar a.back-link { color: #9db8e8; text-decoration: none; font-size: 14px; }
+  .toolbar a.back-link:hover { text-decoration: underline; }
+
+  /* --- Speaker notes panel: docked below the stage, plain readable text,
+     hidden by default so a mirrored/projected display shows a clean deck.
+     Notes on the challenge slides carry the fuller explanation (what %
+     and // actually do, what a correct breathing loop looks like) -- that
+     reasoning is for the teacher to draw out of the class, not for the
+     projected slide itself. --- */
+  .notes-panel {
+    flex: 0 0 auto;
+    background: #f6f8fa;
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    max-height: 26vh;
+    overflow-y: auto;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .notes-panel h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+
+  .click-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30%;
+    cursor: pointer;
+  }
+  .click-zone.left { left: 0; }
+  .click-zone.right { right: 0; }
+
+  /* --- Outline / print-notes view: a plain scrollable page listing every
+     slide with its full speaker notes, meant for printing ahead of class. --- */
+  .outline {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .outline h1 { margin-bottom: 4px; }
+  .outline .outline-sub { color: var(--muted); margin-top: 0; }
+
+  .outline-slide {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    break-inside: avoid;
+  }
+
+  .outline-slide h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+  }
+
+  .outline-slide.outline-nested {
+    margin: 12px 0 12px 32px;
+    background: #f6f8fa;
+    border-style: dashed;
+  }
+
+  .outline-slide h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: var(--muted);
+  }
+
+  .outline-slide .outline-bullets {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 14px;
+  }
+
+  .outline-slide .outline-notes {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .outline-slide .outline-notes p:first-child { margin-top: 0; }
+
+  @media print {
+    .toolbar { display: none !important; }
+    .outline { height: auto; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+<script type="text/babel" data-type="module">
+{% raw %}
+const { useState, useEffect, useRef, useCallback } = React;
+
+// Edit this array to change the deck. `bullets` is what students see on the
+// slide (keep it short, they're reading fast); `notes` is only ever shown in
+// the notes panel or the printable outline, so it can be a full paragraph.
+//
+// Project 1.4 and 1.5's own pages are deliberately light on worked code for
+// the "challenge" sections (count in binary, make it breathe): students are
+// meant to derive the solution, not copy it. These slides keep that same
+// rule on screen -- a challenge slide names the goal and the tools, never
+// the assembled answer. Anything more revealing belongs in `notes`, which
+// only the teacher sees, not projected to the whole room.
+const SLIDES = [
+  {
+    kind: "title",
+    kicker: "Projects 1.4 & 1.5",
+    title: "From Blinking to Breathing",
+    subtitle: "Day 3 & 4: loops, binary, and PWM",
+    notes: "Two projects, spanning two class days. 1.4 turns REPL commands into saved scripts and adds binary counting; 1.5 introduces PWM so an LED can do something other than fully on or fully off."
+  },
+  {
+    kind: "bullets",
+    kicker: "Project 1.4",
+    title: "Blink the Onboard LED",
+    bullets: [
+      "Same commands as Project 1.3's REPL, now in a saved script",
+      "machine.Pin(\"LED\", machine.Pin.OUT)",
+      "A while True loop with .toggle() and time.sleep()"
+    ],
+    notes: "This is a direct translation of what they already typed into the REPL one line at a time. The new idea is the loop doing it automatically, forever, without them pressing Enter again."
+  },
+  {
+    kind: "bullets",
+    kicker: "Swap the pin",
+    title: "Blink One of Your Own LEDs",
+    bullets: [
+      "Same script, one change: the pin number",
+      "Check your Project 1.1 Notes page for which pin",
+      "machine.Pin(13, machine.Pin.OUT), or 14, or 15"
+    ],
+    notes: "Reinforces that the GPIO number is the only thing tying code to a specific physical wire."
+  },
+  {
+    kind: "bullets",
+    challenge: true,
+    kicker: "Challenge",
+    title: "All Three, In a Row",
+    bullets: [
+      "Light all three LEDs one at a time, in order",
+      "Each one on for a second before the next takes over"
+    ],
+    notes: "They'll need a Pin object for each LED and to think through what has to happen, in what order, inside the loop. Don't give the loop structure away; this is a reasonable first stretch before binary counting."
+  },
+  {
+    kind: "bullets",
+    kicker: "Beyond one at a time",
+    title: "Give Each LED a Place Value",
+    bullets: [
+      "4, 2, and 1, the same idea as Secret Messages in Binary",
+      "Any number from 0 to 7 is some combination of those three",
+      "Example: 5 is 4 + 1, so the 4s and 1s LEDs are on, the 2s LED is off"
+    ],
+    notes: "The full 0-7 table is on the lesson page and the checklist's back. Walk through one or two examples live if the class needs it, but the point of the challenge is deriving the pattern, not memorizing the table."
+  },
+  {
+    kind: "bullets",
+    challenge: true,
+    kicker: "Challenge",
+    title: "Count in Binary",
+    bullets: [
+      "A program that counts 0 to 7, forever, on three LEDs",
+      "Figure out, for any number, which LEDs should be on",
+      "Two tools: % (modulo) and // (floor division)"
+    ],
+    notes: "Do not show a lookup table or a worked conversion on screen. % gives the remainder after dividing; // divides and drops the remainder. Used together, repeatedly, on the same number, they peel off one binary digit at a time -- let students arrive at that themselves. If a group is completely stuck, a good nudge is asking what number%2 tells you about a number's last binary digit.",
+    down: [
+      {
+        kind: "bullets",
+        kicker: "If a group is stuck",
+        title: "A Nudge, Not the Answer",
+        bullets: [
+          "What does number % 2 tell you about its last binary digit?",
+          "What happens to that digit if you then do number // 2?",
+          "What do you get if you repeat both three times?"
+        ],
+        notes: "Three guiding questions, not a solution. Use only with a group that's genuinely stuck, not as the default explanation."
+      }
+    ]
+  },
+  {
+    kind: "title",
+    kicker: "Project 1.5",
+    title: "Fading with PWM",
+    subtitle: "On, off, or something in between?",
+    notes: "Section handoff, typically a new day. Everything in 1.4 was strictly on or off; PWM is the first time a pin does something that looks like 'partway.'"
+  },
+  {
+    kind: "bullets",
+    kicker: "Still digital, underneath",
+    title: "Faking an In-Between",
+    bullets: [
+      "A GPIO pin is still only ever fully on or fully off",
+      "PWM flips it on and off hundreds of times a second",
+      "Your eye can't follow the flicker, just the average brightness"
+    ],
+    notes: "Tie back to The Water Analogy's valve: a valve snapping open and shut faster than you could ever flip it by hand, averaging out to a partial flow."
+  },
+  {
+    kind: "bullets",
+    kicker: "New API",
+    title: "Set Up PWM",
+    bullets: [
+      "machine.PWM(machine.Pin(13)) instead of a plain Pin",
+      "led.freq(1000): switch 1000 times a second",
+      "led.duty_u16(value): 0 (off) to 65535 (fully on)"
+    ],
+    notes: "Have students try duty_u16 at a few fixed values directly in the REPL first (0, 32768, 65535) before attempting any kind of loop. That's the API-learning step; the fade is the challenge."
+  },
+  {
+    kind: "bullets",
+    challenge: true,
+    kicker: "Challenge",
+    title: "Make It Breathe",
+    bullets: [
+      "Fade an LED up to full brightness, then back down, forever",
+      "No typing after you click Run",
+      "You already know every piece: a loop, duty_u16(), time.sleep()"
+    ],
+    notes: "Two hints to offer if needed, same as the lesson page: range() can step by more than 1 (you don't need all 65,536 values), and range() can count downward with a negative step. Don't assemble the loop for them on screen.",
+    down: [
+      {
+        kind: "bullets",
+        kicker: "If a group is stuck",
+        title: "A Nudge, Not the Answer",
+        bullets: [
+          "range(0, 10, 2) counts 0, 2, 4, 6, 8, skipping by 2",
+          "A negative step counts downward instead of up",
+          "What's the smallest change that turns a rising loop into a falling one?"
+        ],
+        notes: "Again, guiding questions only. The combination into one continuous breathing loop is the actual challenge."
+      }
+    ]
+  },
+  {
+    kind: "bullets",
+    challenge: true,
+    kicker: "Challenge",
+    title: "Two LEDs, Out of Sync",
+    bullets: [
+      "Fade two LEDs at once, each with its own PWM object",
+      "One brightening while the other dims",
+      { text: "Chapter 8 covers PWM conflicts in more depth", href: "/pico/08-temperature-gauge/#fading-an-led-with-pwm" }
+    ],
+    notes: "A stretch for whoever finishes early. Two pins can conflict if they share the same underlying PWM slice and channel; Chapter 8 explains which pin combinations are safe."
+  },
+  {
+    kind: "title",
+    title: "Questions?",
+    subtitle: "Let's build.",
+    notes: "Open the floor briefly, then get Picos plugged in."
+  }
+];
+
+// A bullet is either a plain string, or { text, href } to render as a link
+// (used for pointing straight at the chapter or the Notes page).
+function renderBullets(bullets) {
+  return (
+    <ul>
+      {bullets.map((b, i) => (
+        <li key={i}>{typeof b === "string" ? b : <a href={b.href}>{b.text}</a>}</li>
+      ))}
+    </ul>
+  );
+}
+
+function Stage({ slide, aspect }) {
+  const arClass = aspect === "4:3" ? "ar-4-3" : "ar-16-9";
+  if (slide.kind === "title") {
+    return (
+      <div className={"stage title-slide " + arClass}>
+        {slide.kicker && <p className="kicker">{slide.kicker}</p>}
+        <h1 className="slide-title">{slide.title}</h1>
+        {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+      </div>
+    );
+  }
+  const extraClass = slide.challenge ? " challenge-slide" : "";
+  return (
+    <div className={"stage " + arClass + extraClass}>
+      <p className="kicker">{slide.kicker}</p>
+      <h1 className="slide-title">{slide.title}</h1>
+      <div className="slide-body">{renderBullets(slide.bullets)}</div>
+    </div>
+  );
+}
+
+function ScaledStage({ slide, aspect }) {
+  const outerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const designW = 1280;
+  const designH = aspect === "4:3" ? 960 : 720;
+
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const recompute = () => {
+      const rect = el.getBoundingClientRect();
+      const s = Math.min((rect.width * 0.98) / designW, (rect.height * 0.98) / designH);
+      setScale(s > 0 ? s : 1);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => { ro.disconnect(); window.removeEventListener("resize", recompute); };
+  }, [designH]);
+
+  return (
+    <div className="stage-outer" ref={outerRef}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}>
+        <Stage slide={slide} aspect={aspect} />
+      </div>
+    </div>
+  );
+}
+
+function bulletsToText(bullets) {
+  return bullets.map(b => (typeof b === "string" ? b : b.text)).join(" / ");
+}
+
+function OutlineCard({ slide, heading, nested }) {
+  return (
+    <div className={"outline-slide" + (nested ? " outline-nested" : "")}>
+      {nested ? <h3>{heading}</h3> : <h2>{heading}</h2>}
+      {slide.bullets && <p className="outline-bullets">On slide: {bulletsToText(slide.bullets)}</p>}
+      <div className="outline-notes"><p>{slide.notes}</p></div>
+    </div>
+  );
+}
+
+function Outline() {
+  return (
+    <div className="outline">
+      <h1>Projects 1.4 &amp; 1.5: From Blinking to Breathing</h1>
+      <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
+      {SLIDES.map((s, i) => (
+        <React.Fragment key={i}>
+          <OutlineCard slide={s} heading={`${i + 1}. ${s.title}`} />
+          {(s.down || []).map((d, j) => (
+            <OutlineCard slide={d} heading={`Extra: ${d.title}`} nested key={j} />
+          ))}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+// Deep-linking: ?slide=3 opens on that slide (1-indexed, to match the
+// on-screen counter), ?extra=1 additionally drops into that slide's Nth
+// "down" slide if it has any, ?outline=1 opens straight into the
+// speaker-notes outline -- handy for linking straight to a specific slide,
+// or handing a substitute teacher the notes view without them finding the
+// button.
+function initialStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const slideParam = parseInt(params.get("slide"), 10);
+  const index = Number.isInteger(slideParam) ? Math.min(Math.max(slideParam - 1, 0), SLIDES.length - 1) : 0;
+  const maxExtra = (SLIDES[index].down || []).length;
+  const extraParam = parseInt(params.get("extra"), 10);
+  const subIndex = Number.isInteger(extraParam) ? Math.min(Math.max(extraParam, 0), maxExtra) : 0;
+  const mode = params.get("outline") ? "outline" : "deck";
+  return { index, subIndex, mode };
+}
+
+function App() {
+  const initial = initialStateFromUrl();
+  const [index, setIndex] = useState(initial.index);
+  const [subIndex, setSubIndex] = useState(initial.subIndex);
+  const [showNotes, setShowNotes] = useState(false);
+  const [aspect, setAspect] = useState("16:9");
+  const [mode, setMode] = useState(initial.mode); // "deck" | "outline"
+
+  const topSlide = SLIDES[index];
+  const downSlides = topSlide.down || [];
+  const slide = subIndex === 0 ? topSlide : downSlides[subIndex - 1];
+
+  const next = useCallback(() => { setIndex(i => Math.min(i + 1, SLIDES.length - 1)); setSubIndex(0); }, []);
+  const prev = useCallback(() => { setIndex(i => Math.max(i - 1, 0)); setSubIndex(0); }, []);
+  const goDown = useCallback(() => setSubIndex(s => Math.min(s + 1, downSlides.length)), [downSlides.length]);
+  const goUp = useCallback(() => setSubIndex(s => Math.max(s - 1, 0)), []);
+
+  useEffect(() => {
+    function onKey(e) {
+      if (mode !== "deck") {
+        if (e.key === "Escape") setMode("deck");
+        return;
+      }
+      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); goDown(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); goUp(); }
+      else if (e.key === "n" || e.key === "N") setShowNotes(v => !v);
+      else if (e.key === "f" || e.key === "F") toggleFullscreen();
+      else if (e.key === "o" || e.key === "O") setMode("outline");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mode, next, prev, goDown, goUp]);
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+
+  if (mode === "outline") {
+    return (
+      <div className="app">
+        <div className="toolbar">
+          <a className="back-link" href="/pico/project1-4-blinking-your-leds/">&larr; Projects 1.4 &amp; 1.5</a>
+          <div className="spacer"></div>
+          <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
+          <button onClick={() => window.print()}>Print</button>
+        </div>
+        <Outline />
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      <div className="stage-outer" style={{ position: "relative" }}>
+        <ScaledStage slide={slide} aspect={aspect} />
+        <div className="click-zone left" onClick={prev} title="Previous slide"></div>
+        <div className="click-zone right" onClick={next} title="Next slide"></div>
+        {subIndex > 0 && (
+          <button className="depth-nav depth-up" onClick={goUp} title="Back to the main flow">&#9650; Back</button>
+        )}
+        {subIndex < downSlides.length && (
+          <button className="depth-nav depth-down" onClick={goDown} title="More about this slide">&#9660; More</button>
+        )}
+        <div className="slide-counter-badge">
+          {index + 1} / {SLIDES.length}
+          {subIndex > 0 && <span> &middot; extra {subIndex}/{downSlides.length}</span>}
+        </div>
+      </div>
+      {showNotes && (
+        <div className="notes-panel">
+          <h3>Speaker notes</h3>
+          <p>{slide.notes}</p>
+        </div>
+      )}
+      <div className="toolbar">
+        <a className="back-link" href="/pico/project1-4-blinking-your-leds/">&larr; Projects 1.4 &amp; 1.5</a>
+        <div className="spacer"></div>
+        <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
+        <span className="counter">{index + 1} / {SLIDES.length}</span>
+        <button onClick={next} disabled={index === SLIDES.length - 1}>Next &rarr;</button>
+        <button className={showNotes ? "active" : ""} onClick={() => setShowNotes(v => !v)}>Notes (N)</button>
+        <button onClick={() => setMode("outline")}>Print notes (O)</button>
+        <button onClick={() => setAspect(a => a === "16:9" ? "4:3" : "16:9")}>{aspect}</button>
+        <button onClick={toggleFullscreen}>Fullscreen (F)</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+{% endraw %}
+</script>
+</body>
+</html>

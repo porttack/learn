@@ -8,6 +8,10 @@ project_part: 4
 label: "Project 1.4"
 source: original
 subtitle: "Write your first programs for the circuit you built, then make your three LEDs count in binary"
+organizer: /pico/project1-4-5-checklist/
+organizer_label: "Checklist (covers 1.4 & 1.5)"
+slides: /pico/project1-4-5-intro-slides/
+slides_label: "Slides (covers 1.4 & 1.5)"
 ---
 
 This is for after your three-LED circuit from [Project 1.1](/pico/project1-1-wiring-three-leds/) is signed off, [Project 1.2](/pico/project1-2-flashing-with-thonny/) has MicroPython running on your Pico, and [Project 1.3](/pico/project1-3-files-and-the-repl/) has you comfortable saving a file to your Pico and typing commands straight into the REPL. If you finish early and your teacher is ready for you to move on, this is what comes next.
