@@ -79,8 +79,8 @@ back to the shared copies, but you'll rarely use it. Once you're
 working on a project, the normal thing is to just leave the virtual
 environment active for as long as you're working in that terminal.
 Closing the terminal has a similar effect, except then you'll need to
-`cd` back into `emojize` and run `source myvenv/bin/activate` again
-next time, not `deactivate`.
+`cd` back into `emojize` and run **`source myvenv/bin/activate`**
+again next time, not `deactivate`.
 
 Now install the `emoji` package, which does the actual code-to-emoji
 lookup for you:
