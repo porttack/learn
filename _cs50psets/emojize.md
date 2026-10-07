@@ -67,11 +67,23 @@ python -m venv myvenv
 source myvenv/bin/activate
 ```
 
-You'll know it's active because your prompt starts showing
-`(myvenv)`. If you close this terminal and open a new one later,
-you'll need to `cd` back into `emojize` and run the `source` command
-again. Now install the `emoji` package, which does the actual
-code-to-emoji lookup for you:
+`python -m venv myvenv` creates a folder holding its own private
+copies of `python` and `pip`. `source myvenv/bin/activate` doesn't
+install anything, it just points your terminal at those private
+copies instead of the ones shared across your whole account, for the
+rest of this terminal session. You'll know it worked because your
+prompt starts showing `(myvenv)`.
+
+There's a matching `deactivate` command that switches your terminal
+back to the shared copies, but you'll rarely use it. Once you're
+working on a project, the normal thing is to just leave the virtual
+environment active for as long as you're working in that terminal.
+Closing the terminal has a similar effect, except then you'll need to
+`cd` back into `emojize` and run `source myvenv/bin/activate` again
+next time, not `deactivate`.
+
+Now install the `emoji` package, which does the actual code-to-emoji
+lookup for you:
 
 {% include copy-command.html command="pip install emoji" %}
 
