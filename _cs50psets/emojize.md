@@ -197,6 +197,20 @@ double-check the exact spelling using the search box above. A single
 missing underscore (`:thumbsup:` is a real alias, but `:thumbs up:`
 with a space is not) is the most common reason it doesn't match.
 
+<details class="hint-toggle" markdown="1">
+<summary>Need a hint?</summary>
+
+If some codes convert and others don't, check the `language` argument
+before anything else. `emojize()` defaults to `language="en"`, which
+only matches each emoji's one canonical name, not its aliases.
+`:thumbs_up:` is a canonical name, so it converts even if you forget
+the argument entirely. But `:smile_cat:` and `:thumbsup:` are aliases,
+not canonical names, so they silently print back unchanged unless you
+pass `language="alias"`, same as the Specification section above
+shows.
+
+</details>
+
 ## Style and Submission
 
 Run these one at a time, from inside your `emojize` folder.
