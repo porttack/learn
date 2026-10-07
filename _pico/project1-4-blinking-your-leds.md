@@ -3,6 +3,7 @@ layout: lesson
 title: "Project 1.4: Blinking Your LEDs (Day 3)"
 pathway: pico
 order: 103
+chapter: "p1.4"
 project: 1
 project_part: 4
 label: "Project 1.4"

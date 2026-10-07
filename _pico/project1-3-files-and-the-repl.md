@@ -3,6 +3,7 @@ layout: lesson
 title: "Project 1.3: Files on Your Pico, and Your First REPL Commands (Day 2)"
 pathway: pico
 order: 102
+chapter: "p1.3"
 project: 1
 project_part: 3
 label: "Project 1.3"

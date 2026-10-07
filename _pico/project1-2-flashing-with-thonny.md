@@ -3,6 +3,7 @@ layout: lesson
 title: "Project 1.2: Flashing MicroPython with Thonny (Day 2)"
 pathway: pico
 order: 101
+chapter: "p1.2"
 project: 1
 project_part: 2
 label: "Project 1.2"

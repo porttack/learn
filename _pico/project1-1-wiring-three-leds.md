@@ -3,6 +3,7 @@ layout: lesson
 title: "Project 1.1: Wiring Three LEDs (Day 1)"
 pathway: pico
 order: 100
+chapter: "p1.1"
 project: 1
 project_part: 1
 project_name: "Three LEDs"
