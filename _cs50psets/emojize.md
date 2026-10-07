@@ -9,6 +9,22 @@ source_unit_url: "https://cs50.harvard.edu/python/weeks/4/"
 subtitle: "Write a program that turns emoji codes like :thumbs_up: into real emoji."
 ---
 
+<figure id="fig-emojize-transform" class="pset-hero">
+  <svg viewBox="0 0 400 170" role="img" aria-labelledby="emojize-transform-title">
+    <title id="emojize-transform-title">The code :thumbs_up: inside a rounded box, with an arrow pointing right to a large thumbs-up emoji</title>
+    <defs>
+      <marker id="emojize-arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+        <path d="M0,0 L8,4 L0,8 z" fill="#111"/>
+      </marker>
+    </defs>
+    <rect x="20" y="55" width="160" height="60" rx="10" fill="#f2f2f2" stroke="#ccc"/>
+    <text x="100" y="92" text-anchor="middle" font-family="SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace" font-size="20" fill="#111">:thumbs_up:</text>
+    <line x1="190" y1="85" x2="240" y2="85" stroke="#111" stroke-width="2" marker-end="url(#emojize-arrow)"/>
+    <text x="320" y="107" text-anchor="middle" font-size="64">&#128077;</text>
+  </svg>
+  <figcaption>emojize() turns a code like :thumbs_up: into the real emoji.</figcaption>
+</figure>
+
 ## Background
 
 Lots of apps let you type a short code like `:thumbs_up:` and have it turn
