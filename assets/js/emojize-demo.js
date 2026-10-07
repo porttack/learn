@@ -18,8 +18,9 @@
     return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
-  // A small stand-in for emoji.emojize(text, language="en"): replaces each
-  // :name: token with its emoji if known, leaves unknown tokens untouched.
+  // A small stand-in for emoji.emojize(text, language="alias"): replaces
+  // each :name: token with its emoji if known, leaves unknown tokens
+  // untouched.
   function emojizeText(text) {
     return text.replace(/:([a-zA-Z0-9_+-]+):/g, function (whole, name) {
       var hit = lookup[name.toLowerCase()];

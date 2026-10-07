@@ -1,7 +1,7 @@
 ---
 title: "Lineup (less comfortable)"
-order: 8
-chapter: 8
+order: 9
+chapter: 9
 source: original
 subtitle: "Implement enqueue and dequeue on a plain list for a bounded song request line."
 ---

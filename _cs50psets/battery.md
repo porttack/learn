@@ -1,7 +1,7 @@
 ---
 title: "Battery Gauge"
-order: 7
-chapter: 7
+order: 8
+chapter: 8
 source: original
 subtitle: "Read a battery's voltage and report whether it's low, good, or a plain percentage, validating input with try/except."
 ---

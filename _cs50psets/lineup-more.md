@@ -1,7 +1,7 @@
 ---
 title: "Lineup (more comfortable)"
-order: 9
-chapter: 9
+order: 10
+chapter: 10
 source: original
 subtitle: "The same song request line, rebuilt with deque, plus a history stack behind a BACK command."
 ---

@@ -1,7 +1,7 @@
 ---
 title: "Emojize"
-order: 11
-chapter: 11
+order: 6
+chapter: 6
 source: cs50-python
 source_url: "https://cs50.harvard.edu/python/psets/4/emojize/"
 subtitle: "Write a program that turns emoji codes like :thumbs_up: into real emoji."
@@ -52,13 +52,13 @@ a string of text and prints an "emojized" version of it.
   `input()`.
 - Use the `emoji` package's `emojize` function to convert the string,
   and print the result.
-- Call `emojize` with `language="en"` so it only recognizes English
-  codes and aliases, not codes written in another language.
+- Call `emojize` with `language="alias"` so it recognizes English codes
+  and their aliases, not codes written in another language.
 
 ```python
 from emoji import emojize
 
-print(emojize("very funny :thumbs_up:", language="en"))
+print(emojize("very funny :thumbs_up:", language="alias"))
 ```
 
 That's the whole program: one `input()`, one call to `emojize`, one
@@ -129,11 +129,11 @@ Check your style:
 
 Check your correctness:
 
-{% include copy-command.html command="check50 cs50/problems/2022/python/emojize" %}
+{% include copy-command.html command="check50 porttack/cs50/problems/py/emojize" %}
 
 Submit your work:
 
-{% include copy-command.html command="submit50 cs50/problems/2022/python/emojize" %}
+{% include copy-command.html command="submit50 porttack/cs50/problems/py/emojize" %}
 
 <hr>
 
