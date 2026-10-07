@@ -77,31 +77,107 @@ page so it doesn't turn this lesson into a 5,000-row scroll:
 
 ## Usage
 
-Your program should behave per the examples below.
+Your program should behave like the demo below.
 
-```
-$ python emojize.py
+<div class="terminal-demo">
+  <div class="terminal-demo-bar">
+    <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+  </div>
+  <pre><code id="emojize-usage-terminal"></code><span class="terminal-cursor">&nbsp;</span></pre>
+</div>
+
+<pre class="terminal-demo-print">$ python emojize.py
 Input: :1st_place_medal:
 🥇
-```
 
-```
 $ python emojize.py
 Input: :money_bag:
 💰
-```
 
-```
 $ python emojize.py
 Input: :smile_cat:
 😸
-```
 
-```
 $ python emojize.py
 Input: nice job on that pset :thumbs_up:, cs50 is :fire:
 nice job on that pset 👍, cs50 is 🔥
-```
+</pre>
+
+<script>
+(function () {
+  var el = document.getElementById('emojize-usage-terminal');
+  if (!el) return;
+
+  var script = [
+    { text: '$ ', type: false },
+    { text: 'python emojize.py', type: true, speed: 90 },
+    { text: '\n', type: false },
+    { text: 'Input: ', type: false },
+    { text: ':1st_place_medal:\n', type: true, speed: 100 },
+    { text: '🥇\n\n', type: false },
+    { text: '$ ', type: false },
+    { text: 'python emojize.py', type: true, speed: 90 },
+    { text: '\n', type: false },
+    { text: 'Input: ', type: false },
+    { text: ':money_bag:\n', type: true, speed: 100 },
+    { text: '💰\n\n', type: false },
+    { text: '$ ', type: false },
+    { text: 'python emojize.py', type: true, speed: 90 },
+    { text: '\n', type: false },
+    { text: 'Input: ', type: false },
+    { text: ':smile_cat:\n', type: true, speed: 100 },
+    { text: '😸\n\n', type: false },
+    { text: '$ ', type: false },
+    { text: 'python emojize.py', type: true, speed: 90 },
+    { text: '\n', type: false },
+    { text: 'Input: ', type: false },
+    { text: 'nice job on that pset :thumbs_up:, cs50 is :fire:\n', type: true, speed: 60 },
+    { text: 'nice job on that pset 👍, cs50 is 🔥\n', type: false }
+  ];
+
+  var pauseBetweenLoops = 3600;
+  var pauseBetweenLines = 500;
+
+  function typeText(text, speed, cb) {
+    var i = 0;
+    (function step() {
+      if (i < text.length) {
+        el.textContent += text.charAt(i);
+        i++;
+        setTimeout(step, speed);
+      } else {
+        cb();
+      }
+    })();
+  }
+
+  function playStep(index) {
+    if (index >= script.length) {
+      setTimeout(function () {
+        el.textContent = '';
+        playStep(0);
+      }, pauseBetweenLoops);
+      return;
+    }
+    var item = script[index];
+    if (item.type) {
+      typeText(item.text, item.speed, function () { playStep(index + 1); });
+    } else {
+      el.textContent += item.text;
+      setTimeout(function () { playStep(index + 1); }, pauseBetweenLines);
+    }
+  }
+
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    var full = '';
+    for (var i = 0; i < script.length; i++) full += script[i].text;
+    el.textContent = full;
+  } else {
+    playStep(0);
+  }
+})();
+</script>
 
 A code `emojize` doesn't recognize is left exactly as it was typed,
 colons and all, since there's no emoji to replace it with.
