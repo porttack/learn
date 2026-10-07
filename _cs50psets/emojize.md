@@ -56,8 +56,22 @@ code emojize.py
 That creates a new folder called `emojize`, moves into it, and opens a
 new, empty file called `emojize.py` for you to edit.
 
-Then install the `emoji` package, which does the actual code-to-emoji
-lookup for you:
+Next, create and activate a virtual environment. This is the first
+problem in this pathway that needs a package from outside Python
+itself, and a virtual environment keeps that package (and any others
+you install later) scoped to this one project instead of your whole
+account:
+
+```
+python -m venv myvenv
+source myvenv/bin/activate
+```
+
+You'll know it's active because your prompt starts showing
+`(myvenv)`. If you close this terminal and open a new one later,
+you'll need to `cd` back into `emojize` and run the `source` command
+again. Now install the `emoji` package, which does the actual
+code-to-emoji lookup for you:
 
 {% include copy-command.html command="pip install emoji" %}
 
@@ -229,7 +243,10 @@ shows.
 
 ## Style and Submission
 
-Run these one at a time, from inside your `emojize` folder.
+Run these one at a time, from inside your `emojize` folder. If you're
+coming back to this in a new terminal, reactivate your virtual
+environment first (`source myvenv/bin/activate`) or `check50` will
+report a missing `emoji` module even though your code is correct.
 
 Check your style:
 
