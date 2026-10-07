@@ -4,6 +4,8 @@ order: 7
 chapter: 7
 source: cs50-ap
 source_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/6/readability/"
+source_unit: "Problem Set 6"
+source_unit_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/6/"
 subtitle: "Estimate a text's U.S. grade level from its average word and sentence length."
 ---
 

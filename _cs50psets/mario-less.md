@@ -4,6 +4,8 @@ order: 1
 chapter: 1
 source: cs50-ap
 source_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/6/mario/less/"
+source_unit: "Problem Set 6"
+source_unit_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/6/"
 subtitle: "Print a half-pyramid of hash-mark blocks, validating a height between 1 and 8."
 ---
 

@@ -4,6 +4,8 @@ order: 11
 chapter: 11
 source: cs50-ap
 source_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/5/inheritance/"
+source_unit: "Problem Set 5"
+source_unit_url: "https://cs50.harvard.edu/ap/2025/curriculum/x/psets/5/"
 subtitle: "Recursively build and print a random blood-type family tree as nested dictionaries."
 ---
 
