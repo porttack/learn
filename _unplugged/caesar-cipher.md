@@ -169,6 +169,9 @@ possibilities than anyone, or anything, could ever try one by one.
 **Next step:** try a [Vigenère cipher]({{ '/unplugged/vigenere-cipher/' | relative_url }}),
 which uses a whole keyword instead of one shift.
 
+**Already comfortable with some Python?** [CS50's Caesar problem set]({{ '/cs50-psets/caesar/' | relative_url }})
+has you code this exact cipher, with the key typed on the command line.
+
 <p class="screen-only-note">Teachers: there is also an
 <a href="{{ '/unplugged/caesar-cipher-wheel/' | relative_url }}">optional cut-out cipher wheel</a>
 that does the same job as the shift table.</p>

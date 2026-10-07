@@ -65,4 +65,16 @@ Ask: *"How long would cracking a Caesar cipher take a computer?"* (Less
 than a blink: only 25 keys.) *"So how do real ciphers stay safe?"* (So many
 keys that trying them all would take longer than the age of the universe.)
 
+## Going further
+
+- **Programming students:** the CS50 [Caesar problem set]({{ '/cs50-psets/caesar/' | relative_url }})
+  has them write this cipher in Python, with the key typed on the command
+  line. It works best right after the paper version, because students
+  already know exactly what the program should do. It's online, not
+  printed, and checks itself with `check50`.
+- **Cracking it a smarter way:** [Caesar Cipher: cracking it with letter frequency]({{ '/unplugged/caesar-cipher-frequency/' | relative_url }})
+  finds the key without trying all 25.
+- **A cipher that's much harder to crack:** [Vigenère Cipher]({{ '/unplugged/vigenere-cipher/' | relative_url }})
+  uses a keyword, so each letter shifts by a different amount.
+
 {% include standards-alignment.html %}

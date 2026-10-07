@@ -228,3 +228,11 @@ Submit your work:
   what wraps the alphabet around from `Z` back to `A`. (AP calls this
   `MOD`.)
 
+<aside class="callout note" markdown="1">
+**TRY IT ON PAPER**
+
+Before or after you code it, try the [Caesar Cipher worksheet]({{ '/unplugged/caesar-cipher/' | relative_url }}):
+fill in a shift table by hand, decode secret messages, then crack one with
+no key by trying every shift. That's the same try-every-key idea a program
+could use to break this cipher.
+</aside>
