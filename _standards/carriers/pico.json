@@ -18,7 +18,12 @@
       "9": "09-data-logger",
       "10": "10-digital-communication-protocols",
       "11": "11-wifi-connectivity",
-      "12": "12-bluetooth-connectivity"
+      "12": "12-bluetooth-connectivity",
+      "p1.1": "project1-1-wiring-three-leds",
+      "p1.2": "project1-2-flashing-with-thonny",
+      "p1.3": "project1-3-files-and-the-repl",
+      "p1.4": "project1-4-blinking-your-leds",
+      "p1.5": "project1-5-fading-an-led-with-pwm"
     },
     "locator_titles": {
       "5": "Traffic light controller",
@@ -32,9 +37,14 @@
       "9": "Data logger",
       "10": "Digital communication protocols: I2C and SPI",
       "11": "Wi-Fi connectivity",
-      "12": "Bluetooth connectivity"
+      "12": "Bluetooth connectivity",
+      "p1.1": "Project 1.1: Wiring Three LEDs",
+      "p1.2": "Project 1.2: Flashing MicroPython with Thonny",
+      "p1.3": "Project 1.3: Files on Your Pico, and Your First REPL Commands",
+      "p1.4": "Project 1.4: Blinking Your LEDs",
+      "p1.5": "Project 1.5: Fading an LED with PWM"
     },
-    "caveat": "Aligns all 12 numbered chapters. The three reference appendices (specifications, pinout guide, programmable I/O) are intentionally out of scope -- they're look-up material for the curious, not taught lessons with their own pedagogical content to align. Chapter 2 is taught twice, once with Thonny (Chapter 2 proper) and once with ViperIDE (Interlude A) -- both lesson files carry the same chapter: 2 front matter and therefore show identical coverage, since they teach the same underlying programming concepts through different tools.",
+    "caveat": "Aligns all 12 numbered chapters. The three reference appendices (specifications, pinout guide, programmable I/O) are intentionally out of scope -- they're look-up material for the curious, not taught lessons with their own pedagogical content to align. Chapter 2 is taught twice, once with Thonny (Chapter 2 proper) and once with ViperIDE (Interlude A) -- both lesson files carry the same chapter: 2 front matter and therefore show identical coverage, since they teach the same underlying programming concepts through different tools. Also aligns Projects 1.1 through 1.5 (locators p1.1-p1.5), the original hands-on sequence built on top of the book's own chapters, not a 1:1 mapping to any single chapter. Projects 1.1 and 1.2 are hardware- and tooling-focused and have correspondingly thin coverage, the same pattern already noted for chapters 1 and 3.",
     "alignment_log": [
       {
         "date": "2026-09-06",
@@ -47,6 +57,12 @@
         "by": "Claude Sonnet 5",
         "scope": "Full pass: chapters 1-4 and 7-12 against all four frameworks (5-6 already covered by the initial pass)",
         "note": "Extended several chapter 5-6 codes to new chapters where the same standard genuinely recurs (event-driven programming, circuit-building from a schematic, the loops/conditionals/procedures toolkit), and added new codes for concepts unique to the new chapters (networking, file I/O, communication protocols, binary/hex representation, Bluetooth/asyncio). Chapters 1 and 3 have thinner coverage in places (hardware assembly and a component reference, respectively) -- some frameworks genuinely have little to say about them, and those gaps are left unmarked per this carrier's own convention of omitting rather than padding."
+      },
+      {
+        "date": "2026-10-06",
+        "by": "Claude Sonnet 5",
+        "scope": "Added locators p1.1-p1.5 for Projects 1.1-1.5 against all four active frameworks (apcsp, castandards, csta2026, ca-ict-anchor)",
+        "note": "Extended ten existing codes to cover a genuine recurrence in the new Projects (iteration, libraries, arithmetic operators, software/hardware layering, troubleshooting-by-testing, binary/hex representation, PWM), and added three new codes not previously needed anywhere in the carrier: apcsp 2.1 (Binary Numbers, for Project 1.4's binary-counting challenge), csta2026 S1-PHY-DD-03 (iterative physical-computing challenges, for Projects 1.3-1.5's deliberately unsolved REPL/blink/breathe challenges), and csta2026 MS-PRO-PD-13 (documentation lookup, for Project 1.3's dir(machine) step). Projects 1.1 and 1.2 remain thin by design, the same pattern chapters 1 and 3 already show for hardware- and tooling-only lessons with little to align against code-focused standards."
       }
     ]
   },
@@ -90,10 +106,13 @@
           2,
           4,
           5,
-          7
+          7,
+          "p1.3",
+          "p1.4",
+          "p1.5"
         ],
         "strength": "strong",
-        "note": "Chapter 2 covers both definite iteration (for with range) and indefinite iteration (while True), plus breaking out of a loop early. Chapter 4's blinking-LED program is a clean while True loop. Chapter 5's traffic light cycle is a similar repeating while True loop. Chapter 7's for i in range(50) flash loop is a finite, counted loop -- the other half of the topic's scope."
+        "note": "Chapter 2 covers both definite iteration (for with range) and indefinite iteration (while True), plus breaking out of a loop early. Chapter 4's blinking-LED program is a clean while True loop. Chapter 5's traffic light cycle is a similar repeating while True loop. Chapter 7's for i in range(50) flash loop is a finite, counted loop -- the other half of the topic's scope. Project 1.3's closing challenge asks students to turn the same REPL commands they just tried into a saved while True script that blinks forever -- the same indefinite-iteration pattern, now self-written rather than demonstrated. Project 1.4's blink, LED-sequence, and binary-counting scripts are further instances of the same loop. Project 1.5's breathing-LED script uses range() with a step other than 1 and, for the fade-down half, a negative step -- a concrete counted-loop variation the carrier hadn't shown before."
       },
       "3.13": {
         "locators": [
@@ -122,19 +141,21 @@
       },
       "3.3": {
         "locators": [
-          8
+          8,
+          "p1.4"
         ],
         "strength": "partial",
-        "note": "Converting a raw ADC reading into a voltage, and a voltage into a temperature, both use a conversion-factor equation built from ordinary arithmetic -- the lesson doesn't dwell on order-of-operations rules explicitly, but the equations depend on them."
+        "note": "Converting a raw ADC reading into a voltage, and a voltage into a temperature, both use a conversion-factor equation built from ordinary arithmetic -- the lesson doesn't dwell on order-of-operations rules explicitly, but the equations depend on them. Project 1.4 names and explains % (modulo) and // (floor division) directly, as operators students will apply themselves to a binary-counting problem, rather than leaving them implicit inside a larger formula."
       },
       "3.14": {
         "locators": [
           4,
           10,
-          12
+          12,
+          "p1.3"
         ],
         "strength": "strong",
-        "note": "Chapter 4 explicitly explains import as bringing in pre-written code and introduces the API concept through machine and time. Chapter 10 uses a separate ssd1306.py driver file as a library the program imports rather than reimplementing. Chapter 12 imports aioble, bluetooth, and struct, each doing real work the lesson doesn't ask students to build themselves."
+        "note": "Chapter 4 explicitly explains import as bringing in pre-written code and introduces the API concept through machine and time. Chapter 10 uses a separate ssd1306.py driver file as a library the program imports rather than reimplementing. Chapter 12 imports aioble, bluetooth, and struct, each doing real work the lesson doesn't ask students to build themselves. Project 1.3 goes a step further and has students call dir(machine) directly in the REPL to see what a built-in library actually offers before using any of it, a more hands-on instance of treating a library as something with its own documented surface to inspect."
       },
       "2.4": {
         "locators": [
@@ -156,6 +177,14 @@
         ],
         "strength": "partial",
         "note": "The lesson's STATUS CODES section has students check the result of a network request rather than assuming it always succeeds, but it doesn't build a system that keeps working when a connection actually fails -- more awareness of unreliability than designed-in tolerance for it."
+      },
+      "2.1": {
+        "locators": [
+          "p1.4",
+          "p1.5"
+        ],
+        "strength": "partial",
+        "note": "Project 1.4's binary-counting challenge has students convert a decimal count from 0 to 7 into its base-2 representation by hand, assigning each of three LEDs a place value (4, 2, 1) -- the same base-10-to-base-2 conversion and place-value idea this topic covers. Project 1.5 revisits the underlying on/off, bit-level fact from the other direction: a GPIO pin is still only ever one bit, and PWM only approximates something in between by switching that single bit very fast, rather than the pin ever genuinely holding an analog value."
       }
     },
     "castandards": {
@@ -178,10 +207,11 @@
       },
       "9-12.CS.3": {
         "locators": [
-          5
+          5,
+          "p1.1"
         ],
-        "strength": "related",
-        "note": "Wiring three LEDs, a button, and a buzzer to the right pins on a breadboard is exactly the kind of troubleshooting-by-testing this standard describes, but the lesson doesn't frame it as a debugging skill explicitly."
+        "strength": "strong",
+        "note": "Wiring three LEDs, a button, and a buzzer to the right pins on a breadboard is exactly the kind of troubleshooting-by-testing this standard describes, but the lesson doesn't frame it as a debugging skill explicitly. Project 1.1 is a cleaner instance of the same standard: its two-stage sign-off, a neighbor check followed by a teacher check against a written workmanship rubric, is a structured, repeatable troubleshooting process in a way chapter 5's wiring isn't."
       },
       "9-12.DA.11": {
         "locators": [
@@ -200,25 +230,28 @@
       "6-8.AP.12": {
         "locators": [
           2,
-          4
+          4,
+          "p1.4"
         ],
         "strength": "partial",
-        "note": "Chapter 2 combines loops and conditionals rather than teaching them in isolation. Chapter 4 builds its combined LED-and-button program iteratively across three small programs (Blink, Button, Switch) rather than all at once."
+        "note": "Chapter 2 combines loops and conditionals rather than teaching them in isolation. Chapter 4 builds its combined LED-and-button program iteratively across three small programs (Blink, Button, Switch) rather than all at once. Project 1.4 follows the same incremental pattern: blink the onboard LED, then a wired LED, then sequence three LEDs in a row, then count in binary, each program built on the last rather than arriving at the full version all at once."
       },
       "9-12.CS.2": {
         "locators": [
-          10
+          10,
+          "p1.2"
         ],
         "strength": "partial",
-        "note": "The ssd1306.py driver hides the low-level I2C/SPI protocol behind a small set of drawing functions -- a real example of a software layer sitting on top of a hardware interface, though the lesson doesn't name the layering explicitly."
+        "note": "The ssd1306.py driver hides the low-level I2C/SPI protocol behind a small set of drawing functions -- a real example of a software layer sitting on top of a hardware interface, though the lesson doesn't name the layering explicitly. Project 1.2 installs the layer underneath that one: flashing MicroPython firmware is putting system software in place before any application script can run on top of it, a more fundamental instance of hardware/software layering than a single driver file."
       },
       "9-12.DA.8": {
         "locators": [
           8,
-          12
+          12,
+          "p1.4"
         ],
         "strength": "strong",
-        "note": "Chapter 8 converts a raw ADC reading into a voltage and then into a temperature via two separate equations -- the same real-world quantity represented three different ways. Chapter 12 packs a floating-point temperature into structured binary bytes with struct.pack and unpacks it back with struct.unpack on the receiving end."
+        "note": "Chapter 8 converts a raw ADC reading into a voltage and then into a temperature via two separate equations -- the same real-world quantity represented three different ways. Chapter 12 packs a floating-point temperature into structured binary bytes with struct.pack and unpacks it back with struct.unpack on the receiving end. Project 1.4's binary-counting challenge represents the same quantity, a count from 0 to 7, a third way: as a physical pattern across three LEDs, each one standing for a place value."
       },
       "9-12.DA.9": {
         "locators": [
@@ -251,10 +284,11 @@
           6,
           7,
           8,
-          10
+          10,
+          "p1.1"
         ],
         "strength": "strong",
-        "note": "Chapters 4, 5, 6, 7, 8, and 10 all have students build a working circuit from a wiring diagram -- an LED and button, a traffic light, PIR sensor and buzzer, a potentiometer, an OLED module -- and work out why it doesn't behave right when a wire, resistor, or voltage is wrong. This standard's own example (an LED that won't light) runs through nearly every hands-on chapter in the pathway."
+        "note": "Chapters 4, 5, 6, 7, 8, and 10 all have students build a working circuit from a wiring diagram -- an LED and button, a traffic light, PIR sensor and buzzer, a potentiometer, an OLED module -- and work out why it doesn't behave right when a wire, resistor, or voltage is wrong. This standard's own example (an LED that won't light) runs through nearly every hands-on chapter in the pathway. Project 1.1 is this standard's example almost exactly: three hand-wired LEDs checked against an exemplar for correct polarity, pins, and wire color, with no code involved at all yet."
       },
       "S1-PHY-IO-02": {
         "locators": [
@@ -351,6 +385,22 @@
         ],
         "strength": "related",
         "note": "Chapter 1 introduces the Pico as a microcontroller development board built for physical computing, and chapter 9 turns it into a standalone, unattended data-logging device -- both touch the idea of a specialized computing device, but neither lesson discusses the input/output/processing/storage framing this standard uses."
+      },
+      "S1-PHY-DD-03": {
+        "locators": [
+          "p1.3",
+          "p1.4",
+          "p1.5"
+        ],
+        "strength": "strong",
+        "note": "Projects 1.3, 1.4, and 1.5 are each built as a challenge with hints rather than a worked example: write a script that blinks an LED forever (1.3), sequence three LEDs or count in binary on them (1.4), or make an LED breathe by fading it up and down forever (1.5). In every case, students write code that visibly drives the physical LEDs and have to revise it once they see how it actually behaves, since none of these programs are shown solved."
+      },
+      "MS-PRO-PD-13": {
+        "locators": [
+          "p1.3"
+        ],
+        "strength": "partial",
+        "note": "Project 1.3 has students call dir(machine) directly in the REPL to look up what a built-in library offers before using any of it -- documentation lookup as a normal step in writing a program, though the lesson doesn't also cover searching an error message, the standard's other named example."
       }
     },
     "ca-ict-anchor": {
@@ -411,10 +461,11 @@
         "locators": [
           1,
           4,
-          10
+          10,
+          "p1.1"
         ],
         "strength": "strong",
-        "note": "Chapter 1's soldering section is a full walkthrough of assembling hardware with the right tools (iron, solder, stand) and testing the result (checking every joint for bridges or cold joints). Chapter 4 builds a breadboard circuit and tests it by running the program. Chapter 10 wires and tests an external OLED module."
+        "note": "Chapter 1's soldering section is a full walkthrough of assembling hardware with the right tools (iron, solder, stand) and testing the result (checking every joint for bridges or cold joints). Chapter 4 builds a breadboard circuit and tests it by running the program. Chapter 10 wires and tests an external OLED module. Project 1.1 hand-wires three LEDs and resistors with the right tools (wire strippers and cutters) following a color convention, then tests the result against a written rubric through a two-stage sign-off, rather than by running a program."
       },
       "C4.6": {
         "locators": [
@@ -425,10 +476,11 @@
       },
       "C4.3": {
         "locators": [
-          2
+          2,
+          "p1.2"
         ],
         "strength": "partial",
-        "note": "Chapter 2 (in both its Thonny and ViperIDE forms) is entirely about working inside a development environment, though the lesson doesn't compare it against a bare content editor the way the standard frames the spectrum."
+        "note": "Chapter 2 (in both its Thonny and ViperIDE forms) is entirely about working inside a development environment, though the lesson doesn't compare it against a bare content editor the way the standard frames the spectrum. Project 1.2 is a step earlier: provisioning that development environment in the first place, flashing MicroPython firmware and confirming Thonny shows the device connected, before chapter 2's lessons ever put it to use."
       },
       "C4.1": {
         "locators": [
@@ -440,17 +492,19 @@
       "5.11": {
         "locators": [
           10,
-          12
+          12,
+          "p1.4"
         ],
         "strength": "partial",
-        "note": "Chapter 10's HEXADECIMAL aside directly explains base-16 notation for I2C addresses. Chapter 12 uses hexadecimal UUIDs (0x181A, 0x2A6E) for BLE service and characteristic identifiers, converting one to decimal by hand as an example."
+        "note": "Chapter 10's HEXADECIMAL aside directly explains base-16 notation for I2C addresses. Chapter 12 uses hexadecimal UUIDs (0x181A, 0x2A6E) for BLE service and characteristic identifiers, converting one to decimal by hand as an example. Project 1.4's binary-counting challenge is a sustained, hands-on exercise in base-2 representation rather than a passing aside: place values and a count from 0 to 7, worked out across three physical LEDs."
       },
       "C9.4": {
         "locators": [
-          8
+          8,
+          "p1.5"
         ],
         "strength": "partial",
-        "note": "Reading the ADC and driving PWM both touch how a microcontroller represents and processes data at a low level, though the lesson doesn't discuss digital logic or memory organization directly."
+        "note": "Reading the ADC and driving PWM both touch how a microcontroller represents and processes data at a low level, though the lesson doesn't discuss digital logic or memory organization directly. Project 1.5 isolates the PWM half of that on its own: machine.PWM, freq(), and duty_u16() explored directly, without the ADC half chapter 8 also covers."
       },
       "C4.4": {
         "locators": [
@@ -461,10 +515,11 @@
       },
       "10.10": {
         "locators": [
-          9
+          9,
+          "p1.3"
         ],
         "strength": "strong",
-        "note": "The data logger reads, writes, and appends files on the Pico's own filesystem, and main.py's special auto-run behavior is part of how that filesystem is organized."
+        "note": "The data logger reads, writes, and appends files on the Pico's own filesystem, and main.py's special auto-run behavior is part of how that filesystem is organized. Project 1.3 introduces the more basic idea underneath that: Thonny shows two entirely separate file panels, This computer and Raspberry Pi Pico, and a script has to be saved to the Pico's own storage, not the computer's, to actually run there."
       },
       "10.7": {
         "locators": [
