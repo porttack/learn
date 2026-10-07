@@ -686,6 +686,59 @@ figure.figure-small img {
   display: none;
 }
 
+// The emojize pset's searchable emoji table (_cs50psets/emojize.md). Local
+// stand-in for the carpedm20.github.io/emoji reference list, which the
+// school firewall blocks.
+.emoji-list-widget {
+  margin: 1.5em 0;
+  padding: 1em 1.2em;
+  border: 1px solid $grey-color-light;
+  border-radius: 6px;
+  background: $grey-color-light;
+
+  input[type="text"] {
+    font: inherit;
+    width: 100%;
+    max-width: 20em;
+    box-sizing: border-box;
+    padding: 0.4em 0.6em;
+    border: 1px solid $grey-color;
+    border-radius: 4px;
+  }
+
+  .emoji-list-status {
+    margin: 0.6em 0;
+    font-size: 0.85em;
+    color: $grey-color-dark;
+  }
+}
+
+.emoji-list-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  background: $background-color;
+
+  th, td {
+    padding: 0.4em 0.6em;
+    border-bottom: 1px solid $grey-color-light;
+    text-align: left;
+  }
+
+  th {
+    background: $grey-color-light;
+  }
+
+  .emoji-list-glyph {
+    font-size: 1.4em;
+    text-align: center;
+  }
+}
+
+.emoji-list-print {
+  display: none;
+}
+
 @keyframes terminal-blink {
   50% { opacity: 0; }
 }
@@ -1681,11 +1734,13 @@ table.checkoff.light-message td {
   .pset-demo,
   .terminal-demo,
   .rw-walk,
-  .buoy-demo {
+  .buoy-demo,
+  .emoji-list-widget {
     display: none !important;
   }
 
-  .terminal-demo-print {
+  .terminal-demo-print,
+  .emoji-list-print {
     display: block !important;
   }
 
