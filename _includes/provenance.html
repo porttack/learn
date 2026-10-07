@@ -2,15 +2,23 @@
 {% if src %}
 <footer class="provenance">
   {% if src.use == "adapt" %}
+  {%- assign embed_link = false -%}
+  {%- if page.source_url and page.source_unit -%}
+    {%- assign embed_link = true -%}
+  {%- endif -%}
   <p>
-    Adapted from <cite>{{ src.title }}</cite>{% if src.year %}, {{ src.year }}{% endif %},
+    Adapted from <cite>{{ src.title }}</cite>{% if src.year %}, {{ src.year }}{% endif %}{% if embed_link %} (<a href="{{ page.source_unit_url | default: page.source_url }}">{{ page.source_unit }}</a>, <a href="{{ page.source_url }}">{{ page.title }}</a>){% endif %},
     by {{ src.author }}{% if src.publisher %} ({{ src.publisher }}){% endif %}.
     This version by <a href="{{ site.author_url }}">{{ site.author }}</a>.
     Licensed under <a href="{{ src.licence_url }}">{{ src.licence }}</a>.
   </p>
-  {% if page.source_url or page.original_print %}<p class="provenance-link">
-    {%- if page.source_url %}<a href="{{ page.source_url }}">{{ src.link_label | default: "original problem" }}</a>{% endif -%}
-    {%- if page.source_url and page.original_print %} &middot; {% endif -%}
+  {%- assign show_source_link = false -%}
+  {%- unless embed_link -%}
+    {%- if page.source_url -%}{%- assign show_source_link = true -%}{%- endif -%}
+  {%- endunless -%}
+  {% if show_source_link or page.original_print %}<p class="provenance-link">
+    {%- if show_source_link %}<a href="{{ page.source_url }}">{{ src.link_label | default: "original problem" }}</a>{% endif -%}
+    {%- if show_source_link and page.original_print %} &middot; {% endif -%}
     {%- if page.original_print %}<a href="{{ page.original_print }}">original printable (PDF)</a>{% endif -%}
   </p>{% endif %}
   {% elsif src.use == "original" %}

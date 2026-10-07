@@ -4,6 +4,8 @@ order: 6
 chapter: 6
 source: cs50-python
 source_url: "https://cs50.harvard.edu/python/psets/4/emojize/"
+source_unit: "Problem Set 4"
+source_unit_url: "https://cs50.harvard.edu/python/psets/4/"
 subtitle: "Write a program that turns emoji codes like :thumbs_up: into real emoji."
 ---
 
