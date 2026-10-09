@@ -1,43 +1,17 @@
 ---
 layout: lesson
-title: "Project 1.6: Choosing a Program with DIP Switches (Day 5)"
+title: "Project 1.7: Choosing a Program with Imports (Day 6)"
 pathway: pico
-order: 105
-chapter: "p1.6"
+order: 106
+chapter: "p1.7"
 project: 1
-project_part: 6
-label: "Project 1.6"
+project_part: 7
+label: "Project 1.7"
 source: original
-subtitle: "Wire a switch bank, then let it pick which saved function runs"
+subtitle: "Read your switches, then import leds.py to let them pick a program"
 ---
 
-This is for after [Project 1.5](/pico/project1-5-fading-an-led-with-pwm/) has you comfortable with `leds.py`, the file with `unarycount`, `binarycount`, `breathe1`, and `breatheall` saved on your Pico. Today you'll wire a way to pick one of those four without editing any code, then write the small program that does the picking.
-
-### Wire the switches
-
-A DIP switch is a strip of tiny on/off switches in one package, straddling the center gap just like a chip: each switch has one leg on the left side of the gap, one leg on the right, and flipping it toward the side marked **ON** connects those two legs together. You only need three of them.
-
-<figure id="fig-dip-switches-exemplar">
-  <img src="{{ '/assets/img/pico/dip-switches-exemplar.jpg' | relative_url }}" alt="A Pico 2 W breadboard circuit with three red LEDs wired to GP13, GP14, and GP15, and an 8-position DIP switch added above them straddling the center gap. Three of its switches have a green wire running to the main ground rail and a white wire running to the Pico's GP10, GP11, and GP12 pins.">
-  <figcaption>Exemplar: three LEDs, plus three switches wired and ready</figcaption>
-</figure>
-
-For each of the three switches you're using:
-
-1. Run a green wire from one leg to your main ground rail, the same rail from Project 1.1.
-2. Run a white wire from the other leg to a GPIO pin: physical pins 14, 15, and 16, which are GP10, GP11, and GP12.
-
-<aside class="callout note" markdown="1">
-**WHITE FOR INPUT NOW TOO**
-
-Project 1.1 just said "white for signal," because every signal wire so far was an output, something your Pico controls. A switch is different: it's an input, something your Pico reads. White still works fine for it; the color marks "GPIO signal," not a particular direction. Your existing LED wires don't need to change.
-</aside>
-
-<aside class="callout note" markdown="1">
-**IF A SWITCH SEEMS TO DO NOTHING**
-
-Some full-size breadboards split each power rail into two halves around the middle, with no connection between them. If your switches are wired near the gap and your Pico is wired further down, a short jumper bridging the two halves of the ground rail may be missing. Check for a break with a multimeter, or just run a wire from one half of the rail to the other.
-</aside>
+This is for after your switch wiring from [Project 1.6](/pico/project1-6-wiring-a-switch-bank/) is signed off.
 
 ### Read a switch
 
@@ -108,4 +82,12 @@ A few things to plan out before you start:
 This one doesn't come back: whichever function runs will keep running forever, same as it does in `leds.py` on its own.
 </aside>
 
-Once you can flip a switch and watch your Pico switch programs, you've got a working control panel: the start of being able to add more behavior later without ever touching `leds.py` again.
+### Run it without a computer attached
+
+Right now your switch-picker only runs when you click Run in ViperIDE. [Chapter 9](/pico/09-data-logger/#running-headless) covers the fix: save your finished file as `main.py`, and your Pico runs it automatically every time it's powered on, no computer needed.
+
+Saving it as `main.py` alone won't make it jump into action immediately: while ViperIDE is still connected, your Pico stays sitting in the REPL. Press CTRL+D in the Terminal to force a soft reset, the same trick Chapter 9 uses, or just unplug and plug your Pico back in.
+
+Once it's running as `main.py`, this becomes a real stand-alone gadget: plug it into any USB power source, flip a switch, and it picks the program, no laptop required. You can always reconnect to ViperIDE later to edit it further; that just stops the automatic running until you save and reset again.
+
+Once you can flip a switch and watch your Pico switch programs, even unplugged from your computer, you've got a working control panel: the start of being able to add more behavior later without ever touching `leds.py` again.
