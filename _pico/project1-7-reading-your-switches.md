@@ -25,9 +25,9 @@ A switch wired this way works exactly like the push-button in [Chapter 4](/pico/
 ```python
 from machine import Pin
 
-sw1 = Pin(10, Pin.IN, Pin.PULL_UP)
+sw1 = Pin(12, Pin.IN, Pin.PULL_UP)
 sw2 = Pin(11, Pin.IN, Pin.PULL_UP)
-sw3 = Pin(12, Pin.IN, Pin.PULL_UP)
+sw3 = Pin(10, Pin.IN, Pin.PULL_UP)
 ```
 
 This is `from machine import Pin` rather than the `import machine` you've used up to now, so it's `Pin(...)` instead of `machine.Pin(...)`. Same thing either way, just a shorter name for it; [Project 1.8](/pico/project1-8-choosing-a-program-with-imports/) covers why there's more than one way to do this.
@@ -50,9 +50,9 @@ Save this as `watchswitches.py` and run it:
 from machine import Pin
 from time import sleep
 
-sw1 = Pin(10, Pin.IN, Pin.PULL_UP)
+sw1 = Pin(12, Pin.IN, Pin.PULL_UP)
 sw2 = Pin(11, Pin.IN, Pin.PULL_UP)
-sw3 = Pin(12, Pin.IN, Pin.PULL_UP)
+sw3 = Pin(10, Pin.IN, Pin.PULL_UP)
 
 last1 = None
 last2 = None

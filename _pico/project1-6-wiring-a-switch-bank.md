@@ -31,7 +31,7 @@ A DIP switch is a strip of tiny on/off switches in one package, straddling the c
 For each of the three switches you're using:
 
 1. Run a green wire from one leg to your main ground rail, the same rail from Project 1.1.
-2. Run a white wire from the other leg to a GPIO pin: physical pins 14, 15, and 16, which are GP10, GP11, and GP12.
+2. Run a white wire from the other leg to a GPIO pin. Wire switch position 1, the one nearest your LEDs, to GP12 (physical pin 16); switch 2 to GP11 (physical pin 15); and switch 3, the one farthest from your LEDs, to GP10 (physical pin 14). Nearest switch to nearest pin keeps the wires short and uncrossed.
 
 <aside class="callout note" markdown="1">
 **WHITE FOR INPUT NOW TOO**
