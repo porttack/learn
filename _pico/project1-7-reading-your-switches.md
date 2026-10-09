@@ -47,11 +47,22 @@ It feels backward the first time: flipping a switch to ON makes it read the lowe
 
 Write a program that loops forever, checking all three switches, and prints a line reporting all three as `ON` or `OFF` whenever any of them changes. Flip a switch, see one new line. Don't touch anything, see nothing print, forever, no matter how long the loop keeps running.
 
+Two pieces of syntax make this possible: `!=` tests "is not equal to," and `else` catches whatever an `if` didn't:
+
+```python
+if new_value != old_value:
+    print("it changed")
+else:
+    print("still the same")
+```
+
+[Chapter 2](/pico/02-viperide-and-your-first-program/#variables-and-conditionals) covers `if`/`else` in more depth if you want it.
+
 A few things to plan out before you start:
 
 - A loop that prints every single time around, with no condition, will flood the Shell with thousands of identical lines a second. You need to remember what you printed last, and only print again when something's actually different.
 - That means storing each switch's last known reading in its own variable, started before the loop begins, and updating it every time you do print.
-- `!=` tests "is not equal to." You'll want it once per switch, or some way to check all three at once.
+- You'll want `!=` once per switch, or some way to check all three at once.
 - `sw1.value()` gives you `0` or `1`. Printing those numbers directly works, but translating them into the words `ON` and `OFF` first reads a lot better.
 </aside>
 
