@@ -44,7 +44,7 @@ It feels backward the first time: flipping a switch to ON makes it read the lowe
 
 A loop that prints every single time around, with no condition, would flood your Shell with thousands of identical lines a second. Printing only when something's actually different means remembering what you printed last, which means a variable for each switch's last known reading, started before the loop begins and updated every time you do print.
 
-Save and run this:
+Save this as `watchswitches.py` and run it:
 
 ```python
 from machine import Pin
