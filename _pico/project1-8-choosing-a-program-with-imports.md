@@ -86,3 +86,5 @@ Saving it as `main.py` alone won't make it jump into action immediately: while T
 Once it's running as `main.py`, this becomes a real stand-alone gadget: plug it into any USB power source, flip a switch, and it picks the program, no laptop required. You can always reconnect to Thonny later to edit it further; that just stops the automatic running until you save and reset again.
 
 Once you can flip a switch and watch your Pico switch programs, even unplugged from your computer, you've got a working control panel: the start of being able to add more behavior later without ever touching `leds.py` again.
+
+That's the end of Project 1. [Project 2](/pico/project2-1-moving-a-servo/) moves from digital I/O, always either on or off, to analog I/O: a servo that holds any position, not just two, then a potentiometer to steer it.
