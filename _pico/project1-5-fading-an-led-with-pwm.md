@@ -103,3 +103,5 @@ breathe1(led)
 
 Add a third function to the same `leds.py` file, `breatheall(leds)`, where `leds` is a list of `PWM` objects this time, not plain `Pin` objects. Fade all of them at once so they're never all brightening or all dimming together. [Chapter 8](/pico/08-temperature-gauge/#fading-an-led-with-pwm) covers PWM in more depth, including how to avoid two pins fighting over the same PWM hardware.
 </aside>
+
+Once `leds.py` has all four functions working, move on to [Project 1.6](/pico/project1-6-dip-switches-and-imports/), where you'll wire a set of switches to pick between them.
