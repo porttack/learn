@@ -13,6 +13,7 @@
   collection: pico
   url: /pico/
   standards_carrier: pico
+  nav_top: true
   image: /assets/img/pico/fig-1-1.jpg
   blurb: >-
     Get acquainted with the Raspberry Pi Pico and MicroPython: wiring,

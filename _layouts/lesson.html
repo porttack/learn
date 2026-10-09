@@ -14,6 +14,8 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
 {% assign next_index = current_index | plus: 1 %}
 {% if current_index > 0 %}{% assign prev_page = pathway_pages[prev_index] %}{% endif %}
 {% if next_index < pathway_pages.size %}{% assign next_page = pathway_pages[next_index] %}{% endif %}
+{% assign has_pager = false %}
+{% if current_index > 0 or next_index < pathway_pages.size %}{% assign has_pager = true %}{% endif %}
 
 <article class="lesson">
   {% if pathway_meta.name_line and page.name_line != false %}{% include unplugged/name-line.html %}{% endif %}
@@ -43,7 +45,7 @@ _data/pathways.yml) gets no prev/next links at all.{% endcomment %}
   <p class="lesson-card-hint">New to lesson cards? <a href="{{ '/rovrobotics/what-is-a-lesson-card/' | relative_url }}">See what a lesson card is</a>.</p>
   {% endif %}
 
-  {% if current_index > 0 or next_index < pathway_pages.size %}
+  {% if pathway_meta.nav_top and has_pager %}
   <div class="lesson-nav-pager lesson-nav-top">
   {% if current_index > 0 %}
     <a class="lesson-prev" href="{{ prev_page.url | relative_url }}">&larr; {{ prev_page.title }}</a>
