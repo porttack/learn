@@ -17,6 +17,8 @@ This is for after [Project 1.7](/pico/project1-7-reading-your-switches/) has you
 
 You've only ever used your own functions in the same file you wrote them in. Reaching into `leds.py` from a different file works exactly like reaching into `machine` does, except it's your own code this time. In fact, Project 1.7 already had you use two of the three ways to do it, without it being named yet: `import machine` and `from machine import Pin` are the same two patterns, just with a built-in module instead of your own file.
 
+As a reminder, `leds.py` is the file [Project 1.4](/pico/project1-4-blinking-your-leds/) had you start, with `unarycount` and `binarycount`, and [Project 1.5](/pico/project1-5-fading-an-led-with-pwm/) added `breathe1` and `breatheall` to.
+
 ```python
 import leds
 
