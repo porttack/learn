@@ -18,14 +18,16 @@ This is for after your switch wiring from [Project 1.6](/pico/project1-6-wiring-
 A switch wired this way works exactly like the push-button in [Chapter 4](/pico/04-physical-computing-with-pico/#inputs-reading-a-button): closed, it connects your GPIO pin straight to ground; open, it doesn't connect to anything, so you need a pull-up to give it a known value.
 
 ```python
-import machine
+from machine import Pin
 
-sw1 = machine.Pin(10, machine.Pin.IN, machine.Pin.PULL_UP)
-sw2 = machine.Pin(11, machine.Pin.IN, machine.Pin.PULL_UP)
-sw3 = machine.Pin(12, machine.Pin.IN, machine.Pin.PULL_UP)
+sw1 = Pin(10, Pin.IN, Pin.PULL_UP)
+sw2 = Pin(11, Pin.IN, Pin.PULL_UP)
+sw3 = Pin(12, Pin.IN, Pin.PULL_UP)
 ```
 
-Try `sw1.value()` in the REPL, flipping that switch between tries. Off (away from the **ON** label), you'll get `1`: the pull-up is holding the pin high since nothing else is connected to it. On, the switch connects the pin straight to ground, and you'll get `0`.
+This is `from machine import Pin` rather than the `import machine` you've used up to now, so it's `Pin(...)` instead of `machine.Pin(...)`. Same thing either way, just a shorter name for it; more on why there's more than one way to do this shortly.
+
+Try `sw1.value()` in the Shell, flipping that switch between tries. Off (away from the **ON** label), you'll get `1`: the pull-up is holding the pin high since nothing else is connected to it. On, the switch connects the pin straight to ground, and you'll get `0`.
 
 <aside class="callout note" markdown="1">
 **ON READS 0**
@@ -35,7 +37,7 @@ It feels backward the first time: flipping a switch to ON makes it read the lowe
 
 ### Three ways to use `leds.py`
 
-You've only ever used your own functions in the same file you wrote them in. Reaching into `leds.py` from a different file works like reaching into `machine` or `time`, except it's your own code this time. There are three ways to do it:
+You've only ever used your own functions in the same file you wrote them in. Reaching into `leds.py` from a different file works exactly like reaching into `machine` does, except it's your own code this time. In fact, you just used two of the three ways to do it without being told: `import machine` and `from machine import Pin` up above are the same two patterns, just with a built-in module instead of your own file.
 
 ```python
 import leds
@@ -84,10 +86,10 @@ This one doesn't come back: whichever function runs will keep running forever, s
 
 ### Run it without a computer attached
 
-Right now your switch-picker only runs when you click Run in ViperIDE. [Chapter 9](/pico/09-data-logger/#running-headless) covers the fix: save your finished file as `main.py`, and your Pico runs it automatically every time it's powered on, no computer needed.
+Right now your switch-picker only runs when you click Run in Thonny. [Chapter 9](/pico/09-data-logger/#running-headless) covers the same fix with ViperIDE instead, but the idea is identical: save your finished file as `main.py`, with **File > Save As**, choosing **Raspberry Pi Pico** just like any other save, and your Pico runs it automatically every time it's powered on, no computer needed.
 
-Saving it as `main.py` alone won't make it jump into action immediately: while ViperIDE is still connected, your Pico stays sitting in the REPL. Press CTRL+D in the Terminal to force a soft reset, the same trick Chapter 9 uses, or just unplug and plug your Pico back in.
+Saving it as `main.py` alone won't make it jump into action immediately: while Thonny is still connected, your Pico stays sitting in the REPL. Click into the Shell and press Ctrl+D to force a soft reset, or just unplug your Pico and plug it back in.
 
-Once it's running as `main.py`, this becomes a real stand-alone gadget: plug it into any USB power source, flip a switch, and it picks the program, no laptop required. You can always reconnect to ViperIDE later to edit it further; that just stops the automatic running until you save and reset again.
+Once it's running as `main.py`, this becomes a real stand-alone gadget: plug it into any USB power source, flip a switch, and it picks the program, no laptop required. You can always reconnect to Thonny later to edit it further; that just stops the automatic running until you save and reset again.
 
 Once you can flip a switch and watch your Pico switch programs, even unplugged from your computer, you've got a working control panel: the start of being able to add more behavior later without ever touching `leds.py` again.
