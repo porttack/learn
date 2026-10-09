@@ -1245,6 +1245,13 @@ figure.figure-small img {
   }
 }
 
+.lesson-nav-top {
+  margin-bottom: 1.6em;
+  padding-bottom: 1.2em;
+  border-bottom: 1px solid $grey-color-light;
+  font-size: 0.95em;
+}
+
 // One row of same-size buttons: Print, Word, Slides, answer key.
 .lesson-actions {
   display: flex;
@@ -1726,6 +1733,7 @@ table.checkoff.light-message td {
   .site-menu,
   .pathway-back,
   .lesson-nav,
+  .lesson-nav-top,
   .print-button,
   .copy-btn,
   .standards-alignment:not(.standards-alignment-open),
