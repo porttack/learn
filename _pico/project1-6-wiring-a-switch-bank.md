@@ -11,7 +11,7 @@ source: original
 subtitle: "Add three switches to the same breadboard, ready for code in Project 1.7"
 ---
 
-This is for after [Project 1.5](/pico/project1-5-fading-an-led-with-pwm/) has `leds.py` saved and working on your Pico, with `unarycount`, `binarycount`, `breathe1`, and `breatheall` all in it. Today is wiring only, same as Project 1.1 was: no code until [Project 1.7](/pico/project1-7-choosing-a-program-with-imports/).
+This is for after [Project 1.5](/pico/project1-5-fading-an-led-with-pwm/) has `leds.py` saved and working on your Pico, with `unarycount`, `binarycount`, `breathe1`, and `breatheall` all in it. Today is wiring only, same as Project 1.1 was: no code until [Project 1.7](/pico/project1-7-reading-your-switches/).
 
 <aside class="callout warning" markdown="1">
 **UNPLUG BEFORE YOU WIRE**
@@ -49,4 +49,4 @@ Some full-size breadboards split each power rail into two halves around the midd
 
 Once your three switches are wired, compare your breadboard to the exemplar above. Ask a neighbor to check it first. Once they agree it matches, call a teacher over for the real sign-off before you plug back in.
 
-Once you're signed off, move on to [Project 1.7](/pico/project1-7-choosing-a-program-with-imports/), where you'll write the code that actually reads these switches.
+Once you're signed off, move on to [Project 1.7](/pico/project1-7-reading-your-switches/), where you'll write the code that actually reads these switches.

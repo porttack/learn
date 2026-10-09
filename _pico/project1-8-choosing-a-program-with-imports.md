@@ -1,43 +1,21 @@
 ---
 layout: lesson
-title: "Project 1.7: Choosing a Program with Imports (Day 6)"
+title: "Project 1.8: Choosing a Program with Imports (Day 7)"
 pathway: pico
-order: 106
-chapter: "p1.7"
+order: 107
+chapter: "p1.8"
 project: 1
-project_part: 7
-label: "Project 1.7"
+project_part: 8
+label: "Project 1.8"
 source: original
-subtitle: "Read your switches, then import leds.py to let them pick a program"
+subtitle: "Import leds.py from a new file, and let your switches pick a program"
 ---
 
-This is for after your switch wiring from [Project 1.6](/pico/project1-6-wiring-a-switch-bank/) is signed off.
-
-### Read a switch
-
-A switch wired this way works exactly like the push-button in [Chapter 4](/pico/04-physical-computing-with-pico/#inputs-reading-a-button): closed, it connects your GPIO pin straight to ground; open, it doesn't connect to anything, so you need a pull-up to give it a known value.
-
-```python
-from machine import Pin
-
-sw1 = Pin(10, Pin.IN, Pin.PULL_UP)
-sw2 = Pin(11, Pin.IN, Pin.PULL_UP)
-sw3 = Pin(12, Pin.IN, Pin.PULL_UP)
-```
-
-This is `from machine import Pin` rather than the `import machine` you've used up to now, so it's `Pin(...)` instead of `machine.Pin(...)`. Same thing either way, just a shorter name for it; more on why there's more than one way to do this shortly.
-
-Try `sw1.value()` in the Shell, flipping that switch between tries. Off (away from the **ON** label), you'll get `1`: the pull-up is holding the pin high since nothing else is connected to it. On, the switch connects the pin straight to ground, and you'll get `0`.
-
-<aside class="callout note" markdown="1">
-**ON READS 0**
-
-It feels backward the first time: flipping a switch to ON makes it read the lower number. That's the pull-up at work, same as the button in Chapter 4. Worth saying out loud once so it's not a surprise later.
-</aside>
+This is for after [Project 1.7](/pico/project1-7-reading-your-switches/) has you reading `sw1`, `sw2`, and `sw3`.
 
 ### Three ways to use `leds.py`
 
-You've only ever used your own functions in the same file you wrote them in. Reaching into `leds.py` from a different file works exactly like reaching into `machine` does, except it's your own code this time. In fact, you just used two of the three ways to do it without being told: `import machine` and `from machine import Pin` up above are the same two patterns, just with a built-in module instead of your own file.
+You've only ever used your own functions in the same file you wrote them in. Reaching into `leds.py` from a different file works exactly like reaching into `machine` does, except it's your own code this time. In fact, Project 1.7 already had you use two of the three ways to do it, without it being named yet: `import machine` and `from machine import Pin` are the same two patterns, just with a built-in module instead of your own file.
 
 ```python
 import leds

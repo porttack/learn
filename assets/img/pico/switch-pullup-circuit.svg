@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 420" font-family="-apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+  <!-- Simple, original schematic (not a photo) of one switch wired to a
+       GPIO pin with its internal pull-up enabled: 3V3 through the
+       programmable pull-up resistor down to the GPIO node, the switch
+       from that same node to GND, shown open (default, reads 1), with a
+       small row below showing it closed (reads 0). Drawn, not
+       photographed, so there is no licensing question about the source. -->
+  <rect x="0" y="0" width="480" height="420" fill="#ffffff"/>
+
+  <!-- 3V3 rail -->
+  <line x1="120" y1="50" x2="260" y2="50" stroke="#1b1f23" stroke-width="3"/>
+  <text x="90" y="55" font-size="15" fill="#1b1f23">3V3</text>
+
+  <!-- wire down to pull-up resistor -->
+  <line x1="200" y1="50" x2="200" y2="90" stroke="#333" stroke-width="2"/>
+
+  <!-- dashed box: this resistor is internal / software, not a wired part -->
+  <rect x="163" y="82" width="74" height="66" fill="none" stroke="#9e9e9e" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+  <!-- resistor zigzag -->
+  <path d="M200,90 L188,98 L212,106 L188,114 L212,122 L188,130 L200,140" fill="none" stroke="#333" stroke-width="2.5"/>
+
+  <!-- label for the pull-up, no leader line needed, the dashed box does that job -->
+  <text x="150" y="100" text-anchor="end" font-size="13" fill="#1b1f23">Internal pull-up resistor:</text>
+  <text x="150" y="116" text-anchor="end" font-size="13" fill="#1b1f23">set in software, nothing</text>
+  <text x="150" y="132" text-anchor="end" font-size="13" fill="#1b1f23">you wire by hand</text>
+
+  <!-- wire down to the node -->
+  <line x1="200" y1="140" x2="200" y2="170" stroke="#333" stroke-width="2"/>
+  <circle cx="200" cy="170" r="4" fill="#1b1f23"/>
+
+  <!-- wire right to GPIO box -->
+  <line x1="200" y1="170" x2="320" y2="170" stroke="#333" stroke-width="2"/>
+  <rect x="320" y="148" width="120" height="44" fill="#e3f2fd" stroke="#1565c0" stroke-width="2"/>
+  <text x="380" y="166" text-anchor="middle" font-size="15" fill="#1b1f23">GPIO10</text>
+  <text x="380" y="182" text-anchor="middle" font-size="11" fill="#555">(sw1 on your Pico)</text>
+
+  <!-- wire down to switch, open position -->
+  <line x1="200" y1="170" x2="200" y2="222" stroke="#333" stroke-width="2"/>
+  <circle cx="200" cy="222" r="3" fill="#1b1f23"/>
+  <line x1="200" y1="222" x2="226" y2="250" stroke="#333" stroke-width="2.5"/>
+  <circle cx="200" cy="268" r="3" fill="#1b1f23"/>
+
+  <!-- wire down to GND rail -->
+  <line x1="200" y1="268" x2="200" y2="310" stroke="#333" stroke-width="2"/>
+  <line x1="120" y1="310" x2="260" y2="310" stroke="#1b1f23" stroke-width="3"/>
+  <text x="90" y="315" font-size="15" fill="#1b1f23">GND</text>
+
+  <!-- open-state label, clear of the GPIO box above it -->
+  <line x1="226" y1="250" x2="290" y2="250" stroke="#333" stroke-width="1.5"/>
+  <text x="296" y="238" font-size="14" font-weight="600" fill="#1b1f23">Open (default)</text>
+  <text x="296" y="258" font-size="13" fill="#1b1f23">pulled up to 3V3</text>
+  <text x="296" y="276" font-size="13" fill="#1b1f23">sw1.value() reads 1</text>
+
+  <!-- separate row below: the same switch, closed -->
+  <line x1="20" y1="335" x2="460" y2="335" stroke="#ddd" stroke-width="1"/>
+  <circle cx="160" cy="355" r="3" fill="#1b1f23"/>
+  <line x1="160" y1="355" x2="160" y2="400" stroke="#333" stroke-width="2.5"/>
+  <circle cx="160" cy="400" r="3" fill="#1b1f23"/>
+  <text x="195" y="368" font-size="14" font-weight="600" fill="#1b1f23">Closed (pressed)</text>
+  <text x="195" y="386" font-size="13" fill="#1b1f23">shorts straight to GND</text>
+  <text x="195" y="404" font-size="13" fill="#1b1f23">sw1.value() reads 0</text>
+</svg>
