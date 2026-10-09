@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 380" font-family="-apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif">
+  <!-- Simple, original diagram (not a photo): two square waves over the
+       same one-third of a second, same 50% duty cycle, showing only
+       frequency differs. 9 Hz draws 3 wide, countable pulses; 60 Hz draws
+       20 narrow ones, already blurring toward a steady line. Drawn, not
+       photographed, so there is no licensing question about the source. -->
+  <rect x="0" y="0" width="760" height="380" fill="#ffffff"/>
+
+  <text x="20" y="60" font-size="22" font-weight="700" fill="#1b1f23">9 Hz</text>
+  <text x="95" y="86" text-anchor="end" font-size="13" fill="#555">ON</text>
+  <text x="95" y="136" text-anchor="end" font-size="13" fill="#555">OFF</text>
+  <path d="M 110.0,130.0 L 110.0,80.0 L 205.1,80.0 L 205.1,130.0 L 300.2,130.0 L 300.2,80.0 L 395.3,80.0 L 395.3,130.0 L 490.4,130.0 L 490.4,80.0 L 585.5,80.0 L 585.5,130.0 L 680.0,130.0"
+        fill="none" stroke="#1565c0" stroke-width="3"/>
+
+  <!-- one-cycle bracket under the 9 Hz wave's first pulse -->
+  <path d="M 110,148 L 110,154 L 205.1,154 L 205.1,148" fill="none" stroke="#777" stroke-width="1.5"/>
+  <text x="157" y="172" text-anchor="middle" font-size="13" fill="#555">one cycle, about 111 ms</text>
+
+  <text x="20" y="200" font-size="22" font-weight="700" fill="#1b1f23">60 Hz</text>
+  <text x="95" y="226" text-anchor="end" font-size="13" fill="#555">ON</text>
+  <text x="95" y="276" text-anchor="end" font-size="13" fill="#555">OFF</text>
+  <path d="M 110.0,270.0 L 110.0,220.0 L 124.3,220.0 L 124.3,270.0 L 138.5,270.0 L 138.5,220.0 L 152.8,220.0 L 152.8,270.0 L 167.1,270.0 L 167.1,220.0 L 181.3,220.0 L 181.3,270.0 L 195.6,270.0 L 195.6,220.0 L 209.8,220.0 L 209.8,270.0 L 224.1,270.0 L 224.1,220.0 L 238.4,220.0 L 238.4,270.0 L 252.6,270.0 L 252.6,220.0 L 266.9,220.0 L 266.9,270.0 L 281.2,270.0 L 281.2,220.0 L 295.4,220.0 L 295.4,270.0 L 309.7,270.0 L 309.7,220.0 L 324.0,220.0 L 324.0,270.0 L 338.2,270.0 L 338.2,220.0 L 352.5,220.0 L 352.5,270.0 L 366.8,270.0 L 366.8,220.0 L 381.0,220.0 L 381.0,270.0 L 395.3,270.0 L 395.3,220.0 L 409.5,220.0 L 409.5,270.0 L 423.8,270.0 L 423.8,220.0 L 438.1,220.0 L 438.1,270.0 L 452.3,270.0 L 452.3,220.0 L 466.6,220.0 L 466.6,270.0 L 480.9,270.0 L 480.9,220.0 L 495.1,220.0 L 495.1,270.0 L 509.4,270.0 L 509.4,220.0 L 523.7,220.0 L 523.7,270.0 L 537.9,270.0 L 537.9,220.0 L 552.2,220.0 L 552.2,270.0 L 566.5,270.0 L 566.5,220.0 L 580.7,220.0 L 580.7,270.0 L 595.0,270.0 L 595.0,220.0 L 609.2,220.0 L 609.2,270.0 L 623.5,270.0 L 623.5,220.0 L 637.8,220.0 L 637.8,270.0 L 652.0,270.0 L 652.0,220.0 L 666.3,220.0 L 666.3,270.0 L 680.0,270.0"
+        fill="none" stroke="#2e7d32" stroke-width="2.5"/>
+
+  <text x="157" y="300" text-anchor="middle" font-size="13" fill="#555">20 cycles in the same span, about 17 ms each</text>
+
+  <!-- shared time axis -->
+  <line x1="110" y1="330" x2="680" y2="330" stroke="#1b1f23" stroke-width="2"/>
+  <line x1="110" y1="325" x2="110" y2="335" stroke="#1b1f23" stroke-width="2"/>
+  <line x1="281.2" y1="325" x2="281.2" y2="335" stroke="#1b1f23" stroke-width="2"/>
+  <line x1="452.3" y1="325" x2="452.3" y2="335" stroke="#1b1f23" stroke-width="2"/>
+  <line x1="623.5" y1="325" x2="623.5" y2="335" stroke="#1b1f23" stroke-width="2"/>
+  <text x="110" y="352" text-anchor="middle" font-size="13" fill="#1b1f23">0</text>
+  <text x="281.2" y="352" text-anchor="middle" font-size="13" fill="#1b1f23">100 ms</text>
+  <text x="452.3" y="352" text-anchor="middle" font-size="13" fill="#1b1f23">200 ms</text>
+  <text x="623.5" y="352" text-anchor="middle" font-size="13" fill="#1b1f23">300 ms</text>
+  <text x="395" y="372" text-anchor="middle" font-size="13" fill="#555">Same one-third of a second, both rows -- only the switching speed changes</text>
+</svg>

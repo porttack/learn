@@ -41,6 +41,13 @@ Use whichever pin number you actually wired. `machine.PWM(...)` wraps the `Pin` 
 Curious what counts as "fast enough"? Try `led.freq(9)`, the slowest rate allowed, just nine switches a second. The LED visibly flickers instead of glowing steadily. Set it back to `led.freq(1000)` before moving on.
 </aside>
 
+<figure id="fig-pwm-frequency-compare">
+  <img src="{{ '/assets/img/pico/pwm-frequency-compare.svg' | relative_url }}" alt="Two square waves over the same one-third of a second, same 50 percent on/off duty cycle. The 9 Hz wave shows three wide, individually countable pulses, each about 111 milliseconds. The 60 Hz wave shows twenty narrow pulses in the same span, each about 17 milliseconds, already starting to blur together.">
+  <figcaption>9 Hz and 60 Hz, same duty cycle, same slice of time: only the switching speed changes</figcaption>
+</figure>
+
+Same on/off split both times, just switched at a different speed. At 9 Hz each pulse lasts long enough to actually watch. 60 Hz, roughly where old TVs and fluorescent lights used to run, is already fast enough that most people stop seeing individual flickers. `freq(1000)` is faster still, so many cycles in the same slice of time that drawing them this way would just look like a solid line.
+
 ### Duty cycle: how much of each cycle is "on"
 
 The fraction of each cycle spent on is the **duty cycle**. `duty_u16()` sets it, as a number from 0 (always off) to 65535 (always on), the largest number that fits in 16 bits:
