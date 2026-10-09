@@ -42,28 +42,51 @@ It feels backward the first time: flipping a switch to ON makes it read the lowe
 
 ### Print only when something changes
 
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: WATCH YOUR SWITCHES**
+A loop that prints every single time around, with no condition, would flood your Shell with thousands of identical lines a second. Printing only when something's actually different means remembering what you printed last, which means a variable for each switch's last known reading, started before the loop begins and updated every time you do print.
 
-Write a program that loops forever, checking all three switches, and prints a line reporting all three as `ON` or `OFF` whenever any of them changes. Flip a switch, see one new line. Don't touch anything, see nothing print, forever, no matter how long the loop keeps running.
-
-Two pieces of syntax make this possible: `!=` tests "is not equal to," and `else` catches whatever an `if` didn't:
+Save and run this:
 
 ```python
-if new_value != old_value:
-    print("it changed")
-else:
-    print("still the same")
+from machine import Pin
+from time import sleep
+
+sw1 = Pin(10, Pin.IN, Pin.PULL_UP)
+sw2 = Pin(11, Pin.IN, Pin.PULL_UP)
+sw3 = Pin(12, Pin.IN, Pin.PULL_UP)
+
+last1 = None
+last2 = None
+last3 = None
+
+while True:
+    v1 = sw1.value()
+    v2 = sw2.value()
+    v3 = sw3.value()
+
+    if v1 != last1 or v2 != last2 or v3 != last3:
+        print(v1, v2, v3)
+
+        if v1 == 0:
+            word1 = "ON"
+        else:
+            word1 = "OFF"
+        if v2 == 0:
+            word2 = "ON"
+        else:
+            word2 = "OFF"
+        if v3 == 0:
+            word3 = "ON"
+        else:
+            word3 = "OFF"
+        print(word1, word2, word3)
+
+        last1 = v1
+        last2 = v2
+        last3 = v3
+
+    sleep(0.05)
 ```
 
-[Chapter 2](/pico/02-viperide-and-your-first-program/#variables-and-conditionals) covers `if`/`else` in more depth if you want it.
-
-A few things to plan out before you start:
-
-- A loop that prints every single time around, with no condition, will flood the Shell with thousands of identical lines a second. You need to remember what you printed last, and only print again when something's actually different.
-- That means storing each switch's last known reading in its own variable, started before the loop begins, and updating it every time you do print.
-- You'll want `!=` once per switch, or some way to check all three at once.
-- `sw1.value()` gives you `0` or `1`. Printing those numbers directly works, but translating them into the words `ON` and `OFF` first reads a lot better.
-</aside>
+Flip switches one at a time and watch both lines print together, like `1 1 0` followed right below by `OFF OFF ON`. Line up the two rows and the inversion from the note above stops being something you take on faith: a `1` really does print as `OFF`, a `0` really does print as `ON`, every single time. Stop touching the switches and the Shell goes quiet, no matter how long the loop keeps running underneath.
 
 Once your Shell stays quiet until you actually flip something, move on to [Project 1.8](/pico/project1-8-choosing-a-program-with-imports/), where you'll use these same three switches to choose which program runs.
