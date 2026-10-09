@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Project 1.6: Wiring a Switch Bank (Day 5)"
+title: "Project 1.6: Wiring a Switch Bank"
 pathway: pico
 order: 105
 chapter: "p1.6"

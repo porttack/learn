@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Project 1.3: Files on Your Pico, and Your First REPL Commands (Day 2)"
+title: "Project 1.3: Files on Your Pico, and Your First REPL Commands"
 pathway: pico
 order: 102
 chapter: "p1.3"

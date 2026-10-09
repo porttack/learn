@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Project 1.4: Blinking Your LEDs (Day 3)"
+title: "Project 1.4: Blinking Your LEDs"
 pathway: pico
 order: 103
 chapter: "p1.4"

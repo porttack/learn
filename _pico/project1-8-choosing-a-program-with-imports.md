@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Project 1.8: Choosing a Program with Imports (Day 7)"
+title: "Project 1.8: Choosing a Program with Imports"
 pathway: pico
 order: 107
 chapter: "p1.8"

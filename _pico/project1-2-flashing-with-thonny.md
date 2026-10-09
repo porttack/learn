@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Project 1.2: Flashing MicroPython with Thonny (Day 2)"
+title: "Project 1.2: Flashing MicroPython with Thonny"
 pathway: pico
 order: 101
 chapter: "p1.2"

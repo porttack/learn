@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Project 1.1: Wiring Three LEDs (Day 1)"
+title: "Project 1.1: Wiring Three LEDs"
 pathway: pico
 order: 100
 chapter: "p1.1"

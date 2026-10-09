@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Project 1.7: Reading Your Switches (Day 6)"
+title: "Project 1.7: Reading Your Switches"
 pathway: pico
 order: 106
 chapter: "p1.7"

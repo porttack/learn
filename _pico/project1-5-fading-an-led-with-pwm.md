@@ -1,6 +1,6 @@
 ---
 layout: lesson
-title: "Project 1.5: Fading an LED with PWM (Day 4)"
+title: "Project 1.5: Fading an LED with PWM"
 pathway: pico
 order: 104
 chapter: "p1.5"
