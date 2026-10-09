@@ -97,6 +97,32 @@ permalink: /pico/project1-4-5-intro-slides/
     color: var(--accent);
   }
 
+  .slide-image-row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .slide-image-row img {
+    max-height: 260px;
+    max-width: 620px;
+    flex: 0 1 auto;
+    min-width: 0;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-image-row .slide-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 30px;
+  }
+
+  .slide-image-row .slide-body li {
+    margin-bottom: 16px;
+  }
+
   .depth-nav {
     position: absolute;
     left: 50%;
@@ -405,6 +431,18 @@ const SLIDES = [
     notes: "Have students try duty_u16 at a few fixed values directly in the REPL first (0, 32768, 65535) before attempting any kind of loop. That's the API-learning step; the fade is the challenge."
   },
   {
+    kind: "image",
+    kicker: "How fast is fast enough?",
+    title: "9 Hz vs 60 Hz",
+    image: "/assets/img/pico/pwm-frequency-compare.svg",
+    bullets: [
+      "Same on/off split, just switched at a different speed",
+      "9 Hz: each pulse lasts long enough to watch",
+      "60 Hz: already blurring toward steady"
+    ],
+    notes: "The lesson page lets them try led.freq(9) themselves and watch it actually flicker. 60 Hz is roughly where old TVs and fluorescent lights ran, about the edge of what most people stop perceiving as flicker. 1000 Hz, what the lesson actually uses, is so much faster that drawing it this way would just look like a solid line."
+  },
+  {
     kind: "bullets",
     challenge: true,
     kicker: "Challenge",
@@ -469,6 +507,18 @@ function Stage({ slide, aspect }) {
         {slide.kicker && <p className="kicker">{slide.kicker}</p>}
         <h1 className="slide-title">{slide.title}</h1>
         {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+      </div>
+    );
+  }
+  if (slide.kind === "image") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-image-row">
+          <img src={slide.image} alt="" />
+          <div className="slide-body">{renderBullets(slide.bullets)}</div>
+        </div>
       </div>
     );
   }
