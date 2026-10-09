@@ -123,13 +123,10 @@ permalink: /pico/project1-6-7-8-intro-slides/
     margin-bottom: 16px;
   }
 
-  /* A tall, portrait photo (the breadboard exemplar) reads as a thin
-     sliver at the row layout's normal height cap. Stacked instead, image
-     on top, with its own taller cap, so the wiring is actually legible. */
   .slide-image-stack img {
     display: block;
     max-width: 100%;
-    max-height: 420px;
+    max-height: 240px;
     margin: 0 auto 28px;
     border-radius: 8px;
     border: 1px solid var(--border);
@@ -365,10 +362,9 @@ const SLIDES = [
   },
   {
     kind: "image",
-    wide: true,
     kicker: "Wire three of them",
     title: "Switch to GPIO, Switch to Ground",
-    image: "/assets/img/pico/dip-switches-exemplar.jpg",
+    image: "/assets/img/pico/dip-switches-exemplar-slide.jpg",
     bullets: [
       "Green wire: one leg to the main ground rail",
       "White wire: other leg to GP12, GP11, or GP10",
