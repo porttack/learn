@@ -15,6 +15,12 @@ slides_label: "Slides (covers 1.6, 1.7 & 1.8)"
 
 This is for after [Project 1.5](/pico/project1-5-fading-an-led-with-pwm/) has `leds.py` saved and working on your Pico, with `unarycount`, `binarycount`, `breathe1`, and `breatheall` all in it. Today is wiring only, same as Project 1.1 was: no code until [Project 1.7](/pico/project1-7-reading-your-switches/).
 
+<aside class="callout note" markdown="1">
+**NO HARDWARE? SIMULATE IT**
+
+No Pico or breadboard in front of you? [Wokwi](https://wokwi.com/projects/new/micropython-pi-pico) simulates a Pico running MicroPython right in your browser, switches and all. Add three LEDs and a DIP switch to the virtual breadboard, wire them to the same GPIO pins this lesson uses, and the rest of Project 1.6 through 1.8 works the same way.
+</aside>
+
 <aside class="callout warning" markdown="1">
 **UNPLUG BEFORE YOU WIRE**
 
