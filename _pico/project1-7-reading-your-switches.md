@@ -32,7 +32,7 @@ sw3 = Pin(12, Pin.IN, Pin.PULL_UP)
 
 This is `from machine import Pin` rather than the `import machine` you've used up to now, so it's `Pin(...)` instead of `machine.Pin(...)`. Same thing either way, just a shorter name for it; [Project 1.8](/pico/project1-8-choosing-a-program-with-imports/) covers why there's more than one way to do this.
 
-Try `sw1.value()` in the Shell, flipping that switch between tries. Off (away from the **ON** label), you'll get `1`: the pull-up is holding the pin high since nothing else is connected to it. On, the switch connects the pin straight to ground, and you'll get `0`.
+Click into the Shell, type `sw1.value()`, and press Enter. Off (away from the **ON** label), you'll get `1`: the pull-up is holding the pin high since nothing else is connected to it. Now flip switch 1 to ON, and run the exact same line again: press the up arrow to bring it back instead of retyping it, then Enter. This time you'll get `0`, the switch connecting the pin straight to ground. Flip it back off, up arrow, Enter, back to `1`. Repeat with `sw2.value()` and `sw3.value()` to check all three switches are wired correctly before moving on.
 
 <aside class="callout note" markdown="1">
 **ON READS 0**
