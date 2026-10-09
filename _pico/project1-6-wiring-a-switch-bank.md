@@ -9,6 +9,8 @@ project_part: 6
 label: "Project 1.6"
 source: original
 subtitle: "Add three switches to the same breadboard, ready for code in Project 1.7"
+slides: /pico/project1-6-7-8-intro-slides/
+slides_label: "Slides (covers 1.6, 1.7 & 1.8)"
 ---
 
 This is for after [Project 1.5](/pico/project1-5-fading-an-led-with-pwm/) has `leds.py` saved and working on your Pico, with `unarycount`, `binarycount`, `breathe1`, and `breatheall` all in it. Today is wiring only, same as Project 1.1 was: no code until [Project 1.7](/pico/project1-7-reading-your-switches/).
