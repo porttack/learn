@@ -53,33 +53,24 @@ Write a new file, separate from `leds.py`, that reads all three switches and run
 - `sw3` on: `breathe1`
 - none of them on: `breatheall`
 
-Checking more than two possibilities needs `elif` ("else if"), chaining as many conditions as you want between one `if` and a final `else`. [Chapter 2](/pico/02-viperide-and-your-first-program/#variables-and-conditionals) covers the syntax if you haven't used it before.
+Checking more than two possibilities needs `elif` ("else if"), chaining as many conditions as you want between one `if` and a final `else`. MicroPython checks each one in order and runs the first match; `else` only runs if nothing above it did:
 
 ```python
-from machine import Pin
-
-sw1 = Pin(10, Pin.IN, Pin.PULL_UP)
-sw2 = Pin(11, Pin.IN, Pin.PULL_UP)
-sw3 = Pin(12, Pin.IN, Pin.PULL_UP)
-
-if sw1.value() == 0:
-    # TODO: build whatever unarycount needs, then call it
-    pass
-elif sw2.value() == 0:
-    # TODO: build whatever binarycount needs, then call it
-    pass
-elif sw3.value() == 0:
-    # TODO: build whatever breathe1 needs, then call it
-    pass
+if count == 1:
+    print("one")
+elif count == 2:
+    print("two")
 else:
-    # TODO: build whatever breatheall needs, then call it
-    pass
+    print("neither")
 ```
 
-Fill in the four TODOs. A few things to plan out before you start:
+[Chapter 2](/pico/02-viperide-and-your-first-program/#variables-and-conditionals) covers this in more depth if you want it.
+
+A few things to plan out before you start:
 
 - `unarycount` and `binarycount` need plain `Pin` objects for the three LEDs; `breathe1` and `breatheall` need `PWM` objects instead. You can't make both kinds from the same GPIO pin at the same time, so only build the objects you actually need, inside whichever branch is about to use them.
 - You've already got three ways to reach a function in `leds.py`. Pick whichever one of the three makes the most sense to you here.
+- "None of them on" is exactly what `else` is for.
 
 This one doesn't come back: whichever function runs will keep running forever, same as it does in `leds.py` on its own.
 </aside>
