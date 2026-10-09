@@ -8,7 +8,7 @@ project: 1
 project_part: 4
 label: "Project 1.4"
 source: original
-subtitle: "Write your first programs for the circuit you built, then make your three LEDs count in binary"
+subtitle: "Write your first programs for the circuit you built, then make your three LEDs count, first in unary, then in binary"
 organizer: /pico/project1-4-5-checklist/
 organizer_label: "Checklist (covers 1.4 & 1.5)"
 slides: /pico/project1-4-5-intro-slides/
@@ -73,15 +73,44 @@ Use whichever pin number you actually wired, 13, 14, or 15, not necessarily 13. 
 
 Every time `.toggle()` runs, it's opening and closing a valve on that GPIO pin, exactly like the valve in [The Water Analogy](/pico/water-analogy/): open, and the 3.3V side connects through your LED and resistor to ground; closed, and nothing flows.
 
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: ALL THREE, IN A ROW**
+### Counting in unary
 
-Can you light all three LEDs one at a time, in order, each one on for a second before the next one takes over? You'll need a `Pin` object for each LED. Think about what has to happen, in what order, inside your loop.
+Three LEDs can do more than blink one at a time: together, they can count. The simplest way to show a number with lights is to light that many of them: one LED on means one, two on means two, three on means three. This is called *unary*, the same idea as tally marks or holding up fingers: the count is the number, nothing more compact about it.
+
+<aside class="callout challenge" markdown="1">
+**CHALLENGE: COUNT IN UNARY**
+
+Save this as `leds.py` on your Pico. The filename and the function name both matter here: later projects will `import leds` and reuse it as-is, not just read it for ideas.
+
+```python
+import machine
+import time
+
+def unarycount(leds, delay=1):
+    n = 0
+    while True:
+        # TODO: turn on the first n LEDs in leds, make sure the rest are off
+        # TODO: wait `delay` seconds, then move to the next count, wrapping
+        # back to 0 once it passes how many LEDs you have
+        pass
+```
+
+`leds` is a list of your three `Pin` objects. Unary doesn't care which LED means what, only how many are lit, so any order is fine as long as you're consistent. `delay` is how long each count stays lit before the next one, in seconds.
+
+Test it by adding these lines below your function, then saving and running the whole file:
+
+```python
+led1 = machine.Pin(13, machine.Pin.OUT)
+led2 = machine.Pin(14, machine.Pin.OUT)
+led3 = machine.Pin(15, machine.Pin.OUT)
+
+unarycount([led1, led2, led3])
+```
 </aside>
 
 ### Counting in binary
 
-Three LEDs can do more than blink one at a time, in turn: together, they can count. Give each LED a place value, the same idea as the place values in [Secret Messages in Binary](/unplugged/ascii-messages-binary/) if you've done that worksheet: 4, 2, and 1. Any number from 0 to 7 is just some combination of those three, each one either on or off.
+Unary tops out fast: three LEDs can only ever show 0 through 3, one count per LED. Binary squeezes more out of the same three LEDs by giving each one a place value instead, the same idea as the place values in [Secret Messages in Binary](/unplugged/ascii-messages-binary/) if you've done that worksheet: 4, 2, and 1. Any number from 0 to 7 is just some combination of those three, each one either on or off.
 
 <table>
   <thead>
@@ -104,14 +133,35 @@ It doesn't matter which of your three LEDs you pick for each place value, as lon
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: COUNT IN BINARY**
 
-Write a program that counts from 0 to 7, forever, showing each number on your three LEDs as the pattern in the table above: each LED's place value on or off, matching that number's binary representation. You already know everything you need for the loop itself; the real problem is figuring out, for any given number, which of your three LEDs should be on.
+Add a second function to the same `leds.py` file: `binarycount(leds, delay=1)`.
 
-Do not write out all 8 patterns by hand. Two operators will do the actual work of converting the number for you:
+```python
+def binarycount(leds, delay=1):
+    n = 0
+    while True:
+        # TODO: for each LED in leds, figure out whether it should be on or
+        # off for the number n, using % and //
+        # TODO: wait `delay` seconds, then move to the next number, wrapping
+        # back to 0 after 7
+        pass
+```
+
+Pass `leds` in place-value order this time: whichever of your three `Pin` objects you want as the 4s place first, then the 2s place, then the 1s place. `delay` works the same as it does for `unarycount`.
+
+Fill in the two TODOs. You already know everything you need for the loop itself; the real problem is figuring out, for any given number, which of your three LEDs should be on. Do not write out all 8 patterns by hand. Two operators will do the actual work of converting the number for you:
 
 - `%` (modulo) gives you the remainder after dividing by something.
 - `//` (floor division) divides by something and throws away the remainder, keeping only the whole number part.
 
 Used together, on the same number, over and over, they can peel off one binary digit at a time. Figure out how.
+
+Test it using the same `led1`, `led2`, `led3` from testing `unarycount`, just call the new function instead:
+
+```python
+binarycount([led1, led2, led3])
+```
+
+Try a `delay` of `0.25` instead of the default once it's working: `binarycount([led1, led2, led3], delay=0.25)`.
 </aside>
 
 Once you're comfortable blinking and counting, move on to [Project 1.5](/pico/project1-5-fading-an-led-with-pwm/), where your LEDs stop being just on or off.

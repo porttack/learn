@@ -35,6 +35,12 @@ led.freq(1000)
 
 Use whichever pin number you actually wired. `machine.PWM(...)` wraps the `Pin` so it can be switched on and off far faster than any loop you could write yourself. `freq(1000)` sets it to switch 1000 times a second, fast enough that you'll never see it flicker.
 
+<aside class="callout note" markdown="1">
+**TRY IT: HOW SLOW IS TOO SLOW?**
+
+Curious what counts as "fast enough"? Try `led.freq(9)`, the slowest rate allowed, just nine switches a second. The LED visibly flickers instead of glowing steadily. Set it back to `led.freq(1000)` before moving on.
+</aside>
+
 ### Duty cycle: how much of each cycle is "on"
 
 The fraction of each cycle spent on is the **duty cycle**. `duty_u16()` sets it, as a number from 0 (always off) to 65535 (always on), the largest number that fits in 16 bits:
@@ -51,7 +57,13 @@ led.duty_u16(32768)
 led.duty_u16(65535)
 ```
 
-Try each of these one at a time in the REPL and watch the LED's brightness change: off, about half brightness, then fully on.
+Try each of these one at a time in the REPL and watch the LED's brightness change.
+
+### Your eye doesn't read duty cycle in a straight line
+
+You might expect 32768, exactly half of 65535, to look half as bright as fully on. It probably didn't. Brightness is one of the senses that doesn't work on a straight line: a change near the dim end is easy to see, while the same size change near the bright end barely registers. For an LED on PWM, most of the visible difference happens below about 10,000; almost everything above that already looks close to fully on.
+
+Keep that in mind for the breathing effect below. A value doesn't have to be close to 65535 to look bright.
 
 ### Make it breathe
 
@@ -60,18 +72,34 @@ You've just set the duty cycle by hand, three times, in the REPL. A real "breath
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: MAKE IT BREATHE**
 
-Write a script that fades your LED continuously: ramping the duty cycle up to full brightness, then back down to off, over and over, forever. You already know every piece you need: a loop that never ends, `duty_u16()`, and `time.sleep()`.
+Add this to your `leds.py` file from Project 1.4, the same one with `unarycount` and `binarycount` in it. The function name matters here too: later projects will call `leds.breathe1(...)` directly.
+
+```python
+def breathe1(led):
+    while True:
+        # TODO: ramp the duty cycle up to full brightness
+        # TODO: ramp the duty cycle back down to off
+        pass
+```
+
+Fill in the two TODOs. You already know every piece you need: a loop that never ends, `duty_u16()`, and `time.sleep()`.
 
 A couple of things worth knowing before you start:
 
-- `range()` can count by more than 1 at a time: `range(0, 10, 2)` counts 0, 2, 4, 6, 8. You don't need to visit all 65,536 possible duty cycle values one at a time; your eye can't tell most of them apart anyway.
+- `range()` can count by more than 1 at a time: `range(0, 10, 2)` counts 0, 2, 4, 6, 8. You don't need to visit all 65,536 possible duty cycle values one at a time, especially above 10,000 or so, where your eye can't tell most of them apart anyway.
 - `range()` can also count downward, if you give it a negative step, instead of only ever counting up.
 
-Figure out how to combine these into a loop that rises, then falls, then repeats.
+Test it by adding these lines below your function, then saving and running the whole file:
+
+```python
+led = machine.PWM(machine.Pin(13))
+led.freq(1000)
+breathe1(led)
+```
 </aside>
 
 <aside class="callout challenge" markdown="1">
-**CHALLENGE: TWO LEDS, OUT OF SYNC**
+**CHALLENGE: ALL LEDS, OUT OF SYNC**
 
-Once your first LED is breathing, can you fade two of your LEDs at once, each with its own `PWM` object, so one is brightening while the other is dimming? [Chapter 8](/pico/08-temperature-gauge/#fading-an-led-with-pwm) covers PWM in more depth, including how to avoid two pins fighting over the same PWM hardware.
+Add a third function to the same `leds.py` file, `breatheall(leds)`, where `leds` is a list of `PWM` objects this time, not plain `Pin` objects. Fade all of them at once so they're never all brightening or all dimming together. [Chapter 8](/pico/08-temperature-gauge/#fading-an-led-with-pwm) covers PWM in more depth, including how to avoid two pins fighting over the same PWM hardware.
 </aside>

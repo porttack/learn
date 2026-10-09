@@ -25,8 +25,8 @@ Check off each box as you finish that step. The back is a quick reference for th
   <tbody>
     <tr><td>Onboard LED blinks, from a saved script</td><td class="checkbox-cell"></td></tr>
     <tr><td>One of my own wired LEDs blinks (pin used: <span class="fill-line short"></span>)</td><td class="checkbox-cell"></td></tr>
-    <tr><td><strong>Challenge:</strong> all three LEDs light one at a time, in a row</td><td class="checkbox-cell"></td></tr>
-    <tr><td><strong>Challenge:</strong> three LEDs count from 0 to 7 in binary, on their own, forever</td><td class="checkbox-cell"></td></tr>
+    <tr><td><strong>Challenge:</strong> leds.py saved with a working unarycount(leds, delay) function</td><td class="checkbox-cell"></td></tr>
+    <tr><td><strong>Challenge:</strong> binarycount(leds, delay) added to leds.py</td><td class="checkbox-cell"></td></tr>
   </tbody>
 </table>
 
@@ -38,8 +38,8 @@ Check off each box as you finish that step. The back is a quick reference for th
   </thead>
   <tbody>
     <tr><td>Tried duty_u16() at 0, 32768, and 65535 in the REPL</td><td class="checkbox-cell"></td></tr>
-    <tr><td><strong>Challenge:</strong> an LED breathes, fading up and down on its own, forever</td><td class="checkbox-cell"></td></tr>
-    <tr><td><strong>Challenge:</strong> two LEDs breathe out of sync with each other</td><td class="checkbox-cell"></td></tr>
+    <tr><td><strong>Challenge:</strong> breathe1(led) added to leds.py</td><td class="checkbox-cell"></td></tr>
+    <tr><td><strong>Challenge:</strong> breatheall(leds) added to leds.py</td><td class="checkbox-cell"></td></tr>
   </tbody>
 </table>
 
@@ -52,9 +52,11 @@ Syntax only. The challenges above are still yours to work out: this page won't d
 ### Project 1.4
 
 - Making an output pin: `machine.Pin(13, machine.Pin.OUT)`
-- Place values for 3 LEDs: 4, 2, 1. Any number 0-7 is some combination of those three, on or off.
+- Unary: light as many LEDs as the count, no place value.
+- Place values for 3 LEDs in binary: 4, 2, 1. Any number 0-7 is some combination of those three, on or off.
 - `%` (modulo) gives the remainder after dividing by something.
 - `//` (floor division) divides by something and throws away the remainder.
+- Save both challenges in one file, `leds.py`: `unarycount(leds, delay=1)` and `binarycount(leds, delay=1)`. Exact names: later projects import this file.
 
 ### Project 1.5
 
@@ -62,3 +64,4 @@ Syntax only. The challenges above are still yours to work out: this page won't d
 - Setting its frequency: `led.freq(1000)`
 - Setting brightness: `led.duty_u16(value)`, from `0` (off) to `65535` (fully on)
 - `range(start, stop, step)` can step by more than 1, and count backward with a negative step
+- Add both challenges to the same `leds.py` from Project 1.4: `breathe1(led)` and `breatheall(leds)`. Exact names: later projects import this file.
