@@ -6,6 +6,7 @@ order: 108
 chapter: "p2.1"
 project: 2
 project_part: 1
+project_name: "Servo and Potentiometer"
 label: "Project 2.1"
 source: original
 subtitle: "PWM for position instead of brightness, and a reusable servo.py"
