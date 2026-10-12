@@ -28,23 +28,25 @@ generator_presets:
 ### Three sheets, not one
 
 This activity is split across three pages, so a sub can hand out one clear
-stack instead of managing a single multi-page packet: each part is its own
-printable sheet with its own Name/Date/Period line.
+stack instead of managing a single multi-page packet.
 
 1. [How it works]({{ '/unplugged/pixel-pictures-how-to/' | relative_url }}):
-   reading only, pixels and the run-length rule.
+   reading only, pixels and the run-length rule. No Name/Date/Period line
+   and nothing to turn in, since there's nothing to write on it.
 2. **Decode & Encode** (this page): the core hands-on practice.
 3. [Make your own]({{ '/unplugged/pixel-pictures-make-your-own/' | relative_url }}):
    draw, trade, and the compression questions.
 
-Each is one sheet, printed double-sided. Print all three per student.
+Each is one sheet, printed double-sided. Print all three per student, but
+only collect the second two: Decode & Encode and Make Your Own.
 
 ### Printing
 
 Use **Print this lesson** (or Ctrl+P / &#8984;P) on each of the three pages
-above. Printed sheets get a **Name, Date, and Period** line at the top, and
-the site menu, buttons, and this box are left off. For the answer key,
-click **Show answer key** at the bottom of the page (or add `?key=1` to the
+above. Parts 2 and 3 get a **Name, Date, and Period** line at the top (Part
+1 doesn't, since nothing is written on it or turned in), and the site menu,
+buttons, and this box are left off either way. For the answer key, click
+**Show answer key** at the bottom of the page (or add `?key=1` to the
 address), then print. Parts 2 and 3 each carry their own answer key for
 their own content.
 

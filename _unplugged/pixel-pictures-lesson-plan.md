@@ -15,7 +15,10 @@ sub? Use the box below.
 
 {% include unplugged/sub-box.html
    sheet="/unplugged/pixel-pictures-how-to/"
-   sheet_note="Then hand out [Decode & Encode](/unplugged/pixel-pictures/) and [Make Your Own](/unplugged/pixel-pictures-make-your-own/) right behind it, in that order. All three are one stapled set."
+   sheet_label="instructions"
+   sheet_no_name=true
+   sheet_note="Then hand out [Decode & Encode](/unplugged/pixel-pictures/) and [Make Your Own](/unplugged/pixel-pictures-make-your-own/) right behind it, in that order. Names go on those two; nothing needs to be stapled."
+   collect="Decode & Encode and Make Your Own from every student, plus at least one keep-going sheet from anyone who got that far (its Set # shows it's their own work, not a copy of a neighbor's). The instructions sheet doesn't need to come back"
    slides="/unplugged/pixel-pictures-slides/"
    slides_stop="On Your Sheet"
    go="pixel"
@@ -32,10 +35,12 @@ sub? Use the box below.
 
 ## Before class
 
-- Print one copy each of the three sheets per student, stapled in order:
+- Print one copy each of the three sheets per student, handed out in order:
   [How It Works]({{ '/unplugged/pixel-pictures-how-to/' | relative_url }}),
   [Decode & Encode]({{ '/unplugged/pixel-pictures/' | relative_url }}), and
   [Make Your Own]({{ '/unplugged/pixel-pictures-make-your-own/' | relative_url }}).
+  Only the second two come back from students, so there's no need to staple
+  all three together.
 - Print keep-going sheets: a ready [class set of 30]({{ '/unplugged/pixel-pictures-generator/?copies=30&per=2' | relative_url }}),
   two per student (front and back). Different class size? Open the
   [New set page]({{ '/unplugged/pixel-pictures-generator/' | relative_url }}) and change **Copies** there.
@@ -61,6 +66,8 @@ to trade and decode each other's pictures.
 ### 3. Keep going (as students finish)
 
 Hand out keep-going sheets. Nobody sits idle and nothing is optional.
+Collect at least one from anyone who gets this far, along with their other
+two sheets.
 
 ### 4. Wrap-up (5 minutes)
 

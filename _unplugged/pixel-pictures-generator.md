@@ -1,5 +1,5 @@
 ---
-title: "Pixel Pictures: make a new set"
+title: "Pixel Pictures Keep-Going: make a new set"
 source: original
 level: ms
 companion: true
