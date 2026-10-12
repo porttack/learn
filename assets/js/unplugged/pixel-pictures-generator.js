@@ -7,7 +7,12 @@ mountGenerator({
   root,
   options: [
     { name: "size", label: "Size", default: "small", choices: Object.entries(SIZES).map(([k, v]) => [k, v.label]) },
-    { name: "count", label: "Pictures", default: 3, choices: [[2, "2"], [3, "3"], [4, "4"]] },
+    // Default 2, not 3: a class-set copy's first page also carries the Name
+    // line and title, and 3 small pictures plus that header don't fit one
+    // printed page (the 3rd picture's whole .pixel-q block, break-inside:
+    // avoid, wraps to a second page instead of sharing the first). 2 always
+    // fits, keeping "Sets per student: 2" at exactly 2 pages per student.
+    { name: "count", label: "Pictures", default: 2, choices: [[2, "2"], [3, "3"], [4, "4"]] },
   ],
   render(rng, opts) {
     const pics = generateSet(rng, { size: opts.size, count: Number(opts.count) });

@@ -16,6 +16,9 @@
                 out sheets (later slides are meant for after the sheet)
     go          optional: short-link word (go/<word>.md); the box then prints
                 learn.porttack.com/go/<word> instead of the long address
+    class_size  optional: your usual class size (e.g. 30). Links straight to
+                a ready class set (that many copies, 2 per student) instead
+                of making the sub-day prep person set Copies by hand.
 
   "Keep going," never "extra" or "early finishers": the next sheet is just
   the next thing to do, not a bonus or a sign the first one was optional.
@@ -43,8 +46,19 @@ Skip the slides: the sheet explains everything.
 {% if include.note %}
 {{ include.note }}
 {% endif %}
-**Teacher, before the sub day:** print one worksheet per student, plus
-keep-going sheets from the [New set page]({{ include.generator | relative_url }}):
-set **Copies** to your class size and **Sets per student** to 2 (front and
-back). That covers a full period even for your fastest students.
+{% if include.class_size %}
+**Before the sub day (teacher, or whoever preps the sub folder):** print one
+worksheet per student, plus keep-going sheets: a ready
+[class set of {{ include.class_size }}]({{ include.generator | append: "?copies=" | append: include.class_size | append: "&per=2" | relative_url }}),
+two per student (front and back). That covers a full period even for your
+fastest students. Different class size this time? Open the
+[New set page]({{ include.generator | relative_url }}) and change **Copies**
+there instead.
+{% else %}
+**Before the sub day (teacher, or whoever preps the sub folder):** print one
+worksheet per student, plus keep-going sheets from the
+[New set page]({{ include.generator | relative_url }}): set **Copies** to
+your class size and **Sets per student** to 2 (front and back). That covers
+a full period even for your fastest students.
+{% endif %}
 </aside>

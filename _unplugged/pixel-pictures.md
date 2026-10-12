@@ -1,6 +1,7 @@
 ---
 title: "Pixel Pictures"
 lesson_plan: /unplugged/pixel-pictures-lesson-plan/
+slides: /unplugged/pixel-pictures-slides/
 source: cs-unplugged-2015
 source_url: "https://classic.csunplugged.org/activities/image-representation/"
 original_print: "https://classic.csunplugged.org/documents/activities/image-representation/unplugged-02-image_representation.pdf"
@@ -18,6 +19,54 @@ generator_presets:
   - { label: "Small pictures", query: "size=small" }
   - { label: "Large pictures", query: "size=large" }
 ---
+
+<aside class="teacher-box" markdown="1">
+## Just For Teachers:
+
+<p class="teacher-box-hint">This box never prints and isn't in the Word copy. Students who open this page online can still see it.</p>
+
+### Printing
+
+Use **Print this lesson** (or Ctrl+P / &#8984;P). Printed sheets get a
+**Name, Date, and Period** line at the top, and the site menu, buttons, and
+this box are left off. For the answer key, click **Show answer key** at the
+bottom of the page (or add `?key=1` to the address), then print.
+
+### Word or Google Docs
+
+**Download as Word (.docx)** makes an editable copy you can change. For a
+Google Doc, upload that file to Google Drive and open it with Google Docs.
+
+### Make new sets
+
+The [**New set** page]({{ page.generator | relative_url }}) makes fresh
+mystery pictures to decode, so a student who finishes always has a next
+sheet to start. Pick **Small pictures** or **Large pictures**, and how many
+**copies**: a class set gives every student a different picture. **Sets per
+student: 2** prints one set on the front and one on the back. In a hurry?
+Jump straight to a [ready class set of 30]({{ page.generator | append: "?copies=30&per=2" | relative_url }}),
+two per student, front and back.
+
+### Slides
+
+[Pixel Pictures slides]({{ page.slides | relative_url }}): project these to
+introduce pixels and the run-length rule. They stop before giving away the
+sheet's four mystery pictures. A down arrow on a couple of slides opens
+optional deeper-dive content (the fax math, and an AP-level lossy-vs-lossless
+question) that a 6th grade class can just skip past.
+
+### Full lesson plan
+
+Want to teach this live instead of as a sub-day sheet? The
+[lesson plan]({{ page.lesson_plan | relative_url }}) walks through the
+hook, the sheet, and a wrap-up, and includes grade-band notes for 6th grade,
+9th grade, and AP CSP under **Going further**.
+
+### Standards
+
+This sheet's standards are listed under **Standards alignment** at the
+bottom of the page.
+</aside>
 
 Every picture on a screen, every photo, every icon, every letter you're
 reading right now, is made of tiny colored squares called pixels (short
