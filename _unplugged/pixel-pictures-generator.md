@@ -6,10 +6,12 @@ companion: true
 scripts: [/assets/js/unplugged/pixel-pictures-generator.js]
 ---
 
-A fresh batch of picture codes to decode every time you click **New set**:
-some picked from a library of original pictures, some built fresh as a
-symmetric "space invader" style sprite. The set number prints on the sheet.
-To reprint the same set
+A fresh batch of pictures every time you click **New set**: some picked
+from a library of original pictures, some built fresh as a symmetric
+"space invader" style sprite. Most are decode (shade the grid to match
+this code); a set of 3 or more also includes one smaller encode picture
+(write the code for this one instead), so bigger sets practice both
+directions. The set number prints on the sheet. To reprint the same set
 later, type its number back into the **Set #** box.
 
 <aside class="callout note" markdown="1">

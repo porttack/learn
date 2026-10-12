@@ -48,17 +48,46 @@ function questionHtml(pic, n) {
   </div>`;
 }
 
+// The reverse direction: the picture is already shaded, and the blank lines
+// (reused from the fixed worksheet's "Make your own") are where the student
+// writes each row's code instead.
+function encodeQuestionHtml(pic, n) {
+  const grid = pictureSvg(pic, { shade: true });
+  const lines = pic.rows.map(() => `<li><span class="fill-line"></span></li>`).join("");
+  return `<div class="pixel-q">
+    <p class="pixel-q-prompt"><strong>Picture ${n}.</strong> Write the code for each row. Each line is one row, top to bottom.</p>
+    <div class="pixel-q-body">
+      ${grid}
+      <ol class="pixel-encode-lines">${lines}</ol>
+    </div>
+  </div>`;
+}
+
 function keyHtml(pic, n) {
   const caption = pic.name ? `Picture ${n}: ${pic.name}` : `Picture ${n}`;
   return pictureSvg(pic, { shade: true, caption, cell: KEY_CELL });
 }
 
-// Fills qRoot with the questions and keyRoot with the answer key.
+// An encode question's key is the code itself (the shaded picture was
+// already given), not another picture.
+function encodeKeyHtml(pic, n) {
+  const code = codeText(pic);
+  return `<div class="pixel-key">
+    <p class="pixel-q-prompt"><strong>Picture ${n}</strong> (encode):</p>
+    <pre class="pixel-code">${esc(code)}</pre>
+  </div>`;
+}
+
+// Fills qRoot with the questions and keyRoot with the answer key. Most
+// pictures are "decode" (shade the grid to match this code); generateSet
+// marks one "encode" (write the code for this picture) once a set has 3 or
+// more pictures, so a bigger keep-going set also practices that direction.
 export function renderSet(pics, qRoot, keyRoot) {
-  qRoot.innerHTML = pics.map((p, i) => questionHtml(p, i + 1)).join("");
+  qRoot.innerHTML = pics.map((p, i) => (p.dir === "encode" ? encodeQuestionHtml(p, i + 1) : questionHtml(p, i + 1))).join("");
   if (keyRoot) {
+    const keys = pics.map((p, i) => (p.dir === "encode" ? encodeKeyHtml(p, i + 1) : keyHtml(p, i + 1)));
     keyRoot.innerHTML = `<h2>Check your answers</h2>
-      <p class="pixel-key-intro">Here is what each code draws.</p>
-      <div class="pixel-grids">${pics.map((p, i) => keyHtml(p, i + 1)).join("")}</div>`;
+      <p class="pixel-key-intro">Here is what each code draws (and the code for any "write the code" picture).</p>
+      <div class="pixel-grids">${keys.join("")}</div>`;
   }
 }
