@@ -81,12 +81,16 @@ const n = Number(process.argv[process.argv.indexOf("--gen") + 1]) || 200;
 let genChecked = 0;
 const t0 = Date.now();
 for (const size of Object.keys(LIBRARY)) {
-  for (let seed = 20000; seed < 20000 + n / 2; seed++) {
-    const pics = generateSet(makeRng(seed), { size, count: 4 });
-    pics.forEach((pic, i) => {
-      checkPicture(`generated ${size} seed ${seed} #${i + 1}`, pic);
-      genChecked++;
-    });
+  // 4 covers the old default; 8 is the new top end of the Pictures dropdown,
+  // exercising a bigger pool draw-down and a later encode index.
+  for (const count of [4, 8]) {
+    for (let seed = 20000; seed < 20000 + n / 2; seed++) {
+      const pics = generateSet(makeRng(seed), { size, count });
+      pics.forEach((pic, i) => {
+        checkPicture(`generated ${size} count=${count} seed ${seed} #${i + 1}`, pic);
+        genChecked++;
+      });
+    }
   }
 }
 console.log(`${genChecked} generated pictures checked in ${Date.now() - t0} ms`);

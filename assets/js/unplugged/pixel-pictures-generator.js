@@ -12,7 +12,10 @@ mountGenerator({
     // printed page (the 3rd picture's whole .pixel-q block, break-inside:
     // avoid, wraps to a second page instead of sharing the first). 2 always
     // fits, keeping "Sets per student: 2" at exactly 2 pages per student.
-    { name: "count", label: "Pictures", default: 2, choices: [[2, "2"], [3, "3"], [4, "4"]] },
+    // Higher counts (up to 8) are there for a teacher who'd rather hand out
+    // one bigger set than two small ones -- more room for the one encode
+    // question to not feel so rare, at the cost of more than one page.
+    { name: "count", label: "Pictures", default: 2, choices: [[2, "2"], [3, "3"], [4, "4"], [5, "5"], [6, "6"], [7, "7"], [8, "8"]] },
   ],
   render(rng, opts) {
     const pics = generateSet(rng, { size: opts.size, count: Number(opts.count) });
