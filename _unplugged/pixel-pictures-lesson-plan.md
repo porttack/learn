@@ -14,15 +14,15 @@ machine squeezes those numbers down. About **50 minutes**. Leaving it for a
 sub? Use the box below.
 
 {% include unplugged/sub-box.html
-   sheet="/unplugged/pixel-pictures/"
+   sheet="/unplugged/pixel-pictures-how-to/"
+   sheet_note="Then hand out [Decode & Encode](/unplugged/pixel-pictures/) and [Make Your Own](/unplugged/pixel-pictures-make-your-own/) right behind it, in that order. All three are one stapled set."
    slides="/unplugged/pixel-pictures-slides/"
    slides_stop="On Your Sheet"
    go="pixel"
    generator="/unplugged/pixel-pictures-generator/"
    class_size="30"
    keep_going="new set of mystery pictures to decode"
-   note="**If students aren't sitting near a partner,** they can skip the Your partner's pictures part."
-   say="Today you're learning how a computer stores a picture as numbers. Follow the rule at the top of the sheet and the pictures will appear. Shade lightly in pencil first." %}
+   say="Today you're learning how a computer stores a picture as numbers. Read the first sheet, then follow the rule on your own. Shade lightly in pencil first." %}
 
 ## Students will be able to
 
@@ -32,7 +32,10 @@ sub? Use the box below.
 
 ## Before class
 
-- Print one [worksheet]({{ '/unplugged/pixel-pictures/' | relative_url }}) per student.
+- Print one copy each of the three sheets per student, stapled in order:
+  [How It Works]({{ '/unplugged/pixel-pictures-how-to/' | relative_url }}),
+  [Decode & Encode]({{ '/unplugged/pixel-pictures/' | relative_url }}), and
+  [Make Your Own]({{ '/unplugged/pixel-pictures-make-your-own/' | relative_url }}).
 - Print keep-going sheets: a ready [class set of 30]({{ '/unplugged/pixel-pictures-generator/?copies=30&per=2' | relative_url }}),
   two per student (front and back). Different class size? Open the
   [New set page]({{ '/unplugged/pixel-pictures-generator/' | relative_url }}) and change **Copies** there.
@@ -46,14 +49,14 @@ Project a photo and zoom in until the squares show. Ask: *"What's under
 the squares?"* (Nothing. Every picture is just a grid of pixels.) Then:
 *"A computer can only store numbers. How could it store this?"*
 
-### 2. The sheet (25 minutes)
+### 2. The sheets (25 minutes)
 
-Students read the rule, decode the pictures, encode one, then make their
-own. Walk the room: the most common mistake is forgetting that every row
-starts with a **white** count, even when that count is 0.
+Students read the rule on the first sheet, then decode and encode on the
+second. Walk the room: the most common mistake is forgetting that every
+row starts with a **white** count, even when that count is 0.
 
-When most students reach **Make your own**, pair them up to trade and
-decode each other's pictures.
+When most students reach the third sheet, **Make your own**, pair them up
+to trade and decode each other's pictures.
 
 ### 3. Keep going (as students finish)
 
@@ -67,11 +70,11 @@ checkerboard changes color every pixel.)
 
 ## Going further
 
-- **6th grade, first time through:** the sheet is already sized for this
-  group. If time is short, cut **Your partner's pictures** rather than
+- **6th grade, first time through:** the three sheets are already sized for
+  this group. If time is short, cut **Your partner's pictures** rather than
   **Make your own**: drawing and encoding their own picture is where the
   idea actually clicks.
-- **9th grade or faster finishers:** after the sheet, hand out
+- **9th grade or faster finishers:** after all three sheets, hand out
   [Pixel Pictures: how much do you save?]({{ '/unplugged/pixel-pictures-compression/' | relative_url }}).
   It has them count the numbers their own completed codes actually used and
   work out a real compression ratio, instead of taking "it saves space" on

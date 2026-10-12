@@ -19,6 +19,9 @@
     class_size  optional: your usual class size (e.g. 30). Links straight to
                 a ready class set (that many copies, 2 per student) instead
                 of making the sub-day prep person set Copies by hand.
+    sheet_note  optional: for an activity split across more than one
+                printed sheet. Appears right after "Hand out," and again in
+                the before-the-sub-day printing instructions.
 
   "Keep going," never "extra" or "early finishers": the next sheet is just
   the next thing to do, not a bonus or a sign the first one was optional.
@@ -36,7 +39,7 @@ the right arrow key to step through. Stop at the slide titled
 Skip the slides: the sheet explains everything.
 {% endif %}
 1. **Hand out** the [worksheet]({{ include.sheet | relative_url }}), one per
-   student. Names on top.
+   student. Names on top.{% if include.sheet_note %} {{ include.sheet_note }}{% endif %}
 2. **Say:** "{{ include.say }}"
 3. **If the teacher left more puzzles,** hand the next one to each student
    who finishes: a {{ include.keep_going }}.
@@ -48,7 +51,8 @@ Skip the slides: the sheet explains everything.
 {% endif %}
 {% if include.class_size %}
 **Before the sub day (teacher, or whoever preps the sub folder):** print one
-worksheet per student, plus keep-going sheets: a ready
+copy of {% if include.sheet_note %}each sheet{% else %}the worksheet{% endif %}
+per student, plus keep-going sheets: a ready
 [class set of {{ include.class_size }}]({{ include.generator | append: "?copies=" | append: include.class_size | append: "&per=2" | relative_url }}),
 two per student (front and back). That covers a full period even for your
 fastest students. Different class size this time? Open the
@@ -56,7 +60,8 @@ fastest students. Different class size this time? Open the
 there instead.
 {% else %}
 **Before the sub day (teacher, or whoever preps the sub folder):** print one
-worksheet per student, plus keep-going sheets from the
+copy of {% if include.sheet_note %}each sheet{% else %}the worksheet{% endif %}
+per student, plus keep-going sheets from the
 [New set page]({{ include.generator | relative_url }}): set **Copies** to
 your class size and **Sets per student** to 2 (front and back). That covers
 a full period even for your fastest students.

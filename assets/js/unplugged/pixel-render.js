@@ -7,7 +7,7 @@ import { encodeRow } from "./pixels.js";
 // with a pencil. The answer key just needs to be legible at a glance, not
 // shaded by hand, so it's drawn smaller (KEY_CELL) to keep the answer
 // page compact.
-const CELL = 24;
+const CELL = 21;
 const KEY_CELL = 16;
 
 const esc = (s) =>

@@ -21,7 +21,7 @@ This activity has you measure it instead of just guessing.
 
 ## Count what you actually used
 
-Each of your four pictures is 10 pixels wide by 10 pixels tall, so each one
+Each of your three pictures is 10 pixels wide by 10 pixels tall, so each one
 is 100 pixels. Go back through your completed worksheet. For each picture,
 count how many numbers its whole code used, adding up every number in
 every row (not the values of the numbers, just how many of them there
@@ -32,7 +32,6 @@ numbers are.
 |---|---|---|
 | Plus | <span class="fill-line short"></span> | 100 |
 | Diamond | <span class="fill-line short"></span> | 100 |
-| Boat | <span class="fill-line short"></span> | 100 |
 | Target | <span class="fill-line short"></span> | 100 |
 {: .checkoff .trace-table}
 
@@ -69,13 +68,11 @@ you being there to help.
 |---|---|---|
 | Plus | 28 | 100 |
 | Diamond | 28 | 100 |
-| Boat | 28 | 100 |
 | Target | 60 | 100 |
 {: .checkoff .trace-table}
 
-1. Plus, Diamond, and Boat are tied for fewest, 28 numbers each. Target
-   used the most by far: 60 numbers, more than double the shortest
-   pictures.
+1. Plus and Diamond are tied for fewest, 28 numbers each. Target used the
+   most by far: 60 numbers, more than double the shortest pictures.
 2. 28 numbers for 100 pixels is a little more than a quarter (28 percent):
    the code is well under a third the length of listing every pixel.
 3. Target's rows are made of lots of short runs (1s and 2s, mostly),
