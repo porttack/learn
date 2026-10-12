@@ -58,12 +58,13 @@ Google Doc, upload that file to Google Drive and open it with Google Docs.
 ### Make new sets
 
 The [**New set** page]({{ page.generator | relative_url }}) makes fresh
-mystery pictures to decode, so a student who finishes always has a next
-sheet to start. Pick **Small pictures** or **Large pictures**, and how many
-**copies**: a class set gives every student a different picture. **Sets per
-student: 2** prints one set on the front and one on the back. In a hurry?
-Jump straight to a [ready class set of 30]({{ page.generator | append: "?copies=30&per=2" | relative_url }}),
-two per student, front and back.
+mystery pictures to decode (and, once a set has 3 or more pictures, one to
+encode), so a student who finishes always has a next sheet to start. Pick
+**Small pictures** or **Large pictures**, how many **Pictures** per set, and
+how many **copies**: a class set gives every student a different set. In a
+hurry? Jump straight to a
+[ready class set of 30]({{ page.generator | append: "?copies=30&size=small&count=6" | relative_url }}),
+one 6-picture set per student (two pages, front and back).
 
 ### Slides
 
