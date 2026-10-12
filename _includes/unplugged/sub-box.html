@@ -32,6 +32,10 @@
     collect     optional: replaces "every sheet, finished or not" in the
                 Collect step, e.g. to name which of several sheets actually
                 need to come back.
+    before_sub_day  optional: replaces the whole "Before the sub day"
+                paragraph (including its own bold lead-in) for an activity
+                too particular for the built-in copies/Sets-per-student
+                phrasing, e.g. one printed as several numbered sheets.
 
   "Keep going," never "extra" or "early finishers": the next sheet is just
   the next thing to do, not a bonus or a sign the first one was optional.
@@ -59,7 +63,9 @@ Skip the slides: the sheet explains everything.
 {% if include.note %}
 {{ include.note }}
 {% endif %}
-{% if include.class_size %}
+{% if include.before_sub_day %}
+{{ include.before_sub_day }}
+{% elsif include.class_size %}
 **Before the sub day (teacher, or whoever preps the sub folder):** print one
 copy of {% if include.sheet_note %}each sheet{% else %}the worksheet{% endif %}
 per student, plus keep-going sheets: a ready

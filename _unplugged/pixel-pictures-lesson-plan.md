@@ -19,6 +19,7 @@ sub? Use the box below.
    sheet_no_name=true
    sheet_note="Then hand out [Decode & Encode](/unplugged/pixel-pictures/) and [Make Your Own](/unplugged/pixel-pictures-make-your-own/) right behind it, in that order. Names go on those two; nothing needs to be stapled."
    collect="Decode & Encode and Make Your Own from every student, plus at least one keep-going sheet from anyone who got that far (its Set # shows it's their own work, not a copy of a neighbor's). The instructions sheet doesn't need to come back"
+   before_sub_day="**Before the sub day (teacher, or whoever preps the sub folder):** print one copy of each sheet per student: (1) [Instructions](/unplugged/pixel-pictures-how-to/), (2) [Decode & Encode](/unplugged/pixel-pictures/), (3) [Make Your Own](/unplugged/pixel-pictures-make-your-own/). Then print the keep-going set: a ready [class set of 30](/unplugged/pixel-pictures-generator/?copies=30&per=2) already has 30 different puzzles built in, two pages each (front and back), so print that one large page once for the whole class, not once per student. Different class size? Open the [New set page](/unplugged/pixel-pictures-generator/) and change **Copies** there instead."
    slides="/unplugged/pixel-pictures-slides/"
    slides_stop="On Your Sheet"
    go="pixel"
@@ -35,14 +36,16 @@ sub? Use the box below.
 
 ## Before class
 
-- Print one copy each of the three sheets per student, handed out in order:
-  [How It Works]({{ '/unplugged/pixel-pictures-how-to/' | relative_url }}),
-  [Decode & Encode]({{ '/unplugged/pixel-pictures/' | relative_url }}), and
-  [Make Your Own]({{ '/unplugged/pixel-pictures-make-your-own/' | relative_url }}).
+- Print one copy of each sheet per student, handed out in order: (1)
+  [Instructions]({{ '/unplugged/pixel-pictures-how-to/' | relative_url }}),
+  (2) [Decode & Encode]({{ '/unplugged/pixel-pictures/' | relative_url }}),
+  (3) [Make Your Own]({{ '/unplugged/pixel-pictures-make-your-own/' | relative_url }}).
   Only the second two come back from students, so there's no need to staple
   all three together.
-- Print keep-going sheets: a ready [class set of 30]({{ '/unplugged/pixel-pictures-generator/?copies=30&per=2' | relative_url }}),
-  two per student (front and back). Different class size? Open the
+- Print the keep-going set once for the whole class, not once per student:
+  a ready [class set of 30]({{ '/unplugged/pixel-pictures-generator/?copies=30&per=2' | relative_url }})
+  already has 30 different puzzles built in, two pages each (front and
+  back). Different class size? Open the
   [New set page]({{ '/unplugged/pixel-pictures-generator/' | relative_url }}) and change **Copies** there.
 - Have any photo ready to project, or use the [slides]({{ '/unplugged/pixel-pictures-slides/' | relative_url }}) instead.
 
