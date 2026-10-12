@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AP Cybersecurity Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1100px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 240px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+.pilot-flag {
+  border: 1px solid var(--accent); background: color-mix(in oklch, var(--accent) 10%, var(--bg));
+  border-radius: 8px; padding: .7rem 1rem; font-size: .9rem; margin: 1rem 0;
+}
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.anchor-link { color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal; opacity: .5; }
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.unit { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.unit > h2 { font-size: 1.5rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: .9rem 1.2rem; margin: 1rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.05rem; }
+.topic .skills { font-size: .8rem; color: var(--muted); }
+.skill-table, .exam-table, .quick-facts-table {
+  width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: .92rem;
+}
+.skill-table th, .skill-table td,
+.exam-table th, .exam-table td,
+.quick-facts-table th, .quick-facts-table td {
+  text-align: left; padding: .5rem .6rem; border: 1px solid var(--border); vertical-align: top;
+}
+.skill-table th, .exam-table th { background: var(--code-bg); color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
+.skill-table .skill-head { color: var(--accent); }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+footer a { color: var(--accent); }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
+@media (max-width: 780px) {
+  .layout { flex-direction: column; }
+  nav.toc { position: static; height: auto; overflow: visible; flex: 1 1 auto; width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
+<a href="/electronics101/"><span class="site-menu-item-icon" aria-hidden="true"></span>Electronics 101</a>
+<a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
+<a href="/python3d/"><span class="site-menu-item-icon" aria-hidden="true"></span>Python in 3D</a>
+<a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<h2>On this page</h2>
+<ul>
+<li><a href="#skills">Course Skills</a></li>
+<li><a href="#exam">Exam Format</a></li>
+</ul>
+<h2>Units</h2>
+<ul>
+<li><a href="#U1">Unit 1 &middot; Introduction to Security</a></li>
+<li><a href="#U2">Unit 2 &middot; Securing Spaces</a></li>
+<li><a href="#U3">Unit 3 &middot; Securing Networks</a></li>
+<li><a href="#U4">Unit 4 &middot; Securing Devices</a></li>
+<li><a href="#U5">Unit 5 &middot; Securing Applications and Data</a></li>
+</ul>
+</nav>
+<main>
+<h1>AP Cybersecurity Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A personal working reference for a brand-new AP course (part of AP Career Kickstart), built to understand what the exam covers and how it's structured &mdash; not yet wired into this site's standards catalog/carrier system the way AP CSP is. Units and topic titles are the College Board's own; skill descriptions below are an original paraphrase, not quoted CED text. Source: the official <em>AP Cybersecurity Course and Exam Description</em> (effective Fall 2026).</div>
+<div class="pilot-flag"><strong>Status:</strong> Course launches fall 2026. First exam: <strong>May 2027</strong>. No prerequisite &mdash; designed as a foundational course aligned with CTE Digital Technology Pathways, built in partnership with CompTIA, Oracle, IBM, and U.S. Bank, and aligned to the NICE Workforce Framework.</div>
+
+<table class="quick-facts-table">
+<tr><th>College course equivalent</th><td>One-semester college intro-to-cybersecurity course</td></tr>
+<tr><th>Prerequisites</th><td>None. Open to any motivated student willing to work individually and in teams.</td></tr>
+<tr><th>Length</th><td>Yearlong, ~110 class periods of required content across 5 units (45-minute periods, 5 days/week)</td></tr>
+<tr><th>Format</th><td>Fully digital exam, delivered in Bluebook</td></tr>
+<tr><th>Credential</th><td>Qualifying AP Exam score earns an AP Career Kickstart employer-endorsed credential, alongside standard AP college credit/placement</td></tr>
+</table>
+
+<section id="skills"><h2>Course Skills</h2>
+<p>Four skill categories, spiraled across all five units. Each has four progressively deeper sub-skills (A&ndash;D). Skill Categories 1&ndash;3 are assessed on the exam; Collaborate is developed throughout the course but isn't itself an MCQ/FRQ category.</p>
+<table class="skill-table">
+<thead><tr><th>Skill Category 1</th><th>Skill Category 2</th><th>Skill Category 3</th><th>Skill Category 4</th></tr></thead>
+<tbody>
+<tr>
+<td><span class="skill-head">Analyze Risk</span><br>Size up risk to an organization's assets.</td>
+<td><span class="skill-head">Mitigate Risk</span><br>Put protective and deterrent security controls in place.</td>
+<td><span class="skill-head">Detect Attacks</span><br>Stand up detection methods, watch systems, and read the evidence.</td>
+<td><span class="skill-head">Collaborate</span><br>Work with others, and with AI, to get a task done.</td>
+</tr>
+<tr><td><span class="code-badge">1.A</span> Name the vulnerabilities, threats, and attack methods in play (with or without AI help), and explain how they add up to risk.</td>
+<td><span class="code-badge">2.A</span> Name the security controls that apply, and explain how each one mitigates a risk.</td>
+<td><span class="code-badge">3.A</span> Name what's needed to monitor a system, and explain how that monitoring catches attacks.</td>
+<td><span class="code-badge">4.A</span> Set clear, shared team objectives for a cybersecurity task.</td></tr>
+<tr><td><span class="code-badge">1.B</span> Work out how an adversary could exploit a given vulnerability to compromise an asset.</td>
+<td><span class="code-badge">2.B</span> Pick layered security controls that address a vulnerability.</td>
+<td><span class="code-badge">3.B</span> Work out strategies and methods to detect an attack.</td>
+<td><span class="code-badge">4.B</span> Assign clear roles and responsibilities across a team.</td></tr>
+<tr><td><span class="code-badge">1.C</span> Judge, with or without AI help, how likely a risk is and how bad its impact would be.</td>
+<td><span class="code-badge">2.C</span> Judge, with or without AI help, how well a protective strategy actually reduces risk.</td>
+<td><span class="code-badge">3.C</span> Judge how effective a given detection method is.</td>
+<td><span class="code-badge">4.C</span> Use AI as a collaboration tool, both solo and as a group.</td></tr>
+<tr><td><span class="code-badge">1.D</span> Document, with or without AI help, a risk's likelihood and impact.</td>
+<td><span class="code-badge">2.D</span> Put mitigations in place and log them, with or without AI help.</td>
+<td><span class="code-badge">3.D</span> Detect and classify an attack by analyzing digital evidence, with or without AI help.</td>
+<td><span class="code-badge">4.D</span> Finish your share of a collaborative cybersecurity task.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="exam"><h2>Exam Format</h2>
+<table class="exam-table">
+<thead><tr><th>Section</th><th>Type</th><th># Questions</th><th>Weighting</th><th>Timing</th></tr></thead>
+<tbody>
+<tr><td>I</td><td>Multiple-choice</td><td>60</td><td>70%</td><td>80 minutes</td></tr>
+<tr><td>II</td><td>Free-response (&ldquo;Device Security Analysis&rdquo;)</td><td>1</td><td>30%</td><td>50 minutes</td></tr>
+</tbody>
+</table>
+<p>Total time: 2 hours 10 minutes. All five units are assessed on the multiple-choice section, organized by skill rather than by unit:</p>
+<table class="exam-table">
+<thead><tr><th>Skill Category</th><th>Approx. MCQ Weighting</th></tr></thead>
+<tbody>
+<tr><td>1 &middot; Analyze Risk</td><td>25&ndash;40%</td></tr>
+<tr><td>2 &middot; Mitigate Risk</td><td>25&ndash;40%</td></tr>
+<tr><td>3 &middot; Detect Attacks</td><td>25&ndash;40%</td></tr>
+</tbody>
+</table>
+<p>The single free-response question, <strong>Device Security Analysis</strong>, hands students simulated sources about one device (security policies, firewall configs, file-system permissions, log files) and asks them to find security issues, spot evidence of an attack, and reason about the effect of a configuration or permission change &mdash; citing the sources directly. It assesses Skill Categories 2 and 3.</p>
+<p class="weight">Task verbs used in the free-response question: <strong>Identify</strong> (surface a concept or piece of evidence), <strong>Explain</strong> (give a reasoned, evidence-backed account of an outcome), <strong>Describe</strong> (characterize a process or outcome), <strong>Determine</strong> (apply criteria/reasoning to the sources to reach a result), <strong>Write</strong> (express a correct command in print form).</p>
+</section>
+
+<input id="search" type="search" placeholder="Filter topics by title or skill&hellip;" aria-label="Filter topics">
+
+<section class="unit" id="U1">
+<h2><a class="anchor-link" href="#U1">#</a>Unit 1: Introduction to Security <span class="weight">(~10 class periods)</span></h2>
+<div class="topic"><h3><span class="code-badge">1.1</span> Understanding Social Engineering</h3><p class="skills">Skills: Analyze Risk, Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">1.2</span> Suspicious Website Logins</h3><p class="skills">Skills: Analyze Risk, Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">1.3</span> Best Practices for Public Networks</h3><p class="skills">Skills: Analyze Risk, Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">1.4</span> AI-Based Cybersecurity Attacks</h3><p class="skills">Skills: Analyze Risk, Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">1.5</span> Leveraging AI in Cyber Defense</h3><p class="skills">Skills: Mitigate Risk, Detect Attacks</p></div>
+</section>
+
+<section class="unit" id="U2">
+<h2><a class="anchor-link" href="#U2">#</a>Unit 2: Securing Spaces <span class="weight">(~21 class periods)</span></h2>
+<div class="topic"><h3><span class="code-badge">2.1</span> Cyber Foundations</h3><p class="skills">Skills: Analyze Risk, Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">2.2</span> Physical Vulnerabilities and Attacks</h3><p class="skills">Skill: Analyze Risk</p></div>
+<div class="topic"><h3><span class="code-badge">2.3</span> Protecting Physical Spaces</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">2.4</span> Detecting Physical Attacks</h3><p class="skills">Skill: Detect Attacks</p></div>
+</section>
+
+<section class="unit" id="U3">
+<h2><a class="anchor-link" href="#U3">#</a>Unit 3: Securing Networks <span class="weight">(~26 class periods)</span></h2>
+<div class="topic"><h3><span class="code-badge">3.1</span> Network Vulnerabilities and Attacks</h3><p class="skills">Skill: Analyze Risk</p></div>
+<div class="topic"><h3><span class="code-badge">3.2</span> Protecting Networks: Managerial Controls and Wireless Security</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">3.3</span> Protecting Networks: Segmentation</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">3.4</span> Protecting Networks: Firewalls</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">3.5</span> Detecting Network Attacks</h3><p class="skills">Skill: Detect Attacks</p></div>
+</section>
+
+<section class="unit" id="U4">
+<h2><a class="anchor-link" href="#U4">#</a>Unit 4: Securing Devices <span class="weight">(~23 class periods)</span></h2>
+<div class="topic"><h3><span class="code-badge">4.1</span> Device Vulnerabilities and Attacks</h3><p class="skills">Skill: Analyze Risk</p></div>
+<div class="topic"><h3><span class="code-badge">4.2</span> Authentication</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">4.3</span> Protecting Devices</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">4.4</span> Detecting Attacks on Devices</h3><p class="skills">Skill: Detect Attacks</p></div>
+</section>
+
+<section class="unit" id="U5">
+<h2><a class="anchor-link" href="#U5">#</a>Unit 5: Securing Applications and Data <span class="weight">(~30 class periods)</span></h2>
+<div class="topic"><h3><span class="code-badge">5.1</span> Application and Data Vulnerabilities and Attacks</h3><p class="skills">Skill: Analyze Risk</p></div>
+<div class="topic"><h3><span class="code-badge">5.2</span> Protecting Applications and Data: Managerial Controls and Access Controls</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">5.3</span> Protecting Stored Data with Cryptography</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">5.4</span> Asymmetric Cryptography</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">5.5</span> Protecting Applications</h3><p class="skills">Skill: Mitigate Risk</p></div>
+<div class="topic"><h3><span class="code-badge">5.6</span> Detecting Attacks on Data and Applications</h3><p class="skills">Skill: Detect Attacks</p></div>
+</section>
+
+<footer>
+<p>Built 2026-10-11 from the official <a href="https://apcentral.collegeboard.org/media/pdf/ap-cybersecurity-course-and-exam-description.pdf" target="_blank" rel="noopener">AP Cybersecurity Course and Exam Description</a> (College Board, effective Fall 2026) and the <a href="https://apcentral.collegeboard.org/courses/ap-cybersecurity" target="_blank" rel="noopener">AP Cybersecurity course page</a> on AP Central. See also <a href="/standards/apnetworking-standards-reference.html">the AP Networking reference</a>, the other AP Career Kickstart course launching alongside it.</p>
+</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var topics = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    topics.forEach(function(el) {
+      el.classList.toggle('hidden', !!q && normalize(el.textContent).indexOf(q) === -1);
+    });
+  });
+})();
+</script>
+</body>
+</html>

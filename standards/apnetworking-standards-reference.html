@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AP Networking Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1100px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 240px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+.pilot-flag {
+  border: 1px solid var(--accent); background: color-mix(in oklch, var(--accent) 10%, var(--bg));
+  border-radius: 8px; padding: .7rem 1rem; font-size: .9rem; margin: 1rem 0;
+}
+.unofficial-flag {
+  border: 1px dashed var(--muted); border-radius: 8px; padding: .7rem 1rem; font-size: .88rem;
+  color: var(--muted); margin: 1rem 0;
+}
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.anchor-link { color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal; opacity: .5; }
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.unit { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.unit > h2 { font-size: 1.5rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: .9rem 1.2rem; margin: 1rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.05rem; }
+.topic .skills { font-size: .8rem; color: var(--muted); }
+.skill-table, .exam-table, .quick-facts-table {
+  width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: .92rem;
+}
+.skill-table th, .skill-table td,
+.exam-table th, .exam-table td,
+.quick-facts-table th, .quick-facts-table td {
+  text-align: left; padding: .5rem .6rem; border: 1px solid var(--border); vertical-align: top;
+}
+.skill-table th, .exam-table th { background: var(--code-bg); color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; }
+.skill-table .skill-head { color: var(--accent); }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+footer a { color: var(--accent); }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
+@media (max-width: 780px) {
+  .layout { flex-direction: column; }
+  nav.toc { position: static; height: auto; overflow: visible; flex: 1 1 auto; width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
+<a href="/electronics101/"><span class="site-menu-item-icon" aria-hidden="true"></span>Electronics 101</a>
+<a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
+<a href="/python3d/"><span class="site-menu-item-icon" aria-hidden="true"></span>Python in 3D</a>
+<a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<h2>On this page</h2>
+<ul>
+<li><a href="#skills">Course Skills</a></li>
+<li><a href="#exam">Exam Format</a></li>
+</ul>
+<h2>Units</h2>
+<ul>
+<li><a href="#U1">Unit 1 &middot; Managing My Connections</a></li>
+<li><a href="#U2">Unit 2 &middot; Managing My Shared Connections</a></li>
+<li><a href="#U3">Unit 3 &middot; Managing Many Connections</a></li>
+<li><a href="#U4">Unit 4 &middot; Managing Our Global Connections</a></li>
+</ul>
+</nav>
+<main>
+<h1>AP Networking Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A personal working reference for a brand-new, still-piloting AP course (the other half of AP Career Kickstart, alongside AP Cybersecurity) &mdash; built to understand what it covers, not wired into this site's standards catalog/carrier system. Units and topic titles are the College Board's own; skill descriptions below are an original paraphrase, not quoted framework text. Source: the official <em>AP Networking Course Framework</em> (for use beginning with the 2026-27 school year pilot).</div>
+<div class="pilot-flag"><strong>Status: this is a pilot, not a general-availability course.</strong> Fall 2026 begins the third and final pilot year. Only schools that already participated in a prior AP Networking or AP Cybersecurity pilot may join this round. The pilot exam runs May 2027; full national launch (and the credential) follows in 2027-28. No prerequisite &mdash; aligns with CTE Digital Technology Pathways, built with Cisco and other industry partners, and aligned to the NICE Workforce Framework.</div>
+
+<table class="quick-facts-table">
+<tr><th>College course equivalent</th><td>One-semester college intro-to-networking course</td></tr>
+<tr><th>Prerequisites</th><td>None. Open to any motivated student willing to work individually and in teams.</td></tr>
+<tr><th>Length</th><td>Yearlong, 4 units (the published framework leaves the class-period pacing for each topic as an unfilled placeholder &mdash; a sign the document is still mid-draft for this pilot round)</td></tr>
+<tr><th>2026-27 pilot exam</th><td>Digital, multiple-choice only, administered May 2027. Question count and timing not yet published.</td></tr>
+</table>
+
+<section id="skills"><h2>Course Skills</h2>
+<p>Four skill categories, spiraled across all four units. Each has four progressively deeper sub-skills (A&ndash;D) &mdash; the same A-through-D shape AP Cybersecurity uses.</p>
+<table class="skill-table">
+<thead><tr><th>Skill Category 1</th><th>Skill Category 2</th><th>Skill Category 3</th><th>Skill Category 4</th></tr></thead>
+<tbody>
+<tr>
+<td><span class="skill-head">Connect and Configure</span><br>Get data moving through computer networks.</td>
+<td><span class="skill-head">Secure</span><br>Apply protective, detective, and deterrent security controls.</td>
+<td><span class="skill-head">Troubleshoot</span><br>Diagnose degraded performance or functionality, and test fixes.</td>
+<td><span class="skill-head">Collaborate</span><br>Work with others, and with AI, to get a task done.</td>
+</tr>
+<tr><td><span class="code-badge">1.A</span> Name common device and network components, protocols, and configurations; explain how they relate.</td>
+<td><span class="code-badge">2.A</span> Name vulnerabilities and their impact on data, devices, and networks; explain how security controls (with or without AI) address and monitor them.</td>
+<td><span class="code-badge">3.A</span> Name common device and network problems, and explain how tools (including AI) help diagnose their cause.</td>
+<td><span class="code-badge">4.A</span> Set clear, shared team objectives for a networking task.</td></tr>
+<tr><td><span class="code-badge">1.B</span> Work out, with or without AI help, the right configuration and settings for a device to get connectivity, management, and performance.</td>
+<td><span class="code-badge">2.B</span> Work out, with or without AI help, strategies to address a device or network vulnerability.</td>
+<td><span class="code-badge">3.B</span> Work out, with or without AI help, the cause of a device or network problem and a possible fix.</td>
+<td><span class="code-badge">4.B</span> Assign clear roles and responsibilities across a team.</td></tr>
+<tr><td><span class="code-badge">1.C</span> Implement and document a device/network configuration to establish and keep connectivity.</td>
+<td><span class="code-badge">2.C</span> Implement and document security controls that address a vulnerability and monitor the network.</td>
+<td><span class="code-badge">3.C</span> Implement and document a fix for a problem.</td>
+<td><span class="code-badge">4.C</span> Use AI as a collaboration tool, both solo and as a group.</td></tr>
+<tr><td><span class="code-badge">1.D</span> Verify connectivity and configuration, and troubleshoot anything that's still wrong.</td>
+<td><span class="code-badge">2.D</span> Verify a control actually mitigates the vulnerability without breaking access or availability, and troubleshoot as needed.</td>
+<td><span class="code-badge">3.D</span> Verify a fix worked, and keep troubleshooting if it didn't.</td>
+<td><span class="code-badge">4.D</span> Finish your share of a collaborative networking task.</td></tr>
+</tbody>
+</table>
+</section>
+
+<section id="exam"><h2>Exam Format</h2>
+<p>The College Board has published very little about exam structure so far &mdash; expected, since this course is still in its final pilot year before 2027-28 general availability.</p>
+<table class="exam-table">
+<thead><tr><th></th><th>What's confirmed (official)</th></tr></thead>
+<tbody>
+<tr><td>2026-27 pilot exam<br><span class="weight">(May 2027)</span></td><td>Digital, multiple-choice only. Built around &ldquo;career-connected scenarios&rdquo; that ask students to make evidence-based, contextually aware decisions. Question count, timing, and skill weighting not disclosed.</td></tr>
+<tr><td>2027-28 operational exam</td><td>No official format published yet.</td></tr>
+</tbody>
+</table>
+<div class="unofficial-flag"><strong>Unverified, from third-party AP test-prep sites (not an official College Board page):</strong> the 2027-28 exam is expected to add a free-response section analyzing real networking artifacts and evidence, alongside the multiple-choice section. Also reported: a qualifying score on the 2026-27 pilot exam carries a free CompTIA certification exam voucher, and the course is designed to stack toward CompTIA Network+, Cisco CCNA, and CCST Networking. Treat these as rumor-grade until AP Central confirms them directly.</div>
+</section>
+
+<input id="search" type="search" placeholder="Filter topics by title or skill&hellip;" aria-label="Filter topics">
+
+<section class="unit" id="U1">
+<h2><a class="anchor-link" href="#U1">#</a>Unit 1: Managing My Connections</h2>
+<div class="topic"><h3><span class="code-badge">1.1</span> Fixing What's Slowing Me Down: Troubleshooting Issues on My Device</h3><p class="skills">Skill: Troubleshoot</p></div>
+<div class="topic"><h3><span class="code-badge">1.2</span> Getting the Most Out of My Network: Connecting and Optimizing My Device</h3><p class="skills">Skill: Connect and Configure</p></div>
+<div class="topic"><h3><span class="code-badge">1.3</span> What Could Go Wrong: Identifying the Security Needs of My Device</h3><p class="skills">Skill: Secure</p></div>
+<div class="topic"><h3><span class="code-badge">1.4</span> Locking It Down: Securing My Device</h3><p class="skills">Skill: Secure</p></div>
+</section>
+
+<section class="unit" id="U2">
+<h2><a class="anchor-link" href="#U2">#</a>Unit 2: Managing My Shared Connections</h2>
+<div class="topic"><h3><span class="code-badge">2.1</span> Missed Connection: Troubleshooting My SOHO Network</h3><p class="skills">Skill: Troubleshoot</p></div>
+<div class="topic"><h3><span class="code-badge">2.2</span> Identification Needed: Documenting My Network</h3><p class="skills">Skill: Connect and Configure</p></div>
+<div class="topic"><h3><span class="code-badge">2.3</span> Smart Moves: Upgrading My Network</h3><p class="skills">Skill: Connect and Configure</p></div>
+<div class="topic"><h3><span class="code-badge">2.4</span> Leveling Up: Advanced Features on My Network</h3><p class="skills">Skill: Connect and Configure</p></div>
+<div class="topic"><h3><span class="code-badge">2.5</span> Guarding My Network: Identifying Security Needs</h3><p class="skills">Skill: Secure</p></div>
+<div class="topic"><h3><span class="code-badge">2.6</span> Applying Defense: Securing My Network</h3><p class="skills">Skill: Secure</p></div>
+</section>
+
+<section class="unit" id="U3">
+<h2><a class="anchor-link" href="#U3">#</a>Unit 3: Managing Many Connections</h2>
+<div class="topic"><h3><span class="code-badge">3.1</span> Planning a Network: Choosing the Right Devices and Connections</h3><p class="skills">Skill: Connect and Configure</p></div>
+<div class="topic"><h3><span class="code-badge">3.2</span> Creating a Network: Switching and Topologies</h3><p class="skills">Skill: Connect and Configure</p></div>
+<div class="topic"><h3><span class="code-badge">3.3</span> Making It Work: Connecting, Configuring, and Verifying Access</h3><p class="skills">Skill: Connect and Configure</p></div>
+<div class="topic"><h3><span class="code-badge">3.4</span> Building the Boundaries: Identifying Segmentation Security</h3><p class="skills">Skill: Secure</p></div>
+<div class="topic"><h3><span class="code-badge">3.5</span> Controlling the Traffic: Firewalls and Filtering</h3><p class="skills">Skill: Secure</p></div>
+<div class="topic"><h3><span class="code-badge">3.6</span> Restored Connections: Documenting, Diagnosing, and Fixing a Segmented LAN</h3><p class="skills">Skill: Troubleshoot</p></div>
+</section>
+
+<section class="unit" id="U4">
+<h2><a class="anchor-link" href="#U4">#</a>Unit 4: Managing Our Global Connections</h2>
+<div class="topic"><h3><span class="code-badge">4.1</span> What Happens When Networks Break or Fail?</h3><p class="skills">Skills: Secure, Troubleshoot</p></div>
+<div class="topic"><h3><span class="code-badge">4.2</span> The Language of the Network: Protocols and the OSI and TCP/IP Models</h3><p class="skills">Skills: Connect and Configure, Troubleshoot</p></div>
+<div class="topic"><h3><span class="code-badge">4.3</span> Tools of Network Analysts: Using the CLI</h3><p class="skills">Skill: Connect and Configure</p></div>
+<div class="topic"><h3><span class="code-badge">4.4</span> How Data Travel the Internet: Routing, Metrics, and Paths</h3><p class="skills">Skill: Connect and Configure</p></div>
+<div class="topic"><h3><span class="code-badge">4.5</span> From the Inside Out: Monitoring and Defending a Large Network</h3><p class="skills">Skill: Secure</p></div>
+<div class="topic"><h3><span class="code-badge">4.6</span> Moving Forward: Designing for Reliability and Growth</h3><p class="skills">Skills: Connect and Configure, Troubleshoot</p></div>
+</section>
+
+<footer>
+<p>Built 2026-10-11 from the official <a href="https://apcentral.collegeboard.org/media/pdf/ap-networking-course-framework.pdf" target="_blank" rel="noopener">AP Networking Course Framework</a> (College Board, for the 2026-27 pilot) and the <a href="https://apcentral.collegeboard.org/courses/ap-networking/about" target="_blank" rel="noopener">About AP Networking</a> and <a href="https://apcentral.collegeboard.org/courses/ap-career-kickstart/pilots" target="_blank" rel="noopener">AP Networking Pilot</a> pages on AP Central. This framework predates a full Course and Exam Description &mdash; expect this page to need a rewrite once one is published. See also <a href="/standards/apcybersecurity-standards-reference.html">the AP Cybersecurity reference</a>, the other AP Career Kickstart course launching alongside it.</p>
+</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var topics = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    topics.forEach(function(el) {
+      el.classList.toggle('hidden', !!q && normalize(el.textContent).indexOf(q) === -1);
+    });
+  });
+})();
+</script>
+</body>
+</html>
