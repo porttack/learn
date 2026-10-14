@@ -9,7 +9,21 @@
   "locator_titles": {
    "4": "Unit 3b - Interactive Animations and Games"
   },
-  "caveat": "Locators here are studio.code.org's own URL position numbers (1-4), not the 'Unit Nb' display labels -- position 3 displays as 'Unit 3a' and position 4 as 'Unit 3b' (code.org does not split Interactive Animations and Games into two separate units the way an earlier draft of this carrier assumed; 3a is a wholly different unit, Programming with Music Lab). This is one of three sibling carriers split out of a single combined 'codeorg_csd' file so each can be toggled independently on the coverage map, matching how this teacher actually runs the course -- Units 1-2 are usually taught together, 3a and 3b are each optional and often skipped depending on the semester, with 3b (the game-building unit) the one most reliably taught and the one students engage with most. All csta2017 citations were fetched directly from each unit's own live standards page (studio.code.org/courses/csd-2026/units/N/standards, which embeds a per-lesson JSON rollup in a data-unit-rollup attribute) on 2026-08-29 -- current, official, and machine-read. csta2026 and ca-ict-anchor entries are this carrier's own topic-level inference from lesson names/objectives, not a code.org claim -- code.org's own citations are all CSTA 2017 (the 2026 CSTA revision isn't reflected in code.org's own standards data yet), kept deliberately sparse."
+  "caveat": "Locators here are studio.code.org's own URL position numbers (1-4), not the 'Unit Nb' display labels -- position 3 displays as 'Unit 3a' and position 4 as 'Unit 3b' (code.org does not split Interactive Animations and Games into two separate units the way an earlier draft of this carrier assumed; 3a is a wholly different unit, Programming with Music Lab). This is one of three sibling carriers split out of a single combined 'codeorg_csd' file so each can be toggled independently on the coverage map, matching how this teacher actually runs the course -- Units 1-2 are usually taught together, 3a and 3b are each optional and often skipped depending on the semester, with 3b (the game-building unit) the one most reliably taught and the one students engage with most. This carrier mixes two kinds of claim, distinguished entry by entry in each note, never by framework: csta2017's ten Level 2 (6-8) entries are code.org's own citation, fetched directly from the unit's own live standards page (studio.code.org/courses/csd-2026/units/N/standards, which embeds a per-lesson JSON rollup in a data-unit-rollup attribute) -- current, official, and machine-read. code.org cites no Level 3A/3B standard anywhere in this unit, which is why the castandards side of that citation never reached 9-12 on its own. Every other entry here -- castandards 9-12/9-12 Specialty, csta2026, csta2017's own 3A-AP/3B-AP entries, ca-ict-anchor -- is this carrier's own content-based inference, read directly off that same live per-lesson rollup (objectives, vocabulary, and named student resources like the 'Peer Review' activity guides in Lessons 18 and 28), never a code.org claim and never mechanically crosswalked. This carrier author's own view is that CS Discoveries plays naturally through about 9th grade, so a 9-12 reading is deliberate, not a reach for completeness -- see `alignment_log` for when and how each reading was done, and its ratings lean `partial`/`related` rather than `strong` throughout, since this is still introductory-depth content relative to the AP-level standards it's being read against.",
+  "alignment_log": [
+   {
+    "date": "2026-10-13",
+    "by": "Claude Sonnet 5",
+    "scope": "castandards 9-12 core + 9-12 Specialty, csta2026 HS-* -- prompted by the teacher noticing the published report showed almost no 9-12 coverage and wanting a genuine (not vendor-mechanical) read, since CS Discoveries runs through 9th grade in this teacher's view",
+    "note": "Fetched Unit 3b's live per-lesson rollup JSON directly (same data-unit-rollup source as the existing csta2017 citations) and read all 28 lessons' objectives/vocabulary/named resources against the 9-12 and 9-12 Specialty castandards and csta2026 HS-* catalogs by hand. Added 6 castandards 9-12 entries, 1 castandards 9-12 Specialty entry, and 6 csta2026 HS-* entries, all rated partial/related; also added two explicit checked:true gaps (9-12.AP.13 and HS-PRO-VD-16, both about list/dictionary data structures) since the unit's 'Variables' lesson only ever covers single scalar values and it's worth recording that this was checked, not missed."
+   },
+   {
+    "date": "2026-10-13",
+    "by": "Claude Sonnet 5",
+    "scope": "csta2017 9-12 (3A-AP/3B-AP) -- same teacher ask, extended to csta2017's own 9-12 tier once it was clear the 2026-08-29 fetch only ever covers csta2017's Level 2 side",
+    "note": "Same method and same source material as the same-day pass above, read against csta2017.json's 3A-AP/3B-AP codes instead. Added 8 related/partial entries (3A-AP-13/15/16/17/18/19/21/23, 3B-AP-23) and one more checked:true gap, 3A-AP-14, which is csta2017's own version of the same list/collection gap already recorded against castandards 9-12.AP.13 and csta2026 HS-PRO-VD-16."
+   }
+  ]
  },
  "coverage": {
   "csta2017": {
@@ -72,6 +86,74 @@
      4
     ],
     "note": "code.org's own CSD-2026 standards data (fetched directly from studio.code.org/courses/csd-2026/units/N/standards) cites this for Unit 3b ('Lesson 25: Functions')."
+   },
+   "3A-AP-14": {
+    "locators": [],
+    "checked": true,
+    "note": "Same gap as this carrier's castandards 9-12.AP.13 and csta2026 HS-PRO-VD-16 entries, all three catalogs' version of the same real missing content: Unit 3b's variables are always single scalar values, never a list."
+   },
+   "3A-AP-13": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading, not a code.org claim: Lesson 28 (Project - Design a Game) has students independently scope and build a game of their own choosing rather than a prescribed one -- a real, if lower-stakes, instance of practicing a problem-solving process on something that interests you."
+   },
+   "3A-AP-15": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading, parallel to this carrier's castandards 9-12.AP.14 entry: loops (the draw loop, the counter pattern) and conditionals (Lesson 15, keyboard/mouse input) are both put to real use in the same programs, without the unit framing the choice between them as its own design decision."
+   },
+   "3A-AP-16": {
+    "locators": [
+     4
+    ],
+    "strength": "partial",
+    "note": "This carrier's own 9-12 reading, parallel to this carrier's castandards 9-12.AP.15 entry: Lesson 16 (Keyboard Input) and Lesson 17 (Mouse Input) have students write event-handler code that triggers a procedure in response to a keypress or click, directly matching this standard's own event-triggers-a-procedure framing, scoped to a game rather than a practical-purpose or social-issue app."
+   },
+   "3A-AP-17": {
+    "locators": [
+     4
+    ],
+    "strength": "partial",
+    "note": "This carrier's own 9-12 reading, parallel to this carrier's castandards 9-12.AP.16 entry: Lesson 25 (Functions) decomposes a program into named, reusable pieces. The unit never reaches the modules/objects or reuse-code-that-already-exists half of this standard -- every program here is built from scratch in a single file."
+   },
+   "3A-AP-18": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading: once Lesson 25's functions and the sprite/event code around them are in play, a finished project (Lessons 26-28) is genuinely a system of smaller interacting pieces -- procedures inside one program, the half of this standard the unit actually reaches (it's never several programs working together)."
+   },
+   "3A-AP-19": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading, parallel to this carrier's castandards 9-12.AP.18 entry: the 'Peer Review' activity guides on both major projects (Lessons 18, 28) are a real, built-in way to collect feedback and revise, scoped to a classroom partner rather than this standard's own 'range of users.'"
+   },
+   "3A-AP-21": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading, parallel to this carrier's castandards 9-12.AP.20 entry: the same Peer Review + Student Checklist pairing drives revision aimed at more than correctness (the checklist covers whether the game is actually fun to play), without reaching the standard's own 'accessible to the people who'll actually use it' framing."
+   },
+   "3A-AP-23": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading, parallel to this carrier's castandards 9-12.AP.22 entry: Lesson 1's Animation and Game Design Template and Lesson 28's planning objective both have students write a design down before building it -- a worksheet-level version of this standard's own 'documented somehow' bar."
+   },
+   "3B-AP-23": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 Specialty reading, parallel to this carrier's castandards 9-12S.AP.24 entry: the named 'Peer Review' activity guide on both major projects is a structured walk-a-partner-through-your-code step, introductory in rigor but a genuine instance of the practice."
    }
   },
   "castandards": {
@@ -134,6 +216,60 @@
      4
     ],
     "note": "Mechanically derived from this carrier's own csta2017 entry (2-AP-14, strength: strong) via the castandards-csta2017 crosswalk -- not independently checked against a code.org source document."
+   },
+   "9-12.AP.13": {
+    "locators": [],
+    "checked": true,
+    "note": "Looked specifically for this because it's the most load-bearing 9-12 AP standard and the obvious one to hope a 'Variables' lesson reaches. It doesn't: Lesson 5 (Variables) and everything built on it only ever stores a single scalar value per variable -- no list, array, or dictionary appears anywhere in this unit's vocabulary or objectives."
+   },
+   "9-12.AP.14": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading, not a code.org claim: Lesson 12 (The Draw Loop), Lesson 15 (Conditionals), and the keyboard/mouse-input lessons (16-17) put loops, conditionals, and if/else branching to real use side by side in the same programs. The unit never frames picking between them as its own design decision the way the standard does -- it's genuine use of both structures, not an explicit comparison."
+   },
+   "9-12.AP.15": {
+    "locators": [
+     4
+    ],
+    "strength": "partial",
+    "note": "This carrier's own 9-12 reading: Lesson 16 (Keyboard Input) and Lesson 17 (Mouse Input) have students write real event-handler code that reacts to input rather than running top to bottom -- the core idea of an event-driven program, just scoped to keyboard/mouse in a game rather than a general UI event model."
+   },
+   "9-12.AP.16": {
+    "locators": [
+     4
+    ],
+    "strength": "partial",
+    "note": "This carrier's own 9-12 reading: Lesson 25 (Functions) has students write their own functions 'that perform a single high-level task' specifically so a program can be reasoned about at a higher level -- the procedure half of this standard, directly. The module/class half never comes up; this unit is single-file Game Lab programs throughout."
+   },
+   "9-12.AP.18": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading: both major projects (Lesson 18 Interactive Card, Lesson 28 Design a Game) ship a 'Peer Review' activity guide students use to give each other structured feedback, which the Game Design Process lessons (26-27) then have students act on. It's a real feedback-and-revise loop, just a classroom partner rather than the standard's own 'real users' / 'broad audience' framing."
+   },
+   "9-12.AP.20": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading: the same Peer Review + Student Checklist pairing on both major projects drives iteration aimed at more than raw correctness (the checklist covers whether the game is actually fun/usable, not just whether it runs). Narrower than the standard's own 'performance and ease of use' framing -- no performance angle here, just correctness and usability."
+   },
+   "9-12.AP.22": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading: Lesson 1's Animation and Game Design Template and Lesson 28's planning objective ('create a plan... describing its major components') both have students write their design down before building it. A worksheet-level design doc, not code-level documentation, but a real instance of writing decisions down to make them legible later."
+   },
+   "9-12S.AP.24": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 Specialty reading: both major projects ship a named 'Peer Review' activity guide, a real structured walk-a-partner-through-your-code step. Worksheet-guided and introductory, not the open-ended professional code review this strand otherwise targets, but a genuine instance of the practice rather than a stretch."
    }
   },
   "csta2026": {
@@ -166,6 +302,53 @@
      4
     ],
     "note": "This carrier's own inference: Unit 3b's 'Using the Game Design Process' has students playtest a partner's game and refine it based on that feedback -- this standard's own user-feedback-driven refinement, scoped to usability rather than formal accessibility review."
+   },
+   "HS-PRO-VD-16": {
+    "locators": [],
+    "checked": true,
+    "note": "Same gap as this carrier's castandards 9-12.AP.13 entry: Unit 3b's variables are always single scalar values, never a list or dictionary, so this standard's own 'choosing the right structure' territory never comes up."
+   },
+   "HS-ALG-PS-02": {
+    "locators": [
+     4
+    ],
+    "strength": "partial",
+    "note": "This carrier's own 9-12 reading, parallel to its MS-PRO-PD-12 entry above: Lesson 25 (Functions) plus the draw-loop/counter-pattern lessons (12-13, 19, 22) have students wrap repeated steps in a function, a loop, or a conditional instead of restating logic -- the mechanism this standard names, at an introductory level rather than the standard's own 'reworked for efficiency' framing."
+   },
+   "HS-ALG-PS-04": {
+    "locators": [
+     4
+    ],
+    "strength": "partial",
+    "note": "This carrier's own 9-12 reading: Lesson 6 (Random Numbers) has students generate and use random values specifically so a program's output varies run to run, directly next to the deterministic programs built in every surrounding lesson -- a hands-on, if not explicitly contrasted, version of this standard."
+   },
+   "HS-PRO-PD-12": {
+    "locators": [
+     4
+    ],
+    "strength": "partial",
+    "note": "This carrier's own 9-12 reading, same evidence as this carrier's MS-PRO-PD-12 entry above: Lesson 25 (Functions) splits a program into named, single-purpose pieces for readability and reuse. The imported-library/object half of this standard never comes up -- this unit is single-file Game Lab programs throughout."
+   },
+   "HS-PRO-PD-15": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading: the Game Design Process (Lessons 26-28) has partners work from a shared planning document, which covers the 'shared design document' third of this standard. There's no assignment of distinct roles and no change-tracking tool -- partners work side by side on the same plan, not in defined roles with a way to track who changed what."
+   },
+   "HS-PRO-TR-19": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading, parallel to this carrier's MS-PRO-TR-19 entry above: both major projects' Student Checklist resources have students check their own finished program against its original plan. Introductory in rigor -- a checklist, not an independent test pass -- but genuinely the same check this standard describes."
+   },
+   "HS-PRO-TR-20": {
+    "locators": [
+     4
+    ],
+    "strength": "related",
+    "note": "This carrier's own 9-12 reading, parallel to this carrier's MS-PRO-TR-20 entry above: the Peer Review resources on both major projects exist specifically to feed a partner's feedback back into revisions, which the Game Design Process lessons then act on."
    }
   },
   "ca-ict-anchor": {
