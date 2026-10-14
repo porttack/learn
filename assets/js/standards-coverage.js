@@ -957,14 +957,21 @@
   function applyRecommendation(sourcesCsv, view, handleToggle, panelActions) {
     if (sourcesCsv != null) {
       var wanted = sourcesCsv.split(',').filter(Boolean);
+      // A ?sources= link is pointless if the picker still hides the whole
+      // sidebar behind the outer <details id="source-details"> ("Sources")
+      // -- its child <details class="source-group"> ("Primary"/"Secondary")
+      // can be open internally and still render as nothing while this
+      // ancestor stays collapsed. Open it unconditionally whenever a link is
+      // actively selecting sources.
+      var sourceDetails = document.getElementById('source-details');
+      if (sourceDetails) sourceDetails.open = true;
       document.querySelectorAll('#source-list input[type=checkbox]').forEach(function (cb) {
         var isWanted = wanted.indexOf(cb.getAttribute('data-source')) !== -1;
         cb.checked = isWanted;
-        // A ?sources= link is pointless if the picker still hides the row
-        // behind a collapsed <details class="source-group"> -- open whichever
-        // group(s) the wanted sources actually live in so a pasted link lands
-        // on a picker that already shows its own selection, not one a reader
-        // has to go hunt open themselves.
+        // Same idea one level in: open whichever group(s) the wanted sources
+        // actually live in so a pasted link lands on a picker that already
+        // shows its own selection, not one a reader has to go hunt open
+        // themselves.
         if (isWanted) {
           var group = cb.closest('details.source-group');
           if (group) group.open = true;
