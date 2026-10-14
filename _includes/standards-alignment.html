@@ -6,6 +6,14 @@
   lesson plan showing its worksheet's standards). Renders nothing until the
   carrier actually lists that locator.
 
+  A page can also override which carrier it reads from with its own
+  `standards_carrier:` front matter -- for a pathway whose pages split across
+  more than one carrier file (pico's book chapters read from pico.json, but
+  its Projects 1.x/2.x pages read from picoprojects.json instead, since
+  they're a separate content source with their own carrier; see
+  _standards/carriers/README.md). Falls back to the pathway's own
+  standards_carrier in _data/pathways.yml when a page doesn't set one.
+
   `standards_note: binary` adds the binary heads-up callout under the heading.
 
   `standards_open: true` on a page shows the list as a plain section (no
@@ -14,15 +22,16 @@
 {% endcomment %}
 {% unless pathway_meta %}{% assign pathway_meta = site.data.pathways | where: "id", page.pathway | first %}{% endunless %}
 {% if page.standards_locator %}{% assign std_locator = page.standards_locator %}{% elsif pathway_meta.standards_locator == "slug" %}{% assign std_locator = page.slug %}{% else %}{% assign std_locator = page.chapter %}{% endif %}
-{% if std_locator and pathway_meta.standards_carrier %}
+{% assign std_carrier = page.standards_carrier | default: pathway_meta.standards_carrier %}
+{% if std_locator and std_carrier %}
 {% if page.standards_open %}
-<section class="standards-alignment standards-alignment-open" data-chapter="{{ std_locator }}" data-carrier-slug="{{ pathway_meta.standards_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ pathway_meta.standards_carrier }}.json" hidden>
+<section class="standards-alignment standards-alignment-open" data-chapter="{{ std_locator }}" data-carrier-slug="{{ std_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ std_carrier }}.json" hidden>
   <h2>Standards alignment</h2>
   {% if page.standards_note == "binary" %}{% include unplugged/binary-standards-note.html %}{% endif %}
   <div class="standards-alignment-body"></div>
 </section>
 {% else %}
-<details class="hint-toggle standards-alignment" data-chapter="{{ std_locator }}" data-carrier-slug="{{ pathway_meta.standards_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ pathway_meta.standards_carrier }}.json" hidden>
+<details class="hint-toggle standards-alignment" data-chapter="{{ std_locator }}" data-carrier-slug="{{ std_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ std_carrier }}.json" hidden>
   <summary>Standards alignment</summary>
   <div class="standards-alignment-body"></div>
 </details>

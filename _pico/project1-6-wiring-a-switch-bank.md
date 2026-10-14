@@ -4,6 +4,7 @@ title: "Project 1.6: Wiring a Switch Bank"
 pathway: pico
 order: 105
 chapter: "p1.6"
+standards_carrier: picoprojects
 project: 1
 project_part: 6
 label: "Project 1.6"

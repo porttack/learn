@@ -96,6 +96,11 @@ Every chapter lists the standards it supports under **Standards alignment**
 at the bottom of its own page. Everything aligned so far, across the whole
 book:
 
-{% include standards-coverage-summary.html carrier="pico" %}
+{% include standards-coverage-summary.html carrier="pico" label="Standards covered so far (the book)" %}
+
+Projects 1.1 through 2.2 are their own content source, not part of the book
+above, so they're aligned under a separate carrier:
+
+{% include standards-coverage-summary.html carrier="picoprojects" label="Standards covered so far (Projects)" %}
 
 {% include provenance.html %}

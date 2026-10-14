@@ -4,9 +4,14 @@
   assets/js/standards-alignment.js), but with no data-chapter, so it lists
   every code the carrier covers anywhere rather than one locator's. Include
   from a pathway's own index page with carrier="<standards_carrier slug>".
+
+  Optional label="..." overrides the chevron's own summary text (default
+  "Standards covered so far") -- for a page that includes this more than once
+  with different carriers, e.g. pico/index.md showing the book and Projects
+  as two separate chevrons, so they read as distinct rather than duplicates.
 {% endcomment %}
 <details class="hint-toggle standards-alignment" data-carrier-slug="{{ include.carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ include.carrier }}.json" hidden>
-  <summary>Standards covered so far</summary>
+  <summary>{{ include.label | default: "Standards covered so far" }}</summary>
   <div class="standards-alignment-body"></div>
 </details>
 <script src="{{ '/assets/js/standards-alignment.js' | relative_url }}"></script>

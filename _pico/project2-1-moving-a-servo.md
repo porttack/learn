@@ -4,6 +4,7 @@ title: "Project 2.1: Moving a Servo"
 pathway: pico
 order: 108
 chapter: "p2.1"
+standards_carrier: picoprojects
 project: 2
 project_part: 1
 project_name: "Servo and Potentiometer"

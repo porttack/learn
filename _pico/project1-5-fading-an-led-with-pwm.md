@@ -4,6 +4,7 @@ title: "Project 1.5: Fading an LED with PWM"
 pathway: pico
 order: 104
 chapter: "p1.5"
+standards_carrier: picoprojects
 project: 1
 project_part: 5
 label: "Project 1.5"

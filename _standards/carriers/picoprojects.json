@@ -1,0 +1,296 @@
+{
+  "meta": {
+    "title": "Pico Projects",
+    "abbrev": "Projs",
+    "source": "picoprojects",
+    "base_url": "https://learn.porttack.com",
+    "locator_kind": "chapter",
+    "locator_url_template": "{base_url}/pico/{locator}/",
+    "locator_slugs": {
+      "p1.1": "project1-1-wiring-three-leds",
+      "p1.2": "project1-2-flashing-with-thonny",
+      "p1.3": "project1-3-files-and-the-repl",
+      "p1.4": "project1-4-blinking-your-leds",
+      "p1.5": "project1-5-fading-an-led-with-pwm",
+      "p1.6": "project1-6-wiring-a-switch-bank",
+      "p1.7": "project1-7-reading-your-switches",
+      "p1.8": "project1-8-choosing-a-program-with-imports",
+      "p2.1": "project2-1-moving-a-servo",
+      "p2.2": "project2-2-reading-a-potentiometer"
+    },
+    "locator_titles": {
+      "p1.1": "Project 1.1: Wiring Three LEDs",
+      "p1.2": "Project 1.2: Flashing MicroPython with Thonny",
+      "p1.3": "Project 1.3: Files on Your Pico, and Your First REPL Commands",
+      "p1.4": "Project 1.4: Blinking Your LEDs",
+      "p1.5": "Project 1.5: Fading an LED with PWM",
+      "p1.6": "Project 1.6: Wiring a Switch Bank",
+      "p1.7": "Project 1.7: Reading Your Switches",
+      "p1.8": "Project 1.8: Choosing a Program with Imports",
+      "p2.1": "Project 2.1: Moving a Servo",
+      "p2.2": "Project 2.2: Reading a Potentiometer"
+    },
+    "caveat": "Aligns Projects 1.1 through 2.2, the original hands-on sequence built on top of the book's own chapters (see pico.json), not a 1:1 mapping to any single chapter. Split out of pico.json 2026-10-14 so the two content sources -- a licensed, adapted book and this teacher's own original project sequence -- each get their own carrier file, the same pattern every other multi-source pathway in this repo already follows. Projects 1.1, 1.2, and 1.6 are hardware- and tooling-focused (wiring only, or flashing firmware) and have correspondingly thin coverage, same as chapters 1 and 3 in the book's own carrier.",
+    "alignment_log": [
+      {
+        "date": "2026-10-06",
+        "by": "Claude Sonnet 5",
+        "scope": "Added locators p1.1-p1.5 for Projects 1.1-1.5 against all four active frameworks (apcsp, castandards, csta2026, ca-ict-anchor) -- originally landed in pico.json, moved here 2026-10-14",
+        "note": "Extended ten existing codes to cover a genuine recurrence in the new Projects (iteration, libraries, arithmetic operators, software/hardware layering, troubleshooting-by-testing, binary/hex representation, PWM), and added three new codes not previously needed anywhere in the carrier: apcsp 2.1 (Binary Numbers, for Project 1.4's binary-counting challenge), csta2026 S1-PHY-DD-03 (iterative physical-computing challenges, for Projects 1.3-1.5's deliberately unsolved REPL/blink/breathe challenges), and csta2026 MS-PRO-PD-13 (documentation lookup, for Project 1.3's dir(machine) step). Projects 1.1 and 1.2 remain thin by design, the same pattern chapters 1 and 3 already show for hardware- and tooling-only lessons with little to align against code-focused standards."
+      },
+      {
+        "date": "2026-10-14",
+        "by": "Claude Sonnet 5",
+        "scope": "Split out of pico.json into this standalone carrier, and aligned Projects 1.6-2.2 for the first time against all four active frameworks",
+        "note": "Project 1.6 (wiring a switch bank) is thin by design, the same pattern as Projects 1.1/1.2 and book chapters 1/3 -- pure wiring, nothing to align against code-focused standards until Project 1.7 gives those switches code. Project 1.7 (reading switches, printing only on change) is rich: a compound boolean condition, state tracked in variables across loop iterations, and hardware input processed into output, each cited from a different framework's own angle. Project 1.8 (choosing a program via elif and imports) leans on library-import coverage already established for Project 1.3, extended with new control-structure-choice and modular-design codes. Project 2.1 (servo + PWM position) and Project 2.2 (potentiometer + range mapping) are the first coverage for Project 2 at all: new codes for parameterized, reusable procedures and for a sensor reading steering an output toward a target, plus extensions of the embedded/PWM and hardware-input-output codes Project 1.5 and the book's own chapter 8 already established."
+      }
+    ]
+  },
+  "coverage": {
+    "apcsp": {
+      "2.1": {
+        "locators": [
+          "p1.4",
+          "p1.5"
+        ],
+        "strength": "partial",
+        "note": "Project 1.4's binary-counting challenge has students convert a decimal count from 0 to 7 into its base-2 representation by hand, assigning each of three LEDs a place value (4, 2, 1) -- the same base-10-to-base-2 conversion and place-value idea this topic covers. Project 1.5 revisits the underlying on/off, bit-level fact from the other direction: a GPIO pin is still only ever one bit, and PWM only approximates something in between by switching that single bit very fast, rather than the pin ever genuinely holding an analog value."
+      },
+      "3.1": {
+        "locators": [
+          "p1.7"
+        ],
+        "strength": "strong",
+        "note": "Project 1.7 tracks each switch's last known reading in last1, last2, and last3, each one started before the loop begins and reassigned on every pass where something changed -- reasoning about what a variable holds across many iterations, not just at the one assignment that created it."
+      },
+      "3.3": {
+        "locators": [
+          "p1.4",
+          "p2.1",
+          "p2.2"
+        ],
+        "strength": "partial",
+        "note": "Project 1.4 names and explains % (modulo) and // (floor division) directly, as operators students apply themselves to a binary-counting problem. Project 2.1's setangle challenge needs students to work out a linear scaling formula by hand, turning an angle from 0 to 180 into a duty_u16 value between two known endpoints. Project 2.2 runs the same kind of scaling backward, mapping a 0-65,535 potentiometer reading down onto a 0-180 angle range."
+      },
+      "3.5": {
+        "locators": [
+          "p1.7"
+        ],
+        "strength": "strong",
+        "note": "The switch-watching loop's single if condition, v1 != last1 or v2 != last2 or v3 != last3, combines three comparison expressions with or into one boolean expression that decides whether to print -- built from comparison operators rather than literal True/False values, exactly this topic's own framing."
+      },
+      "3.6": {
+        "locators": [
+          "p1.7",
+          "p1.8"
+        ],
+        "strength": "strong",
+        "note": "Project 1.7's change-detection check is a single if gating the print statements. Project 1.8's switch-picker needs more than two outcomes, so it chains if/elif/elif/else, introduced back in Chapter 2 and now applied to a problem students design themselves rather than a worked example."
+      },
+      "3.8": {
+        "locators": [
+          "p1.3",
+          "p1.4",
+          "p1.5",
+          "p1.7",
+          "p2.2"
+        ],
+        "strength": "strong",
+        "note": "Project 1.3's closing challenge turns the same REPL commands just tried into a saved while True script that blinks forever -- an indefinite-iteration pattern, self-written rather than demonstrated. Project 1.4's blink, LED-sequence, and binary-counting scripts are further instances of the same loop. Project 1.5's breathing-LED script uses range() with a step other than 1 and, for the fade-down half, a negative step. Project 1.7's switch-watching loop runs forever, checking all three switches every pass and only printing when something changes. Project 2.2's knob-to-servo loop is the same indefinite pattern again, reading an analog input and writing an output on every single iteration rather than counting or blinking."
+      },
+      "3.9": {
+        "locators": [
+          "p2.1"
+        ],
+        "strength": "partial",
+        "note": "The setangle challenge hands students a stub function with a # TODO comment and three known reference points (0 degrees is 3277, 90 degrees is 4915, 180 degrees is 6554) rather than a finished algorithm, asking them to work out the scaling themselves and check it against all three before moving on -- a small, concrete instance of starting rough and refining."
+      },
+      "3.13": {
+        "locators": [
+          "p2.1"
+        ],
+        "strength": "strong",
+        "note": "setangle(servo, angle) takes a servo object and an angle as parameters, general enough to drive any servo wired the same way rather than one hardcoded pin, and sweep(servo) reuses setangle rather than duplicating its math -- the same one-procedure-many-uses idea the book's own chapters 6 and 7 show, now written by students themselves instead of read."
+      },
+      "3.14": {
+        "locators": [
+          "p1.3",
+          "p1.8",
+          "p2.2"
+        ],
+        "strength": "strong",
+        "note": "Project 1.3 has students call dir(machine) directly in the REPL to see what a built-in library actually offers before using any of it. Project 1.8 names and uses all three ways to reach code in another file -- import leds, from leds import binarycount, and from leds import * -- including the real tradeoff of the last one, that there's no way to tell at a glance which file a name like breathe1 actually came from. Project 2.2 reuses that same choice of import style for servo.py and machine, this time without walking through the three options again."
+      }
+    },
+    "castandards": {
+      "6-8.AP.12": {
+        "locators": [
+          "p1.4",
+          "p1.7"
+        ],
+        "strength": "partial",
+        "note": "Project 1.4 follows an incremental pattern: blink the onboard LED, then a wired LED, then sequence three LEDs in a row, then count in binary, each program built on the last rather than arriving at the full version all at once. Project 1.7 combines a loop and a compound conditional into one program: a while True loop that checks all three switches every pass, with a single if gating the print statements only when something actually changed."
+      },
+      "6-8.AP.14": {
+        "locators": [
+          "p2.1"
+        ],
+        "strength": "strong",
+        "note": "setangle(servo, angle) and sweep(servo) are both written once and reused for any angle or any wired servo, rather than one-off code repeated for each position -- a procedure with parameters standing in for what would otherwise be separately written, nearly identical blocks."
+      },
+      "6-8.DA.9": {
+        "locators": [
+          "p2.2"
+        ],
+        "strength": "strong",
+        "note": "Turning the potentiometer and watching the servo respond lets a student change one variable, the knob's position, and directly observe its effect on another, the servo's angle -- the same single-variable-at-a-time testing this standard describes, done with a physical dial instead of a spreadsheet."
+      },
+      "9-12.AP.14": {
+        "locators": [
+          "p1.8"
+        ],
+        "strength": "partial",
+        "note": "Project 1.8 explains if/elif/else as the way to check more than two possibilities and contrasts it directly against chaining separate if statements -- the same choosing-between-control-structures idea the book's own chapters 4 and 5 show, now a decision students make in their own code rather than one shown to them."
+      },
+      "9-12.CS.2": {
+        "locators": [
+          "p1.2"
+        ],
+        "strength": "partial",
+        "note": "Project 1.2 installs the layer underneath the book's own chapter 10 driver example: flashing MicroPython firmware is putting system software in place before any application script can run on top of it, a more fundamental instance of hardware/software layering than a single driver file."
+      },
+      "9-12.CS.3": {
+        "locators": [
+          "p1.1",
+          "p1.6"
+        ],
+        "strength": "strong",
+        "note": "Project 1.1's two-stage sign-off, a neighbor check followed by a teacher check against a written workmanship rubric, is a structured, repeatable troubleshooting process. Project 1.6 repeats the exact same sign-off process for the switch wiring, comparing the breadboard against an exemplar photo before anything gets powered back on."
+      },
+      "9-12.DA.8": {
+        "locators": [
+          "p1.4"
+        ],
+        "strength": "strong",
+        "note": "Project 1.4's binary-counting challenge represents a count from 0 to 7 a third way, after chapters 8 and 12's own two: as a physical pattern across three LEDs, each one standing for a place value."
+      }
+    },
+    "csta2026": {
+      "HS-PRO-PD-12": {
+        "locators": [
+          "p1.8",
+          "p2.2"
+        ],
+        "strength": "strong",
+        "note": "Project 1.8 keeps the switch-picker's own logic separate from leds.py, the file it imports from, rather than folding every function into one script. Project 2.2 does the same with servo.py, keeping the angle-scaling math in its own reusable file, separate from the loop that reads the potentiometer."
+      },
+      "HS-PRO-RD-17": {
+        "locators": [
+          "p1.7"
+        ],
+        "strength": "strong",
+        "note": "Project 1.7's watchswitches.py is readable by tracing what last1, last2, and last3 hold from the previous pass, what the compound if condition branches on, and what the while True loop repeats on every cycle -- the same tracing skill the book's own chapters 5 and 6 ask for, now applied to code students wrote themselves."
+      },
+      "MS-PRO-PD-13": {
+        "locators": [
+          "p1.3"
+        ],
+        "strength": "partial",
+        "note": "Project 1.3 has students call dir(machine) directly in the REPL to look up what a built-in library offers before using any of it -- documentation lookup as a normal step in writing a program, though the lesson doesn't also cover searching an error message, the standard's other named example."
+      },
+      "S1-PHY-DD-03": {
+        "locators": [
+          "p1.3",
+          "p1.4",
+          "p1.5",
+          "p1.7",
+          "p1.8",
+          "p2.1",
+          "p2.2"
+        ],
+        "strength": "strong",
+        "note": "Projects 1.3, 1.4, and 1.5 are each built as a challenge with hints rather than a worked example: write a script that blinks an LED forever (1.3), sequence three LEDs or count in binary on them (1.4), or make an LED breathe by fading it up and down forever (1.5). Project 1.7 reads three switches and only prints when a reading changes, checked against what was seen on the previous pass. Project 1.8's switch-picker fires a different function depending on which switch is on, with nothing shown solved. Project 2.1's setangle and sweep challenges drive the servo's physical position directly from code students write and test against the real hardware. Project 2.2 closes the loop with a live sensor reading steering that same servo continuously, again with no worked example given."
+      },
+      "S1-PHY-HC-01": {
+        "locators": [
+          "p1.1",
+          "p1.6"
+        ],
+        "strength": "strong",
+        "note": "Project 1.1 is this standard's example almost exactly: three hand-wired LEDs checked against an exemplar for correct polarity, pins, and wire color, with no code involved at all yet. Project 1.6 repeats the same pattern for input hardware: three switches wired from a diagram and checked against an exemplar breadboard photo before sign-off."
+      },
+      "S2-PHY-IO-02": {
+        "locators": [
+          "p2.2"
+        ],
+        "strength": "strong",
+        "note": "Turning the potentiometer steers the servo toward whatever angle the knob currently represents -- the same sensor-reading-steers-an-output idea as the book's own chapter 8 fan-speed example, this time driving a physical position instead of an LED's brightness."
+      }
+    },
+    "ca-ict-anchor": {
+      "5.11": {
+        "locators": [
+          "p1.4"
+        ],
+        "strength": "partial",
+        "note": "Project 1.4's binary-counting challenge is a sustained, hands-on exercise in base-2 representation rather than a passing aside: place values and a count from 0 to 7, worked out across three physical LEDs."
+      },
+      "5.12": {
+        "locators": [
+          "p1.7"
+        ],
+        "strength": "strong",
+        "note": "The switch-watching loop's if v1 != last1 or v2 != last2 or v3 != last3 condition is boolean logic driving a decision, three comparisons combined with or -- the same underlying idea chapter 6's winner-decision logic uses, now built by students instead of read."
+      },
+      "C4.3": {
+        "locators": [
+          "p1.2"
+        ],
+        "strength": "partial",
+        "note": "Project 1.2 is a step earlier than chapter 2's own development-environment lessons: provisioning that environment in the first place, flashing MicroPython firmware and confirming Thonny shows the device connected, before any of chapter 2's lessons ever put it to use."
+      },
+      "C4.9": {
+        "locators": [
+          "p1.7",
+          "p1.8",
+          "p2.1",
+          "p2.2"
+        ],
+        "strength": "strong",
+        "note": "Project 1.7 combines a loop with a compound conditional to watch three switches at once. Project 1.8 adds elif chaining and reuses functions already written in leds.py rather than rewriting them. Project 2.1's setangle and sweep are reusable procedures built from that same toolkit. Project 2.2 reuses servo.py's own procedures again, inside a new loop."
+      },
+      "C9.2": {
+        "locators": [
+          "p1.1",
+          "p1.6"
+        ],
+        "strength": "strong",
+        "note": "Project 1.1 hand-wires three LEDs and resistors with the right tools (wire strippers and cutters) following a color convention, then tests the result against a written rubric through a two-stage sign-off, rather than by running a program. Project 1.6 repeats the same assembling-and-testing pattern for three switches, wired and checked against an exemplar before anything is powered back on."
+      },
+      "C9.3": {
+        "locators": [
+          "p1.7",
+          "p2.1",
+          "p2.2"
+        ],
+        "strength": "strong",
+        "note": "Project 1.7's switches, project 2.1's servo, and project 2.2's potentiometer are each hardware capturing input or acting as output, with code doing the processing in between: switches read and compared against their last state, a servo driven to a commanded angle, a potentiometer's reading converted into that same angle."
+      },
+      "C9.4": {
+        "locators": [
+          "p1.5",
+          "p2.1"
+        ],
+        "strength": "partial",
+        "note": "Project 1.5 isolates the PWM half of embedded, low-level hardware control on its own: machine.PWM, freq(), and duty_u16() explored directly, without the ADC half chapter 8 also covers. Project 2.1 reuses the exact same PWM mechanism for a different physical effect, turning duty cycle into a servo's angle instead of an LED's brightness."
+      },
+      "10.10": {
+        "locators": [
+          "p1.3"
+        ],
+        "strength": "strong",
+        "note": "Project 1.3 introduces the basic idea underneath chapter 9's own data logger: Thonny shows two entirely separate file panels, This computer and Raspberry Pi Pico, and a script has to be saved to the Pico's own storage, not the computer's, to actually run there."
+      }
+    }
+  }
+}

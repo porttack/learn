@@ -4,6 +4,7 @@ title: "Project 1.2: Flashing MicroPython with Thonny"
 pathway: pico
 order: 101
 chapter: "p1.2"
+standards_carrier: picoprojects
 project: 1
 project_part: 2
 label: "Project 1.2"

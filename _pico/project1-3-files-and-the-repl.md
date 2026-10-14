@@ -4,6 +4,7 @@ title: "Project 1.3: Files on Your Pico, and Your First REPL Commands"
 pathway: pico
 order: 102
 chapter: "p1.3"
+standards_carrier: picoprojects
 project: 1
 project_part: 3
 label: "Project 1.3"

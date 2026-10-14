@@ -4,6 +4,7 @@ title: "Project 2.2: Reading a Potentiometer"
 pathway: pico
 order: 109
 chapter: "p2.2"
+standards_carrier: picoprojects
 project: 2
 project_part: 2
 label: "Project 2.2"

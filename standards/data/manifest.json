@@ -170,6 +170,14 @@
    "abbrev": "UNPLUG",
    "hue_light": "#c2185b",
    "hue_dark": "#e0457b"
+  },
+  {
+   "slug": "picoprojects",
+   "file": "picoprojects.json",
+   "title": "Pico Projects",
+   "abbrev": "Projs",
+   "hue_light": "#08a09b",
+   "hue_dark": "#18aaa5"
   }
  ],
  "crosswalks": [

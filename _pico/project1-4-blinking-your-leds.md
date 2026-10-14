@@ -4,6 +4,7 @@ title: "Project 1.4: Blinking Your LEDs"
 pathway: pico
 order: 103
 chapter: "p1.4"
+standards_carrier: picoprojects
 project: 1
 project_part: 4
 label: "Project 1.4"

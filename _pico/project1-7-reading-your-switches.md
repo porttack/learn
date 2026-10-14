@@ -4,6 +4,7 @@ title: "Project 1.7: Reading Your Switches"
 pathway: pico
 order: 106
 chapter: "p1.7"
+standards_carrier: picoprojects
 project: 1
 project_part: 7
 label: "Project 1.7"

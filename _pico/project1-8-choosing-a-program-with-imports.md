@@ -4,6 +4,7 @@ title: "Project 1.8: Choosing a Program with Imports"
 pathway: pico
 order: 107
 chapter: "p1.8"
+standards_carrier: picoprojects
 project: 1
 project_part: 8
 label: "Project 1.8"

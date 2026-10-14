@@ -83,6 +83,7 @@ HUES = [
     ("#4169e1", "#5c7cfa"),  # 18 royal blue
     ("#22a048", "#30a654"),  # 19 jade
     ("#c2185b", "#e0457b"),  # 20 raspberry (unplugged; not yet run through validate_palette.js)
+    ("#08a09b", "#18aaa5"),  # 21 turquoise (picoprojects)
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -151,6 +152,21 @@ HUES = [
 # light-mode WARN set (slots 3/4/5/10/17) and dark-mode WARN set (slot 16)
 # are both unchanged -- jade adds no new WARN in either mode.
 #
+# Slot 21 (turquoise) added 2026-10-14 alongside picoprojects, split out of
+# pico's own carrier (see _standards/carriers/README.md's "What moved out"
+# story, and _standards/carriers/pico.json's 2026-10-14 alignment_log entry --
+# this is the same split, just for the color registry). Validated against its
+# new adjacent neighbor, slot 20 (raspberry, ~336 deg): node
+# scripts/validate_palette.js "#c2185b,#08a09b" --mode light (ALL CHECKS PASS,
+# CVD 11.1) and "#e0457b,#18aaa5" --mode dark (ALL CHECKS PASS; CVD 6.5, in the
+# 6-8 floor band -- legal since every source already carries its abbrev
+# directly on the bar as secondary encoding, per color-formula.md). A full
+# 21-slot adjacent check in both modes afterward found no new regression: the
+# one dark-mode CVD FAIL present (raspberry/slot 20 vs jade/slot 19, 4.3) is
+# pre-existing, inherited from raspberry's own 2026-09-xx addition landing
+# without a validation pass (see that slot's inline HUES comment) -- unrelated
+# to this addition and out of scope for it to fix.
+#
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
 # intentionally omitted -- excluded from this admin-facing view by direction,
@@ -162,11 +178,9 @@ HUES = [
 # slot were separated from another real source's slot by an unused reserved slot, a
 # combined view showing just the real sources would render two colors adjacent that
 # were never validated as a pair. Keeping real sources contiguous at the front avoids
-# that: all 19 slots were validated together, so any subset of today's nineteen sources is
-# safe in any combination. cs50psets now has a real carrier file (added 2026-09-10,
-# slot 19/jade) -- there is no placeholder left at the moment; the next new source
-# appended to this list will need its own HUES entry and validation pass, same as
-# every slot addition before it.
+# that. There is no placeholder left at the moment; the next new source appended to
+# this list will need its own HUES entry and validation pass, same as every slot
+# addition before it.
 SOURCE_ORDER = [
     "working_in_python",
     "little_brother",
@@ -188,6 +202,7 @@ SOURCE_ORDER = [
     "pico",
     "cs50psets",
     "unplugged",
+    "picoprojects",
 ]
 
 
