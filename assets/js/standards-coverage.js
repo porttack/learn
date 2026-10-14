@@ -958,7 +958,17 @@
     if (sourcesCsv != null) {
       var wanted = sourcesCsv.split(',').filter(Boolean);
       document.querySelectorAll('#source-list input[type=checkbox]').forEach(function (cb) {
-        cb.checked = wanted.indexOf(cb.getAttribute('data-source')) !== -1;
+        var isWanted = wanted.indexOf(cb.getAttribute('data-source')) !== -1;
+        cb.checked = isWanted;
+        // A ?sources= link is pointless if the picker still hides the row
+        // behind a collapsed <details class="source-group"> -- open whichever
+        // group(s) the wanted sources actually live in so a pasted link lands
+        // on a picker that already shows its own selection, not one a reader
+        // has to go hunt open themselves.
+        if (isWanted) {
+          var group = cb.closest('details.source-group');
+          if (group) group.open = true;
+        }
       });
       handleToggle();
     }
