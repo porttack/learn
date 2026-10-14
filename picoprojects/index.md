@@ -7,7 +7,7 @@ source: original
 
 # Pico Projects
 
-High school classroom lessons strongly related to MicroPython on Pi Pico. Not part of the [MicroPython on Pi Pico and Projects]({{ '/pico/' | relative_url }}) book, and not tied to its chapter numbering. More will be added here over time.
+A sequenced introduction to the Raspberry Pi Pico and physical computing, for students who aren't starting from zero: some computer science or Python background is assumed, so it moves faster than the [MicroPython on Pi Pico]({{ '/pico/' | relative_url }}) book and stays closer to computer science concepts early on. Built for AP Computer Science Principles and Programming with Robotics students. Each project is roughly sized for a class period or two, with its own slides and a worksheet or graphic organizer to go with it, and checkpoints along the way so a teacher can check in on student progress. Under active development, fall 2026.
 
 <ol class="lesson-list project-list">
 {% assign project_groups = site.pico | where_exp: "item", "item.project" | group_by: "project" %}
