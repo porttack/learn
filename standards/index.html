@@ -213,6 +213,16 @@ noscript p {
 .view-toggle-btn:hover { border-color: var(--accent); }
 .view-toggle-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .view-toggle-btn.is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
+/* Per-group Open all/Close all, inside each of the 3 top-level chevrons --
+   momentary actions (no pressed/active state to track, unlike the preset
+   buttons above), so a plainer, smaller control reads as secondary to them. */
+.group-actions { margin: 0 0 1.2rem; font-size: .8rem; display: flex; gap: .4rem; }
+.group-toggle-btn {
+  background: none; border: 1px solid var(--border); border-radius: 6px;
+  padding: .2rem .6rem; color: var(--muted); font: inherit; cursor: pointer;
+}
+.group-toggle-btn:hover { border-color: var(--accent); color: var(--fg); }
+.group-toggle-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .cov-panel { margin: 2.5rem 0; }
 .cov-panel h2 { font-size: 1.4rem; margin: 0 0 .3rem; display: inline; }
 .cov-panel h2 a.panel-ref-link { color: inherit; text-decoration: underline; }

@@ -1000,6 +1000,31 @@
     return { applyView: applyView, clearActive: clearActive };
   }
 
+  // Per-group Open all/Close all (see groupActionsHtml() where these buttons
+  // are rendered, inside each of the 3 top-level groups). Deliberately
+  // independent of VIEW_PRESETS/data-panel-category -- this only ever opens
+  // or closes the one group the clicked button lives in, found by DOM
+  // position (closest .cov-panel ancestor is the group div itself, since the
+  // button sits directly in the group's own <details>, not inside any one of
+  // its children), not by category matching. A click clears the active
+  // preset button the same way manually toggling any one panel already does
+  // -- the panel state it leaves no longer necessarily matches that preset.
+  function wireGroupActions(panelActions) {
+    document.querySelectorAll('.group-toggle-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var group = btn.closest('.cov-panel');
+        if (!group) return;
+        var open = btn.getAttribute('data-group-action') === 'open';
+        group.querySelectorAll('.cov-panel').forEach(function (child) {
+          var details = child.querySelector('details');
+          if (!details) return;
+          if (open) details.setAttribute('open', ''); else details.removeAttribute('open');
+        });
+        panelActions.clearActive();
+      });
+    });
+  }
+
   // ---------- Recommendations: one-click "set up the picker for this class" ----------
   //
   // Each link names the exact set of sources to check (everything else gets
@@ -1406,6 +1431,21 @@
         return '<div class="cov-panel" data-panel-category="' + esc(p[2]) + '"><details open><summary>' + heading + '</summary>' + p[1] + '</details></div>';
       }
 
+      // Open all/Close all for just one of the 3 top-level groups (CS & CTE,
+      // lit, sel) -- placed inside the group's own <details>, so it's only
+      // visible once the group itself is open, right before the content it
+      // controls. See wireGroupActions() for the click handler: it only ever
+      // touches this one group's own children, found by DOM position
+      // (closest .cov-panel ancestor), never VIEW_PRESETS/data-panel-category
+      // -- those stay exactly as they were for the global Open all/Close
+      // all/Show CA* row.
+      function groupActionsHtml() {
+        return '<div class="group-actions">' +
+          '<button type="button" class="group-toggle-btn" data-group-action="open">Open all</button>' +
+          '<button type="button" class="group-toggle-btn" data-group-action="close">Close all</button>' +
+          '</div>';
+      }
+
       // Added 2026-10-19, grouping the eight panels above (this program's
       // actual subject) under their own top-level chevron, the same nesting
       // lit/sel already use -- added once there were two secondary groups
@@ -1424,6 +1464,7 @@
       var csGroupHtml =
         '<div class="cov-panel" data-panel-category="' + esc(csCategories.join(' ')) + '"><details open>' +
         '<summary><h2>Computer Science &amp; CTE</h2></summary>' +
+        groupActionsHtml() +
         panels.map(panelHtml).join('\n') +
         '</details></div>';
 
@@ -1454,6 +1495,7 @@
         '<div class="cov-panel" data-panel-category="lit"><details open>' +
         '<summary><h2>Digital Citizenship, Media Literacy &amp; AI Literacy</h2></summary>' +
         '<div class="cov-group-explainer">' + LIT_EXPLAINER_HTML + '</div>' +
+        groupActionsHtml() +
         litPanels.map(panelHtml).join('\n') +
         '</details></div>';
 
@@ -1474,6 +1516,7 @@
         '<div class="cov-panel" data-panel-category="sel"><details open>' +
         '<summary><h2>Social-Emotional Learning</h2></summary>' +
         '<div class="cov-group-explainer">' + SEL_EXPLAINER_HTML + '</div>' +
+        groupActionsHtml() +
         selPanels.map(panelHtml).join('\n') +
         '</details></div>';
 
@@ -1485,6 +1528,7 @@
         a.addEventListener('click', function (e) { e.stopPropagation(); });
       });
       var panelActions = wirePanelActions();
+      wireGroupActions(panelActions);
 
       badgeRegistry = Array.prototype.slice.call(document.querySelectorAll('.cov-badge')).map(function (el) {
         var framework = el.getAttribute('data-framework');
