@@ -923,6 +923,13 @@
   // preset is active" is durable state a reader benefits from seeing at a
   // glance, so exactly one button stays visually pressed until another preset
   // is chosen or the reader manually opens/closes a panel by hand.
+  //
+  // data-panel-category can hold more than one space-separated id -- a group
+  // wrapper (the Computer Science & CTE / lit / sel panels) lists every id
+  // its own children use, not one made-up group id, so applyView() below can
+  // ask "does this preset show ANY of this group's children?" without
+  // VIEW_PRESETS needing a separate entry for every group. A leaf panel's
+  // single id is just a one-element case of the same rule.
   var VIEW_PRESETS = {
     'open-all': null,
     'close-all': [],
@@ -961,7 +968,8 @@
       var categories = VIEW_PRESETS[view];
       panelEls.forEach(function (el) {
         var details = el.querySelector('details');
-        var show = categories === null || categories.indexOf(el.getAttribute('data-panel-category')) !== -1;
+        var ownCategories = (el.getAttribute('data-panel-category') || '').split(/\s+/).filter(Boolean);
+        var show = categories === null || ownCategories.some(function (c) { return categories.indexOf(c) !== -1; });
         if (show) details.setAttribute('open', ''); else details.removeAttribute('open');
       });
     }
@@ -1398,6 +1406,27 @@
         return '<div class="cov-panel" data-panel-category="' + esc(p[2]) + '"><details open><summary>' + heading + '</summary>' + p[1] + '</details></div>';
       }
 
+      // Added 2026-10-19, grouping the eight panels above (this program's
+      // actual subject) under their own top-level chevron, the same nesting
+      // lit/sel already use -- added once there were two secondary groups
+      // sitting below a flat wall of CS panels, read as inconsistent and
+      // just more clutter on first load. Unlike lit/sel, there's no
+      // explainer paragraph here: nothing about this group needs justifying.
+      // data-panel-category is the space-separated union of its children's
+      // own categories ('ap ca-hs csta ca-ict ca-ms') rather than one made-up
+      // group id -- see the data-panel-category "multi-value" note in
+      // wirePanelActions() below for why that's required, not optional: a
+      // single unmatched id would make every ?view=/Show-CA* preset collapse
+      // this whole group even when one of its children is the exact thing
+      // that preset means to show.
+      var csCategories = [];
+      panels.forEach(function (p) { if (csCategories.indexOf(p[2]) === -1) csCategories.push(p[2]); });
+      var csGroupHtml =
+        '<div class="cov-panel" data-panel-category="' + esc(csCategories.join(' ')) + '"><details open>' +
+        '<summary><h2>Computer Science &amp; CTE</h2></summary>' +
+        panels.map(panelHtml).join('\n') +
+        '</details></div>';
+
       // Added 2026-10-03: digital citizenship / media literacy / AI literacy,
       // the gap found when the five frameworks above turned out to have
       // almost nothing on passwords, terms of service, or AI. Nested one
@@ -1405,10 +1434,16 @@
       // top-level ones) since none of these four reads as a major framework
       // on its own the way AP CSP or CSTA does -- grouping them together
       // also makes room for the explainer text below about just how sparse
-      // this corner of the standards landscape actually is. Nesting needs no
-      // change to wirePanelActions()/VIEW_PRESETS: querySelectorAll('.cov-panel')
-      // picks up the outer wrapper and the four inner panels independently,
-      // each toggled by its own <details>, same as any other panel.
+      // this corner of the standards landscape actually is. This group's own
+      // data-panel-category ("lit") is a single id that never appears in any
+      // VIEW_PRESETS list on purpose -- every named preset except "open-all"
+      // collapses it, which is the intended behavior (this group is
+      // secondary; no Show-CA*/HS/MS button should ever auto-open it). The
+      // Computer Science & CTE group above needs the opposite behavior (open
+      // whenever any one of its children would show), which is why
+      // wirePanelActions() below matches a *space-separated list* of
+      // categories per panel, not a single id -- this group's single "lit"
+      // id still works unchanged under that same matching rule.
       var litPanels = [
         ['ISTE Digital Citizen', renderGroupedPanel(catalogs['iste-digital-citizen'], 'iste-digital-citizen'), 'lit', 'iste-digital-citizen-standards-reference.html', '2024'],
         ['UNESCO Media and Information Literacy', renderGroupedPanel(catalogs['unesco-mil'], 'unesco-mil'), 'lit', 'unesco-mil-standards-reference.html', '2022'],
@@ -1442,7 +1477,7 @@
         selPanels.map(panelHtml).join('\n') +
         '</details></div>';
 
-      document.getElementById('panels').innerHTML = panels.map(panelHtml).join('\n') + '\n' + litGroupHtml + '\n' + selGroupHtml;
+      document.getElementById('panels').innerHTML = csGroupHtml + '\n' + litGroupHtml + '\n' + selGroupHtml;
       // Without this, a click on the link bubbles up to <summary> and also
       // toggles the panel open/closed -- the same fix already applied to the
       // sidebar's source-title links, needed here for the same reason.
