@@ -16,7 +16,9 @@
       "p1.7": "project1-7-reading-your-switches",
       "p1.8": "project1-8-choosing-a-program-with-imports",
       "p2.1": "project2-1-moving-a-servo",
-      "p2.2": "project2-2-reading-a-potentiometer"
+      "p2.2": "project2-2-reading-a-potentiometer",
+      "p2.3": "project2-3-adding-a-neopixel-bar",
+      "p2.4": "project2-4-swapping-in-a-light-sensor"
     },
     "locator_titles": {
       "p1.1": "Project 1.1: Wiring Three LEDs",
@@ -28,9 +30,11 @@
       "p1.7": "Project 1.7: Reading Your Switches",
       "p1.8": "Project 1.8: Choosing a Program with Imports",
       "p2.1": "Project 2.1: Moving a Servo",
-      "p2.2": "Project 2.2: Potentiometer, Voltage Dividers, and a NeoPixel Bar"
+      "p2.2": "Project 2.2: Reading a Potentiometer, and What a Voltage Divider Is",
+      "p2.3": "Project 2.3: Adding a NeoPixel Bar",
+      "p2.4": "Project 2.4: Swapping in a Light Sensor"
     },
-    "caveat": "Aligns Projects 1.1 through 2.2, the original hands-on sequence built on top of the book's own chapters (see pico.json), not a 1:1 mapping to any single chapter. Split out of pico.json 2026-10-14 so the two content sources -- a licensed, adapted book and this teacher's own original project sequence -- each get their own carrier file, the same pattern every other multi-source pathway in this repo already follows. Projects 1.1, 1.2, and 1.6 are hardware- and tooling-focused (wiring only, or flashing firmware) and have correspondingly thin coverage, same as chapters 1 and 3 in the book's own carrier.",
+    "caveat": "Aligns Projects 1.1 through 2.4, the original hands-on sequence built on top of the book's own chapters (see pico.json), not a 1:1 mapping to any single chapter. Split out of pico.json 2026-10-14 so the two content sources -- a licensed, adapted book and this teacher's own original project sequence -- each get their own carrier file, the same pattern every other multi-source pathway in this repo already follows. Projects 1.1, 1.2, and 1.6 are hardware- and tooling-focused (wiring only, or flashing firmware) and have correspondingly thin coverage, same as chapters 1 and 3 in the book's own carrier. Project 2.4 is optional content (an LDR swap-in, no new code skill), so its coverage is intentionally thinner than a required project's.",
     "alignment_log": [
       {
         "date": "2026-10-06",
@@ -47,8 +51,14 @@
       {
         "date": "2026-10-19",
         "by": "Claude Sonnet 5",
-        "scope": "Project 2.2 was rewritten with entirely different content (potentiometer as a voltage divider, an 8-pixel NeoPixel bar, a color-by-voltage challenge, and a swap-in LDR with a resistance calculation, replacing the old potentiometer-drives-servo lesson). Re-reviewed every existing p2.2 locator against the new content rather than leaving stale claims in place.",
+        "scope": "Project 2.2 was first rewritten with entirely different content (potentiometer as a voltage divider, an 8-pixel NeoPixel bar, a color-by-voltage challenge, and a swap-in LDR with a resistance calculation, replacing the old potentiometer-drives-servo lesson). Re-reviewed every existing p2.2 locator against the new content rather than leaving stale claims in place.",
         "note": "Removed p2.2 from three codes that no longer apply at all: apcsp 3.14 (the new lesson uses plain library imports, not a revisit of the three local-module-import styles Project 1.8 taught), csta2026 HS-PRO-PD-12 (no separate reusable file like the old servo.py exists anymore), and ca-ict-anchor C4.9 (the new lesson defines no functions of its own, just a flat loop). Rewrote the notes on five codes that still genuinely apply, now describing the real content: apcsp 3.3 and 3.8 (scaling a raw reading into volts and into a pixel count, inside the same kind of indefinite loop), castandards 6-8.DA.9 and ca-ict-anchor C9.3 (turning the knob, and later swapping in an LDR, as single-variable change-and-observe testing against NeoPixel output), and csta2026 S2-PHY-IO-02 (sensor reading steering pixel count and color, closer to the book's own chapter 8 fan-speed example than the old servo-angle framing was). Narrowed csta2026 S1-PHY-DD-03's p2.2 claim: the base potentiometer-to-NeoPixel mapping is now given as worked starter code, not a challenge, so the 'challenge with hints, no worked example' framing now applies specifically to the color-by-voltage challenge section, not the whole lesson."
+      },
+      {
+        "date": "2026-10-19",
+        "by": "Claude Sonnet 5",
+        "scope": "Same day, second pass: the just-rewritten 2.2 was itself split into three separate projects (2.2 potentiometer + voltage divider only, 2.3 the NeoPixel bar and its challenge, 2.4 an optional LDR swap-in), since one lesson covering all of that was too dense for a single class period. Re-distributed every p2.2 locator from the prior pass to whichever of p2.2/p2.3/p2.4 actually contains that content now, added p2.3 and p2.4 to locator_slugs/locator_titles, rather than leaving the first pass's merged claims in place.",
+        "note": "p2.2 now only wires a potentiometer, reads it into a voltage, and verifies that voltage against a multimeter and the voltage-divider formula by hand -- no NeoPixel, no challenge, no LDR. Kept there: apcsp 3.3 and 3.8 (the voltage-scaling formula and its indefinite read-and-print loop), castandards 6-8.DA.9 (turning the knob and watching the plotted voltage respond). Moved to p2.3, where the NeoPixel bar and its color-by-voltage challenge actually live now: csta2026 S1-PHY-DD-03 (the challenge's if/elif/else stub with TODOs, not the given starter code) and S2-PHY-IO-02 (the sensor-reading-steers-pixel-output idea). Moved to p2.4, where the LDR swap and its resistance calculation live now: a share of apcsp 3.3 (the LDR resistance formula is its own scaling exercise) and castandards 6-8.DA.9 (swapping the sensor itself as the one changed variable). ca-ict-anchor C9.3 (hardware input processed into hardware output) moved off p2.2 entirely, since reading a voltage and printing it has no hardware output yet -- it now cites p2.3 and p2.4, where the NeoPixel bar is the actual output hardware."
       }
     ]
   },
@@ -73,10 +83,12 @@
         "locators": [
           "p1.4",
           "p2.1",
-          "p2.2"
+          "p2.2",
+          "p2.3",
+          "p2.4"
         ],
         "strength": "partial",
-        "note": "Project 1.4 names and explains % (modulo) and // (floor division) directly, as operators students apply themselves to a binary-counting problem. Project 2.1's setangle challenge needs students to work out a linear scaling formula by hand, turning an angle from 0 to 180 into a duty_u16 value between two known endpoints. Project 2.2 scales the same kind of raw ADC reading twice over, once into a 0-3.3V voltage and again into a 0-8 pixel count, then later derives an LDR's resistance from that same voltage with its own formula."
+        "note": "Project 1.4 names and explains % (modulo) and // (floor division) directly, as operators students apply themselves to a binary-counting problem. Project 2.1's setangle challenge needs students to work out a linear scaling formula by hand, turning an angle from 0 to 180 into a duty_u16 value between two known endpoints. Project 2.2 scales a raw ADC reading into a 0-3.3V voltage, and verifies that scaling by hand against a multimeter. Project 2.3 scales that same voltage again into a 0-8 pixel count. Project 2.4 derives an LDR's resistance from that same voltage with its own formula, a third scaling exercise using the same underlying reading."
       },
       "3.5": {
         "locators": [
@@ -99,10 +111,11 @@
           "p1.4",
           "p1.5",
           "p1.7",
-          "p2.2"
+          "p2.2",
+          "p2.3"
         ],
         "strength": "strong",
-        "note": "Project 1.3's closing challenge turns the same REPL commands just tried into a saved while True script that blinks forever -- an indefinite-iteration pattern, self-written rather than demonstrated. Project 1.4's blink, LED-sequence, and binary-counting scripts are further instances of the same loop. Project 1.5's breathing-LED script uses range() with a step other than 1 and, for the fade-down half, a negative step. Project 1.7's switch-watching loop runs forever, checking all three switches every pass and only printing when something changes. Project 2.2's knob-to-NeoPixel loop is the same indefinite pattern again, reading an analog input and redrawing the whole pixel bar on every single iteration rather than counting or blinking."
+        "note": "Project 1.3's closing challenge turns the same REPL commands just tried into a saved while True script that blinks forever -- an indefinite-iteration pattern, self-written rather than demonstrated. Project 1.4's blink, LED-sequence, and binary-counting scripts are further instances of the same loop. Project 1.5's breathing-LED script uses range() with a step other than 1 and, for the fade-down half, a negative step. Project 1.7's switch-watching loop runs forever, checking all three switches every pass and only printing when something changes. Project 2.2's knob-reading loop reads an analog input and prints it forever. Project 2.3 extends that same loop so it also redraws the whole NeoPixel bar on every single iteration, rather than just printing a number."
       },
       "3.9": {
         "locators": [
@@ -145,10 +158,12 @@
       },
       "6-8.DA.9": {
         "locators": [
-          "p2.2"
+          "p2.2",
+          "p2.3",
+          "p2.4"
         ],
         "strength": "strong",
-        "note": "Turning the potentiometer and watching the NeoPixel bar respond lets a student change one variable, the knob's position, and directly observe its effect on another, how many pixels light up and in what color -- the same single-variable-at-a-time testing this standard describes, done with a physical dial instead of a spreadsheet. Swapping the potentiometer for an LDR later, while running the exact same code, is the same idea taken further: the one thing that changed was the sensor itself, and everything downstream kept working."
+        "note": "Project 2.2 has a student turn the potentiometer and watch the plotted voltage respond, changing one variable (the knob's position) and directly observing its effect on another (the printed/plotted number) -- the same single-variable-at-a-time testing this standard describes, done with a physical dial instead of a spreadsheet. Project 2.3 makes that effect visible on the NeoPixel bar instead of just a number. Project 2.4 takes the idea further: swapping the potentiometer for an LDR, while running the exact same code, changes only the sensor itself, and everything downstream keeps working."
       },
       "9-12.AP.14": {
         "locators": [
@@ -210,10 +225,10 @@
           "p1.7",
           "p1.8",
           "p2.1",
-          "p2.2"
+          "p2.3"
         ],
         "strength": "strong",
-        "note": "Projects 1.3, 1.4, and 1.5 are each built as a challenge with hints rather than a worked example: write a script that blinks an LED forever (1.3), sequence three LEDs or count in binary on them (1.4), or make an LED breathe by fading it up and down forever (1.5). Project 1.7 reads three switches and only prints when a reading changes, checked against what was seen on the previous pass. Project 1.8's switch-picker fires a different function depending on which switch is on, with nothing shown solved. Project 2.1's setangle and sweep challenges drive the servo's physical position directly from code students write and test against the real hardware. Project 2.2's base potentiometer-to-NeoPixel mapping is given as working starter code, but its color-by-voltage challenge hands students an if/elif/else stub with TODO comments in place of the actual color values, tested against the real NeoPixel bar rather than shown solved."
+        "note": "Projects 1.3, 1.4, and 1.5 are each built as a challenge with hints rather than a worked example: write a script that blinks an LED forever (1.3), sequence three LEDs or count in binary on them (1.4), or make an LED breathe by fading it up and down forever (1.5). Project 1.7 reads three switches and only prints when a reading changes, checked against what was seen on the previous pass. Project 1.8's switch-picker fires a different function depending on which switch is on, with nothing shown solved. Project 2.1's setangle and sweep challenges drive the servo's physical position directly from code students write and test against the real hardware. Project 2.3's base potentiometer-to-NeoPixel mapping is given as working starter code, but its color-by-voltage challenge hands students an if/elif/else stub with TODO comments in place of the actual color values, tested against the real NeoPixel bar rather than shown solved."
       },
       "S1-PHY-HC-01": {
         "locators": [
@@ -225,10 +240,11 @@
       },
       "S2-PHY-IO-02": {
         "locators": [
-          "p2.2"
+          "p2.3",
+          "p2.4"
         ],
         "strength": "strong",
-        "note": "Turning the potentiometer, and later swapping in an LDR, steers how many NeoPixels light up and (in the challenge) what color they show -- the same sensor-reading-steers-an-output idea as the book's own chapter 8 fan-speed example, close enough to it that the lesson explicitly asks why the code never needed to change when the sensor itself did."
+        "note": "Turning the potentiometer steers how many NeoPixels light up and, in the challenge, what color they show -- the same sensor-reading-steers-an-output idea as the book's own chapter 8 fan-speed example. Project 2.4 swaps in an LDR running the identical code, close enough to the book's example that the lesson explicitly asks why the code never needed to change when the sensor itself did."
       }
     },
     "ca-ict-anchor": {
@@ -274,10 +290,11 @@
         "locators": [
           "p1.7",
           "p2.1",
-          "p2.2"
+          "p2.3",
+          "p2.4"
         ],
         "strength": "strong",
-        "note": "Project 1.7's switches, project 2.1's servo, and project 2.2's potentiometer and NeoPixel bar are each hardware capturing input or acting as output, with code doing the processing in between: switches read and compared against their last state, a servo driven to a commanded angle, a potentiometer's (or later an LDR's) voltage reading converted into a pixel count and color."
+        "note": "Project 1.7's switches, project 2.1's servo, and project 2.3's potentiometer-plus-NeoPixel-bar are each hardware capturing input or acting as output, with code doing the processing in between: switches read and compared against their last state, a servo driven to a commanded angle, a potentiometer's voltage reading converted into a pixel count and color. Project 2.4 swaps the input hardware for an LDR with the output and processing unchanged."
       },
       "C9.4": {
         "locators": [

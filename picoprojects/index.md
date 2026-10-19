@@ -36,7 +36,7 @@ A sequenced introduction to the Raspberry Pi Pico and physical computing, for st
 
 Project 2 isn't finished yet. Here's where it's headed:
 
-- **Project 2.3: a two-axis joystick drives a servo.** Reads the same way
+- **Project 2.5: a two-axis joystick drives a servo.** Reads the same way
   as a potentiometer, just two of them at once. It's also the exact "read
   two axes, map each one to a motor" idea you'd use again if you ever pilot
   a real robot or ROV by hand.
