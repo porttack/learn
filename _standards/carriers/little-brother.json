@@ -39,6 +39,12 @@
     "by": "Claude Sonnet 5",
     "scope": "CSTA 2026 Specialty I/II (CYB primary -- every S1-CYB-*/S2-CYB-* code checked; AIN/DSC/GMD/PHY/SWD/XCS skimmed) and California 9-12 Specialty (all 30 codes, especially the NI.3-6 and IC.27-30 clusters), against the full book text (tmp/lb.txt).",
     "note": "Added 10 csta2026 codes (9 covered, 1 explicit gap) and 9 castandards codes (8 covered, 1 explicit gap). CYB was confirmed as by far the strongest specialty area, as expected -- the book's crypto, mesh-networking, spoofing, traffic-analysis, and social-engineering content maps directly onto more than half the CYB code list. One AIN code (human-in-the-loop for automated systems) was a genuine, non-forced match. AIN/DSC/GMD/PHY/SWD/XCS otherwise yielded nothing real and were left unlisted rather than padded with gaps, per the carrier README. A same-day follow-up pass added `strength` ratings (strong/partial/related) to all 17 covered entries above, since a first read conflated real-but-partial coverage with full coverage -- see 9-12S.NI.5/IC.28 and S1-CYB-CP-12/S1-AIN-HR-08, rated partial or related rather than strong."
+   },
+   {
+    "date": "2026-10-19",
+    "by": "Claude Sonnet 5",
+    "scope": "Digital Citizenship (ISTE Digital Citizen, UNESCO MIL) and SEL (CASEL, VIA Character Strengths) checked against the full book text (tmp/lb.txt), at the user's explicit request to stay conservative rather than cover every framework.",
+    "note": "Added 2 ISTE, 3 UNESCO MIL, 3 CASEL, and 3 VIA codes, each tied to a specific, re-readable scene -- no padding entries. Three frameworks checked and left out entirely rather than forced: UNESCO AI Competency Framework for Students (a 2008 novel has no AI content to check it against), AASL Engage (its best candidate, attribution/reuse-policy, is the same Creative Commons license evidence already cited three times over by apcsp/castandards/ca-ict-anchor -- a fourth citation of the identical passage reads as padding, not new coverage), and RULER (the book has rich emotional content but no depiction of RULER's own structured practice -- naming an emotion precisely, a Mood Meter, a Meta-Moment pause -- as opposed to CASEL's broader competency framing, which fits the same scenes better). CDE T-SEL was also left out: the casel<->cde-tsel crosswalk (_standards/crosswalk-casel-cde-tsel.json) compares those two catalogs' own wording to each other and doesn't obligate a carrier that covers CASEL to also carry a parallel T-SEL entry for the same scene. The two Chapter 1/13 vs. Chapter 4 locators for the w1n5t0n/M1k3y identity thread needed real care: a first pass almost placed the school vice-principal's w1n5t0n accusation (tmp/lb.txt line ~391, 'We have reliable intelligence indicating that you are w1n5t0n') at the DHS interrogation (Chapter 4) by raw proximity to that chapter's marker in the text extract, but the actual content -- Vice Principal Benson, Social Security numbers, 'duly constituted authorities' -- is unmistakably the earlier school-security scene; corrected to Chapter 1, with the real DHS interrogation (Severe Haircut Woman, password coercion) confirmed separately at its already-established Chapter 4."
    }
   ]
  },
@@ -367,6 +373,69 @@
    "8.8": {
     "locators": ["intro", "epilogue"],
     "note": "The whole novel is wider technology adoption's own legal and ethical problems -- hacking, government overreach, privacy breaches -- bookended by the Introduction's framing and the Epilogue's reckoning. Cited here directly rather than de-emphasized as too generic, since unlike a programming-course carrier, this book has no Pathway C content to prefer instead."
+   }
+  },
+  "iste-digital-citizen": {
+   "1.2.a": {
+    "locators": [1, 6, 13],
+    "strength": "strong",
+    "note": "The whole w1n5t0n/M1k3y thread is this standard dramatized: Marcus's years-old w1n5t0n handle almost catches up with him over a school hacking accusation he can still talk his way out of (1); he deliberately starts a fresh identity, M1k3y, for the Xnet blog so his new, higher-stakes activity isn't linked to his old one (6); and that firewall fails anyway -- Ange and then the DHS figure out M1k3y is Marcus (13), proving an online choice's record outlasts the identity you built it to protect."
+   },
+   "1.2.d": {
+    "locators": [1, 4, 6, 10],
+    "strength": "strong",
+    "note": "Arphid and transit-pass tracking as routine, non-consensual data collection (1); the DHS interrogation forcing a password aloud (4); encryption as active, hands-on personal-data protection, not a settings checkbox (6); the web of trust as a real mechanism for controlling who gets to vouch for your identity (10)."
+   }
+  },
+  "unesco-mil": {
+   "2": {
+    "locators": [17],
+    "strength": "strong",
+    "note": "The Manchurian Bloggers reveal -- DHS agents secretly running 'as many as fifty blogs each' to steer the Xnet movement -- is this standard's own concern made concrete: a reader has to know who is actually behind a piece of content, not just who it claims to be from."
+   },
+   "5": {
+    "locators": [17],
+    "strength": "strong",
+    "note": "Same scene as code 2 above, from the evaluation side: recognizing that a wave of seemingly grassroots posts pushing toward radical action is itself manufactured content, not an organic consensus, is exactly this standard's critical-evaluation skill."
+   },
+   "13": {
+    "locators": [14, 15],
+    "strength": "strong",
+    "note": "AbusesOfAuthority -- the crowdsourced blog Marcus starts to collect the public's own photos, audio, and accounts of the park-protest crackdown (14) -- and blogging the press conference live as it happens (15) are both using media as a tool for active civic participation, not passive consumption."
+   }
+  },
+  "casel": {
+   "SA.4": {
+    "locators": [16],
+    "strength": "strong",
+    "note": "Confessing everything to his parents -- 'I came clean... holding in the secret had dirtied me, soiled my spirit. It had made me afraid and ashamed' -- is this standard's own claim that self-awareness includes being honest with the people closest to you, not just with yourself."
+   },
+   "REL.2": {
+    "locators": [13, 17],
+    "strength": "strong",
+    "note": "Van's deliberate trade of secrets with Marcus -- 'I won't swear you to secrecy because what's the point? Either I can trust you or I can't,' followed by her own confession about the stolen standardized tests (13) -- and Ange's 'you and I, we're together now' commitment once she realizes she shares Marcus's risk (17) are both this standard's claim that a real relationship takes deliberate effort, not just proximity."
+   },
+   "REL.8": {
+    "locators": [17],
+    "strength": "strong",
+    "note": "Darryl's father telling his own story and crying 'unashamed' in front of the other families gathered at Barbara Stratford's apartment is grief processed with support actively sought and offered, not carried alone."
+   }
+  },
+  "via-character": {
+   "COU.1": {
+    "locators": [17],
+    "strength": "strong",
+    "note": "\"I am so sick of being scared... Let them take me away. At least I'll have a little certainty in my life\" is Marcus choosing to act on what he believes is right specifically because it's risky and frightening, not despite having worked out a safe way around that."
+   },
+   "COU.2": {
+    "locators": [16],
+    "strength": "strong",
+    "note": "Same scene as casel SA.4 above, from VIA's own honesty framing: presenting yourself accurately and taking responsibility, rather than continuing to manage a secret."
+   },
+   "HUM.2": {
+    "locators": [17],
+    "strength": "partial",
+    "note": "Ange's insistence on sharing Marcus's risk ('guilt by association... when you go, I go') is real mutual care under pressure, though the scene is a single commitment moment rather than the sustained relationship-building this code more fully describes."
    }
   }
  }
