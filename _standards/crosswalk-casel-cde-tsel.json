@@ -1,0 +1,193 @@
+{
+ "meta": {
+  "built": "2026-10-19",
+  "method": "cde-tsel.json's own meta says it directly: T-SEL takes CASEL's same five competency names and runs each one through three added lenses (Identity, Belonging, Agency), so this crosswalk only ever pairs codes within the same competency bucket (T-SEL's Self-Awareness lenses against CASEL's Self-Awareness sub-competencies, and so on for the other four) -- never across buckets, since that's not how T-SEL itself claims to derive from CASEL. Within a bucket, rows were built by reading each T-SEL lens's own grade-progression paraphrase (it spans TK-2 through 6-8 in one sentence, 'starts simple... grows into...') against CASEL's finer sub-competency list and picking whichever ones the lens's own wording actually names or clearly describes, at either end of that progression. A T-SEL lens genuinely built from more than one CASEL sub-competency gets more than one row; a CASEL sub-competency with no real T-SEL equivalent (e.g. SA.4 honesty/integrity, REL.1 communicating effectively, REL.8 seeking/offering support, RDM.3 identifying solutions) has no row rather than a forced one. The honest exception to the single-bucket rule: T-SEL's Belonging lens, in Self-Awareness and in Self-Management specifically, describes content (inclusion/exclusion, handling feedback) that CASEL's own Self-Awareness and Self-Management competencies don't really cover -- CASEL's closest material for 'who gets left out' lives in Social Awareness (SOC.6) instead, a different competency bucket. Rather than force a same-bucket match that isn't really there, those two T-SEL codes (1.BE, 2.BE) simply have no row.",
+  "strength_definitions": {
+   "strong": "same claim, close enough in wording and scope that the two are teaching the same thing",
+   "partial": "same general topic, but one side's phrasing adds, drops, or reframes something the other doesn't say",
+   "related": "adjacent territory -- worth surfacing, but close reading shows they are not actually the same standard"
+  }
+ },
+ "crosswalk": [
+  {
+   "casel": "SA.1",
+   "cde-tsel": "1.ID",
+   "strength": "strong",
+   "note": "T-SEL's own lead clause ('naming your own identity...') is this code's definition almost word for word: a self-concept blending personal and social/cultural identity."
+  },
+  {
+   "casel": "SA.3",
+   "cde-tsel": "1.ID",
+   "strength": "partial",
+   "note": "T-SEL's early-grade anchor names emotions explicitly ('naming your own identity, emotions, and values'); CASEL splits that into its own sub-competency rather than folding it into identity."
+  },
+  {
+   "casel": "SA.6",
+   "cde-tsel": "1.ID",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('how your own beliefs can be challenged') is this code's own framing of prejudice/bias examination, not a looser paraphrase."
+  },
+  {
+   "casel": "SA.7",
+   "cde-tsel": "1.AG",
+   "strength": "strong",
+   "note": "T-SEL's early-grade anchor ('recognizing your own strengths and believing in your capacity to learn') is this code's definition of self-efficacy directly."
+  },
+  {
+   "casel": "SA.8",
+   "cde-tsel": "1.AG",
+   "strength": "strong",
+   "note": "'Believing in your capacity to learn' as a starting point is CASEL's own growth-mindset framing, and T-SEL's Agency lens opens with exactly that."
+  },
+  {
+   "casel": "SA.2",
+   "cde-tsel": "1.AG",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('actively identifying your personal, social, and cultural assets') is a near-exact restatement of this code's own title."
+  },
+  {
+   "casel": "SM.1",
+   "cde-tsel": "2.ID",
+   "strength": "strong",
+   "note": "T-SEL's early-grade anchor (noticing where an emotion sits in your body, a calming strategy) is a concrete instance of this code's emotion regulation."
+  },
+  {
+   "casel": "SM.2",
+   "cde-tsel": "2.ID",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('taking ownership of your own mental and physical health') is this code's stress-management competency, not a separate health standard."
+  },
+  {
+   "casel": "SM.7",
+   "cde-tsel": "2.AG",
+   "strength": "strong",
+   "note": "The lens is literally named Agency, and this code's own title ('demonstrating personal and collective agency') is close to a direct quote."
+  },
+  {
+   "casel": "SM.4",
+   "cde-tsel": "2.AG",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('setting both personal and collective goals') matches this code's title almost verbatim."
+  },
+  {
+   "casel": "SM.5",
+   "cde-tsel": "2.AG",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('managing your own time and materials independently') is this code's organizational-skills competency."
+  },
+  {
+   "casel": "SM.3",
+   "cde-tsel": "2.AG",
+   "strength": "partial",
+   "note": "'Self-monitoring without being told to' is close to this code's self-discipline/self-motivation framing, though T-SEL folds it into the same Agency lens as goal-setting rather than naming it separately."
+  },
+  {
+   "casel": "SOC.1",
+   "cde-tsel": "3.ID",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('recognizing how someone's own identity, culture, or background shapes the emotional reactions and norms they bring to a situation') is perspective-taking applied specifically to identity."
+  },
+  {
+   "casel": "SOC.6",
+   "cde-tsel": "3.BE",
+   "strength": "strong",
+   "note": "'Actively including people whose backgrounds differ from your own' is this code's own concern with social norms and who they exclude."
+  },
+  {
+   "casel": "SOC.3",
+   "cde-tsel": "3.BE",
+   "strength": "partial",
+   "note": "T-SEL's early-grade anchor ('simple kindness') is a lighter version of this code's empathy/compassion, not its full scope."
+  },
+  {
+   "casel": "SOC.6",
+   "cde-tsel": "3.AG",
+   "strength": "strong",
+   "note": "Appears again here (see 3.BE above): T-SEL's later-grade anchor shifts the same norms-and-exclusion content toward recognizing unfair policies and taking action, which this one CASEL code already spans (norms AND whether they're unjust)."
+  },
+  {
+   "casel": "SOC.8",
+   "cde-tsel": "3.AG",
+   "strength": "strong",
+   "note": "'Unfair policies actually harm a group' is this code's own claim that systems and institutions, not just individual choices, shape behavior and outcomes."
+  },
+  {
+   "casel": "REL.6",
+   "cde-tsel": "4.ID",
+   "strength": "strong",
+   "note": "T-SEL's early-grade anchor ('knowing you can say no' to an inappropriate request) is this code's resisting-negative-social-pressure competency at its most concrete."
+  },
+  {
+   "casel": "REL.7",
+   "cde-tsel": "4.ID",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('exploring what kind of leader you are') is this code's own territory, not a stretch."
+  },
+  {
+   "casel": "REL.2",
+   "cde-tsel": "4.BE",
+   "strength": "strong",
+   "note": "T-SEL's early-grade anchor ('naming what makes a good friend') is this code's developing-positive-relationships competency in its simplest form."
+  },
+  {
+   "casel": "REL.3",
+   "cde-tsel": "4.BE",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('respecting other cultures, communicating across cultural differences with humility') is a close paraphrase of this code's own title."
+  },
+  {
+   "casel": "REL.5",
+   "cde-tsel": "4.AG",
+   "strength": "strong",
+   "note": "'Practicing real conflict-resolution strategies, repairing harm' is this code's constructive-conflict-resolution competency, not a looser adjacent claim."
+  },
+  {
+   "casel": "REL.9",
+   "cde-tsel": "4.AG",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('standing up for other people's rights, not just your own') is this code's own title almost exactly."
+  },
+  {
+   "casel": "REL.4",
+   "cde-tsel": "4.AG",
+   "strength": "partial",
+   "note": "T-SEL's early-grade anchor ('solving a problem with someone') touches this code's collaborative-problem-solving territory, though T-SEL frames it as a conflict-resolution lead-in rather than teamwork for its own sake."
+  },
+  {
+   "casel": "RDM.1",
+   "cde-tsel": "5.ID",
+   "strength": "strong",
+   "note": "'Curiosity and honesty... being open to new people and situations' is this code's curiosity-and-open-mindedness competency directly."
+  },
+  {
+   "casel": "RDM.6",
+   "cde-tsel": "5.BE",
+   "strength": "strong",
+   "note": "'Understanding the common good' is this code's own concern with personal choices reflecting family and community well-being, not a separate civics standard."
+  },
+  {
+   "casel": "RDM.7",
+   "cde-tsel": "5.BE",
+   "strength": "partial",
+   "note": "'Democratic citizenship' touches this code's community/institutional-impact scope, though T-SEL's civics framing is narrower than this code's full range (personal through institutional)."
+  },
+  {
+   "casel": "RDM.4",
+   "cde-tsel": "5.AG",
+   "strength": "strong",
+   "note": "T-SEL's early-grade anchor ('a simple stop-think-act strategy') is this code's anticipating-consequences competency at its most concrete."
+  },
+  {
+   "casel": "RDM.2",
+   "cde-tsel": "5.AG",
+   "strength": "strong",
+   "note": "T-SEL's later-grade anchor ('a practiced decision-making process') is this code's reasoned-judgment-from-evidence competency."
+  },
+  {
+   "casel": "RDM.7",
+   "cde-tsel": "5.AG",
+   "strength": "partial",
+   "note": "Appears again here (see 5.BE above): T-SEL's closing clause ('consequences of a choice, including on your community') reaches toward this code's wider-impact scope a second time, from the Agency side rather than the Belonging side."
+  }
+ ]
+}

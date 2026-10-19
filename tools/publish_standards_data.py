@@ -29,6 +29,7 @@ CATALOG_FILES = [
 # which key is which.
 CROSSWALKS = [
     {"between": ["castandards", "csta2017"], "file": "castandards-csta2017.json"},
+    {"between": ["casel", "cde-tsel"], "file": "casel-cde-tsel.json"},
 ]
 
 # Validated this session: node scripts/validate_palette.js "<hexes>" --mode light/dark,

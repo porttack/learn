@@ -215,6 +215,13 @@
     "csta2017"
    ],
    "file": "castandards-csta2017.json"
+  },
+  {
+   "between": [
+    "casel",
+    "cde-tsel"
+   ],
+   "file": "casel-cde-tsel.json"
   }
  ]
 }

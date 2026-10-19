@@ -360,7 +360,7 @@
   // renders no cross-reference, same as an unmapped carrier renders "Unassigned".
   var crosswalkIndex = {}; // "<framework> <code>" -> [{framework, code, strength, note}, ...]
   var catalogEntryByCode = {}; // framework -> code -> catalog standard entry (for the compare-text expansion)
-  var FRAMEWORK_LABELS = { castandards: 'CA', csta2017: 'CSTA 2017' };
+  var FRAMEWORK_LABELS = { castandards: 'CA', csta2017: 'CSTA 2017', casel: 'CASEL', 'cde-tsel': 'T-SEL' };
 
   function frameworkLabel(framework) {
     return FRAMEWORK_LABELS[framework] || framework;
@@ -1374,11 +1374,24 @@
       results[1].forEach(function (pair) { catalogs[pair[0]] = pair[1]; });
       crosswalkIndex = buildCrosswalkIndex(results[2]);
       manifest.catalog.forEach(function (fw) {
-        if (catalogs[fw] && Array.isArray(catalogs[fw].standards)) {
-          var byCode = {};
+        if (!catalogs[fw]) return;
+        var byCode = {};
+        if (Array.isArray(catalogs[fw].standards)) {
           catalogs[fw].standards.forEach(function (s) { byCode[s.code] = s; });
-          catalogEntryByCode[fw] = byCode;
+        } else if (Array.isArray(catalogs[fw].groups)) {
+          // Grouped shape (iste-digital-citizen/unesco-mil/unesco-ai-cfs/
+          // aasl-engage/casel/cde-tsel/ruler/via-character -- see
+          // catalogLabel() in standards-alignment.js for the same shape
+          // handled the other widget's way): flatten groups[].items[] by
+          // code. Needed for the casel<->cde-tsel crosswalk's compare-text
+          // expansion to show real paraphrase text instead of a bare code.
+          catalogs[fw].groups.forEach(function (g) {
+            (g.items || []).forEach(function (item) { byCode[item.code] = item; });
+          });
+        } else {
+          return;
         }
+        catalogEntryByCode[fw] = byCode;
       });
 
       injectHueStyle(manifest);
