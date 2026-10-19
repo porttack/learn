@@ -110,6 +110,39 @@
     'panels above have little language for that, not because this program ' +
     'is built around social-emotional learning. That’s also why this ' +
     'group sits at the bottom of the page, after every CS framework.</p>';
+
+  // Small CASEL wheel, shown at the top of CASEL's own panel (so it's only
+  // in the DOM/visible when that panel's <details> is open, same mechanism
+  // as every other panel -- no extra show/hide JS needed). Wedge paths and
+  // label positions are generated geometry (five equal 72 deg wedges, 3 deg
+  // gap, centered around a hub circle), not hand-traced -- see this commit's
+  // message for the generator. Colors are fixed hex per wedge (an
+  // illustrative label diagram, not a chart encoding data, so the usual
+  // categorical CVD-safe-palette requirement doesn't apply) chosen only to
+  // read clearly against white label text in both page themes; the hub and
+  // caption use the page's own --fg/--muted/--code-bg/--border variables so
+  // they still match light/dark mode.
+  var CASEL_WHEEL_SVG =
+    '<figure class="casel-wheel">' +
+    '<svg viewBox="0 0 240 240" width="220" height="220" role="img" ' +
+    'aria-label="The CASEL wheel: five core competencies around a shared hub, read clockwise from the top -- Self-Awareness, Self-Management, Social Awareness, Relationship Skills, Responsible Decision-Making">' +
+    '<path d="M121.1,78.0 L122.7,16.0 A104,104 0 0 1 218.0,85.3 L159.6,106.0 A42,42 0 0 0 121.1,78.0 Z" fill="#2a9d8f"><title>Self-Awareness</title></path>' +
+    '<text x="162.9" y="55.4" text-anchor="middle" font-size="10" font-weight="600" fill="#fff"><tspan x="162.9" dy="0">Self-</tspan><tspan x="162.9" dy="11">Awareness</tspan></text>' +
+    '<path d="M160.3,108.1 L219.7,90.5 A104,104 0 0 1 183.3,202.5 L145.6,153.3 A42,42 0 0 0 160.3,108.1 Z" fill="#457b9d"><title>Self-Management</title></path>' +
+    '<text x="189.4" y="137.1" text-anchor="middle" font-size="10" font-weight="600" fill="#fff"><tspan x="189.4" dy="0">Self-</tspan><tspan x="189.4" dy="11">Management</tspan></text>' +
+    '<path d="M143.8,154.6 L178.9,205.7 A104,104 0 0 1 61.1,205.7 L96.2,154.6 A42,42 0 0 0 143.8,154.6 Z" fill="#6a4c93"><title>Social Awareness</title></path>' +
+    '<text x="120.0" y="187.5" text-anchor="middle" font-size="10" font-weight="600" fill="#fff"><tspan x="120.0" dy="0">Social</tspan><tspan x="120.0" dy="11">Awareness</tspan></text>' +
+    '<path d="M94.4,153.3 L56.7,202.5 A104,104 0 0 1 20.3,90.5 L79.7,108.1 A42,42 0 0 0 94.4,153.3 Z" fill="#b5485d"><title>Relationship Skills</title></path>' +
+    '<text x="50.6" y="137.1" text-anchor="middle" font-size="10" font-weight="600" fill="#fff"><tspan x="50.6" dy="0">Relationship</tspan><tspan x="50.6" dy="11">Skills</tspan></text>' +
+    '<path d="M80.4,106.0 L22.0,85.3 A104,104 0 0 1 117.3,16.0 L118.9,78.0 A42,42 0 0 0 80.4,106.0 Z" fill="#c9752e"><title>Responsible Decision-Making</title></path>' +
+    '<text x="77.1" y="51.9" text-anchor="middle" font-size="8.5" font-weight="600" fill="#fff"><tspan x="77.1" dy="0">Responsible</tspan><tspan x="77.1" dy="9">Decision-</tspan><tspan x="77.1" dy="9">Making</tspan></text>' +
+    '<circle cx="120" cy="120" r="42" fill="var(--code-bg)" stroke="var(--border)" stroke-width="1.5"/>' +
+    '<text x="120" y="116" text-anchor="middle" font-size="15" font-weight="700" fill="var(--fg)">SEL</text>' +
+    '<text x="120" y="132" text-anchor="middle" font-size="9" fill="var(--muted)">5 competencies</text>' +
+    '</svg>' +
+    '<figcaption>The CASEL wheel: five core competencies, read clockwise from the top.</figcaption>' +
+    '</figure>';
+
   var CHAP_REF_RE = /\bchap(\d{2})([a-z]?)\b/g;
 
   // The sources panel is a <details>, closed by default in the markup --
@@ -1397,7 +1430,7 @@
       // Placed last, after every CS panel and after the digital-citizenship
       // group, to match what this program actually teaches.
       var selPanels = [
-        ['CASEL (Social-Emotional Learning)', renderGroupedPanel(catalogs.casel, 'casel'), 'sel', 'casel-standards-reference.html', '2020'],
+        ['CASEL (Social-Emotional Learning)', CASEL_WHEEL_SVG + renderGroupedPanel(catalogs.casel, 'casel'), 'sel', 'casel-standards-reference.html', '2020'],
         ['California Transformative SEL (T-SEL)', renderGroupedPanel(catalogs['cde-tsel'], 'cde-tsel'), 'sel', 'cde-tsel-standards-reference.html', '2021'],
         ['RULER Approach', renderGroupedPanel(catalogs.ruler, 'ruler'), 'sel', 'ruler-standards-reference.html', '2011'],
         ['VIA Character Strengths', renderGroupedPanel(catalogs['via-character'], 'via-character'), 'sel', 'via-character-standards-reference.html', '2004'],
