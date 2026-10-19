@@ -32,6 +32,22 @@ A sequenced introduction to the Raspberry Pi Pico and physical computing, for st
 {% endfor %}
 </ol>
 
+## What's planned next
+
+Project 2 isn't finished yet. Here's where it's headed:
+
+- **Project 2.3: a two-axis joystick drives a servo.** Reads the same way
+  as a potentiometer, just two of them at once. It's also the exact "read
+  two axes, map each one to a motor" idea you'd use again if you ever pilot
+  a real robot or ROV by hand.
+- **Project 3: I2C**, reading a real sensor over a shared two-wire bus.
+  Same ideas (bus addresses, "is the device even answering") you'd meet
+  again on any bigger computer.
+
+Past that: the plan is for this pathway to keep going beyond the Pico
+itself, toward real Raspberry Pi hardware and eventually real robotics
+software. Pacing beyond Project 3 isn't decided yet.
+
 ## Standards alignment
 
 Every project lesson lists the standards it supports under **Standards

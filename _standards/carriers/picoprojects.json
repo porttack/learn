@@ -28,7 +28,7 @@
       "p1.7": "Project 1.7: Reading Your Switches",
       "p1.8": "Project 1.8: Choosing a Program with Imports",
       "p2.1": "Project 2.1: Moving a Servo",
-      "p2.2": "Project 2.2: Reading a Potentiometer"
+      "p2.2": "Project 2.2: Potentiometer, Voltage Dividers, and a NeoPixel Bar"
     },
     "caveat": "Aligns Projects 1.1 through 2.2, the original hands-on sequence built on top of the book's own chapters (see pico.json), not a 1:1 mapping to any single chapter. Split out of pico.json 2026-10-14 so the two content sources -- a licensed, adapted book and this teacher's own original project sequence -- each get their own carrier file, the same pattern every other multi-source pathway in this repo already follows. Projects 1.1, 1.2, and 1.6 are hardware- and tooling-focused (wiring only, or flashing firmware) and have correspondingly thin coverage, same as chapters 1 and 3 in the book's own carrier.",
     "alignment_log": [
@@ -43,6 +43,12 @@
         "by": "Claude Sonnet 5",
         "scope": "Split out of pico.json into this standalone carrier, and aligned Projects 1.6-2.2 for the first time against all four active frameworks",
         "note": "Project 1.6 (wiring a switch bank) is thin by design, the same pattern as Projects 1.1/1.2 and book chapters 1/3 -- pure wiring, nothing to align against code-focused standards until Project 1.7 gives those switches code. Project 1.7 (reading switches, printing only on change) is rich: a compound boolean condition, state tracked in variables across loop iterations, and hardware input processed into output, each cited from a different framework's own angle. Project 1.8 (choosing a program via elif and imports) leans on library-import coverage already established for Project 1.3, extended with new control-structure-choice and modular-design codes. Project 2.1 (servo + PWM position) and Project 2.2 (potentiometer + range mapping) are the first coverage for Project 2 at all: new codes for parameterized, reusable procedures and for a sensor reading steering an output toward a target, plus extensions of the embedded/PWM and hardware-input-output codes Project 1.5 and the book's own chapter 8 already established."
+      },
+      {
+        "date": "2026-10-19",
+        "by": "Claude Sonnet 5",
+        "scope": "Project 2.2 was rewritten with entirely different content (potentiometer as a voltage divider, an 8-pixel NeoPixel bar, a color-by-voltage challenge, and a swap-in LDR with a resistance calculation, replacing the old potentiometer-drives-servo lesson). Re-reviewed every existing p2.2 locator against the new content rather than leaving stale claims in place.",
+        "note": "Removed p2.2 from three codes that no longer apply at all: apcsp 3.14 (the new lesson uses plain library imports, not a revisit of the three local-module-import styles Project 1.8 taught), csta2026 HS-PRO-PD-12 (no separate reusable file like the old servo.py exists anymore), and ca-ict-anchor C4.9 (the new lesson defines no functions of its own, just a flat loop). Rewrote the notes on five codes that still genuinely apply, now describing the real content: apcsp 3.3 and 3.8 (scaling a raw reading into volts and into a pixel count, inside the same kind of indefinite loop), castandards 6-8.DA.9 and ca-ict-anchor C9.3 (turning the knob, and later swapping in an LDR, as single-variable change-and-observe testing against NeoPixel output), and csta2026 S2-PHY-IO-02 (sensor reading steering pixel count and color, closer to the book's own chapter 8 fan-speed example than the old servo-angle framing was). Narrowed csta2026 S1-PHY-DD-03's p2.2 claim: the base potentiometer-to-NeoPixel mapping is now given as worked starter code, not a challenge, so the 'challenge with hints, no worked example' framing now applies specifically to the color-by-voltage challenge section, not the whole lesson."
       }
     ]
   },
@@ -70,7 +76,7 @@
           "p2.2"
         ],
         "strength": "partial",
-        "note": "Project 1.4 names and explains % (modulo) and // (floor division) directly, as operators students apply themselves to a binary-counting problem. Project 2.1's setangle challenge needs students to work out a linear scaling formula by hand, turning an angle from 0 to 180 into a duty_u16 value between two known endpoints. Project 2.2 runs the same kind of scaling backward, mapping a 0-65,535 potentiometer reading down onto a 0-180 angle range."
+        "note": "Project 1.4 names and explains % (modulo) and // (floor division) directly, as operators students apply themselves to a binary-counting problem. Project 2.1's setangle challenge needs students to work out a linear scaling formula by hand, turning an angle from 0 to 180 into a duty_u16 value between two known endpoints. Project 2.2 scales the same kind of raw ADC reading twice over, once into a 0-3.3V voltage and again into a 0-8 pixel count, then later derives an LDR's resistance from that same voltage with its own formula."
       },
       "3.5": {
         "locators": [
@@ -96,7 +102,7 @@
           "p2.2"
         ],
         "strength": "strong",
-        "note": "Project 1.3's closing challenge turns the same REPL commands just tried into a saved while True script that blinks forever -- an indefinite-iteration pattern, self-written rather than demonstrated. Project 1.4's blink, LED-sequence, and binary-counting scripts are further instances of the same loop. Project 1.5's breathing-LED script uses range() with a step other than 1 and, for the fade-down half, a negative step. Project 1.7's switch-watching loop runs forever, checking all three switches every pass and only printing when something changes. Project 2.2's knob-to-servo loop is the same indefinite pattern again, reading an analog input and writing an output on every single iteration rather than counting or blinking."
+        "note": "Project 1.3's closing challenge turns the same REPL commands just tried into a saved while True script that blinks forever -- an indefinite-iteration pattern, self-written rather than demonstrated. Project 1.4's blink, LED-sequence, and binary-counting scripts are further instances of the same loop. Project 1.5's breathing-LED script uses range() with a step other than 1 and, for the fade-down half, a negative step. Project 1.7's switch-watching loop runs forever, checking all three switches every pass and only printing when something changes. Project 2.2's knob-to-NeoPixel loop is the same indefinite pattern again, reading an analog input and redrawing the whole pixel bar on every single iteration rather than counting or blinking."
       },
       "3.9": {
         "locators": [
@@ -115,11 +121,10 @@
       "3.14": {
         "locators": [
           "p1.3",
-          "p1.8",
-          "p2.2"
+          "p1.8"
         ],
         "strength": "strong",
-        "note": "Project 1.3 has students call dir(machine) directly in the REPL to see what a built-in library actually offers before using any of it. Project 1.8 names and uses all three ways to reach code in another file -- import leds, from leds import binarycount, and from leds import * -- including the real tradeoff of the last one, that there's no way to tell at a glance which file a name like breathe1 actually came from. Project 2.2 reuses that same choice of import style for servo.py and machine, this time without walking through the three options again."
+        "note": "Project 1.3 has students call dir(machine) directly in the REPL to see what a built-in library actually offers before using any of it. Project 1.8 names and uses all three ways to reach code in another file -- import leds, from leds import binarycount, and from leds import * -- including the real tradeoff of the last one, that there's no way to tell at a glance which file a name like breathe1 actually came from."
       }
     },
     "castandards": {
@@ -143,7 +148,7 @@
           "p2.2"
         ],
         "strength": "strong",
-        "note": "Turning the potentiometer and watching the servo respond lets a student change one variable, the knob's position, and directly observe its effect on another, the servo's angle -- the same single-variable-at-a-time testing this standard describes, done with a physical dial instead of a spreadsheet."
+        "note": "Turning the potentiometer and watching the NeoPixel bar respond lets a student change one variable, the knob's position, and directly observe its effect on another, how many pixels light up and in what color -- the same single-variable-at-a-time testing this standard describes, done with a physical dial instead of a spreadsheet. Swapping the potentiometer for an LDR later, while running the exact same code, is the same idea taken further: the one thing that changed was the sensor itself, and everything downstream kept working."
       },
       "9-12.AP.14": {
         "locators": [
@@ -178,11 +183,10 @@
     "csta2026": {
       "HS-PRO-PD-12": {
         "locators": [
-          "p1.8",
-          "p2.2"
+          "p1.8"
         ],
         "strength": "strong",
-        "note": "Project 1.8 keeps the switch-picker's own logic separate from leds.py, the file it imports from, rather than folding every function into one script. Project 2.2 does the same with servo.py, keeping the angle-scaling math in its own reusable file, separate from the loop that reads the potentiometer."
+        "note": "Project 1.8 keeps the switch-picker's own logic separate from leds.py, the file it imports from, rather than folding every function into one script."
       },
       "HS-PRO-RD-17": {
         "locators": [
@@ -209,7 +213,7 @@
           "p2.2"
         ],
         "strength": "strong",
-        "note": "Projects 1.3, 1.4, and 1.5 are each built as a challenge with hints rather than a worked example: write a script that blinks an LED forever (1.3), sequence three LEDs or count in binary on them (1.4), or make an LED breathe by fading it up and down forever (1.5). Project 1.7 reads three switches and only prints when a reading changes, checked against what was seen on the previous pass. Project 1.8's switch-picker fires a different function depending on which switch is on, with nothing shown solved. Project 2.1's setangle and sweep challenges drive the servo's physical position directly from code students write and test against the real hardware. Project 2.2 closes the loop with a live sensor reading steering that same servo continuously, again with no worked example given."
+        "note": "Projects 1.3, 1.4, and 1.5 are each built as a challenge with hints rather than a worked example: write a script that blinks an LED forever (1.3), sequence three LEDs or count in binary on them (1.4), or make an LED breathe by fading it up and down forever (1.5). Project 1.7 reads three switches and only prints when a reading changes, checked against what was seen on the previous pass. Project 1.8's switch-picker fires a different function depending on which switch is on, with nothing shown solved. Project 2.1's setangle and sweep challenges drive the servo's physical position directly from code students write and test against the real hardware. Project 2.2's base potentiometer-to-NeoPixel mapping is given as working starter code, but its color-by-voltage challenge hands students an if/elif/else stub with TODO comments in place of the actual color values, tested against the real NeoPixel bar rather than shown solved."
       },
       "S1-PHY-HC-01": {
         "locators": [
@@ -224,7 +228,7 @@
           "p2.2"
         ],
         "strength": "strong",
-        "note": "Turning the potentiometer steers the servo toward whatever angle the knob currently represents -- the same sensor-reading-steers-an-output idea as the book's own chapter 8 fan-speed example, this time driving a physical position instead of an LED's brightness."
+        "note": "Turning the potentiometer, and later swapping in an LDR, steers how many NeoPixels light up and (in the challenge) what color they show -- the same sensor-reading-steers-an-output idea as the book's own chapter 8 fan-speed example, close enough to it that the lesson explicitly asks why the code never needed to change when the sensor itself did."
       }
     },
     "ca-ict-anchor": {
@@ -253,11 +257,10 @@
         "locators": [
           "p1.7",
           "p1.8",
-          "p2.1",
-          "p2.2"
+          "p2.1"
         ],
         "strength": "strong",
-        "note": "Project 1.7 combines a loop with a compound conditional to watch three switches at once. Project 1.8 adds elif chaining and reuses functions already written in leds.py rather than rewriting them. Project 2.1's setangle and sweep are reusable procedures built from that same toolkit. Project 2.2 reuses servo.py's own procedures again, inside a new loop."
+        "note": "Project 1.7 combines a loop with a compound conditional to watch three switches at once. Project 1.8 adds elif chaining and reuses functions already written in leds.py rather than rewriting them. Project 2.1's setangle and sweep are reusable procedures built from that same toolkit."
       },
       "C9.2": {
         "locators": [
@@ -274,7 +277,7 @@
           "p2.2"
         ],
         "strength": "strong",
-        "note": "Project 1.7's switches, project 2.1's servo, and project 2.2's potentiometer are each hardware capturing input or acting as output, with code doing the processing in between: switches read and compared against their last state, a servo driven to a commanded angle, a potentiometer's reading converted into that same angle."
+        "note": "Project 1.7's switches, project 2.1's servo, and project 2.2's potentiometer and NeoPixel bar are each hardware capturing input or acting as output, with code doing the processing in between: switches read and compared against their last state, a servo driven to a commanded angle, a potentiometer's (or later an LDR's) voltage reading converted into a pixel count and color."
       },
       "C9.4": {
         "locators": [

@@ -98,4 +98,4 @@ Try a few different angles between 0 and 180 once that one works.
 Add a second function to the same `servo.py` file, `sweep(servo)`, moving the servo from 0 to 180 and back, over and over, forever, using `setangle` to actually move it. This is the same up-then-down loop shape as Project 1.5's `breathe1`, just driving an angle instead of a brightness.
 </aside>
 
-Once your servo sweeps back and forth on its own, move on to [Project 2.2](/pico/project2-2-reading-a-potentiometer/), where a potentiometer takes over from the automatic sweep.
+Once your servo sweeps back and forth on its own, you're done with it for a little while. [Project 2.2](/pico/project2-2-reading-a-potentiometer/) picks up the potentiometer on its own terms, and a joystick brings the servo back after that.
