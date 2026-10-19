@@ -22,20 +22,34 @@
 // the word "pathway" in summary-mode link text for something that fits a
 // non-pathway carrier (e.g. "unit").
 var STANDARDS_FRAMEWORKS = {
-  apcsp: { file: 'apcsp-standards-reference.html', prefix: 'T', name: 'AP Computer Science Principles', catalog: 'apcsp' },
-  castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California Computer Science', catalog: 'castandards' },
-  csta2017: { file: 'csta2017-standards-reference.html', prefix: 'S', name: 'CSTA 2017', catalog: 'csta2017' },
-  csta2026: { file: 'csta2026-standards-reference.html', prefix: 'T', name: 'CSTA 2026', catalog: 'csta2026' },
-  'ca-ict-anchor': { file: 'ca-ict-anchor-standards-reference.html', prefix: 'T', name: 'CA CTE (ICT)', catalog: 'ca-ict-anchor' },
-  'iste-digital-citizen': { file: 'iste-digital-citizen-standards-reference.html', prefix: 'T', name: 'ISTE Digital Citizen', catalog: 'iste-digital-citizen' },
-  'unesco-mil': { file: 'unesco-mil-standards-reference.html', prefix: 'T', name: 'UNESCO Media and Information Literacy', catalog: 'unesco-mil' },
-  'unesco-ai-cfs': { file: 'unesco-ai-cfs-standards-reference.html', prefix: 'T', name: 'UNESCO AI Competency Framework for Students', catalog: 'unesco-ai-cfs' },
-  'aasl-engage': { file: 'aasl-engage-standards-reference.html', prefix: 'T', name: 'AASL Engage (National School Library Standards)', catalog: 'aasl-engage' },
-  casel: { file: 'casel-standards-reference.html', prefix: 'T', name: 'CASEL (Social-Emotional Learning)', catalog: 'casel' },
-  'cde-tsel': { file: 'cde-tsel-standards-reference.html', prefix: 'T', name: 'California Transformative SEL (T-SEL)', catalog: 'cde-tsel' },
-  ruler: { file: 'ruler-standards-reference.html', prefix: 'T', name: 'RULER Approach', catalog: 'ruler' },
-  'via-character': { file: 'via-character-standards-reference.html', prefix: 'T', name: 'VIA Character Strengths', catalog: 'via-character' }
+  apcsp: { file: 'apcsp-standards-reference.html', prefix: 'T', name: 'AP Computer Science Principles', catalog: 'apcsp', category: 'cs' },
+  castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California Computer Science', catalog: 'castandards', category: 'cs' },
+  csta2017: { file: 'csta2017-standards-reference.html', prefix: 'S', name: 'CSTA 2017', catalog: 'csta2017', category: 'cs' },
+  csta2026: { file: 'csta2026-standards-reference.html', prefix: 'T', name: 'CSTA 2026', catalog: 'csta2026', category: 'cs' },
+  'ca-ict-anchor': { file: 'ca-ict-anchor-standards-reference.html', prefix: 'T', name: 'CA CTE (ICT)', catalog: 'ca-ict-anchor', category: 'cs' },
+  'iste-digital-citizen': { file: 'iste-digital-citizen-standards-reference.html', prefix: 'T', name: 'ISTE Digital Citizen', catalog: 'iste-digital-citizen', category: 'lit' },
+  'unesco-mil': { file: 'unesco-mil-standards-reference.html', prefix: 'T', name: 'UNESCO Media and Information Literacy', catalog: 'unesco-mil', category: 'lit' },
+  'unesco-ai-cfs': { file: 'unesco-ai-cfs-standards-reference.html', prefix: 'T', name: 'UNESCO AI Competency Framework for Students', catalog: 'unesco-ai-cfs', category: 'lit' },
+  'aasl-engage': { file: 'aasl-engage-standards-reference.html', prefix: 'T', name: 'AASL Engage (National School Library Standards)', catalog: 'aasl-engage', category: 'lit' },
+  casel: { file: 'casel-standards-reference.html', prefix: 'T', name: 'CASEL (Social-Emotional Learning)', catalog: 'casel', category: 'sel' },
+  'cde-tsel': { file: 'cde-tsel-standards-reference.html', prefix: 'T', name: 'California Transformative SEL (T-SEL)', catalog: 'cde-tsel', category: 'sel' },
+  ruler: { file: 'ruler-standards-reference.html', prefix: 'T', name: 'RULER Approach', catalog: 'ruler', category: 'sel' },
+  'via-character': { file: 'via-character-standards-reference.html', prefix: 'T', name: 'VIA Character Strengths', catalog: 'via-character', category: 'sel' }
 };
+
+// Fixed display order, same 3-way split the /standards/ coverage map uses
+// for its own top-level chevrons (Computer Science & CTE / Digital
+// Citizenship, Media Literacy & AI Literacy / Social-Emotional Learning) --
+// shorter names here since this widget is a small per-lesson footer, not a
+// full page. A category only renders (see the render step below) when at
+// least one of its frameworks actually matched this lesson/carrier; with
+// 13 frameworks now live, a lesson touching several of them read as a flat
+// wall of <h3>s without this grouping.
+var STANDARDS_CATEGORIES = [
+  { id: 'cs', name: 'Computer Science' },
+  { id: 'lit', name: 'Digital Literacy' },
+  { id: 'sel', name: 'SEL' }
+];
 
 function escapeHtml(s) {
   var div = document.createElement('div');
@@ -126,21 +140,30 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
     })
     .then(function (result) {
       if (!result) return;
-      var html = '';
+      var byCategory = {};
       result.groups.forEach(function (g, i) {
         var meta = STANDARDS_FRAMEWORKS[g.fw];
         var catalogData = result.catalogs[i];
-        html += '<h3>' + escapeHtml(meta.name) + '</h3><ul>';
+        var frameworkHtml = '<h3>' + escapeHtml(meta.name) + '</h3><ul>';
         g.items.forEach(function (item) {
           var url = base + '/standards/' + meta.file + '#' + meta.prefix + '-' + encodeURIComponent(item.code);
           var label = catalogLabel(g.fw, catalogData, item.code);
-          html += '<li><a href="' + url + '">' + escapeHtml(item.code) + '</a>' +
+          frameworkHtml += '<li><a href="' + url + '">' + escapeHtml(item.code) + '</a>' +
             (label ? ' — <em>' + escapeHtml(label) + '</em>' : '') +
             (item.note ? '<p class="standards-note">' + escapeHtml(item.note) + '</p>' : '') +
             '</li>';
         });
-        html += '</ul>';
+        frameworkHtml += '</ul>';
+        (byCategory[meta.category] = byCategory[meta.category] || []).push(frameworkHtml);
       });
+      var html = STANDARDS_CATEGORIES.map(function (cat) {
+        var frameworksHtml = byCategory[cat.id];
+        if (!frameworksHtml || !frameworksHtml.length) return '';
+        return '<details class="standards-alignment-group" open>' +
+          '<summary>' + escapeHtml(cat.name) + '</summary>' +
+          frameworksHtml.join('') +
+          '</details>';
+      }).join('');
       if (carrierSlug) {
         var mapUrl = base + '/standards/?only=' + encodeURIComponent(carrierSlug) + '&view=open-all';
         var html2suffix;
@@ -169,3 +192,20 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
     })
     .catch(function () {});
 });
+
+// The three category groups default open, but a reader can still close one
+// by hand -- and a standards_open page (the one variant that actually
+// prints, see main.scss's print rules) would then silently print with that
+// category missing. Same force-open/restore pattern as porttack.com's own
+// #git-history and the /standards/ coverage map's beforeprint handler.
+(function () {
+  var reopened = [];
+  window.addEventListener('beforeprint', function () {
+    reopened = Array.prototype.slice.call(document.querySelectorAll('.standards-alignment-group:not([open])'));
+    reopened.forEach(function (d) { d.setAttribute('open', ''); });
+  });
+  window.addEventListener('afterprint', function () {
+    reopened.forEach(function (d) { d.removeAttribute('open'); });
+    reopened = [];
+  });
+})();

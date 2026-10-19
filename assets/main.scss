@@ -1357,6 +1357,18 @@ figure.figure-small img {
   }
 }
 
+// print_attribution: false (page front matter) drops the attribution line
+// from printed output only -- it still shows on screen. For a tool page
+// like a generator, the printout is a stack of student boards, not "the
+// page" itself, and the line has nowhere good to land once it's printing
+// many copies rather than one; a true repeating page footer isn't
+// reliable enough across browsers to build instead.
+@media print {
+  .no-print-attribution .provenance {
+    display: none;
+  }
+}
+
 .standards-alignment {
   font-size: 0.85em;
   color: $grey-color-dark;
@@ -1387,6 +1399,47 @@ figure.figure-small img {
   .standards-alignment-links {
     margin: 1em 0 0;
     font-style: italic;
+  }
+}
+
+// The Computer Science / Digital Literacy / SEL chevron each framework
+// matched for this lesson gets grouped under -- same arrow mechanism as
+// .hint-toggle (native marker hidden, a rotating ▸ in its place), just
+// lighter: no border/box of its own, since this already nests inside the
+// small grey widget (or, in standards-alignment-open, inside a plain page
+// section) and a second boxed-in-a-box reads as heavier than the grouping
+// is worth. Font size/color are relative (em/inherit) on purpose, so this
+// one ruleset works unchanged in both the small widget and the full-size
+// standards-alignment-open variant below, rather than needing its own copy
+// in each.
+.standards-alignment-group {
+  margin: 0.8em 0;
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    &::before {
+      content: "\25B8";
+      display: inline-block;
+      transition: transform 0.15s ease;
+    }
+  }
+
+  &[open] > summary::before {
+    transform: rotate(90deg);
+  }
+
+  h3:first-of-type {
+    margin-top: 0.5em;
   }
 }
 
@@ -1527,6 +1580,15 @@ table.checkoff {
 
   &.checkoff-voltage td:not(:first-child) {
     height: 2em;
+  }
+
+  // A worked example already filled in, so students know the expected
+  // answer format before their own first blank row. The "Example:" text
+  // in the cell carries the meaning on its own (in case styling is lost,
+  // e.g. in the Word export); this is just a visual reinforcement.
+  tr.example-row td {
+    font-style: italic;
+    background: $grey-color-light;
   }
 
   // Vocabulary tables (term + blank definition): the term column only ever
