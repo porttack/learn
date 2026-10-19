@@ -87,6 +87,29 @@
     'curriculum-content one.) Nothing here amounts to "California requires ' +
     'this be taught," which is exactly why this corner of the standards ' +
     'landscape stays this sparse.</p>';
+
+  // Explainer shown inside the "Social-Emotional Learning" group (added
+  // 2026-10-19, nested the same day CASEL/CDE-T-SEL/RULER/VIA were added,
+  // after first trying them as four flat top-level panels and deciding that
+  // read as too prominent for what this program actually is). Unlike the
+  // digital-citizenship group above, these four aren't thin fragments
+  // standing in for a missing coded standard -- CASEL and VIA especially are
+  // real frameworks in their own right -- so this explainer isn't making a
+  // "here's the gap" case, just the honest one: this is a CS program, not an
+  // SEL program, and this group exists because some of its content happens
+  // to teach collaboration and decision-making well, not because SEL is a
+  // course goal.
+  var SEL_EXPLAINER_HTML =
+    '<p>This program’s three courses are Exploring Computer Science, AP ' +
+    'Computer Science Principles, and Programming with Robotics, and none of ' +
+    'them is an SEL or character-education class. The four frameworks ' +
+    'grouped here are cataloged because some of this site’s content ' +
+    '(Kagan cooperative-learning structures, ROV Robotics’ ' +
+    'engineering-company roles and agile workflow) genuinely teaches ' +
+    'collaboration, team dynamics, and decision-making, and the CS-standards ' +
+    'panels above have little language for that, not because this program ' +
+    'is built around social-emotional learning. That’s also why this ' +
+    'group sits at the bottom of the page, after every CS framework.</p>';
   var CHAP_REF_RE = /\bchap(\d{2})([a-z]?)\b/g;
 
   // The sources panel is a <details>, closed by default in the markup --
@@ -753,7 +776,11 @@
       reportGroupedSection(catalogs['iste-digital-citizen'], covered('iste-digital-citizen'), meta, 'lit', 'ISTE Digital Citizen', 'iste-digital-citizen-standards-reference.html'),
       reportGroupedSection(catalogs['unesco-mil'], covered('unesco-mil'), meta, 'lit', 'UNESCO Media and Information Literacy', 'unesco-mil-standards-reference.html'),
       reportGroupedSection(catalogs['unesco-ai-cfs'], covered('unesco-ai-cfs'), meta, 'lit', 'UNESCO AI Competency Framework for Students', 'unesco-ai-cfs-standards-reference.html'),
-      reportGroupedSection(catalogs['aasl-engage'], covered('aasl-engage'), meta, 'lit', 'AASL Engage (National School Library Standards)', 'aasl-engage-standards-reference.html')
+      reportGroupedSection(catalogs['aasl-engage'], covered('aasl-engage'), meta, 'lit', 'AASL Engage (National School Library Standards)', 'aasl-engage-standards-reference.html'),
+      reportGroupedSection(catalogs.casel, covered('casel'), meta, 'sel', 'CASEL (Social-Emotional Learning)', 'casel-standards-reference.html'),
+      reportGroupedSection(catalogs['cde-tsel'], covered('cde-tsel'), meta, 'sel', 'California Transformative SEL (T-SEL)', 'cde-tsel-standards-reference.html'),
+      reportGroupedSection(catalogs.ruler, covered('ruler'), meta, 'sel', 'RULER Approach', 'ruler-standards-reference.html'),
+      reportGroupedSection(catalogs['via-character'], covered('via-character'), meta, 'sel', 'VIA Character Strengths', 'via-character-standards-reference.html')
     ].join('\n');
   }
 
@@ -1362,7 +1389,27 @@
         litPanels.map(panelHtml).join('\n') +
         '</details></div>';
 
-      document.getElementById('panels').innerHTML = panels.map(panelHtml).join('\n') + '\n' + litGroupHtml;
+      // Added 2026-10-19, nested the same way as the digital-citizenship group
+      // above but for a different reason: these four aren't thin fragments
+      // standing in for a missing coded standard (CASEL and VIA especially are
+      // real frameworks on their own), they're grouped because they're all
+      // orthogonal to this program's actual subject -- see SEL_EXPLAINER_HTML.
+      // Placed last, after every CS panel and after the digital-citizenship
+      // group, to match what this program actually teaches.
+      var selPanels = [
+        ['CASEL (Social-Emotional Learning)', renderGroupedPanel(catalogs.casel, 'casel'), 'sel', 'casel-standards-reference.html', '2020'],
+        ['California Transformative SEL (T-SEL)', renderGroupedPanel(catalogs['cde-tsel'], 'cde-tsel'), 'sel', 'cde-tsel-standards-reference.html', '2021'],
+        ['RULER Approach', renderGroupedPanel(catalogs.ruler, 'ruler'), 'sel', 'ruler-standards-reference.html', '2011'],
+        ['VIA Character Strengths', renderGroupedPanel(catalogs['via-character'], 'via-character'), 'sel', 'via-character-standards-reference.html', '2004'],
+      ];
+      var selGroupHtml =
+        '<div class="cov-panel" data-panel-category="sel"><details open>' +
+        '<summary><h2>Social-Emotional Learning</h2></summary>' +
+        '<div class="cov-group-explainer">' + SEL_EXPLAINER_HTML + '</div>' +
+        selPanels.map(panelHtml).join('\n') +
+        '</details></div>';
+
+      document.getElementById('panels').innerHTML = panels.map(panelHtml).join('\n') + '\n' + litGroupHtml + '\n' + selGroupHtml;
       // Without this, a click on the link bubbles up to <summary> and also
       // toggles the panel open/closed -- the same fix already applied to the
       // sidebar's source-title links, needed here for the same reason.

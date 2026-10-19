@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "source": "The RULER Approach to Social and Emotional Learning (Yale Center for Emotional Intelligence / Yale Child Study Center)",
+    "url": "https://rulerapproach.org/about/what-is-ruler/",
+    "year": 2011,
+    "extracted": "2026-10-19",
+    "license_note": "(c) Yale University, all rights reserved. RULER is a CASEL SELect program; implementing it as a full school program (the Mood Meter app, printed Charter/Blueprint materials, staff training) is a licensed partnership with Yale, not something this catalog grants. Only the publicly described skill and tool names are paraphrased here, never Yale's own text, and nothing here substitutes for that licensed program.",
+    "scope_note": "RULER is narrower than CASEL: it's specifically an emotional-intelligence model (not the broader relationship/decision-making territory CASEL and CDE's T-SEL also cover), built around one five-letter acronym plus four named tools for putting it into practice. 2011 is the earliest confirmed published source using \"The RULER Approach to Social and Emotional Learning\" as a named framework (Brackett & Kremenitzer, cited by Yale's own team pages); RULER's development work at Yale predates that publication, but no earlier definitive founding year could be confirmed, so this project doesn't assert one.",
+    "codes_note": "Codes are this project's own three-letter mnemonics, not an official RULER numbering -- RULER has no codes of its own, only the five skill names (whose first letters spell the acronym) and four tool names."
+  },
+  "groups": [
+    {
+      "name": "The Five RULER Skills",
+      "paraphrase": "The five skills of emotional intelligence that give RULER its name, meant to be practiced in that order: notice an emotion, make sense of it, name it precisely, show it appropriately, then manage it.",
+      "items": [
+        { "code": "REC", "name": "Recognizing", "paraphrase": "Recognizing emotions means picking up on the verbal, physical, and tonal cues that signal what someone, including yourself, is actually feeling, before trying to do anything about it." },
+        { "code": "UND", "name": "Understanding", "paraphrase": "Understanding an emotion means working out what caused it and what it's likely to lead to, not just noticing that it's there." },
+        { "code": "LAB", "name": "Labeling", "paraphrase": "Labeling an emotion precisely, rather than reaching for a vague word like \"bad\" or \"fine,\" makes it easier to actually talk about and manage." },
+        { "code": "EXP", "name": "Expressing", "paraphrase": "Expressing an emotion well means showing it in a way that fits the social and cultural setting you're in, rather than suppressing it or venting it without regard for context." },
+        { "code": "REG", "name": "Regulating", "paraphrase": "Regulating an emotion means having a real strategy for managing its intensity, so it doesn't derail a goal you're working toward." }
+      ]
+    },
+    {
+      "name": "Core Tools",
+      "paraphrase": "RULER's four named tools for putting the five skills into practice in a classroom or group.",
+      "items": [
+        { "code": "CHARTER", "name": "Charter", "paraphrase": "A Charter is a group's own written agreement about how its members want to feel and what they'll do to help each other feel that way." },
+        { "code": "MOOD", "name": "Mood Meter", "paraphrase": "The Mood Meter builds emotion vocabulary and self-awareness, and a personal range of strategies for regulating whatever emotion shows up." },
+        { "code": "META", "name": "Meta-Moment", "paraphrase": "A Meta-Moment is a deliberate pause between an emotional trigger and a response, used to choose a reaction that matches who you actually want to be rather than reacting on impulse." },
+        { "code": "BLUEPRINT", "name": "Blueprint", "paraphrase": "A Blueprint is a structured way to reflect on a specific conflict and plan how to repair it, building empathy for everyone it affected along the way." }
+      ]
+    }
+  ]
+}

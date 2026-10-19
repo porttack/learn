@@ -1,0 +1,84 @@
+{
+  "meta": {
+    "source": "CASEL's SEL Framework (Collaborative for Academic, Social, and Emotional Learning), the \"CASEL wheel,\" 2020 revision",
+    "url": "https://casel.org/core-competencies/",
+    "year": 2020,
+    "extracted": "2026-10-19",
+    "license_note": "CASEL's SEL Framework (c) CASEL, all rights reserved; CASEL's own terms permit noncommercial use in preschool-through-high-school education, which is the only use made of it here. The five competency names and the official sub-competency names are CASEL's; every paraphrase here is written for this project, never CASEL's own text.",
+    "scope_note": "CASEL is a general social-and-emotional-learning framework, not a CS-specific one -- it's cataloged here as an orthogonal standard a lesson can also be checked against, alongside the CS/digital-literacy frameworks above. The sub-competency list below reflects CASEL's current (2020-revision) wheel, confirmed directly against casel.org on the extraction date; an earlier (January 2017) version of the wheel used a shorter, less equity-explicit list under each competency, so a secondary source describing CASEL's sub-competencies may not match this file if it's citing that older wheel.",
+    "codes_note": "Codes are this project's own sequential numbering, not CASEL's: <prefix>.<n> per competency, in the order CASEL's own wheel lists them within that competency (SA=Self-Awareness, SM=Self-Management, SOC=Social Awareness, REL=Relationship Skills, RDM=Responsible Decision-Making). CASEL does not number or code its sub-competencies itself, only names them, the same situation unesco-mil was in.",
+    "settings_note": "CASEL frames these five competencies as taught and reinforced across four coordinated settings, not in a classroom alone: classrooms, schools, homes, and communities."
+  },
+  "groups": [
+    {
+      "name": "Self-Awareness",
+      "paraphrase": "Understanding your own emotions, values, and identity well enough to see how they shape your behavior, and seeing yourself accurately with a confident, growth-oriented outlook.",
+      "items": [
+        { "code": "SA.1", "name": "Integrating personal and social identities", "paraphrase": "A student's sense of self blends their personal identity with the social identities, family, culture, community, they're part of, not one or the other alone." },
+        { "code": "SA.2", "name": "Identifying personal, cultural, and linguistic assets", "paraphrase": "Recognizing the strengths that come from a student's own background, culture, and language is part of self-awareness, not something separate from it." },
+        { "code": "SA.3", "name": "Identifying one's emotions", "paraphrase": "Naming what you're actually feeling, accurately and specifically, is the starting point for managing it." },
+        { "code": "SA.4", "name": "Demonstrating honesty and integrity", "paraphrase": "Being self-aware includes being honest with yourself and others about who you are and what you value." },
+        { "code": "SA.5", "name": "Linking feelings, values, and thoughts", "paraphrase": "Noticing how an emotion, a belief, and a thought connect to each other is what makes self-awareness more than just naming a feeling in isolation." },
+        { "code": "SA.6", "name": "Examining prejudices and biases", "paraphrase": "Looking honestly at your own prejudices and biases, rather than assuming you don't have any, is part of understanding how your thinking shapes your behavior." },
+        { "code": "SA.7", "name": "Experiencing self-efficacy", "paraphrase": "Believing you're capable of doing something well is what lets a student actually attempt it." },
+        { "code": "SA.8", "name": "Having a growth mindset", "paraphrase": "Treating ability as something that develops with effort, not a fixed trait, changes how a student responds to a setback." },
+        { "code": "SA.9", "name": "Developing interests and a sense of purpose", "paraphrase": "Knowing what you care about and why gives direction to the choices you make." }
+      ]
+    },
+    {
+      "name": "Self-Management",
+      "paraphrase": "Regulating your own emotions, thoughts, and behavior well enough to work toward a goal, even under stress.",
+      "items": [
+        { "code": "SM.1", "name": "Managing one's emotions", "paraphrase": "Regulating a strong emotion in the moment, rather than being controlled by it, is a learnable skill." },
+        { "code": "SM.2", "name": "Identifying and using stress management strategies", "paraphrase": "Recognizing stress and having a real strategy for it, not just getting through it, is part of self-management." },
+        { "code": "SM.3", "name": "Exhibiting self-discipline and self-motivation", "paraphrase": "Following through on something without someone else pushing you to is what separates self-management from just complying." },
+        { "code": "SM.4", "name": "Setting personal and collective goals", "paraphrase": "Setting a goal for yourself and setting one for a group you're part of are related but separate skills, both part of self-management." },
+        { "code": "SM.5", "name": "Using planning and organizational skills", "paraphrase": "Breaking a goal into steps and keeping track of them is what turns an intention into a finished result." },
+        { "code": "SM.6", "name": "Showing the courage to take initiative", "paraphrase": "Starting something before being told to, even when the outcome is uncertain, takes a kind of courage that's part of self-management." },
+        { "code": "SM.7", "name": "Demonstrating personal and collective agency", "paraphrase": "Believing your own actions, and your group's actions together, can actually change an outcome is what makes effort feel worthwhile." }
+      ]
+    },
+    {
+      "name": "Social Awareness",
+      "paraphrase": "Understanding and empathizing with people whose backgrounds, cultures, and circumstances differ from your own, including the norms and systems that shape their situation.",
+      "items": [
+        { "code": "SOC.1", "name": "Taking others' perspectives", "paraphrase": "Genuinely considering how a situation looks from someone else's point of view, not just assuming your own view is universal." },
+        { "code": "SOC.2", "name": "Recognizing strengths in others", "paraphrase": "Noticing what someone else is good at is part of social awareness, not just noticing their emotions." },
+        { "code": "SOC.3", "name": "Demonstrating empathy and compassion", "paraphrase": "Empathy is understanding what someone else feels; compassion is caring enough to want to help." },
+        { "code": "SOC.4", "name": "Showing concern for the feelings of others", "paraphrase": "Paying attention to how your words or actions land on someone else is a basic form of social awareness." },
+        { "code": "SOC.5", "name": "Understanding and expressing gratitude", "paraphrase": "Recognizing when someone has helped you, and saying so, is part of being socially aware, not just being polite." },
+        { "code": "SOC.6", "name": "Identifying diverse social norms, including unjust ones", "paraphrase": "Different settings have different unwritten rules for behavior, and some of those rules are themselves unfair, worth noticing rather than just following." },
+        { "code": "SOC.7", "name": "Recognizing situational demands and opportunities", "paraphrase": "Reading what a specific situation actually calls for, rather than applying one fixed script everywhere, is part of social awareness." },
+        { "code": "SOC.8", "name": "Understanding the influences of organizations and systems on behavior", "paraphrase": "People's behavior is shaped by the institutions and systems around them, not just by personal choice alone." }
+      ]
+    },
+    {
+      "name": "Relationship Skills",
+      "paraphrase": "Building and keeping healthy relationships across a range of people and groups, through clear communication, cooperation, and constructive conflict.",
+      "items": [
+        { "code": "REL.1", "name": "Communicating effectively", "paraphrase": "Getting your actual meaning across, and listening well enough to receive someone else's, is the foundation every other relationship skill builds on." },
+        { "code": "REL.2", "name": "Developing positive relationships", "paraphrase": "Building a relationship that's actually healthy takes deliberate effort, not just spending time near someone." },
+        { "code": "REL.3", "name": "Demonstrating cultural competency", "paraphrase": "Working well across cultural differences means knowing enough to engage respectfully, not just being polite in the abstract." },
+        { "code": "REL.4", "name": "Practicing teamwork and collaborative problem-solving", "paraphrase": "Solving a problem as a team is a different skill from solving the same problem alone, and it has to be practiced on its own." },
+        { "code": "REL.5", "name": "Resolving conflicts constructively", "paraphrase": "Working through a disagreement so both sides actually come out better, instead of just ending the argument, is a specific skill." },
+        { "code": "REL.6", "name": "Resisting negative social pressure", "paraphrase": "Saying no to pressure from a peer group takes a skill of its own, separate from knowing the right answer." },
+        { "code": "REL.7", "name": "Showing leadership in groups", "paraphrase": "Leading a group well means helping it function better, not just being the one in charge." },
+        { "code": "REL.8", "name": "Seeking or offering support and help when needed", "paraphrase": "Knowing when to ask for help, and when to offer it, is a relationship skill most people have to learn deliberately." },
+        { "code": "REL.9", "name": "Standing up for the rights of others", "paraphrase": "Speaking up when someone else is being treated unfairly, even when it doesn't affect you directly, is part of maintaining a healthy relationship with a community." }
+      ]
+    },
+    {
+      "name": "Responsible Decision-Making",
+      "paraphrase": "Making a thoughtful choice about your own behavior and social interactions by weighing evidence, ethics, safety, and the well-being of everyone affected.",
+      "items": [
+        { "code": "RDM.1", "name": "Demonstrating curiosity and open-mindedness", "paraphrase": "Being willing to ask a real question and consider an answer you didn't expect is what makes a decision actually informed." },
+        { "code": "RDM.2", "name": "Learning how to make a reasoned judgment after analyzing information, data, and facts", "paraphrase": "Working from evidence to a conclusion, rather than from a gut reaction, is the core move of responsible decision-making." },
+        { "code": "RDM.3", "name": "Identifying solutions for personal and social problems", "paraphrase": "Generating real options for a problem, not just naming that a problem exists, is where responsible decision-making actually does its work." },
+        { "code": "RDM.4", "name": "Anticipating and evaluating the consequences of one's actions", "paraphrase": "Thinking ahead to what a choice will actually lead to, for yourself and for other people, before making it." },
+        { "code": "RDM.5", "name": "Recognizing how critical thinking skills are useful both inside and outside of school", "paraphrase": "Critical thinking taught in a classroom is meant to transfer to decisions made outside it, not stay confined to schoolwork." },
+        { "code": "RDM.6", "name": "Reflecting on one's role to promote personal, family, and community well-being", "paraphrase": "Looking back at how your own choices affected the people and communities around you, not just yourself, is part of making better ones next time." },
+        { "code": "RDM.7", "name": "Evaluating personal, interpersonal, community, and institutional impacts", "paraphrase": "A single decision can ripple out from an individual to a relationship to a whole community or institution, and responsible decision-making means weighing all of those levels, not just the nearest one." }
+      ]
+    }
+  ]
+}

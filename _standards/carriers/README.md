@@ -63,7 +63,10 @@ want it; you don't need it to write a carrier file.
 **Framework keys** (spelled exactly): `apcsp`, `castandards`, `csta2017`,
 `csta2026`, `ca-ict-anchor`, plus four added 2026-10-03 for digital
 citizenship / media literacy / AI literacy: `iste-digital-citizen`,
-`unesco-mil`, `unesco-ai-cfs`, `aasl-engage`.
+`unesco-mil`, `unesco-ai-cfs`, `aasl-engage`, plus four more added 2026-10-19,
+orthogonal non-CS SEL/character frameworks — see `../README.md`'s
+"SEL/character catalogs" section before aligning anything to any of them:
+`casel`, `cde-tsel`, `ruler`, `via-character`.
 
 **Codes** must match the catalog exactly, including any grade-band prefix:
 `castandards` codes look like `9-12.AP.14` or `6-8.CS.1` (the grade band is
@@ -76,10 +79,24 @@ codes look like `4.1.1` (UNESCO's own `4.<level>.<dimension>` scheme: level
 1=Understand/2=Apply/3=Create, dimension 1=Human-centred mindset/2=Ethics of
 AI/3=AI techniques and applications/4=AI system design). `aasl-engage` codes
 look like `VI.A.1` (AASL's own `VI.<domain letter>.<n>` scheme, all under the
-VI. Engage Shared Foundation: A=Think, B=Create, C=Share, D=Grow). **Only
-include a code if it actually exists in that framework's catalog file** — if
-you have the catalog file, grep it; if you don't, ask rather than guess a
-code.
+VI. Engage Shared Foundation: A=Think, B=Create, C=Share, D=Grow). `casel`
+codes look like `SA.1` or `RDM.3` — this project's own sequential numbering
+per competency (SA=Self-Awareness, SM=Self-Management, SOC=Social Awareness,
+REL=Relationship Skills, RDM=Responsible Decision-Making), since CASEL itself
+only names its sub-competencies, never numbers them. `cde-tsel` codes look
+like `3.BE` (`<competency-number 1-5>.<ID/BE/AG>`) — the competency number is
+CDE's own, the area abbreviation (Identity/Belonging/Agency) is this
+project's rollup of CDE's finer lettered indicators; see `cde-tsel.json`'s
+own `scope_note` before citing it, since it deliberately doesn't go down to
+CDE's full per-letter, per-grade-band table. `ruler` codes are this project's
+own three-to-nine-letter mnemonics (`REC`, `UND`, `LAB`, `EXP`, `REG` for the
+five skills; `CHARTER`, `MOOD`, `META`, `BLUEPRINT` for the four tools) —
+RULER has no codes of its own. `via-character` codes look like `WIS.3` or
+`TEM.1` (`<virtue-abbreviation>.<n>`), this project's own sequential
+numbering per virtue — VIA names its 24 strengths but doesn't number them
+either. **Only include a code if it actually exists in that framework's
+catalog file** — if you have the catalog file, grep it; if you don't, ask
+rather than guess a code.
 
 ## Coverage entry fields
 

@@ -3,13 +3,16 @@
 Canonical catalog of standard codes and original paraphrases: `apcsp.json`,
 `castandards.json`, `csta2026.json`, `csta2017.json`, `ca-ict-anchor.json`,
 `iste-digital-citizen.json`, `unesco-mil.json`, `unesco-ai-cfs.json`,
-`aasl-engage.json`, `crosswalk.json`, `crosswalk-castandards-csta2017.json`.
-Each contains only official codes and paraphrases written for this project —
-never verbatim framework text. The third-party framework documents these are
-built from (the AP CSP CED, California K-12 CS Standards, CSTA 2026, CSTA
-2017, CA CTE ICT, ISTE Standards for Students, UNESCO's MIL Curricula
-Guidelines, UNESCO's AI Competency Framework for Students, AASL's National
-School Library Standards) are never committed here.
+`aasl-engage.json`, `casel.json`, `cde-tsel.json`, `ruler.json`,
+`via-character.json`, `crosswalk.json`, `crosswalk-castandards-csta2017.json`.
+Each contains only official codes/names and paraphrases written for this
+project — never verbatim framework text. The third-party framework documents
+these are built from (the AP CSP CED, California K-12 CS Standards, CSTA
+2026, CSTA 2017, CA CTE ICT, ISTE Standards for Students, UNESCO's MIL
+Curricula Guidelines, UNESCO's AI Competency Framework for Students, AASL's
+National School Library Standards, CASEL's SEL Framework, California's T-SEL
+Competencies, the RULER Approach, VIA's Classification of Character
+Strengths and Virtues) are never committed here.
 
 ## The "grouped" shape
 
@@ -70,6 +73,73 @@ Level 2 counterpart at all, CA's core 9-12 AP strand draws entirely from
 CSTA's Level 3A (all seventeen of Level 3B's AP standards go unindexed on the
 CA side), and a few CA 9-12 standards turn out to renumber or blend CSTA's
 Level 3A/3B standards in ways the code alone doesn't reveal.
+
+## SEL/character catalogs: orthogonal, non-CS, grouped at the bottom
+
+`casel.json`, `cde-tsel.json`, `ruler.json`, and `via-character.json` are
+four SEL/character-strengths frameworks, cataloged starting 2026-10-19. All
+four reuse the same grouped shape as the four digital-literacy catalogs
+above, and on `/standards/` they nest the same way those four do: one shared
+"Social-Emotional Learning" panel (`assets/js/standards-coverage.js`'s
+`selPanels`/`selGroupHtml`/`SEL_EXPLAINER_HTML`, parallel to
+`litPanels`/`litGroupHtml`/`LIT_EXPLAINER_HTML`), with the four frameworks as
+nested sub-panels inside it. Unlike the digital-citizenship group, this
+nesting isn't a "here's the gap" case — CASEL and VIA in particular each
+read as a real framework in their own right, not a thin fragment standing in
+for a missing coded standard. It's grouped for a different reason, stated
+plainly in `SEL_EXPLAINER_HTML`: this is a CS program, not an SEL program,
+so these four get grouped together and placed last on the page, after every
+CS framework and after the digital-citizenship group, to match what the
+program actually teaches. Each framework still gets its own standalone
+static reference page (`tools/build_alignment.py`'s `render_grouped` plus
+the shared `orthogonal_see_also` footer) and its own `sel` category in the
+Open all/Close all view presets, exactly like the four digital-literacy
+catalogs do with `lit`.
+
+- **`casel.json`** — CASEL's SEL Framework (the "CASEL wheel"): five
+  competencies (Self-Awareness/Self-Management/Social Awareness/Relationship
+  Skills/Responsible Decision-Making), 40 sub-competencies total. CASEL
+  doesn't number or code its sub-competencies itself, only names them, the
+  same situation `unesco-mil` was in; codes like `SA.1`/`RDM.7` are this
+  project's own sequential numbering per competency, documented as such in
+  `codes_note`.
+- **`cde-tsel.json`** — California's Transformative SEL (T-SEL)
+  Competencies: the same five CASEL competencies run through three CDE-named
+  lenses, Identity/Belonging/Agency, each with its own grade-differentiated
+  (TK-2/3-5/6-8) indicators. This catalog aggregates up to the
+  competency-by-area level (15 entries), not CDE's full lettered,
+  per-grade-band indicator table — see its `scope_note` for exactly why
+  (CDE's own site blocked automated access past its top-level summary page,
+  so the indicator text behind this catalog was cross-checked against a
+  third-party curriculum-alignment chart reproducing CDE's own wording
+  instead, and the 9-12 band isn't verified or represented at all). CDE's
+  other T-SEL half, "Conditions for Thriving" (practices/policies for the
+  adults around a student), is deliberately excluded for the same reason
+  Character.org's 11 Principles never got cataloged: it's a rubric for
+  adult/system practice, not a student-skill standard a lesson aligns to.
+- **`ruler.json`** — Yale's RULER Approach: a narrower, emotional-intelligence-specific
+  model (Recognizing/Understanding/Labeling/Expressing/Regulating) plus four
+  named implementation tools (Charter, Mood Meter, Meta-Moment, Blueprint).
+  Only the publicly described skill/tool framework is paraphrased here, not
+  Yale's licensed program materials (the actual Mood Meter app, printed
+  Charter/Blueprint templates) — see its `license_note`.
+- **`via-character.json`** — VIA's Classification of Character Strengths and
+  Virtues: 6 virtues, 24 strengths, from positive-psychology research
+  (Peterson & Seligman, 2004) rather than a K-12 SEL program. Everyone is
+  understood to carry all 24 strengths to some degree, not master them in
+  sequence, unlike the competency frameworks above.
+
+This whole vein was added as a motivated case, not a one-off:
+`kagan-teambuilding.json`'s `alignment_log` (see `carriers/`) already shows
+every CS-standard match for Kagan's cooperative-learning structures getting
+downgraded to `related` because CSTA/CA CS standards don't actually teach
+team dynamics or consensus-building, just adjacent to them. CASEL's
+Relationship Skills, CDE's Agency lens, and VIA's Teamwork/Leadership
+strengths are all much more direct fits for that content, and likely for ROV
+Robotics' engineering-company roles and agile/status-report material too.
+Expect more catalogs in this same vein over time; each should get its own
+flat panel and its own `codes_note` honesty about whatever numbering scheme
+it invents, the same way these four do.
 
 **This directory used to live in `working-in-python`.** It moved here because
 it stopped being book-specific the moment a second content source

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VIA Character Strengths Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
+}
+.page-toggle-label input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
+<a href="/electronics101/"><span class="site-menu-item-icon" aria-hidden="true"></span>Electronics 101</a>
+<a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
+<a href="/python3d/"><span class="site-menu-item-icon" aria-hidden="true"></span>Python in 3D</a>
+<a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<ul>
+<li class="topic-link"><a href="#grp-group-0">Wisdom</a></li>
+<li class="topic-link"><a href="#grp-group-1">Courage</a></li>
+<li class="topic-link"><a href="#grp-group-2">Humanity</a></li>
+<li class="topic-link"><a href="#grp-group-3">Justice</a></li>
+<li class="topic-link"><a href="#grp-group-4">Temperance</a></li>
+<li class="topic-link"><a href="#grp-group-5">Transcendence</a></li>
+</ul>
+</nav>
+<main>
+<h1>VIA Character Strengths Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of <em>The VIA Classification of Character Strengths and Virtues (VIA Institute on Character; originating research by Christopher Peterson and Martin Seligman, Character Strengths and Virtues: A Handbook and Classification, 2004)</em> (2004). <strong>Scope.</strong> VIA's classification is a general character-strengths taxonomy, not a CS-specific or even SEL-specific one. Unlike CASEL/CDE's T-SEL/RULER, which group skills by emotional or social competency, VIA groups strengths by classical virtue, and everyone is understood to carry all 24 strengths to some degree rather than mastering them in sequence. Teamwork, Leadership, Perseverance, Judgment, and Creativity read as likely strong candidates for a future carrier alignment pass against this project's existing Kagan/ROV Robotics content. <strong>Codes.</strong> Codes are this project's own sequential numbering per virtue (&lt;virtue-abbreviation&gt;.&lt;n&gt;), not an official VIA scheme -- VIA names its 24 strengths but doesn't number them. <strong>What this is not.</strong> (c) VIA Institute on Character, all rights reserved; VIA is a registered trademark. VIA Institute's own mission is free dissemination of this classification for education and research, and its VIA Survey is openly available, but the text itself is still copyrighted. The six virtue names and 24 strength names are VIA's own; every paraphrase here is written for this project, never VIA's own first-person survey-style text. <strong>See also.</strong> <a href="/standards/">The full standards map</a> for the CS/digital-literacy frameworks this sits alongside.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<div class="page-toggles"><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-carriers" checked> Show which curricula cover each item</label></div>
+<div class="topic" id="grp-group-0">
+<h3><a class="anchor-link" href="#grp-group-0">#</a>Wisdom</h3>
+<p class="paraphrase">Strengths that involve acquiring and using knowledge well.</p>
+<ul class="ek-list">
+<li id="T-WIS.1"><a class="anchor-link" href="#T-WIS.1">#</a><span class="code-badge">WIS.1</span> <strong>Creativity</strong> Coming up with ideas that are both original and genuinely useful, not just different for its own sake.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-WIS.2"><a class="anchor-link" href="#T-WIS.2">#</a><span class="code-badge">WIS.2</span> <strong>Curiosity</strong> Actively seeking out new experiences and information rather than waiting for them to show up.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-WIS.3"><a class="anchor-link" href="#T-WIS.3">#</a><span class="code-badge">WIS.3</span> <strong>Judgment</strong> Weighing a decision from multiple angles, including evidence that cuts against what you already believe.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-WIS.4"><a class="anchor-link" href="#T-WIS.4">#</a><span class="code-badge">WIS.4</span> <strong>Love of Learning</strong> Being motivated to build real depth in a subject or skill, not just to get through it.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-WIS.5"><a class="anchor-link" href="#T-WIS.5">#</a><span class="code-badge">WIS.5</span> <strong>Perspective</strong> Being the person others come to for advice because you can see the bigger picture, drawing on your own experience to help someone else see it too.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-1">
+<h3><a class="anchor-link" href="#grp-group-1">#</a>Courage</h3>
+<p class="paraphrase">Strengths that involve exercising will to accomplish goals in the face of difficulty.</p>
+<ul class="ek-list">
+<li id="T-COU.1"><a class="anchor-link" href="#T-COU.1">#</a><span class="code-badge">COU.1</span> <strong>Bravery</strong> Acting on what you believe is right even when it's risky, difficult, or frightening.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-COU.2"><a class="anchor-link" href="#T-COU.2">#</a><span class="code-badge">COU.2</span> <strong>Honesty</strong> Presenting yourself accurately to other people and taking responsibility for your own actions.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-COU.3"><a class="anchor-link" href="#T-COU.3">#</a><span class="code-badge">COU.3</span> <strong>Perseverance</strong> Continuing to work toward a goal despite obstacles or setbacks.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-COU.4"><a class="anchor-link" href="#T-COU.4">#</a><span class="code-badge">COU.4</span> <strong>Zest</strong> Approaching life with energy and enthusiasm rather than going through the motions.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-2">
+<h3><a class="anchor-link" href="#grp-group-2">#</a>Humanity</h3>
+<p class="paraphrase">Strengths that show up in caring for and befriending other people.</p>
+<ul class="ek-list">
+<li id="T-HUM.1"><a class="anchor-link" href="#T-HUM.1">#</a><span class="code-badge">HUM.1</span> <strong>Kindness</strong> Doing something genuinely helpful for someone else without expecting anything back.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-HUM.2"><a class="anchor-link" href="#T-HUM.2">#</a><span class="code-badge">HUM.2</span> <strong>Love</strong> Building close relationships defined by mutual care, not just shared proximity.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-HUM.3"><a class="anchor-link" href="#T-HUM.3">#</a><span class="code-badge">HUM.3</span> <strong>Social Intelligence</strong> Being aware of your own feelings and reading what the people around you are feeling too.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-3">
+<h3><a class="anchor-link" href="#grp-group-3">#</a>Justice</h3>
+<p class="paraphrase">Strengths that underlie a healthy community life.</p>
+<ul class="ek-list">
+<li id="T-JUS.1"><a class="anchor-link" href="#T-JUS.1">#</a><span class="code-badge">JUS.1</span> <strong>Fairness</strong> Treating people equally and applying the same rules to everyone, not just the people you favor.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-JUS.2"><a class="anchor-link" href="#T-JUS.2">#</a><span class="code-badge">JUS.2</span> <strong>Leadership</strong> Guiding a group toward a shared goal while keeping relationships among its members healthy.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-JUS.3"><a class="anchor-link" href="#T-JUS.3">#</a><span class="code-badge">JUS.3</span> <strong>Teamwork</strong> Contributing your share to a group's effort and feeling responsible for the team's success, not just your own part.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-4">
+<h3><a class="anchor-link" href="#grp-group-4">#</a>Temperance</h3>
+<p class="paraphrase">Strengths that protect against excess.</p>
+<ul class="ek-list">
+<li id="T-TEM.1"><a class="anchor-link" href="#T-TEM.1">#</a><span class="code-badge">TEM.1</span> <strong>Forgiveness</strong> Letting go of resentment toward someone who wronged you, without pretending it didn't happen.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-TEM.2"><a class="anchor-link" href="#T-TEM.2">#</a><span class="code-badge">TEM.2</span> <strong>Humility</strong> Knowing your own strengths without needing to be the center of attention for them.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-TEM.3"><a class="anchor-link" href="#T-TEM.3">#</a><span class="code-badge">TEM.3</span> <strong>Prudence</strong> Thinking ahead and avoiding unnecessary risk rather than acting on impulse.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-TEM.4"><a class="anchor-link" href="#T-TEM.4">#</a><span class="code-badge">TEM.4</span> <strong>Self-Regulation</strong> Managing your own impulses and actions on purpose, rather than being managed by them.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-5">
+<h3><a class="anchor-link" href="#grp-group-5">#</a>Transcendence</h3>
+<p class="paraphrase">Strengths that forge connections to the larger universe and provide meaning.</p>
+<ul class="ek-list">
+<li id="T-TRA.1"><a class="anchor-link" href="#T-TRA.1">#</a><span class="code-badge">TRA.1</span> <strong>Appreciation of Beauty and Excellence</strong> Noticing and genuinely responding to something well made or well done, whether it's art, nature, or someone else's skill.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-TRA.2"><a class="anchor-link" href="#T-TRA.2">#</a><span class="code-badge">TRA.2</span> <strong>Gratitude</strong> Noticing when someone has helped you and actually telling them so.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-TRA.3"><a class="anchor-link" href="#T-TRA.3">#</a><span class="code-badge">TRA.3</span> <strong>Hope</strong> Staying realistic about a situation while still expecting things to work out.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-TRA.4"><a class="anchor-link" href="#T-TRA.4">#</a><span class="code-badge">TRA.4</span> <strong>Humor</strong> Finding something to laugh about, including in a stressful moment, without making it at someone else's expense.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-TRA.5"><a class="anchor-link" href="#T-TRA.5">#</a><span class="code-badge">TRA.5</span> <strong>Spirituality</strong> Having a sense that your life fits into something larger than yourself.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

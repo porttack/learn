@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "source": "The VIA Classification of Character Strengths and Virtues (VIA Institute on Character; originating research by Christopher Peterson and Martin Seligman, Character Strengths and Virtues: A Handbook and Classification, 2004)",
+    "url": "https://www.viacharacter.org/character-strengths",
+    "year": 2004,
+    "extracted": "2026-10-19",
+    "license_note": "(c) VIA Institute on Character, all rights reserved; VIA is a registered trademark. VIA Institute's own mission is free dissemination of this classification for education and research, and its VIA Survey is openly available, but the text itself is still copyrighted. The six virtue names and 24 strength names are VIA's own; every paraphrase here is written for this project, never VIA's own first-person survey-style text.",
+    "scope_note": "VIA's classification is a general character-strengths taxonomy, not a CS-specific or even SEL-specific one. Unlike CASEL/CDE's T-SEL/RULER, which group skills by emotional or social competency, VIA groups strengths by classical virtue, and everyone is understood to carry all 24 strengths to some degree rather than mastering them in sequence. Teamwork, Leadership, Perseverance, Judgment, and Creativity read as likely strong candidates for a future carrier alignment pass against this project's existing Kagan/ROV Robotics content.",
+    "codes_note": "Codes are this project's own sequential numbering per virtue (<virtue-abbreviation>.<n>), not an official VIA scheme -- VIA names its 24 strengths but doesn't number them."
+  },
+  "groups": [
+    {
+      "name": "Wisdom",
+      "paraphrase": "Strengths that involve acquiring and using knowledge well.",
+      "items": [
+        { "code": "WIS.1", "name": "Creativity", "paraphrase": "Coming up with ideas that are both original and genuinely useful, not just different for its own sake." },
+        { "code": "WIS.2", "name": "Curiosity", "paraphrase": "Actively seeking out new experiences and information rather than waiting for them to show up." },
+        { "code": "WIS.3", "name": "Judgment", "paraphrase": "Weighing a decision from multiple angles, including evidence that cuts against what you already believe." },
+        { "code": "WIS.4", "name": "Love of Learning", "paraphrase": "Being motivated to build real depth in a subject or skill, not just to get through it." },
+        { "code": "WIS.5", "name": "Perspective", "paraphrase": "Being the person others come to for advice because you can see the bigger picture, drawing on your own experience to help someone else see it too." }
+      ]
+    },
+    {
+      "name": "Courage",
+      "paraphrase": "Strengths that involve exercising will to accomplish goals in the face of difficulty.",
+      "items": [
+        { "code": "COU.1", "name": "Bravery", "paraphrase": "Acting on what you believe is right even when it's risky, difficult, or frightening." },
+        { "code": "COU.2", "name": "Honesty", "paraphrase": "Presenting yourself accurately to other people and taking responsibility for your own actions." },
+        { "code": "COU.3", "name": "Perseverance", "paraphrase": "Continuing to work toward a goal despite obstacles or setbacks." },
+        { "code": "COU.4", "name": "Zest", "paraphrase": "Approaching life with energy and enthusiasm rather than going through the motions." }
+      ]
+    },
+    {
+      "name": "Humanity",
+      "paraphrase": "Strengths that show up in caring for and befriending other people.",
+      "items": [
+        { "code": "HUM.1", "name": "Kindness", "paraphrase": "Doing something genuinely helpful for someone else without expecting anything back." },
+        { "code": "HUM.2", "name": "Love", "paraphrase": "Building close relationships defined by mutual care, not just shared proximity." },
+        { "code": "HUM.3", "name": "Social Intelligence", "paraphrase": "Being aware of your own feelings and reading what the people around you are feeling too." }
+      ]
+    },
+    {
+      "name": "Justice",
+      "paraphrase": "Strengths that underlie a healthy community life.",
+      "items": [
+        { "code": "JUS.1", "name": "Fairness", "paraphrase": "Treating people equally and applying the same rules to everyone, not just the people you favor." },
+        { "code": "JUS.2", "name": "Leadership", "paraphrase": "Guiding a group toward a shared goal while keeping relationships among its members healthy." },
+        { "code": "JUS.3", "name": "Teamwork", "paraphrase": "Contributing your share to a group's effort and feeling responsible for the team's success, not just your own part." }
+      ]
+    },
+    {
+      "name": "Temperance",
+      "paraphrase": "Strengths that protect against excess.",
+      "items": [
+        { "code": "TEM.1", "name": "Forgiveness", "paraphrase": "Letting go of resentment toward someone who wronged you, without pretending it didn't happen." },
+        { "code": "TEM.2", "name": "Humility", "paraphrase": "Knowing your own strengths without needing to be the center of attention for them." },
+        { "code": "TEM.3", "name": "Prudence", "paraphrase": "Thinking ahead and avoiding unnecessary risk rather than acting on impulse." },
+        { "code": "TEM.4", "name": "Self-Regulation", "paraphrase": "Managing your own impulses and actions on purpose, rather than being managed by them." }
+      ]
+    },
+    {
+      "name": "Transcendence",
+      "paraphrase": "Strengths that forge connections to the larger universe and provide meaning.",
+      "items": [
+        { "code": "TRA.1", "name": "Appreciation of Beauty and Excellence", "paraphrase": "Noticing and genuinely responding to something well made or well done, whether it's art, nature, or someone else's skill." },
+        { "code": "TRA.2", "name": "Gratitude", "paraphrase": "Noticing when someone has helped you and actually telling them so." },
+        { "code": "TRA.3", "name": "Hope", "paraphrase": "Staying realistic about a situation while still expecting things to work out." },
+        { "code": "TRA.4", "name": "Humor", "paraphrase": "Finding something to laugh about, including in a stressful moment, without making it at someone else's expense." },
+        { "code": "TRA.5", "name": "Spirituality", "paraphrase": "Having a sense that your life fits into something larger than yourself." }
+      ]
+    }
+  ]
+}

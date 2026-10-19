@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>California Transformative SEL (T-SEL) Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
+}
+.page-toggle-label input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
+<a href="/electronics101/"><span class="site-menu-item-icon" aria-hidden="true"></span>Electronics 101</a>
+<a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
+<a href="/python3d/"><span class="site-menu-item-icon" aria-hidden="true"></span>Python in 3D</a>
+<a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<ul>
+<li class="topic-link"><a href="#grp-1">1 Self-Awareness</a></li>
+<li class="topic-link"><a href="#grp-2">2 Self-Management</a></li>
+<li class="topic-link"><a href="#grp-3">3 Social Awareness</a></li>
+<li class="topic-link"><a href="#grp-4">4 Relationship Skills</a></li>
+<li class="topic-link"><a href="#grp-5">5 Responsible Decision-Making</a></li>
+</ul>
+</nav>
+<main>
+<h1>California Transformative SEL (T-SEL) Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of <em>California Transformative SEL (T-SEL) Competencies (California Department of Education), adapted from CASEL's framework with an added equity/identity lens</em> (2021). <strong>Scope.</strong> T-SEL takes CASEL's same five competencies and runs each one through three lenses CDE calls Identity, Belonging, and Agency, plus grade-differentiated indicators (CDE confirms TK-2, 3-5, and 6-8 bands at minimum). This catalog aggregates up to the competency-by-area level (5 competencies x 3 areas = 15 entries), not CDE's full lettered, per-grade-band indicator table (roughly 38 lettered indicators x multiple grade bands) -- that finer table is real and CDE-published, just not reproduced here; see codes_note. CDE's own site (cde.ca.gov/ci/se/) returned bot-protection challenges on every sub-page below its top-level competency summary during cataloging, so the indicator-level text behind this catalog's paraphrases was cross-checked against a third-party curriculum-alignment chart (Second Step's own TK-8 California T-SEL alignment PDF, which reproduces CDE's lettered indicator text verbatim for its own alignment purposes) rather than read directly off cde.ca.gov -- flagged here per this project's own verify-the-primary-source standard, since that's one hop further removed than every other catalog in this directory. That source only covers TK-2 through grade 8, so CDE's 9-12 band indicators are not verified and are not represented here; this is a known gap, not a claim that T-SEL stops at grade 8. T-SEL's other half, "Conditions for Thriving" (practices and policies for the adults around a student: state/county/district/school/classroom leaders), is deliberately out of scope here for the same reason Character.org's 11 Principles was ruled out of this project's standards map: it's a rubric for adult/system practice, not a student-skill standard a lesson can be aligned to. <strong>Codes.</strong> Codes are `&lt;competency-number&gt;.&lt;area&gt;`, e.g. `3.BE` for Social Awareness / Belonging. The competency number (1=Self-Awareness, 2=Self-Management, 3=Social Awareness, 4=Relationship Skills, 5=Responsible Decision-Making) is CDE's own. The `.ID`/`.BE`/`.AG` area suffix is this project's own abbreviation of CDE's Identity/Belonging/Agency labels, rolling up CDE's own lettered sub-indicators within that competency and area (e.g. CDE's own 3.C/3.D/3.E, the three Social Awareness/Belonging indicators, all roll into this catalog's single `3.BE`). This is a coarser grain than CDE's own code scheme -- see scope_note. <strong>What this is not.</strong> California Department of Education, a state government publication. The five competency names (CDE's own 1-5 numbering) and the Identity/Belonging/Agency area names are CDE's own; every paraphrase here is written for this project, never CDE's own text. <strong>See also.</strong> <a href="/standards/">The full standards map</a> for the CS/digital-literacy frameworks this sits alongside.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<div class="page-toggles"><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-carriers" checked> Show which curricula cover each item</label></div>
+<div class="topic" id="grp-1">
+<h3><a class="anchor-link" href="#grp-1">#</a><span class="code-badge">1</span> Self-Awareness</h3>
+<p class="paraphrase">Understanding your own emotions, values, and identity, with an explicit lens on how social identity, inclusion, and personal power shape that understanding.</p>
+<ul class="ek-list">
+<li id="T-1.ID"><a class="anchor-link" href="#T-1.ID">#</a><span class="code-badge">1.ID</span> <strong>Identity</strong> Naming your own identity, emotions, and values starts simple (naming a feeling, naming what matters to you) and grows into examining how identity intersects with race, culture, language, and bias, and how your own beliefs can be challenged.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-1.BE"><a class="anchor-link" href="#T-1.BE">#</a><span class="code-badge">1.BE</span> <strong>Belonging</strong> Understanding inclusion and exclusion starts with noticing who gets left out, and grows into reflecting on your own experience of being excluded or excluding others, and on whether a community actually meets your needs.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-1.AG"><a class="anchor-link" href="#T-1.AG">#</a><span class="code-badge">1.AG</span> <strong>Agency</strong> Recognizing your own strengths and believing in your capacity to learn starts as a basic growth mindset, and grows into actively identifying your personal, social, and cultural assets and developing a real sense of personal power.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-2">
+<h3><a class="anchor-link" href="#grp-2">#</a><span class="code-badge">2</span> Self-Management</h3>
+<p class="paraphrase">Regulating your own emotions and behavior to work toward a goal, with an explicit lens on receiving feedback, respecting boundaries, and building independence over time.</p>
+<ul class="ek-list">
+<li id="T-2.ID"><a class="anchor-link" href="#T-2.ID">#</a><span class="code-badge">2.ID</span> <strong>Identity</strong> Managing your own emotions and stress starts with noticing where you feel them in your body and using a simple calming strategy, and grows into channeling emotions productively and taking ownership of your own mental and physical health.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-2.BE"><a class="anchor-link" href="#T-2.BE">#</a><span class="code-badge">2.BE</span> <strong>Belonging</strong> Handling feedback starts with listening to and accepting simple, constructive feedback, and grows into actively seeking it out, giving it well to peers, and understanding how boundaries shift across relationships and cultures.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-2.AG"><a class="anchor-link" href="#T-2.AG">#</a><span class="code-badge">2.AG</span> <strong>Agency</strong> Working toward a goal starts with naming a goal and a simple step toward it, and grows into setting both personal and collective goals, self-monitoring without being told to, and managing your own time and materials independently.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-3">
+<h3><a class="anchor-link" href="#grp-3">#</a><span class="code-badge">3</span> Social Awareness</h3>
+<p class="paraphrase">Understanding and empathizing with people whose backgrounds and circumstances differ from your own, with an explicit lens on trust, inclusion, and fairness within a group.</p>
+<ul class="ek-list">
+<li id="T-3.ID"><a class="anchor-link" href="#T-3.ID">#</a><span class="code-badge">3.ID</span> <strong>Identity</strong> Noticing similarities and differences between people starts with simple comparison, and grows into recognizing how someone's own identity, culture, or background shapes the emotional reactions and norms they bring to a situation.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-3.BE"><a class="anchor-link" href="#T-3.BE">#</a><span class="code-badge">3.BE</span> <strong>Belonging</strong> Being a good community member starts with simple kindness and knowing who to ask for help, and grows into building trust deliberately, maintaining healthy boundaries, and actively including people whose backgrounds differ from your own.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-3.AG"><a class="anchor-link" href="#T-3.AG">#</a><span class="code-badge">3.AG</span> <strong>Agency</strong> Fairness starts with following shared rules and cooperating respectfully, and grows into recognizing how bias, prejudice, and unfair policies actually harm a group, and taking real action toward a more inclusive and just community.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-4">
+<h3><a class="anchor-link" href="#grp-4">#</a><span class="code-badge">4</span> Relationship Skills</h3>
+<p class="paraphrase">Building and keeping healthy relationships, with an explicit lens on power, pressure, and repair within those relationships.</p>
+<ul class="ek-list">
+<li id="T-4.ID"><a class="anchor-link" href="#T-4.ID">#</a><span class="code-badge">4.ID</span> <strong>Identity</strong> Recognizing an inappropriate request starts with knowing you can say no, and grows into recognizing how peers influence your decisions and exploring what kind of leader you are.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-4.BE"><a class="anchor-link" href="#T-4.BE">#</a><span class="code-badge">4.BE</span> <strong>Belonging</strong> Friendship and gratitude start with naming what makes a good friend and saying thank you, and grow into navigating the changing nature of friendships, respecting other cultures, and communicating across cultural differences with humility.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-4.AG"><a class="anchor-link" href="#T-4.AG">#</a><span class="code-badge">4.AG</span> <strong>Agency</strong> Solving a problem with someone starts with talking it through and apologizing honestly, and grows into practicing real conflict-resolution strategies, repairing harm, and standing up for other people's rights, not just your own.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-5">
+<h3><a class="anchor-link" href="#grp-5">#</a><span class="code-badge">5</span> Responsible Decision-Making</h3>
+<p class="paraphrase">Making a thoughtful choice about your own behavior and social interactions, with an explicit lens on safety, citizenship, and the well-being of the wider community.</p>
+<ul class="ek-list">
+<li id="T-5.ID"><a class="anchor-link" href="#T-5.ID">#</a><span class="code-badge">5.ID</span> <strong>Identity</strong> Curiosity and honesty start with being open to new people and situations and telling the truth, and grow into understanding ethics as a concept and applying it to real decisions, including how choices affect the planet.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-5.BE"><a class="anchor-link" href="#T-5.BE">#</a><span class="code-badge">5.BE</span> <strong>Belonging</strong> Safety and citizenship start with understanding why safety rules exist and wanting to help, and grow into understanding the common good, democratic citizenship, and how your own safety and identity connect.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-5.AG"><a class="anchor-link" href="#T-5.AG">#</a><span class="code-badge">5.AG</span> <strong>Agency</strong> Thinking ahead before acting starts with a simple stop-think-act strategy, and grows into a practiced decision-making process and critical thinking about the wider consequences of a choice, including on your community.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

@@ -22,6 +22,10 @@ Outputs, into --out:
   unesco-mil-standards-reference.html
   unesco-ai-cfs-standards-reference.html
   aasl-engage-standards-reference.html
+  casel-standards-reference.html
+  cde-tsel-standards-reference.html
+  ruler-standards-reference.html
+  via-character-standards-reference.html
   standards-alignment.md   (by-locator, by-standard, and gap views, plus a
                              per-framework coverage summary)
 
@@ -952,6 +956,10 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
         "unesco-mil": [i["code"] for grp in catalogs["unesco-mil"]["groups"] for i in grp["items"]],
         "unesco-ai-cfs": [i["code"] for grp in catalogs["unesco-ai-cfs"]["groups"] for i in grp["items"]],
         "aasl-engage": [i["code"] for grp in catalogs["aasl-engage"]["groups"] for i in grp["items"]],
+        "casel": [i["code"] for grp in catalogs["casel"]["groups"] for i in grp["items"]],
+        "cde-tsel": [i["code"] for grp in catalogs["cde-tsel"]["groups"] for i in grp["items"]],
+        "ruler": [i["code"] for grp in catalogs["ruler"]["groups"] for i in grp["items"]],
+        "via-character": [i["code"] for grp in catalogs["via-character"]["groups"] for i in grp["items"]],
     }
     for fw, codes in fw_entries.items():
         carried = sum(1 for c in codes if covs[fw].get(c))
@@ -994,6 +1002,7 @@ def main():
     catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in [
         "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
         "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
+        "casel", "cde-tsel", "ruler", "via-character",
     ]}
     sources = set(args.source) if args.source else None
     carrier_files = load_carrier_files(args.carriers, sources)
@@ -1018,6 +1027,23 @@ def main():
         ("aasl-engage", "AASL Engage Standards Reference"),
     ]:
         provenance = grouped_provenance(catalogs[fw]["meta"], args.scope_label) + see_also
+        (out / f"{fw}-standards-reference.html").write_text(render_grouped(title, catalogs[fw], covs[fw], args.scope_label, provenance))
+
+    # CASEL/CDE-T-SEL/RULER/VIA are orthogonal SEL and character frameworks, not
+    # CS-standards gap-fillers like the four digital-literacy catalogs above, so
+    # each gets its own provenance footer instead of reusing their CS-specific
+    # `see_also` text.
+    orthogonal_see_also = (
+        ' <strong>See also.</strong> <a href="/standards/">The full standards map</a> for the '
+        "CS/digital-literacy frameworks this sits alongside."
+    )
+    for fw, title in [
+        ("casel", "CASEL Social-Emotional Learning Standards Reference"),
+        ("cde-tsel", "California Transformative SEL (T-SEL) Standards Reference"),
+        ("ruler", "RULER Approach Standards Reference"),
+        ("via-character", "VIA Character Strengths Standards Reference"),
+    ]:
+        provenance = grouped_provenance(catalogs[fw]["meta"], args.scope_label) + orthogonal_see_also
         (out / f"{fw}-standards-reference.html").write_text(render_grouped(title, catalogs[fw], covs[fw], args.scope_label, provenance))
 
     (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))

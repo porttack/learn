@@ -22,7 +22,11 @@ var STANDARDS_FRAMEWORKS = {
   'iste-digital-citizen': { file: 'iste-digital-citizen-standards-reference.html', prefix: 'T', name: 'ISTE Digital Citizen', catalog: 'iste-digital-citizen' },
   'unesco-mil': { file: 'unesco-mil-standards-reference.html', prefix: 'T', name: 'UNESCO Media and Information Literacy', catalog: 'unesco-mil' },
   'unesco-ai-cfs': { file: 'unesco-ai-cfs-standards-reference.html', prefix: 'T', name: 'UNESCO AI Competency Framework for Students', catalog: 'unesco-ai-cfs' },
-  'aasl-engage': { file: 'aasl-engage-standards-reference.html', prefix: 'T', name: 'AASL Engage (National School Library Standards)', catalog: 'aasl-engage' }
+  'aasl-engage': { file: 'aasl-engage-standards-reference.html', prefix: 'T', name: 'AASL Engage (National School Library Standards)', catalog: 'aasl-engage' },
+  casel: { file: 'casel-standards-reference.html', prefix: 'T', name: 'CASEL (Social-Emotional Learning)', catalog: 'casel' },
+  'cde-tsel': { file: 'cde-tsel-standards-reference.html', prefix: 'T', name: 'California Transformative SEL (T-SEL)', catalog: 'cde-tsel' },
+  ruler: { file: 'ruler-standards-reference.html', prefix: 'T', name: 'RULER Approach', catalog: 'ruler' },
+  'via-character': { file: 'via-character-standards-reference.html', prefix: 'T', name: 'VIA Character Strengths', catalog: 'via-character' }
 };
 
 function escapeHtml(s) {

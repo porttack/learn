@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "source": "California Transformative SEL (T-SEL) Competencies (California Department of Education), adapted from CASEL's framework with an added equity/identity lens",
+    "url": "https://www.cde.ca.gov/ci/se/tselcompetencies.asp",
+    "year": 2021,
+    "extracted": "2026-10-19",
+    "license_note": "California Department of Education, a state government publication. The five competency names (CDE's own 1-5 numbering) and the Identity/Belonging/Agency area names are CDE's own; every paraphrase here is written for this project, never CDE's own text.",
+    "scope_note": "T-SEL takes CASEL's same five competencies and runs each one through three lenses CDE calls Identity, Belonging, and Agency, plus grade-differentiated indicators (CDE confirms TK-2, 3-5, and 6-8 bands at minimum). This catalog aggregates up to the competency-by-area level (5 competencies x 3 areas = 15 entries), not CDE's full lettered, per-grade-band indicator table (roughly 38 lettered indicators x multiple grade bands) -- that finer table is real and CDE-published, just not reproduced here; see codes_note. CDE's own site (cde.ca.gov/ci/se/) returned bot-protection challenges on every sub-page below its top-level competency summary during cataloging, so the indicator-level text behind this catalog's paraphrases was cross-checked against a third-party curriculum-alignment chart (Second Step's own TK-8 California T-SEL alignment PDF, which reproduces CDE's lettered indicator text verbatim for its own alignment purposes) rather than read directly off cde.ca.gov -- flagged here per this project's own verify-the-primary-source standard, since that's one hop further removed than every other catalog in this directory. That source only covers TK-2 through grade 8, so CDE's 9-12 band indicators are not verified and are not represented here; this is a known gap, not a claim that T-SEL stops at grade 8. T-SEL's other half, \"Conditions for Thriving\" (practices and policies for the adults around a student: state/county/district/school/classroom leaders), is deliberately out of scope here for the same reason Character.org's 11 Principles was ruled out of this project's standards map: it's a rubric for adult/system practice, not a student-skill standard a lesson can be aligned to.",
+    "codes_note": "Codes are `<competency-number>.<area>`, e.g. `3.BE` for Social Awareness / Belonging. The competency number (1=Self-Awareness, 2=Self-Management, 3=Social Awareness, 4=Relationship Skills, 5=Responsible Decision-Making) is CDE's own. The `.ID`/`.BE`/`.AG` area suffix is this project's own abbreviation of CDE's Identity/Belonging/Agency labels, rolling up CDE's own lettered sub-indicators within that competency and area (e.g. CDE's own 3.C/3.D/3.E, the three Social Awareness/Belonging indicators, all roll into this catalog's single `3.BE`). This is a coarser grain than CDE's own code scheme -- see scope_note."
+  },
+  "groups": [
+    {
+      "code": "1",
+      "name": "Self-Awareness",
+      "paraphrase": "Understanding your own emotions, values, and identity, with an explicit lens on how social identity, inclusion, and personal power shape that understanding.",
+      "items": [
+        { "code": "1.ID", "name": "Identity", "paraphrase": "Naming your own identity, emotions, and values starts simple (naming a feeling, naming what matters to you) and grows into examining how identity intersects with race, culture, language, and bias, and how your own beliefs can be challenged." },
+        { "code": "1.BE", "name": "Belonging", "paraphrase": "Understanding inclusion and exclusion starts with noticing who gets left out, and grows into reflecting on your own experience of being excluded or excluding others, and on whether a community actually meets your needs." },
+        { "code": "1.AG", "name": "Agency", "paraphrase": "Recognizing your own strengths and believing in your capacity to learn starts as a basic growth mindset, and grows into actively identifying your personal, social, and cultural assets and developing a real sense of personal power." }
+      ]
+    },
+    {
+      "code": "2",
+      "name": "Self-Management",
+      "paraphrase": "Regulating your own emotions and behavior to work toward a goal, with an explicit lens on receiving feedback, respecting boundaries, and building independence over time.",
+      "items": [
+        { "code": "2.ID", "name": "Identity", "paraphrase": "Managing your own emotions and stress starts with noticing where you feel them in your body and using a simple calming strategy, and grows into channeling emotions productively and taking ownership of your own mental and physical health." },
+        { "code": "2.BE", "name": "Belonging", "paraphrase": "Handling feedback starts with listening to and accepting simple, constructive feedback, and grows into actively seeking it out, giving it well to peers, and understanding how boundaries shift across relationships and cultures." },
+        { "code": "2.AG", "name": "Agency", "paraphrase": "Working toward a goal starts with naming a goal and a simple step toward it, and grows into setting both personal and collective goals, self-monitoring without being told to, and managing your own time and materials independently." }
+      ]
+    },
+    {
+      "code": "3",
+      "name": "Social Awareness",
+      "paraphrase": "Understanding and empathizing with people whose backgrounds and circumstances differ from your own, with an explicit lens on trust, inclusion, and fairness within a group.",
+      "items": [
+        { "code": "3.ID", "name": "Identity", "paraphrase": "Noticing similarities and differences between people starts with simple comparison, and grows into recognizing how someone's own identity, culture, or background shapes the emotional reactions and norms they bring to a situation." },
+        { "code": "3.BE", "name": "Belonging", "paraphrase": "Being a good community member starts with simple kindness and knowing who to ask for help, and grows into building trust deliberately, maintaining healthy boundaries, and actively including people whose backgrounds differ from your own." },
+        { "code": "3.AG", "name": "Agency", "paraphrase": "Fairness starts with following shared rules and cooperating respectfully, and grows into recognizing how bias, prejudice, and unfair policies actually harm a group, and taking real action toward a more inclusive and just community." }
+      ]
+    },
+    {
+      "code": "4",
+      "name": "Relationship Skills",
+      "paraphrase": "Building and keeping healthy relationships, with an explicit lens on power, pressure, and repair within those relationships.",
+      "items": [
+        { "code": "4.ID", "name": "Identity", "paraphrase": "Recognizing an inappropriate request starts with knowing you can say no, and grows into recognizing how peers influence your decisions and exploring what kind of leader you are." },
+        { "code": "4.BE", "name": "Belonging", "paraphrase": "Friendship and gratitude start with naming what makes a good friend and saying thank you, and grow into navigating the changing nature of friendships, respecting other cultures, and communicating across cultural differences with humility." },
+        { "code": "4.AG", "name": "Agency", "paraphrase": "Solving a problem with someone starts with talking it through and apologizing honestly, and grows into practicing real conflict-resolution strategies, repairing harm, and standing up for other people's rights, not just your own." }
+      ]
+    },
+    {
+      "code": "5",
+      "name": "Responsible Decision-Making",
+      "paraphrase": "Making a thoughtful choice about your own behavior and social interactions, with an explicit lens on safety, citizenship, and the well-being of the wider community.",
+      "items": [
+        { "code": "5.ID", "name": "Identity", "paraphrase": "Curiosity and honesty start with being open to new people and situations and telling the truth, and grow into understanding ethics as a concept and applying it to real decisions, including how choices affect the planet." },
+        { "code": "5.BE", "name": "Belonging", "paraphrase": "Safety and citizenship start with understanding why safety rules exist and wanting to help, and grow into understanding the common good, democratic citizenship, and how your own safety and identity connect." },
+        { "code": "5.AG", "name": "Agency", "paraphrase": "Thinking ahead before acting starts with a simple stop-think-act strategy, and grows into a practiced decision-making process and critical thinking about the wider consequences of a choice, including on your community." }
+      ]
+    }
+  ]
+}
