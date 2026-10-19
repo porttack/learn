@@ -1,0 +1,96 @@
+{
+ "meta": {
+  "title": "porttack.com: SEL",
+  "base_url": "https://porttack.com",
+  "locator_kind": "none",
+  "locator_url_template": "{base_url}/{locator}",
+  "locator_slugs": {
+   "one-word-wall": "2025/09/22/one-word-wall.html"
+  },
+  "source": "porttack_sel",
+  "abbrev": "PT-SEL",
+  "alignment_log": [
+   {
+    "date": "2026-10-19",
+    "by": "Claude Sonnet 5",
+    "scope": "Initial alignment pass: CDE T-SEL, CASEL, CA CTE (ICT) anchor standards.",
+    "note": "Primary source was the teacher's own \"One Word Lesson Plan\" Google Doc (Aug 2025, linked from the post), which already maps the activity to T-SEL and CTE ICT anchors in detail. That doc is an administrative justification document (it cites nearly every competency area and anchor standard in reach, plus K-5 and 9-12 \"if you taught it there\" extensions this post never claims); this carrier is deliberately narrower -- only the specific codes the actual 6th-grade activity (five words, elimination, word-wall art, journal reflection) does on its own, not everything an ICT instructor could plausibly justify. RULER and VIA were checked and skipped: RULER is specifically about emotion vocabulary and regulation, which this activity doesn't teach (it's about identity, not feelings-in-the-moment), and VIA's character-strengths taxonomy doesn't map cleanly onto an identity-naming exercise without forcing it. No CS-content frameworks checked -- this lesson is explicitly orthogonal to the program's CS standards, same framing as the catalogs' own SEL group."
+   }
+  ],
+  "locator_titles": {
+   "one-word-wall": "Words That Built Our Classroom Community"
+  },
+  "caveat": "A single blog post, not a chaptered source -- locator_kind is \"none\". This is the first post in the porttack.com SEL category carrier; more SEL-tagged lesson plans will add their own locators here rather than new carrier files."
+ },
+ "coverage": {
+  "cde-tsel": {
+   "1.ID": {
+    "locators": [
+     "one-word-wall"
+    ],
+    "strength": "strong",
+    "note": "The lesson's whole arc -- five words, then narrowing by elimination, to one -- is naming your own identity in the plainest sense this competency describes, right down to the standard's own \"naming a feeling, naming what matters to you\" framing matching the brainstorm categories (personality, hobbies, background/culture, goals, talents, values)."
+   },
+   "1.AG": {
+    "locators": [
+     "one-word-wall"
+    ],
+    "strength": "partial",
+    "note": "The teacher's doc names \"Demonstrating Self-Efficacy\" explicitly (recognizing personal strengths and talents while choosing words); it's a real but secondary thread under the identity-naming activity, not the main point."
+   },
+   "3.BE": {
+    "locators": [
+     "one-word-wall"
+    ],
+    "strength": "strong",
+    "note": "The word wall itself is the belonging payoff: students see classmates' chosen words, ask questions, admire designs, and the collected wall becomes (in the post's own words) \"our portrait.\" That's this standard's \"being a good community member\" framing made literal."
+   },
+   "4.BE": {
+    "locators": [
+     "one-word-wall"
+    ],
+    "strength": "partial",
+    "note": "The art-making phase doubles as unstructured peer interaction (helping with supplies, asking about word choices), a lighter-weight version of this standard's friendship/listening focus than 3.BE above."
+   }
+  },
+  "casel": {
+   "SA.1": {
+    "locators": [
+     "one-word-wall"
+    ],
+    "strength": "strong",
+    "note": "The word list itself blends personal traits (funny, determined, artistic) with social/cultural identities (italian, mexican, polish, american, christian, sister, brother) in the same brainstorm -- this competency's own definition, not an inference."
+   },
+   "SOC.3": {
+    "locators": [
+     "one-word-wall"
+    ],
+    "strength": "partial",
+    "note": "Reading and reacting to classmates' words during the art-making phase is a light touch of empathy/compassion, secondary to the identity work the lesson is actually built around."
+   }
+  },
+  "ca-ict-anchor": {
+   "3.1": {
+    "locators": [
+     "one-word-wall"
+    ],
+    "strength": "partial",
+    "note": "The source doc (written from the teacher's CTE-instructor role) frames the self-reflection as career-readiness groundwork -- knowing your own interests, aptitudes, and traits. Honest caveat: that's the doc's own career-pathway framing applied to a 6th-grade icebreaker, not something the lesson teaches on its own terms; keep this one at partial rather than strong."
+   },
+   "9.6": {
+    "locators": [
+     "one-word-wall"
+    ],
+    "strength": "partial",
+    "note": "\"Respect individual and cultural differences\" is a workplace-diversity standard; the word wall's display of classmates' varied cultural/personal identities is a middle-school-scale analog of it, not a direct instance."
+   },
+   "8.4": {
+    "locators": [
+     "one-word-wall"
+    ],
+    "strength": "partial",
+    "note": "The lesson's own \"safe space\" rule -- share only what you're comfortable with, use a private code word if needed, never comment on someone else's choice -- is a real, age-appropriate version of this standard's confidentiality/personal-integrity concern, even though the standard itself is written for a workplace."
+   }
+  }
+ }
+}

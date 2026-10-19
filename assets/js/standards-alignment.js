@@ -13,6 +13,14 @@
 //     only codes whose locators include this page's chapter/slug.
 //   - Pathway-level summary (no data-chapter, e.g. unplugged/index.md): every
 //     code the carrier covers anywhere, deduplicated.
+//
+// Embeddable on another site (e.g. porttack.com): optional data-base prefixes
+// every /standards/... URL this script builds (catalog fetch, reference-page
+// links, map/report links), so a page on a different origin can point back at
+// this site's published data and pages instead of its own root. learn's own
+// pages never set it, so they're unaffected. Optional data-scope-label swaps
+// the word "pathway" in summary-mode link text for something that fits a
+// non-pathway carrier (e.g. "unit").
 var STANDARDS_FRAMEWORKS = {
   apcsp: { file: 'apcsp-standards-reference.html', prefix: 'T', name: 'AP Computer Science Principles', catalog: 'apcsp' },
   castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California Computer Science', catalog: 'castandards' },
@@ -81,6 +89,8 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
   // page slugs. Absent entirely in pathway-summary mode (see file header).
   var chapter = section.getAttribute('data-chapter');
   var carrierSlug = section.getAttribute('data-carrier-slug');
+  var base = section.getAttribute('data-base') || '';
+  var scopeLabel = section.getAttribute('data-scope-label') || 'pathway';
   fetch(section.getAttribute('data-carrier-url'))
     .then(function (r) { return r.ok ? r.json() : null; })
     .then(function (data) {
@@ -108,7 +118,7 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
       if (!groups.length) return null;
       // Only fetch the catalogs actually needed for the frameworks matched above.
       return Promise.all(groups.map(function (g) {
-        var catalogUrl = '/standards/data/catalog/' + STANDARDS_FRAMEWORKS[g.fw].catalog + '.json';
+        var catalogUrl = base + '/standards/data/catalog/' + STANDARDS_FRAMEWORKS[g.fw].catalog + '.json';
         return fetch(catalogUrl).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
       })).then(function (catalogs) {
         return { groups: groups, catalogs: catalogs };
@@ -122,7 +132,7 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
         var catalogData = result.catalogs[i];
         html += '<h3>' + escapeHtml(meta.name) + '</h3><ul>';
         g.items.forEach(function (item) {
-          var url = '/standards/' + meta.file + '#' + meta.prefix + '-' + encodeURIComponent(item.code);
+          var url = base + '/standards/' + meta.file + '#' + meta.prefix + '-' + encodeURIComponent(item.code);
           var label = catalogLabel(g.fw, catalogData, item.code);
           html += '<li><a href="' + url + '">' + escapeHtml(item.code) + '</a>' +
             (label ? ' — <em>' + escapeHtml(label) + '</em>' : '') +
@@ -132,7 +142,7 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
         html += '</ul>';
       });
       if (carrierSlug) {
-        var mapUrl = '/standards/?only=' + encodeURIComponent(carrierSlug) + '&view=open-all';
+        var mapUrl = base + '/standards/?only=' + encodeURIComponent(carrierSlug) + '&view=open-all';
         var html2suffix;
         if (chapter) {
           // &locator=<chapter> narrows the report to just this lesson's own
@@ -140,14 +150,18 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
           // filterCoverageToLocator() in standards-coverage.js. The report
           // page itself offers a "View all of <pathway>" link back out, so
           // this is never a dead end.
-          var reportUrl = '/standards/?report=' + encodeURIComponent(carrierSlug) + '&locator=' + encodeURIComponent(chapter) + '&view=open-all';
+          var reportUrl = base + '/standards/?report=' + encodeURIComponent(carrierSlug) + '&locator=' + encodeURIComponent(chapter) + '&view=open-all';
           html2suffix = '<a href="' + reportUrl + '">View this lesson\'s own report</a>';
         } else {
-          var pathwayReportUrl = '/standards/?report=' + encodeURIComponent(carrierSlug) + '&view=open-all';
-          html2suffix = '<a href="' + pathwayReportUrl + '">View this pathway\'s own report</a>';
+          var pathwayReportUrl = base + '/standards/?report=' + encodeURIComponent(carrierSlug) + '&view=open-all';
+          html2suffix = '<a href="' + pathwayReportUrl + '">View this ' + escapeHtml(scopeLabel) + '\'s own report</a>';
         }
+        // scopeLabel here always names the whole carrier/source (e.g.
+        // "pathway", or porttack's "category"/"unit"), never the single
+        // lesson -- this link filters the map to everything the carrier
+        // covers, not just this page's own locator.
         html += '<p class="standards-alignment-links">' +
-          '<a href="' + mapUrl + '">See this pathway on the full standards map</a> &middot; ' +
+          '<a href="' + mapUrl + '">See this ' + escapeHtml(scopeLabel) + ' on the full standards map</a> &middot; ' +
           html2suffix + '</p>';
       }
       section.querySelector('.standards-alignment-body').innerHTML = html;

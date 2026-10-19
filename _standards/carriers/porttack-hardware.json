@@ -1,0 +1,43 @@
+{
+ "meta": {
+  "title": "porttack.com: Hardware",
+  "base_url": "https://porttack.com",
+  "locator_kind": "none",
+  "locator_url_template": "{base_url}/{locator}",
+  "locator_slugs": {
+   "kilo-and-milli": "2026/05/04/kilo-and-milli.html"
+  },
+  "source": "porttack_hardware",
+  "abbrev": "PT-HW",
+  "alignment_log": [
+   {
+    "date": "2026-10-19",
+    "by": "Claude Sonnet 5",
+    "scope": "Initial alignment pass: CA CTE (ICT) anchor standards only.",
+    "note": "The post's own appendix already states the honest scope: this lesson sits outside California's 9-12 CS core on purpose (that framework doesn't cover electrical measurement), and names the two CTE anchors that do fit. This carrier keeps exactly that scope rather than padding it -- no castandards, apcsp, or CSTA entries, since none of those frameworks has anything to check it against. No SEL catalog fits either; this is a procedural/technical-skill lesson with no identity, relationship, or emotional-regulation content."
+   }
+  ],
+  "locator_titles": {
+   "kilo-and-milli": "Kilo & Milli: Borrowing the Meter Stick to Teach Electrical Units"
+  },
+  "caveat": "A single blog post, not a chaptered source -- locator_kind is \"none\". First post in the porttack.com Hardware category carrier; a physical-computing/electronics lesson that doesn't fit the Coding, SEL, or Society buckets gets its own locator here rather than a new carrier file."
+ },
+ "coverage": {
+  "ca-ict-anchor": {
+   "10.7": {
+    "locators": [
+     "kilo-and-milli"
+    ],
+    "strength": "strong",
+    "note": "Direct quote match, named in the post's own appendix: the standard's 'kilo, mega, giga, and tera' examples are written with data sizes in mind, but the competency -- fluency with SI prefixes as a scale factor -- is exactly what this lesson teaches, applied to volts/amps/ohms instead."
+   },
+   "5.7": {
+    "locators": [
+     "kilo-and-milli"
+    ],
+    "strength": "partial",
+    "note": "The chaining exercise (converting across two steps by repeating the same divide/multiply-by-1000 rule) is a small, concrete instance of this standard's iterative problem-solving, as the post's own appendix already names."
+   }
+  }
+ }
+}

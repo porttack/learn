@@ -128,10 +128,10 @@
    "hue_dark": "#b8860b"
   },
   {
-   "slug": "teaching_binary_with_coins",
-   "file": "teaching-binary-with-coins.json",
-   "title": "Teaching Binary With Coins",
-   "abbrev": "Coins",
+   "slug": "porttack_coding",
+   "file": "porttack-coding.json",
+   "title": "porttack.com: Coding",
+   "abbrev": "PT-Code",
    "hue_light": "#b32eba",
    "hue_dark": "#cb52d1"
   },
@@ -182,6 +182,30 @@
    "abbrev": "Projs",
    "hue_light": "#08a09b",
    "hue_dark": "#18aaa5"
+  },
+  {
+   "slug": "porttack_sel",
+   "file": "porttack-sel.json",
+   "title": "porttack.com: SEL",
+   "abbrev": "PT-SEL",
+   "hue_light": "#a430f2",
+   "hue_dark": "#ad53ea"
+  },
+  {
+   "slug": "porttack_hardware",
+   "file": "porttack-hardware.json",
+   "title": "porttack.com: Hardware",
+   "abbrev": "PT-HW",
+   "hue_light": "#8b2939",
+   "hue_dark": "#ba4b5d"
+  },
+  {
+   "slug": "porttack_society",
+   "file": "porttack-society.json",
+   "title": "porttack.com: Society (Impact of Computing)",
+   "abbrev": "PT-Soc",
+   "hue_light": "#2f37c0",
+   "hue_dark": "#6d72cf"
   }
  ],
  "crosswalks": [

@@ -1,0 +1,192 @@
+{
+ "meta": {
+  "title": "porttack.com: Society (Impact of Computing)",
+  "base_url": "https://porttack.com",
+  "locator_kind": "none",
+  "locator_url_template": "{base_url}/{locator}",
+  "locator_slugs": {
+   "can-a-company-have-a-conscience": "2026/03/18/can-a-company-have-a-conscience.html",
+   "finding-fido-or-finding-you": "2026/03/04/finding-fido-or-finding-you.html",
+   "prove-me-wrong": "2026/07/20/prove-me-wrong.html"
+  },
+  "source": "porttack_society",
+  "abbrev": "PT-Soc",
+  "alignment_log": [
+   {
+    "date": "2026-10-19",
+    "by": "Claude Sonnet 5",
+    "scope": "Initial alignment pass for all three posts: AP CSP, California K-12 CS Standards, ISTE Digital Citizen, UNESCO AI Competency Framework for Students, CASEL, VIA, AASL Engage, CA CTE (ICT) anchor standards.",
+    "note": "Finding Fido already carried a hand-written standards table (castandards, apcsp, ISTE) in its own appendix -- those four codes are kept as-is here, just moved into this carrier's shape. Can a Company Have a Conscience and Prove Me Wrong had no prior alignment; both are read fresh against every catalog. apcsp 5.1 (Beneficial and Harmful Effects) is the one code genuinely common to all three posts -- surveillance (Fido), a company's own ethical stance (Conscience), and AI's effect on learning (Prove Me Wrong) are three different instances of the same Big Idea, so it's one coverage entry with three locators and a locator_notes override per post rather than three near-duplicate entries. CSTA 2017/2026 were checked but left out for Conscience and Prove Me Wrong -- castandards and apcsp already cover the same ground more specifically for those two, and adding CSTA on top would be padding, not new coverage. Little Brother (the novel unit) stays in its own carrier, little_brother.json -- it's a multi-week unit with its own chapter-by-chapter locators, not a single-post source like these three."
+   }
+  ],
+  "locator_titles": {
+   "can-a-company-have-a-conscience": "Can a Company Have a Conscience?",
+   "finding-fido-or-finding-you": "Finding Fido or Finding You?",
+   "prove-me-wrong": "Prove Me Wrong: A Socratic Seminar on AI and Cheating"
+  },
+  "caveat": "A single blog post per locator, not a chaptered source -- locator_kind is \"none\". California Ed Code Section 33548 (AB 873/AB 2876, media literacy and AI literacy) is cited directly by Finding Fido and Prove Me Wrong, but it's a legislative mandate, not a framework in this catalog system, so it isn't represented here -- it stays as a short line of prose in each post instead."
+ },
+ "coverage": {
+  "apcsp": {
+   "5.1": {
+    "locators": [
+     "can-a-company-have-a-conscience",
+     "finding-fido-or-finding-you",
+     "prove-me-wrong"
+    ],
+    "strength": "strong",
+    "note": "Big Idea 5's Beneficial and Harmful Effects topic, applied three different ways across these posts.",
+    "locator_notes": {
+     "can-a-company-have-a-conscience": "A company's own AI being weighed for both its military and consumer harms and benefits is this topic's dual-use framing in a single real news story.",
+     "finding-fido-or-finding-you": "The Ring ad is a beneficial-looking feature (finding a lost dog) that doubles as harmful infrastructure (a neighborhood surveillance network) -- IOC-1's core tension, named explicitly in the post's own 'function creep' section.",
+     "prove-me-wrong": "The seminar's central question -- when AI use helps learning versus steals the practice that builds it -- is this topic's beneficial/harmful framing applied to the tool itself, not just to society."
+    }
+   },
+   "5.5": {
+    "locators": [
+     "can-a-company-have-a-conscience"
+    ],
+    "strength": "strong",
+    "note": "A company's Pentagon contract, its self-imposed ethical red lines (no mass surveillance, no autonomous weapons), and the legal/political fallout are Legal and Ethical Concerns in its most direct, current-events form."
+   }
+  },
+  "castandards": {
+   "9-12.IC.26": {
+    "locators": [
+     "can-a-company-have-a-conscience"
+    ],
+    "strength": "strong",
+    "note": "A single company's contract decision reshaping its relationship with the federal government, consumer sentiment, and a competitor's own choices in the same week is exactly this standard's 'new technologies reshape social, economic, and political structures' claim, playing out in real time."
+   },
+   "9-12.IC.23": {
+    "locators": [
+     "finding-fido-or-finding-you"
+    ],
+    "strength": "strong",
+    "note": "From the post's own appendix: computing's social and cultural effects, not always for the better -- the Ring ad backlash across senators, privacy groups, and ordinary users."
+   },
+   "9-12.IC.29": {
+    "locators": [
+     "finding-fido-or-finding-you"
+    ],
+    "strength": "strong",
+    "note": "From the post's own appendix: Search Party is on by default and opt-out, meaning most camera owners' footage gets pulled into the system without ever actively agreeing to it -- this standard's 'automatic data collection without active participation' almost verbatim."
+   },
+   "9-12.IC.30": {
+    "locators": [
+     "finding-fido-or-finding-you"
+    ],
+    "strength": "strong",
+    "note": "From the post's own appendix: weighing privacy against the safety and law-enforcement case Ring's founder makes for near-zero neighborhood crime is this standard's privacy-vs-safety-and-law tradeoff."
+   },
+   "6-8.IC.20": {
+    "locators": [
+     "finding-fido-or-finding-you"
+    ],
+    "strength": "partial",
+    "note": "The post's own appendix cites the 6-8 band more lightly than the 9-12 one (just this code, not .21 bias or .22 collaboration, neither of which the post actually covers) -- the same tradeoffs argument, pitched for a middle-school read."
+   }
+  },
+  "iste-digital-citizen": {
+   "1.2.d": {
+    "locators": [
+     "finding-fido-or-finding-you"
+    ],
+    "strength": "strong",
+    "note": "The post's own appendix cites ISTE 2b under an older numbering; this catalog's current Digital Citizen standard covering the same ground -- managing personal data and awareness of data-collection technology -- is 1.2.d."
+   }
+  },
+  "unesco-ai-cfs": {
+   "4.2.1": {
+    "locators": [
+     "can-a-company-have-a-conscience"
+    ],
+    "strength": "strong",
+    "note": "\"AI creators and service providers carry real legal and social obligations\" is this post's whole premise: Anthropic choosing to hold a line its own leadership calls a matter of conscience, and facing real consequences for it."
+   },
+   "4.3.1": {
+    "locators": [
+     "can-a-company-have-a-conscience",
+     "prove-me-wrong"
+    ],
+    "strength": "strong",
+    "note": "Critically examining how AI and the companies behind it affect society, as a responsible citizen would.",
+    "locator_notes": {
+     "can-a-company-have-a-conscience": "The post explicitly frames the question for students as theirs to weigh, not just the company's: \"Can a company have a conscience? ... I'm asking you.\"",
+     "prove-me-wrong": "The whole seminar format exists to make students examine AI's role in their own learning and honesty, not just absorb a rule about it."
+    }
+   },
+   "4.2.2": {
+    "locators": [
+     "prove-me-wrong"
+    ],
+    "strength": "strong",
+    "note": "\"Safe and responsible use\" -- understanding ethical principles and when a tool helps versus harms -- is the exact question the seminar's facilitator prompts return to again and again: \"when does the tool help you, and when does it steal the practice you needed?\""
+   }
+  },
+  "casel": {
+   "SA.4": {
+    "locators": [
+     "can-a-company-have-a-conscience"
+    ],
+    "strength": "partial",
+    "note": "The post's closing line, \"this is how we show students that character counts,\" is a direct appeal to honesty and integrity as self-aware values, even though the lesson's content is a corporate ethics case study, not a personal-identity exercise."
+   },
+   "REL.1": {
+    "locators": [
+     "prove-me-wrong"
+    ],
+    "strength": "strong",
+    "note": "The fishbowl format -- one voice at a time, building on what came before, citing evidence -- is a structured implementation of communicating effectively, not just a discussion format left to chance."
+   },
+   "RDM.2": {
+    "locators": [
+     "prove-me-wrong"
+    ],
+    "strength": "strong",
+    "note": "\"Cite the text or a real example when you make a claim\" (one of the five posted norms) and the observer organizer's evidence columns are this standard's reasoned-judgment-from-evidence made into a gradable classroom routine."
+   },
+   "SOC.1": {
+    "locators": [
+     "prove-me-wrong"
+    ],
+    "strength": "strong",
+    "note": "The whole design -- inquiry first, teacher opinion held back until the reveal, a before/after temperature check scored by who changed the most minds -- exists specifically to get students taking each other's perspectives seriously, not performing a position."
+   }
+  },
+  "via-character": {
+   "COU.2": {
+    "locators": [
+     "prove-me-wrong"
+    ],
+    "strength": "strong",
+    "note": "Honesty, in VIA's own sense of presenting yourself accurately and taking responsibility for your actions, is the lesson's explicit subject (a cheating scandal) and its own closing instruction to students: \"I grade effort and honesty here, not the position landed on.\""
+   },
+   "WIS.3": {
+    "locators": [
+     "prove-me-wrong"
+    ],
+    "strength": "partial",
+    "note": "Judgment -- weighing a decision from multiple angles, including evidence that cuts against what you already believe -- is what the before/after temperature check is built to surface, though the seminar format exercises it more than it explicitly teaches it as a named skill."
+   }
+  },
+  "aasl-engage": {
+   "VI.A.2": {
+    "locators": [
+     "prove-me-wrong"
+    ],
+    "strength": "strong",
+    "note": "Ethical Use -- understanding what counts as ethical use of a tool before you reach for it -- is the seminar's core content: when AI use on schoolwork crosses from help into substituting for the learning itself."
+   }
+  },
+  "ca-ict-anchor": {
+   "8.4": {
+    "locators": [
+     "prove-me-wrong"
+    ],
+    "strength": "partial",
+    "note": "Personal integrity and ethical behavior is this standard's workplace framing of the same academic-honesty question the seminar raises about AI use, applied to a classroom rather than a job."
+   }
+  }
+ }
+}

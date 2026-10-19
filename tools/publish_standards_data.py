@@ -85,6 +85,9 @@ HUES = [
     ("#22a048", "#30a654"),  # 19 jade
     ("#c2185b", "#e0457b"),  # 20 raspberry (unplugged; not yet run through validate_palette.js)
     ("#08a09b", "#18aaa5"),  # 21 turquoise (picoprojects)
+    ("#a430f2", "#ad53ea"),  # 22 violet-magenta (porttack_sel)
+    ("#8b2939", "#ba4b5d"),  # 23 crimson (porttack_hardware)
+    ("#2f37c0", "#6d72cf"),  # 24 cobalt (porttack_society)
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -168,6 +171,29 @@ HUES = [
 # without a validation pass (see that slot's inline HUES comment) -- unrelated
 # to this addition and out of scope for it to fix.
 #
+# Slot 15 (orchid) renamed in place 2026-10-19: teaching_binary_with_coins
+# became porttack_coding when its one post joined the porttack.com category-
+# carrier system (SEL/Hardware/Society below). No color change, no re-
+# validation needed -- same slot, same hue, just a new source slug/filename.
+#
+# Slots 22-24 (violet-magenta, crimson, cobalt) added 2026-10-19 alongside
+# porttack_sel, porttack_hardware, and porttack_society -- the other three
+# porttack.com category carriers, appended after picoprojects so every real
+# source stays contiguous. Same brute-force-and-validate method as every slot
+# above (dataviz skill's validate() export), this time biased away from hue
+# angles already in use elsewhere in the list (not just the new adjacent
+# neighbor) since three slots landing back-to-back gave more room to pick
+# genuinely distinct families: violet-magenta (~276 deg) fills the gap
+# between indigo (slot 16, ~259) and orchid (slot 15, ~297); crimson (~350
+# deg) and cobalt (~237 deg) were each chosen fresh, validated only against
+# their immediate chain neighbor per the "adjacent pairs are what render
+# adjacent" rule. Pairwise: turquoise/slot21 -> violet-magenta/slot22,
+# violet-magenta -> crimson/slot23, crimson -> cobalt/slot24, all PASS in both
+# modes (worst adjacent CVD 19.0 light / contrast and normal-floor clear). A
+# full 24-slot adjacent run afterward found no new regression beyond the
+# pre-existing raspberry/jade dark-mode FAIL noted above (slot 20 vs 19,
+# unrelated to this addition).
+#
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
 # intentionally omitted -- excluded from this admin-facing view by direction,
@@ -197,13 +223,16 @@ SOURCE_ORDER = [
     "codeorg_csd_3a",
     "codeorg_csd_3b",
     "hour_of_data",
-    "teaching_binary_with_coins",
+    "porttack_coding",
     "kagan_teambuilding",
     "kagan_classbuilding",
     "pico",
     "cs50psets",
     "unplugged",
     "picoprojects",
+    "porttack_sel",
+    "porttack_hardware",
+    "porttack_society",
 ]
 
 

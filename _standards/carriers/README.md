@@ -192,6 +192,44 @@ from JSON `tools/publish_standards_data.py` publishes), add its slug to
 — don't insert it before an already-shipped source, since that would shift
 everyone else's assigned color) and rerun `tools/publish_standards.sh`.
 
+## Embedding the widget on another site
+
+`assets/js/standards-alignment.js` has no Jekyll/collection dependency of its
+own — it just needs a DOM node with `data-carrier-url` (plus optionally
+`data-chapter`/`data-carrier-slug`) and two kinds of static JSON reachable by
+`fetch()`: a carrier file and the catalog files it references. The only
+Jekyll-specific piece is `_includes/standards-alignment.html`, which computes
+`data-chapter`/`data-carrier-slug` from `page`/`_data/pathways.yml` — a site
+with no such collection system can just hand-write the equivalent markup.
+
+GitHub Pages serves everything under `standards/data/` and `standards/*.html`
+with `access-control-allow-origin: *`, so another site can load the script
+and fetch the JSON straight from `learn.porttack.com` rather than syncing
+copies. Two optional attributes make this safe to do from a different origin:
+
+- `data-base="https://learn.porttack.com"` — prefixed onto every
+  `/standards/...` URL the script builds (the catalog fetch, reference-page
+  links, and the map/report links). Omit it (the default, `''`) on learn's
+  own pages so nothing changes there.
+- `data-scope-label="unit"` — replaces the word "pathway" in summary-mode
+  link text ("View this pathway's own report") for a carrier that isn't a
+  pathway. Default stays `'pathway'`.
+
+porttack.com's `_includes/standards-alignment.html` is the worked example:
+it has no `_data/pathways.yml`, so it reads `page.lesson_category` /
+`page.standards_carrier` directly instead, but emits the same markup shape
+(`<details class="standards-alignment" data-base="..." data-carrier-slug="..."
+data-carrier-url="..." hidden>`) and loads the same unmodified script from
+`{data-base}/assets/js/standards-alignment.js`.
+
+The alternative — `tools/sync-standards.sh`, which copies the catalog and a
+named carrier file's JSON into a target repo — is still the right call for a
+site that needs to work with learn offline, or that isn't a Jekyll site
+GitHub Pages can CORS-serve from in the first place (`working-in-python`'s
+Sphinx build uses the synced-copy approach for exactly that reason). Loading
+live from learn is simpler when the consuming site is fine depending on
+learn's uptime and doesn't need a local copy.
+
 ## `rollups` (optional, rare)
 
 A coarser, whole-Big-Idea-level claim, separate from per-code `coverage`.
