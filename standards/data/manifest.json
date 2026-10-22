@@ -206,6 +206,14 @@
    "abbrev": "PT-Soc",
    "hue_light": "#2f37c0",
    "hue_dark": "#6d72cf"
+  },
+  {
+   "slug": "socratic_seminar_kit",
+   "file": "socratic-seminar-kit.json",
+   "title": "porttack.com: Socratic Seminar Kit",
+   "abbrev": "SocKit",
+   "hue_light": "#1b8a5a",
+   "hue_dark": "#2aa36e"
   }
  ],
  "crosswalks": [

@@ -89,6 +89,7 @@ HUES = [
     ("#a430f2", "#ad53ea"),  # 22 violet-magenta (porttack_sel)
     ("#8b2939", "#ba4b5d"),  # 23 crimson (porttack_hardware)
     ("#2f37c0", "#6d72cf"),  # 24 cobalt (porttack_society)
+    ("#1b8a5a", "#2aa36e"),  # 25 emerald (socratic_seminar_kit)
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -195,6 +196,19 @@ HUES = [
 # pre-existing raspberry/jade dark-mode FAIL noted above (slot 20 vs 19,
 # unrelated to this addition).
 #
+# Slot 25 (emerald) added 2026-10-22 alongside socratic_seminar_kit, appended
+# after porttack_society so real sources stay contiguous. Only the new
+# adjacent pair needed checking, since this source is appended at the end:
+# node scripts/validate_palette.js "#2f37c0,#1b8a5a" --mode light and
+# "#6d72cf,#2aa36e" --mode dark both PASS (CVD 26.4 light / 19.0 dark, both
+# clear of the 6-8 floor band). Full 25-slot run in both modes afterward
+# found no new regression: the one dark-mode CVD FAIL present
+# (raspberry/slot 20 vs jade/slot 19, 4.3) is the same pre-existing failure
+# noted at slot 21's addition, unrelated to this one. Emerald's hue (~150
+# deg) sits close to jade's (slot 19, ~140 deg) and turquoise's (slot 21,
+# ~175 deg), but neither is its adjacent neighbor in this list, so reusing
+# the family is fine per this file's own rule above.
+#
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
 # intentionally omitted -- excluded from this admin-facing view by direction,
@@ -234,6 +248,7 @@ SOURCE_ORDER = [
     "porttack_sel",
     "porttack_hardware",
     "porttack_society",
+    "socratic_seminar_kit",
 ]
 
 

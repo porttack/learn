@@ -7,7 +7,11 @@
   "locator_slugs": {
    "can-a-company-have-a-conscience": "2026/03/18/can-a-company-have-a-conscience.html",
    "finding-fido-or-finding-you": "2026/03/04/finding-fido-or-finding-you.html",
-   "prove-me-wrong": "2026/07/20/prove-me-wrong.html"
+   "prove-me-wrong": "2026/07/20/prove-me-wrong.html",
+   "students-wrote-the-rules-seminar": "2026/10/21/students-wrote-the-rules-seminar.html",
+   "robot-teacher-seminar": "2026/10/21/robot-teacher-seminar.html",
+   "what-does-delete-mean-seminar": "2026/10/22/what-does-delete-mean-seminar.html",
+   "who-sets-the-rules-for-ai": "2026/10/21/who-sets-the-rules-for-ai.html"
   },
   "source": "porttack_society",
   "abbrev": "PT-Soc",
@@ -17,14 +21,24 @@
     "by": "Claude Sonnet 5",
     "scope": "Initial alignment pass for all three posts: AP CSP, California K-12 CS Standards, ISTE Digital Citizen, UNESCO AI Competency Framework for Students, CASEL, VIA, AASL Engage, CA CTE (ICT) anchor standards.",
     "note": "Finding Fido already carried a hand-written standards table (castandards, apcsp, ISTE) in its own appendix -- those four codes are kept as-is here, just moved into this carrier's shape. Can a Company Have a Conscience and Prove Me Wrong had no prior alignment; both are read fresh against every catalog. apcsp 5.1 (Beneficial and Harmful Effects) is the one code genuinely common to all three posts -- surveillance (Fido), a company's own ethical stance (Conscience), and AI's effect on learning (Prove Me Wrong) are three different instances of the same Big Idea, so it's one coverage entry with three locators and a locator_notes override per post rather than three near-duplicate entries. CSTA 2017/2026 were checked but left out for Conscience and Prove Me Wrong -- castandards and apcsp already cover the same ground more specifically for those two, and adding CSTA on top would be padding, not new coverage. Little Brother (the novel unit) stays in its own carrier, little_brother.json -- it's a multi-week unit with its own chapter-by-chapter locators, not a single-post source like these three."
+   },
+   {
+    "date": "2026-10-22",
+    "by": "Claude Sonnet 5",
+    "scope": "Added the four new Socratic-seminar posts (the STUDENTS FIRST Act, the Salamanca robot tutor, the Nest doorbell camera, the Digital Education Council survey) to this carrier's existing apcsp coverage, at the same topic-level granularity (5.x, 2.x) this carrier already uses -- not the finer IOC-1.A/DAT-2.A-style essential-knowledge codes the posts themselves cite inline, since no carrier in this project cites at that grain and the coverage-map widget is built around topic-level keys.",
+    "note": "Read each post's own Learning Goals and, where present, its own explicit \"AP CSP, Big Idea 5\" section (Robot Tutor and Delete both already name their topics outright; Rules Students Wrote and Who Sets the Rules do not, so their topic-level codes are derived here from the IOC-1.x/DAT-2.x essential-knowledge codes each post cites, via apcsp.json's own topic->LO mapping). 5.1 (Beneficial and Harmful Effects) extends to all four, same reasoning as the existing three-locator entry: a school-district robot, a doorbell camera's residual data, a 49-rule student bill, and a survey about unclear AI rules are four more instances of the same beneficial/harmful tension. 5.5 (Legal and Ethical Concerns) extends to Rules Students Wrote (who decides what AI use is \"permitted\") and Robot Tutor (the Commissioner's letter, the paused data-privacy agreement). 5.2 (Digital Divide) and 5.3 (Computing Bias) are new, Robot Tutor only -- 5.3 is marked partial, since the post's own reading and core rounds don't build bias in directly; it surfaces only as one back-pocket CS-lens question (\"Could a robot tutor be biased?\"), unlike 5.2's Salamanca-district framing, which the reading leads with. 5.6 (Safe Computing) is new, shared by Robot Tutor (student IDs, stored conversations, flagged-term alerts) and Delete (the whole post). 2.3 (Extracting Information from Data), also new, is Who Sets the Rules only -- its reading is explicitly \"data, not a story,\" and paragraph 8's self-reported/college-only/no-fieldwork-dates critique is this topic's own cautions about what a dataset can and can't show, not just a beneficial/harmful framing. Deliberately did not duplicate the CASEL/VIA/UNESCO-MIL discourse-skill alignment prove-me-wrong already carries here (REL.1, RDM.2, SOC.1, COU.2, VI.A.2, 8.4) across these four posts too -- those codes describe the Socratic Seminar format itself (the fishbowl, the norms, the tickets), not any one post's content, and that format now lives in its own shared page (socratic-seminar-kit.md, linked from all seven seminar posts), so its alignment belongs once on that page's own carrier (socratic_seminar_kit) instead of copied seven times. Common Core ELA and AB 873, which every seminar post also cites, stay as the kit's own prose for the same reason this carrier already keeps AB 873 out of its coverage object: a legislative mandate and an ELA framework this catalog system doesn't model, not something to force into a coverage key."
    }
   ],
   "locator_titles": {
    "can-a-company-have-a-conscience": "Can a Company Have a Conscience?",
    "finding-fido-or-finding-you": "Finding Fido or Finding You?",
-   "prove-me-wrong": "Prove Me Wrong: A Socratic Seminar on AI and Cheating"
+   "prove-me-wrong": "Prove Me Wrong: A Socratic Seminar on AI and Cheating",
+   "students-wrote-the-rules-seminar": "The Rules Students Wrote: A Socratic Seminar on the STUDENTS FIRST Act",
+   "robot-teacher-seminar": "Should a School Buy a Robot Tutor? A Socratic Seminar",
+   "what-does-delete-mean-seminar": "What Does Delete Mean? A Socratic Seminar on a Doorbell Camera",
+   "who-sets-the-rules-for-ai": "Who Sets the Rules for AI? A Socratic Seminar on a Student Survey"
   },
-  "caveat": "A single blog post per locator, not a chaptered source -- locator_kind is \"none\". California Ed Code Section 33548 (AB 873/AB 2876, media literacy and AI literacy) is cited directly by Finding Fido and Prove Me Wrong, but it's a legislative mandate, not a framework in this catalog system, so it isn't represented here -- it stays as a short line of prose in each post instead."
+  "caveat": "A single blog post per locator, not a chaptered source -- locator_kind is \"none\". California Ed Code Section 33548 (AB 873/AB 2876, media literacy and AI literacy) is cited directly by Finding Fido and Prove Me Wrong, but it's a legislative mandate, not a framework in this catalog system, so it isn't represented here -- it stays as a short line of prose in each post instead. The four newest posts (students-wrote-the-rules-seminar, robot-teacher-seminar, what-does-delete-mean-seminar, who-sets-the-rules-for-ai) are Socratic seminars built on a shared format page, socratic-seminar-kit.md, which carries its own Common Core ELA and AB 873 prose plus its own carrier (socratic_seminar_kit) for the discourse-skill standards that format itself practices -- this carrier covers only each post's own reading and content, not the shared format."
  },
  "coverage": {
   "apcsp": {
@@ -32,22 +46,69 @@
     "locators": [
      "can-a-company-have-a-conscience",
      "finding-fido-or-finding-you",
-     "prove-me-wrong"
+     "prove-me-wrong",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "what-does-delete-mean-seminar",
+     "who-sets-the-rules-for-ai"
     ],
     "strength": "strong",
-    "note": "Big Idea 5's Beneficial and Harmful Effects topic, applied three different ways across these posts.",
+    "note": "Big Idea 5's Beneficial and Harmful Effects topic, applied seven different ways across these posts.",
     "locator_notes": {
      "can-a-company-have-a-conscience": "A company's own AI being weighed for both its military and consumer harms and benefits is this topic's dual-use framing in a single real news story.",
      "finding-fido-or-finding-you": "The Ring ad is a beneficial-looking feature (finding a lost dog) that doubles as harmful infrastructure (a neighborhood surveillance network) -- IOC-1's core tension, named explicitly in the post's own 'function creep' section.",
-     "prove-me-wrong": "The seminar's central question -- when AI use helps learning versus steals the practice that builds it -- is this topic's beneficial/harmful framing applied to the tool itself, not just to society."
+     "prove-me-wrong": "The seminar's central question -- when AI use helps learning versus steals the practice that builds it -- is this topic's beneficial/harmful framing applied to the tool itself, not just to society.",
+     "students-wrote-the-rules-seminar": "Six real provisions from a 98-student-written national AI policy, including a rule that can suspend a student over a parent's AI use, are weighed for who they help and who they punish -- the post's own learning goal names IOC-1.A and IOC-1.B directly.",
+     "robot-teacher-seminar": "A $57,590 humanoid tutor that can also log a student's ID and conversation history is a single innovation argued as helpful (an underserved district getting new tech first) and harmful (a state pause over data-privacy concerns) in the same reading.",
+     "what-does-delete-mean-seminar": "The post's own learning goal states this directly: \"weigh a helpful and a damaging outcome of the same design decision: keeping data a user thinks is gone\" -- the FBI's recovered footage versus a camera owner's belief that pressing Delete meant gone.",
+     "who-sets-the-rules-for-ai": "88% of students using AI and 57% saying the rules are unclear is the same beneficial/harmful tension read through a number instead of a story -- the post's own learning goal cites IOC-1.A and IOC-1.B."
     }
+   },
+   "5.2": {
+    "locators": [
+     "robot-teacher-seminar"
+    ],
+    "strength": "strong",
+    "note": "Salamanca is a small, high-poverty district on the Seneca Nation reservation that chose to be among the first in the country to buy a humanoid classroom robot -- the reading leads with exactly this framing, and one facilitator question asks it directly: does this narrow the gap between rich and poor schools, or widen it?"
+   },
+   "5.3": {
+    "locators": [
+     "robot-teacher-seminar"
+    ],
+    "strength": "partial",
+    "note": "\"Could a robot tutor be biased? In what ways?\" is one back-pocket CS-lens question, not a theme the reading itself builds -- the post's own Standards section names 5.3 as something the seminar \"touches,\" which is a lighter claim than 5.1's or 5.6's."
    },
    "5.5": {
     "locators": [
-     "can-a-company-have-a-conscience"
+     "can-a-company-have-a-conscience",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar"
     ],
     "strength": "strong",
-    "note": "A company's Pentagon contract, its self-imposed ethical red lines (no mass surveillance, no autonomous weapons), and the legal/political fallout are Legal and Ethical Concerns in its most direct, current-events form."
+    "note": "A company's Pentagon contract, its self-imposed ethical red lines (no mass surveillance, no autonomous weapons), and the legal/political fallout are Legal and Ethical Concerns in its most direct, current-events form.",
+    "locator_notes": {
+     "students-wrote-the-rules-seminar": "Rule A treats any AI use not explicitly permitted as plagiarism, and Rule B can suspend a student over a parent's AI use -- the post's second learning goal names the legal and ethical question outright: who decides what's \"permitted,\" and who answers for it.",
+     "robot-teacher-seminar": "The Education Commissioner's letter and the district's pause \"while it works through enhanced student data privacy agreements\" are Legal and Ethical Concerns playing out as an actual, unresolved regulatory question, not a hypothetical."
+    }
+   },
+   "5.6": {
+    "locators": [
+     "robot-teacher-seminar",
+     "what-does-delete-mean-seminar"
+    ],
+    "strength": "strong",
+    "note": "Safe Computing's own ground -- personal data a system collects and what can go wrong keeping it.",
+    "locator_notes": {
+     "robot-teacher-seminar": "Each student logs in with a unique ID the robot uses to recall past conversations, and flagged words trigger an automatic alert to administrators -- the CS-lens questions ask directly what that data is and who could see it.",
+     "what-does-delete-mean-seminar": "The entire reading is this topic: a camera marked disconnected, no paid subscription, and the FBI still recovering video from \"residual data located in backend systems\" -- the post's own Standards section names 5.6 first."
+    }
+   },
+   "2.3": {
+    "locators": [
+     "who-sets-the-rules-for-ai"
+    ],
+    "strength": "strong",
+    "note": "The reading is built to be \"data, not a story\": a 45,000-person, 35-country survey reduced to a few real percentages, with paragraph 8 explicitly flagging what the numbers can and can't support (self-reported, college students only, no fieldwork dates given) -- Extracting Information from Data applied to the reading itself, not just its topic."
    }
   },
   "castandards": {
