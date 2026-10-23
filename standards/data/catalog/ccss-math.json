@@ -5,7 +5,7 @@
   "year": 2010,
   "extracted": "2026-10-24",
   "license_note": "(c) 2010 National Governors Association Center for Best Practices and Council of Chief State School Officers, all rights reserved; NGA/CCSSO license the standards for free noncommercial educational use, but every paraphrase here is written for this project, never the standards' own text, matching this repo's policy for every other catalog regardless of a source's own licence.",
-  "scope_note": "Middle school only (grades 6-8), and only the strands Bootstrap:Algebra's own alignment claims touch: 6.NS (The Number System), 6.SP/7.SP/8.SP (Statistics & Probability), 7.EE (Expressions & Equations), 8.F (Functions), 8.G (Geometry, Pythagorean theorem cluster only). Not a general-purpose math catalog -- no Ratios & Proportions, no Geometry outside 8.G.6-8, no high school content. Add strands as a real need shows up, the same way this project's ccss-ela.json stayed scoped to what was actually cited rather than built out as a complete K-12 reference.",
+  "scope_note": "Middle school (6-8) and a grounded slice of high school Algebra/Functions -- only the strands and specific codes a real read of Bootstrap:Algebra's own 28-lesson sequence (bootstrapworld.org, Fall 2026 course page) actually supports, not every code its domain could theoretically cover. Skipped entirely, for lack of any matching lesson: A-SSE (quadratics/exponential series), A-REI.1/2/4 (quadratics), F-IF.3-6/8-9 (sequences, complex curve analysis, quadratic/exponential forms), F-BF.2-4 (sequences, transformations, inverses), F-LE.3-4 (exponential-specific), and all of grades 6-8 Statistics & Probability (no lesson in the sequence collects or analyzes real-world data). Not a general-purpose math catalog -- no Ratios & Proportions, no Geometry outside the two codes grounded here, no untouched high school content. Add strands as a real need shows up, the same way this project's ccss-ela.json stayed scoped to what was actually cited.",
   "codes_note": "Codes are CCSS's own (e.g. 6.NS.5, 8.F.2), not a project-specific scheme. Lettered sub-parts (e.g. 6.NS.6.a-c, 7.EE.4.a-b) are folded into one paraphrase per numbered standard, matching this project's existing topic-level citation granularity (see apcsp.json's topic/LO split, or ccss-ela.json's own codes_note).",
   "abbrev": "CCSS-Math"
  },
@@ -152,6 +152,116 @@
      "code": "8.SP.A.3",
      "name": null,
      "paraphrase": "Use the equation of a fitted linear model to solve problems in the context of bivariate measurement data, interpreting the slope and intercept."
+    }
+   ]
+  },
+  {
+   "name": "Grade 6: Geometry",
+   "items": [
+    {
+     "code": "6.G.4",
+     "name": null,
+     "paraphrase": "Represent three-dimensional figures using nets of rectangles and triangles, and use nets to find surface area."
+    }
+   ]
+  },
+  {
+   "name": "Grade 8: Geometry (Transformations)",
+   "items": [
+    {
+     "code": "8.G.3",
+     "name": null,
+     "paraphrase": "Describe the effect of dilations, translations, rotations, and reflections on two-dimensional figures using coordinates."
+    }
+   ]
+  },
+  {
+   "name": "High School: Interpreting Functions",
+   "items": [
+    {
+     "code": "F-IF.1",
+     "name": null,
+     "paraphrase": "A function assigns each input in its domain exactly one output in its range; f(x) denotes the output for input x."
+    },
+    {
+     "code": "F-IF.2",
+     "name": null,
+     "paraphrase": "Use function notation, evaluate functions at inputs in their domains, and interpret statements that use function notation in context."
+    },
+    {
+     "code": "F-IF.7",
+     "name": null,
+     "paraphrase": "Graph functions expressed symbolically, including piecewise-defined functions (step and absolute value functions among them), showing key features."
+    }
+   ]
+  },
+  {
+   "name": "High School: Building Functions",
+   "items": [
+    {
+     "code": "F-BF.1",
+     "name": null,
+     "paraphrase": "Write a function that describes a relationship between two quantities, including composing functions (using one function's output as another's input)."
+    }
+   ]
+  },
+  {
+   "name": "High School: Creating Equations",
+   "items": [
+    {
+     "code": "A-CED.1",
+     "name": null,
+     "paraphrase": "Write equations and inequalities in one variable, including linear ones, to solve problems."
+    },
+    {
+     "code": "A-CED.2",
+     "name": null,
+     "paraphrase": "Write equations in two or more variables to represent relationships between quantities, and graph them on labeled axes."
+    },
+    {
+     "code": "A-CED.3",
+     "name": null,
+     "paraphrase": "Use equations, inequalities, or systems of them to represent constraints in a context, and judge whether a solution is workable given those constraints."
+    }
+   ]
+  },
+  {
+   "name": "High School: Reasoning with Equations & Inequalities",
+   "items": [
+    {
+     "code": "A-REI.3",
+     "name": null,
+     "paraphrase": "Solve linear equations and inequalities in one variable, including those with coefficients given as letters."
+    },
+    {
+     "code": "A-REI.10",
+     "name": null,
+     "paraphrase": "Understand that the graph of an equation in two variables is the set of all its solutions plotted in the coordinate plane."
+    },
+    {
+     "code": "A-REI.12",
+     "name": null,
+     "paraphrase": "Graph the solution to a linear inequality in two variables as a half-plane, and graph the solution to a system of linear inequalities as the intersection of the corresponding half-planes."
+    }
+   ]
+  },
+  {
+   "name": "High School: Linear & Exponential Models",
+   "items": [
+    {
+     "code": "F-LE.1",
+     "name": null,
+     "paraphrase": "Distinguish situations modeled by linear functions (equal differences over equal intervals) from those modeled by exponential functions (equal factors over equal intervals)."
+    },
+    {
+     "code": "F-LE.2",
+     "name": null,
+     "paraphrase": "Construct linear and exponential functions from a graph, a description of a relationship, or two input-output pairs."
+    },
+    {
+     "code": "F-LE.5",
+     "name": null,
+     "paraphrase": "Interpret the parameters of a linear or exponential function (e.g. slope, intercept) in terms of the context it models."
     }
    ]
   }
