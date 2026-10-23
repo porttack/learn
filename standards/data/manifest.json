@@ -13,7 +13,8 @@
   "cde-tsel",
   "ruler",
   "via-character",
-  "ccss-ela"
+  "ccss-ela",
+  "ccss-math"
  ],
  "sources": [
   {
@@ -215,6 +216,14 @@
    "abbrev": "SocKit",
    "hue_light": "#1b8a5a",
    "hue_dark": "#2aa36e"
+  },
+  {
+   "slug": "bootstrap_algebra",
+   "file": "bootstrap-algebra.json",
+   "title": "Bootstrap:Algebra",
+   "abbrev": "BS-Alg",
+   "hue_light": "#7a2e8a",
+   "hue_dark": "#9d4bb5"
   }
  ],
  "crosswalks": [

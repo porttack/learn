@@ -1,0 +1,263 @@
+{
+ "meta": {
+  "title": "Bootstrap:Algebra",
+  "base_url": "https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/",
+  "locator_kind": "none",
+  "locator_url_template": "{base_url}",
+  "source": "bootstrap_algebra",
+  "abbrev": "BS-Alg",
+  "caveat": "Course-level, not lesson-level: the only material available this pass is Bootstrap's own 2-page course overview (tmp/Bootstrap-Algebra.pdf, gitignored, teacher's own copy, \"BootstrapAlgebra-Overview-2017\" by Emmanuel Schanzer) plus their publicly published alignment-code list (bootstrapworld.org/materials/fall2019/Standards.shtml). Hour of Data's carrier, by contrast, was built from a real 23-screen Teacher Guide with actual exercises -- this one has no lesson breakdown to locate anything within, so locator_kind is \"none\" with a single locator (\"course\") standing for the whole 25-hour module, not a stub meaning \"not yet looked at.\" The teacher taught this briefly and may return to it; if they do, upgrade this carrier to real lesson-level locators against actual teacher materials, the same way every other carrier here is built, and reconsider the statistics-strand codes flagged partial below.",
+  "alignment_log": [
+   {
+    "date": "2026-10-24",
+    "by": "Claude Sonnet 5",
+    "scope": "First pass, added as secondary content at the teacher's request (previously taught for about a month, may revisit, wants it comparable to what replaced it). Checked Bootstrap's own 2019 alignment page's claimed CCSS Math and CSTA 2017 codes against the course overview PDF and each code's real text at thecorestandards.org / this project's csta2017.json.",
+    "note": "The overview PDF names specific concepts: order of operations, function composition, function definition, inequalities, piecewise functions, and the distance formula (math), plus reactive programming, datatypes, testing, and code review (CS) -- a videogame-design course. Codes tied to one of those named concepts are marked strong; the rest of Bootstrap's own claimed list is marked partial (plausible but not describable from what I could read) or left out. Left out entirely: CSTA 2-DA-07/08/09 and 3A-DA-11 (data cleaning, RGB/hex representations, interactive visualization) -- these read as a carryover from Bootstrap:Data Science's own alignment, not this course's; nothing in the overview describes working with external datasets. Piecewise functions, named in the overview, has no clean middle-school CCSS code (it's normally an Algebra 1/F-IF.C concept) -- not covered here since this pass is MS-scoped only; would need the HS Functions strand this project hasn't built yet. 7.SP.A.1 and the 6.SP/8.SP.A.1 sampling-and-distribution codes are Bootstrap's own claims with nothing in the overview to confirm or deny them -- marked partial, not dropped, since the source document's own silence isn't evidence either way."
+   }
+  ]
+ },
+ "coverage": {
+  "ccss-math": {
+   "6.NS.6": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Plotting a game object's position in all four quadrants of the coordinate plane is exactly this standard, and exactly what a videogame's own coordinate system requires."
+   },
+   "6.NS.7": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Ordering and absolute value of rational numbers underlie the inequalities the overview names as a taught concept."
+   },
+   "6.NS.8": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Finding distances between points sharing a coordinate is a direct precursor to the distance formula (8.G.8) the overview names explicitly."
+   },
+   "6.NS.5": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "Signed numbers in context (score, position deltas) plausibly come up in a videogame, but the overview doesn't describe this specifically."
+   },
+   "6.SP.A.1": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "Bootstrap's own alignment page claims this; the overview describes no statistics component to confirm it against."
+   },
+   "6.SP.A.2": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "Same as 6.SP.A.1 -- claimed, unconfirmed."
+   },
+   "6.SP.A.3": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "Same as 6.SP.A.1 -- claimed, unconfirmed."
+   },
+   "6.SP.B.5": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "Same as 6.SP.A.1 -- claimed, unconfirmed."
+   },
+   "7.EE.1": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Combining and expanding linear expressions with rational coefficients is core algebra content the course is built to teach through programming."
+   },
+   "7.EE.2": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Rewriting an expression to clarify how quantities relate is the same move as function composition, one of the overview's own named concepts."
+   },
+   "7.EE.3": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Multi-step problems with rational numbers, checked for reasonableness, match the overview's own order-of-operations framing."
+   },
+   "7.EE.4": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Writing equations and inequalities from word problems, then graphing and interpreting inequality solutions, is the overview's \"inequalities\" concept by name."
+   },
+   "7.SP.A.1": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "Bootstrap's own alignment page claims this; the overview describes no statistics component to confirm it against."
+   },
+   "8.F.1": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "A function as a rule pairing each input to exactly one output is the overview's own \"function definition.\""
+   },
+   "8.F.2": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Comparing functions represented algebraically, graphically, in a table, or verbally is directly relevant to a course teaching function definition through a programming environment that can show more than one representation."
+   },
+   "8.F.3": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Reading y = mx + b as a linear function, with non-examples, is foundational to the function and piecewise-function content the overview names."
+   },
+   "8.G.6": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "The overview names the distance formula (8.G.7/8.G.8's application), not explicitly a proof of the Pythagorean theorem itself."
+   },
+   "8.G.7": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Applying the Pythagorean theorem to find unknown side lengths is the mechanism behind the distance formula the overview names explicitly."
+   },
+   "8.G.8": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Finding the distance between two points in a coordinate system is the distance formula, named explicitly in the overview as a taught concept -- the strongest single match in this catalog."
+   },
+   "8.SP.A.1": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "Bootstrap's own alignment page claims this; the overview describes no statistics component to confirm it against."
+   },
+   "8.SP.A.2": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "Fitting a line to bivariate data plausibly connects to the course's own linear-function content (8.F.3), but the overview doesn't describe a data-fitting activity specifically."
+   },
+   "8.SP.A.3": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "Same reasoning as 8.SP.A.2 -- plausible via the slope/intercept connection to 8.F.3, not confirmed by the overview."
+   }
+  },
+  "csta2017": {
+   "2-AP-11": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Naming and using variables clearly is foundational to a course that has students define their own functions and data."
+   },
+   "2-AP-13": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Breaking a videogame's design into subproblems is how the overview's \"function composition\" and \"function definition\" get built up piece by piece."
+   },
+   "2-AP-14": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Generalizing a repeated procedure with a parameter is, in math terms, exactly function definition and composition -- the overview's own core content."
+   },
+   "2-AP-17": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Deliberately testing with inputs expected to break a program is the overview's own named \"testing\" concept."
+   },
+   "2-AP-19": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Documentation that lets someone else follow, test, and debug a program is the overview's own named \"code review\" concept."
+   },
+   "3A-AP-16": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "An event triggering a procedure is reactive programming, the overview's own named concept, and the mechanism behind a student-designed videogame responding to player input."
+   },
+   "3A-AP-17": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Systematically decomposing a hard problem into reusable procedures is the same design-recipe approach underlying 2-AP-13, at the course's upper grade band."
+   },
+   "3A-AP-18": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "A complex artifact as a system of interacting pieces is plausible for a full videogame project, though the overview doesn't describe the project's own architecture in enough detail to confirm this specifically."
+   },
+   "3A-AP-23": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Documenting a program's design decisions is the overview's own named \"code review\" concept, at the course's upper grade band."
+   },
+   "3B-AP-14": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Building one's own components, procedures, or data definitions rather than only using provided ones is the overview's own framing: students \"program a videogame of their own design.\""
+   },
+   "3B-AP-21": {
+    "locators": [
+     "course"
+    ],
+    "strength": "strong",
+    "note": "Writing deliberate test cases to verify a program against its own design spec is the overview's own named \"testing\" concept, and matches Bootstrap's own publicly documented \"Design Recipe\" pedagogy (write test cases before the function body)."
+   },
+   "3B-AP-22": {
+    "locators": [
+     "course"
+    ],
+    "strength": "partial",
+    "note": "That adding a feature can quietly break existing behavior is a real risk in any iterative project like a student-designed videogame, but the overview doesn't describe this specifically as taught content."
+   }
+  }
+ }
+}

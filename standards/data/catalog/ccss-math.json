@@ -1,0 +1,159 @@
+{
+ "meta": {
+  "source": "Common Core State Standards for Mathematics (National Governors Association Center for Best Practices, Council of Chief State School Officers)",
+  "url": "https://www.thecorestandards.org/Math/",
+  "year": 2010,
+  "extracted": "2026-10-24",
+  "license_note": "(c) 2010 National Governors Association Center for Best Practices and Council of Chief State School Officers, all rights reserved; NGA/CCSSO license the standards for free noncommercial educational use, but every paraphrase here is written for this project, never the standards' own text, matching this repo's policy for every other catalog regardless of a source's own licence.",
+  "scope_note": "Middle school only (grades 6-8), and only the strands Bootstrap:Algebra's own alignment claims touch: 6.NS (The Number System), 6.SP/7.SP/8.SP (Statistics & Probability), 7.EE (Expressions & Equations), 8.F (Functions), 8.G (Geometry, Pythagorean theorem cluster only). Not a general-purpose math catalog -- no Ratios & Proportions, no Geometry outside 8.G.6-8, no high school content. Add strands as a real need shows up, the same way this project's ccss-ela.json stayed scoped to what was actually cited rather than built out as a complete K-12 reference.",
+  "codes_note": "Codes are CCSS's own (e.g. 6.NS.5, 8.F.2), not a project-specific scheme. Lettered sub-parts (e.g. 6.NS.6.a-c, 7.EE.4.a-b) are folded into one paraphrase per numbered standard, matching this project's existing topic-level citation granularity (see apcsp.json's topic/LO split, or ccss-ela.json's own codes_note).",
+  "abbrev": "CCSS-Math"
+ },
+ "groups": [
+  {
+   "name": "Grade 6: The Number System",
+   "items": [
+    {
+     "code": "6.NS.5",
+     "name": null,
+     "paraphrase": "Use positive and negative numbers to represent quantities with opposite directions or values (temperature, elevation, debits/credits), explaining what 0 means in context."
+    },
+    {
+     "code": "6.NS.6",
+     "name": null,
+     "paraphrase": "Understand rational numbers as points on a number line, extend number lines and coordinate axes to negative numbers, and locate points in all four quadrants of the coordinate plane."
+    },
+    {
+     "code": "6.NS.7",
+     "name": null,
+     "paraphrase": "Understand ordering and absolute value of rational numbers, including that absolute value is a number's distance from 0."
+    },
+    {
+     "code": "6.NS.8",
+     "name": null,
+     "paraphrase": "Solve real-world problems by graphing points in all four quadrants of the coordinate plane, using coordinates and absolute value to find distances between points sharing a coordinate."
+    }
+   ]
+  },
+  {
+   "name": "Grade 6: Statistics & Probability",
+   "items": [
+    {
+     "code": "6.SP.A.1",
+     "name": null,
+     "paraphrase": "Recognize a statistical question as one that anticipates variability in the data."
+    },
+    {
+     "code": "6.SP.A.2",
+     "name": null,
+     "paraphrase": "Understand that a data set has a distribution describable by center, spread, and overall shape."
+    },
+    {
+     "code": "6.SP.A.3",
+     "name": null,
+     "paraphrase": "Recognize that a measure of center summarizes a data set with a single number, and a measure of variation describes its spread with a single number."
+    },
+    {
+     "code": "6.SP.B.5",
+     "name": null,
+     "paraphrase": "Summarize numerical data sets in context: report the number of observations, describe the attribute measured, give quantitative measures of center and variability, and relate the choice of measures to the shape of the distribution."
+    }
+   ]
+  },
+  {
+   "name": "Grade 7: Expressions & Equations",
+   "items": [
+    {
+     "code": "7.EE.1",
+     "name": null,
+     "paraphrase": "Use properties of operations to add, subtract, factor, and expand linear expressions with rational coefficients."
+    },
+    {
+     "code": "7.EE.2",
+     "name": null,
+     "paraphrase": "Recognize that rewriting an expression in a different form can clarify a problem and how its quantities relate."
+    },
+    {
+     "code": "7.EE.3",
+     "name": null,
+     "paraphrase": "Solve multi-step real-life problems with rational numbers in any form, using properties of operations and checking the reasonableness of answers."
+    },
+    {
+     "code": "7.EE.4",
+     "name": null,
+     "paraphrase": "Use variables to represent quantities, write equations and inequalities to solve real-world problems, and graph and interpret inequality solution sets."
+    }
+   ]
+  },
+  {
+   "name": "Grade 7: Statistics & Probability",
+   "items": [
+    {
+     "code": "7.SP.A.1",
+     "name": null,
+     "paraphrase": "Understand that statistics can be used to gain information about a population by examining a representative sample, typically through random sampling."
+    }
+   ]
+  },
+  {
+   "name": "Grade 8: Functions",
+   "items": [
+    {
+     "code": "8.F.1",
+     "name": null,
+     "paraphrase": "Understand a function as a rule that assigns exactly one output to each input; a function's graph is the set of ordered pairs of input and output."
+    },
+    {
+     "code": "8.F.2",
+     "name": null,
+     "paraphrase": "Compare properties of two functions represented in different ways (algebraically, graphically, in a table, or by verbal description)."
+    },
+    {
+     "code": "8.F.3",
+     "name": null,
+     "paraphrase": "Interpret the equation y = mx + b as defining a linear function, and give examples of functions that are not linear."
+    }
+   ]
+  },
+  {
+   "name": "Grade 8: Geometry",
+   "items": [
+    {
+     "code": "8.G.6",
+     "name": null,
+     "paraphrase": "Explain a proof of the Pythagorean Theorem and its converse."
+    },
+    {
+     "code": "8.G.7",
+     "name": null,
+     "paraphrase": "Apply the Pythagorean Theorem to determine unknown side lengths in right triangles, in real-world and mathematical problems in two and three dimensions."
+    },
+    {
+     "code": "8.G.8",
+     "name": null,
+     "paraphrase": "Apply the Pythagorean Theorem to find the distance between two points in a coordinate system."
+    }
+   ]
+  },
+  {
+   "name": "Grade 8: Statistics & Probability",
+   "items": [
+    {
+     "code": "8.SP.A.1",
+     "name": null,
+     "paraphrase": "Construct and interpret scatter plots for bivariate measurement data to investigate patterns such as clustering, outliers, and association."
+    },
+    {
+     "code": "8.SP.A.2",
+     "name": null,
+     "paraphrase": "Know that straight lines are widely used to model relationships between two quantitative variables; informally fit a line to data that suggests a linear association."
+    },
+    {
+     "code": "8.SP.A.3",
+     "name": null,
+     "paraphrase": "Use the equation of a fitted linear model to solve problems in the context of bivariate measurement data, interpreting the slope and intercept."
+    }
+   ]
+  }
+ ]
+}

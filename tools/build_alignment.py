@@ -1002,7 +1002,7 @@ def main():
     catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in [
         "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
         "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
-        "casel", "cde-tsel", "ruler", "via-character", "ccss-ela",
+        "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math",
     ]}
     sources = set(args.source) if args.source else None
     carrier_files = load_carrier_files(args.carriers, sources)
@@ -1057,6 +1057,15 @@ def main():
     provenance = grouped_provenance(catalogs["ccss-ela"]["meta"], args.scope_label) + ccss_see_also
     (out / "ccss-ela-standards-reference.html").write_text(
         render_grouped("Common Core ELA (Speaking, Listening & Writing) Standards Reference", catalogs["ccss-ela"], covs["ccss-ela"], args.scope_label, provenance)
+    )
+
+    ccss_math_see_also = (
+        ' <strong>See also.</strong> <a href="/standards/">The full standards map</a> for the '
+        "CS and SEL/character frameworks this sits alongside."
+    )
+    provenance = grouped_provenance(catalogs["ccss-math"]["meta"], args.scope_label) + ccss_math_see_also
+    (out / "ccss-math-standards-reference.html").write_text(
+        render_grouped("Common Core Math (Middle School) Standards Reference", catalogs["ccss-math"], covs["ccss-math"], args.scope_label, provenance)
     )
 
     (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))

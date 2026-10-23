@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Common Core Math (Middle School) Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
+}
+.page-toggle-label input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
+<a href="/electronics101/"><span class="site-menu-item-icon" aria-hidden="true"></span>Electronics 101</a>
+<a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
+<a href="/python3d/"><span class="site-menu-item-icon" aria-hidden="true"></span>Python in 3D</a>
+<a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<ul>
+<li class="topic-link"><a href="#grp-group-0">Grade 6: The Number System</a></li>
+<li class="topic-link"><a href="#grp-group-1">Grade 6: Statistics &amp; Probability</a></li>
+<li class="topic-link"><a href="#grp-group-2">Grade 7: Expressions &amp; Equations</a></li>
+<li class="topic-link"><a href="#grp-group-3">Grade 7: Statistics &amp; Probability</a></li>
+<li class="topic-link"><a href="#grp-group-4">Grade 8: Functions</a></li>
+<li class="topic-link"><a href="#grp-group-5">Grade 8: Geometry</a></li>
+<li class="topic-link"><a href="#grp-group-6">Grade 8: Statistics &amp; Probability</a></li>
+</ul>
+</nav>
+<main>
+<h1>Common Core Math (Middle School) Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of <em>Common Core State Standards for Mathematics (National Governors Association Center for Best Practices, Council of Chief State School Officers)</em> (2010). <strong>Scope.</strong> Middle school only (grades 6-8), and only the strands Bootstrap:Algebra's own alignment claims touch: 6.NS (The Number System), 6.SP/7.SP/8.SP (Statistics &amp; Probability), 7.EE (Expressions &amp; Equations), 8.F (Functions), 8.G (Geometry, Pythagorean theorem cluster only). Not a general-purpose math catalog -- no Ratios &amp; Proportions, no Geometry outside 8.G.6-8, no high school content. Add strands as a real need shows up, the same way this project's ccss-ela.json stayed scoped to what was actually cited rather than built out as a complete K-12 reference. <strong>Codes.</strong> Codes are CCSS's own (e.g. 6.NS.5, 8.F.2), not a project-specific scheme. Lettered sub-parts (e.g. 6.NS.6.a-c, 7.EE.4.a-b) are folded into one paraphrase per numbered standard, matching this project's existing topic-level citation granularity (see apcsp.json's topic/LO split, or ccss-ela.json's own codes_note). <strong>What this is not.</strong> (c) 2010 National Governors Association Center for Best Practices and Council of Chief State School Officers, all rights reserved; NGA/CCSSO license the standards for free noncommercial educational use, but every paraphrase here is written for this project, never the standards' own text, matching this repo's policy for every other catalog regardless of a source's own licence. <strong>See also.</strong> <a href="/standards/">The full standards map</a> for the CS and SEL/character frameworks this sits alongside.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<div class="page-toggles"><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-carriers" checked> Show which curricula cover each item</label></div>
+<div class="topic" id="grp-group-0">
+<h3><a class="anchor-link" href="#grp-group-0">#</a>Grade 6: The Number System</h3>
+<ul class="ek-list">
+<li id="T-6.NS.5"><a class="anchor-link" href="#T-6.NS.5">#</a><span class="code-badge">6.NS.5</span> Use positive and negative numbers to represent quantities with opposite directions or values (temperature, elevation, debits/credits), explaining what 0 means in context.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">Signed numbers in context (score, position deltas) plausibly come up in a videogame, but the overview doesn't describe this specifically.</div></li></ul></div></li>
+<li id="T-6.NS.6"><a class="anchor-link" href="#T-6.NS.6">#</a><span class="code-badge">6.NS.6</span> Understand rational numbers as points on a number line, extend number lines and coordinate axes to negative numbers, and locate points in all four quadrants of the coordinate plane.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Plotting a game object's position in all four quadrants of the coordinate plane is exactly this standard, and exactly what a videogame's own coordinate system requires.</div></li></ul></div></li>
+<li id="T-6.NS.7"><a class="anchor-link" href="#T-6.NS.7">#</a><span class="code-badge">6.NS.7</span> Understand ordering and absolute value of rational numbers, including that absolute value is a number's distance from 0.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Ordering and absolute value of rational numbers underlie the inequalities the overview names as a taught concept.</div></li></ul></div></li>
+<li id="T-6.NS.8"><a class="anchor-link" href="#T-6.NS.8">#</a><span class="code-badge">6.NS.8</span> Solve real-world problems by graphing points in all four quadrants of the coordinate plane, using coordinates and absolute value to find distances between points sharing a coordinate.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Finding distances between points sharing a coordinate is a direct precursor to the distance formula (8.G.8) the overview names explicitly.</div></li></ul></div></li>
+</ul></div>
+<div class="topic" id="grp-group-1">
+<h3><a class="anchor-link" href="#grp-group-1">#</a>Grade 6: Statistics &amp; Probability</h3>
+<ul class="ek-list">
+<li id="T-6.SP.A.1"><a class="anchor-link" href="#T-6.SP.A.1">#</a><span class="code-badge">6.SP.A.1</span> Recognize a statistical question as one that anticipates variability in the data.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">Bootstrap's own alignment page claims this; the overview describes no statistics component to confirm it against.</div></li></ul></div></li>
+<li id="T-6.SP.A.2"><a class="anchor-link" href="#T-6.SP.A.2">#</a><span class="code-badge">6.SP.A.2</span> Understand that a data set has a distribution describable by center, spread, and overall shape.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">Same as 6.SP.A.1 -- claimed, unconfirmed.</div></li></ul></div></li>
+<li id="T-6.SP.A.3"><a class="anchor-link" href="#T-6.SP.A.3">#</a><span class="code-badge">6.SP.A.3</span> Recognize that a measure of center summarizes a data set with a single number, and a measure of variation describes its spread with a single number.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">Same as 6.SP.A.1 -- claimed, unconfirmed.</div></li></ul></div></li>
+<li id="T-6.SP.B.5"><a class="anchor-link" href="#T-6.SP.B.5">#</a><span class="code-badge">6.SP.B.5</span> Summarize numerical data sets in context: report the number of observations, describe the attribute measured, give quantitative measures of center and variability, and relate the choice of measures to the shape of the distribution.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">Same as 6.SP.A.1 -- claimed, unconfirmed.</div></li></ul></div></li>
+</ul></div>
+<div class="topic" id="grp-group-2">
+<h3><a class="anchor-link" href="#grp-group-2">#</a>Grade 7: Expressions &amp; Equations</h3>
+<ul class="ek-list">
+<li id="T-7.EE.1"><a class="anchor-link" href="#T-7.EE.1">#</a><span class="code-badge">7.EE.1</span> Use properties of operations to add, subtract, factor, and expand linear expressions with rational coefficients.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Combining and expanding linear expressions with rational coefficients is core algebra content the course is built to teach through programming.</div></li></ul></div></li>
+<li id="T-7.EE.2"><a class="anchor-link" href="#T-7.EE.2">#</a><span class="code-badge">7.EE.2</span> Recognize that rewriting an expression in a different form can clarify a problem and how its quantities relate.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Rewriting an expression to clarify how quantities relate is the same move as function composition, one of the overview's own named concepts.</div></li></ul></div></li>
+<li id="T-7.EE.3"><a class="anchor-link" href="#T-7.EE.3">#</a><span class="code-badge">7.EE.3</span> Solve multi-step real-life problems with rational numbers in any form, using properties of operations and checking the reasonableness of answers.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Multi-step problems with rational numbers, checked for reasonableness, match the overview's own order-of-operations framing.</div></li></ul></div></li>
+<li id="T-7.EE.4"><a class="anchor-link" href="#T-7.EE.4">#</a><span class="code-badge">7.EE.4</span> Use variables to represent quantities, write equations and inequalities to solve real-world problems, and graph and interpret inequality solution sets.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Writing equations and inequalities from word problems, then graphing and interpreting inequality solutions, is the overview's "inequalities" concept by name.</div></li></ul></div></li>
+</ul></div>
+<div class="topic" id="grp-group-3">
+<h3><a class="anchor-link" href="#grp-group-3">#</a>Grade 7: Statistics &amp; Probability</h3>
+<ul class="ek-list">
+<li id="T-7.SP.A.1"><a class="anchor-link" href="#T-7.SP.A.1">#</a><span class="code-badge">7.SP.A.1</span> Understand that statistics can be used to gain information about a population by examining a representative sample, typically through random sampling.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">Bootstrap's own alignment page claims this; the overview describes no statistics component to confirm it against.</div></li></ul></div></li>
+</ul></div>
+<div class="topic" id="grp-group-4">
+<h3><a class="anchor-link" href="#grp-group-4">#</a>Grade 8: Functions</h3>
+<ul class="ek-list">
+<li id="T-8.F.1"><a class="anchor-link" href="#T-8.F.1">#</a><span class="code-badge">8.F.1</span> Understand a function as a rule that assigns exactly one output to each input; a function's graph is the set of ordered pairs of input and output.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">A function as a rule pairing each input to exactly one output is the overview's own "function definition."</div></li></ul></div></li>
+<li id="T-8.F.2"><a class="anchor-link" href="#T-8.F.2">#</a><span class="code-badge">8.F.2</span> Compare properties of two functions represented in different ways (algebraically, graphically, in a table, or by verbal description).<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Comparing functions represented algebraically, graphically, in a table, or verbally is directly relevant to a course teaching function definition through a programming environment that can show more than one representation.</div></li></ul></div></li>
+<li id="T-8.F.3"><a class="anchor-link" href="#T-8.F.3">#</a><span class="code-badge">8.F.3</span> Interpret the equation y = mx + b as defining a linear function, and give examples of functions that are not linear.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Reading y = mx + b as a linear function, with non-examples, is foundational to the function and piecewise-function content the overview names.</div></li></ul></div></li>
+</ul></div>
+<div class="topic" id="grp-group-5">
+<h3><a class="anchor-link" href="#grp-group-5">#</a>Grade 8: Geometry</h3>
+<ul class="ek-list">
+<li id="T-8.G.6"><a class="anchor-link" href="#T-8.G.6">#</a><span class="code-badge">8.G.6</span> Explain a proof of the Pythagorean Theorem and its converse.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">The overview names the distance formula (8.G.7/8.G.8's application), not explicitly a proof of the Pythagorean theorem itself.</div></li></ul></div></li>
+<li id="T-8.G.7"><a class="anchor-link" href="#T-8.G.7">#</a><span class="code-badge">8.G.7</span> Apply the Pythagorean Theorem to determine unknown side lengths in right triangles, in real-world and mathematical problems in two and three dimensions.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Applying the Pythagorean theorem to find unknown side lengths is the mechanism behind the distance formula the overview names explicitly.</div></li></ul></div></li>
+<li id="T-8.G.8"><a class="anchor-link" href="#T-8.G.8">#</a><span class="code-badge">8.G.8</span> Apply the Pythagorean Theorem to find the distance between two points in a coordinate system.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a><div class="meta-note">Finding the distance between two points in a coordinate system is the distance formula, named explicitly in the overview as a taught concept -- the strongest single match in this catalog.</div></li></ul></div></li>
+</ul></div>
+<div class="topic" id="grp-group-6">
+<h3><a class="anchor-link" href="#grp-group-6">#</a>Grade 8: Statistics &amp; Probability</h3>
+<ul class="ek-list">
+<li id="T-8.SP.A.1"><a class="anchor-link" href="#T-8.SP.A.1">#</a><span class="code-badge">8.SP.A.1</span> Construct and interpret scatter plots for bivariate measurement data to investigate patterns such as clustering, outliers, and association.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">Bootstrap's own alignment page claims this; the overview describes no statistics component to confirm it against.</div></li></ul></div></li>
+<li id="T-8.SP.A.2"><a class="anchor-link" href="#T-8.SP.A.2">#</a><span class="code-badge">8.SP.A.2</span> Know that straight lines are widely used to model relationships between two quantitative variables; informally fit a line to data that suggests a linear association.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">Fitting a line to bivariate data plausibly connects to the course's own linear-function content (8.F.3), but the overview doesn't describe a data-fitting activity specifically.</div></li></ul></div></li>
+<li id="T-8.SP.A.3"><a class="anchor-link" href="#T-8.SP.A.3">#</a><span class="code-badge">8.SP.A.3</span> Use the equation of a fitted linear model to solve problems in the context of bivariate measurement data, interpreting the slope and intercept.<div class="item-meta"><ul class="meta-list"><li><strong>Bootstrap:Algebra:</strong> <a href="https://bootstrapworld.org/materials/fall2024/en-us/courses/algebra-pyret/">the source</a> <span class="meta-strength">(partial)</span><div class="meta-note">Same reasoning as 8.SP.A.2 -- plausible via the slope/intercept connection to 8.F.3, not confirmed by the overview.</div></li></ul></div></li>
+</ul></div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

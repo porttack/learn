@@ -20,7 +20,7 @@ from pathlib import Path
 CATALOG_FILES = [
     "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
     "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
-    "casel", "cde-tsel", "ruler", "via-character", "ccss-ela",
+    "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math",
 ]
 
 # Pairs of catalogs with a hand-built crosswalk file (see _standards/README.md).
@@ -90,6 +90,7 @@ HUES = [
     ("#8b2939", "#ba4b5d"),  # 23 crimson (porttack_hardware)
     ("#2f37c0", "#6d72cf"),  # 24 cobalt (porttack_society)
     ("#1b8a5a", "#2aa36e"),  # 25 emerald (socratic_seminar_kit)
+    ("#7a2e8a", "#9d4bb5"),  # 26 purple (bootstrap_algebra)
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -209,6 +210,16 @@ HUES = [
 # ~175 deg), but neither is its adjacent neighbor in this list, so reusing
 # the family is fine per this file's own rule above.
 #
+# Slot 26 (purple) added 2026-10-24 alongside bootstrap_algebra, appended
+# after socratic_seminar_kit so real sources stay contiguous. Validated
+# against its new adjacent neighbor, slot 25 (emerald, ~150 deg): node
+# scripts/validate_palette.js "#2f37c0,#1b8a5a,#7a2e8a" --mode light and
+# "#6d72cf,#2aa36e,#9d4bb5" --mode dark both PASS (worst adjacent CVD 17.6
+# light / 17.0 dark, clear of the 6-8 floor band). Full 26-slot run in both
+# modes afterward confirmed no new regression beyond the pre-existing
+# raspberry/jade dark-mode FAIL noted at slot 21's addition (unrelated to
+# this one).
+#
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
 # intentionally omitted -- excluded from this admin-facing view by direction,
@@ -249,6 +260,7 @@ SOURCE_ORDER = [
     "porttack_hardware",
     "porttack_society",
     "socratic_seminar_kit",
+    "bootstrap_algebra",
 ]
 
 

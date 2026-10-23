@@ -128,6 +128,19 @@
     'Listening and Writing, grades 6 through 11-12 -- not Reading or Language, ' +
     'since nothing here currently teaches toward those strands.</p>';
 
+  // Explainer shown inside the "Mathematics" group (added 2026-10-24
+  // alongside bootstrap_algebra). Same honest framing as ELA/SEL above, plus
+  // an explicit note that this one carrier is secondary -- taught briefly,
+  // not currently part of a course -- unlike the Socratic seminar format
+  // ELA covers, which is actively in use.
+  var MATH_EXPLAINER_HTML =
+    '<p>None of this program’s three courses is a math class either. This group ' +
+    'exists for one Secondary source, Bootstrap:Algebra (see the sources ' +
+    'sidebar), which the teacher taught briefly, might teach again, and wants ' +
+    'comparable to whatever replaces it. Its own carrier is grounded in a ' +
+    '2-page course overview, not lesson-level materials -- see that carrier’s ' +
+    'own caveat before treating any single code here as settled.</p>';
+
   // Small CASEL wheel, shown at the top of CASEL's own panel (so it's only
   // in the DOM/visible when that panel's <details> is open, same mechanism
   // as every other panel -- no extra show/hide JS needed). Wedge paths and
@@ -831,7 +844,8 @@
       reportGroupedSection(catalogs['cde-tsel'], covered('cde-tsel'), meta, 'sel', 'California Transformative SEL (T-SEL)', 'cde-tsel-standards-reference.html'),
       reportGroupedSection(catalogs.ruler, covered('ruler'), meta, 'sel', 'RULER Approach', 'ruler-standards-reference.html'),
       reportGroupedSection(catalogs['via-character'], covered('via-character'), meta, 'sel', 'VIA Character Strengths', 'via-character-standards-reference.html'),
-      reportGroupedSection(catalogs['ccss-ela'], covered('ccss-ela'), meta, 'ela', 'Common Core ELA (Speaking, Listening & Writing)', 'ccss-ela-standards-reference.html')
+      reportGroupedSection(catalogs['ccss-ela'], covered('ccss-ela'), meta, 'ela', 'Common Core ELA (Speaking, Listening & Writing)', 'ccss-ela-standards-reference.html'),
+      reportGroupedSection(catalogs['ccss-math'], covered('ccss-math'), meta, 'math', 'Common Core Math (Middle School)', 'ccss-math-standards-reference.html')
     ].join('\n');
   }
 
@@ -1260,7 +1274,7 @@
   // it's a fixed lookup here rather than manifest/carrier metadata.
   var SOURCE_GROUPS = [
     { label: 'Primary', slugs: ['cmu_cs0', 'cmu_cs1', 'cmu_csp', 'codeorg_apcsp', 'cs50ap', 'cs50ap_extended', 'cs50p', 'codehs_corgi'] },
-    { label: 'Secondary', slugs: ['working_in_python', 'little_brother', 'codeorg_csd_1_2', 'codeorg_csd_3a', 'codeorg_csd_3b'] }
+    { label: 'Secondary', slugs: ['working_in_python', 'little_brother', 'codeorg_csd_1_2', 'codeorg_csd_3a', 'codeorg_csd_3b', 'bootstrap_algebra'] }
   ];
 
   // A report is pointless for a carrier that covers nothing (an empty/stub
@@ -1566,7 +1580,22 @@
         elaPanels.map(panelHtml).join('\n') +
         '</details></div>';
 
-      document.getElementById('panels').innerHTML = csGroupHtml + '\n' + litGroupHtml + '\n' + selGroupHtml + '\n' + elaGroupHtml;
+      // Added 2026-10-24 alongside bootstrap_algebra (a Secondary source --
+      // see SOURCE_GROUPS -- taught briefly, might return). Same nesting as
+      // ela/lit/sel: one framework, orthogonal to this program's actual
+      // subject, not a major framework on its own the way AP CSP is.
+      var mathPanels = [
+        ['Common Core Math (Middle School)', renderGroupedPanel(catalogs['ccss-math'], 'ccss-math'), 'math', 'ccss-math-standards-reference.html', '2010'],
+      ];
+      var mathGroupHtml =
+        '<div class="cov-panel" data-panel-category="math"><details open>' +
+        '<summary><h2>Mathematics</h2></summary>' +
+        '<div class="cov-group-explainer">' + MATH_EXPLAINER_HTML + '</div>' +
+        groupActionsHtml() +
+        mathPanels.map(panelHtml).join('\n') +
+        '</details></div>';
+
+      document.getElementById('panels').innerHTML = csGroupHtml + '\n' + litGroupHtml + '\n' + selGroupHtml + '\n' + elaGroupHtml + '\n' + mathGroupHtml;
       // Without this, a click on the link bubbles up to <summary> and also
       // toggles the panel open/closed -- the same fix already applied to the
       // sidebar's source-title links, needed here for the same reason.
