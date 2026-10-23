@@ -111,6 +111,23 @@
     'is built around social-emotional learning. That’s also why this ' +
     'group sits at the bottom of the page, after every CS framework.</p>';
 
+  // Explainer shown inside the "English Language Arts" group (added
+  // 2026-10-23, alongside the ccss-ela catalog). Same honest framing as
+  // SEL_EXPLAINER_HTML above: this is a CS program, and this group exists
+  // because some of its content -- the Socratic seminar format specifically
+  // -- genuinely practices discussion and argument-writing skills, not
+  // because ELA is a course goal. Scoped to just two strands at the
+  // teacher's own request; see ccss-ela.json's own scope_note for why
+  // Reading and Language aren't here.
+  var ELA_EXPLAINER_HTML =
+    '<p>Common Core ELA isn’t a CS framework, and none of this program’s three ' +
+    'courses is an English class. This group exists because the Socratic ' +
+    'seminar format (the fishbowl, the norms, the entry/exit tickets) genuinely ' +
+    'practices collaborative discussion and argument writing, and those skills ' +
+    'have real Common Core codes behind them. Scoped to just Speaking &amp; ' +
+    'Listening and Writing, grades 6 through 11-12 -- not Reading or Language, ' +
+    'since nothing here currently teaches toward those strands.</p>';
+
   // Small CASEL wheel, shown at the top of CASEL's own panel (so it's only
   // in the DOM/visible when that panel's <details> is open, same mechanism
   // as every other panel -- no extra show/hide JS needed). Wedge paths and
@@ -813,7 +830,8 @@
       reportGroupedSection(catalogs.casel, covered('casel'), meta, 'sel', 'CASEL (Social-Emotional Learning)', 'casel-standards-reference.html'),
       reportGroupedSection(catalogs['cde-tsel'], covered('cde-tsel'), meta, 'sel', 'California Transformative SEL (T-SEL)', 'cde-tsel-standards-reference.html'),
       reportGroupedSection(catalogs.ruler, covered('ruler'), meta, 'sel', 'RULER Approach', 'ruler-standards-reference.html'),
-      reportGroupedSection(catalogs['via-character'], covered('via-character'), meta, 'sel', 'VIA Character Strengths', 'via-character-standards-reference.html')
+      reportGroupedSection(catalogs['via-character'], covered('via-character'), meta, 'sel', 'VIA Character Strengths', 'via-character-standards-reference.html'),
+      reportGroupedSection(catalogs['ccss-ela'], covered('ccss-ela'), meta, 'ela', 'Common Core ELA (Speaking, Listening & Writing)', 'ccss-ela-standards-reference.html')
     ].join('\n');
   }
 
@@ -1533,7 +1551,22 @@
         selPanels.map(panelHtml).join('\n') +
         '</details></div>';
 
-      document.getElementById('panels').innerHTML = csGroupHtml + '\n' + litGroupHtml + '\n' + selGroupHtml;
+      // Added 2026-10-23, same nesting as lit/sel above and the same reason:
+      // one framework, orthogonal to this program's actual subject, that
+      // doesn't read as a major framework on its own the way AP CSP or CSTA
+      // does. Placed last, after SEL, since it was added after SEL was.
+      var elaPanels = [
+        ['Common Core ELA (Speaking, Listening & Writing)', renderGroupedPanel(catalogs['ccss-ela'], 'ccss-ela'), 'ela', 'ccss-ela-standards-reference.html', '2010'],
+      ];
+      var elaGroupHtml =
+        '<div class="cov-panel" data-panel-category="ela"><details open>' +
+        '<summary><h2>English Language Arts</h2></summary>' +
+        '<div class="cov-group-explainer">' + ELA_EXPLAINER_HTML + '</div>' +
+        groupActionsHtml() +
+        elaPanels.map(panelHtml).join('\n') +
+        '</details></div>';
+
+      document.getElementById('panels').innerHTML = csGroupHtml + '\n' + litGroupHtml + '\n' + selGroupHtml + '\n' + elaGroupHtml;
       // Without this, a click on the link bubbles up to <summary> and also
       // toggles the panel open/closed -- the same fix already applied to the
       // sidebar's source-title links, needed here for the same reason.
