@@ -21,6 +21,16 @@
 // pages never set it, so they're unaffected. Optional data-scope-label swaps
 // the word "pathway" in summary-mode link text for something that fits a
 // non-pathway carrier (e.g. "unit").
+//
+// Optional second carrier: data-extra-carrier-url (+ data-extra-carrier-slug,
+// data-extra-scope-label) merges a second carrier's coverage into the same
+// widget instead of rendering a separate one -- porttack.com's Socratic
+// seminar posts use this to fold the shared kit's discourse-skill codes in
+// alongside the post's own content codes under one "Standards alignment"
+// box, so a reader sees one control, not two identically-labeled ones. The
+// extra carrier is always read in whole-source mode (no chapter filtering),
+// since it describes a shared format, not this one page. Absent entirely,
+// behavior is identical to a single carrier (every other page on the site).
 var STANDARDS_FRAMEWORKS = {
   apcsp: { file: 'apcsp-standards-reference.html', prefix: 'T', name: 'AP Computer Science Principles', catalog: 'apcsp', category: 'cs' },
   castandards: { file: 'ca-cs-standards-reference.html', prefix: 'S', name: 'California Computer Science', catalog: 'castandards', category: 'cs' },
@@ -98,6 +108,37 @@ function catalogLabel(fw, catalogData, code) {
   return null;
 }
 
+// Matches one carrier's coverage against an optional chapter/locator,
+// returning [{fw, items: [{code, note}]}] -- chapterFilter null means
+// whole-source mode (every code the carrier covers anywhere).
+function matchCarrierGroups(data, chapterFilter) {
+  if (!data) return [];
+  var groups = [];
+  Object.keys(STANDARDS_FRAMEWORKS).forEach(function (fw) {
+    var coverage = (data.coverage || {})[fw] || {};
+    var items = [];
+    Object.keys(coverage).forEach(function (code) {
+      var entry = coverage[code];
+      if (!chapterFilter) {
+        items.push({ code: code, note: entry.note });
+        return;
+      }
+      if (entry.locators && entry.locators.some(function (l) { return String(l) === chapterFilter; })) {
+        // locator_notes (optional) says how *this* page covers the code,
+        // when the shared note describes several pages at once.
+        var own = (entry.locator_notes || {})[chapterFilter];
+        items.push({ code: code, note: own || entry.note });
+      }
+    });
+    if (items.length) groups.push({ fw: fw, items: items });
+  });
+  return groups;
+}
+
+function fetchJson(url) {
+  return fetch(url).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+}
+
 document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(function (section) {
   // Compared as text: pico's locators are chapter numbers, unplugged's are
   // page slugs. Absent entirely in pathway-summary mode (see file header).
@@ -105,35 +146,31 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
   var carrierSlug = section.getAttribute('data-carrier-slug');
   var base = section.getAttribute('data-base') || '';
   var scopeLabel = section.getAttribute('data-scope-label') || 'pathway';
-  fetch(section.getAttribute('data-carrier-url'))
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (data) {
-      if (!data) return null;
-      var groups = [];
-      Object.keys(STANDARDS_FRAMEWORKS).forEach(function (fw) {
-        var coverage = (data.coverage || {})[fw] || {};
-        var items = [];
-        Object.keys(coverage).forEach(function (code) {
-          var entry = coverage[code];
-          if (!chapter) {
-            // Pathway summary: every code this carrier covers, anywhere.
-            items.push({ code: code, note: entry.note });
-            return;
-          }
-          if (entry.locators && entry.locators.some(function (l) { return String(l) === chapter; })) {
-            // locator_notes (optional) says how *this* page covers the code,
-            // when the shared note describes several pages at once.
-            var own = (entry.locator_notes || {})[chapter];
-            items.push({ code: code, note: own || entry.note });
-          }
-        });
-        if (items.length) groups.push({ fw: fw, items: items });
+  var extraCarrierUrl = section.getAttribute('data-extra-carrier-url');
+  var extraCarrierSlug = section.getAttribute('data-extra-carrier-slug');
+  var extraScopeLabel = section.getAttribute('data-extra-scope-label') || 'unit';
+
+  Promise.all([
+    fetchJson(section.getAttribute('data-carrier-url')),
+    extraCarrierUrl ? fetchJson(extraCarrierUrl) : Promise.resolve(null)
+  ])
+    .then(function (datas) {
+      // Merge by framework, in case the same framework is ever matched by
+      // both carriers -- one <h3> per framework either way, not two.
+      var merged = {};
+      matchCarrierGroups(datas[0], chapter).forEach(function (g) {
+        merged[g.fw] = (merged[g.fw] || []).concat(g.items);
       });
+      if (extraCarrierUrl) {
+        matchCarrierGroups(datas[1], null).forEach(function (g) {
+          merged[g.fw] = (merged[g.fw] || []).concat(g.items);
+        });
+      }
+      var groups = Object.keys(merged).map(function (fw) { return { fw: fw, items: merged[fw] }; });
       if (!groups.length) return null;
       // Only fetch the catalogs actually needed for the frameworks matched above.
       return Promise.all(groups.map(function (g) {
-        var catalogUrl = base + '/standards/data/catalog/' + STANDARDS_FRAMEWORKS[g.fw].catalog + '.json';
-        return fetch(catalogUrl).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+        return fetchJson(base + '/standards/data/catalog/' + STANDARDS_FRAMEWORKS[g.fw].catalog + '.json');
       })).then(function (catalogs) {
         return { groups: groups, catalogs: catalogs };
       });
@@ -164,9 +201,14 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
           frameworksHtml.join('') +
           '</details>';
       }).join('');
+      // scopeLabel/extraScopeLabel always name the whole carrier/source
+      // (e.g. "pathway", or porttack's "category"/"unit"/"format"), never
+      // the single lesson -- these links filter the map to everything the
+      // carrier covers, not just this page's own locator.
+      var links = [];
       if (carrierSlug) {
         var mapUrl = base + '/standards/?only=' + encodeURIComponent(carrierSlug) + '&view=open-all';
-        var html2suffix;
+        var reportLink;
         if (chapter) {
           // &locator=<chapter> narrows the report to just this lesson's own
           // coverage instead of the whole pathway's -- see
@@ -174,18 +216,23 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
           // page itself offers a "View all of <pathway>" link back out, so
           // this is never a dead end.
           var reportUrl = base + '/standards/?report=' + encodeURIComponent(carrierSlug) + '&locator=' + encodeURIComponent(chapter) + '&view=open-all';
-          html2suffix = '<a href="' + reportUrl + '">View this lesson\'s own report</a>';
+          reportLink = '<a href="' + reportUrl + '">View this lesson\'s own report</a>';
         } else {
           var pathwayReportUrl = base + '/standards/?report=' + encodeURIComponent(carrierSlug) + '&view=open-all';
-          html2suffix = '<a href="' + pathwayReportUrl + '">View this ' + escapeHtml(scopeLabel) + '\'s own report</a>';
+          reportLink = '<a href="' + pathwayReportUrl + '">View this ' + escapeHtml(scopeLabel) + '\'s own report</a>';
         }
-        // scopeLabel here always names the whole carrier/source (e.g.
-        // "pathway", or porttack's "category"/"unit"), never the single
-        // lesson -- this link filters the map to everything the carrier
-        // covers, not just this page's own locator.
-        html += '<p class="standards-alignment-links">' +
-          '<a href="' + mapUrl + '">See this ' + escapeHtml(scopeLabel) + ' on the full standards map</a> &middot; ' +
-          html2suffix + '</p>';
+        links.push('<a href="' + mapUrl + '">See this ' + escapeHtml(scopeLabel) + ' on the full standards map</a> &middot; ' + reportLink);
+      }
+      if (extraCarrierSlug) {
+        // The extra carrier is always whole-source (no chapter), same link
+        // shape as a primary carrier's own override/pathway-summary mode.
+        var extraMapUrl = base + '/standards/?only=' + encodeURIComponent(extraCarrierSlug) + '&view=open-all';
+        var extraReportUrl = base + '/standards/?report=' + encodeURIComponent(extraCarrierSlug) + '&view=open-all';
+        links.push('<a href="' + extraMapUrl + '">See this ' + escapeHtml(extraScopeLabel) + ' on the full standards map</a> &middot; ' +
+          '<a href="' + extraReportUrl + '">View this ' + escapeHtml(extraScopeLabel) + '\'s own report</a>');
+      }
+      if (links.length) {
+        html += '<p class="standards-alignment-links">' + links.join('<br>') + '</p>';
       }
       section.querySelector('.standards-alignment-body').innerHTML = html;
       section.hidden = false;

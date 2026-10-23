@@ -214,6 +214,16 @@ copies. Two optional attributes make this safe to do from a different origin:
 - `data-scope-label="unit"` — replaces the word "pathway" in summary-mode
   link text ("View this pathway's own report") for a carrier that isn't a
   pathway. Default stays `'pathway'`.
+- `data-extra-carrier-url` (+ optional `data-extra-carrier-slug`,
+  `data-extra-scope-label`) — folds a *second* carrier's coverage into the
+  same widget, merged into the same category chevrons, instead of rendering
+  a separate `.standards-alignment` element. The extra carrier is always
+  read in whole-source mode (no locator filtering), since it's meant for a
+  shared format or resource this page uses, not this page's own content.
+  porttack.com's Socratic seminar posts use this (`standards_extra_carrier:`
+  front matter) to merge the shared Socratic Seminar Kit's discourse-skill
+  codes in alongside each seminar's own reading, so a reader sees one
+  "Standards alignment" control, not two identically-labeled ones.
 
 porttack.com's `_includes/standards-alignment.html` is the worked example:
 it has no `_data/pathways.yml`, so it reads `page.lesson_category` /
