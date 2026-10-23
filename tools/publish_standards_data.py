@@ -20,7 +20,7 @@ from pathlib import Path
 CATALOG_FILES = [
     "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
     "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
-    "casel", "cde-tsel", "ruler", "via-character",
+    "casel", "cde-tsel", "ruler", "via-character", "ccss-ela",
 ]
 
 # Pairs of catalogs with a hand-built crosswalk file (see _standards/README.md).

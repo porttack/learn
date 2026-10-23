@@ -18,6 +18,12 @@
     "by": "Claude Sonnet 5",
     "scope": "Gave this carrier real per-post locators instead of one generic \"kit\" locator, after noticing /standards/casel-standards-reference.html#T-SOC.1 only linked to the kit page, not to any of the seminar posts that actually embed this carrier via standards_extra_carrier.",
     "note": "No content changed -- every code's note and strength are the same claim as before, about the format itself. What changed is purely which pages that claim links to: tools/build_alignment.py builds the cross-reference pages straight from each code's locators array via locator_url_template/locator_slugs, and a single \"kit\" locator could only ever resolve to the kit page's own URL -- it had no way to know this same format-level claim also applies to every post that links to the kit instead of restating it. Added the kit page itself plus the four posts currently using standards_extra_carrier: socratic_seminar_kit (students-wrote-the-rules-seminar, robot-teacher-seminar, you-deleted-it-is-it-gone, who-sets-the-rules-for-ai). Deliberately left out prove-me-wrong -- it predates this carrier and carries its own independent CASEL/VIA/AASL/CA-ICT-anchor entries directly in porttack_society.json (see that carrier's own 2026-10-19 alignment_log entry), not the merged-widget pattern the four newer posts use, so adding it here would be a real second claim about the same codes rather than a second link for the same one."
+   },
+   {
+    "date": "2026-10-23",
+    "by": "Claude Sonnet 5",
+    "scope": "Added real coverage.ccss-ela entries for the Common Core citations the kit page's own prose already made (Speaking & Listening and Writing only, at the teacher's request -- not Reading, and not every SL/W code, just the ones the kit actually names).",
+    "note": "This isn't new analysis -- the kit page's own \"Common Core and California mandates\" section already named SL.6.1/9-10.1, SL.6.3/9-10.3, and W.6.1/9-10.1 (plus RI.6.1/9-10.1 and RI.6.8/9-10.8, left out of this pass since the teacher doesn't want Reading standards catalogued). This just gives those six codes real coverage entries now that _standards/ccss-ela.json exists, instead of leaving them as prose only. Same five locators as every other code here, same reasoning: a claim about the shared format, not about any one seminar's own reading."
    }
   ],
   "caveat": "Every code here is a claim about the shared format (the kit page itself), not about any one seminar's reading -- so each entry's locators list every page that currently embeds this carrier (the kit page, plus every Socratic seminar post that sets standards_extra_carrier: socratic_seminar_kit in its own front matter), not just \"kit\" once. This isn't five separate claims per post -- it's one claim with five links, same as porttack_society's own multi-locator entries. locator_kind stays \"none\": none of these pages has real sub-units. When a new Socratic seminar post adopts the kit (adds standards_extra_carrier: socratic_seminar_kit to its front matter), add its slug here too -- the per-page widget already shows this carrier whole-source regardless (see assets/js/standards-alignment.js's extra-carrier handling), so leaving a post's slug out of these locators lists breaks only the cross-reference pages (standards/*-standards-reference.html), not the widget itself -- exactly the gap that prompted this pass.",
@@ -107,6 +113,74 @@
     ],
     "strength": "partial",
     "note": "Two of the five posted norms -- disagree with the idea, not the person; invite quiet voices in -- are a real but narrower claim on ethical communication than the temperature check's, since they shape how a student speaks rather than what they're willing to reconsider."
+   }
+  },
+  "ccss-ela": {
+   "SL.6.1": {
+    "locators": [
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
+    ],
+    "strength": "strong",
+    "note": "The fishbowl is a collaborative discussion where every student builds on others' ideas and expresses their own, exactly as the kit's own prose already claims (\"engage in... collaborative discussions, building on others and justifying one's own views. The spine of the activity\")."
+   },
+   "SL.9-10.1": {
+    "locators": [
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
+    ],
+    "strength": "strong",
+    "note": "Same claim as SL.6.1, at the band where students are additionally expected to set discussion norms and goals and refine a position as evidence comes in -- the fishbowl's hot seat and the facilitator's \"protect the silence\" role are built around exactly that."
+   },
+   "SL.6.3": {
+    "locators": [
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
+    ],
+    "strength": "strong",
+    "note": "The observer organizer's job -- catching the strongest point made, an idea to push back on, and a question nobody has asked -- is delineating a speaker's argument and distinguishing supported claims from unsupported ones."
+   },
+   "SL.9-10.3": {
+    "locators": [
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
+    ],
+    "strength": "strong",
+    "note": "Same observer-organizer claim as SL.6.3, at the band where evaluating a speaker also means watching for fallacious reasoning or exaggerated evidence, not just restating the claim."
+   },
+   "W.6.1": {
+    "locators": [
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
+    ],
+    "strength": "strong",
+    "note": "The entry and exit tickets both ask students to write a position backed by reasons and evidence by paragraph number -- the kit's own prose already claims this (\"write to support a claim with reasons and evidence. Entry and exit tickets\")."
+   },
+   "W.9-10.1": {
+    "locators": [
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
+    ],
+    "strength": "strong",
+    "note": "Same ticket-writing claim as W.6.1, at the band where the evidence is expected to be sufficient and the reasoning valid, not just present -- the kit's own grading line (\"I grade effort and honesty here, not the position landed on\") still holds either way."
    }
   }
  }

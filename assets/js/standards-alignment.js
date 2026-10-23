@@ -44,21 +44,20 @@ var STANDARDS_FRAMEWORKS = {
   casel: { file: 'casel-standards-reference.html', prefix: 'T', name: 'CASEL (Social-Emotional Learning)', catalog: 'casel', category: 'sel' },
   'cde-tsel': { file: 'cde-tsel-standards-reference.html', prefix: 'T', name: 'California Transformative SEL (T-SEL)', catalog: 'cde-tsel', category: 'sel' },
   ruler: { file: 'ruler-standards-reference.html', prefix: 'T', name: 'RULER Approach', catalog: 'ruler', category: 'sel' },
-  'via-character': { file: 'via-character-standards-reference.html', prefix: 'T', name: 'VIA Character Strengths', catalog: 'via-character', category: 'sel' }
+  'via-character': { file: 'via-character-standards-reference.html', prefix: 'T', name: 'VIA Character Strengths', catalog: 'via-character', category: 'sel' },
+  'ccss-ela': { file: 'ccss-ela-standards-reference.html', prefix: 'T', name: 'Common Core ELA (Speaking, Listening & Writing)', catalog: 'ccss-ela', category: 'ela' }
 };
 
-// Fixed display order, same 3-way split the /standards/ coverage map uses
-// for its own top-level chevrons (Computer Science & CTE / Digital
-// Citizenship, Media Literacy & AI Literacy / Social-Emotional Learning) --
-// shorter names here since this widget is a small per-lesson footer, not a
-// full page. A category only renders (see the render step below) when at
-// least one of its frameworks actually matched this lesson/carrier; with
-// 13 frameworks now live, a lesson touching several of them read as a flat
-// wall of <h3>s without this grouping.
+// Fixed display order, local to this per-lesson widget (the main /standards/
+// coverage map doesn't share this grouping -- it's just a way to keep a
+// lesson touching several frameworks from reading as a flat wall of <h3>s).
+// A category only renders (see the render step below) when at least one of
+// its frameworks actually matched this lesson/carrier.
 var STANDARDS_CATEGORIES = [
   { id: 'cs', name: 'Computer Science' },
   { id: 'lit', name: 'Digital Literacy' },
-  { id: 'sel', name: 'SEL' }
+  { id: 'sel', name: 'SEL' },
+  { id: 'ela', name: 'English Language Arts' }
 ];
 
 function escapeHtml(s) {

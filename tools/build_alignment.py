@@ -1002,7 +1002,7 @@ def main():
     catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in [
         "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
         "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
-        "casel", "cde-tsel", "ruler", "via-character",
+        "casel", "cde-tsel", "ruler", "via-character", "ccss-ela",
     ]}
     sources = set(args.source) if args.source else None
     carrier_files = load_carrier_files(args.carriers, sources)
@@ -1045,6 +1045,19 @@ def main():
     ]:
         provenance = grouped_provenance(catalogs[fw]["meta"], args.scope_label) + orthogonal_see_also
         (out / f"{fw}-standards-reference.html").write_text(render_grouped(title, catalogs[fw], covs[fw], args.scope_label, provenance))
+
+    # Common Core ELA (Speaking & Listening, Writing) isn't a CS-standards
+    # gap-filler like the four digital-literacy catalogs, and isn't an SEL/
+    # character framework either -- it's general ELA, so it gets its own
+    # see_also rather than reusing either of those.
+    ccss_see_also = (
+        ' <strong>See also.</strong> <a href="/standards/">The full standards map</a> for the '
+        "CS and SEL/character frameworks this sits alongside."
+    )
+    provenance = grouped_provenance(catalogs["ccss-ela"]["meta"], args.scope_label) + ccss_see_also
+    (out / "ccss-ela-standards-reference.html").write_text(
+        render_grouped("Common Core ELA (Speaking, Listening & Writing) Standards Reference", catalogs["ccss-ela"], covs["ccss-ela"], args.scope_label, provenance)
+    )
 
     (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))
 

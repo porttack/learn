@@ -1,0 +1,424 @@
+{
+ "meta": {
+  "source": "Common Core State Standards for English Language Arts & Literacy (National Governors Association Center for Best Practices, Council of Chief State School Officers)",
+  "url": "https://www.thecorestandards.org/ELA-Literacy/",
+  "year": 2010,
+  "extracted": "2026-10-23",
+  "license_note": "(c) 2010 National Governors Association Center for Best Practices and Council of Chief State School Officers, all rights reserved; NGA/CCSSO license the standards for free noncommercial educational use, but every paraphrase here is written for this project, never the standards' own text, matching this repo's policy for every other catalog regardless of a source's own licence.",
+  "scope_note": "Speaking & Listening and Writing strands only, grades 6 through 11-12 (five bands: 6, 7, 8, 9-10, 11-12) -- not Reading (Literature or Informational Text) or Language, and not K-5. California's own CCSS adoption (the 2013 ELA/Literacy framework) keeps this same numbering verbatim, so this catalog serves both a national and a California-specific citation.",
+  "codes_note": "Codes are CCSS's own (e.g. SL.6.1, W.9-10.1), not a project-specific scheme. The lettered sub-parts some standards carry officially (e.g. W.6.1.a-e) are folded into one paraphrase per numbered standard here, matching this project's existing topic-level (not sub-EK-level) citation granularity elsewhere (see apcsp.json's own topic/LO split).",
+  "abbrev": "CCSS-ELA"
+ },
+ "groups": [
+  {
+   "name": "Speaking & Listening",
+   "items": [
+    {
+     "code": "SL.6.1",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Take part effectively in collaborative discussions with varied partners on grade 6 topics, building on others' ideas and expressing your own clearly."
+    },
+    {
+     "code": "SL.6.2",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Interpret information presented in diverse media and formats (visual, quantitative, oral) and explain how it contributes to a topic."
+    },
+    {
+     "code": "SL.6.3",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Delineate a speaker's argument and specific claims, distinguishing claims supported by reasons and evidence from claims that are not."
+    },
+    {
+     "code": "SL.6.4",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Present claims and findings in a logical sequence, with relevant facts and details, using eye contact, adequate volume, and clear pronunciation."
+    },
+    {
+     "code": "SL.6.5",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Include multimedia components and visual displays in presentations to clarify information."
+    },
+    {
+     "code": "SL.6.6",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Adapt speech to a variety of contexts and tasks, using formal English when appropriate."
+    },
+    {
+     "code": "SL.7.1",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Take part productively in a range of discussions with diverse partners on grade 7 topics, coming prepared, following discussion norms, and revising your own views in light of new evidence."
+    },
+    {
+     "code": "SL.7.2",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Analyze the main ideas and supporting details presented in diverse media and formats, explaining how they clarify a topic."
+    },
+    {
+     "code": "SL.7.3",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Delineate a speaker's argument and specific claims, evaluating the soundness of the reasoning and the relevance and sufficiency of the evidence."
+    },
+    {
+     "code": "SL.7.4",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Present claims and findings in a focused, organized manner, emphasizing the most important points with relevant facts, details, and examples, with appropriate eye contact, volume, and pronunciation."
+    },
+    {
+     "code": "SL.7.5",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Use multimedia and visual displays in presentations to clarify claims and findings and to emphasize the most salient points."
+    },
+    {
+     "code": "SL.7.6",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Adapt speech to a variety of contexts and tasks, using formal English when appropriate."
+    },
+    {
+     "code": "SL.8.1",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Take part productively in a range of discussions with diverse partners on grade 8 topics, coming prepared, connecting classmates' ideas, and updating or justifying your views based on new evidence."
+    },
+    {
+     "code": "SL.8.2",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Analyze the purpose of information presented in diverse media and formats, evaluating the motives (e.g. social, commercial, political) behind its presentation."
+    },
+    {
+     "code": "SL.8.3",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Delineate a speaker's argument and specific claims, evaluating the soundness of the reasoning and the relevance and sufficiency of the evidence, and identifying irrelevant evidence."
+    },
+    {
+     "code": "SL.8.4",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Present claims and findings clearly and logically, emphasizing salient points with relevant evidence and well-chosen details, with appropriate eye contact, volume, and pronunciation."
+    },
+    {
+     "code": "SL.8.5",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Add multimedia and visual displays to presentations to clarify information, strengthen claims and evidence, and engage the audience."
+    },
+    {
+     "code": "SL.8.6",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Adapt speech to a variety of contexts and tasks, using formal English when appropriate."
+    },
+    {
+     "code": "SL.9-10.1",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Initiate and participate effectively in a range of collaborative discussions with diverse partners, building on others' ideas and expressing your own clearly and persuasively, setting norms and goals, and refining your position in light of the evidence."
+    },
+    {
+     "code": "SL.9-10.2",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Integrate multiple sources of information presented in diverse media and formats, evaluating the credibility and accuracy of each source."
+    },
+    {
+     "code": "SL.9-10.3",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Evaluate a speaker's point of view, reasoning, and use of evidence and rhetoric, identifying any fallacious reasoning or exaggerated or distorted evidence."
+    },
+    {
+     "code": "SL.9-10.4",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Present information, findings, and supporting evidence clearly, concisely, and logically, with organization, development, and style appropriate to purpose, audience, and task."
+    },
+    {
+     "code": "SL.9-10.5",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Make strategic use of digital media in presentations to enhance understanding of findings, reasoning, and evidence, and to add interest."
+    },
+    {
+     "code": "SL.9-10.6",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Adapt speech to a variety of contexts and tasks, using formal English when appropriate."
+    },
+    {
+     "code": "SL.11-12.1",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Initiate and participate effectively in a range of collaborative discussions with diverse partners, building on others' ideas and expressing your own clearly and persuasively."
+    },
+    {
+     "code": "SL.11-12.2",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Integrate multiple sources of information presented in diverse formats to make informed decisions and solve problems, evaluating credibility and accuracy and noting discrepancies among the data."
+    },
+    {
+     "code": "SL.11-12.3",
+     "name": "Comprehension and Collaboration",
+     "paraphrase": "Evaluate a speaker's point of view, reasoning, and use of evidence and rhetoric, assessing stance, premises, links among ideas, word choice, emphasis, and tone."
+    },
+    {
+     "code": "SL.11-12.4",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Present information, findings, and supporting evidence conveying a clear and distinct perspective, organized so listeners can follow the line of reasoning and addressing alternative or opposing perspectives."
+    },
+    {
+     "code": "SL.11-12.5",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Make strategic use of digital media in presentations to enhance understanding of findings, reasoning, and evidence, and to add interest."
+    },
+    {
+     "code": "SL.11-12.6",
+     "name": "Presentation of Knowledge and Ideas",
+     "paraphrase": "Adapt speech to a variety of contexts and tasks, using formal English when appropriate."
+    }
+   ]
+  },
+  {
+   "name": "Writing",
+   "items": [
+    {
+     "code": "W.6.1",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write arguments to support claims with clear reasons and relevant evidence, organizing them clearly and maintaining a formal style."
+    },
+    {
+     "code": "W.6.2",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write informative/explanatory texts that examine a topic and convey ideas and information through the selection, organization, and analysis of relevant content."
+    },
+    {
+     "code": "W.6.3",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write narratives to develop real or imagined experiences or events, using effective technique, relevant descriptive details, and well-structured event sequences."
+    },
+    {
+     "code": "W.6.4",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience."
+    },
+    {
+     "code": "W.6.5",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "With guidance and support from peers and adults, develop and strengthen writing by planning, revising, editing, rewriting, or trying a new approach."
+    },
+    {
+     "code": "W.6.6",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Use technology, including the internet, to produce and publish writing and to interact and collaborate with others."
+    },
+    {
+     "code": "W.6.7",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Conduct short research projects to answer a question, drawing on several sources and refocusing the inquiry when appropriate."
+    },
+    {
+     "code": "W.6.8",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Gather relevant information from multiple print and digital sources, assess the credibility of each source, and quote or paraphrase data and conclusions without plagiarizing."
+    },
+    {
+     "code": "W.6.9",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Draw evidence from literary or informational texts to support analysis, reflection, and research."
+    },
+    {
+     "code": "W.6.10",
+     "name": "Range of Writing",
+     "paraphrase": "Write routinely over extended time frames and shorter time frames for a range of discipline-specific tasks, purposes, and audiences."
+    },
+    {
+     "code": "W.7.1",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write arguments to support claims with logical reasoning and relevant evidence."
+    },
+    {
+     "code": "W.7.2",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write informative/explanatory texts that examine a topic and convey ideas, concepts, and information through the selection, organization, and analysis of relevant content."
+    },
+    {
+     "code": "W.7.3",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write narratives to develop real or imagined experiences or events, using effective technique, relevant descriptive details, and well-structured event sequences."
+    },
+    {
+     "code": "W.7.4",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience."
+    },
+    {
+     "code": "W.7.5",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "With guidance and support from peers and adults, develop and strengthen writing by planning, revising, editing, rewriting, or trying a new approach, focusing on how well purpose and audience have been addressed."
+    },
+    {
+     "code": "W.7.6",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Use technology, including the internet, to produce and publish writing and link to and cite sources, as well as to interact and collaborate with others."
+    },
+    {
+     "code": "W.7.7",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Conduct short research projects to answer a question, drawing on several sources and generating additional related, focused questions for further research and investigation."
+    },
+    {
+     "code": "W.7.8",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Gather relevant information from multiple print and digital sources, assess the credibility and accuracy of each source, and quote or paraphrase data and conclusions while avoiding plagiarism."
+    },
+    {
+     "code": "W.7.9",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Draw evidence from literary or informational texts to support analysis, reflection, and research."
+    },
+    {
+     "code": "W.7.10",
+     "name": "Range of Writing",
+     "paraphrase": "Write routinely over extended time frames and shorter time frames for a range of discipline-specific tasks, purposes, and audiences."
+    },
+    {
+     "code": "W.8.1",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write arguments to support claims with logical reasoning and relevant evidence."
+    },
+    {
+     "code": "W.8.2",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write informative/explanatory texts that examine a topic and convey ideas, concepts, and information through the selection, organization, and analysis of relevant content."
+    },
+    {
+     "code": "W.8.3",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write narratives to develop real or imagined experiences or events, using effective technique, relevant descriptive details, and well-structured event sequences."
+    },
+    {
+     "code": "W.8.4",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience."
+    },
+    {
+     "code": "W.8.5",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "With guidance and support from peers and adults, develop and strengthen writing by planning, revising, editing, rewriting, or trying a new approach, focusing on how well purpose and audience have been addressed."
+    },
+    {
+     "code": "W.8.6",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Use technology, including the internet, to produce and publish writing and present the relationships between information and ideas efficiently, as well as to interact and collaborate with others."
+    },
+    {
+     "code": "W.8.7",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Conduct short research projects to answer a question (including a self-generated question), drawing on several sources and generating additional related, focused questions that allow for multiple avenues of exploration."
+    },
+    {
+     "code": "W.8.8",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Gather relevant information from multiple print and digital sources, assess the credibility and accuracy of each source, and quote or paraphrase data and conclusions while avoiding plagiarism."
+    },
+    {
+     "code": "W.8.9",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Draw evidence from literary or informational texts to support analysis, reflection, and research."
+    },
+    {
+     "code": "W.8.10",
+     "name": "Range of Writing",
+     "paraphrase": "Write routinely over extended time frames and shorter time frames for a range of discipline-specific tasks, purposes, and audiences."
+    },
+    {
+     "code": "W.9-10.1",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write arguments to support claims in an analysis of substantive topics or texts, using valid reasoning and relevant and sufficient evidence."
+    },
+    {
+     "code": "W.9-10.2",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write informative/explanatory texts to examine and convey complex ideas, concepts, and information clearly and accurately through the effective selection, organization, and analysis of content."
+    },
+    {
+     "code": "W.9-10.3",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write narratives to develop real or imagined experiences or events, using effective technique, well-chosen details, and well-structured event sequences."
+    },
+    {
+     "code": "W.9-10.4",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience."
+    },
+    {
+     "code": "W.9-10.5",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Develop and strengthen writing as needed by planning, revising, editing, rewriting, or trying a new approach, focusing on addressing what is most significant for a specific purpose and audience."
+    },
+    {
+     "code": "W.9-10.6",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Use technology, including the internet, to produce, publish, and update individual or shared writing products, taking advantage of technology's capacity to link to other information and to display information flexibly and dynamically."
+    },
+    {
+     "code": "W.9-10.7",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Conduct short as well as more sustained research projects to answer a question or solve a problem, narrowing or broadening the inquiry when appropriate and synthesizing multiple sources."
+    },
+    {
+     "code": "W.9-10.8",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Gather relevant information from multiple authoritative print and digital sources, assess the usefulness of each source, and integrate information into the text selectively while avoiding plagiarism."
+    },
+    {
+     "code": "W.9-10.9",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Draw evidence from literary or informational texts to support analysis, reflection, and research."
+    },
+    {
+     "code": "W.9-10.10",
+     "name": "Range of Writing",
+     "paraphrase": "Write routinely over extended time frames and shorter time frames for a range of tasks, purposes, and audiences."
+    },
+    {
+     "code": "W.11-12.1",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write arguments to support claims in an analysis of substantive topics or texts, using valid reasoning and relevant and sufficient evidence."
+    },
+    {
+     "code": "W.11-12.2",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write informative/explanatory texts to examine and convey complex ideas, concepts, and information clearly and accurately through the effective selection, organization, and analysis of content."
+    },
+    {
+     "code": "W.11-12.3",
+     "name": "Text Types and Purposes",
+     "paraphrase": "Write narratives to develop real or imagined experiences or events, using effective technique, well-chosen details, and well-structured event sequences."
+    },
+    {
+     "code": "W.11-12.4",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience."
+    },
+    {
+     "code": "W.11-12.5",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Develop and strengthen writing as needed by planning, revising, editing, rewriting, or trying a new approach, focusing on addressing what is most significant for a specific purpose and audience."
+    },
+    {
+     "code": "W.11-12.6",
+     "name": "Production and Distribution of Writing",
+     "paraphrase": "Use technology, including the internet, to produce, publish, and update individual or shared writing products, taking advantage of technology's capacity to link to other information and to display information flexibly and dynamically."
+    },
+    {
+     "code": "W.11-12.7",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Conduct short as well as more sustained research projects to answer a question or solve a problem, narrowing or broadening the inquiry when appropriate and synthesizing multiple sources."
+    },
+    {
+     "code": "W.11-12.8",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Gather relevant information from multiple authoritative print and digital sources, assess the strengths and limitations of each source, and integrate information into the text selectively while avoiding plagiarism."
+    },
+    {
+     "code": "W.11-12.9",
+     "name": "Research to Build and Present Knowledge",
+     "paraphrase": "Draw evidence from literary or informational texts to support analysis, reflection, and research."
+    },
+    {
+     "code": "W.11-12.10",
+     "name": "Range of Writing",
+     "paraphrase": "Write routinely over extended time frames and shorter time frames for a range of tasks, purposes, and audiences."
+    }
+   ]
+  }
+ ]
+}

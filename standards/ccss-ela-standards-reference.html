@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Common Core ELA (Speaking, Listening &amp; Writing) Standards Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
+}
+.page-toggle-label input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
+<a href="/electronics101/"><span class="site-menu-item-icon" aria-hidden="true"></span>Electronics 101</a>
+<a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
+<a href="/python3d/"><span class="site-menu-item-icon" aria-hidden="true"></span>Python in 3D</a>
+<a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<ul>
+<li class="topic-link"><a href="#grp-group-0">Speaking &amp; Listening</a></li>
+<li class="topic-link"><a href="#grp-group-1">Writing</a></li>
+</ul>
+</nav>
+<main>
+<h1>Common Core ELA (Speaking, Listening &amp; Writing) Standards Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of <em>Common Core State Standards for English Language Arts &amp; Literacy (National Governors Association Center for Best Practices, Council of Chief State School Officers)</em> (2010). <strong>Scope.</strong> Speaking &amp; Listening and Writing strands only, grades 6 through 11-12 (five bands: 6, 7, 8, 9-10, 11-12) -- not Reading (Literature or Informational Text) or Language, and not K-5. California's own CCSS adoption (the 2013 ELA/Literacy framework) keeps this same numbering verbatim, so this catalog serves both a national and a California-specific citation. <strong>Codes.</strong> Codes are CCSS's own (e.g. SL.6.1, W.9-10.1), not a project-specific scheme. The lettered sub-parts some standards carry officially (e.g. W.6.1.a-e) are folded into one paraphrase per numbered standard here, matching this project's existing topic-level (not sub-EK-level) citation granularity elsewhere (see apcsp.json's own topic/LO split). <strong>What this is not.</strong> (c) 2010 National Governors Association Center for Best Practices and Council of Chief State School Officers, all rights reserved; NGA/CCSSO license the standards for free noncommercial educational use, but every paraphrase here is written for this project, never the standards' own text, matching this repo's policy for every other catalog regardless of a source's own licence. <strong>See also.</strong> <a href="/standards/">The full standards map</a> for the CS and SEL/character frameworks this sits alongside.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<div class="page-toggles"><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-carriers" checked> Show which curricula cover each item</label></div>
+<div class="topic" id="grp-group-0">
+<h3><a class="anchor-link" href="#grp-group-0">#</a>Speaking &amp; Listening</h3>
+<ul class="ek-list">
+<li id="T-SL.6.1"><a class="anchor-link" href="#T-SL.6.1">#</a><span class="code-badge">SL.6.1</span> <strong>Comprehension and Collaboration</strong> Take part effectively in collaborative discussions with varied partners on grade 6 topics, building on others' ideas and expressing your own clearly.<div class="item-meta"><ul class="meta-list"><li><strong>porttack.com: Socratic Seminar Kit:</strong> <a href="https://porttack.com/socratic-seminar-kit/">Socratic Seminar Kit</a>, <a href="https://porttack.com/2026/10/21/students-wrote-the-rules-seminar.html">The Rules Students Wrote: A Socratic Seminar on the STUDENTS FIRST Act</a>, <a href="https://porttack.com/2026/10/21/robot-teacher-seminar.html">Should a School Buy a Robot Tutor? A Socratic Seminar</a>, <a href="https://porttack.com/2026/10/22/you-deleted-it-is-it-gone.html">You Deleted It. Is It Gone? A Socratic Seminar on Doorbell Cameras and AI Chats</a>, <a href="https://porttack.com/2026/10/21/who-sets-the-rules-for-ai.html">Who Sets the Rules for AI? A Socratic Seminar on a Student Survey</a><div class="meta-note">The fishbowl is a collaborative discussion where every student builds on others' ideas and expresses their own, exactly as the kit's own prose already claims ("engage in... collaborative discussions, building on others and justifying one's own views. The spine of the activity").</div></li></ul></div></li>
+<li id="T-SL.6.2"><a class="anchor-link" href="#T-SL.6.2">#</a><span class="code-badge">SL.6.2</span> <strong>Comprehension and Collaboration</strong> Interpret information presented in diverse media and formats (visual, quantitative, oral) and explain how it contributes to a topic.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.6.3"><a class="anchor-link" href="#T-SL.6.3">#</a><span class="code-badge">SL.6.3</span> <strong>Comprehension and Collaboration</strong> Delineate a speaker's argument and specific claims, distinguishing claims supported by reasons and evidence from claims that are not.<div class="item-meta"><ul class="meta-list"><li><strong>porttack.com: Socratic Seminar Kit:</strong> <a href="https://porttack.com/socratic-seminar-kit/">Socratic Seminar Kit</a>, <a href="https://porttack.com/2026/10/21/students-wrote-the-rules-seminar.html">The Rules Students Wrote: A Socratic Seminar on the STUDENTS FIRST Act</a>, <a href="https://porttack.com/2026/10/21/robot-teacher-seminar.html">Should a School Buy a Robot Tutor? A Socratic Seminar</a>, <a href="https://porttack.com/2026/10/22/you-deleted-it-is-it-gone.html">You Deleted It. Is It Gone? A Socratic Seminar on Doorbell Cameras and AI Chats</a>, <a href="https://porttack.com/2026/10/21/who-sets-the-rules-for-ai.html">Who Sets the Rules for AI? A Socratic Seminar on a Student Survey</a><div class="meta-note">The observer organizer's job -- catching the strongest point made, an idea to push back on, and a question nobody has asked -- is delineating a speaker's argument and distinguishing supported claims from unsupported ones.</div></li></ul></div></li>
+<li id="T-SL.6.4"><a class="anchor-link" href="#T-SL.6.4">#</a><span class="code-badge">SL.6.4</span> <strong>Presentation of Knowledge and Ideas</strong> Present claims and findings in a logical sequence, with relevant facts and details, using eye contact, adequate volume, and clear pronunciation.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.6.5"><a class="anchor-link" href="#T-SL.6.5">#</a><span class="code-badge">SL.6.5</span> <strong>Presentation of Knowledge and Ideas</strong> Include multimedia components and visual displays in presentations to clarify information.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.6.6"><a class="anchor-link" href="#T-SL.6.6">#</a><span class="code-badge">SL.6.6</span> <strong>Presentation of Knowledge and Ideas</strong> Adapt speech to a variety of contexts and tasks, using formal English when appropriate.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.7.1"><a class="anchor-link" href="#T-SL.7.1">#</a><span class="code-badge">SL.7.1</span> <strong>Comprehension and Collaboration</strong> Take part productively in a range of discussions with diverse partners on grade 7 topics, coming prepared, following discussion norms, and revising your own views in light of new evidence.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.7.2"><a class="anchor-link" href="#T-SL.7.2">#</a><span class="code-badge">SL.7.2</span> <strong>Comprehension and Collaboration</strong> Analyze the main ideas and supporting details presented in diverse media and formats, explaining how they clarify a topic.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.7.3"><a class="anchor-link" href="#T-SL.7.3">#</a><span class="code-badge">SL.7.3</span> <strong>Comprehension and Collaboration</strong> Delineate a speaker's argument and specific claims, evaluating the soundness of the reasoning and the relevance and sufficiency of the evidence.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.7.4"><a class="anchor-link" href="#T-SL.7.4">#</a><span class="code-badge">SL.7.4</span> <strong>Presentation of Knowledge and Ideas</strong> Present claims and findings in a focused, organized manner, emphasizing the most important points with relevant facts, details, and examples, with appropriate eye contact, volume, and pronunciation.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.7.5"><a class="anchor-link" href="#T-SL.7.5">#</a><span class="code-badge">SL.7.5</span> <strong>Presentation of Knowledge and Ideas</strong> Use multimedia and visual displays in presentations to clarify claims and findings and to emphasize the most salient points.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.7.6"><a class="anchor-link" href="#T-SL.7.6">#</a><span class="code-badge">SL.7.6</span> <strong>Presentation of Knowledge and Ideas</strong> Adapt speech to a variety of contexts and tasks, using formal English when appropriate.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.8.1"><a class="anchor-link" href="#T-SL.8.1">#</a><span class="code-badge">SL.8.1</span> <strong>Comprehension and Collaboration</strong> Take part productively in a range of discussions with diverse partners on grade 8 topics, coming prepared, connecting classmates' ideas, and updating or justifying your views based on new evidence.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.8.2"><a class="anchor-link" href="#T-SL.8.2">#</a><span class="code-badge">SL.8.2</span> <strong>Comprehension and Collaboration</strong> Analyze the purpose of information presented in diverse media and formats, evaluating the motives (e.g. social, commercial, political) behind its presentation.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.8.3"><a class="anchor-link" href="#T-SL.8.3">#</a><span class="code-badge">SL.8.3</span> <strong>Comprehension and Collaboration</strong> Delineate a speaker's argument and specific claims, evaluating the soundness of the reasoning and the relevance and sufficiency of the evidence, and identifying irrelevant evidence.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.8.4"><a class="anchor-link" href="#T-SL.8.4">#</a><span class="code-badge">SL.8.4</span> <strong>Presentation of Knowledge and Ideas</strong> Present claims and findings clearly and logically, emphasizing salient points with relevant evidence and well-chosen details, with appropriate eye contact, volume, and pronunciation.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.8.5"><a class="anchor-link" href="#T-SL.8.5">#</a><span class="code-badge">SL.8.5</span> <strong>Presentation of Knowledge and Ideas</strong> Add multimedia and visual displays to presentations to clarify information, strengthen claims and evidence, and engage the audience.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.8.6"><a class="anchor-link" href="#T-SL.8.6">#</a><span class="code-badge">SL.8.6</span> <strong>Presentation of Knowledge and Ideas</strong> Adapt speech to a variety of contexts and tasks, using formal English when appropriate.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.9-10.1"><a class="anchor-link" href="#T-SL.9-10.1">#</a><span class="code-badge">SL.9-10.1</span> <strong>Comprehension and Collaboration</strong> Initiate and participate effectively in a range of collaborative discussions with diverse partners, building on others' ideas and expressing your own clearly and persuasively, setting norms and goals, and refining your position in light of the evidence.<div class="item-meta"><ul class="meta-list"><li><strong>porttack.com: Socratic Seminar Kit:</strong> <a href="https://porttack.com/socratic-seminar-kit/">Socratic Seminar Kit</a>, <a href="https://porttack.com/2026/10/21/students-wrote-the-rules-seminar.html">The Rules Students Wrote: A Socratic Seminar on the STUDENTS FIRST Act</a>, <a href="https://porttack.com/2026/10/21/robot-teacher-seminar.html">Should a School Buy a Robot Tutor? A Socratic Seminar</a>, <a href="https://porttack.com/2026/10/22/you-deleted-it-is-it-gone.html">You Deleted It. Is It Gone? A Socratic Seminar on Doorbell Cameras and AI Chats</a>, <a href="https://porttack.com/2026/10/21/who-sets-the-rules-for-ai.html">Who Sets the Rules for AI? A Socratic Seminar on a Student Survey</a><div class="meta-note">Same claim as SL.6.1, at the band where students are additionally expected to set discussion norms and goals and refine a position as evidence comes in -- the fishbowl's hot seat and the facilitator's "protect the silence" role are built around exactly that.</div></li></ul></div></li>
+<li id="T-SL.9-10.2"><a class="anchor-link" href="#T-SL.9-10.2">#</a><span class="code-badge">SL.9-10.2</span> <strong>Comprehension and Collaboration</strong> Integrate multiple sources of information presented in diverse media and formats, evaluating the credibility and accuracy of each source.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.9-10.3"><a class="anchor-link" href="#T-SL.9-10.3">#</a><span class="code-badge">SL.9-10.3</span> <strong>Comprehension and Collaboration</strong> Evaluate a speaker's point of view, reasoning, and use of evidence and rhetoric, identifying any fallacious reasoning or exaggerated or distorted evidence.<div class="item-meta"><ul class="meta-list"><li><strong>porttack.com: Socratic Seminar Kit:</strong> <a href="https://porttack.com/socratic-seminar-kit/">Socratic Seminar Kit</a>, <a href="https://porttack.com/2026/10/21/students-wrote-the-rules-seminar.html">The Rules Students Wrote: A Socratic Seminar on the STUDENTS FIRST Act</a>, <a href="https://porttack.com/2026/10/21/robot-teacher-seminar.html">Should a School Buy a Robot Tutor? A Socratic Seminar</a>, <a href="https://porttack.com/2026/10/22/you-deleted-it-is-it-gone.html">You Deleted It. Is It Gone? A Socratic Seminar on Doorbell Cameras and AI Chats</a>, <a href="https://porttack.com/2026/10/21/who-sets-the-rules-for-ai.html">Who Sets the Rules for AI? A Socratic Seminar on a Student Survey</a><div class="meta-note">Same observer-organizer claim as SL.6.3, at the band where evaluating a speaker also means watching for fallacious reasoning or exaggerated evidence, not just restating the claim.</div></li></ul></div></li>
+<li id="T-SL.9-10.4"><a class="anchor-link" href="#T-SL.9-10.4">#</a><span class="code-badge">SL.9-10.4</span> <strong>Presentation of Knowledge and Ideas</strong> Present information, findings, and supporting evidence clearly, concisely, and logically, with organization, development, and style appropriate to purpose, audience, and task.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.9-10.5"><a class="anchor-link" href="#T-SL.9-10.5">#</a><span class="code-badge">SL.9-10.5</span> <strong>Presentation of Knowledge and Ideas</strong> Make strategic use of digital media in presentations to enhance understanding of findings, reasoning, and evidence, and to add interest.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.9-10.6"><a class="anchor-link" href="#T-SL.9-10.6">#</a><span class="code-badge">SL.9-10.6</span> <strong>Presentation of Knowledge and Ideas</strong> Adapt speech to a variety of contexts and tasks, using formal English when appropriate.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.11-12.1"><a class="anchor-link" href="#T-SL.11-12.1">#</a><span class="code-badge">SL.11-12.1</span> <strong>Comprehension and Collaboration</strong> Initiate and participate effectively in a range of collaborative discussions with diverse partners, building on others' ideas and expressing your own clearly and persuasively.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.11-12.2"><a class="anchor-link" href="#T-SL.11-12.2">#</a><span class="code-badge">SL.11-12.2</span> <strong>Comprehension and Collaboration</strong> Integrate multiple sources of information presented in diverse formats to make informed decisions and solve problems, evaluating credibility and accuracy and noting discrepancies among the data.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.11-12.3"><a class="anchor-link" href="#T-SL.11-12.3">#</a><span class="code-badge">SL.11-12.3</span> <strong>Comprehension and Collaboration</strong> Evaluate a speaker's point of view, reasoning, and use of evidence and rhetoric, assessing stance, premises, links among ideas, word choice, emphasis, and tone.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.11-12.4"><a class="anchor-link" href="#T-SL.11-12.4">#</a><span class="code-badge">SL.11-12.4</span> <strong>Presentation of Knowledge and Ideas</strong> Present information, findings, and supporting evidence conveying a clear and distinct perspective, organized so listeners can follow the line of reasoning and addressing alternative or opposing perspectives.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.11-12.5"><a class="anchor-link" href="#T-SL.11-12.5">#</a><span class="code-badge">SL.11-12.5</span> <strong>Presentation of Knowledge and Ideas</strong> Make strategic use of digital media in presentations to enhance understanding of findings, reasoning, and evidence, and to add interest.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-SL.11-12.6"><a class="anchor-link" href="#T-SL.11-12.6">#</a><span class="code-badge">SL.11-12.6</span> <strong>Presentation of Knowledge and Ideas</strong> Adapt speech to a variety of contexts and tasks, using formal English when appropriate.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<div class="topic" id="grp-group-1">
+<h3><a class="anchor-link" href="#grp-group-1">#</a>Writing</h3>
+<ul class="ek-list">
+<li id="T-W.6.1"><a class="anchor-link" href="#T-W.6.1">#</a><span class="code-badge">W.6.1</span> <strong>Text Types and Purposes</strong> Write arguments to support claims with clear reasons and relevant evidence, organizing them clearly and maintaining a formal style.<div class="item-meta"><ul class="meta-list"><li><strong>porttack.com: Socratic Seminar Kit:</strong> <a href="https://porttack.com/socratic-seminar-kit/">Socratic Seminar Kit</a>, <a href="https://porttack.com/2026/10/21/students-wrote-the-rules-seminar.html">The Rules Students Wrote: A Socratic Seminar on the STUDENTS FIRST Act</a>, <a href="https://porttack.com/2026/10/21/robot-teacher-seminar.html">Should a School Buy a Robot Tutor? A Socratic Seminar</a>, <a href="https://porttack.com/2026/10/22/you-deleted-it-is-it-gone.html">You Deleted It. Is It Gone? A Socratic Seminar on Doorbell Cameras and AI Chats</a>, <a href="https://porttack.com/2026/10/21/who-sets-the-rules-for-ai.html">Who Sets the Rules for AI? A Socratic Seminar on a Student Survey</a><div class="meta-note">The entry and exit tickets both ask students to write a position backed by reasons and evidence by paragraph number -- the kit's own prose already claims this ("write to support a claim with reasons and evidence. Entry and exit tickets").</div></li></ul></div></li>
+<li id="T-W.6.2"><a class="anchor-link" href="#T-W.6.2">#</a><span class="code-badge">W.6.2</span> <strong>Text Types and Purposes</strong> Write informative/explanatory texts that examine a topic and convey ideas and information through the selection, organization, and analysis of relevant content.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.6.3"><a class="anchor-link" href="#T-W.6.3">#</a><span class="code-badge">W.6.3</span> <strong>Text Types and Purposes</strong> Write narratives to develop real or imagined experiences or events, using effective technique, relevant descriptive details, and well-structured event sequences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.6.4"><a class="anchor-link" href="#T-W.6.4">#</a><span class="code-badge">W.6.4</span> <strong>Production and Distribution of Writing</strong> Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.6.5"><a class="anchor-link" href="#T-W.6.5">#</a><span class="code-badge">W.6.5</span> <strong>Production and Distribution of Writing</strong> With guidance and support from peers and adults, develop and strengthen writing by planning, revising, editing, rewriting, or trying a new approach.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.6.6"><a class="anchor-link" href="#T-W.6.6">#</a><span class="code-badge">W.6.6</span> <strong>Production and Distribution of Writing</strong> Use technology, including the internet, to produce and publish writing and to interact and collaborate with others.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.6.7"><a class="anchor-link" href="#T-W.6.7">#</a><span class="code-badge">W.6.7</span> <strong>Research to Build and Present Knowledge</strong> Conduct short research projects to answer a question, drawing on several sources and refocusing the inquiry when appropriate.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.6.8"><a class="anchor-link" href="#T-W.6.8">#</a><span class="code-badge">W.6.8</span> <strong>Research to Build and Present Knowledge</strong> Gather relevant information from multiple print and digital sources, assess the credibility of each source, and quote or paraphrase data and conclusions without plagiarizing.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.6.9"><a class="anchor-link" href="#T-W.6.9">#</a><span class="code-badge">W.6.9</span> <strong>Research to Build and Present Knowledge</strong> Draw evidence from literary or informational texts to support analysis, reflection, and research.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.6.10"><a class="anchor-link" href="#T-W.6.10">#</a><span class="code-badge">W.6.10</span> <strong>Range of Writing</strong> Write routinely over extended time frames and shorter time frames for a range of discipline-specific tasks, purposes, and audiences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.1"><a class="anchor-link" href="#T-W.7.1">#</a><span class="code-badge">W.7.1</span> <strong>Text Types and Purposes</strong> Write arguments to support claims with logical reasoning and relevant evidence.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.2"><a class="anchor-link" href="#T-W.7.2">#</a><span class="code-badge">W.7.2</span> <strong>Text Types and Purposes</strong> Write informative/explanatory texts that examine a topic and convey ideas, concepts, and information through the selection, organization, and analysis of relevant content.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.3"><a class="anchor-link" href="#T-W.7.3">#</a><span class="code-badge">W.7.3</span> <strong>Text Types and Purposes</strong> Write narratives to develop real or imagined experiences or events, using effective technique, relevant descriptive details, and well-structured event sequences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.4"><a class="anchor-link" href="#T-W.7.4">#</a><span class="code-badge">W.7.4</span> <strong>Production and Distribution of Writing</strong> Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.5"><a class="anchor-link" href="#T-W.7.5">#</a><span class="code-badge">W.7.5</span> <strong>Production and Distribution of Writing</strong> With guidance and support from peers and adults, develop and strengthen writing by planning, revising, editing, rewriting, or trying a new approach, focusing on how well purpose and audience have been addressed.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.6"><a class="anchor-link" href="#T-W.7.6">#</a><span class="code-badge">W.7.6</span> <strong>Production and Distribution of Writing</strong> Use technology, including the internet, to produce and publish writing and link to and cite sources, as well as to interact and collaborate with others.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.7"><a class="anchor-link" href="#T-W.7.7">#</a><span class="code-badge">W.7.7</span> <strong>Research to Build and Present Knowledge</strong> Conduct short research projects to answer a question, drawing on several sources and generating additional related, focused questions for further research and investigation.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.8"><a class="anchor-link" href="#T-W.7.8">#</a><span class="code-badge">W.7.8</span> <strong>Research to Build and Present Knowledge</strong> Gather relevant information from multiple print and digital sources, assess the credibility and accuracy of each source, and quote or paraphrase data and conclusions while avoiding plagiarism.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.9"><a class="anchor-link" href="#T-W.7.9">#</a><span class="code-badge">W.7.9</span> <strong>Research to Build and Present Knowledge</strong> Draw evidence from literary or informational texts to support analysis, reflection, and research.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.7.10"><a class="anchor-link" href="#T-W.7.10">#</a><span class="code-badge">W.7.10</span> <strong>Range of Writing</strong> Write routinely over extended time frames and shorter time frames for a range of discipline-specific tasks, purposes, and audiences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.1"><a class="anchor-link" href="#T-W.8.1">#</a><span class="code-badge">W.8.1</span> <strong>Text Types and Purposes</strong> Write arguments to support claims with logical reasoning and relevant evidence.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.2"><a class="anchor-link" href="#T-W.8.2">#</a><span class="code-badge">W.8.2</span> <strong>Text Types and Purposes</strong> Write informative/explanatory texts that examine a topic and convey ideas, concepts, and information through the selection, organization, and analysis of relevant content.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.3"><a class="anchor-link" href="#T-W.8.3">#</a><span class="code-badge">W.8.3</span> <strong>Text Types and Purposes</strong> Write narratives to develop real or imagined experiences or events, using effective technique, relevant descriptive details, and well-structured event sequences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.4"><a class="anchor-link" href="#T-W.8.4">#</a><span class="code-badge">W.8.4</span> <strong>Production and Distribution of Writing</strong> Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.5"><a class="anchor-link" href="#T-W.8.5">#</a><span class="code-badge">W.8.5</span> <strong>Production and Distribution of Writing</strong> With guidance and support from peers and adults, develop and strengthen writing by planning, revising, editing, rewriting, or trying a new approach, focusing on how well purpose and audience have been addressed.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.6"><a class="anchor-link" href="#T-W.8.6">#</a><span class="code-badge">W.8.6</span> <strong>Production and Distribution of Writing</strong> Use technology, including the internet, to produce and publish writing and present the relationships between information and ideas efficiently, as well as to interact and collaborate with others.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.7"><a class="anchor-link" href="#T-W.8.7">#</a><span class="code-badge">W.8.7</span> <strong>Research to Build and Present Knowledge</strong> Conduct short research projects to answer a question (including a self-generated question), drawing on several sources and generating additional related, focused questions that allow for multiple avenues of exploration.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.8"><a class="anchor-link" href="#T-W.8.8">#</a><span class="code-badge">W.8.8</span> <strong>Research to Build and Present Knowledge</strong> Gather relevant information from multiple print and digital sources, assess the credibility and accuracy of each source, and quote or paraphrase data and conclusions while avoiding plagiarism.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.9"><a class="anchor-link" href="#T-W.8.9">#</a><span class="code-badge">W.8.9</span> <strong>Research to Build and Present Knowledge</strong> Draw evidence from literary or informational texts to support analysis, reflection, and research.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.8.10"><a class="anchor-link" href="#T-W.8.10">#</a><span class="code-badge">W.8.10</span> <strong>Range of Writing</strong> Write routinely over extended time frames and shorter time frames for a range of discipline-specific tasks, purposes, and audiences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.9-10.1"><a class="anchor-link" href="#T-W.9-10.1">#</a><span class="code-badge">W.9-10.1</span> <strong>Text Types and Purposes</strong> Write arguments to support claims in an analysis of substantive topics or texts, using valid reasoning and relevant and sufficient evidence.<div class="item-meta"><ul class="meta-list"><li><strong>porttack.com: Socratic Seminar Kit:</strong> <a href="https://porttack.com/socratic-seminar-kit/">Socratic Seminar Kit</a>, <a href="https://porttack.com/2026/10/21/students-wrote-the-rules-seminar.html">The Rules Students Wrote: A Socratic Seminar on the STUDENTS FIRST Act</a>, <a href="https://porttack.com/2026/10/21/robot-teacher-seminar.html">Should a School Buy a Robot Tutor? A Socratic Seminar</a>, <a href="https://porttack.com/2026/10/22/you-deleted-it-is-it-gone.html">You Deleted It. Is It Gone? A Socratic Seminar on Doorbell Cameras and AI Chats</a>, <a href="https://porttack.com/2026/10/21/who-sets-the-rules-for-ai.html">Who Sets the Rules for AI? A Socratic Seminar on a Student Survey</a><div class="meta-note">Same ticket-writing claim as W.6.1, at the band where the evidence is expected to be sufficient and the reasoning valid, not just present -- the kit's own grading line ("I grade effort and honesty here, not the position landed on") still holds either way.</div></li></ul></div></li>
+<li id="T-W.9-10.2"><a class="anchor-link" href="#T-W.9-10.2">#</a><span class="code-badge">W.9-10.2</span> <strong>Text Types and Purposes</strong> Write informative/explanatory texts to examine and convey complex ideas, concepts, and information clearly and accurately through the effective selection, organization, and analysis of content.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.9-10.3"><a class="anchor-link" href="#T-W.9-10.3">#</a><span class="code-badge">W.9-10.3</span> <strong>Text Types and Purposes</strong> Write narratives to develop real or imagined experiences or events, using effective technique, well-chosen details, and well-structured event sequences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.9-10.4"><a class="anchor-link" href="#T-W.9-10.4">#</a><span class="code-badge">W.9-10.4</span> <strong>Production and Distribution of Writing</strong> Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.9-10.5"><a class="anchor-link" href="#T-W.9-10.5">#</a><span class="code-badge">W.9-10.5</span> <strong>Production and Distribution of Writing</strong> Develop and strengthen writing as needed by planning, revising, editing, rewriting, or trying a new approach, focusing on addressing what is most significant for a specific purpose and audience.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.9-10.6"><a class="anchor-link" href="#T-W.9-10.6">#</a><span class="code-badge">W.9-10.6</span> <strong>Production and Distribution of Writing</strong> Use technology, including the internet, to produce, publish, and update individual or shared writing products, taking advantage of technology's capacity to link to other information and to display information flexibly and dynamically.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.9-10.7"><a class="anchor-link" href="#T-W.9-10.7">#</a><span class="code-badge">W.9-10.7</span> <strong>Research to Build and Present Knowledge</strong> Conduct short as well as more sustained research projects to answer a question or solve a problem, narrowing or broadening the inquiry when appropriate and synthesizing multiple sources.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.9-10.8"><a class="anchor-link" href="#T-W.9-10.8">#</a><span class="code-badge">W.9-10.8</span> <strong>Research to Build and Present Knowledge</strong> Gather relevant information from multiple authoritative print and digital sources, assess the usefulness of each source, and integrate information into the text selectively while avoiding plagiarism.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.9-10.9"><a class="anchor-link" href="#T-W.9-10.9">#</a><span class="code-badge">W.9-10.9</span> <strong>Research to Build and Present Knowledge</strong> Draw evidence from literary or informational texts to support analysis, reflection, and research.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.9-10.10"><a class="anchor-link" href="#T-W.9-10.10">#</a><span class="code-badge">W.9-10.10</span> <strong>Range of Writing</strong> Write routinely over extended time frames and shorter time frames for a range of tasks, purposes, and audiences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.1"><a class="anchor-link" href="#T-W.11-12.1">#</a><span class="code-badge">W.11-12.1</span> <strong>Text Types and Purposes</strong> Write arguments to support claims in an analysis of substantive topics or texts, using valid reasoning and relevant and sufficient evidence.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.2"><a class="anchor-link" href="#T-W.11-12.2">#</a><span class="code-badge">W.11-12.2</span> <strong>Text Types and Purposes</strong> Write informative/explanatory texts to examine and convey complex ideas, concepts, and information clearly and accurately through the effective selection, organization, and analysis of content.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.3"><a class="anchor-link" href="#T-W.11-12.3">#</a><span class="code-badge">W.11-12.3</span> <strong>Text Types and Purposes</strong> Write narratives to develop real or imagined experiences or events, using effective technique, well-chosen details, and well-structured event sequences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.4"><a class="anchor-link" href="#T-W.11-12.4">#</a><span class="code-badge">W.11-12.4</span> <strong>Production and Distribution of Writing</strong> Produce clear and coherent writing in which the development, organization, and style are appropriate to task, purpose, and audience.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.5"><a class="anchor-link" href="#T-W.11-12.5">#</a><span class="code-badge">W.11-12.5</span> <strong>Production and Distribution of Writing</strong> Develop and strengthen writing as needed by planning, revising, editing, rewriting, or trying a new approach, focusing on addressing what is most significant for a specific purpose and audience.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.6"><a class="anchor-link" href="#T-W.11-12.6">#</a><span class="code-badge">W.11-12.6</span> <strong>Production and Distribution of Writing</strong> Use technology, including the internet, to produce, publish, and update individual or shared writing products, taking advantage of technology's capacity to link to other information and to display information flexibly and dynamically.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.7"><a class="anchor-link" href="#T-W.11-12.7">#</a><span class="code-badge">W.11-12.7</span> <strong>Research to Build and Present Knowledge</strong> Conduct short as well as more sustained research projects to answer a question or solve a problem, narrowing or broadening the inquiry when appropriate and synthesizing multiple sources.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.8"><a class="anchor-link" href="#T-W.11-12.8">#</a><span class="code-badge">W.11-12.8</span> <strong>Research to Build and Present Knowledge</strong> Gather relevant information from multiple authoritative print and digital sources, assess the strengths and limitations of each source, and integrate information into the text selectively while avoiding plagiarism.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.9"><a class="anchor-link" href="#T-W.11-12.9">#</a><span class="code-badge">W.11-12.9</span> <strong>Research to Build and Present Knowledge</strong> Draw evidence from literary or informational texts to support analysis, reflection, and research.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-W.11-12.10"><a class="anchor-link" href="#T-W.11-12.10">#</a><span class="code-badge">W.11-12.10</span> <strong>Range of Writing</strong> Write routinely over extended time frames and shorter time frames for a range of tasks, purposes, and audiences.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+</ul></div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
