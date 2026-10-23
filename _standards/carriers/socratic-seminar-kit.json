@@ -1,9 +1,9 @@
 {
  "meta": {
   "title": "porttack.com: Socratic Seminar Kit",
-  "base_url": "https://porttack.com/socratic-seminar-kit/",
+  "base_url": "https://porttack.com",
   "locator_kind": "none",
-  "locator_url_template": "{base_url}",
+  "locator_url_template": "{base_url}/{locator}",
   "source": "socratic_seminar_kit",
   "abbrev": "SocKit",
   "alignment_log": [
@@ -12,29 +12,61 @@
     "by": "Claude Sonnet 5",
     "scope": "First alignment pass for this carrier, which didn't exist before this pass. Read socratic-seminar-kit.md directly (the run of show, the five norms, the fishbowl guardrails, the handout's three tickets, the temperature-check rationale, and the grading line) against CASEL, VIA, and UNESCO MIL.",
     "note": "This carrier covers the reusable Socratic-seminar *format* -- the norms, fishbowl, tickets, and temperature check that porttack_society's seven seminar posts (prove-me-wrong and the four newest ones) all link to instead of restating. It deliberately does not cover any one seminar's reading or topic; that content-specific alignment stays per-post in porttack_society.json. Three of the five codes here (REL.1, RDM.2, SOC.1) already exist in porttack_society.json under prove-me-wrong, from before this material moved to its own shared page -- this carrier is the format's new home, not a duplicate; porttack_society's own entries were left as-is rather than edited, since untangling which words in prove-me-wrong are 'the format' versus 'this seminar's own framing' wasn't asked for and isn't needed for either carrier to be correct on its own. unesco-mil (Media and Information Literacy) is new to this project's socratic-seminar coverage: code 23, 'Willingness to question one's own beliefs,' is a close, honest match for the temperature check's entire premise (the kit's own words: 'changing your mind during the seminar is not losing. It is the point'), and code 9, 'Ethically communicate,' is a partial match for the posted norms (disagree with the idea not the person; invite quiet voices in) -- real but less central than the temperature check. Checked but left out: aasl-engage's VI.A.2 (Ethical Use) and ca-ict-anchor's 8.4, both of which porttack_society.json cites for prove-me-wrong specifically about AI-use honesty -- that's a claim about one seminar's topic, not something the empty-handout format itself teaches regardless of what seminar runs on it. Common Core ELA (SL.6.1/9-10.1, SL.6.3/9-10.3, RI.6.1/9-10.1, RI.6.8/9-10.8, W.6.1/9-10.1) and AB 873 are both already named in the kit page's own prose, same as porttack_society's own handling of AB 873 elsewhere -- a framework this catalog system doesn't model and a legislative mandate, respectively, neither forced into a coverage key here."
+   },
+   {
+    "date": "2026-10-23",
+    "by": "Claude Sonnet 5",
+    "scope": "Gave this carrier real per-post locators instead of one generic \"kit\" locator, after noticing /standards/casel-standards-reference.html#T-SOC.1 only linked to the kit page, not to any of the seminar posts that actually embed this carrier via standards_extra_carrier.",
+    "note": "No content changed -- every code's note and strength are the same claim as before, about the format itself. What changed is purely which pages that claim links to: tools/build_alignment.py builds the cross-reference pages straight from each code's locators array via locator_url_template/locator_slugs, and a single \"kit\" locator could only ever resolve to the kit page's own URL -- it had no way to know this same format-level claim also applies to every post that links to the kit instead of restating it. Added the kit page itself plus the four posts currently using standards_extra_carrier: socratic_seminar_kit (students-wrote-the-rules-seminar, robot-teacher-seminar, you-deleted-it-is-it-gone, who-sets-the-rules-for-ai). Deliberately left out prove-me-wrong -- it predates this carrier and carries its own independent CASEL/VIA/AASL/CA-ICT-anchor entries directly in porttack_society.json (see that carrier's own 2026-10-19 alignment_log entry), not the merged-widget pattern the four newer posts use, so adding it here would be a real second claim about the same codes rather than a second link for the same one."
    }
   ],
-  "caveat": "A single shared page, not a chaptered source -- locator_kind is \"none\" with one locator (\"kit\") standing for the whole page, matching how a single-page source like hour_of_data or a porttack.com category carrier uses \"none\" for a page with no real sub-units. This carrier shows as a whole-source summary when embedded via standards_carrier: socratic_seminar_kit (see _includes/standards-alignment.html in the porttack.com repo), the same override pattern little_brother uses."
+  "caveat": "Every code here is a claim about the shared format (the kit page itself), not about any one seminar's reading -- so each entry's locators list every page that currently embeds this carrier (the kit page, plus every Socratic seminar post that sets standards_extra_carrier: socratic_seminar_kit in its own front matter), not just \"kit\" once. This isn't five separate claims per post -- it's one claim with five links, same as porttack_society's own multi-locator entries. locator_kind stays \"none\": none of these pages has real sub-units. When a new Socratic seminar post adopts the kit (adds standards_extra_carrier: socratic_seminar_kit to its front matter), add its slug here too -- the per-page widget already shows this carrier whole-source regardless (see assets/js/standards-alignment.js's extra-carrier handling), so leaving a post's slug out of these locators lists breaks only the cross-reference pages (standards/*-standards-reference.html), not the widget itself -- exactly the gap that prompted this pass.",
+  "locator_slugs": {
+   "kit": "socratic-seminar-kit/",
+   "students-wrote-the-rules-seminar": "2026/10/21/students-wrote-the-rules-seminar.html",
+   "robot-teacher-seminar": "2026/10/21/robot-teacher-seminar.html",
+   "you-deleted-it-is-it-gone": "2026/10/22/you-deleted-it-is-it-gone.html",
+   "who-sets-the-rules-for-ai": "2026/10/21/who-sets-the-rules-for-ai.html"
+  },
+  "locator_titles": {
+   "kit": "Socratic Seminar Kit",
+   "students-wrote-the-rules-seminar": "The Rules Students Wrote: A Socratic Seminar on the STUDENTS FIRST Act",
+   "robot-teacher-seminar": "Should a School Buy a Robot Tutor? A Socratic Seminar",
+   "you-deleted-it-is-it-gone": "You Deleted It. Is It Gone? A Socratic Seminar on Doorbell Cameras and AI Chats",
+   "who-sets-the-rules-for-ai": "Who Sets the Rules for AI? A Socratic Seminar on a Student Survey"
+  }
  },
  "coverage": {
   "casel": {
    "REL.1": {
     "locators": [
-     "kit"
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
     ],
     "strength": "strong",
     "note": "The fishbowl -- one voice at a time, build on what came before, cite the text -- is a structured implementation of communicating effectively built into the format itself, not left to chance by whatever topic fills it."
    },
    "RDM.2": {
     "locators": [
-     "kit"
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
     ],
     "strength": "strong",
     "note": "\"Cite the text or a real example when you make a claim\" (one of the five posted norms) and the observer organizer's evidence columns make reasoned, evidence-based judgment a gradable routine of the format, regardless of which seminar is running."
    },
    "SOC.1": {
     "locators": [
-     "kit"
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
     ],
     "strength": "strong",
     "note": "The opening and closing temperature checks and the fishbowl's hot seat are built specifically to get students taking each other's perspectives seriously -- the run of show's whole shape, not any one seminar's content."
@@ -43,7 +75,11 @@
   "via-character": {
    "COU.2": {
     "locators": [
-     "kit"
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
     ],
     "strength": "strong",
     "note": "\"I grade effort and honesty here, not the position landed on. 'I changed my mind because of what someone said' is the best possible answer\" is the kit's own grading line, applying VIA's sense of honesty -- presenting yourself accurately, including when that means admitting you changed your mind -- to every seminar that uses this handout."
@@ -52,14 +88,22 @@
   "unesco-mil": {
    "23": {
     "locators": [
-     "kit"
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
     ],
     "strength": "strong",
     "note": "The temperature check's entire premise is this competency by name: the kit's own line, \"changing your mind during the seminar is not losing. It is the point,\" asks students to be willing to question their own starting belief, not just evaluate someone else's."
    },
    "9": {
     "locators": [
-     "kit"
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "robot-teacher-seminar",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
     ],
     "strength": "partial",
     "note": "Two of the five posted norms -- disagree with the idea, not the person; invite quiet voices in -- are a real but narrower claim on ethical communication than the temperature check's, since they shape how a student speaks rather than what they're willing to reconsider."
