@@ -845,7 +845,7 @@
       reportGroupedSection(catalogs.ruler, covered('ruler'), meta, 'sel', 'RULER Approach', 'ruler-standards-reference.html'),
       reportGroupedSection(catalogs['via-character'], covered('via-character'), meta, 'sel', 'VIA Character Strengths', 'via-character-standards-reference.html'),
       reportGroupedSection(catalogs['ccss-ela'], covered('ccss-ela'), meta, 'ela', 'Common Core ELA (Speaking, Listening & Writing)', 'ccss-ela-standards-reference.html'),
-      reportGroupedSection(catalogs['ccss-math'], covered('ccss-math'), meta, 'math', 'Common Core Math (Middle School)', 'ccss-math-standards-reference.html')
+      reportGroupedSection(catalogs['ccss-math'], covered('ccss-math'), meta, 'math', 'Common Core Math', 'ccss-math-standards-reference.html')
     ].join('\n');
   }
 
@@ -1585,7 +1585,7 @@
       // ela/lit/sel: one framework, orthogonal to this program's actual
       // subject, not a major framework on its own the way AP CSP is.
       var mathPanels = [
-        ['Common Core Math (Middle School)', renderGroupedPanel(catalogs['ccss-math'], 'ccss-math'), 'math', 'ccss-math-standards-reference.html', '2010'],
+        ['Common Core Math', renderGroupedPanel(catalogs['ccss-math'], 'ccss-math'), 'math', 'ccss-math-standards-reference.html', '2010'],
       ];
       var mathGroupHtml =
         '<div class="cov-panel" data-panel-category="math"><details open>' +

@@ -1065,7 +1065,7 @@ def main():
     )
     provenance = grouped_provenance(catalogs["ccss-math"]["meta"], args.scope_label) + ccss_math_see_also
     (out / "ccss-math-standards-reference.html").write_text(
-        render_grouped("Common Core Math (Middle School) Standards Reference", catalogs["ccss-math"], covs["ccss-math"], args.scope_label, provenance)
+        render_grouped("Common Core Math Standards Reference", catalogs["ccss-math"], covs["ccss-math"], args.scope_label, provenance)
     )
 
     (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))
