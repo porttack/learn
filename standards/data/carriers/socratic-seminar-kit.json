@@ -24,20 +24,26 @@
     "by": "Claude Sonnet 5",
     "scope": "Added real coverage.ccss-ela entries for the Common Core citations the kit page's own prose already made (Speaking & Listening and Writing only, at the teacher's request -- not Reading, and not every SL/W code, just the ones the kit actually names).",
     "note": "This isn't new analysis -- the kit page's own \"Common Core and California mandates\" section already named SL.6.1/9-10.1, SL.6.3/9-10.3, and W.6.1/9-10.1 (plus RI.6.1/9-10.1 and RI.6.8/9-10.8, left out of this pass since the teacher doesn't want Reading standards catalogued). This just gives those six codes real coverage entries now that _standards/ccss-ela.json exists, instead of leaving them as prose only. Same five locators as every other code here, same reasoning: a claim about the shared format, not about any one seminar's own reading."
+   },
+   {
+    "date": "2026-10-25",
+    "by": "Claude Sonnet 5",
+    "scope": "Added via-character WIS.3, after \"Playing the Other Side\" (the best-argument-for-the-other-side entry-ticket question, with its own rubric) became a shared, every-seminar kit feature rather than being specific to one post.",
+    "note": "Confirmed from the kit page's own wording: \"The entry ticket's fourth question asks for it... Everyone prepares the other side before they speak\" -- stated as a feature of the format itself, same basis as every other code in this carrier. Same five locators as the rest of this carrier's entries."
    }
   ],
-  "caveat": "Every code here is a claim about the shared format (the kit page itself), not about any one seminar's reading -- so each entry's locators list every page that currently embeds this carrier (the kit page, plus every Socratic seminar post that sets standards_extra_carrier: socratic_seminar_kit in its own front matter), not just \"kit\" once. This isn't five separate claims per post -- it's one claim with five links, same as porttack_society's own multi-locator entries. locator_kind stays \"none\": none of these pages has real sub-units. When a new Socratic seminar post adopts the kit (adds standards_extra_carrier: socratic_seminar_kit to its front matter), add its slug here too -- the per-page widget already shows this carrier whole-source regardless (see assets/js/standards-alignment.js's extra-carrier handling), so leaving a post's slug out of these locators lists breaks only the cross-reference pages (standards/*-standards-reference.html), not the widget itself -- exactly the gap that prompted this pass.",
+  "caveat": "Every code here is a claim about the shared format (the kit page itself), not about any one seminar's reading -- so each entry's locators list every page that currently embeds this carrier (the kit page, plus every Socratic seminar post that sets standards_extra_carrier: socratic_seminar_kit in its own front matter), not just \"kit\" once. This isn't five separate claims per post -- it's one claim with five links, same as porttack_society's own multi-locator entries. locator_kind stays \"none\": none of these pages has real sub-units. When a new Socratic seminar post adopts the kit (adds standards_extra_carrier: socratic_seminar_kit to its front matter), add its slug here too -- the per-page widget already shows this carrier whole-source regardless (see assets/js/standards-alignment.js's extra-carrier handling), so leaving a post's slug out of these locators lists breaks only the cross-reference pages (standards/*-standards-reference.html), not the widget itself -- exactly the gap that prompted this pass. The robot-tutor seminar's locator was renamed 2026-10-25 (was robot-teacher-seminar) after its post went through several retitles; check a post's own redirect_from list before assuming a stale-looking locator means stale content.",
   "locator_slugs": {
    "kit": "socratic-seminar-kit/",
    "students-wrote-the-rules-seminar": "2026/10/21/students-wrote-the-rules-seminar.html",
-   "robot-teacher-seminar": "2026/10/21/robot-teacher-seminar.html",
+   "can-robotic-ai-teachers-replace-human-teachers": "2026/10/23/can-robotic-ai-teachers-replace-human-teachers.html",
    "you-deleted-it-is-it-gone": "2026/10/22/you-deleted-it-is-it-gone.html",
    "who-sets-the-rules-for-ai": "2026/10/21/who-sets-the-rules-for-ai.html"
   },
   "locator_titles": {
    "kit": "Socratic Seminar Kit",
    "students-wrote-the-rules-seminar": "The Rules Students Wrote: A Socratic Seminar on the STUDENTS FIRST Act",
-   "robot-teacher-seminar": "Should a School Buy a Robot Tutor? A Socratic Seminar",
+   "can-robotic-ai-teachers-replace-human-teachers": "Can Robotic AI Teachers Replace Human Teachers? A Socratic Seminar",
    "you-deleted-it-is-it-gone": "You Deleted It. Is It Gone? A Socratic Seminar on Doorbell Cameras and AI Chats",
    "who-sets-the-rules-for-ai": "Who Sets the Rules for AI? A Socratic Seminar on a Student Survey"
   }
@@ -48,7 +54,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -59,7 +65,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -70,7 +76,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -83,12 +89,23 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
     "strength": "strong",
     "note": "\"I grade effort and honesty here, not the position landed on. 'I changed my mind because of what someone said' is the best possible answer\" is the kit's own grading line, applying VIA's sense of honesty -- presenting yourself accurately, including when that means admitting you changed your mind -- to every seminar that uses this handout."
+   },
+   "WIS.3": {
+    "locators": [
+     "kit",
+     "students-wrote-the-rules-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
+     "you-deleted-it-is-it-gone",
+     "who-sets-the-rules-for-ai"
+    ],
+    "strength": "strong",
+    "note": "\"Playing the Other Side\" has every student prepare the best argument for the side they did not pick -- \"say it so well that someone who holds that view would agree you got it right\" -- graded on a fair/specific/reasoned rubric. That is this standard's own definition of judgment: weighing a decision from an angle that cuts against what the student already believes, made into a graded routine of the format itself."
    }
   },
   "unesco-mil": {
@@ -96,7 +113,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -107,7 +124,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -120,7 +137,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -131,7 +148,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -142,7 +159,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -153,7 +170,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -164,7 +181,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
@@ -175,7 +192,7 @@
     "locators": [
      "kit",
      "students-wrote-the-rules-seminar",
-     "robot-teacher-seminar",
+     "can-robotic-ai-teachers-replace-human-teachers",
      "you-deleted-it-is-it-gone",
      "who-sets-the-rules-for-ai"
     ],
