@@ -239,15 +239,20 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
     .catch(function () {});
 });
 
-// The three category groups default open, but a reader can still close one
-// by hand -- and a standards_open page (the one variant that actually
-// prints, see main.scss's print rules) would then silently print with that
-// category missing. Same force-open/restore pattern as porttack.com's own
-// #git-history and the /standards/ coverage map's beforeprint handler.
+// The widget itself (.standards-alignment) is a <details> that starts
+// closed -- a reader has to click "Standards alignment" to see anything --
+// and the category groups inside it (.standards-alignment-group) default
+// open but a reader can still close one by hand. Either closed state means
+// a printed page (a teacher handing out this lesson plan on paper) would
+// silently omit the alignment entirely, or omit one category from it, with
+// nothing on the page to say it's missing. Force both open right before
+// print and restore whatever the reader had afterward -- same force-open/
+// restore pattern as porttack.com's own #git-history and the /standards/
+// coverage map's beforeprint handler.
 (function () {
   var reopened = [];
   window.addEventListener('beforeprint', function () {
-    reopened = Array.prototype.slice.call(document.querySelectorAll('.standards-alignment-group:not([open])'));
+    reopened = Array.prototype.slice.call(document.querySelectorAll('.standards-alignment:not([open]), .standards-alignment-group:not([open])'));
     reopened.forEach(function (d) { d.setAttribute('open', ''); });
   });
   window.addEventListener('afterprint', function () {
