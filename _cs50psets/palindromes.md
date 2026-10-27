@@ -81,6 +81,65 @@ code palindromes.py
 That creates a new folder called `palindromes`, moves into it, and
 opens a new, empty file called `palindromes.py` for you to edit.
 
+## Starter Code
+
+Paste this into `palindromes.py` to start from. `clean_word` and
+`is_palindrome` are stubbed out with `pass` and doctest examples; run
+`python3 -m doctest palindromes.py` from inside your `palindromes` folder to
+check them. They'll fail until you replace `pass` with real code.
+
+`main` is left as a comment on purpose, same as it was in Lineup: the
+sentence handling is its own job, and a docstring can't check a program
+that reads input the way it can check a pure function.
+
+```python
+# Student Initials:
+"""
+Palindromes
+
+Slug: porttack/cs50/problems/py/palindromes
+Doctests: python3 -m doctest palindromes.py
+"""
+
+
+def main():
+    # Read a sentence with input(), then split it into words. Call
+    # clean_word on each word. Skip any cleaned word shorter than 2
+    # letters. Count the words that are palindromes, then print the
+    # count.
+    pass
+
+
+def clean_word(word):
+    """
+    Returns word in lowercase with everything that isn't a letter
+    removed.
+
+    >>> clean_word("Civic.")
+    'civic'
+    >>> clean_word("don't")
+    'dont'
+    """
+    pass
+
+
+def is_palindrome(word):
+    """
+    Takes a word that is already lowercase and letters only. Returns
+    True if it reads the same forwards and backwards, False otherwise.
+
+    >>> is_palindrome("racecar")
+    True
+    >>> is_palindrome("cat")
+    False
+    """
+    pass
+
+
+if __name__ == "__main__":
+    main()
+```
+
 ## Specification
 
 Implement a program, in `palindromes.py`, that reads a sentence from
@@ -90,14 +149,18 @@ the user and prints how many of its words are palindromes.
 - A word counts as a palindrome if it reads the same forwards and
   backwards, ignoring case. `Mom` and `mom` are the same word for this
   purpose.
-- Ignore punctuation attached to a word. `civic.` and `kayak?` should
-  be treated as `civic` and `kayak`.
+- Ignore any character that isn't a letter. `civic.` and `kayak?`
+  should be treated as `civic` and `kayak`, and `don't` as `dont`.
 - A single letter, like `a` or `I`, does not count as a palindrome,
   even though it trivially reads the same both ways. Only words of two
   or more letters count.
 - Words are separated by whitespace.
 - Print the total number of palindromic words in the sentence,
   followed by a newline.
+- `is_palindrome` must compare characters by index, working from both
+  ends of the word toward the middle, using a loop. It must not build
+  a reversed copy of the word, so no slicing, `reversed()`, or `join`.
+  `check50` can't test for this, but your code will be read for it.
 
 ## Usage
 
@@ -129,9 +192,27 @@ Sentence: no palindromes here
 - A word's punctuation isn't part of the word, so you'll need to strip
   it off before comparing. `str.isalpha()` can help you check which
   characters are letters and which aren't.
-- Python can reverse a string with slicing: `word[::-1]`.
-- Converting both a word and its reverse to the same case, with
-  `.lower()`, takes care of "Mom" vs. "mom" for you.
+- Every character in a word has an index, and you can ask for one
+  with `word[i]`. The first character is at index `0`. The last
+  character is at `len(word) - 1`. Which other pair of characters
+  would have to match in a palindrome?
+- Converting each word to the same case, with `.lower()`, takes care
+  of "Mom" vs. "mom" for you.
+
+## To Get Full Credit
+
+It's more important that you submit a working solution than that you
+do everything below. Submit early, then keep improving and resubmit as
+many times as you like.
+
+- Fill in `clean_word` and `is_palindrome` with real code, and add
+  one more `>>>` example of your own to each docstring covering a case
+  not already shown (a word with an even number of letters for
+  `is_palindrome`, for instance). Don't try to doctest `main`; a
+  program that reads input doesn't fit the format.
+- At the end of the program, add a comment describing any challenges
+  you ran into or what you'd improve if you did this again. A sentence
+  or two is fine.
 
 ## Style and Submission
 
