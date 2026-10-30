@@ -11,7 +11,8 @@
    "students-wrote-the-rules-seminar": "2026/10/21/students-wrote-the-rules-seminar.html",
    "can-robotic-ai-teachers-replace-human-teachers": "2026/10/23/can-robotic-ai-teachers-replace-human-teachers.html",
    "you-deleted-it-is-it-gone": "2026/10/22/you-deleted-it-is-it-gone.html",
-   "who-sets-the-rules-for-ai": "2026/10/21/who-sets-the-rules-for-ai.html"
+   "who-sets-the-rules-for-ai": "2026/10/21/who-sets-the-rules-for-ai.html",
+   "finding-fido-seminar": "2026/10/29/finding-fido-seminar.html"
   },
   "source": "porttack_society",
   "abbrev": "PT-Soc",
@@ -39,6 +40,12 @@
     "by": "Claude Sonnet 5",
     "scope": "Realignment after the robot-tutor seminar post was renamed twice more and substantially expanded (new title, a third round built around a vendor-history trust question, the avatar interview content with an explicit bias probe, and the new shared \"Playing the Other Side\" mechanism).",
     "note": "Renamed the locator again (robot-teacher-seminar -> can-robotic-ai-teachers-replace-human-teachers; the post's own redirect_from lists two intermediate slugs from between those). Re-read the full current post, including the reading include (_includes/robot-reading.html) and the Round 2/3 content added since the last pass. 5.1, 5.2, 5.5, 5.6 all still hold against the current reading text, unchanged. 5.3 (Computing Bias) is upgraded from partial to strong: the original pass found only a single back-pocket question (\"Could a robot tutor be biased?\"); the current post has the avatar interview itself demonstrate a bias-probing exchange (\"who is better at math, boys or girls\") with a facilitator question that pushes past a surface-level good answer to ask how you'd actually test for bias -- real reading content now, not a hypothetical prompt. New: unesco-ai-cfs 4.2.1 (AI creators and service providers carry real legal and social obligations), for Round 3's vendor-history trust question -- a different claim from 5.5's existing data-privacy-agreement framing, about whether to believe a vendor's promises given its own corporate history. Did not add a code for \"Playing the Other Side\" here -- that mechanism is now a shared, every-seminar kit feature (see socratic-seminar-kit.md's own new section), so its standard (via-character WIS.3) was added to socratic_seminar_kit.json instead, not duplicated per post."
+   },
+   {
+    "date": "2026-10-29",
+    "by": "Claude Sonnet 5.5",
+    "scope": "finding-fido-seminar only: California K-12 CS (6-8.IC.20, 6-8.IC.24, 9-12.IC.29), CSTA 2017 (2-IC-20, 2-IC-23, 3A-IC-29, via the CA-CSTA crosswalk), CSTA 2026 (MS-SOC-HI-39, MS-SOC-HU-43, MS-SOC-ET-42, HS-SOC-HU-43), UNESCO MIL 5. AP CSP deliberately not mapped: AP classes use other seminars.",
+    "note": "First pass, written from the post, not checked by the author. CSTA 2026 mappings are this carrier's own inference, as in little-brother.json. The grades 7-9 seminar lists both 6-8 and 9-12 codes."
    }
   ],
   "locator_titles": {
@@ -140,7 +147,8 @@
    },
    "9-12.IC.29": {
     "locators": [
-     "finding-fido-or-finding-you"
+     "finding-fido-or-finding-you",
+     "finding-fido-seminar"
     ],
     "strength": "strong",
     "note": "From the post's own appendix: Search Party is on by default and opt-out, meaning most camera owners' footage gets pulled into the system without ever actively agreeing to it -- this standard's 'automatic data collection without active participation' almost verbatim."
@@ -154,10 +162,17 @@
    },
    "6-8.IC.20": {
     "locators": [
-     "finding-fido-or-finding-you"
+     "finding-fido-or-finding-you",
+     "finding-fido-seminar"
     ],
     "strength": "partial",
     "note": "The post's own appendix cites the 6-8 band more lightly than the 9-12 one (just this code, not .21 bias or .22 collaboration, neither of which the post actually covers) -- the same tradeoffs argument, pitched for a middle-school read."
+   },
+   "6-8.IC.24": {
+    "locators": [
+     "finding-fido-seminar"
+    ],
+    "note": "Grades 7-9 seminar: a default setting is a choice between two competing goods, a lost dog found fast versus neighbors' cameras searched without being asked. Students weigh it in Round 1 and state it again on the exit ticket (leave it on, or turn it off)."
    }
   },
   "iste-digital-citizen": {
@@ -269,10 +284,57 @@
   "unesco-mil": {
    "5": {
     "locators": [
-     "you-deleted-it-is-it-gone"
+     "you-deleted-it-is-it-gone",
+     "finding-fido-seminar"
     ],
     "strength": "strong",
     "note": "Round 2 is built around judging two sources with competing interests (a creator arguing a position, a competitor running a parody ad), explicitly naming what's documented versus only claimed (\"Ring disputes parts of what the videos say\"), then a 'Sort It' exercise that has students do the sorting themselves -- Critically Evaluate Content as the reading's own structure, not just its topic."
+   }
+  },
+  "csta2017": {
+   "2-IC-20": {
+    "locators": [
+     "finding-fido-seminar"
+    ],
+    "note": "Same evidence as 6-8.IC.20 above, via the castandards-csta2017 crosswalk (strength: strong)."
+   },
+   "2-IC-23": {
+    "locators": [
+     "finding-fido-seminar"
+    ],
+    "note": "Same evidence as 6-8.IC.24 above, via the castandards-csta2017 crosswalk (strength: strong). Numbering shifts: CA's IC.24 is CSTA's 2-IC-23."
+   },
+   "3A-IC-29": {
+    "locators": [
+     "finding-fido-seminar"
+    ],
+    "note": "Same evidence as 9-12.IC.29 above, via the castandards-csta2017 crosswalk (strength: strong)."
+   }
+  },
+  "csta2026": {
+   "MS-SOC-HI-39": {
+    "locators": [
+     "finding-fido-seminar"
+    ],
+    "note": "This carrier's own inference -- no official source exists for the 2026 revision: Ring's stated purpose for Search Party (pets only) set against the founder's stated goal (reduce crime) is a technology's original purpose versus its possible effects on privacy."
+   },
+   "MS-SOC-HU-43": {
+    "locators": [
+     "finding-fido-seminar"
+    ],
+    "note": "This carrier's own inference: on by default and six steps to turn off are human decisions behind the system, and the seminar asks students to judge them."
+   },
+   "MS-SOC-ET-42": {
+    "locators": [
+     "finding-fido-seminar"
+    ],
+    "note": "This carrier's own inference: whether Search Party helps or harms a neighborhood is the debatable question the seminar asks students to argue, with evidence from the reading."
+   },
+   "HS-SOC-HU-43": {
+    "locators": [
+     "finding-fido-seminar"
+    ],
+    "note": "This carrier's own inference: the same human-decisions point for the 9th graders, who also name a rule an engineer could check."
    }
   }
  }
