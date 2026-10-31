@@ -15,7 +15,7 @@ source/
 # never committed -- same policy as the *.pdf/*.epub rule above, but for the
 # whole directory, since it also collects non-PDF scratch files (e.g. a
 # plain-text book export) that those patterns wouldn't catch.
-tmp/
+attic/
 
 # Private teacher planning notes — candid working drafts, never committed.
 # Content meant to be checked in belongs in _program-notes-public/ instead.
