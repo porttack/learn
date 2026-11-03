@@ -128,6 +128,27 @@ whatever commit `gh-pages` points to when you update):
     git add working-in-python
     git commit -m "Update working-in-python mirror"
 
+### Turtle Draw (`turtle-draw/`)
+
+A block-based turtle graphics app (working name, real name pending) for
+grades 6-11. **Before working on anything under `turtle-draw/`, read
+`turtle-draw/CLAUDE.md`** (licensing, privacy and "forbidden sources" rules,
+architecture, milestone status).
+
+The rules most often gotten wrong:
+
+- It is an **AGPL-3.0 island** in an otherwise MIT/CC repo. Never put CC
+  lesson content in that folder, and never copy its code elsewhere in `learn`.
+- Plain static files, like `python3d/`: no front matter, no collection, no
+  build step. Its dev files (`CLAUDE.md`, `README.md`, `NOTICE.md`,
+  `package.json`, `test/`, `dev/`) are excluded from the Jekyll build.
+- **Deploy gate:** while it has its placeholder name, the whole folder is
+  under `exclude:` in `_config.yml` so it is not published. Don't remove that
+  line, add the `/license/` paragraph, or add a `_data/pathways.yml` card
+  until the teacher has named it.
+- Dev server on port **4011** (`python3 -m http.server 4011 --directory
+  turtle-draw`), unit tests with `cd turtle-draw && node --test`.
+
 ### Teacher planning notes
 
 Two non-collection, non-published directories (Jekyll ignores underscore

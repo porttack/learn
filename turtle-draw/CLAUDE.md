@@ -1,0 +1,138 @@
+# Turtle Draw (working name)
+
+A block-based turtle graphics app for a grades 6-11 CS and robotics classroom,
+hosted on GitHub Pages. Students drag Sugar-style blocks to draw with a turtle.
+Nothing a student does ever leaves their browser. Chromebooks with Chrome,
+mouse and touch.
+
+It lives inside the `learn` repo at `turtle-draw/` but is its own **AGPL-3.0
+island**: everything else in `learn` is MIT (code) or CC BY-NC-SA (lessons).
+
+## Non-negotiables
+
+Read these before changing anything.
+
+1. **License: AGPL-3.0-or-later for everything in this folder.** `COPYING` is
+   here. The About page must credit Sugar Labs and link to the source (AGPL
+   section 13). Never put CC lesson content in this folder, and never copy
+   code from this folder into other parts of `learn`.
+2. **Allowed borrowing:** Sugar Labs' Turtle Blocks JS
+   (https://github.com/sugarlabs/turtleblocksjs, AGPL-3.0): the SVGs in
+   `images/` and `header-icons/`, and the block-shape and turtle SVG templates
+   in `js/artwork.js` and `js/blockfactory.js`. Keep their copyright notices
+   on anything copied, say what was modified, and record every borrowed file
+   in `NOTICE.md`. Check each copied file's header for a different license:
+   `js/utils/platformstyle.js` is GPL-3.0-or-later (Sam Parkinson); Material
+   Icons and Roboto are Apache 2.0 from Google and need their own notices.
+   **Do not** pull in their runtime engine or dependencies (jQuery, EaselJS,
+   require.js, Tone.js, p5, the Planet server, and so on).
+3. **Forbidden:** no code, artwork, icons, text, or name from Playful
+   Invention's TurtleArt. Implement from the functional spec only. Never name
+   the app TurtleArt or Turtle Blocks. Block labels, help tips and error
+   messages are written fresh.
+4. **Privacy:** fully static, client-side HTML, CSS and JavaScript. No
+   analytics, accounts, cookies, server or CDNs. Vendor every font and
+   library into the repo. Every HTML page carries the strict
+   Content-Security-Policy meta tag (everything `'self'`, plus `data:` and
+   `blob:` for images). No inline `<script>` or `<style>`; style from script
+   through the CSSOM (`el.style.x = ...`), which the policy allows.
+   `localStorage` is used only to autosave the current project.
+5. **Readable code:** no build step, plain ES modules, so the source on GitHub
+   Pages is the source in the repo and advanced students can read it. Comment
+   for a smart high schooler. `js/core/` never touches the DOM and is tested
+   with `node --test`.
+
+## Naming
+
+"Turtle Draw" is a placeholder. The name lives in `js/app-info.js` and the
+folder name. **Ask the teacher for the real name before the first deploy**
+(see "Deploy gate"). The saved-file format names (`FORMAT_ID` in
+`js/core/project.js`, the PNG chunk keyword) are deliberately independent of
+the app name so old pictures keep opening after a rename.
+
+## Writing rules for student-facing text
+
+Block labels, help tips, error messages, and the About, privacy and guide
+pages follow the `learn` repo rules: **no em dashes or en dashes**, second
+person, plain and short, no condescension. Error messages say what happened
+and what to try. Code comments are not student-facing in this sense, but keep
+the dashes out of them too for consistency.
+
+## Layout
+
+    index.html        the app (CSP meta tag, module script)
+    js/core/          NO DOM. Runs under node --test.
+      blocks-spec.js  every block: palette, kind, label, sockets, help tip
+      interpreter.js  generator-based: every block yields once when it runs
+      scheduler.js    drives the generator: speed, 12 ms slices, stop
+      turtle.js       state, geometry, records drawing ops (line, arc, fill...)
+      color.js        RGB 0-255
+      project.js      project JSON: validate, find the Run stack
+    js/ui/            the browser side
+      canvas-view.js  paper canvas (1400x1120) + draggable turtle overlay
+      artwork.js      PORTED from Turtle Blocks JS (see NOTICE.md)
+      main.js         wiring
+    css/app.css
+    test/             node --test
+    dev/              browser checks over Chrome DevTools Protocol (dev only)
+
+## Key design decisions
+
+- **Own block engine, not Blockly.** Matching Sugar's look is a goal and the
+  code doubles as teaching material. The block-shape generator is ported from
+  Turtle Blocks' `blockfactory.js` (milestone b1).
+- **Coordinates:** paper 700 x 560, origin center, x right, y UP. Heading 0 is
+  up and grows clockwise. Exact sin/cos at multiples of 90 so squares close.
+- **Color is RGB 0-255**, rounded and clamped (not an error), so a loop that
+  adds 10 to red just stays at full red. Grays are r = g = b.
+- **Project JSON is the one data model:** editor, interpreter, undo, autosave
+  and the PNG iTXt chunk all use it. Block = `{ op, args?, body? }`.
+- **Interpreter errors are `RunError`** with a friendly message and the block
+  object, so the editor can outline the block. Reporters are plain functions;
+  commands are generators.
+- **Turtle emits ops** (`line`, `arc`, `fill`, `fillScreen`, `clear`). The
+  canvas paints them as they arrive; SVG export will read the same list.
+  Only the most recent `MAX_OPS` are kept so `forever` can't eat memory.
+- **Fill** follows the turtle's whole walk (pen-up moves count, like Python's
+  turtle), uses the pen color from `start fill`, and the outline is repainted
+  over the fill.
+- **`arc(angle, radius)`:** positive angle curves right, negative curves left;
+  a negative radius is treated as positive.
+- **`clean`** resets everything: white paper, turtle home, pen down, red,
+  size 5.
+- **Run button** runs the topmost stack whose first block is `clean` or
+  `fill screen`. Clicking any stack runs that stack. One program at a time.
+- **Dragging the turtle** (shell moves, head turns, rounded to whole units
+  and degrees) is blocked while a program runs.
+
+## Milestones
+
+Plan: a scaffold + core, b1 block editor basics, b2 editor polish, c PNG
+save/load, d Math and Flow, e My Blocks and boxes, f SVG export, privacy and
+guide pages, real name, deploy.
+
+Done: **a**. The page runs built-in demos with Run, Stop and a speed menu;
+there is no block editor yet.
+
+## Deploy gate
+
+While the app has its placeholder name, the whole `turtle-draw/` folder is
+listed under `exclude:` in the repo's `_config.yml`, so pushing `learn` for
+other reasons does not publish it. Remove that line (keep the dev-file
+excludes) only after the teacher has named the app and the public pages
+(about, privacy, guide) exist. Also add the public paragraph to `/license/`
+and a card in `_data/pathways.yml` at that point. Confirm the `learn` repo is
+public so the AGPL source link works.
+
+## Commands
+
+    cd turtle-draw && node --test                                # unit tests
+    python3 -m http.server 4011 --directory turtle-draw          # dev server
+    node turtle-draw/dev/browser-checks.mjs                      # real Chrome
+
+Use port 4011 for this app's dev server. Never use 4000 (the author's own
+Jekyll) or kill processes you did not start. The final check of the built
+site uses Jekyll on 4010 as described in the repo's root `CLAUDE.md`.
+`browser-checks.mjs` needs Google Chrome at its macOS path and the dev server
+running; it drives mouse input over DevTools Protocol and also fails on any
+console error or CSP violation.

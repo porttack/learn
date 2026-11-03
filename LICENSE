@@ -49,3 +49,11 @@ CC BY-NC-SA 3.0 Unported and cannot be relicensed to 4.0 by virtue of this
 file.
 
 https://creativecommons.org/licenses/by-nc-sa/3.0/
+
+## turtle-draw/
+
+Everything under `turtle-draw/` is a separate program, licensed under the GNU
+Affero General Public License, version 3 or later, not under any of the
+licences above. See `turtle-draw/COPYING` for the licence text and
+`turtle-draw/NOTICE.md` for the third-party work it includes (notably Sugar
+Labs' Turtle Blocks JS).
