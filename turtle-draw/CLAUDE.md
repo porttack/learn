@@ -66,21 +66,48 @@ the dashes out of them too for consistency.
       interpreter.js  generator-based: every block yields once when it runs
       scheduler.js    drives the generator: speed, 12 ms slices, stop
       turtle.js       state, geometry, records drawing ops (line, arc, fill...)
+      edit.js         what happens when a block is dropped: detach, snap, plug
       color.js        RGB 0-255
       project.js      project JSON: validate, find the Run stack
     js/ui/            the browser side
+      blockfactory.js PORTED from Turtle Blocks JS (see NOTICE.md; rebuilt by
+                      dev/port-blockfactory.mjs). Draws block shapes.
+      block-view.js   layout (sizes, connection points) and SVG for stacks
+      workspace.js    the editor: render, drag, snap, number editing, marks
+      palette.js      palette buttons + the flyout of blocks to drag out
+      palette-colors.js, artwork.js (PORTED), demos.js
       canvas-view.js  paper canvas (1400x1120) + draggable turtle overlay
-      artwork.js      PORTED from Turtle Blocks JS (see NOTICE.md)
       main.js         wiring
-    css/app.css
-    test/             node --test
-    dev/              browser checks over Chrome DevTools Protocol (dev only)
+    css/app.css  fonts/roboto/  images/
+    test/             node --test (core only)
+    dev/              real-Chrome checks over DevTools Protocol, port script
 
 ## Key design decisions
 
 - **Own block engine, not Blockly.** Matching Sugar's look is a goal and the
   code doubles as teaching material. The block-shape generator is ported from
-  Turtle Blocks' `blockfactory.js` (milestone b1).
+  Turtle Blocks' `blockfactory.js`.
+- **Editing rebuilds the stacks it touches** (`Workspace.render`) rather than
+  patching the SVG. Projects are tiny and it cannot drift out of sync. Layout
+  (`block-view.js`) is separate from rendering and from the editing rules
+  (`core/edit.js`), which are unit tested.
+- **Sockets hold plain numbers or a plugged-in reporter.** Numbers are drawn
+  as Sugar-style number boxes (Math color). Tapping one opens a text box.
+  Pulling a reporter out puts the block's default number back.
+- **Docks decide everything.** A shape's docks come in a fixed order (see the
+  top of `block-view.js`); snapping compares dock positions in workspace
+  coordinates, within 28 screen pixels.
+- **Touch and mouse share one code path** (Pointer Events). The workspace
+  captures the pointer on itself so a drag survives the re-render at drag
+  start. The workspace SVG ignores pointer events except on blocks, so the
+  turtle underneath stays draggable. The palette flyout uses
+  `touch-action: pan-y`: vertical swipes scroll it, sideways drags pull a block
+  out. The grab offset is measured from the press point, not from where the
+  pointer is when the drag starts (a fast drag has already moved).
+- **Tapping** a stack runs it; tapping a palette block runs that one block
+  (a lone reporter shows its value in the message bar). Dropping on the
+  palette deletes; the palette tints red while you hover.
+- **Palettes with no blocks yet are hidden** (Math and My Blocks until d, e).
 - **Coordinates:** paper 700 x 560, origin center, x right, y UP. Heading 0 is
   up and grows clockwise. Exact sin/cos at multiples of 90 so squares close.
 - **Color is RGB 0-255**, rounded and clamped (not an error), so a loop that
@@ -111,8 +138,21 @@ Plan: a scaffold + core, b1 block editor basics, b2 editor polish, c PNG
 save/load, d Math and Flow, e My Blocks and boxes, f SVG export, privacy and
 guide pages, real name, deploy.
 
-Done: **a**. The page runs built-in demos with Run, Stop and a speed menu;
-there is no block editor yet.
+Done: **a** (scaffold, core, canvas), **b1** (block editor: Turtle, Pen and
+Flow palettes with `repeat`, drag, snap, unsnap, delete, plug reporters, type
+numbers, tap to run, run highlight and error outline, Roboto vendored).
+Not yet: undo, zoom, pan, duplicate, help tips (b2); save and autosave (c);
+Math and the rest of Flow (d); My Blocks (e).
+
+Known limits to fix when they matter:
+- `blockfactory.js` only grows the space for the first two sockets when
+  something taller than a number box is plugged in (`setExpand` has two
+  slots). Milestone d adds math reporters with sockets, so patch the port
+  script to use a list of extra heights for every socket.
+- Reporters with sockets and boolean shapes are not ported yet (`makeShape`
+  in `block-view.js` throws for them).
+- `?demo=name` (see `demos.js`) loads a program into the workspace for trying
+  things out. It is a developer shortcut, not a feature for students.
 
 ## Deploy gate
 
@@ -128,11 +168,14 @@ public so the AGPL source link works.
 
     cd turtle-draw && node --test                                # unit tests
     python3 -m http.server 4011 --directory turtle-draw          # dev server
-    node turtle-draw/dev/browser-checks.mjs                      # real Chrome
+    node turtle-draw/dev/browser-checks.mjs                      # real Chrome: turtle, Run/Stop
+    node turtle-draw/dev/editor-checks.mjs                       # real Chrome: block editor, touch, privacy
 
 Use port 4011 for this app's dev server. Never use 4000 (the author's own
 Jekyll) or kill processes you did not start. The final check of the built
 site uses Jekyll on 4010 as described in the repo's root `CLAUDE.md`.
-`browser-checks.mjs` needs Google Chrome at its macOS path and the dev server
-running; it drives mouse input over DevTools Protocol and also fails on any
-console error or CSP violation.
+The two check scripts need Google Chrome at its macOS path and the dev server
+running. They drive real mouse and touch input over DevTools Protocol and fail
+on any console error or CSP violation. `editor-checks.mjs` also fails if any
+label overflows its block or the page requests anything outside its own
+address. Set `SHOTS_DIR` to keep their screenshots.

@@ -17,9 +17,12 @@
 <body>
   <header class="toolbar">
     <h1 id="app-name">Turtle Draw</h1>
-    <label>Demo
-      <select id="demo"></select>
-    </label>
+    <button id="run" class="icon-button" type="button" title="Run" aria-label="Run">
+      <img src="images/run-button.svg" alt="" draggable="false">
+    </button>
+    <button id="stop" class="icon-button" type="button" title="Stop" aria-label="Stop">
+      <img src="images/stop-button.svg" alt="" draggable="false">
+    </button>
     <label>Speed
       <select id="speed">
         <option value="slow">Slow</option>
@@ -28,8 +31,9 @@
         <option value="instant">Instant</option>
       </select>
     </label>
-    <button id="run" type="button">Run</button>
-    <button id="stop" type="button">Stop</button>
+    <button id="hide-blocks" class="icon-button" type="button" title="Hide blocks" aria-label="Hide or show blocks" aria-pressed="false">
+      <img src="images/hide-blocks-button.svg" alt="" draggable="false">
+    </button>
   </header>
   <main id="stage" class="stage"></main>
   <p id="message" class="message" role="status" aria-live="polite"></p>

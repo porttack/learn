@@ -3,9 +3,10 @@
 Block-based turtle graphics that runs entirely in your browser. Nothing you do
 is sent anywhere.
 
-**Status: under construction.** The page currently runs a few built-in demo
-programs. The block editor, saving, and the rest are coming. See `CLAUDE.md`
-for the plan and the rules this project follows.
+**Status: under construction.** You can drag blocks out of the palettes,
+snap them together, and run them. Saving, undo, zoom, the Math palette and My
+Blocks are still to come. See `CLAUDE.md` for the plan and the rules this
+project follows.
 
 ## Try it
 

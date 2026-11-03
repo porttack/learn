@@ -4,6 +4,23 @@
  * See COPYING in the folder above this one.
  */
 
+/* Roboto, Copyright 2011 Google Inc., Apache License 2.0 (fonts/roboto/).
+   It is served from this folder so the page never contacts a font server,
+   and so block text is the same width on every computer. */
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/roboto/Roboto-Regular.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 700;
+  src: url(../fonts/roboto/Roboto-Bold.woff2) format('woff2');
+}
+
 * { box-sizing: border-box; }
 
 html, body {
@@ -16,18 +33,20 @@ body {
   flex-direction: column;
   background: #e9edf1;
   color: #1b1f23;
-  font-family: system-ui, sans-serif;
+  font-family: Roboto, system-ui, sans-serif;
   /* Dragging on the page should never scroll or zoom it. */
   overscroll-behavior: none;
 }
+
+/* ---- Toolbar ---- */
 
 .toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  background: #5370dc;
+  padding: 0.35rem 0.75rem;
+  background: #4da6ff;
   color: #fff;
 }
 
@@ -42,8 +61,7 @@ body {
   gap: 0.4rem;
 }
 
-.toolbar select,
-.toolbar button {
+.toolbar select {
   min-height: 2.25rem;
   padding: 0 0.75rem;
   font: inherit;
@@ -51,16 +69,32 @@ body {
   border-radius: 0.4rem;
 }
 
-.toolbar button {
-  background: #fff;
-  color: #1b1f23;
+.icon-button {
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   cursor: pointer;
 }
 
-.toolbar button:disabled {
-  opacity: 0.5;
+.icon-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.icon-button:disabled {
+  opacity: 0.4;
   cursor: default;
 }
+
+.icon-button[aria-pressed='true'] {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* ---- The stage: paper, turtle, blocks ---- */
 
 .stage {
   position: relative;
@@ -69,6 +103,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 /* The box is sized by script to fit the stage while keeping the paper's shape. */
@@ -104,6 +139,146 @@ body {
 
 .turtle-sprite.dragging { cursor: grabbing; }
 .turtle-sprite.locked { cursor: default; }
+
+/* ---- Blocks ---- */
+
+/* The workspace covers the paper but lets clicks through, except on blocks. */
+.workspace {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  touch-action: none;
+}
+
+.workspace .node {
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.workspace .node.literal { cursor: text; }
+
+.block-text {
+  font-family: Roboto, system-ui, sans-serif;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.workspace .carried { opacity: 0.9; }
+.workspace .carried .node { cursor: grabbing; }
+
+/* The block that just ran, and the block that caused an error. */
+.workspace .running path { stroke: #fff; stroke-width: 3px; }
+.workspace .error path { stroke: #e60000; stroke-width: 3px; }
+
+.snap-ring {
+  fill: rgba(255, 255, 255, 0.55);
+  stroke: #ffb300;
+  stroke-width: 3;
+  pointer-events: none;
+}
+
+.hint {
+  position: absolute;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.85);
+  color: #444;
+  pointer-events: none;
+}
+
+.stage.blocks-hidden .workspace,
+.stage.blocks-hidden .palettes,
+.stage.blocks-hidden .flyout,
+.stage.blocks-hidden .hint {
+  display: none;
+}
+
+.number-input {
+  position: absolute;
+  z-index: 6;
+  padding: 0 0.4rem;
+  font: 16px Roboto, system-ui, sans-serif; /* 16px so phones don't zoom in */
+  border: 2px solid #ff2c76;
+  border-radius: 0.3rem;
+  background: #fff;
+}
+
+/* ---- Palettes ---- */
+
+.palettes {
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 1.8rem;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* The icons are drawn for a light background, so each button is white with a
+   ring in its palette's color. */
+.palette-button {
+  width: 3rem;
+  height: 3rem;
+  padding: 0.3rem;
+  border: 4px solid var(--palette-color);
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+}
+
+.palette-button img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.palette-button.selected {
+  outline: 3px solid #1b1f23;
+  outline-offset: 2px;
+}
+
+.flyout {
+  position: absolute;
+  left: 5.6rem;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  z-index: 3;
+  overflow-y: auto;
+  border-radius: 0.8rem;
+  background: rgba(240, 240, 240, 0.96);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+.flyout[hidden] { display: none; }
+
+.flyout-svg {
+  display: block;
+  /* Up and down scrolls the flyout. Sideways drags a block out of it. */
+  touch-action: pan-y;
+}
+
+.flyout-svg .stack { cursor: grab; }
+
+/* While a block is held over the palette, it turns red: drop to delete. */
+.palettes.trash,
+.flyout.trash {
+  background: rgba(255, 190, 190, 0.95);
+}
+
+/* ---- Messages ---- */
 
 .message {
   margin: 0;

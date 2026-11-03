@@ -35,12 +35,15 @@ export async function launch({ width = 1200, height = 800, port = 9333 } = {}) {
   let nextId = 1;
   const pending = new Map();
   const problems = []; // console errors, exceptions, CSP violations
+  const requests = []; // every URL the page asked for
   ws.onmessage = (event) => {
     const msg = JSON.parse(event.data);
     if (msg.id && pending.has(msg.id)) {
       const { resolve, reject } = pending.get(msg.id);
       pending.delete(msg.id);
       msg.error ? reject(new Error(JSON.stringify(msg.error))) : resolve(msg.result);
+    } else if (msg.method === 'Network.requestWillBeSent') {
+      requests.push(msg.params.request.url);
     } else if (msg.method === 'Runtime.exceptionThrown') {
       problems.push('exception: ' + (msg.params.exceptionDetails.exception?.description ?? msg.params.exceptionDetails.text));
     } else if (msg.method === 'Runtime.consoleAPICalled' && ['error', 'warning'].includes(msg.params.type)) {
@@ -58,9 +61,11 @@ export async function launch({ width = 1200, height = 800, port = 9333 } = {}) {
   await send('Page.enable');
   await send('Runtime.enable');
   await send('Log.enable');
+  await send('Network.enable');
 
   const api = {
     problems,
+    requests,
     send,
     async goto(url) {
       await send('Page.navigate', { url });

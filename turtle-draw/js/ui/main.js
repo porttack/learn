@@ -1,81 +1,24 @@
-// Turtle Draw: starts the app.
+// Turtle Draw: starts the app and wires the pieces together.
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 // See COPYING in the folder above this one.
 //
-// Milestone a: no block editor yet. This runs a few built-in demo programs
-// so the turtle, the canvas, the interpreter and the scheduler can be tried
-// together. The block editor replaces the demo picker next.
-//
-// For developers: the address can carry ?demo=flower&speed=instant&autorun=1
-// to pick a demo and speed and run it as soon as the page loads.
+// The pieces:
+//   Turtle + CanvasView   the drawing and the turtle you can drag
+//   Workspace + PaletteUI the blocks and where they come from
+//   Scheduler             runs a program at a watchable speed
+// This file just connects them to the buttons and to each other.
 
 import { APP_NAME } from '../app-info.js';
 import { Turtle } from '../core/turtle.js';
 import { Scheduler, SPEEDS } from '../core/scheduler.js';
-import { runBlocks, createContext, RunError } from '../core/interpreter.js';
-import { findMainStack, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
+import { runBlocks, createContext, evalNumber, RunError } from '../core/interpreter.js';
+import { emptyProject, findMainStack, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
+import { BLOCKS } from '../core/blocks-spec.js';
+import { newBlock, cloneBlock, isReporterStack } from '../core/edit.js';
 import { CanvasView } from './canvas-view.js';
-
-// ---- Demo programs ------------------------------------------------------
-
-const b = (op, ...args) => ({ op, args });
-const repeat = (n, ...body) => ({ op: 'repeat', args: [n], body });
-
-const DEMOS = {
-  square: {
-    label: 'Square',
-    blocks: [b('clean'), repeat(4, b('forward', 150), b('right', 90))],
-  },
-  flower: {
-    label: 'Flower (arcs)',
-    blocks: [
-      b('clean'),
-      b('fillscreen', 25, 25, 70),
-      b('setcolor', 255, 120, 200),
-      b('setpensize', 4),
-      repeat(12, repeat(2, b('arc', 60, 140), b('right', 120)), b('right', 30)),
-    ],
-  },
-  arcs: {
-    label: 'Right and left arcs',
-    blocks: [
-      b('clean'),
-      b('setcolor', 220, 0, 0),
-      b('arc', 90, 120),
-      b('penup'),
-      b('setxy', 0, 0),
-      b('setheading', 0),
-      b('pendown'),
-      b('setcolor', 0, 0, 220),
-      b('arc', -90, 120),
-    ],
-  },
-  star: {
-    label: 'Gold star (fill)',
-    blocks: [
-      b('clean'),
-      b('penup'),
-      b('setxy', -110, -100),
-      b('pendown'),
-      b('setcolor', 255, 200, 0),
-      b('startfill'),
-      b('setcolor', 120, 60, 0),
-      b('setpensize', 6),
-      repeat(5, b('forward', 220), b('right', 144)),
-      b('endfill'),
-    ],
-  },
-  forever: {
-    label: 'Forever (press Stop)',
-    blocks: [
-      b('clean'),
-      b('setpensize', 2),
-      { op: 'repeat', args: [1e9], body: [b('forward', 3), b('right', 7)] },
-    ],
-  },
-};
-
-// ---- Wiring -------------------------------------------------------------
+import { Workspace } from './workspace.js';
+import { PaletteUI } from './palette.js';
+import { DEMOS } from './demos.js';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -83,20 +26,42 @@ const params = new URLSearchParams(location.search);
 document.title = APP_NAME;
 $('app-name').textContent = APP_NAME;
 
-const demoSelect = $('demo');
-for (const [id, demo] of Object.entries(DEMOS)) {
-  demoSelect.append(new Option(demo.label, id));
-}
-if (params.get('demo') in DEMOS) demoSelect.value = params.get('demo');
+// Block sizes are worked out from the width of their text, so the font has to
+// be loaded before the first block is measured. (If it fails to load, the
+// fallback font is used for both measuring and drawing, which is still fine.)
+await Promise.all([document.fonts.load('400 10px Roboto'), document.fonts.load('700 16px Roboto')]);
 
-const speedSelect = $('speed');
-if (params.get('speed') in SPEEDS) speedSelect.value = params.get('speed');
-
+const stage = $('stage');
 const message = $('message');
 const runButton = $('run');
 const stopButton = $('stop');
+const speedSelect = $('speed');
+const hideButton = $('hide-blocks');
+
+function say(text) {
+  message.textContent = text;
+}
+
+// ---- The project ---------------------------------------------------------
+
+const project = emptyProject();
+const demo = params.get('demo');
+if (demo && Object.hasOwn(DEMOS, demo)) {
+  // Run it through the same checks as a file from a student would get.
+  const loaded = validateProject({
+    app: FORMAT_ID,
+    version: FORMAT_VERSION,
+    stacks: [{ x: 300, y: 70, blocks: cloneBlock(DEMOS[demo]) }],
+  });
+  if (loaded.ok) project.stacks = loaded.project.stacks;
+}
+
+// ---- Drawing, running ----------------------------------------------------
+
+if (params.get('speed') in SPEEDS) speedSelect.value = params.get('speed');
 
 let view = null;
+let workspace = null;
 const turtle = new Turtle({ onOp: (op) => view.applyOp(op) });
 
 const scheduler = new Scheduler({
@@ -105,52 +70,91 @@ const scheduler = new Scheduler({
     runButton.disabled = true;
     stopButton.disabled = false;
     view.sprite.classList.add('locked');
-    message.textContent = '';
+    workspace.setError(null);
+    say('');
   },
-  onStep: () => view.requestSync(),
+  onStep: (block) => {
+    view.requestSync();
+    // Outlining every block would only slow down an instant run.
+    if (scheduler.speed !== 'instant') workspace.setRunning(block);
+  },
   onFinish: (result) => {
     runButton.disabled = false;
     stopButton.disabled = true;
     view.sprite.classList.remove('locked');
     view.sync();
+    workspace.setRunning(null);
     if (result.status === 'error') {
-      const error = result.error;
-      message.textContent =
-        error instanceof RunError
-          ? `Stopped. ${error.message}`
-          : 'Something went wrong inside the app. Try Run again.';
-      if (!(error instanceof RunError)) console.error(error);
+      if (result.error instanceof RunError) {
+        workspace.setError(result.error.block);
+        say(result.error.message);
+      } else {
+        say('Something went wrong inside the app. Try again.');
+        console.error(result.error);
+      }
     }
   },
 });
 
-view = new CanvasView({
-  stage: $('stage'),
-  turtle,
-  isLocked: () => scheduler.running,
+view = new CanvasView({ stage, turtle, isLocked: () => scheduler.running });
+
+/** Run a stack of blocks. A lone reporter (like x) just shows its value. */
+function runStack(stack) {
+  const context = createContext({ turtle });
+  if (isReporterStack(stack)) {
+    const block = stack.blocks[0];
+    try {
+      say(`${BLOCKS[block.op].label} is ${evalNumber(block, context, block)}`);
+    } catch (error) {
+      if (!(error instanceof RunError)) throw error;
+      say(error.message);
+    }
+    return;
+  }
+  scheduler.start(runBlocks(stack.blocks, context));
+}
+
+// ---- Blocks --------------------------------------------------------------
+
+let palettes = null;
+workspace = new Workspace({
+  stage,
+  project,
+  onChange: () => {
+    workspace.setError(null);
+  },
+  onRunStack: runStack,
+  onRunPaletteBlock: (op) => runStack({ x: 0, y: 0, blocks: [newBlock(op)] }),
+  isOverPalette: (x, y) => palettes.isOver(x, y),
+  onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
 });
+palettes = new PaletteUI({ stage, workspace });
+
+// ---- Buttons -------------------------------------------------------------
+
+runButton.addEventListener('click', () => {
+  const stack = findMainStack(project);
+  if (!stack) {
+    say('Put a clean block at the top of the stack you want Run to start. Or tap any stack to run it.');
+    return;
+  }
+  runStack(stack);
+});
+
+stopButton.addEventListener('click', () => scheduler.stop());
+stopButton.disabled = true;
 
 speedSelect.addEventListener('change', () => {
   scheduler.speed = speedSelect.value;
 });
 
-function currentProject() {
-  const result = validateProject({
-    app: FORMAT_ID,
-    version: FORMAT_VERSION,
-    stacks: [{ x: 20, y: 20, blocks: DEMOS[demoSelect.value].blocks }],
-  });
-  if (!result.ok) throw new Error(result.error);
-  return result.project;
+hideButton.addEventListener('click', () => {
+  const hidden = stage.classList.toggle('blocks-hidden');
+  hideButton.setAttribute('aria-pressed', String(hidden));
+  hideButton.title = hidden ? 'Show blocks' : 'Hide blocks';
+});
+
+if (params.get('autorun') === '1') {
+  const stack = findMainStack(project);
+  if (stack) runStack(stack);
 }
-
-function run() {
-  const stack = findMainStack(currentProject());
-  scheduler.start(runBlocks(stack.blocks, createContext({ turtle })));
-}
-
-runButton.addEventListener('click', run);
-stopButton.addEventListener('click', () => scheduler.stop());
-
-stopButton.disabled = true;
-if (params.get('autorun') === '1') run();
