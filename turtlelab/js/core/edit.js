@@ -22,6 +22,7 @@ export function newBlock(op) {
   const spec = BLOCKS[op];
   const block = { op, args: spec.args.map((arg) => arg.default ?? null) };
   if (spec.kind === 'clamp') block.body = [];
+  if (spec.kind === 'note') block.text = '';
   return block;
 }
 

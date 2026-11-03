@@ -17,6 +17,8 @@ export const PALETTE_COLORS = {
   math: { fill: '#FF6EA1', stroke: '#FF2C76' },
   flow: { fill: '#D98A43', stroke: '#B7651A' },
   myblocks: { fill: '#FFBF00', stroke: '#DAAF30' },
+  // Sticky notes: the pale yellow of the paper kind. These two are original, not from Sugar.
+  notes: { fill: '#FFF1A8', stroke: '#C9B037' },
 };
 
 // The little boxes that hold a number use the Math palette's color.

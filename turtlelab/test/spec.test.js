@@ -5,13 +5,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { BLOCKS, PALETTES } from '../js/core/blocks-spec.js';
+import { BLOCKS, PALETTES, NOTE_MAX_CHARS } from '../js/core/blocks-spec.js';
 
 const entries = Object.entries(BLOCKS);
 
 test('every block belongs to a real palette and has a known kind', () => {
   const palettes = new Set(PALETTES.map((p) => p.id));
-  const kinds = new Set(['command', 'clamp', 'hat', 'reporter']);
+  const kinds = new Set(['command', 'clamp', 'hat', 'reporter', 'note']);
   for (const [op, spec] of entries) {
     assert.ok(palettes.has(spec.palette), `${op}: unknown palette ${spec.palette}`);
     assert.ok(kinds.has(spec.kind), `${op}: unknown kind ${spec.kind}`);
@@ -76,4 +76,12 @@ test('every palette that has blocks shows in the palette column, and the Math an
   for (const op of ['penup', 'pendown', 'setpensize', 'pensize', 'setcolor', 'penred', 'pengreen', 'penblue', 'fillscreen', 'startfill', 'endfill']) {
     assert.ok(inPalette('pen').includes(op), `Pen palette is missing ${op}`);
   }
+});
+
+test('there is a Notes palette with a sticky note in it, and a note has no sockets', () => {
+  assert.ok(PALETTES.some((p) => p.id === 'notes'));
+  assert.equal(BLOCKS.note.palette, 'notes');
+  assert.equal(BLOCKS.note.kind, 'note');
+  assert.deepEqual(BLOCKS.note.args, []);
+  assert.equal(NOTE_MAX_CHARS, 300);
 });

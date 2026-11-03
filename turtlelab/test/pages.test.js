@@ -107,7 +107,7 @@ test('every page that describes what is stored names the one storage item the ap
 test('the Guide explains Save, Open, New and Ctrl+S, and no longer says saving is missing', () => {
   const guide = read('guide.html');
   assert.ok(!/not built yet|not yet/i.test(guide));
-  for (const word of ['Save', 'Open', 'New', 'Ctrl+S', 'shared computer']) assert.ok(guide.includes(word), word);
+  for (const word of ['Save', 'Open', 'New', 'Ctrl+S', 'shared computer', 'Sticky notes']) assert.ok(guide.includes(word), word);
 });
 
 test('the app page links to Guide and About in a new tab, so no click loses your blocks', () => {

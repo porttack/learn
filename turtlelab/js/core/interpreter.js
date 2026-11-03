@@ -78,6 +78,8 @@ export function* runBlocks(blocks, ctx) {
 const COMMANDS = {
   // start only marks where a stack begins. When it runs it does nothing.
   start: () => {},
+  // a note is words for people, so running one does nothing
+  note: () => {},
   clean: (t) => t.clean(),
   forward: (t, [steps]) => t.forward(steps),
   back: (t, [steps]) => t.back(steps),

@@ -413,3 +413,10 @@ test('a color made with the readers can be used to make a darker one', () => {
   ]);
   assert.deepEqual(turtle.color, [100, 0, 50]);
 });
+
+test('a note does nothing when it is run, but still takes a step', () => {
+  const note = { op: 'note', args: [], text: 'hello' };
+  const { turtle, steps } = runWith([note, forwardBy(5)]);
+  assert.equal(turtle.y, 5);
+  assert.equal(steps[0], note);
+});

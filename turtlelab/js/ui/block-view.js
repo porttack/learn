@@ -258,6 +258,77 @@ function layoutRow(node, spec, colors) {
   return node;
 }
 
+// ---- Sticky notes --------------------------------------------------------------
+//
+// A note is a pale yellow square with a folded corner and the words wrapped
+// inside. It connects to nothing, so it only needs a size. This is TurtleLab's
+// own drawing, not Sugar's.
+
+const NOTE_WIDTH = 200;
+const NOTE_TEXT_WIDTH = 160; // narrower than the note, so words stay clear of the folded corner
+const NOTE_FONT = 14;
+const NOTE_LINE = 18;
+const NOTE_MIN_LINES = 3;
+const NOTE_MAX_LINES = 16;
+const NOTE_FOLD = 16;
+
+/** Break text into lines no wider than `maxWidth` pixels. Words wider than a line are split. */
+function wrapText(text, maxWidth, fontSize) {
+  const lines = [];
+  for (const paragraph of text.split('\n')) {
+    let line = '';
+    for (const word of paragraph.split(' ')) {
+      let rest = word;
+      // A word wider than a whole line is cut into pieces that fit.
+      while (textWidth(rest, fontSize) > maxWidth) {
+        let n = rest.length;
+        while (n > 1 && textWidth(rest.slice(0, n), fontSize) > maxWidth) n -= 1;
+        if (line) lines.push(line);
+        line = '';
+        lines.push(rest.slice(0, n));
+        rest = rest.slice(n);
+      }
+      const longer = line ? `${line} ${rest}` : rest;
+      if (textWidth(longer, fontSize) <= maxWidth) {
+        line = longer;
+      } else {
+        lines.push(line);
+        line = rest;
+      }
+    }
+    lines.push(line);
+  }
+  return lines;
+}
+
+/** Lay out a sticky note: its size, and the SVG for it. */
+function layoutNote(node, spec, colors) {
+  const text = node.block.text ?? '';
+  let lines = text === '' ? ['Tap to write a note.'] : wrapText(text, NOTE_TEXT_WIDTH, NOTE_FONT);
+  if (lines.length > NOTE_MAX_LINES) lines = [...lines.slice(0, NOTE_MAX_LINES - 1), `${lines[NOTE_MAX_LINES - 1]}...`.slice(0, 40)];
+  const height = 16 + Math.max(lines.length, NOTE_MIN_LINES) * NOTE_LINE + 10;
+  const width = NOTE_WIDTH;
+  const ink = text === '' ? '#9a8f4a' : '#4a4100';
+  const rows = lines
+    .map((line, i) => `<tspan x="12" y="${26 + i * NOTE_LINE}">${escapeXml(line)}</tspan>`)
+    .join('');
+  node.markup =
+    `<svg xmlns="${SVG_NS}" width="${width}" height="${height}">` +
+    `<path d="M1 1 H${width - NOTE_FOLD - 1} L${width - 1} ${NOTE_FOLD + 1} V${height - 1} H1 Z" fill="${colors.fill}" stroke="${colors.stroke}" stroke-width="1.5" stroke-linejoin="round"/>` +
+    `<path d="M${width - NOTE_FOLD - 1} 1 V${NOTE_FOLD + 1} H${width - 1} Z" fill="#e7d57e" stroke="${colors.stroke}" stroke-width="1.5" stroke-linejoin="round"/>` +
+    `<text class="block-text note-text" font-size="${NOTE_FONT}" fill="${ink}">${rows}</text>` +
+    `</svg>`;
+  node.w = width;
+  node.h = height;
+  // A note connects to nothing. These keep the code that expects docks happy.
+  node.docks = [[0, 0], [0, 0]];
+  node.slot = [0, 0];
+  node.tab = [0, 0];
+  node.mouth = null;
+  node.argPos = [];
+  return node;
+}
+
 /**
  * Work out the size and shape of one block and everything plugged into it
  * or inside it. Positions are relative to the block's own top-left corner
@@ -267,6 +338,7 @@ export function layoutBlock(block) {
   const spec = BLOCKS[block.op];
   const colors = PALETTE_COLORS[spec.palette];
   const node = { id: nextId++, block, spec, kind: spec.kind, args: [], body: [], ax: 0, ay: 0 };
+  if (spec.kind === 'note') return layoutNote(node, spec, colors);
 
   // What is in each socket: a number box, another block plugged in, or (for
   // a pointed yes-or-no socket with nothing in it) nothing: the notch is the

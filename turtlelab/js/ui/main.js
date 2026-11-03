@@ -168,6 +168,7 @@ view = new CanvasView({ stage, turtle, isLocked: () => scheduler.running });
 
 /** Run a stack of blocks. A lone reporter (like x) just shows its value. */
 function runStack(stack) {
+  if (BLOCKS[stack.blocks[0].op].kind === 'note') return; // a sticky note is not a program
   if (isReporterStack(stack)) {
     // Tapping a reporter reads from the boxes the last run left behind.
     // Looking at a value never changes it.

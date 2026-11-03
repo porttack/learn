@@ -378,3 +378,17 @@ body {
   outline: 4px dashed #ff2c76;
   outline-offset: -10px;
 }
+
+/* ---- Sticky notes ---- */
+
+.note-input {
+  position: absolute;
+  z-index: 6;
+  padding: 10px 12px;
+  font: 14px/18px Roboto, system-ui, sans-serif;
+  color: #4a4100;
+  background: #fff8c4;
+  border: 2px solid #c9b037;
+  border-radius: 4px;
+  resize: none;
+}

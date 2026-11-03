@@ -19,8 +19,8 @@ There are two exceptions, and both keep your own work in your own
 browser. The Working in Python pathway embeds an in-browser Python
 environment (JupyterLite) so you can run notebooks live, and it uses
 your browser's local storage to save your work between visits.
-TurtleLab, a block-based drawing tool, keeps a copy of the blocks you
-are working on in your browser's local storage so that refreshing the
+TurtleLab, a block-based drawing tool, keeps a copy of the blocks and
+notes you are working on in your browser's local storage so that refreshing the
 page does not lose them. In both cases the storage stays entirely on
 your device and is never transmitted to any server. Both are explained
 in full below.
@@ -114,7 +114,8 @@ entirely in your browser tab. It makes no network requests while you use it
 and sets no cookies.
 
 So that refreshing the page does not lose your blocks, TurtleLab keeps one
-copy of your current blocks in your browser's local storage, as a single item
+copy of your current blocks, and the words on any sticky notes you typed, in
+your browser's local storage, as a single item
 named `turtlelab-project`. It is plain text, it stays on your own device, and
 it is never transmitted anywhere. It is removed when you press New or clear
 this site's data in your browser's settings. Because it lives in the browser,

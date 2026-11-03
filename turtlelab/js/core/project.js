@@ -21,7 +21,7 @@
 // The "app" name is the file format's name. It stays the same even if the
 // app is renamed, so old saved pictures keep opening.
 
-import { BLOCKS, isKnownOp } from './blocks-spec.js';
+import { BLOCKS, NOTE_MAX_CHARS, isKnownOp } from './blocks-spec.js';
 
 export const FORMAT_ID = 'porttack-turtle';
 export const FORMAT_VERSION = 1;
@@ -82,7 +82,7 @@ export function findRunStack(project) {
   let startCount = 0;
   for (const stack of project.stacks) {
     const first = stack.blocks[0];
-    if (!first) continue;
+    if (!first || BLOCKS[first.op].kind === 'note') continue; // a note is not a program
     if (first.op === 'start') {
       startCount += 1;
       if (higher(stack, topStart)) topStart = stack;
@@ -145,6 +145,7 @@ function cleanBlock(block, depth) {
     throw new ProjectError(`This file uses a block this app does not have: "${block.op}".`);
   }
   const clean = { op: block.op };
+  if (BLOCKS[block.op].kind === 'note') clean.text = cleanNoteText(block.text);
   if (block.args !== undefined) {
     if (!Array.isArray(block.args)) throw new ProjectError('A block in this file is damaged.');
     clean.args = block.args.map((arg) => cleanArg(arg, depth + 1));
@@ -154,6 +155,13 @@ function cleanBlock(block, depth) {
     clean.body = block.body.map((inner) => cleanBlock(inner, depth + 1));
   }
   return clean;
+}
+
+/** The words on a note: text only, with no control characters, and not too long. */
+function cleanNoteText(text) {
+  if (typeof text !== 'string') return '';
+  // eslint-disable-next-line no-control-regex
+  return text.replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, '').slice(0, NOTE_MAX_CHARS);
 }
 
 function cleanArg(arg, depth) {

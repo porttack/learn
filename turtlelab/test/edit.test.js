@@ -208,3 +208,18 @@ test('pulling a block out of an if leaves its socket empty, not a number', () =>
   assert.deepEqual(ifBlock.args, [null]);
   assert.equal(carried.blocks[0].op, 'less');
 });
+
+test('a new note is empty, and a note is not a reporter', () => {
+  assert.deepEqual(newBlock('note'), { op: 'note', args: [], text: '' });
+  assert.equal(isReporterStack({ blocks: [{ op: 'note', args: [], text: '' }] }), false);
+});
+
+test('a note can be picked up, copied and put back like any stack', () => {
+  const note = { op: 'note', args: [], text: 'explains the square' };
+  const stack = { x: 10, y: 20, blocks: [note] };
+  const project = projectWith(stack);
+  const carried = detachCommands(project, stack, stack.blocks, 0, 50, 60);
+  assert.equal(carried, stack);
+  assert.deepEqual(cloneBlock(note), note);
+  assert.notEqual(cloneBlock(note), note);
+});

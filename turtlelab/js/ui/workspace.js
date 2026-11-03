@@ -24,7 +24,7 @@
 
 import { layoutStack, renderStack, walkNodes } from './block-view.js';
 import { HelpBubble } from './help-bubble.js';
-import { BLOCKS } from '../core/blocks-spec.js';
+import { BLOCKS, NOTE_MAX_CHARS } from '../core/blocks-spec.js';
 import { HOME_VIEW, zoomAbout, panBy } from '../core/view.js';
 import {
   newBlock,
@@ -247,6 +247,8 @@ export class Workspace {
       this.onRunPaletteBlock(palette.op);
     } else if (entry.type === 'literal') {
       this.editNumber(entry);
+    } else if (entry.node.kind === 'note') {
+      this.editNote(entry.node); // tapping a sticky note is for writing in it
     } else {
       this.onRunStack(entry.node.stack);
     }
@@ -411,6 +413,8 @@ export class Workspace {
     const limit = SNAP_DISTANCE / this.view.zoom;
     const carried = carriedLayout.stack;
     const first = carriedLayout.nodes[0];
+    // A sticky note floats: it snaps to nothing, and nothing snaps to it.
+    if (first.kind === 'note') return null;
     const last = carriedLayout.nodes[carriedLayout.nodes.length - 1];
     const at = (layout, node, dock) => [
       layout.stack.x + node.ax + dock[0],
@@ -443,7 +447,7 @@ export class Workspace {
             if (!canPlug(node.block, i, carried.blocks[0])) return;
             consider(at(layout, node, node.docks[1 + i]), topPoint, { kind: 'socket', owner: node, index: i });
           });
-        } else if (node.kind !== 'reporter' && canHang) {
+        } else if (node.kind !== 'reporter' && node.kind !== 'note' && canHang) {
           // Nothing goes below a block that ends a stack (like stop).
           if (!node.spec.endsStack) consider(at(layout, node, node.tab), topPoint, { kind: 'after', node });
           if (node.mouth) consider(at(layout, node, node.mouth), topPoint, { kind: 'inside', node });
@@ -452,7 +456,7 @@ export class Workspace {
       // Blocks can go on top of a stack, unless it starts with a hat (its
       // cap is the top) or is a lone reporter.
       const head = layout.nodes[0];
-      if (!reporter && !last.spec.endsStack && head.kind !== 'reporter' && head.kind !== 'hat') {
+      if (!reporter && !last.spec.endsStack && head.kind !== 'reporter' && head.kind !== 'hat' && head.kind !== 'note') {
         consider(at(layout, head, head.slot), bottomPoint, { kind: 'above', layout });
       }
     }
@@ -543,6 +547,44 @@ export class Workspace {
       },
       { passive: false },
     );
+  }
+
+  // ---- Writing on a sticky note ------------------------------------------
+
+  /** Put a text box over a note so its words can be changed. Clicking away keeps them. Escape cancels. */
+  editNote(node) {
+    const box = node.el.getBoundingClientRect();
+    const stageBox = this.stage.getBoundingClientRect();
+    const area = document.createElement('textarea');
+    area.className = 'note-input';
+    area.maxLength = NOTE_MAX_CHARS;
+    area.value = node.block.text ?? '';
+    area.setAttribute('aria-label', 'Note');
+    area.placeholder = 'Write what your program does';
+    area.style.left = `${box.left - stageBox.left}px`;
+    area.style.top = `${box.top - stageBox.top}px`;
+    area.style.width = `${box.width}px`;
+    area.style.height = `${Math.max(box.height, 96)}px`;
+    this.stage.append(area);
+    area.focus();
+    area.setSelectionRange(area.value.length, area.value.length);
+
+    let finished = false;
+    const finish = (keep) => {
+      if (finished) return;
+      finished = true;
+      const text = area.value;
+      area.remove();
+      if (keep && text !== (node.block.text ?? '')) {
+        node.block.text = text;
+        this.render();
+        this.onChange();
+      }
+    };
+    area.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') finish(false);
+    });
+    area.addEventListener('blur', () => finish(true));
   }
 
   // ---- Typing a number ---------------------------------------------------

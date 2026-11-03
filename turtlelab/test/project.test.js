@@ -204,3 +204,40 @@ test('the Flow and Math blocks are valid in a project file, with an empty if soc
     assert.equal(validateProject({ app: FORMAT_ID, version: 1, stacks: [stack(condition)] }).ok, true);
   }
 });
+
+// ---- Sticky notes ----------------------------------------------------------------------------
+
+const noteProject = (text) => ({ app: FORMAT_ID, version: 1, stacks: [{ x: 5, y: 6, blocks: [{ op: 'note', text }] }] });
+const noteText = (result) => result.project.stacks[0].blocks[0].text;
+
+test('a note keeps its words through validation', () => {
+  const result = validateProject(noteProject('Draws a square.\nThe turtle turns 90 degrees.'));
+  assert.equal(result.ok, true);
+  assert.equal(noteText(result), 'Draws a square.\nThe turtle turns 90 degrees.');
+});
+
+test('a note with no words, or words that are not text, ends up with empty text', () => {
+  assert.equal(noteText(validateProject({ ...noteProject(''), })), '');
+  assert.equal(noteText(validateProject(noteProject(42))), '');
+  assert.equal(noteText(validateProject(noteProject(null))), '');
+  const missing = { app: FORMAT_ID, version: 1, stacks: [{ x: 0, y: 0, blocks: [{ op: 'note' }] }] };
+  assert.equal(noteText(validateProject(missing)), '');
+});
+
+test('a note is cut to the length limit, and control characters are removed', () => {
+  assert.equal(noteText(validateProject(noteProject('x'.repeat(5000)))).length, 300);
+  assert.equal(noteText(validateProject(noteProject('a\u0000b\u0007c\td'))), 'abcd');
+  assert.equal(noteText(validateProject(noteProject('line one\nline two'))), 'line one\nline two', 'new lines are kept');
+});
+
+test('other blocks never get a text field, even if a file tries to give them one', () => {
+  const sneaky = { app: FORMAT_ID, version: 1, stacks: [{ x: 0, y: 0, blocks: [{ op: 'clean', text: 'hello' }] }] };
+  assert.deepEqual(validateProject(sneaky).project.stacks[0].blocks[0], { op: 'clean' });
+});
+
+test('Run ignores a stack that is only a note, and starts elsewhere', () => {
+  const note = { x: 0, y: 0, blocks: [{ op: 'note', text: 'hi' }] };
+  const program = { x: 0, y: 300, blocks: [{ op: 'forward', args: [10] }] };
+  assert.equal(findRunStack({ stacks: [note, program] }).stack, program, 'a note higher up the page does not count');
+  assert.deepEqual(findRunStack({ stacks: [note] }), { stack: null, startCount: 0 });
+});

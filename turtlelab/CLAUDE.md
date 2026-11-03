@@ -86,7 +86,7 @@ the dashes out of them too for consistency.
       workspace.js    the editor: render, drag, snap, number editing, marks
       palette.js      palette buttons + the flyout of blocks to drag out
       help-bubble.js  the tip bubble (press and hold, right-click) + Copy stack
-      palette-colors.js, artwork.js (PORTED), demos.js
+      palette-colors.js, artwork.js (PORTED), demos.js (developer examples)
       canvas-view.js  paper canvas (1400x1120) + draggable turtle overlay
       files.js        Save (download a PNG with the blocks inside), Open, drops
       storage.js      autosave to local storage (one item: turtlelab-project)
@@ -214,7 +214,16 @@ the dashes out of them too for consistency.
     ignored; every use is in try/catch. A visit restores it unless `?demo=`
     is given. It is the only thing the app stores, and the privacy pages and
     checks say exactly that.
-- **Palettes with no blocks are hidden** (none now: all five have blocks).
+- **Sticky notes** (`note`, in a sixth palette, Notes). A note is a block of
+  kind `note` with its words in `block.text` (cleaned by `project.js`: text
+  only, no control characters, at most `NOTE_MAX_CHARS`, 300). It floats: it
+  snaps to nothing and nothing snaps to it, a stack that is only a note is
+  never what Run starts, running one does nothing, and tapping one opens a
+  writing box (`Workspace.editNote`; clicking away keeps the words, Escape
+  cancels, and each change is one undo step). Notes are saved with the project
+  (autosave, and inside saved pictures), so the privacy pages say the stored
+  text includes notes. The look (`layoutNote` in `block-view.js`) is original.
+- **Palettes with no blocks are hidden** (none now: all six have blocks).
 - **Coordinates:** paper 700 x 560, origin center, x right, y UP. Heading 0 is
   up and grows clockwise. Exact sin/cos at multiples of 90 so squares close.
 - **Color is RGB 0-255**, rounded and clamped (not an error), so a loop that

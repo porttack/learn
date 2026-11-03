@@ -50,5 +50,5 @@ Software Foundation (https://www.gnu.org/licenses/agpl-3.0.txt).
 ## Still to be added
 
 Entries are added when files are copied in. Still to come: any further toolbar
-icons from `header-icons/`, and any further block shapes. `images/undo.svg` and `redo.svg` are original
+icons from `header-icons/`, and any further block shapes. `images/undo.svg`, `redo.svg` and `palette-notes.svg` are original
 drawings made for this project, not taken from anywhere.

@@ -102,7 +102,7 @@ try {
   await chrome.goto(BASE + '?speed=instant');
   check('Roboto loaded from the app itself', await chrome.eval(`[...document.fonts].some((f) => f.family === 'Roboto' && f.status === 'loaded')`));
   check('starts empty, with a hint', (await stacks()) === 0 && (await chrome.eval(`!document.querySelector('.hint').hidden`)));
-  check('five palettes have blocks', (await count('.palette-button')) === 5);
+  check('six palettes have blocks', (await count('.palette-button')) === 6);
 
   await openPalette('Turtle');
   check('the Turtle palette opens and lists its 11 blocks', (await chrome.eval(`!document.querySelector('.flyout').hidden`)) && (await count('.flyout .stack')) === 11,
@@ -112,7 +112,7 @@ try {
   // labels in one block may overlap each other. (Compared as rectangles on
   // the screen, which works for every kind of block.)
   const problemsWithLabels = [];
-  for (const title of ['Turtle', 'Pen', 'Math', 'Flow', 'My Blocks']) {
+  for (const title of ['Turtle', 'Pen', 'Math', 'Flow', 'My Blocks', 'Notes']) {
     await openPalette(title);
     const bad = await chrome.eval(`(() => {
       const bad = [];
@@ -951,6 +951,121 @@ try {
   await chrome.eval(`localStorage.setItem('turtlelab-project', '{ this is not a project')`);
   await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
   check('a damaged autosave is ignored: the page loads empty and without errors', (await stacks()) === 0 && chrome.problems.length === problemsBefore, chrome.problems.slice(problemsBefore).join(' | '));
+
+  // ---- Sticky notes ----------------------------------------------------------------------------------
+  const noteRect = () =>
+    chrome.eval(`(() => { const n = document.querySelector('.workspace .node.note'); return n ? (${rectJs})(n) : null; })()`);
+  // The words as a reader sees them: wrapped lines joined with a space.
+  const noteWords = () => chrome.eval(`(() => { const n = document.querySelector('.workspace .node.note'); return n ? [...n.querySelectorAll('tspan')].map((t) => t.textContent).join(' ').trim() : null; })()`);
+  const writeNote = async (words) => {
+    const r = await noteRect();
+    await chrome.click(r.left + 30, r.top + 40);
+    await chrome.sleep(150);
+    await chrome.send('Input.insertText', { text: words });
+    await chrome.click(850, 640); // clicking away keeps what was written
+    await chrome.sleep(200);
+  };
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Notes');
+  check('the Notes palette has just the sticky note', (await count('.flyout .stack')) === 1);
+  await dragFromPalette('note', 480, 120);
+  check('a note dragged out lands on the page, asking to be written on', (await stacks()) === 1 && (await noteWords()) === 'Tap to write a note.');
+
+  const emptyNote = await noteRect();
+  await chrome.click(emptyNote.left + 30, emptyNote.top + 40);
+  await chrome.sleep(150);
+  check('tapping a note opens a writing box over it, and does not run anything', (await count('.note-input')) === 1 && (await chrome.eval(`document.activeElement.className`)) === 'note-input');
+  await chrome.send('Input.insertText', { text: 'Draws a square with four sides.' });
+  await chrome.click(850, 640);
+  await chrome.sleep(200);
+  check('clicking away keeps the words, shown on the note', (await count('.note-input')) === 0 && /Draws a square with four sides\./.test(await noteWords()), await noteWords());
+
+  await clickButton('undo');
+  check('Undo takes the words away again', (await noteWords()) === 'Tap to write a note.');
+  await clickButton('redo');
+  check('and Redo brings them back', /Draws a square/.test(await noteWords()));
+
+  const wordsBefore = await noteWords();
+  const r1 = await noteRect();
+  await chrome.click(r1.left + 30, r1.top + 40);
+  await chrome.sleep(150);
+  await chrome.send('Input.insertText', { text: ' EXTRA' });
+  await key('Escape', 'Escape', 27, 0);
+  await chrome.sleep(150);
+  check('Escape cancels what was typed', (await count('.note-input')) === 0 && (await noteWords()) === wordsBefore);
+
+  await writeNote(' ' + 'a very long explanation '.repeat(8));
+  const long = await chrome.eval(`(() => {
+    const n = document.querySelector('.workspace .node.note');
+    const box = n.querySelector('path').getBoundingClientRect();
+    const lines = [...n.querySelectorAll('tspan')].map((t) => t.getBoundingClientRect());
+    return { lines: lines.length, height: box.height, outside: lines.filter((l) => l.left < box.left || l.right > box.right || l.bottom > box.bottom + 1).length };
+  })()`);
+  check('long words wrap onto more lines, and the note grows to hold them', long.lines > 4 && long.outside === 0 && long.height > 100, JSON.stringify(long));
+
+  // Notes connect to nothing.
+  await openPalette('Turtle');
+  const noteBox = await noteRect();
+  await dragFromPalette('forward', noteBox.left + 4, noteBox.bottom + 4);
+  check('a block dropped right under a note does not snap to it', (await stacks()) === 2);
+  await openPalette('Notes');
+  const fwdBox = await nodeRect('forward');
+  await dragFromPalette('note', fwdBox.left + 4, fwdBox.bottom + 4);
+  check('a note dropped right under a block does not snap to it either', (await stacks()) === 3);
+
+  // Run ignores notes.
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Notes');
+  await dragFromPalette('note', 480, 120);
+  await pressRun();
+  check('with only a note on the page, Run says there is nothing to run', /Drag some blocks onto the page first/.test(await messageText()), await messageText());
+  const noteOnly = await noteRect();
+  await chrome.click(noteOnly.left + 30, noteOnly.top + 40);
+  await chrome.sleep(150);
+  check('and tapping a note edits it rather than running it', (await count('.note-input')) === 1 && !(await chrome.eval(`document.getElementById('run').disabled`)));
+  await key('Escape', 'Escape', 27, 0);
+
+  await chrome.goto(BASE + '?demo=square&speed=instant');
+  await openPalette('Notes');
+  await dragFromPalette('note', 480, 20);
+  await pressRun();
+  check('a note higher up the page does not stop Run from running the real program', (await redPixels()) > 5000);
+
+  // Copying a note, and keeping it.
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Notes');
+  await dragFromPalette('note', 480, 120);
+  await writeNote('Starts at the middle.');
+  const toCopy = await noteRect();
+  await chrome.mouse('mouseMoved', toCopy.left + 30, toCopy.top + 40, { buttons: 0 });
+  await chrome.mouse('mousePressed', toCopy.left + 30, toCopy.top + 40);
+  await chrome.sleep(750);
+  const bubbleButton = await chrome.centerOf('.bubble button');
+  await chrome.mouse('mouseReleased', toCopy.left + 30, toCopy.top + 40);
+  await chrome.click(bubbleButton.x, bubbleButton.y);
+  await chrome.sleep(200);
+  const copies = await chrome.eval(`[...document.querySelectorAll('.workspace .node.note')].map((n) => n.textContent.trim())`);
+  check('press and hold on a note offers Copy stack, and the copy has the same words', copies.length === 2 && copies.every((t) => t === 'Starts at the middle.'), JSON.stringify(copies));
+
+  await chrome.sleep(700);
+  const noteAutosave = JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`));
+  check('the words are kept by autosave', noteAutosave.stacks.filter((st) => st.blocks[0].op === 'note' && st.blocks[0].text === 'Starts at the middle.').length === 2);
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  check('and are still on the notes after a refresh', (await chrome.eval(`[...document.querySelectorAll('.workspace .node.note')].map((n) => n.textContent.trim()).join('|')`)) === 'Starts at the middle.|Starts at the middle.');
+
+  const noteFileBefore = savedPngs().length;
+  await chrome.eval(`document.getElementById('message').textContent = ''`);
+  await clickButton('save');
+  let withNotes = null;
+  for (let i = 0; i < 40 && !withNotes; i += 1) {
+    await chrome.sleep(150);
+    for (const f of savedPngs()) {
+      const found = readProjectFile(new Uint8Array(readFileSync(join(downloads, f))));
+      if (found.ok && found.project.stacks.some((st) => st.blocks[0].text === 'Starts at the middle.')) withNotes = found;
+    }
+  }
+  check('a saved picture carries the words of its notes', withNotes !== null && noteFileBefore >= 1);
 
   // ---- No backend: what the app and its pages really do ----------------------------------------------
   // data: and blob: addresses are made from data already in the page, so no network is involved.

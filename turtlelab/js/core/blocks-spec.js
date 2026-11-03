@@ -14,6 +14,8 @@
 //            'hat'       a command with a cap on top: blocks snap below it,
 //                        but nothing can snap above it. It starts a stack.
 //            'reporter'  plugs into a socket and hands back a number
+//            'note'      a sticky note with text on it. It floats on the page,
+//                        connects to nothing, and never changes what runs.
 //   label    the word(s) written on the block
 //   args     the sockets, in order. `label` is a small word shown in front
 //            of the socket (like "x"), and `default` is what the socket
@@ -39,7 +41,11 @@ export const PALETTES = [
   { id: 'math', label: 'Math' },
   { id: 'flow', label: 'Flow' },
   { id: 'myblocks', label: 'My Blocks' },
+  { id: 'notes', label: 'Notes' },
 ];
+
+/** The most characters a sticky note can hold. */
+export const NOTE_MAX_CHARS = 300;
 
 export const BLOCKS = {
   // ---- Turtle ----------------------------------------------------------
@@ -393,6 +399,17 @@ for (let n = 1; n <= BOX_COUNT; n += 1) {
     help: `Reports the number stored in box${n}. It is 0 until you store something in it.`,
   };
 }
+
+// ---- Notes -------------------------------------------------------------
+// A sticky note is for explaining your program to yourself and to others. Its
+// words are kept in the block's `text` (see project.js), not in a socket.
+BLOCKS.note = {
+  palette: 'notes',
+  kind: 'note',
+  label: 'note',
+  args: [],
+  help: 'A sticky note. Tap it to write what your program does. Notes never change how your program runs.',
+};
 
 /** True if `op` names a real block. */
 export function isKnownOp(op) {
