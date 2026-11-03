@@ -199,12 +199,20 @@ checks. All wording is student-facing, so no dashes and no grade level.
   app's color and shade readers). A gray is equal red, green and blue.
   The Pen palette puts all four readers at the bottom, like the Turtle
   palette.
-- **Flow.** `start` (hat), `repeat`, `forever`, `if`, `ifelse`, `wait`, `stop`. `stop`
+- **Flow.** `start` (hat), `repeat`, `forever`, `if`, `ifelse`, `wait`, `speed`, `stop`. `stop`
   ends the whole program (inside a My Block it will leave just that block):
   it has a tail, so nothing snaps below it, and it cannot go on top of a stack.
   `forever` and every loop yield each lap, so none can freeze the tab.
   `wait` takes tenths of a second and is **real time even at Instant speed**;
   Stop cuts it short. (`Wait` is yielded to the scheduler, which sleeps.)
+  `speed` (1 slow, 2 medium, 3 fast, 4 instant; off the ends is pulled back,
+  like a color) is the ONLY speed control: the toolbar has no menu, on the
+  teacher's say-so ("less cluttered, making people discover it is fine"). The
+  interpreter calls `ctx.setSpeed(name)` and `main.js` hands it to the
+  scheduler, which reads its speed fresh before every step. Each Run resets to
+  `DEFAULT_SPEED` (fast), so one program's speed never leaks into the next.
+  `?speed=slow` in the address is still a dev and teacher shortcut for where a
+  run starts. The Guide's "Watch it draw slowly" row is where students find it.
   `ifelse` is the one block with **two mouths** (spec `mouths: 2`, with
   `mouthLabels: ['', 'else']`). A block's mouths are kept in the project as
   `body` and `elseBody` (`BODY_KEYS` in blocks-spec.js; `walkBlocks`,

@@ -15,7 +15,7 @@ import { History } from '../core/history.js';
 import { formatNumber, formatValue } from '../core/format.js';
 import { runBlocks, createContext, evalArg, RunError } from '../core/interpreter.js';
 import { emptyProject, findRunStack, usesBoxes, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
-import { BLOCKS } from '../core/blocks-spec.js';
+import { BLOCKS, DEFAULT_SPEED } from '../core/blocks-spec.js';
 import { newBlock, cloneBlock, isReporterStack } from '../core/edit.js';
 import { CanvasView } from './canvas-view.js';
 import { Workspace } from './workspace.js';
@@ -41,7 +41,6 @@ const stage = $('stage');
 const message = $('message');
 const runButton = $('run');
 const stopButton = $('stop');
-const speedSelect = $('speed');
 const hideButton = $('hide-blocks');
 const undoButton = $('undo');
 const redoButton = $('redo');
@@ -86,7 +85,9 @@ if (!sample && !(demo && Object.hasOwn(DEMOS, demo))) {
 
 // ---- Drawing, running ----------------------------------------------------
 
-if (params.get('speed') in SPEEDS) speedSelect.value = params.get('speed');
+// Every run starts at this speed. A speed block in the program changes it from
+// there. (?speed=slow in the address is a handy way to try the others.)
+const startSpeed = Object.hasOwn(SPEEDS, params.get('speed')) ? params.get('speed') : DEFAULT_SPEED;
 
 let view = null;
 let workspace = null;
@@ -95,6 +96,15 @@ const turtle = new Turtle({ onOp: (op) => view.applyOp(op) });
 // The boxes (variables) belong to the most recent run. Each run starts with
 // fresh boxes at 0. The readout shows them, but only when the project has a
 // box block in it, so it stays out of the way until it matters.
+/** A fresh set of boxes, and a way for a speed block to reach the scheduler. */
+const newContext = () =>
+  createContext({
+    turtle,
+    print,
+    setSpeed: (name) => {
+      scheduler.speed = name;
+    },
+  });
 let context = createContext({ turtle });
 let boxesInUse = usesBoxes(project);
 const readout = document.createElement('p');
@@ -140,8 +150,9 @@ function refreshBoxes() {
 }
 showBoxes();
 
+let outlined = false; // is a block outlined as running right now?
 const scheduler = new Scheduler({
-  speed: speedSelect.value,
+  speed: startSpeed,
   onStart: () => {
     runButton.disabled = true;
     stopButton.disabled = false;
@@ -154,7 +165,12 @@ const scheduler = new Scheduler({
     // Outlining every block would only slow down an instant run.
     if (scheduler.speed !== 'instant') {
       workspace.setRunning(block);
+      outlined = true;
       showBoxes();
+    } else if (outlined) {
+      // A speed block just switched to instant: take the outline off the last block.
+      workspace.setRunning(null);
+      outlined = false;
     }
   },
   onFinish: (result) => {
@@ -163,6 +179,7 @@ const scheduler = new Scheduler({
     view.sprite.classList.remove('locked');
     view.sync();
     workspace.setRunning(null);
+    outlined = false;
     showBoxes();
     if (result.status === 'error') {
       if (result.error instanceof RunError) {
@@ -198,7 +215,8 @@ function runStack(stack) {
     return;
   }
   clearOutput();
-  context = createContext({ turtle, print });
+  context = newContext();
+  scheduler.speed = startSpeed; // the last run's speed block does not carry over
   scheduler.start(runBlocks(stack.blocks, context));
 }
 
@@ -299,7 +317,7 @@ async function openFile(file) {
   history.record(project);
   updateHistoryButtons();
   clearOutput();
-  context = createContext({ turtle, print });
+  context = newContext();
   refreshBoxes();
   autosave.schedule();
 
@@ -333,7 +351,7 @@ function newProject() {
   history.record(project);
   updateHistoryButtons();
   clearOutput();
-  context = createContext({ turtle, print });
+  context = newContext();
   refreshBoxes();
   autosave.schedule();
   say(hadBlocks ? 'Starting fresh. Undo brings your blocks back.' : 'Starting fresh.');
@@ -393,10 +411,6 @@ document.addEventListener('keydown', (event) => {
 
 stopButton.addEventListener('click', () => scheduler.stop());
 stopButton.disabled = true;
-
-speedSelect.addEventListener('change', () => {
-  scheduler.speed = speedSelect.value;
-});
 
 hideButton.addEventListener('click', () => {
   const hidden = stage.classList.toggle('blocks-hidden');

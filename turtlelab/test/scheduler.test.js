@@ -4,7 +4,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { Scheduler, SPEEDS } from '../js/core/scheduler.js';
-import { RunError, Wait } from '../js/core/interpreter.js';
+import { RunError, Wait, runBlocks, createContext } from '../js/core/interpreter.js';
+import { Turtle } from '../js/core/turtle.js';
 
 /** A clock the test controls. */
 function fakeTime({ tickPerNow = 0 } = {}) {
@@ -214,4 +215,31 @@ test('stop cuts a wait short', async () => {
   sched.stop();
   assert.equal(time.timers[0].live, false);
   assert.deepEqual(await done, { status: 'stopped' });
+});
+
+// ---- A speed block in a real program, driving a real scheduler ------------------------------
+
+const move = () => ({ op: 'forward', args: [1] });
+
+test('a speed block changes how long the scheduler waits after it, and only from then on', async () => {
+  const time = fakeTime();
+  const sched = new Scheduler({ ...time, speed: 'slow' });
+  const context = createContext({ turtle: new Turtle(), setSpeed: (name) => (sched.speed = name) });
+  const done = sched.start(runBlocks([move(), { op: 'speed', args: [4] }, move(), move()], context));
+  assert.equal(time.timers[0].ms, SPEEDS.slow, 'the first block ran at the speed the run began with');
+  time.fire();
+  await flush();
+  assert.deepEqual(await done, { status: 'done' });
+  assert.equal(time.timers.length, 1, 'after the speed block there was nothing left to wait for');
+});
+
+test('a speed block can slow a run down as well as speed it up', async () => {
+  const time = fakeTime();
+  const sched = new Scheduler({ ...time, speed: 'instant' });
+  const context = createContext({ turtle: new Turtle(), setSpeed: (name) => (sched.speed = name) });
+  const done = sched.start(runBlocks([move(), { op: 'speed', args: [2] }, move()], context));
+  await flush();
+  assert.equal(time.timers[0].ms, SPEEDS.medium, 'the block after it waits at medium');
+  sched.stop();
+  await done;
 });

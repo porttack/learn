@@ -472,3 +472,32 @@ test('if else blocks nest, and a box decides which way each one goes', () => {
   ]);
   assert.equal(turtle.y, 3 * 10 - 3 * 1);
 });
+
+// ---- speed ---------------------------------------------------------------------------------------
+
+/** Run blocks and collect the names a speed block asked for. */
+function speedsAsked(blocks) {
+  const asked = [];
+  runWith(blocks, { setSpeed: (name) => asked.push(name) });
+  return asked;
+}
+
+test('a speed block picks slow, medium, fast or instant for 1, 2, 3 and 4', () => {
+  assert.deepEqual(speedsAsked([block('speed', 1), block('speed', 2), block('speed', 3), block('speed', 4)]), ['slow', 'medium', 'fast', 'instant']);
+});
+
+test('a speed off the ends is pulled back to the nearest one, and a fraction is rounded', () => {
+  assert.deepEqual(speedsAsked([block('speed', 0), block('speed', -7), block('speed', 99), block('speed', 2.6), block('speed', 2.4)]), ['slow', 'slow', 'instant', 'fast', 'medium']);
+});
+
+test('the speed can come from a calculation or a box, and it takes one step like any block', () => {
+  const asked = [];
+  const run = runWith([block('store1', 3), block('speed', op('add', { op: 'box1' }, 1))], { setSpeed: (name) => asked.push(name) });
+  assert.deepEqual(asked, ['instant']);
+  assert.equal(run.steps.length, 2);
+});
+
+test('a speed block with nothing plugged in says so, and without a listener it does nothing', () => {
+  assert.throws(() => runWith([{ op: 'speed', args: [null] }]), (e) => e instanceof RunError);
+  assert.doesNotThrow(() => runWith([block('speed', 4)]), 'tests and tools that give no setSpeed are fine');
+});

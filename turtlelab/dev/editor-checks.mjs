@@ -30,7 +30,7 @@ const rectJs = `(n) => { const r = n.getBoundingClientRect(); return { left: r.l
 /** The screen rectangle of the workspace block with this exact label, or null. */
 const nodeRect = (label) =>
   chrome.eval(`(() => {
-    const n = [...document.querySelectorAll(${JSON.stringify(BLOCK_NODES)})].find((n) => n.textContent.trim() === ${JSON.stringify(label)});
+    const n = [...document.querySelectorAll(${JSON.stringify(BLOCK_NODES)})].find((n) => n.textContent.replace(/\\s+/g, '') === ${JSON.stringify(label)}.replace(/\\s+/g, ''));
     return n ? (${rectJs})(n) : null;
   })()`);
 
@@ -78,7 +78,7 @@ async function dragFromPalette(op, left, top) {
 /** Tap the last workspace block with this label, at a point that really is on it. */
 async function tapBlockNamed(label) {
   const point = await chrome.eval(`(() => {
-    const nodes = [...document.querySelectorAll(${JSON.stringify(BLOCK_NODES)})].filter((n) => n.textContent.trim() === ${JSON.stringify(label)});
+    const nodes = [...document.querySelectorAll(${JSON.stringify(BLOCK_NODES)})].filter((n) => n.textContent.replace(/\\s+/g, '') === ${JSON.stringify(label)}.replace(/\\s+/g, ''));
     const node = nodes.at(-1);
     const r = node.getBoundingClientRect();
     for (let y = r.top + 4; y < r.bottom - 2; y += 3) {
@@ -289,7 +289,7 @@ try {
 
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Flow');
-  check('the Flow palette lists its seven blocks', (await count('.flyout .stack')) === 7);
+  check('the Flow palette lists its eight blocks', (await count('.flyout .stack')) === 8);
   await dragFromPalette('start', 450, 300);
   const startBlock = await nodeRect('start');
   await openPalette('Turtle');
@@ -556,6 +556,57 @@ try {
   await chrome.goto(BASE + '?demo=ifelseno&speed=instant');
   await pressRun();
   check('the false demo goes 100 steps down', near(-(await stepsUp()), 100 * scale, 3), `${(await stepsUp()).toFixed(0)}px up (negative = down)`);
+
+  // ---- The speed block: the only speed control, and it lasts for one run ----------------------
+  await chrome.goto(BASE + '?speed=instant');
+  check('the toolbar has no speed menu', (await count('.toolbar select')) === 0 && (await count('#speed')) === 0);
+
+  const runIsOver = () => chrome.eval(`!document.getElementById('run').disabled`);
+  /** Wait for the run to end. Returns how many milliseconds it took, or null if it was still going after `limit`. */
+  const timeRun = async (limit) => {
+    const began = Date.now();
+    while (Date.now() - began < limit) {
+      if (await runIsOver()) return Date.now() - began;
+      await chrome.sleep(50);
+    }
+    return null;
+  };
+
+  await chrome.goto(BASE + '?demo=slowdown&speed=instant');
+  await pressRun();
+  check('a speed block of 1 slows the program to a crawl (still running 300 ms later)', !(await runIsOver()));
+  const slowTook = await timeRun(8000);
+  check('and the program does finish, taking seconds, not instants', slowTook !== null && slowTook > 1200, `${slowTook} ms more`);
+
+  // Run starts again from the normal speed, even though the last run ended at slow.
+  await openPalette('Flow');
+  const tapPoint = await chrome.eval(`(() => {
+    document.querySelector('.flyout .stack[data-op=repeat]').scrollIntoView({ block: 'nearest' });
+    const stack = document.querySelector('.flyout .stack[data-op=repeat]');
+    const r = stack.getBoundingClientRect();
+    for (let y = r.top + 6; y < r.bottom - 2; y += 3) {
+      for (let x = r.left + 4; x < r.right - 2; x += 3) {
+        if (document.elementFromPoint(x, y)?.closest('.stack') === stack) return { x, y };
+      }
+    }
+    return null;
+  })()`);
+  await chrome.click(tapPoint.x, tapPoint.y);
+  await chrome.sleep(150);
+  const againTook = await timeRun(1500);
+  check('the next run starts at the normal speed again (a slow run would take 2 seconds)', againTook !== null && againTook < 1000, `${againTook} ms`);
+
+  await chrome.goto(BASE + '?demo=speedup&speed=instant');
+  await pressRun();
+  const upTook = await timeRun(8000);
+  check('a speed block of 4 in the middle of a slow run finishes it at once (fifty slow steps would take 25 seconds)', upTook !== null && upTook < 3500, `${upTook} ms more`);
+  check('and the outline that follows a slow run is gone afterwards', (await count('.workspace .running')) === 0, `${await count('.workspace .running')} outlined`);
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Flow');
+  await dragFromPalette('speed', 450, 150);
+  check('a speed block comes out of the palette set to 1, so using one does something you can see',
+    (await chrome.eval(`document.querySelector('.workspace .stack').textContent.replace(/\\s+/g, '')`)) === 'speed1');
 
   const forwardSocket = async () => {
     await chrome.goto(BASE + '?speed=instant');

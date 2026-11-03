@@ -17,7 +17,7 @@
 // Reporter blocks (the ones that hand back a number, like x) do not draw
 // anything, so they are ordinary functions that return a value right away.
 
-import { BLOCKS, BOX_COUNT } from './blocks-spec.js';
+import { BLOCKS, BOX_COUNT, SPEED_NAMES } from './blocks-spec.js';
 import { round10 } from './turtle.js';
 import { formatNumber } from './format.js';
 
@@ -50,11 +50,13 @@ const LONGEST_WAIT_MS = 2 ** 31 - 1;
 /**
  * Make the object that carries the program's state while it runs: the
  * turtle, and the boxes (variables). Boxes start at 0 unless told otherwise.
- * `random` gives numbers from 0 up to (not including) 1, and `print` receives
- * each line a print block shows. Tests replace them to get fixed answers.
+ * `random` gives numbers from 0 up to (not including) 1, `print` receives
+ * each line a print block shows, and `setSpeed` is told the name of the speed
+ * a speed block picks (the app hands it on to the scheduler). Tests replace
+ * them to get fixed answers.
  */
-export function createContext({ turtle, boxes = null, random = Math.random, print = () => {} }) {
-  return { turtle, boxes: boxes ?? new Array(BOX_COUNT).fill(0), random, print };
+export function createContext({ turtle, boxes = null, random = Math.random, print = () => {}, setSpeed = () => {} }) {
+  return { turtle, boxes: boxes ?? new Array(BOX_COUNT).fill(0), random, print, setSpeed };
 }
 
 /**
@@ -96,6 +98,12 @@ const COMMANDS = {
   startfill: (t) => t.startFill(),
   endfill: (t) => t.endFill(),
   print: (t, [value], ctx) => ctx.print(formatNumber(value)),
+  // 1 is slow and 4 is instant. Like a color, a number off the end is
+  // pulled back to the nearest speed, and 2.6 counts as 3.
+  speed: (t, [number], ctx) => {
+    const pick = Math.min(SPEED_NAMES.length, Math.max(1, Math.round(number)));
+    ctx.setSpeed(SPEED_NAMES[pick - 1]);
+  },
 };
 
 // Box n lives at ctx.boxes[n - 1]. store1 puts a number there, box1 reads it.

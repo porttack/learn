@@ -17,6 +17,9 @@
 //            'note'      a sticky note with text on it. It floats on the page,
 //                        connects to nothing, and never changes what runs.
 //   label    the word(s) written on the block
+//   lines    optional: the label split over two or more lines, centered, for a
+//            block that reads better stacked ('store in' over 'box1'). Only
+//            commands with a socket use it. `label` is still the plain text.
 //   args     the sockets, in order. `label` is a small word shown in front
 //            of the socket (like "x"), and `default` is what the socket
 //            holds when the block comes out of the palette. `type` is
@@ -56,6 +59,15 @@ export const BODY_KEYS = ['body', 'elseBody'];
 export function mouthCount(spec) {
   return spec.kind === 'clamp' ? spec.mouths ?? 1 : 0;
 }
+
+/**
+ * The speeds a `speed` block can pick, slowest first: 1 is slow, 4 is instant.
+ * They are the same names the scheduler uses (a test keeps the two in step).
+ */
+export const SPEED_NAMES = Object.freeze(['slow', 'medium', 'fast', 'instant']);
+
+/** The speed a program starts at every time it runs. */
+export const DEFAULT_SPEED = 'fast';
 
 /** The most characters a sticky note can hold. */
 export const NOTE_MAX_CHARS = 300;
@@ -274,9 +286,16 @@ export const BLOCKS = {
   wait: {
     palette: 'flow',
     kind: 'command',
-    label: 'wait tenths',
+    label: 'wait',
     args: [{ default: 10 }],
     help: 'Pauses for this many tenths of a second. 10 is one second. Waiting always takes real time, even at Instant speed.',
+  },
+  speed: {
+    palette: 'flow',
+    kind: 'command',
+    label: 'speed',
+    args: [{ default: 1 }],
+    help: 'Sets how fast the program runs from here on, so you can watch it draw. 1 is slow, 2 is medium, 3 is fast and 4 is instant. Every time you press Run it starts at 3.',
   },
   stop: {
     palette: 'flow',
@@ -410,6 +429,7 @@ for (let n = 1; n <= BOX_COUNT; n += 1) {
     palette: 'myblocks',
     kind: 'command',
     label: `store in box${n}`,
+    lines: ['store in', `box${n}`],
     args: [{ default: 0 }],
     help: `Puts a number in box${n} so you can use it later. A box starts at 0 each time you run.`,
   };

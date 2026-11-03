@@ -93,6 +93,10 @@ export const DEMOS = {
   // ends 100 steps up. The false one runs only the else mouth, 100 steps down.
   ifelseyes: [b('start'), b('clean'), { op: 'ifelse', args: [{ op: 'less', args: [1, 2] }], body: [b('forward', 100)], elseBody: [b('back', 100)] }],
   ifelseno: [b('start'), b('clean'), { op: 'ifelse', args: [{ op: 'less', args: [2, 1] }], body: [b('forward', 100)], elseBody: [b('back', 100)] }],
+  // A speed block slows the run to a crawl (the same program without it is over at once).
+  slowdown: [b('start'), b('clean'), b('speed', 1), b('forward', 30), b('forward', 30), b('forward', 30), b('forward', 30)],
+  // Slow, then instant: fifty slow steps would take 25 seconds, so finishing quickly proves the switch.
+  speedup: [b('start'), b('clean'), b('speed', 1), b('forward', 30), b('speed', 4), repeat(50, b('forward', 2))],
   // Prints a calculation.
   printing: [
     b('start'),

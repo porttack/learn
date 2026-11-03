@@ -58,6 +58,11 @@ function escapeXml(text) {
 
 let nextId = 1;
 
+const LINE_GAP = 12; // between the lines of a label over several lines (before SCALE)
+
+/** The lines a block's label is written on: one, unless the spec splits it. */
+const labelLines = (spec) => spec.lines ?? [spec.label];
+
 /**
  * Fill in the label placeholders the shape generator leaves in its SVG. The
  * generator draws the small labels beside sockets in a small font. The words
@@ -65,8 +70,23 @@ let nextId = 1;
  * so with `fullSize` they are drawn in the same font as the block's name, and
  * moved down so they still sit in the middle of the band they label.
  */
-function withLabels(markup, label, argLabels, fullSize = false) {
-  let out = markup.replace('block_label', () => escapeXml(label));
+function withLabels(markup, lines, argLabels, fullSize = false) {
+  let out = markup;
+  if (lines.length === 1) {
+    out = out.replace('block_label', () => escapeXml(lines[0]));
+  } else {
+    // A label over several lines, centered on the middle of the room the generator
+    // left for the label (it right-aligns one line, at x).
+    out = out.replace(
+      /<text class="block-text" font-size="([\d.]+)" fill="([^"]+)" text-anchor="end"><tspan x="(-?[\d.]+)" y="(-?[\d.]+)">block_label<\/tspan><\/text>/,
+      (all, size, fill, x, y) => {
+        const center = Number(x) - Math.max(...lines.map((line) => textWidth(line))) / 2;
+        const first = Number(y) - ((lines.length - 1) * LINE_GAP) / 2;
+        const rows = lines.map((line, i) => `<tspan x="${center}" y="${first + i * LINE_GAP}">${escapeXml(line)}</tspan>`).join('');
+        return `<text class="block-text" font-size="${size}" fill="${fill}" text-anchor="middle">${rows}</text>`;
+      },
+    );
+  }
   if (fullSize) {
     const size = FONT_SIZE; // the block's own text is drawn at this size inside the scaled shape
     out = out.replace(
@@ -136,12 +156,12 @@ function makeShape(spec, colors, extra) {
   // beside the mouths, not the sockets, so those are the words to give it.
   const mouthWords = spec.kind === 'clamp' && spec.args[0]?.type === 'boolean';
   const argLabels = mouthWords ? spec.mouthLabels ?? [] : spec.args.map((arg) => arg.label ?? '');
-  return { shape, markup: withLabels(markup, spec.label, argLabels, mouthWords) };
+  return { shape, markup: withLabels(markup, labelLines(spec), argLabels, mouthWords) };
 }
 
 /** How much wider than its minimum a block must be for its labels to fit. */
 function widthNeeded(spec, minimumWidth) {
-  const labelWidth = textWidth(spec.label);
+  const labelWidth = Math.max(...labelLines(spec).map((line) => textWidth(line)));
   const argLabelWidth = Math.max(0, ...spec.args.map((arg) => textWidth(arg.label ?? '', SMALL_FONT_SIZE)));
   let required;
   // A reporter's label starts about 13 in from its left edge.
@@ -389,6 +409,9 @@ export function layoutBlock(block) {
     ys: node.args.map((arg) => Math.max(0, heightOf(arg) - BOX_HEIGHT) / SCALE),
     mouths: new Array(mouthCount(spec)).fill(0),
   };
+  // A label over two lines needs more height than one over a single line. The
+  // generator makes a block taller by making its first socket taller.
+  if (spec.lines && spec.args.length > 0) extra.ys[0] = Math.max(extra.ys[0], (spec.lines.length - 1) * LINE_GAP);
 
   // Pick the width from the smallest version of this shape.
   const smallest = makeShape(spec, colors, extra).shape;

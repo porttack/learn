@@ -5,7 +5,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { BLOCKS, PALETTES, NOTE_MAX_CHARS, BODY_KEYS, mouthCount } from '../js/core/blocks-spec.js';
+import { BLOCKS, PALETTES, NOTE_MAX_CHARS, BODY_KEYS, mouthCount, SPEED_NAMES, DEFAULT_SPEED } from '../js/core/blocks-spec.js';
+import { SPEEDS } from '../js/core/scheduler.js';
 
 const entries = Object.entries(BLOCKS);
 
@@ -106,4 +107,27 @@ test('clamps have one or two mouths, and the labels beside mouths fit', () => {
   assert.equal(mouthCount(BLOCKS.ifelse), 2);
   assert.equal(mouthCount(BLOCKS.repeat), 1);
   assert.equal(mouthCount(BLOCKS.forward), 0);
+});
+
+test('a label split over lines reads the same as the plain label, and only a command with a socket has one', () => {
+  for (const [op, spec] of entries) {
+    if (!spec.lines) continue;
+    assert.equal(spec.kind, 'command', `${op}: only commands are drawn over several lines`);
+    assert.ok(spec.args.length > 0, `${op}: the extra height comes from its first socket`);
+    assert.ok(spec.lines.length >= 2 && spec.lines.length <= 3, `${op}: two or three lines`);
+    assert.equal(spec.lines.join(' '), spec.label, `${op}: the lines are the label`);
+  }
+  assert.deepEqual(BLOCKS.store1.lines, ['store in', 'box1']);
+  assert.equal(BLOCKS.wait.label, 'wait', 'the unit is explained by the help tip, not written on the block');
+  assert.match(BLOCKS.wait.help, /tenths of a second/);
+});
+
+test('the speed block uses the scheduler\'s own speeds, slowest first, and a run starts at fast', () => {
+  assert.deepEqual([...SPEED_NAMES], Object.keys(SPEEDS), 'the same names, in the same order');
+  const waits = SPEED_NAMES.map((name) => SPEEDS[name]);
+  assert.deepEqual(waits, [...waits].sort((a, b) => b - a), 'each one is quicker than the one before');
+  assert.equal(DEFAULT_SPEED, 'fast');
+  assert.ok(SPEED_NAMES.includes(DEFAULT_SPEED));
+  assert.equal(BLOCKS.speed.palette, 'flow');
+  assert.match(BLOCKS.speed.help, /1 is slow.*4 is instant/);
 });

@@ -157,3 +157,10 @@ test('the home page has a TurtleLab card', () => {
   const pathways = readFileSync(new URL('../_data/pathways.yml', here), 'utf8');
   assert.match(pathways, /- id: turtlelab\n\s+title: "TurtleLab"\n\s+url: \/turtlelab\//);
 });
+
+test('the toolbar has no speed menu: speed is a block, which you find in Flow', () => {
+  const html = read('index.html');
+  assert.ok(!/<select/i.test(html), 'no drop-down menus in the toolbar');
+  assert.ok(!/id="speed"/.test(html));
+  assert.match(read('guide.html'), /speed<\/em> block/);
+});
