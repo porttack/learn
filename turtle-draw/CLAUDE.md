@@ -128,7 +128,18 @@ the dashes out of them too for consistency.
   Copy stack button. Right-click opens the same bubble. Holding a palette
   block shows its tip without a Copy button. Holding a number box does
   nothing (a tap there is for typing).
-- **Palettes with no blocks yet are hidden** (Math and My Blocks until d, e).
+- **Boxes are the variables.** Three of them, as six fixed blocks in the
+  My Blocks palette (`store in box1/2/3` with a number socket, and reporters
+  `box1/2/3`), with no dropdowns. They are generated from `BOX_COUNT` in
+  `core/blocks-spec.js` and the interpreter. Calling variables "boxes" is the
+  teacher's choice. Their look is original (Sugar-style, yellow); nothing was
+  taken from anyone's palette screenshot. **Each run starts with all boxes at
+  0** (like a Python program), so a run never depends on an earlier one; the
+  context for a run is made fresh in `main.js`. A readout chip at the bottom
+  right shows the values (live at slow speeds), but only when the project
+  has a box block. Tapping a lone `box1` shows the value the last run left
+  behind and never changes it. Boxes hold numbers only for now.
+- **Palettes with no blocks yet are hidden** (Math until d).
 - **Coordinates:** paper 700 x 560, origin center, x right, y UP. Heading 0 is
   up and grows clockwise. Exact sin/cos at multiples of 90 so squares close.
 - **Color is RGB 0-255**, rounded and clamped (not an error), so a loop that
@@ -169,8 +180,9 @@ Flow palettes with `start` and `repeat`, drag, snap, unsnap, delete, plug report
 numbers, tap to run, run highlight and error outline, Roboto vendored).
 **b2** (undo and redo with buttons and keys, zoom and pan with buttons,
 wheel, drag and pinch, Shift-drag and press-and-hold copying, help bubble).
-Not yet: save and autosave (c); Math and the rest of Flow (d); My Blocks and
-the three boxes (e).
+**Boxes** (variables), done early at the teacher's request.
+Not yet: save and autosave (c); Math and the rest of Flow (d); the `to`
+block that makes your own blocks (e).
 
 Known limits to fix when they matter:
 - `blockfactory.js` only grows the space for the first two sockets when

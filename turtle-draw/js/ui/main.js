@@ -13,10 +13,11 @@ import { Turtle } from '../core/turtle.js';
 import { Scheduler, SPEEDS } from '../core/scheduler.js';
 import { History } from '../core/history.js';
 import { runBlocks, createContext, evalNumber, RunError } from '../core/interpreter.js';
-import { emptyProject, findRunStack, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
+import { emptyProject, findRunStack, usesBoxes, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
 import { BLOCKS } from '../core/blocks-spec.js';
 import { newBlock, cloneBlock, isReporterStack } from '../core/edit.js';
 import { CanvasView } from './canvas-view.js';
+import { formatNumber } from './block-view.js';
 import { Workspace } from './workspace.js';
 import { PaletteUI } from './palette.js';
 import { DEMOS } from './demos.js';
@@ -67,6 +68,26 @@ let view = null;
 let workspace = null;
 const turtle = new Turtle({ onOp: (op) => view.applyOp(op) });
 
+// The boxes (variables) belong to the most recent run. Each run starts with
+// fresh boxes at 0. The readout shows them, but only when the project has a
+// box block in it, so it stays out of the way until it matters.
+let context = createContext({ turtle });
+let boxesInUse = usesBoxes(project);
+const readout = document.createElement('p');
+readout.className = 'boxes-readout';
+stage.append(readout);
+
+function showBoxes() {
+  readout.hidden = !boxesInUse;
+  readout.textContent = context.boxes.map((value, i) => `box${i + 1}  ${formatNumber(value)}`).join('      ');
+}
+
+function refreshBoxes() {
+  boxesInUse = usesBoxes(project);
+  showBoxes();
+}
+showBoxes();
+
 const scheduler = new Scheduler({
   speed: speedSelect.value,
   onStart: () => {
@@ -79,7 +100,10 @@ const scheduler = new Scheduler({
   onStep: (block) => {
     view.requestSync();
     // Outlining every block would only slow down an instant run.
-    if (scheduler.speed !== 'instant') workspace.setRunning(block);
+    if (scheduler.speed !== 'instant') {
+      workspace.setRunning(block);
+      showBoxes();
+    }
   },
   onFinish: (result) => {
     runButton.disabled = false;
@@ -87,6 +111,7 @@ const scheduler = new Scheduler({
     view.sprite.classList.remove('locked');
     view.sync();
     workspace.setRunning(null);
+    showBoxes();
     if (result.status === 'error') {
       if (result.error instanceof RunError) {
         workspace.setError(result.error.block);
@@ -103,17 +128,20 @@ view = new CanvasView({ stage, turtle, isLocked: () => scheduler.running });
 
 /** Run a stack of blocks. A lone reporter (like x) just shows its value. */
 function runStack(stack) {
-  const context = createContext({ turtle });
   if (isReporterStack(stack)) {
+    // Tapping a reporter reads from the boxes the last run left behind.
+    // Looking at a value never changes it.
+    const reading = createContext({ turtle, boxes: context.boxes.slice() });
     const block = stack.blocks[0];
     try {
-      say(`${BLOCKS[block.op].label} is ${evalNumber(block, context, block)}`);
+      say(`${BLOCKS[block.op].label} is ${formatNumber(evalNumber(block, reading, block))}`);
     } catch (error) {
       if (!(error instanceof RunError)) throw error;
       say(error.message);
     }
     return;
   }
+  context = createContext({ turtle });
   scheduler.start(runBlocks(stack.blocks, context));
 }
 
@@ -133,6 +161,7 @@ function restore(snapshot) {
   workspace.render();
   workspace.setError(null);
   updateHistoryButtons();
+  refreshBoxes();
 }
 
 let palettes = null;
@@ -143,6 +172,7 @@ workspace = new Workspace({
     workspace.setError(null);
     history.record(project);
     updateHistoryButtons();
+    refreshBoxes();
   },
   onRunStack: runStack,
   onRunPaletteBlock: (op) => runStack({ x: 0, y: 0, blocks: [newBlock(op)] }),

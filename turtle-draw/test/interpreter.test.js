@@ -115,6 +115,59 @@ test('every block in the spec runs with the values it comes with', () => {
   }
 });
 
+test('a number stored in a box can be read back and used', () => {
+  const { turtle } = run([block('store1', 40), block('forward', { op: 'box1' })]);
+  assert.equal(turtle.y, 40);
+});
+
+test('boxes start at 0', () => {
+  const { turtle } = run([block('forward', { op: 'box2' })]);
+  assert.equal(turtle.y, 0);
+  assert.deepEqual(createContext({ turtle: new Turtle() }).boxes, [0, 0, 0]);
+});
+
+test('the three boxes are separate', () => {
+  const { turtle } = run([
+    block('store1', 10),
+    block('store2', 20),
+    block('store3', 30),
+    block('forward', { op: 'box1' }),
+    block('forward', { op: 'box2' }),
+    block('forward', { op: 'box3' }),
+  ]);
+  assert.equal(turtle.y, 60);
+});
+
+test('a box can hold a value reported by another block', () => {
+  const { turtle } = run([block('forward', 10), block('store2', { op: 'y' }), block('back', { op: 'box2' })]);
+  assert.equal(turtle.y, 0);
+});
+
+test('a box keeps its value through every lap of a loop', () => {
+  const { turtle } = run([block('store1', 5), repeat(3, block('forward', { op: 'box1' }))]);
+  assert.equal(turtle.y, 15);
+});
+
+test('storing again replaces what was in the box', () => {
+  const { turtle } = run([block('store1', 5), block('store1', 8), block('forward', { op: 'box1' })]);
+  assert.equal(turtle.y, 8);
+});
+
+test('a fresh run starts with empty boxes, but a context can be given values to read', () => {
+  const turtle = new Turtle();
+  const first = createContext({ turtle });
+  [...runBlocks([block('store1', 99)], first)];
+  assert.equal(first.boxes[0], 99);
+  assert.equal(createContext({ turtle }).boxes[0], 0);
+  const copy = createContext({ turtle, boxes: first.boxes.slice() });
+  assert.equal(copy.boxes[0], 99);
+});
+
+test('a store block with an empty socket is an error', () => {
+  const bad = block('store1', null);
+  assert.throws(() => run([bad]), (error) => error instanceof RunError && error.block === bad);
+});
+
 test('an empty socket is an error that names the block', () => {
   const bad = block('forward', null);
   assert.throws(

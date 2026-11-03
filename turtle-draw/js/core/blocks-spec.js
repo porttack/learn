@@ -197,6 +197,31 @@ export const BLOCKS = {
   },
 };
 
+// ---- My Blocks: boxes ---------------------------------------------------
+// A box holds one number so you can use it later. It is a variable. There are
+// three of them, each with a block that stores a number in it (store1, store2,
+// store3) and a block that reports what is in it (box1, box2, box3). They are
+// six separate blocks, not one block with a menu, so nothing needs typing.
+// A box starts at 0 each time a program runs.
+export const BOX_COUNT = 3;
+
+for (let n = 1; n <= BOX_COUNT; n += 1) {
+  BLOCKS[`store${n}`] = {
+    palette: 'myblocks',
+    kind: 'command',
+    label: `store in box${n}`,
+    args: [{ default: 0 }],
+    help: `Puts a number in box${n} so you can use it later. A box starts at 0 each time you run.`,
+  };
+  BLOCKS[`box${n}`] = {
+    palette: 'myblocks',
+    kind: 'reporter',
+    label: `box${n}`,
+    args: [],
+    help: `Reports the number stored in box${n}. It is 0 until you store something in it.`,
+  };
+}
+
 /** True if `op` names a real block. */
 export function isKnownOp(op) {
   return Object.prototype.hasOwnProperty.call(BLOCKS, op);

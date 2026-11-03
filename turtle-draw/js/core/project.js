@@ -93,6 +93,28 @@ export function findRunStack(project) {
   return { stack: topStart ?? topCommands, startCount };
 }
 
+/** Call `visit` for every block in a list, including blocks plugged into sockets and inside clamps. */
+export function walkBlocks(blocks, visit) {
+  for (const block of blocks) {
+    visit(block);
+    for (const arg of block.args ?? []) {
+      if (arg !== null && typeof arg === 'object') walkBlocks([arg], visit);
+    }
+    if (block.body) walkBlocks(block.body, visit);
+  }
+}
+
+/** True if any block in the project stores to or reads from a box. */
+export function usesBoxes(project) {
+  let found = false;
+  for (const stack of project.stacks) {
+    walkBlocks(stack.blocks, (block) => {
+      if (/^(store|box)\d+$/.test(block.op)) found = true;
+    });
+  }
+  return found;
+}
+
 // ---- Internals --------------------------------------------------------
 
 class ProjectError extends Error {}

@@ -7,6 +7,8 @@ import {
   emptyProject,
   validateProject,
   findRunStack,
+  usesBoxes,
+  walkBlocks,
   FORMAT_ID,
   FORMAT_VERSION,
 } from '../js/core/project.js';
@@ -170,5 +172,28 @@ test('nothing to run on an empty page', () => {
 
 test('a start block is a valid block in a project file', () => {
   const data = { app: FORMAT_ID, version: 1, stacks: [{ x: 0, y: 0, blocks: [{ op: 'start' }, { op: 'clean' }] }] };
+  assert.equal(validateProject(data).ok, true);
+});
+
+test('usesBoxes sees a box block anywhere, including plugged in and inside a clamp', () => {
+  const stack = (...blocks) => ({ stacks: [{ x: 0, y: 0, blocks }] });
+  assert.equal(usesBoxes({ stacks: [] }), false);
+  assert.equal(usesBoxes(stack({ op: 'forward', args: [100] })), false);
+  assert.equal(usesBoxes(stack({ op: 'store2', args: [5] })), true);
+  assert.equal(usesBoxes(stack({ op: 'forward', args: [{ op: 'box3' }] })), true);
+  assert.equal(usesBoxes(stack({ op: 'repeat', args: [2], body: [{ op: 'forward', args: [{ op: 'box1' }] }] })), true);
+});
+
+test('walkBlocks visits blocks in sockets and bodies', () => {
+  const seen = [];
+  walkBlocks(
+    [{ op: 'repeat', args: [2], body: [{ op: 'forward', args: [{ op: 'box1' }] }] }, { op: 'right', args: [90] }],
+    (block) => seen.push(block.op),
+  );
+  assert.deepEqual(seen, ['repeat', 'forward', 'box1', 'right']);
+});
+
+test('box blocks are valid in a project file', () => {
+  const data = { app: FORMAT_ID, version: 1, stacks: [{ x: 0, y: 0, blocks: [{ op: 'store1', args: [3] }, { op: 'forward', args: [{ op: 'box1' }] }] }] };
   assert.equal(validateProject(data).ok, true);
 });

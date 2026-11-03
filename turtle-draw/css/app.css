@@ -329,3 +329,22 @@ body {
 }
 
 .bubble button[hidden] { display: none; }
+
+/* ---- Boxes readout ---- */
+
+.boxes-readout {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 4;
+  margin: 0;
+  padding: 0.3rem 0.9rem;
+  border: 2px solid #daaf30;
+  border-radius: 1rem;
+  background: rgba(255, 251, 230, 0.95);
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+  pointer-events: none;
+}
+
+.boxes-readout[hidden] { display: none; }

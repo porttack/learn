@@ -17,7 +17,7 @@
 // Reporter blocks (the ones that hand back a number, like x) do not draw
 // anything, so they are ordinary functions that return a value right away.
 
-import { BLOCKS } from './blocks-spec.js';
+import { BLOCKS, BOX_COUNT } from './blocks-spec.js';
 
 /** An error with a friendly message and the block that caused it. */
 export class RunError extends Error {
@@ -31,9 +31,12 @@ export class RunError extends Error {
 /** Returned by a block to say "stop running this block or program now". */
 export const STOP = Symbol('stop');
 
-/** Make the object that carries the program's state while it runs. */
-export function createContext({ turtle }) {
-  return { turtle };
+/**
+ * Make the object that carries the program's state while it runs: the
+ * turtle, and the boxes (variables). Boxes start at 0 unless told otherwise.
+ */
+export function createContext({ turtle, boxes = null }) {
+  return { turtle, boxes: boxes ?? new Array(BOX_COUNT).fill(0) };
 }
 
 /**
@@ -51,8 +54,9 @@ export function* runBlocks(blocks, ctx) {
 
 // ---- Commands ---------------------------------------------------------
 
-// Simple commands run to completion in one go. Each one gets the turtle and
-// its arguments, already worked out into plain numbers.
+// Simple commands run to completion in one go. Each one gets the turtle, its
+// arguments (already worked out into plain numbers), and the context.
+// The store-in-box commands are added below the table.
 const COMMANDS = {
   // start only marks where a stack begins. When it runs it does nothing.
   start: () => {},
@@ -72,6 +76,13 @@ const COMMANDS = {
   startfill: (t) => t.startFill(),
   endfill: (t) => t.endFill(),
 };
+
+// Box n lives at ctx.boxes[n - 1]. store1 puts a number there, box1 reads it.
+for (let n = 1; n <= BOX_COUNT; n += 1) {
+  COMMANDS[`store${n}`] = (turtle, [value], ctx) => {
+    ctx.boxes[n - 1] = value;
+  };
+}
 
 // Flow commands decide what to run next, so they are generators too.
 const FLOW = {
@@ -103,7 +114,7 @@ function* runBlock(block, ctx) {
   // Go by the sockets the block is supposed to have, so a block that is
   // missing an argument reports an empty box instead of running with NaN.
   const args = BLOCKS[block.op].args.map((_, i) => evalNumber(block.args?.[i], ctx, block));
-  command(ctx.turtle, args);
+  command(ctx.turtle, args, ctx);
   yield block;
   return undefined;
 }
@@ -118,6 +129,9 @@ const REPORTERS = {
   heading: (ctx) => ctx.turtle.reportedHeading,
   pensize: (ctx) => ctx.turtle.penSize,
 };
+for (let n = 1; n <= BOX_COUNT; n += 1) {
+  REPORTERS[`box${n}`] = (ctx) => ctx.boxes[n - 1];
+}
 
 /**
  * Work out what goes in a socket: a plain number stays as it is, and a

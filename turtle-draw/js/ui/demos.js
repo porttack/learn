@@ -45,6 +45,22 @@ export const DEMOS = {
     repeat(5, b('forward', 220), b('right', 144)),
     b('endfill'),
   ],
+  // The square's size comes from a box.
+  boxes: [
+    b('start'),
+    b('clean'),
+    b('store1', 120),
+    repeat(4, b('forward', { op: 'box1' }), b('right', 90)),
+  ],
+  // Reads box1 BEFORE storing in it. Every run must see 0 first, so the turtle
+  // never moves. (If boxes survived from one run to the next, the second run
+  // would move it.) Used by the automated checks.
+  boxorder: [
+    b('start'),
+    b('clean'),
+    b('forward', { op: 'box1' }),
+    b('store1', 50),
+  ],
   // Runs until you press Stop: a good test that the page never freezes.
   forever: [
     b('start'),

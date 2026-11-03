@@ -65,7 +65,7 @@ try {
   await chrome.goto(BASE + '?speed=instant');
   check('Roboto loaded from the app itself', await chrome.eval(`[...document.fonts].some((f) => f.family === 'Roboto' && f.status === 'loaded')`));
   check('starts empty, with a hint', (await stacks()) === 0 && (await chrome.eval(`!document.querySelector('.hint').hidden`)));
-  check('three palettes have blocks so far', (await count('.palette-button')) === 3);
+  check('four palettes have blocks so far', (await count('.palette-button')) === 4);
 
   await openPalette('Turtle');
   check('the Turtle palette opens and lists its 11 blocks', (await chrome.eval(`!document.querySelector('.flyout').hidden`)) && (await count('.flyout .stack')) === 11,
@@ -73,7 +73,7 @@ try {
 
   // Every label, in every palette, must fit inside its block.
   const overflows = [];
-  for (const title of ['Turtle', 'Pen', 'Flow']) {
+  for (const title of ['Turtle', 'Pen', 'Flow', 'My Blocks']) {
     await openPalette(title);
     const bad = await chrome.eval(`(() => {
       const bad = [];
@@ -344,6 +344,61 @@ try {
   check('a block made and then deleted in one go is a single undoable step', (await stacks()) === 0);
   await clickButton('undo');
   check('and undoing it brings it back', (await stacks()) === 1);
+
+  // ---- Boxes (variables) -----------------------------------------------------------------------
+  await chrome.goto(BASE + '?speed=instant');
+  const readoutHidden = () => chrome.eval(`document.querySelector('.boxes-readout').hidden`);
+  const readoutText = () => chrome.eval(`document.querySelector('.boxes-readout').textContent.replace(/\\s+/g, ' ').trim()`);
+  check('the boxes readout stays hidden until a box is used', await readoutHidden());
+  await openPalette('My Blocks');
+  check('My Blocks lists the six box blocks', (await count('.flyout .stack')) === 6);
+  await dragFromPalette('store1', 450, 150);
+  check('the readout appears once a box block is on the page', !(await readoutHidden()) && (await readoutText()) === 'box1 0 box2 0 box3 0', await readoutText());
+
+  const literalRect = (index) =>
+    chrome.eval(`(() => { const n = document.querySelectorAll('.workspace .node.literal')[${index}]; return n ? (${rectJs})(n) : null; })()`);
+  const firstNumber = await literalRect(0);
+  await chrome.click(firstNumber.left + firstNumber.w / 2, firstNumber.top + firstNumber.h / 2);
+  await chrome.sleep(100);
+  await chrome.send('Input.insertText', { text: '40' });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+  await chrome.sleep(100);
+
+  const storeBlock = await nodeRect('store in box1');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', storeBlock.left + 6, storeBlock.bottom + 4);
+  const forwardNumber = await literalRect(1);
+  await openPalette('My Blocks');
+  await dragFromPalette('box1', forwardNumber.left + 2, forwardNumber.top + 2);
+  check('box1 plugs into the forward block like any reporter', (await count('.workspace .node.reporter')) === 1 && (await count('.workspace .node.literal')) === 1);
+
+  const storeNow = await nodeRect('store in box1');
+  await chrome.click(storeNow.left + 10, storeNow.top + storeNow.h / 2);
+  await chrome.sleep(300);
+  check('running it moves the turtle by what was stored in the box', near(await stepsUp(), 40 * scale, 3), `${(await stepsUp()).toFixed(1)}px up, expected ${(40 * scale).toFixed(1)}`);
+  check('the readout shows the stored number', (await readoutText()) === 'box1 40 box2 0 box3 0', await readoutText());
+
+  await dragFromPalette('box1', 700, 450);
+  // There are two box1 blocks now (one plugged in); the lone one is the last in the page.
+  const lone = await chrome.eval(`(() => {
+    const all = [...document.querySelectorAll(${JSON.stringify(BLOCK_NODES)})].filter((n) => n.textContent.trim() === 'box1');
+    return (${rectJs})(all.at(-1));
+  })()`);
+  await chrome.click(lone.left + 12, lone.top + lone.h / 2);
+  await chrome.sleep(150);
+  check('tapping a lone box1 shows what the last run left in it', /box1 is 40/.test(await messageText()), await messageText());
+  check('looking at a box does not change it', (await readoutText()) === 'box1 40 box2 0 box3 0');
+
+  await chrome.goto(BASE + '?demo=boxes&speed=instant');
+  await pressRun();
+  check('the boxes demo draws its square, sized by box1', near(await stepsUp(), 0, 2) && (await readoutText()) === 'box1 120 box2 0 box3 0', await readoutText());
+
+  await chrome.goto(BASE + '?demo=boxorder&speed=instant');
+  await pressRun();
+  await pressRun();
+  check('each run starts with empty boxes: reading a box before storing in it always gives 0',
+    near(await stepsUp(), 0, 1) && (await readoutText()) === 'box1 50 box2 0 box3 0', `${(await stepsUp()).toFixed(1)}px up`);
 
   // ---- Zoom and pan -----------------------------------------------------------------------------
   await chrome.goto(BASE + '?demo=square&speed=instant');
