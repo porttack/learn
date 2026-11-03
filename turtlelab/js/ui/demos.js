@@ -65,6 +65,12 @@ export const DEMOS = {
   ],
   // Waits most of a second, then moves. (Checks that waiting is real time.)
   waiting: [b('start'), b('clean'), b('wait', 8), b('forward', 50)],
+  // The program shown on the home page banner (made by dev/make-banner.mjs): a growing spiral.
+  banner: [
+    b('start'),
+    b('setcolor', 20, 110, 255),
+    repeat(75, b('forward', { op: 'box1' }), b('right', 89), b('store1', { op: 'add', args: [{ op: 'box1' }, 3] })),
+  ],
   // ( 2 + 3 ) x 4 with parentheses: the turtle goes up 20.
   parens: [
     b('start'),

@@ -44,6 +44,24 @@ test('no page loads anything from another website', () => {
   }
 });
 
+test('every page uses the turtle as its icon, and the icon is a plain, safe SVG', () => {
+  for (const page of PAGES) {
+    assert.match(read(page), /<link rel="icon" type="image\/svg\+xml" href="images\/favicon\.svg">/, page);
+  }
+  const icon = read('images/favicon.svg');
+  assert.match(icon, /<svg[^>]*viewBox=/);
+  assert.ok(!/<script|style=|onload|href=/i.test(icon));
+});
+
+test('the home page card has a banner, which is a PNG the size of the other cards', () => {
+  const pathways = readFileSync(new URL('../_data/pathways.yml', here), 'utf8');
+  assert.match(pathways, /- id: turtlelab[\s\S]*?image: \/turtlelab\/images\/banner\.png/);
+  const banner = readFileSync(new URL('images/banner.png', here));
+  assert.deepEqual([...banner.subarray(0, 4)], [0x89, 0x50, 0x4e, 0x47]);
+  assert.equal(banner.readUInt32BE(16), 1024, 'width');
+  assert.equal(banner.readUInt32BE(20), 254, 'height');
+});
+
 test('every page says what it is: language, viewport, and a title with the app name', () => {
   for (const page of PAGES) {
     const html = read(page);

@@ -52,6 +52,9 @@
 - id: turtlelab
   title: "TurtleLab"
   url: /turtlelab/
+  # The banner lives inside turtlelab/ because it shows Sugar-derived artwork
+  # (the blocks and the turtle), which must stay in the AGPL part of the repo.
+  image: /turtlelab/images/banner.png
   blurb: >-
     Snap blocks together and watch a turtle draw: squares, spirals, flowers,
     anything you can plan. A block-based drawing tool with variables, loops
