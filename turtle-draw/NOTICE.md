@@ -18,7 +18,8 @@ dependencies.
 | `js/ui/blockfactory.js` | `js/blockfactory.js`: the `SVG` block shape generator (`basicBlock`, `basicBox`, `basicClamp` and the helpers they use) | Copyright (c) 2015-20 Walter Bender | Converted to an ES module; kept only the shapes in use; fills, strokes and text are SVG attributes instead of `style` attributes (Turtle Draw's Content Security Policy forbids inline styles); removed the drop shadow filter; text color is a constant instead of `platformColor.blockText`. The geometry is unchanged. `dev/port-blockfactory.mjs` rebuilds the file from the original and shows every change. |
 | `js/ui/artwork.js` | `js/artwork.js`: the turtle SVG template and the `FILLCOLORS` / `STROKECOLORS` lists | Copyright (c) 2014-21 Walter Bender | Converted to an ES module; cut down to the turtle sprite and its colors; removed the XML prolog from the SVG; added `turtleSvg()`. The SVG paths are unchanged. |
 | `images/palette-turtle.svg`, `palette-pen.svg`, `palette-math.svg`, `palette-flow.svg`, `palette-myblocks.svg` | `js/artwork.js`: the constants `TURTLEPALETTEICON`, `PENPALETTEICON`, `NUMBERPALETTEICON`, `FLOWPALETTEICON`, `MYBLOCKSPALETTEICON` | Copyright (c) 2014-21 Walter Bender | Each inline SVG string was written out as its own file. Otherwise unchanged. |
-| `images/run-button.svg`, `stop-button.svg`, `hide-blocks-button.svg` | `header-icons/` | None stated in the files (they carry no license text; the repository's AGPL-3.0-or-later applies) | Copied unchanged. |
+| `images/run-button.svg`, `stop-button.svg`, `hide-blocks-button.svg`, `bigger-button.svg`, `smaller-button.svg` | `header-icons/` | None stated in the files (they carry no license text; the repository's AGPL-3.0-or-later applies) | Copied unchanged. |
+| `images/go-home-button.svg` | `header-icons/go-home-button.svg` | As above | Removed one red dashed guide rectangle that was left inside the drawing. Nothing else changed. |
 
 ## Sam Parkinson, platformstyle.js (Turtle Blocks JS)
 
@@ -47,5 +48,6 @@ Software Foundation (https://www.gnu.org/licenses/agpl-3.0.txt).
 ## Still to be added
 
 Entries are added when files are copied in. Still to come: more toolbar icons
-from `header-icons/` (save, open, undo, zoom and so on), and any further block
-shapes (the boolean ones, for the Math palette).
+from `header-icons/` (save and open), and any further block shapes (the boolean
+ones, for the Math palette). `images/undo.svg` and `redo.svg` are original
+drawings made for this project, not taken from anywhere.

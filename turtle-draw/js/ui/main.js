@@ -11,6 +11,7 @@
 import { APP_NAME } from '../app-info.js';
 import { Turtle } from '../core/turtle.js';
 import { Scheduler, SPEEDS } from '../core/scheduler.js';
+import { History } from '../core/history.js';
 import { runBlocks, createContext, evalNumber, RunError } from '../core/interpreter.js';
 import { emptyProject, findRunStack, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
 import { BLOCKS } from '../core/blocks-spec.js';
@@ -37,6 +38,8 @@ const runButton = $('run');
 const stopButton = $('stop');
 const speedSelect = $('speed');
 const hideButton = $('hide-blocks');
+const undoButton = $('undo');
+const redoButton = $('redo');
 
 function say(text) {
   message.textContent = text;
@@ -116,12 +119,30 @@ function runStack(stack) {
 
 // ---- Blocks --------------------------------------------------------------
 
+const history = new History(project);
+
+function updateHistoryButtons() {
+  undoButton.disabled = !history.canUndo;
+  redoButton.disabled = !history.canRedo;
+}
+
+/** Put the project back to an earlier (or later) copy and redraw it. */
+function restore(snapshot) {
+  if (!snapshot || workspace.busy) return;
+  project.stacks = snapshot.stacks;
+  workspace.render();
+  workspace.setError(null);
+  updateHistoryButtons();
+}
+
 let palettes = null;
 workspace = new Workspace({
   stage,
   project,
   onChange: () => {
     workspace.setError(null);
+    history.record(project);
+    updateHistoryButtons();
   },
   onRunStack: runStack,
   onRunPaletteBlock: (op) => runStack({ x: 0, y: 0, blocks: [newBlock(op)] }),
@@ -144,6 +165,26 @@ function pressRun() {
 }
 
 runButton.addEventListener('click', pressRun);
+
+undoButton.addEventListener('click', () => restore(history.undo()));
+redoButton.addEventListener('click', () => restore(history.redo()));
+updateHistoryButtons();
+
+$('zoom-in').addEventListener('click', () => workspace.zoomBy(1.25));
+$('zoom-out').addEventListener('click', () => workspace.zoomBy(0.8));
+$('view-home').addEventListener('click', () => workspace.resetView());
+
+// Ctrl or Cmd with Z undoes; with Shift (or Ctrl+Y) it redoes. Typing in the
+// number box keeps its own undo, so leave the keys alone there.
+document.addEventListener('keydown', (event) => {
+  if (event.target.matches?.('input, textarea, select')) return;
+  if (!(event.ctrlKey || event.metaKey)) return;
+  const key = event.key.toLowerCase();
+  if (key === 'z' && !event.shiftKey) restore(history.undo());
+  else if ((key === 'z' && event.shiftKey) || key === 'y') restore(history.redo());
+  else return;
+  event.preventDefault();
+});
 
 stopButton.addEventListener('click', () => scheduler.stop());
 stopButton.disabled = true;

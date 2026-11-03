@@ -287,6 +287,180 @@ try {
   check('Run draws the square from the demo blocks', red > 5000, `${red} red pixels`);
   await chrome.screenshot(SHOTS + 'editor-square-run.png');
 
+  // ---- Undo and redo ------------------------------------------------------------------------
+  const isDisabled = (id) => chrome.eval(`document.getElementById('${id}').disabled`);
+  const clickButton = async (id) => {
+    const b = await chrome.centerOf('#' + id);
+    await chrome.click(b.x, b.y);
+    await chrome.sleep(100);
+  };
+  const key = async (name, code, windowsVirtualKeyCode, modifiers) => {
+    for (const type of ['keyDown', 'keyUp']) {
+      await chrome.send('Input.dispatchKeyEvent', { type, key: name, code, windowsVirtualKeyCode, modifiers });
+    }
+    await chrome.sleep(100);
+  };
+  const CTRL = 2;
+  const SHIFT = 8;
+
+  await chrome.goto(BASE + '?speed=instant');
+  check('undo and redo start out greyed out', (await isDisabled('undo')) && (await isDisabled('redo')));
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 450, 200);
+  check('after an edit, undo is available', !(await isDisabled('undo')) && (await isDisabled('redo')));
+  await clickButton('undo');
+  check('undo takes the block away again', (await stacks()) === 0 && !(await isDisabled('redo')));
+  await clickButton('redo');
+  check('redo brings it back', (await stacks()) === 1 && (await nodeRect('forward')) !== null);
+
+  await key('z', 'KeyZ', 90, CTRL);
+  check('Ctrl+Z undoes', (await stacks()) === 0);
+  await key('y', 'KeyY', 89, CTRL);
+  check('Ctrl+Y redoes', (await stacks()) === 1);
+  await key('z', 'KeyZ', 90, CTRL);
+  await key('z', 'KeyZ', 90, CTRL | SHIFT);
+  check('Ctrl+Shift+Z redoes', (await stacks()) === 1);
+
+  const number = await chrome.eval(`(() => { const n = document.querySelector('.workspace .node.literal'); return (${rectJs})(n); })()`);
+  await chrome.click(number.left + number.w / 2, number.top + number.h / 2);
+  await chrome.sleep(100);
+  await chrome.send('Input.insertText', { text: '7' });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+  await chrome.sleep(100);
+  const numberText = () => chrome.eval(`document.querySelector('.workspace .node.literal').textContent.trim()`);
+  check('changing a number can be undone', (await numberText()) === '7' && (await (async () => { await clickButton('undo'); return numberText(); })()) === '100');
+
+  // Dropping a block on the palette where it started leaves nothing to undo.
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 450, 200);
+  await clickButton('undo');
+  await dragFromPalette('back', 450, 200);
+  const pal = await chrome.centerOf('.palette-button[title="Turtle"]');
+  const back = await nodeRect('back');
+  await chrome.drag({ x: back.left + 10, y: back.top + back.h / 2 }, { x: pal.x, y: pal.y }, 8);
+  await chrome.sleep(100);
+  check('a block made and then deleted in one go is a single undoable step', (await stacks()) === 0);
+  await clickButton('undo');
+  check('and undoing it brings it back', (await stacks()) === 1);
+
+  // ---- Zoom and pan -----------------------------------------------------------------------------
+  await chrome.goto(BASE + '?demo=square&speed=instant');
+  const width = async () => (await nodeRect('clean')).w;
+  const w1 = await width();
+  await clickButton('zoom-in');
+  const w2 = await width();
+  check('the zoom in button makes blocks bigger', near(w2 / w1, 1.25, 0.02), `x${(w2 / w1).toFixed(2)}`);
+  await clickButton('zoom-out');
+  await clickButton('zoom-out');
+  const w3 = await width();
+  check('the zoom out button makes them smaller', near(w3 / w1, 0.8, 0.02), `x${(w3 / w1).toFixed(2)}`);
+  await clickButton('view-home');
+  check('the home button puts the view back', near(await width(), w1, 0.5));
+
+  const wheel = (x, y, deltaX, deltaY, modifiers = 0) =>
+    chrome.send('Input.dispatchMouseEvent', { type: 'mouseWheel', x, y, deltaX, deltaY, modifiers });
+  const blockPlace = nodeRect;
+  const beforeWheel = await blockPlace('clean');
+  await wheel(700, 500, 0, -240, CTRL);
+  await chrome.sleep(100);
+  check('Ctrl and the wheel zooms in', (await width()) > w1 * 1.3, `x${((await width()) / w1).toFixed(2)}`);
+  await clickButton('view-home');
+
+  // Zooming about a point keeps the point under the pointer fixed. Use the
+  // top-left corner of a block as the point: it should not move.
+  const corner = await nodeRect('clean');
+  await wheel(corner.left + 1, corner.top + 1, 0, -200, CTRL);
+  await chrome.sleep(100);
+  const cornerAfter = await nodeRect('clean');
+  check('zooming around a block corner keeps that corner still', near(cornerAfter.left, corner.left, 3) && near(cornerAfter.top, corner.top, 3),
+    `moved ${(cornerAfter.left - corner.left).toFixed(1)},${(cornerAfter.top - corner.top).toFixed(1)}`);
+  await clickButton('view-home');
+
+  const p0 = await nodeRect('clean');
+  await wheel(700, 500, 0, 60);
+  await chrome.sleep(100);
+  const p1 = await nodeRect('clean');
+  check('the wheel scrolls the workspace', near(p0.top - p1.top, 60, 2) && near(p0.left, p1.left, 1), `moved ${(p1.top - p0.top).toFixed(0)}`);
+  await clickButton('view-home');
+
+  await chrome.drag({ x: 900, y: 600 }, { x: 960, y: 640 }, 6);
+  const dragged = await nodeRect('clean');
+  check('dragging empty space slides the blocks', near(dragged.left - p0.left, 60, 2) && near(dragged.top - p0.top, 40, 2),
+    `moved ${(dragged.left - p0.left).toFixed(0)},${(dragged.top - p0.top).toFixed(0)}`);
+  await clickButton('view-home');
+
+  const turtleNow = await chrome.centerOf('.turtle-sprite');
+  await chrome.drag({ x: turtleNow.x, y: turtleNow.y + 4 }, { x: turtleNow.x + 50, y: turtleNow.y + 40 }, 6);
+  const afterTurtle = await nodeRect('clean');
+  check('dragging the turtle moves the turtle, not the blocks', near(afterTurtle.left, p0.left, 1) && near(afterTurtle.top, p0.top, 1) &&
+    near((await chrome.centerOf('.turtle-sprite')).x - turtleNow.x, 50, 3));
+
+  await chrome.goto(BASE + '?speed=instant');
+  await clickButton('zoom-in');
+  await openPalette('Turtle');
+  await dragFromPalette('clean', 480, 150);
+  const zc = await nodeRect('clean');
+  await dragFromPalette('forward', zc.left + 6, zc.bottom + 4);
+  check('snapping still works when zoomed in', (await stacks()) === 1);
+
+  // ---- Copying a stack ------------------------------------------------------------------------------
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('clean', 450, 150);
+  const base = await nodeRect('clean');
+  await dragFromPalette('forward', base.left + 6, base.bottom + 4);
+  const nodes = () => count(BLOCK_NODES);
+  check('a stack of two blocks to copy', (await stacks()) === 1 && (await nodes()) === 2);
+  const grab = await nodeRect('clean');
+  await chrome.drag({ x: grab.left + 10, y: grab.top + grab.h / 2 }, { x: grab.left + 260, y: grab.top + 120 }, 8, { modifiers: SHIFT });
+  await chrome.sleep(100);
+  check('Shift-drag makes a copy of the whole stack and leaves the original', (await stacks()) === 2 && (await nodes()) === 4);
+  const originalStill = await chrome.eval(`(() => { const r = [...document.querySelectorAll('.workspace .node.command')].map((n) => n.getBoundingClientRect()); return r.some((b) => Math.abs(b.left - ${grab.left}) < 2 && Math.abs(b.top - ${grab.top}) < 2); })()`);
+  check('the original stayed where it was', originalStill);
+
+  // ---- Help bubble: press and hold, right click, Escape ----------------------------------------------------------
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 450, 200);
+  const held = await nodeRect('forward');
+  const spriteBefore = await chrome.centerOf('.turtle-sprite');
+  const point = { x: held.left + 10, y: held.top + held.h / 2 };
+  await chrome.mouse('mouseMoved', point.x, point.y, { buttons: 0 });
+  await chrome.mouse('mousePressed', point.x, point.y);
+  await chrome.sleep(750);
+  const bubbleText = () => chrome.eval(`(() => { const b = document.querySelector('.bubble'); return b.hidden ? null : b.querySelector('p').textContent; })()`);
+  const copyVisible = () => chrome.eval(`!document.querySelector('.bubble button').hidden`);
+  check('holding a block shows its one-line tip', /Moves the turtle forward/.test((await bubbleText()) ?? ''), await bubbleText());
+  check('a block in the workspace gets a Copy stack button', await copyVisible());
+  await chrome.mouse('mouseReleased', point.x, point.y);
+  await chrome.sleep(300);
+  check('letting go after a hold does not run the stack', near((await chrome.centerOf('.turtle-sprite')).y, spriteBefore.y, 1));
+  check('the bubble stays until you tap elsewhere', (await bubbleText()) !== null);
+  const copyButton = await chrome.centerOf('.bubble button');
+  await chrome.click(copyButton.x, copyButton.y);
+  await chrome.sleep(150);
+  check('Copy stack copies the stack and closes the bubble', (await stacks()) === 2 && (await bubbleText()) === null);
+
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: point.x, y: point.y, buttons: 0 });
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mousePressed', x: point.x, y: point.y, button: 'right', buttons: 2, clickCount: 1 });
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: point.x, y: point.y, button: 'right', buttons: 0, clickCount: 1 });
+  await chrome.sleep(200);
+  check('right-clicking a block shows its tip', (await bubbleText()) !== null);
+  await key('Escape', 'Escape', 27, 0);
+  check('Escape closes the bubble', (await bubbleText()) === null);
+
+  const fl = await flyoutRect('back');
+  const fp = { x: fl.left + 10, y: fl.top + fl.h / 2 };
+  await chrome.mouse('mouseMoved', fp.x, fp.y, { buttons: 0 });
+  await chrome.mouse('mousePressed', fp.x, fp.y);
+  await chrome.sleep(750);
+  check('holding a palette block shows its tip, without a Copy button', /backward/.test((await bubbleText()) ?? '') && !(await copyVisible()), await bubbleText());
+  await chrome.mouse('mouseReleased', fp.x, fp.y);
+  await chrome.sleep(100);
+  check('holding a palette block does not add one to the workspace', (await stacks()) === 2);
+
   // ---- The same things with a finger ---------------------------------------------------------
   // Touch input is its own set of events in Chrome, so it gets its own checks.
   await chrome.goto(BASE + '?speed=instant');
@@ -339,6 +513,33 @@ try {
   check('touch: tapping a number opens the text box', (await count('.number-input')) === 1);
   await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await chrome.sleep(100);
+
+  // Press and hold with a finger: the tip and the Copy stack button (a touchscreen has no Shift key).
+  const stacksBefore = await stacks();
+  const heldBlock = await nodeRect('forward');
+  await chrome.touch('touchStart', [{ x: heldBlock.left + 10, y: heldBlock.top + heldBlock.h / 2 }]);
+  await chrome.sleep(750);
+  const touchBubble = await chrome.eval(`(() => { const b = document.querySelector('.bubble'); return b.hidden ? null : b.querySelector('p').textContent; })()`);
+  await chrome.touch('touchEnd', []);
+  await chrome.sleep(200);
+  check('touch: holding a block shows its tip', /Moves the turtle forward/.test(touchBubble ?? ''), touchBubble);
+  const touchCopy = await chrome.centerOf('.bubble button');
+  await tap(touchCopy.x, touchCopy.y);
+  check('touch: the Copy stack button copies the stack', (await stacks()) === stacksBefore + 1);
+
+  // Two fingers on empty space pinch to zoom.
+  const pinchWidth = async () => (await nodeRect('clean')).w;
+  const homeButton = await chrome.centerOf('#view-home');
+  await tap(homeButton.x, homeButton.y);
+  const pw1 = await pinchWidth();
+  await chrome.touch('touchStart', [{ x: 760, y: 450, id: 1 }, { x: 860, y: 450, id: 2 }]);
+  for (let i = 1; i <= 8; i++) {
+    await chrome.touch('touchMove', [{ x: 760 - i * 10, y: 450, id: 1 }, { x: 860 + i * 10, y: 450, id: 2 }]);
+    await chrome.sleep(16);
+  }
+  await chrome.touch('touchEnd', []);
+  await chrome.sleep(100);
+  check('touch: pinching two fingers apart zooms in', (await pinchWidth()) > pw1 * 1.4, `x${((await pinchWidth()) / pw1).toFixed(2)}`);
 
   check('no console errors, exceptions or CSP violations', chrome.problems.length === 0, chrome.problems.join(' | '));
   const elsewhere = chrome.requests.filter((url) => !url.startsWith(BASE) && !url.startsWith('data:') && !url.startsWith('blob:'));

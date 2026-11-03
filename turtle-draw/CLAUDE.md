@@ -67,6 +67,8 @@ the dashes out of them too for consistency.
       scheduler.js    drives the generator: speed, 12 ms slices, stop
       turtle.js       state, geometry, records drawing ops (line, arc, fill...)
       edit.js         what happens when a block is dropped: detach, snap, plug
+      history.js      undo and redo (whole-project snapshots)
+      view.js         pan and zoom maths
       color.js        RGB 0-255
       project.js      project JSON: validate, find the Run stack
     js/ui/            the browser side
@@ -75,6 +77,7 @@ the dashes out of them too for consistency.
       block-view.js   layout (sizes, connection points) and SVG for stacks
       workspace.js    the editor: render, drag, snap, number editing, marks
       palette.js      palette buttons + the flyout of blocks to drag out
+      help-bubble.js  the tip bubble (press and hold, right-click) + Copy stack
       palette-colors.js, artwork.js (PORTED), demos.js
       canvas-view.js  paper canvas (1400x1120) + draggable turtle overlay
       main.js         wiring
@@ -107,6 +110,24 @@ the dashes out of them too for consistency.
 - **Tapping** a stack runs it; tapping a palette block runs that one block
   (a lone reporter shows its value in the message bar). Dropping on the
   palette deletes; the palette tints red while you hover.
+- **Undo and redo** keep whole-project JSON snapshots (`core/history.js`,
+  100 steps). `Workspace.onChange` fires after every committed edit and
+  `main.js` records it; a change that leaves the project identical (a block
+  made and deleted in one drag) records nothing. Ctrl/Cmd+Z undoes,
+  Ctrl+Y or Ctrl/Cmd+Shift+Z redoes (not while typing in the number box).
+  Pan and zoom are view settings, not edits, so they are not undoable.
+- **Pan and zoom** (`core/view.js`): drag empty space (paper or the gray
+  around it) to slide the blocks; two fingers pinch; the wheel slides;
+  Ctrl+wheel (also a trackpad pinch) zooms about the pointer; buttons zoom
+  and go home. The turtle and the palettes are not empty space. Zoom is
+  0.4 to 2.5. The flyout is not zoomed, so a block dragged out of it takes
+  the workspace's size.
+- **Copying a stack:** Shift-drag carries a copy of the whole stack, which
+  starts exactly on top of the original. Touch has no Shift, so press and
+  hold (500 ms, hardly moving) opens a bubble with the block's tip and a
+  Copy stack button. Right-click opens the same bubble. Holding a palette
+  block shows its tip without a Copy button. Holding a number box does
+  nothing (a tap there is for typing).
 - **Palettes with no blocks yet are hidden** (Math and My Blocks until d, e).
 - **Coordinates:** paper 700 x 560, origin center, x right, y UP. Heading 0 is
   up and grows clockwise. Exact sin/cos at multiples of 90 so squares close.
@@ -146,8 +167,10 @@ guide pages, real name, deploy.
 Done: **a** (scaffold, core, canvas), **b1** (block editor: Turtle, Pen and
 Flow palettes with `start` and `repeat`, drag, snap, unsnap, delete, plug reporters, type
 numbers, tap to run, run highlight and error outline, Roboto vendored).
-Not yet: undo, zoom, pan, duplicate, help tips (b2); save and autosave (c);
-Math and the rest of Flow (d); My Blocks (e).
+**b2** (undo and redo with buttons and keys, zoom and pan with buttons,
+wheel, drag and pinch, Shift-drag and press-and-hold copying, help bubble).
+Not yet: save and autosave (c); Math and the rest of Flow (d); My Blocks and
+the three boxes (e).
 
 Known limits to fix when they matter:
 - `blockfactory.js` only grows the space for the first two sockets when

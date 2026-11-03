@@ -14,13 +14,21 @@
 //   drop it on the palette   deleted.
 //   tap a block              run its stack.
 //   tap a number             type a new number.
+//   hold a block, or         a bubble with a one-line tip, and a Copy stack
+//   right-click it           button. Shift-drag copies a stack too.
+//   drag empty space         slide the workspace (two fingers: pinch to zoom).
+//   mouse wheel, trackpad    scroll to slide, Ctrl and scroll (or pinch) to zoom.
 //
 // The rules for how a drop changes the project live in core/edit.js. This
 // file works out which blocks the person meant and draws the result.
 
 import { layoutStack, renderStack, walkNodes } from './block-view.js';
+import { HelpBubble } from './help-bubble.js';
+import { BLOCKS } from '../core/blocks-spec.js';
+import { HOME_VIEW, zoomAbout, panBy } from '../core/view.js';
 import {
   newBlock,
+  cloneBlock,
   detachCommands,
   detachReporter,
   attachAfter,
@@ -35,6 +43,8 @@ const SVG_NS = 'http://www.w3.org/2000/svg';
 const SNAP_DISTANCE = 28; // how close (in screen pixels) a drop must be to snap
 const DRAG_THRESHOLD = 6; // how far a press must move before it is a drag
 const TOUCH_DRAG_THRESHOLD = 10; // fingers wobble more than mice
+const LONG_PRESS_MS = 500; // how long to hold a block for its help bubble
+const COPY_OFFSET = 30; // how far a copied stack lands from the original
 
 export class Workspace {
   /**
@@ -67,8 +77,9 @@ export class Workspace {
     this.layouts = [];
     this.registry = new Map(); // element id -> what it is
     this.byBlock = new Map(); // block object -> its node
-    this.view = { x: 0, y: 0, zoom: 1 }; // pan and zoom (used by a later milestone)
+    this.view = { ...HOME_VIEW }; // how the workspace is slid and zoomed
     this.pointer = null; // the press in progress, if any
+    this.pressTimer = null; // fires when a block has been held long enough
     this.drag = null; // the drag in progress, if any
     this.runningBlock = null;
     this.errorBlock = null;
@@ -92,8 +103,17 @@ export class Workspace {
     this.hint.textContent = 'Drag blocks here from the palettes. Run begins at the Start block (in Flow).';
     stage.append(this.hint);
 
+    this.bubble = new HelpBubble(stage);
+
     this.listen();
+    this.listenForView();
+    this.applyView();
     this.render();
+  }
+
+  /** True while a block is being carried. */
+  get busy() {
+    return this.drag !== null;
   }
 
   // ---- Drawing -----------------------------------------------------------
@@ -156,15 +176,27 @@ export class Workspace {
     this.svg.addEventListener('pointermove', (event) => this.move(event));
     this.svg.addEventListener('pointerup', (event) => this.release(event));
     this.svg.addEventListener('pointercancel', (event) => this.cancel(event));
+    this.svg.addEventListener('contextmenu', (event) => {
+      const entry = this.entryAt(event.target);
+      if (entry?.type === 'block') {
+        event.preventDefault();
+        this.showHelp(entry.node);
+      }
+    });
+  }
+
+  /** What was pressed: the block or number box under an element, if any. */
+  entryAt(target) {
+    const el = target.closest?.('[data-nid]');
+    return el ? this.registry.get(Number(el.dataset.nid)) : null;
   }
 
   /** A press on a block in the workspace. */
   pressBlock(event) {
     if (this.pointer || (event.pointerType === 'mouse' && event.button !== 0)) return;
-    const el = event.target.closest?.('[data-nid]');
-    const entry = el && this.registry.get(Number(el.dataset.nid));
+    const entry = this.entryAt(event.target);
     if (!entry) return;
-    this.startPress(event, { entry });
+    this.startPress(event, { entry, duplicate: event.shiftKey });
   }
 
   /** A press on a block in the palette (called by the palette). */
@@ -179,8 +211,10 @@ export class Workspace {
       startX: event.clientX,
       startY: event.clientY,
       threshold: event.pointerType === 'mouse' ? DRAG_THRESHOLD : TOUCH_DRAG_THRESHOLD,
+      longPressed: false,
       ...what,
     };
+    this.pressTimer = setTimeout(() => this.longPress(), LONG_PRESS_MS);
     // Capture on the workspace itself: it outlives the re-drawing that
     // happens when a drag begins, so the events keep coming.
     this.svg.setPointerCapture(event.pointerId);
@@ -192,6 +226,7 @@ export class Workspace {
     if (!this.drag) {
       const far = Math.hypot(event.clientX - this.pointer.startX, event.clientY - this.pointer.startY);
       if (far < this.pointer.threshold) return;
+      this.clearPressTimer();
       this.beginDrag();
       if (!this.drag) return;
     }
@@ -200,10 +235,13 @@ export class Workspace {
 
   release(event) {
     if (!this.pointer || event.pointerId !== this.pointer.id) return;
-    const { entry, palette } = this.pointer;
+    const { entry, palette, longPressed } = this.pointer;
+    this.clearPressTimer();
     this.pointer = null;
     if (this.drag) {
       this.drop(event);
+    } else if (longPressed) {
+      // The help bubble is showing. Letting go is not a tap.
     } else if (palette) {
       this.onRunPaletteBlock(palette.op);
     } else if (entry.type === 'literal') {
@@ -215,8 +253,52 @@ export class Workspace {
 
   cancel(event) {
     if (!this.pointer || event.pointerId !== this.pointer.id) return;
+    this.clearPressTimer();
     this.pointer = null;
     if (this.drag) this.drop(event, { keepWhereItIs: true });
+  }
+
+  clearPressTimer() {
+    clearTimeout(this.pressTimer);
+    this.pressTimer = null;
+  }
+
+  // ---- Help bubble and copying a stack -----------------------------------
+
+  /** A block has been held down without moving: show its tip. */
+  longPress() {
+    this.pressTimer = null;
+    const press = this.pointer;
+    if (!press || this.drag) return;
+    if (press.palette) {
+      press.longPressed = true;
+      this.bubble.show({ rect: press.palette.rect, text: BLOCKS[press.palette.op].help });
+    } else if (press.entry.type === 'block') {
+      press.longPressed = true;
+      this.showHelp(press.entry.node);
+    }
+    // A press on a number box is for typing, so it gets no bubble.
+  }
+
+  /** Show the tip for a block in the workspace, with a Copy stack button. */
+  showHelp(node) {
+    this.bubble.show({
+      rect: node.el.getBoundingClientRect(),
+      text: BLOCKS[node.block.op].help,
+      onCopy: () => this.copyStack(node.stack),
+    });
+  }
+
+  /** Make a copy of a whole stack, a little way from the original. */
+  copyStack(stack) {
+    const copy = {
+      x: stack.x + COPY_OFFSET,
+      y: stack.y + COPY_OFFSET,
+      blocks: stack.blocks.map(cloneBlock),
+    };
+    this.project.stacks.push(copy);
+    this.render();
+    this.onChange();
   }
 
   // ---- Dragging ----------------------------------------------------------
@@ -234,6 +316,13 @@ export class Workspace {
     if (palette) {
       origin = this.toWorld(palette.rect.left, palette.rect.top);
       carried = { x: origin.x, y: origin.y, blocks: [newBlock(palette.op)] };
+      this.project.stacks.push(carried);
+    } else if (this.pointer.duplicate) {
+      // Shift-drag: carry a copy of the whole stack. It starts right on top of
+      // the original, so wherever you grabbed it, you are still holding it there.
+      const source = (entry.type === 'literal' ? entry.owner : entry.node).stack;
+      origin = { x: source.x, y: source.y };
+      carried = { x: source.x, y: source.y, blocks: source.blocks.map(cloneBlock) };
       this.project.stacks.push(carried);
     } else {
       // A press on a number box picks up the block the number belongs to.
@@ -364,6 +453,92 @@ export class Workspace {
       }
     }
     return best;
+  }
+
+  // ---- Panning and zooming -----------------------------------------------
+
+  applyView() {
+    const { x, y, zoom } = this.view;
+    this.viewport.setAttribute('transform', `translate(${x} ${y}) scale(${zoom})`);
+  }
+
+  setView(view) {
+    this.view = view;
+    this.applyView();
+    this.bubble.hide();
+  }
+
+  /** Zoom in or out around the middle of the stage (used by the buttons). */
+  zoomBy(factor) {
+    const box = this.svg.getBoundingClientRect();
+    this.setView(zoomAbout(this.view, factor, box.width / 2, box.height / 2));
+  }
+
+  resetView() {
+    this.setView({ ...HOME_VIEW });
+  }
+
+  /**
+   * Slide and zoom with the pointer. On empty space (the paper, or the gray
+   * around it) one finger or the mouse slides the workspace, and two fingers
+   * pinch to zoom. The wheel slides, and Ctrl with the wheel (which is also
+   * what a trackpad pinch sends) zooms around the pointer. The turtle and the
+   * palettes are not "empty space", so they keep their own behavior.
+   */
+  listenForView() {
+    const isEmpty = (target) =>
+      target === this.stage || target.classList?.contains('paper') || target.classList?.contains('paper-box');
+    const fingers = new Map(); // pointer id -> where it is now
+
+    const spread = () => {
+      const [a, b] = [...fingers.values()];
+      return { distance: Math.hypot(a.x - b.x, a.y - b.y), x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    };
+
+    this.stage.addEventListener('pointerdown', (event) => {
+      if (!isEmpty(event.target) || (event.pointerType === 'mouse' && event.button !== 0)) return;
+      this.bubble.hide();
+      fingers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      this.stage.setPointerCapture(event.pointerId);
+    });
+
+    this.stage.addEventListener('pointermove', (event) => {
+      const before = fingers.get(event.pointerId);
+      if (!before) return;
+      if (fingers.size === 1) {
+        this.setView(panBy(this.view, event.clientX - before.x, event.clientY - before.y));
+        fingers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      } else if (fingers.size === 2) {
+        const was = spread();
+        fingers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        const now = spread();
+        const box = this.svg.getBoundingClientRect();
+        let view = zoomAbout(this.view, now.distance / was.distance, was.x - box.left, was.y - box.top);
+        view = panBy(view, now.x - was.x, now.y - was.y);
+        this.setView(view);
+      }
+    });
+
+    const lift = (event) => fingers.delete(event.pointerId);
+    this.stage.addEventListener('pointerup', lift);
+    this.stage.addEventListener('pointercancel', lift);
+
+    this.stage.addEventListener(
+      'wheel',
+      (event) => {
+        if (!isEmpty(event.target) && !this.svg.contains(event.target)) return; // e.g. scrolling the flyout
+        event.preventDefault();
+        if (event.ctrlKey) {
+          const box = this.svg.getBoundingClientRect();
+          const factor = Math.exp(-event.deltaY * 0.01);
+          this.setView(zoomAbout(this.view, factor, event.clientX - box.left, event.clientY - box.top));
+        } else {
+          const lines = event.deltaMode === 1 ? 16 : 1; // a mouse wheel counts in lines
+          this.setView(panBy(this.view, -event.deltaX * lines, -event.deltaY * lines));
+        }
+      },
+      { passive: false },
+    );
   }
 
   // ---- Typing a number ---------------------------------------------------

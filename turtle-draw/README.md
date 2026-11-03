@@ -4,8 +4,8 @@ Block-based turtle graphics that runs entirely in your browser. Nothing you do
 is sent anywhere.
 
 **Status: under construction.** You can drag blocks out of the palettes,
-snap them together, and run them. Saving, undo, zoom, the Math palette and My
-Blocks are still to come. See `CLAUDE.md` for the plan and the rules this
+snap them together, and run them, with undo, zoom and pan. Saving, the Math
+palette and My Blocks are still to come. See `CLAUDE.md` for the plan and the rules this
 project follows.
 
 ## Try it

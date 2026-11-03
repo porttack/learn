@@ -85,6 +85,10 @@ body {
   height: 100%;
 }
 
+.toolbar-gap {
+  width: 0.5rem;
+}
+
 .icon-button:disabled {
   opacity: 0.4;
   cursor: default;
@@ -100,6 +104,7 @@ body {
   position: relative;
   flex: 1 1 auto;
   min-height: 0;
+  touch-action: none; /* dragging empty space slides the blocks, it never scrolls the page */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -289,3 +294,38 @@ body {
 }
 
 .message:empty { visibility: hidden; }
+
+/* ---- Help bubble ---- */
+
+.bubble {
+  position: absolute;
+  z-index: 7;
+  max-width: 16rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.7rem;
+  background: #fffbe6;
+  border: 2px solid #b98900;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: #1b1f23;
+}
+
+.bubble[hidden] { display: none; }
+
+.bubble p {
+  margin: 0;
+  line-height: 1.35;
+}
+
+.bubble button {
+  margin-top: 0.5rem;
+  min-height: 2.25rem;
+  padding: 0 0.9rem;
+  font: inherit;
+  border: 0;
+  border-radius: 0.4rem;
+  background: #4da6ff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.bubble button[hidden] { display: none; }
