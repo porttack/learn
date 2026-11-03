@@ -195,7 +195,6 @@ function pillMarkup(width, height, colors) {
 function layoutRow(node, spec, colors) {
   const boolean = spec.returns === 'boolean';
   const fontSize = FONT_SIZE * SCALE;
-  const labelWidth = textWidth(spec.label) * SCALE;
   const sizeOf = (arg) => arg.child ?? arg.literal;
 
   // The row is as tall as its tallest socket, with a little room above and below.
@@ -203,28 +202,32 @@ function layoutRow(node, spec, colors) {
   const height = contentHeight + 2 * ROW_PAD_V;
   const plug = numberPlug();
 
-  // Lay the items out left to right: the label sits between the two sockets
-  // (infix) or before them (prefix).
-  const order = spec.layout === 'infix' ? ['socket0', 'label', 'socket1'] : ['label', 'socket0', 'socket1'];
+  // The things in the row, left to right. The label sits between the two
+  // sockets (infix), before them (prefix), or there is text on both sides of
+  // one socket (wrap, for parentheses).
+  const text = (value) => ({ text: value });
+  let items;
+  if (spec.layout === 'infix') items = [{ socket: 0 }, text(spec.label), { socket: 1 }];
+  else if (spec.layout === 'wrap') items = [text(spec.label), { socket: 0 }, text(spec.endLabel)];
+  else items = [text(spec.label), { socket: 0 }, { socket: 1 }];
+  const gap = spec.layout === 'wrap' ? 3 : ROW_GAP;
+
   let x = boolean ? height / 2 + ROW_PAD_H - 2 : plug[0] + ROW_PAD_H;
-  let labelX = 0;
   const socketAt = [];
-  order.forEach((item, k) => {
-    if (k > 0) x += ROW_GAP;
-    if (item === 'label') {
-      labelX = x;
-      x += labelWidth;
+  let labelMarkup = '';
+  items.forEach((item, k) => {
+    if (k > 0) x += gap;
+    if (item.text !== undefined) {
+      labelMarkup +=
+        `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${x}" y="${height / 2 + fontSize * 0.35}">${escapeXml(item.text)}</text>`;
+      x += textWidth(item.text) * SCALE;
     } else {
-      const index = Number(item.slice(-1));
-      const box = sizeOf(node.args[index]);
-      socketAt[index] = { x, y: ROW_PAD_V + (contentHeight - box.h) / 2 };
+      const box = sizeOf(node.args[item.socket]);
+      socketAt[item.socket] = { x, y: ROW_PAD_V + (contentHeight - box.h) / 2 };
       x += box.w;
     }
   });
   const width = x + (boolean ? height / 2 + ROW_PAD_H - 2 : ROW_PAD_H);
-
-  const labelMarkup =
-    `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${labelX}" y="${height / 2 + fontSize * 0.35}">${escapeXml(spec.label)}</text>`;
   let outline;
   let size;
   if (boolean) {

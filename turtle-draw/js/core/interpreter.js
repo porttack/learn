@@ -176,6 +176,13 @@ const REPORTERS = {
   y: (ctx) => ctx.turtle.reportedY,
   heading: (ctx) => ctx.turtle.reportedHeading,
   pensize: (ctx) => ctx.turtle.penSize,
+  penred: (ctx) => ctx.turtle.color[0],
+  pengreen: (ctx) => ctx.turtle.color[1],
+  penblue: (ctx) => ctx.turtle.color[2],
+
+  // Parentheses give back what is inside. (Which part of a sum is worked out
+  // first is already decided by which block is inside which.)
+  paren: (ctx, [value]) => value,
 
   add: (ctx, [a, b]) => a + b,
   subtract: (ctx, [a, b]) => a - b,

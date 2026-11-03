@@ -450,7 +450,7 @@ try {
   // ---- Math, if, forever, stop, wait, print --------------------------------------------------------
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Math');
-  check('the Math palette lists its eleven blocks', (await count('.flyout .stack')) === 11, `${await count('.flyout .stack')}`);
+  check('the Math palette lists its twelve blocks', (await count('.flyout .stack')) === 12, `${await count('.flyout .stack')}`);
   // Math and comparison blocks read left to right: both sockets on one row.
   const rowSockets = (op) =>
     chrome.eval(`(() => {
@@ -460,6 +460,20 @@ try {
       const slots = parts.filter((p) => p.kind.includes('literal')).map((p) => p.r);
       return { block: { left: block.left, right: block.right, top: block.top, bottom: block.bottom }, slots: slots.map((r) => ({ left: r.left, right: r.right, top: r.top })) };
     })()`);
+  const modText = await chrome.eval(`document.querySelector('.flyout .stack[data-op=mod] .node').textContent.trim()`);
+  check('the modulo block is labelled %', modText === '%', modText);
+  const parenRow = await chrome.eval(`(() => {
+    const stack = document.querySelector('.flyout .stack[data-op=paren]');
+    const nodes = [...stack.querySelectorAll('.node')];
+    const block = nodes[0].getBoundingClientRect();
+    const slot = nodes.find((n) => n.getAttribute('class').includes('literal')).getBoundingClientRect();
+    const texts = [...nodes[0].querySelectorAll('text')].map((t) => ({ text: t.textContent.trim(), r: t.getBoundingClientRect() })).filter((t) => t.text);
+    return { block: [block.left, block.right], slot: [slot.left, slot.right], texts: texts.map((t) => ({ text: t.text, left: t.r.left, right: t.r.right })) };
+  })()`);
+  const [openText, closeText] = parenRow.texts;
+  check('the paren block draws ( before its slot and ) after it',
+    openText?.text === '(' && closeText?.text === ')' && openText.right <= parenRow.slot[0] + 1 && closeText.left >= parenRow.slot[1] - 1 &&
+    parenRow.slot[0] > parenRow.block[0] && parenRow.slot[1] < parenRow.block[1], JSON.stringify(parenRow));
   for (const op of ['add', 'less', 'random']) {
     const row = await rowSockets(op);
     check(`${op}: the two number slots sit side by side inside the block`,
@@ -514,6 +528,18 @@ try {
     `${nestedRect.left.toFixed(0)}-${nestedRect.right.toFixed(0)} inside ${holderRect.left.toFixed(0)}-${holderRect.right.toFixed(0)}`);
   check('blocks plug into blocks, as deep as you like', (await stacks()) === 1 && (await count('.workspace .node.reporter')) === 2 && (await nodeRect('\u00d7')).left > addRect.left,
     `${await stacks()} stacks, ${await count('.workspace .node.reporter')} reporters`);
+
+  await chrome.goto(BASE + '?demo=parens&speed=instant');
+  await pressRun();
+  check('( 2 + 3 ) x 4 with parentheses goes 20 steps', near(await stepsUp(), 20 * scale, 2), `${(await stepsUp()).toFixed(1)}px up, expected ${(20 * scale).toFixed(1)}`);
+
+  await chrome.goto(BASE + '?demo=pencolor&speed=instant');
+  await pressRun();
+  check('the pen color readers report red, green and blue', (await readoutText()) === 'box1 10 box2 20 box3 30', await readoutText());
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Pen');
+  check('the Pen palette lists eleven blocks, including pen red, green and blue', (await count('.flyout .stack')) === 11, `${await count('.flyout .stack')}`);
 
   // Stop, forever.
   await chrome.goto(BASE + '?speed=instant');

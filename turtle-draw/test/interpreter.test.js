@@ -364,3 +364,52 @@ test('print sends each value, tidied up, to the context', () => {
 test('print works when nobody is listening', () => {
   assert.doesNotThrow(() => runWith([block('print', 1)]));
 });
+
+// ---- Parentheses and the pen color readers --------------------------------------------------
+
+test('parentheses give back what is inside them', () => {
+  assert.equal(runWith([forwardBy(op('paren', 7))]).turtle.y, 7);
+  assert.equal(runWith([forwardBy(op('paren', op('add', 3, 4)))]).turtle.y, 7);
+});
+
+test('parentheses change nothing: the block inside is still worked out first', () => {
+  // (2 + 3) x 4 written with a paren block, and without one, give the same answer.
+  const withParens = runWith([forwardBy(op('multiply', op('paren', op('add', 2, 3)), 4))]).turtle.y;
+  const without = runWith([forwardBy(op('multiply', op('add', 2, 3), 4))]).turtle.y;
+  assert.equal(withParens, 20);
+  assert.equal(without, 20);
+});
+
+test('parentheses with nothing valid inside are an error, like any socket', () => {
+  assert.throws(() => runWith([forwardBy({ op: 'paren', args: [null] })]), RunError);
+});
+
+test('% is the remainder (modulo), the same as the old mod block', () => {
+  assert.equal(runWith([forwardBy(op('mod', 17, 5))]).turtle.y, 2);
+  assert.equal(runWith([forwardBy(op('mod', -1, 5))]).turtle.y, 4);
+});
+
+test('the pen color readers report the red, green and blue of the pen', () => {
+  const { turtle } = runWith([
+    block('setcolor', 10, 20, 30),
+    block('store1', { op: 'penred' }),
+    block('store2', { op: 'pengreen' }),
+    block('store3', { op: 'penblue' }),
+  ]);
+  assert.deepEqual(turtle.color, [10, 20, 30]);
+  const { context } = runWith([block('setcolor', 10, 20, 30), block('store1', { op: 'penred' }), block('store2', { op: 'pengreen' }), block('store3', { op: 'penblue' })]);
+  assert.deepEqual(context.boxes, [10, 20, 30]);
+});
+
+test('the pen color readers start at the default red pen', () => {
+  const { context } = runWith([block('store1', { op: 'penred' }), block('store2', { op: 'pengreen' }), block('store3', { op: 'penblue' })]);
+  assert.deepEqual(context.boxes, [255, 0, 0]);
+});
+
+test('a color made with the readers can be used to make a darker one', () => {
+  const { turtle } = runWith([
+    block('setcolor', 200, 100, 50),
+    block('setcolor', op('subtract', { op: 'penred' }, 100), op('subtract', { op: 'pengreen' }, 100), { op: 'penblue' }),
+  ]);
+  assert.deepEqual(turtle.color, [100, 0, 50]);
+});

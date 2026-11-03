@@ -65,6 +65,20 @@ export const DEMOS = {
   ],
   // Waits most of a second, then moves. (Checks that waiting is real time.)
   waiting: [b('start'), b('clean'), b('wait', 8), b('forward', 50)],
+  // ( 2 + 3 ) x 4 with parentheses: the turtle goes up 20.
+  parens: [
+    b('start'),
+    b('clean'),
+    b('forward', { op: 'multiply', args: [{ op: 'paren', args: [{ op: 'add', args: [2, 3] }] }, 4] }),
+  ],
+  // Reads the pen color back into the three boxes.
+  pencolor: [
+    b('start'),
+    b('setcolor', 10, 20, 30),
+    b('store1', { op: 'penred' }),
+    b('store2', { op: 'pengreen' }),
+    b('store3', { op: 'penblue' }),
+  ],
   // Waits a minute (so Stop has to cut the wait short).
   longwait: [b('start'), b('clean'), b('wait', 600), b('forward', 50)],
   // An if with nothing plugged into it: Run must explain, and mark the if.

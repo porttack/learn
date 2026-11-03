@@ -24,7 +24,9 @@
 //            only fits a socket of the same type.
 //   layout   for a reporter with sockets: how it reads. 'infix' puts the
 //            label between its two sockets, like a sum: [ a ] + [ b ].
-//            'prefix' puts the label first: random [ a ] [ b ]. Either way
+//            'prefix' puts the label first: random [ a ] [ b ]. 'wrap' puts
+//            text on both sides of one socket, like ( [ a ] ), using
+//            `label` before it and `endLabel` after. Either way
 //            the sockets sit side by side inside the block, so an expression
 //            reads left to right. (Blocks without a layout stack their
 //            sockets down the right edge.)
@@ -147,13 +149,6 @@ export const BLOCKS = {
     args: [{ default: 5 }],
     help: 'Sets how thick the lines are.',
   },
-  pensize: {
-    palette: 'pen',
-    kind: 'reporter',
-    label: 'pen size',
-    args: [],
-    help: 'Reports how thick the lines are right now.',
-  },
   setcolor: {
     palette: 'pen',
     kind: 'command',
@@ -189,6 +184,34 @@ export const BLOCKS = {
     label: 'end fill',
     args: [],
     help: 'Fills in the shape the turtle walked since start fill, using the pen color from when it started.',
+  },
+  pensize: {
+    palette: 'pen',
+    kind: 'reporter',
+    label: 'pen size',
+    args: [],
+    help: 'Reports how thick the lines are right now.',
+  },
+  penred: {
+    palette: 'pen',
+    kind: 'reporter',
+    label: 'pen red',
+    args: [],
+    help: 'Reports how much red is in the pen color right now, from 0 to 255.',
+  },
+  pengreen: {
+    palette: 'pen',
+    kind: 'reporter',
+    label: 'pen green',
+    args: [],
+    help: 'Reports how much green is in the pen color right now, from 0 to 255.',
+  },
+  penblue: {
+    palette: 'pen',
+    kind: 'reporter',
+    label: 'pen blue',
+    args: [],
+    help: 'Reports how much blue is in the pen color right now, from 0 to 255.',
   },
 
   // ---- Flow ------------------------------------------------------------
@@ -275,9 +298,18 @@ export const BLOCKS = {
     palette: 'math',
     kind: 'reporter',
     layout: 'infix',
-    label: 'mod',
+    label: '%',
     args: [{ default: 10 }, { default: 3 }],
-    help: 'The remainder left over when the first number is divided by the second. 10 mod 3 is 1.',
+    help: 'Modulo: the remainder left over when the first number is divided by the second. 10 % 3 is 1.',
+  },
+  paren: {
+    palette: 'math',
+    kind: 'reporter',
+    layout: 'wrap',
+    label: '(',
+    endLabel: ')',
+    args: [{ default: 0 }],
+    help: 'Parentheses. They give back whatever is inside them. Putting a block inside another block already decides what is worked out first, so these are for reading: ( 3 + 4 ) \u00d7 2.',
   },
   random: {
     palette: 'math',

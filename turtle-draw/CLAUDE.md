@@ -147,6 +147,12 @@ the dashes out of them too for consistency.
   socket) and running it is an error that outlines the `if`. Pulling a block
   out of a number socket restores the number; out of a pointed one leaves it
   empty.
+- **Pen color is RGB, so there is no shade.** `set color` takes red, green and
+  blue (0 to 255) and `fill screen` the same. The reporters `pen red`, `pen
+  green`, `pen blue` read the pen color back (the RGB version of another
+  app's color and shade readers). A gray is equal red, green and blue.
+  The Pen palette puts all four readers at the bottom, like the Turtle
+  palette.
 - **Flow.** `start` (hat), `repeat`, `forever`, `if`, `wait`, `stop`. `stop`
   ends the whole program (inside a My Block it will leave just that block):
   it has a tail, so nothing snaps below it, and it cannot go on top of a stack.
@@ -166,8 +172,13 @@ the dashes out of them too for consistency.
   rectangle outline come from Sugar's `basicBox`. The teacher liked how
   another app lays out math and comparisons horizontally; nothing of that
   app's artwork was used. All other blocks keep Sugar's right-edge sockets.
-- **Math.** `+ - x ÷ mod random one-of`, `< > =`, `print`. `mod` follows
-  Python (never negative for a positive divisor). `random` of two whole
+- **Math.** `+ - x ÷ %`, `( )`, `random`, `one of`, `< > =`, `print`. The
+  modulo block's op name is `mod` but it is labelled `%` (matches the Python
+  course) and follows Python (never negative for a positive divisor). The
+  `( )` block (`paren`, layout `wrap`) gives back what is inside it. It
+  changes no answer, because which block is inside which already decides the
+  order; it is there so expressions read like the Python students will write,
+  and because the teacher asked for it. `random` of two whole
   numbers is a whole number and both ends can come up. `=` ignores tiny
   rounding errors. Divide or mod by zero is a friendly error naming the
   block. There is no separate `number` block: every socket already holds a
