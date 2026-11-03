@@ -29,6 +29,10 @@ test('a new block comes with the numbers from the spec', () => {
   assert.deepEqual(newBlock('clean'), { op: 'clean', args: [] });
 });
 
+test('a new start block has no sockets', () => {
+  assert.deepEqual(newBlock('start'), { op: 'start', args: [] });
+});
+
 test('a new clamp block has an empty body', () => {
   assert.deepEqual(newBlock('repeat'), { op: 'repeat', args: [4], body: [] });
 });

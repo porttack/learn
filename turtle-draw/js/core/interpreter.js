@@ -54,6 +54,8 @@ export function* runBlocks(blocks, ctx) {
 // Simple commands run to completion in one go. Each one gets the turtle and
 // its arguments, already worked out into plain numbers.
 const COMMANDS = {
+  // start only marks where a stack begins. When it runs it does nothing.
+  start: () => {},
   clean: (t) => t.clean(),
   forward: (t, [steps]) => t.forward(steps),
   back: (t, [steps]) => t.back(steps),

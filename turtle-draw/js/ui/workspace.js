@@ -89,7 +89,7 @@ export class Workspace {
 
     this.hint = document.createElement('p');
     this.hint.className = 'hint';
-    this.hint.textContent = 'Pick a palette on the left, then drag blocks here.';
+    this.hint.textContent = 'Drag blocks here from the palettes. Run begins at the Start block (in Flow).';
     stage.append(this.hint);
 
     this.listen();
@@ -332,6 +332,9 @@ export class Workspace {
     const topPoint = at(carriedLayout, first, first.slot);
     const bottomPoint = at(carriedLayout, last, last.tab);
     const reporter = isReporterStack(carried);
+    // A stack that begins with a hat has a cap on top: it cannot hang from
+    // anything. (It can still sit on top of another stack by its bottom.)
+    const canHang = first.kind !== 'hat';
 
     let best = null;
     const consider = (point, mine, target) => {
@@ -348,13 +351,15 @@ export class Workspace {
           node.args.forEach((_, i) => {
             consider(at(layout, node, node.docks[1 + i]), topPoint, { kind: 'socket', owner: node, index: i });
           });
-        } else if (node.kind !== 'reporter') {
+        } else if (node.kind !== 'reporter' && canHang) {
           consider(at(layout, node, node.tab), topPoint, { kind: 'after', node });
           if (node.mouth) consider(at(layout, node, node.mouth), topPoint, { kind: 'inside', node });
         }
       });
+      // Blocks can go on top of a stack, unless it starts with a hat (its
+      // cap is the top) or is a lone reporter.
       const head = layout.nodes[0];
-      if (!reporter && head.kind !== 'reporter') {
+      if (!reporter && head.kind !== 'reporter' && head.kind !== 'hat') {
         consider(at(layout, head, head.slot), bottomPoint, { kind: 'above', layout });
       }
     }

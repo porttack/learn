@@ -11,8 +11,9 @@ const b = (op, ...args) => ({ op, args });
 const repeat = (n, ...body) => ({ op: 'repeat', args: [n], body });
 
 export const DEMOS = {
-  square: [b('clean'), repeat(4, b('forward', 150), b('right', 90))],
+  square: [b('start'), b('clean'), repeat(4, b('forward', 150), b('right', 90))],
   flower: [
+    b('start'),
     b('clean'),
     b('fillscreen', 25, 25, 70),
     b('setcolor', 255, 120, 200),
@@ -20,6 +21,7 @@ export const DEMOS = {
     repeat(12, repeat(2, b('arc', 60, 140), b('right', 120)), b('right', 30)),
   ],
   arcs: [
+    b('start'),
     b('clean'),
     b('setcolor', 220, 0, 0),
     b('arc', 90, 120),
@@ -31,6 +33,7 @@ export const DEMOS = {
     b('arc', -90, 120),
   ],
   star: [
+    b('start'),
     b('clean'),
     b('penup'),
     b('setxy', -110, -100),
@@ -44,6 +47,7 @@ export const DEMOS = {
   ],
   // Runs until you press Stop: a good test that the page never freezes.
   forever: [
+    b('start'),
     b('clean'),
     b('setpensize', 2),
     repeat(1e9, b('forward', 3), b('right', 7)),

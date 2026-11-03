@@ -12,7 +12,7 @@ import { APP_NAME } from '../app-info.js';
 import { Turtle } from '../core/turtle.js';
 import { Scheduler, SPEEDS } from '../core/scheduler.js';
 import { runBlocks, createContext, evalNumber, RunError } from '../core/interpreter.js';
-import { emptyProject, findMainStack, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
+import { emptyProject, findRunStack, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
 import { BLOCKS } from '../core/blocks-spec.js';
 import { newBlock, cloneBlock, isReporterStack } from '../core/edit.js';
 import { CanvasView } from './canvas-view.js';
@@ -132,14 +132,18 @@ palettes = new PaletteUI({ stage, workspace });
 
 // ---- Buttons -------------------------------------------------------------
 
-runButton.addEventListener('click', () => {
-  const stack = findMainStack(project);
+/** Press Run: start at the Start block (see findRunStack for the exact rule). */
+function pressRun() {
+  const { stack, startCount } = findRunStack(project);
   if (!stack) {
-    say('Put a clean block at the top of the stack you want Run to start. Or tap any stack to run it.');
+    say('Drag some blocks onto the page first. Run begins at the Start block, which is in the Flow palette.');
     return;
   }
   runStack(stack);
-});
+  if (startCount > 1) say(`There are ${startCount} Start blocks. Run uses the top one. Tap a stack to run that one instead.`);
+}
+
+runButton.addEventListener('click', pressRun);
 
 stopButton.addEventListener('click', () => scheduler.stop());
 stopButton.disabled = true;
@@ -154,7 +158,4 @@ hideButton.addEventListener('click', () => {
   hideButton.title = hidden ? 'Show blocks' : 'Hide blocks';
 });
 
-if (params.get('autorun') === '1') {
-  const stack = findMainStack(project);
-  if (stack) runStack(stack);
-}
+if (params.get('autorun') === '1') pressRun();

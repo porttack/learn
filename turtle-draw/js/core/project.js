@@ -21,7 +21,7 @@
 // The "app" name is the file format's name. It stays the same even if the
 // app is renamed, so old saved pictures keep opening.
 
-import { isKnownOp } from './blocks-spec.js';
+import { BLOCKS, isKnownOp } from './blocks-spec.js';
 
 export const FORMAT_ID = 'porttack-turtle';
 export const FORMAT_VERSION = 1;
@@ -63,20 +63,34 @@ export function validateProject(data) {
 }
 
 /**
- * The stack the Run button starts: the topmost stack whose first block is
- * `clean` or `fillscreen`. "Topmost" means the smallest y, and the smallest
- * x breaks a tie. Returns null if there is no such stack.
+ * What the Run button should run.
+ *
+ * Run starts at a `start` block: the topmost stack that begins with one.
+ * ("Topmost" means the smallest y, and the smallest x breaks a tie.) If
+ * there is no start block anywhere, it runs the topmost stack of commands
+ * instead, so pressing Run always does something sensible with what is on
+ * the page. A lone reporter (like x) is not a program, so it never counts.
+ *
+ * Returns { stack, startCount }. `stack` is null when there is nothing to
+ * run, and `startCount` is how many start blocks there are, so the editor
+ * can say so when there is more than one.
  */
-export function findMainStack(project) {
-  let best = null;
+export function findRunStack(project) {
+  const higher = (a, b) => b === null || a.y < b.y || (a.y === b.y && a.x < b.x);
+  let topStart = null;
+  let topCommands = null;
+  let startCount = 0;
   for (const stack of project.stacks) {
     const first = stack.blocks[0];
-    if (!first || (first.op !== 'clean' && first.op !== 'fillscreen')) continue;
-    if (best === null || stack.y < best.y || (stack.y === best.y && stack.x < best.x)) {
-      best = stack;
+    if (!first) continue;
+    if (first.op === 'start') {
+      startCount += 1;
+      if (higher(stack, topStart)) topStart = stack;
+    } else if (BLOCKS[first.op].kind !== 'reporter' && higher(stack, topCommands)) {
+      topCommands = stack;
     }
   }
-  return best;
+  return { stack: topStart ?? topCommands, startCount };
 }
 
 // ---- Internals --------------------------------------------------------

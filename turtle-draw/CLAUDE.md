@@ -127,8 +127,13 @@ the dashes out of them too for consistency.
   a negative radius is treated as positive.
 - **`clean`** resets everything: white paper, turtle home, pen down, red,
   size 5.
-- **Run button** runs the topmost stack whose first block is `clean` or
-  `fill screen`. Clicking any stack runs that stack. One program at a time.
+- **Run button** (`findRunStack` in `core/project.js`) starts at the topmost
+  stack that begins with a `start` block (a "hat": cap on top, so nothing
+  snaps above it, but it can be dropped on top of an existing stack). With
+  several start blocks it runs the top one and says so. With none it falls
+  back to the topmost stack of commands, so Run always does something with
+  what is on the page. Tapping any stack runs that stack. One program at a
+  time. `start` itself does nothing when it runs.
 - **Dragging the turtle** (shell moves, head turns, rounded to whole units
   and degrees) is blocked while a program runs.
 
@@ -139,7 +144,7 @@ save/load, d Math and Flow, e My Blocks and boxes, f SVG export, privacy and
 guide pages, real name, deploy.
 
 Done: **a** (scaffold, core, canvas), **b1** (block editor: Turtle, Pen and
-Flow palettes with `repeat`, drag, snap, unsnap, delete, plug reporters, type
+Flow palettes with `start` and `repeat`, drag, snap, unsnap, delete, plug reporters, type
 numbers, tap to run, run highlight and error outline, Roboto vendored).
 Not yet: undo, zoom, pan, duplicate, help tips (b2); save and autosave (c);
 Math and the rest of Flow (d); My Blocks (e).
@@ -153,6 +158,26 @@ Known limits to fix when they matter:
   in `block-view.js` throws for them).
 - `?demo=name` (see `demos.js`) loads a program into the workspace for trying
   things out. It is a developer shortcut, not a feature for students.
+
+## Licence exit option (deferred on purpose)
+
+The teacher asked on 2026-11-03 whether the app could leave AGPL and chose to
+**stay on AGPL for now and revisit later**. Everything except the Sugar Labs
+material is original (Eric Brown) and could be licensed any way. The Sugar
+material is: `js/ui/blockfactory.js` (about 820 code lines, AGPL), the turtle
+sprite in `js/ui/artwork.js`, the five `images/palette-*.svg` and three
+toolbar icons (AGPL), and the hex values in `js/ui/palette-colors.js`
+(GPL-3.0-or-later; just colors). Roboto is Apache 2.0 and fine under any
+licence. Only `block-view.js` touches the ported generator, so the seam is
+clean.
+
+To leave AGPL: write an independent shape generator (it must be genuinely
+independent in structure and constants, not a retyping; whoever wrote this
+code has seen the original), draw new turtle and icons, pick new colors,
+drop the AGPL notices, relicense. The blocks would stop looking like
+Sugar's. **Decide before milestone d**, which ports boolean shapes and
+entangles more of the original. Until then, keep adding every borrowed file
+to `NOTICE.md`. Not legal advice; ask a lawyer if it matters.
 
 ## Deploy gate
 

@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {
   emptyProject,
   validateProject,
-  findMainStack,
+  findRunStack,
   FORMAT_ID,
   FORMAT_VERSION,
 } from '../js/core/project.js';
@@ -126,21 +126,49 @@ test('only known fields survive validation', () => {
   assert.equal({}.polluted, undefined);
 });
 
-test('the main stack is the topmost one that starts with clean or fill screen', () => {
-  const stack = (x, y, op) => ({ x, y, blocks: [{ op }] });
-  const lower = stack(0, 200, 'clean');
-  const top = stack(300, 50, 'fillscreen');
-  const project = { stacks: [lower, stack(0, 10, 'forward'), top] };
-  assert.equal(findMainStack(project), top);
+const stackAt = (x, y, ...ops) => ({ x, y, blocks: ops.map((op) => ({ op, args: [] })) });
+
+test('Run starts at the topmost stack that begins with a start block', () => {
+  const lower = stackAt(0, 300, 'start', 'clean');
+  const top = stackAt(300, 50, 'start', 'forward');
+  const plainAbove = stackAt(0, 10, 'forward');
+  const result = findRunStack({ stacks: [lower, plainAbove, top] });
+  assert.equal(result.stack, top);
+  assert.equal(result.startCount, 2);
 });
 
-test('when two main stacks are level, the leftmost wins', () => {
-  const left = { x: 10, y: 50, blocks: [{ op: 'clean' }] };
-  const right = { x: 90, y: 50, blocks: [{ op: 'clean' }] };
-  assert.equal(findMainStack({ stacks: [right, left] }), left);
+test('a start stack beats a plain stack that is higher up the page', () => {
+  const plain = stackAt(0, 10, 'forward');
+  const started = stackAt(0, 200, 'start');
+  assert.equal(findRunStack({ stacks: [plain, started] }).stack, started);
 });
 
-test('no main stack when nothing starts with clean or fill screen', () => {
-  assert.equal(findMainStack({ stacks: [] }), null);
-  assert.equal(findMainStack({ stacks: [{ x: 0, y: 0, blocks: [{ op: 'forward' }] }] }), null);
+test('when two start stacks are level, the leftmost wins', () => {
+  const left = stackAt(10, 50, 'start');
+  const right = stackAt(90, 50, 'start');
+  assert.equal(findRunStack({ stacks: [right, left] }).stack, left);
+});
+
+test('with no start block, Run falls back to the topmost stack of commands', () => {
+  const lower = stackAt(0, 200, 'back');
+  const top = stackAt(40, 20, 'forward');
+  const result = findRunStack({ stacks: [lower, top] });
+  assert.equal(result.stack, top);
+  assert.equal(result.startCount, 0);
+});
+
+test('a lone reporter is not a program, so Run ignores it', () => {
+  const reporter = stackAt(0, 0, 'x');
+  const commands = stackAt(0, 100, 'forward');
+  assert.equal(findRunStack({ stacks: [reporter, commands] }).stack, commands);
+  assert.equal(findRunStack({ stacks: [reporter] }).stack, null);
+});
+
+test('nothing to run on an empty page', () => {
+  assert.deepEqual(findRunStack({ stacks: [] }), { stack: null, startCount: 0 });
+});
+
+test('a start block is a valid block in a project file', () => {
+  const data = { app: FORMAT_ID, version: 1, stacks: [{ x: 0, y: 0, blocks: [{ op: 'start' }, { op: 'clean' }] }] };
+  assert.equal(validateProject(data).ok, true);
 });

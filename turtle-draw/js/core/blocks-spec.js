@@ -11,6 +11,8 @@
 //   palette  which of the five palettes it lives in
 //   kind     'command'   snaps above and below other blocks
 //            'clamp'     a command with a C-shaped hole for blocks inside
+//            'hat'       a command with a cap on top: blocks snap below it,
+//                        but nothing can snap above it. It starts a stack.
 //            'reporter'  plugs into a socket and hands back a number
 //   label    the word(s) written on the block
 //   args     the sockets, in order. `label` is a small word shown in front
@@ -179,6 +181,13 @@ export const BLOCKS = {
   },
 
   // ---- Flow ------------------------------------------------------------
+  start: {
+    palette: 'flow',
+    kind: 'hat',
+    label: 'start',
+    args: [],
+    help: 'The Run button starts here. Snap the blocks you want to run under this one.',
+  },
   repeat: {
     palette: 'flow',
     kind: 'clamp',

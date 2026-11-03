@@ -50,6 +50,14 @@ test('repeat with zero, negative or fractional counts', () => {
   assert.equal(run([repeat(2.9, block('forward', 10))]).turtle.y, 20);
 });
 
+test('a start block does nothing itself, then the blocks under it run', () => {
+  const start = { op: 'start', args: [] };
+  const { turtle, steps } = run([start, block('forward', 40)]);
+  assert.equal(turtle.y, 40);
+  assert.equal(steps[0], start, 'start still takes a step, so it can be highlighted');
+  assert.equal(steps.length, 2);
+});
+
 test('an empty repeat still pauses every lap, so a huge empty loop cannot freeze the tab', () => {
   const { steps } = run([repeat(5)]);
   assert.equal(steps.length, 5);

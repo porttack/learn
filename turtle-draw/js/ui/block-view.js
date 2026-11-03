@@ -17,6 +17,7 @@
 // "docks": the points where other things connect. Their order is fixed:
 //   command  [ slot (top), socket 0, socket 1, ..., tab (bottom) ]
 //   clamp    [ slot, socket 0, ..., mouth (where inner blocks start), tab ]
+//   hat      like a command, but the first dock is a cap: nothing connects there
 //   reporter [ plug (its left edge) ]
 
 import { SVG } from './blockfactory.js';
@@ -103,6 +104,8 @@ function makeShape(spec, colors, extra) {
     markup = shape.basicBox();
   } else {
     shape.setInnies(sockets);
+    // A hat has a cap on top instead of a slot, so nothing can go above it.
+    if (spec.kind === 'hat') shape.setCap(true);
     markup = shape.basicBlock();
   }
   const argLabels = spec.args.map((arg) => arg.label ?? '');

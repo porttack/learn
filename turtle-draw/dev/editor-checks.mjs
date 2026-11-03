@@ -20,7 +20,7 @@ const chrome = await launch({ width: 1200, height: 800 });
 
 // ---- Helpers that look at the page ----------------------------------------
 
-const BLOCK_NODES = ".workspace .node.command, .workspace .node.clamp, .workspace .node.reporter";
+const BLOCK_NODES = ".workspace .node.command, .workspace .node.clamp, .workspace .node.hat, .workspace .node.reporter";
 const rectJs = `(n) => { const r = n.getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, w: r.width, h: r.height }; }`;
 
 /** The screen rectangle of the workspace block with this exact label, or null. */
@@ -214,11 +214,70 @@ try {
   check('a second block snaps under the first, still inside', (await stacks()) === 1 && near(inside2.left, inside.left, 2));
   await chrome.screenshot(SHOTS + 'editor-repeat.png');
 
-  // ---- Run button -----------------------------------------------------------------------------
-  const runBtn = await chrome.centerOf('#run');
-  await chrome.click(runBtn.x, runBtn.y);
-  await chrome.sleep(200);
-  check('Run with no clean block explains what to do', /clean/.test(await chrome.eval(`document.getElementById('message').textContent`)));
+  // ---- The Start block and the Run button -------------------------------------------------------
+  const pressRun = async () => {
+    const button = await chrome.centerOf('#run');
+    await chrome.click(button.x, button.y);
+    await chrome.sleep(300);
+  };
+  const messageText = () => chrome.eval(`document.getElementById('message').textContent`);
+  const stepsUp = async () => (await chrome.centerOf('.paper-box')).y - (await chrome.centerOf('.turtle-sprite')).y;
+
+  await chrome.goto(BASE + '?speed=instant');
+  await pressRun();
+  check('Run on an empty page explains where to begin', /Start block/.test(await messageText()));
+
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 450, 300);
+  await pressRun();
+  check('with no Start block, Run runs the topmost stack', near(await stepsUp(), 100 * scale, 3), `${(await stepsUp()).toFixed(0)}px up`);
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Flow');
+  check('the Flow palette lists start and repeat', (await count('.flyout .stack')) === 2);
+  await dragFromPalette('start', 450, 300);
+  const startBlock = await nodeRect('start');
+  await openPalette('Turtle');
+  await dragFromPalette('back', startBlock.left + 6, startBlock.bottom + 4);
+  check('a block snaps under a Start block', (await stacks()) === 1);
+  await dragFromPalette('forward', 450, 100);
+  check('a second stack higher on the page stays separate', (await stacks()) === 2);
+  await pressRun();
+  check('Run starts at the Start block, not at the higher stack', near(-(await stepsUp()), 100 * scale, 3), `${(await stepsUp()).toFixed(0)}px up (negative = down)`);
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Flow');
+  await dragFromPalette('start', 450, 300);
+  await dragFromPalette('start', 450, 100);
+  await pressRun();
+  check('with two Start blocks, Run says which one it used', /2 Start blocks/.test(await messageText()), await messageText());
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 450, 300);
+  const fwdHeight = (await nodeRect('forward')).h;
+  await openPalette('Flow');
+  const hatHeight = (await flyoutRect('start')).h;
+  const stackTop = await nodeRect('forward');
+  await dragFromPalette('start', stackTop.left, stackTop.top - hatHeight + 4);
+  const merged = await nodeRect('start');
+  check('a Start block dropped on top of a stack joins it', (await stacks()) === 1 && merged.top < (await nodeRect('forward')).top);
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Flow');
+  await dragFromPalette('start', 450, 300);
+  const hat = await nodeRect('start');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', hat.left, hat.top - fwdHeight + 4);
+  check('nothing snaps above a Start block', (await stacks()) === 2);
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 450, 200);
+  const below = await nodeRect('forward');
+  await openPalette('Flow');
+  await dragFromPalette('start', below.left + 2, below.bottom + 6);
+  check('a Start block cannot hang from the bottom of another block', (await stacks()) === 2);
 
   await chrome.goto(BASE + '?demo=square&speed=instant');
   const run2 = await chrome.centerOf('#run');
