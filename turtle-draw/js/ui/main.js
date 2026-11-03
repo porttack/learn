@@ -12,12 +12,12 @@ import { APP_NAME } from '../app-info.js';
 import { Turtle } from '../core/turtle.js';
 import { Scheduler, SPEEDS } from '../core/scheduler.js';
 import { History } from '../core/history.js';
-import { runBlocks, createContext, evalNumber, RunError } from '../core/interpreter.js';
+import { formatNumber, formatValue } from '../core/format.js';
+import { runBlocks, createContext, evalArg, RunError } from '../core/interpreter.js';
 import { emptyProject, findRunStack, usesBoxes, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
 import { BLOCKS } from '../core/blocks-spec.js';
 import { newBlock, cloneBlock, isReporterStack } from '../core/edit.js';
 import { CanvasView } from './canvas-view.js';
-import { formatNumber } from './block-view.js';
 import { Workspace } from './workspace.js';
 import { PaletteUI } from './palette.js';
 import { DEMOS } from './demos.js';
@@ -77,6 +77,34 @@ const readout = document.createElement('p');
 readout.className = 'boxes-readout';
 stage.append(readout);
 
+// What print blocks say goes in a small box at the top right: the last few
+// lines, cleared at the start of every run. It is redrawn at most once a frame,
+// because a loop can print thousands of lines a second.
+const output = document.createElement('div');
+output.className = 'output';
+output.hidden = true;
+stage.append(output);
+let outputLines = [];
+let outputQueued = false;
+
+function print(line) {
+  outputLines.push(line);
+  if (outputLines.length > 8) outputLines.shift();
+  if (outputQueued) return;
+  outputQueued = true;
+  requestAnimationFrame(() => {
+    outputQueued = false;
+    output.textContent = outputLines.join('\n');
+    output.hidden = outputLines.length === 0;
+  });
+}
+
+function clearOutput() {
+  outputLines = [];
+  output.textContent = '';
+  output.hidden = true;
+}
+
 function showBoxes() {
   readout.hidden = !boxesInUse;
   readout.textContent = context.boxes.map((value, i) => `box${i + 1}  ${formatNumber(value)}`).join('      ');
@@ -134,14 +162,18 @@ function runStack(stack) {
     const reading = createContext({ turtle, boxes: context.boxes.slice() });
     const block = stack.blocks[0];
     try {
-      say(`${BLOCKS[block.op].label} is ${formatNumber(evalNumber(block, reading, block))}`);
+      const value = formatValue(evalArg(block, reading, block));
+      // A block with no sockets (like x) reads best as "x is 5"; one with
+      // sockets (like +) just gives its answer.
+      say(BLOCKS[block.op].args.length === 0 ? `${BLOCKS[block.op].label} is ${value}` : `Answer: ${value}`);
     } catch (error) {
       if (!(error instanceof RunError)) throw error;
       say(error.message);
     }
     return;
   }
-  context = createContext({ turtle });
+  clearOutput();
+  context = createContext({ turtle, print });
   scheduler.start(runBlocks(stack.blocks, context));
 }
 

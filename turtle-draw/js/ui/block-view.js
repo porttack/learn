@@ -18,11 +18,15 @@
 //   command  [ slot (top), socket 0, socket 1, ..., tab (bottom) ]
 //   clamp    [ slot, socket 0, ..., mouth (where inner blocks start), tab ]
 //   hat      like a command, but the first dock is a cap: nothing connects there
-//   reporter [ plug (its left edge) ]
+//   stop     like a command, but the last dock is a tail: nothing connects there
+//   reporter [ plug (its left edge), socket 0, socket 1, ... ]
 
 import { SVG } from './blockfactory.js';
 import { BLOCKS } from '../core/blocks-spec.js';
 import { PALETTE_COLORS, NUMBER_COLORS } from './palette-colors.js';
+import { formatNumber } from '../core/format.js';
+
+export { formatNumber };
 
 export const SCALE = 1.5; // Turtle Blocks' own default block scale
 const FONT_SIZE = 10; // before SCALE is applied
@@ -48,12 +52,6 @@ export function textWidth(text, fontSize = FONT_SIZE) {
 
 function escapeXml(text) {
   return String(text).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
-}
-
-/** The text shown in a number box. */
-export function formatNumber(value) {
-  if (value === null || value === undefined) return '';
-  return String(Number(Number(value).toPrecision(10)));
 }
 
 // ---- Layout --------------------------------------------------------------
@@ -84,28 +82,47 @@ function layoutLiteral(value) {
 
 /**
  * Make the shape for a block.
- * `extra` is extra room: x (width), y (below socket 0), y2 (below socket 1),
- * and mouth (extra height inside a clamp).
+ * `extra` is extra room: x (width), ys (height under each socket, for
+ * something taller than a number box plugged in), and mouth (extra height
+ * inside a clamp).
  */
 function makeShape(spec, colors, extra) {
   const shape = new SVG();
   shape.setScale(SCALE);
   shape.setFontSize(FONT_SIZE);
   shape.setColors([colors.fill, colors.stroke]);
-  shape.setExpand(extra.x, extra.y, 0, spec.kind === 'clamp' ? extra.mouth : extra.y2);
+  shape.setExpand(extra.x, extra.ys[0] || 0, 0, spec.kind === 'clamp' ? extra.mouth : extra.ys[1] || 0);
+  shape.setExpandYs(extra.ys);
   const sockets = spec.args.map(() => true);
   let markup;
   if (spec.kind === 'clamp') {
-    shape.setInnies(sockets);
     shape.setClampCount(1);
+    if (spec.args[0]?.type === 'boolean') {
+      // The pointed socket of an if: the shape draws it itself, so it has no round sockets.
+      shape.setBoolean(true);
+      shape.setInnies([]);
+    } else {
+      shape.setInnies(sockets);
+    }
     markup = shape.basicClamp();
+  } else if (spec.kind === 'reporter' && spec.returns === 'boolean') {
+    shape.setInnies(sockets);
+    markup = shape.booleanCompare();
+  } else if (spec.kind === 'reporter' && sockets.length > 0) {
+    // A reporter with sockets (like +): plugs in on the left, no slot or tab.
+    shape.setInnies(sockets);
+    shape.setOutie(true);
+    shape.setSlot(false);
+    shape.setTab(false);
+    markup = shape.basicBlock();
   } else if (spec.kind === 'reporter') {
-    if (sockets.length > 0) throw new Error('reporters with sockets are not supported yet');
     markup = shape.basicBox();
   } else {
     shape.setInnies(sockets);
     // A hat has a cap on top instead of a slot, so nothing can go above it.
     if (spec.kind === 'hat') shape.setCap(true);
+    // A block that ends a stack has a tail instead of a tab, so nothing can go below it.
+    if (spec.endsStack) shape.setTail(true);
     markup = shape.basicBlock();
   }
   const argLabels = spec.args.map((arg) => arg.label ?? '');
@@ -118,10 +135,10 @@ function widthNeeded(spec, minimumWidth) {
   const argLabelWidth = Math.max(0, ...spec.args.map((arg) => textWidth(arg.label ?? '', SMALL_FONT_SIZE)));
   let required;
   // A reporter's label starts about 13 in from its left edge.
-  if (spec.kind === 'reporter') required = labelWidth + 17;
+  if (spec.kind === 'reporter' && spec.args.length === 0) required = labelWidth + 17;
   else if (spec.kind === 'clamp') required = labelWidth + argLabelWidth + 30;
   else required = Math.max(labelWidth, argLabelWidth) + 22;
-  return Math.max(spec.kind === 'reporter' ? 14 : 0, required - minimumWidth);
+  return Math.max(spec.kind === 'reporter' && spec.args.length === 0 ? 14 : 0, required - minimumWidth);
 }
 
 /**
@@ -134,21 +151,19 @@ export function layoutBlock(block) {
   const colors = PALETTE_COLORS[spec.palette];
   const node = { id: nextId++, block, spec, kind: spec.kind, args: [], body: [], ax: 0, ay: 0 };
 
-  // What is in each socket: a number box, or another block plugged in.
-  spec.args.forEach((_, i) => {
+  // What is in each socket: a number box, another block plugged in, or (for
+  // a pointed yes-or-no socket with nothing in it) nothing: the notch is the
+  // empty socket.
+  spec.args.forEach((socket, i) => {
     const value = block.args?.[i];
-    node.args.push(
-      value !== null && typeof value === 'object'
-        ? { child: layoutBlock(value) }
-        : { literal: layoutLiteral(value) },
-    );
+    if (value !== null && typeof value === 'object') node.args.push({ child: layoutBlock(value) });
+    else if (socket.type === 'boolean') node.args.push({});
+    else node.args.push({ literal: layoutLiteral(value) });
   });
 
   // Make room for any socket content taller than a number box.
-  const heightOf = (arg) => (arg.child ? arg.child.h : arg.literal.h);
-  const extra = { x: 0, y: 0, y2: 0, mouth: 0 };
-  if (node.args[0]) extra.y = Math.max(0, heightOf(node.args[0]) - BOX_HEIGHT) / SCALE;
-  if (node.args[1]) extra.y2 = Math.max(0, heightOf(node.args[1]) - BOX_HEIGHT) / SCALE;
+  const heightOf = (arg) => (arg.child ? arg.child.h : arg.literal ? arg.literal.h : 0);
+  const extra = { x: 0, ys: node.args.map((arg) => Math.max(0, heightOf(arg) - BOX_HEIGHT) / SCALE), mouth: 0 };
 
   // Pick the width from the smallest version of this shape.
   const smallest = makeShape(spec, colors, extra).shape;
@@ -182,7 +197,7 @@ export function layoutBlock(block) {
   // Where each socket's content sits, relative to this block.
   node.argPos = node.args.map((arg, i) => {
     const socket = shape.docks[1 + i];
-    const plug = arg.child ? arg.child.slot : arg.literal.plug;
+    const plug = arg.child ? arg.child.slot : arg.literal ? arg.literal.plug : [0, 0];
     return { x: socket[0] - plug[0], y: socket[1] - plug[1] };
   });
   return node;
@@ -280,7 +295,7 @@ export function renderStack(layout, register) {
     node.args.forEach((arg) => {
       if (arg.child) {
         renderNode(arg.child);
-      } else {
+      } else if (arg.literal) {
         const box = svgElement('g', {
           class: 'node literal',
           transform: `translate(${arg.ax} ${arg.ay})`,
@@ -307,8 +322,8 @@ export function stackBounds(layout) {
     width = Math.max(width, node.ax + node.w);
     height = Math.max(height, node.ay + node.h);
     node.args.forEach((arg) => {
-      const w = arg.child ? arg.child.w : arg.literal.w;
-      const h = arg.child ? arg.child.h : arg.literal.h;
+      const w = arg.child ? arg.child.w : arg.literal ? arg.literal.w : 0;
+      const h = arg.child ? arg.child.h : arg.literal ? arg.literal.h : 0;
       width = Math.max(width, arg.ax + w);
       height = Math.max(height, arg.ay + h);
     });

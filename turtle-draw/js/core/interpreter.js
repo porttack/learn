@@ -18,6 +18,8 @@
 // anything, so they are ordinary functions that return a value right away.
 
 import { BLOCKS, BOX_COUNT } from './blocks-spec.js';
+import { round10 } from './turtle.js';
+import { formatNumber } from './format.js';
 
 /** An error with a friendly message and the block that caused it. */
 export class RunError extends Error {
@@ -32,11 +34,27 @@ export class RunError extends Error {
 export const STOP = Symbol('stop');
 
 /**
+ * Yielded by the wait block: "pause for this many milliseconds". The
+ * scheduler does the actual waiting (and Stop can cut it short).
+ */
+export class Wait {
+  constructor(block, ms) {
+    this.block = block;
+    this.ms = ms;
+  }
+}
+
+// The longest pause a timer can really do. (A longer one would fire at once.)
+const LONGEST_WAIT_MS = 2 ** 31 - 1;
+
+/**
  * Make the object that carries the program's state while it runs: the
  * turtle, and the boxes (variables). Boxes start at 0 unless told otherwise.
+ * `random` gives numbers from 0 up to (not including) 1, and `print` receives
+ * each line a print block shows. Tests replace them to get fixed answers.
  */
-export function createContext({ turtle, boxes = null }) {
-  return { turtle, boxes: boxes ?? new Array(BOX_COUNT).fill(0) };
+export function createContext({ turtle, boxes = null, random = Math.random, print = () => {} }) {
+  return { turtle, boxes: boxes ?? new Array(BOX_COUNT).fill(0), random, print };
 }
 
 /**
@@ -75,6 +93,7 @@ const COMMANDS = {
   fillscreen: (t, [r, g, b]) => t.fillScreen(r, g, b),
   startfill: (t) => t.startFill(),
   endfill: (t) => t.endFill(),
+  print: (t, [value], ctx) => ctx.print(formatNumber(value)),
 };
 
 // Box n lives at ctx.boxes[n - 1]. store1 puts a number there, box1 reads it.
@@ -98,6 +117,35 @@ const FLOW = {
     }
     return undefined;
   },
+
+  *forever(block, ctx) {
+    const body = block.body ?? [];
+    while (true) {
+      const signal = yield* runBlocks(body, ctx);
+      if (signal === STOP) return STOP;
+      // Every block yields when it runs, so a loop with anything in it is safe.
+      // An empty one has to pause here, or it would freeze the tab.
+      if (body.length === 0) yield block;
+    }
+  },
+
+  *if(block, ctx) {
+    const condition = evalBoolean(block.args?.[0], ctx, block);
+    yield block; // so a false `if` still takes a step, and can be seen
+    if (!condition) return undefined;
+    return yield* runBlocks(block.body ?? [], ctx);
+  },
+
+  *wait(block, ctx) {
+    const tenths = evalNumber(block.args?.[0], ctx, block);
+    yield new Wait(block, Math.min(LONGEST_WAIT_MS, Math.max(0, tenths) * 100));
+    return undefined;
+  },
+
+  *stop(block) {
+    yield block;
+    return STOP;
+  },
 };
 
 function* runBlock(block, ctx) {
@@ -113,7 +161,7 @@ function* runBlock(block, ctx) {
   }
   // Go by the sockets the block is supposed to have, so a block that is
   // missing an argument reports an empty box instead of running with NaN.
-  const args = BLOCKS[block.op].args.map((_, i) => evalNumber(block.args?.[i], ctx, block));
+  const args = BLOCKS[block.op].args.map((socket, i) => evalSocket(block.args?.[i], ctx, block, socket));
   command(ctx.turtle, args, ctx);
   yield block;
   return undefined;
@@ -121,21 +169,50 @@ function* runBlock(block, ctx) {
 
 // ---- Reporters --------------------------------------------------------
 
-// Reporters hand back a number. They get the context, the already evaluated
-// arguments, and their own block.
+// Reporters hand back a number (or true or false). They get the context, the
+// already evaluated sockets, and their own block.
 const REPORTERS = {
   x: (ctx) => ctx.turtle.reportedX,
   y: (ctx) => ctx.turtle.reportedY,
   heading: (ctx) => ctx.turtle.reportedHeading,
   pensize: (ctx) => ctx.turtle.penSize,
+
+  add: (ctx, [a, b]) => a + b,
+  subtract: (ctx, [a, b]) => a - b,
+  multiply: (ctx, [a, b]) => a * b,
+  divide: (ctx, [a, b], block) => {
+    if (b === 0) throw new RunError('You cannot divide by zero.', block);
+    return a / b;
+  },
+  // mod is the remainder after dividing, and is never negative when the
+  // second number is positive (the same as Python): -1 mod 5 is 4.
+  mod: (ctx, [a, b], block) => {
+    if (b === 0) throw new RunError('Mod divides, and you cannot divide by zero.', block);
+    return ((a % b) + b) % b;
+  },
+  random: (ctx, [a, b]) => {
+    const [low, high] = a <= b ? [a, b] : [b, a];
+    // Whole numbers in give a whole number out, and both ends can come up.
+    if (Number.isInteger(low) && Number.isInteger(high)) {
+      return low + Math.floor(ctx.random() * (high - low + 1));
+    }
+    return low + ctx.random() * (high - low);
+  },
+  oneof: (ctx, [a, b]) => (ctx.random() < 0.5 ? a : b),
+
+  // Compare after rounding away tiny errors, so 0.1 + 0.2 equals 0.3.
+  less: (ctx, [a, b]) => round10(a) < round10(b),
+  greater: (ctx, [a, b]) => round10(a) > round10(b),
+  equal: (ctx, [a, b]) => round10(a) === round10(b),
 };
 for (let n = 1; n <= BOX_COUNT; n += 1) {
   REPORTERS[`box${n}`] = (ctx) => ctx.boxes[n - 1];
 }
 
 /**
- * Work out what goes in a socket: a plain number stays as it is, and a
- * reporter block gets run to find its value.
+ * Work out what goes in a socket, whatever it is: a plain number stays as
+ * it is, and a reporter block gets run to find its value (a number, or true
+ * or false).
  */
 export function evalArg(arg, ctx, block) {
   if (arg === null || arg === undefined) {
@@ -145,10 +222,10 @@ export function evalArg(arg, ctx, block) {
   if (typeof arg === 'object') {
     const reporter = REPORTERS[arg.op];
     if (!reporter) {
-      throw new RunError(`"${arg.op}" is not a block that reports a number.`, arg);
+      throw new RunError(`"${arg.op}" is not a block that reports a value.`, arg);
     }
     const sockets = BLOCKS[arg.op]?.args ?? [];
-    const values = sockets.map((_, i) => evalArg(arg.args?.[i], ctx, arg));
+    const values = sockets.map((socket, i) => evalSocket(arg.args?.[i], ctx, arg, socket));
     return reporter(ctx, values, arg);
   }
   throw new RunError('Something unexpected is in this box.', block);
@@ -157,8 +234,28 @@ export function evalArg(arg, ctx, block) {
 /** Like evalArg, but the answer has to be a real, finite number. */
 export function evalNumber(arg, ctx, block) {
   const value = evalArg(arg, ctx, block);
+  if (typeof value === 'boolean') {
+    throw new RunError('This block needs a number, but it got a yes or no answer.', block);
+  }
   if (typeof value !== 'number' || !Number.isFinite(value)) {
     throw new RunError('This block got a number that is too big or is not a number.', block);
   }
   return value;
+}
+
+/** Like evalArg, but the answer has to be true or false. */
+export function evalBoolean(arg, ctx, block) {
+  if (arg === null || arg === undefined) {
+    throw new RunError('This block needs a yes or no block plugged into it, like a less than, greater than or equals block.', block);
+  }
+  const value = evalArg(arg, ctx, block);
+  if (typeof value !== 'boolean') {
+    throw new RunError('This block needs a yes or no answer, like the one a less than, greater than or equals block gives.', block);
+  }
+  return value;
+}
+
+/** Work out a socket the way its type says: a round socket wants a number, a pointed one a yes or no. */
+function evalSocket(arg, ctx, block, socket) {
+  return socket.type === 'boolean' ? evalBoolean(arg, ctx, block) : evalNumber(arg, ctx, block);
 }

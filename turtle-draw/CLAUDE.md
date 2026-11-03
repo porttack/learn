@@ -139,7 +139,29 @@ the dashes out of them too for consistency.
   right shows the values (live at slow speeds), but only when the project
   has a box block. Tapping a lone `box1` shows the value the last run left
   behind and never changes it. Boxes hold numbers only for now.
-- **Palettes with no blocks yet are hidden** (Math until d).
+- **Socket types.** A socket is `number` (round) or `boolean` (pointed, only
+  `if` has one); a reporter `returns` `number` or `boolean` (`<`, `>`, `=`).
+  A reporter only snaps into a socket of its own type (`canPlug` in
+  `core/edit.js`); the interpreter also checks, because a file could say
+  otherwise. An empty pointed socket draws nothing (the notch is the empty
+  socket) and running it is an error that outlines the `if`. Pulling a block
+  out of a number socket restores the number; out of a pointed one leaves it
+  empty.
+- **Flow.** `start` (hat), `repeat`, `forever`, `if`, `wait`, `stop`. `stop`
+  ends the whole program (inside a My Block it will leave just that block):
+  it has a tail, so nothing snaps below it, and it cannot go on top of a stack.
+  `forever` and every loop yield each lap, so none can freeze the tab.
+  `wait` takes tenths of a second and is **real time even at Instant speed**;
+  Stop cuts it short. (`Wait` is yielded to the scheduler, which sleeps.)
+- **Math.** `+ - x ÷ mod random one-of`, `< > =`, `print`. `mod` follows
+  Python (never negative for a positive divisor). `random` of two whole
+  numbers is a whole number and both ends can come up. `=` ignores tiny
+  rounding errors. Divide or mod by zero is a friendly error naming the
+  block. There is no separate `number` block: every socket already holds a
+  number you tap to type, and pulling a block out puts one back.
+  `print` shows numbers in a box at the top right (last 8 lines, cleared each
+  run, redrawn once a frame). Tapping a lone math block shows its answer.
+- **Palettes with no blocks are hidden** (none now: all five have blocks).
 - **Coordinates:** paper 700 x 560, origin center, x right, y UP. Heading 0 is
   up and grows clockwise. Exact sin/cos at multiples of 90 so squares close.
 - **Color is RGB 0-255**, rounded and clamped (not an error), so a loop that
@@ -181,16 +203,15 @@ numbers, tap to run, run highlight and error outline, Roboto vendored).
 **b2** (undo and redo with buttons and keys, zoom and pan with buttons,
 wheel, drag and pinch, Shift-drag and press-and-hold copying, help bubble).
 **Boxes** (variables), done early at the teacher's request.
-Not yet: save and autosave (c); Math and the rest of Flow (d); the `to`
-block that makes your own blocks (e).
+**d** (the rest of Flow: forever, if, wait, stop; the Math palette; yes-or-no
+shapes; print). Not yet: save and autosave (c); the `to` block that makes
+your own blocks (e); SVG export and the public pages (f).
+
+Unknown: the teacher's second screenshot of another app's Flow palette showed
+two blocks with dots and an arrow that are not in the brief. Ask what they
+are before building anything like them.
 
 Known limits to fix when they matter:
-- `blockfactory.js` only grows the space for the first two sockets when
-  something taller than a number box is plugged in (`setExpand` has two
-  slots). Milestone d adds math reporters with sockets, so patch the port
-  script to use a list of extra heights for every socket.
-- Reporters with sockets and boolean shapes are not ported yet (`makeShape`
-  in `block-view.js` throws for them).
 - `?demo=name` (see `demos.js`) loads a program into the workspace for trying
   things out. It is a developer shortcut, not a feature for students.
 
@@ -210,9 +231,12 @@ To leave AGPL: write an independent shape generator (it must be genuinely
 independent in structure and constants, not a retyping; whoever wrote this
 code has seen the original), draw new turtle and icons, pick new colors,
 drop the AGPL notices, relicense. The blocks would stop looking like
-Sugar's. **Decide before milestone d**, which ports boolean shapes and
-entangles more of the original. Until then, keep adding every borrowed file
-to `NOTICE.md`. Not legal advice; ask a lawyer if it matters.
+Sugar's. Milestone d (done) ported one more shape (`booleanCompare`) and
+extended the generator (`setExpandYs`), so the borrowed code grew a little;
+the seam is still just `block-view.js`. Every later milestone that adds a
+block shape makes leaving slightly bigger, so keep the decision in mind. Keep
+adding every borrowed file to `NOTICE.md`. Not legal advice; ask a lawyer if
+it matters.
 
 ## Deploy gate
 

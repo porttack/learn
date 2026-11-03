@@ -17,7 +17,12 @@
 //   label    the word(s) written on the block
 //   args     the sockets, in order. `label` is a small word shown in front
 //            of the socket (like "x"), and `default` is what the socket
-//            holds when the block comes out of the palette.
+//            holds when the block comes out of the palette. `type` is
+//            'number' (the usual round socket) or 'boolean' (a pointed
+//            socket that takes only a yes-or-no block, like the one in `if`).
+//   returns  for a reporter: 'number' (the usual) or 'boolean'. A reporter
+//            only fits a socket of the same type.
+//   endsStack  true for a block with nothing below it (like stop)
 //   help     the one-line tip shown when you press and hold the block
 
 export const PALETTES = [
@@ -194,6 +199,125 @@ export const BLOCKS = {
     label: 'repeat',
     args: [{ default: 4 }],
     help: 'Runs the blocks inside again and again, this many times.',
+  },
+  forever: {
+    palette: 'flow',
+    kind: 'clamp',
+    label: 'forever',
+    args: [],
+    help: 'Runs the blocks inside again and again until you press Stop.',
+  },
+  if: {
+    palette: 'flow',
+    kind: 'clamp',
+    label: 'if',
+    args: [{ type: 'boolean' }],
+    help: 'Runs the blocks inside only if the yes-or-no block plugged into it is true. Plug a less than, greater than or equals block into it.',
+  },
+  wait: {
+    palette: 'flow',
+    kind: 'command',
+    label: 'wait',
+    args: [{ label: 'tenths', default: 10 }],
+    help: 'Pauses for this many tenths of a second. 10 is one second. Waiting always takes real time, even at Instant speed.',
+  },
+  stop: {
+    palette: 'flow',
+    kind: 'command',
+    endsStack: true,
+    label: 'stop',
+    args: [],
+    help: 'Stops the program right here. Nothing can go below it.',
+  },
+
+  // ---- Math ------------------------------------------------------------
+  // These plug into the sockets of other blocks. Plug one into another to
+  // build a longer sum: the block inside is worked out first.
+  add: {
+    palette: 'math',
+    kind: 'reporter',
+    label: '+',
+    args: [{ default: 1 }, { default: 1 }],
+    help: 'Adds two numbers.',
+  },
+  subtract: {
+    palette: 'math',
+    kind: 'reporter',
+    label: '-',
+    args: [{ default: 5 }, { default: 1 }],
+    help: 'Subtracts the second number from the first.',
+  },
+  multiply: {
+    palette: 'math',
+    kind: 'reporter',
+    label: '\u00d7',
+    args: [{ default: 2 }, { default: 2 }],
+    help: 'Multiplies two numbers.',
+  },
+  divide: {
+    palette: 'math',
+    kind: 'reporter',
+    label: '\u00f7',
+    args: [{ default: 10 }, { default: 2 }],
+    help: 'Divides the first number by the second. You cannot divide by zero.',
+  },
+  mod: {
+    palette: 'math',
+    kind: 'reporter',
+    label: 'mod',
+    args: [{ default: 10 }, { default: 3 }],
+    help: 'The remainder left over when the first number is divided by the second. 10 mod 3 is 1.',
+  },
+  random: {
+    palette: 'math',
+    kind: 'reporter',
+    label: 'random',
+    args: [
+      { label: 'low', default: 1 },
+      { label: 'high', default: 10 },
+    ],
+    help: 'Picks a random number from low to high. Whole numbers in, whole number out.',
+  },
+  oneof: {
+    palette: 'math',
+    kind: 'reporter',
+    label: 'one of',
+    args: [
+      { label: 'a', default: 0 },
+      { label: 'b', default: 1 },
+    ],
+    help: 'Picks one of the two numbers at random.',
+  },
+  less: {
+    palette: 'math',
+    kind: 'reporter',
+    returns: 'boolean',
+    label: '<',
+    args: [{ default: 0 }, { default: 0 }],
+    help: 'True if the first number is less than the second. Plug it into an if block.',
+  },
+  greater: {
+    palette: 'math',
+    kind: 'reporter',
+    returns: 'boolean',
+    label: '>',
+    args: [{ default: 0 }, { default: 0 }],
+    help: 'True if the first number is greater than the second. Plug it into an if block.',
+  },
+  equal: {
+    palette: 'math',
+    kind: 'reporter',
+    returns: 'boolean',
+    label: '=',
+    args: [{ default: 0 }, { default: 0 }],
+    help: 'True if the two numbers are the same. Plug it into an if block.',
+  },
+  print: {
+    palette: 'math',
+    kind: 'command',
+    label: 'print',
+    args: [{ default: 0 }],
+    help: 'Shows a number in the box at the top right, so you can see what is going on. It is not drawn on the paper.',
   },
 };
 

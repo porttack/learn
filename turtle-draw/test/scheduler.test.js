@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { Scheduler, SPEEDS } from '../js/core/scheduler.js';
-import { RunError } from '../js/core/interpreter.js';
+import { RunError, Wait } from '../js/core/interpreter.js';
 
 /** A clock the test controls. */
 function fakeTime({ tickPerNow = 0 } = {}) {
@@ -183,4 +183,35 @@ test('a finished program leaves the scheduler ready to run another', async () =>
   const sched = new Scheduler({ ...fakeTime(), speed: 'instant' });
   assert.deepEqual(await sched.start(steps(1)), { status: 'done' });
   assert.deepEqual(await sched.start(steps(2)), { status: 'done' });
+});
+
+test('a wait is a real pause even at instant speed, and the block is reported', async () => {
+  const time = fakeTime();
+  const seen = [];
+  const block = { op: 'wait' };
+  function* program() {
+    yield new Wait(block, 500);
+    yield 'after';
+  }
+  const sched = new Scheduler({ ...time, speed: 'instant', onStep: (b) => seen.push(b) });
+  const done = sched.start(program());
+  assert.equal(time.timers.length, 1);
+  assert.equal(time.timers[0].ms, 500);
+  assert.deepEqual(seen, [block]);
+  time.fire();
+  await flush();
+  assert.deepEqual(await done, { status: 'done' });
+  assert.deepEqual(seen, [block, 'after']);
+});
+
+test('stop cuts a wait short', async () => {
+  const time = fakeTime();
+  function* program() {
+    yield new Wait({ op: 'wait' }, 60000);
+  }
+  const sched = new Scheduler({ ...time, speed: 'instant' });
+  const done = sched.start(program());
+  sched.stop();
+  assert.equal(time.timers[0].live, false);
+  assert.deepEqual(await done, { status: 'stopped' });
 });

@@ -52,6 +52,30 @@ export const DEMOS = {
     b('store1', 120),
     repeat(4, b('forward', { op: 'box1' }), b('right', 90)),
   ],
+  // Counts laps in a box, draws a step each lap, and stops when box1 reaches 5.
+  counting: [
+    b('start'),
+    b('clean'),
+    b('store1', 0),
+    { op: 'forever', args: [], body: [
+      b('store1', { op: 'add', args: [{ op: 'box1' }, 1] }),
+      b('forward', 10),
+      { op: 'if', args: [{ op: 'equal', args: [{ op: 'box1' }, 5] }], body: [b('stop')] },
+    ] },
+  ],
+  // Waits most of a second, then moves. (Checks that waiting is real time.)
+  waiting: [b('start'), b('clean'), b('wait', 8), b('forward', 50)],
+  // Waits a minute (so Stop has to cut the wait short).
+  longwait: [b('start'), b('clean'), b('wait', 600), b('forward', 50)],
+  // An if with nothing plugged into it: Run must explain, and mark the if.
+  emptyif: [b('start'), { op: 'if', args: [null], body: [b('forward', 10)] }],
+  // Prints a calculation.
+  printing: [
+    b('start'),
+    b('store1', 7),
+    b('print', { op: 'multiply', args: [{ op: 'box1' }, 3] }),
+    b('print', 0.1),
+  ],
   // Reads box1 BEFORE storing in it. Every run must see 0 first, so the turtle
   // never moves. (If boxes survived from one run to the next, the second run
   // would move it.) Used by the automated checks.

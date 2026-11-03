@@ -37,6 +37,7 @@ import {
   attachReporter,
   removeStack,
   isReporterStack,
+  canPlug,
 } from '../core/edit.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -437,18 +438,21 @@ export class Workspace {
       if (layout === carriedLayout) continue;
       walkNodes(layout, (node) => {
         if (reporter) {
+          // A reporter only fits a socket of its own kind: a yes-or-no block cannot go in a number box.
           node.args.forEach((_, i) => {
+            if (!canPlug(node.block, i, carried.blocks[0])) return;
             consider(at(layout, node, node.docks[1 + i]), topPoint, { kind: 'socket', owner: node, index: i });
           });
         } else if (node.kind !== 'reporter' && canHang) {
-          consider(at(layout, node, node.tab), topPoint, { kind: 'after', node });
+          // Nothing goes below a block that ends a stack (like stop).
+          if (!node.spec.endsStack) consider(at(layout, node, node.tab), topPoint, { kind: 'after', node });
           if (node.mouth) consider(at(layout, node, node.mouth), topPoint, { kind: 'inside', node });
         }
       });
       // Blocks can go on top of a stack, unless it starts with a hat (its
       // cap is the top) or is a lone reporter.
       const head = layout.nodes[0];
-      if (!reporter && head.kind !== 'reporter' && head.kind !== 'hat') {
+      if (!reporter && !last.spec.endsStack && head.kind !== 'reporter' && head.kind !== 'hat') {
         consider(at(layout, head, head.slot), bottomPoint, { kind: 'above', layout });
       }
     }

@@ -16,6 +16,8 @@
 // Time comes in through options (now, setTimer, ...) so tests can use a fake
 // clock and run in an instant.
 
+import { Wait } from './interpreter.js';
+
 /** Milliseconds to wait after each block at each speed. */
 export const SPEEDS = Object.freeze({
   slow: 500,
@@ -107,6 +109,14 @@ export class Scheduler {
         return this._finish(token, { status: 'error', error });
       }
       if (step.done) return this._finish(token, { status: 'done' });
+
+      // A wait block asks for a real pause, whatever the speed. Stop can cut it short.
+      if (step.value instanceof Wait) {
+        if (this.onStep) this.onStep(step.value.block);
+        await this._sleep(step.value.ms);
+        sliceStart = this._now();
+        continue;
+      }
 
       if (this.onStep) this.onStep(step.value);
 

@@ -17,9 +17,12 @@
 //
 // Modified 2026 by Eric Brown for Turtle Draw:
 //   * converted to an ES module;
-//   * kept only the shapes Turtle Draw uses so far: basicBlock (commands
-//     and reporters with sockets), basicBox (number boxes and plain
-//     reporters) and basicClamp (blocks with a C-shaped mouth, like repeat);
+//   * kept only the shapes Turtle Draw uses: basicBlock (commands and
+//     reporters with sockets), basicBox (number boxes and plain reporters),
+//     booleanCompare (the yes-or-no blocks <, > and =) and basicClamp
+//     (blocks with a C-shaped mouth, like repeat);
+//   * added setExpandYs and _innieExtra, so a tall block plugged into any
+//     socket (not just the first two) makes room for itself;
 //   * fills, strokes and text are written as SVG attributes instead of
 //     style="..." attributes, because Turtle Draw's Content Security Policy
 //     does not allow inline styles;
@@ -67,6 +70,7 @@ export class SVG {
         this._expandX2 = 0;
         this._expandY = 0;
         this._expandY2 = 0;
+        this._expandYs = null; // extra height under each socket (see setExpandYs)
         this._clampCount = 1;
         this._clampSlots = [1];
         this._slotSize = 21; // TODO: Compute this.
@@ -918,11 +922,7 @@ export class SVG {
                 if (this._innies[i]) {
                     svg += this._doInnie();
                 }
-                if (i === 0) {
-                    svg += this._rLineTo(0, this._expandY);
-                } else if (i === 1 && this._expandY2 > 0) {
-                    svg += this._rLineTo(0, this._expandY2);
-                }
+                svg += this._rLineTo(0, this._innieExtra(i));
                 if (i === 0 && this._porch) {
                     svg += this._doPorch(false);
                 } else if (this._innies.length - 1 > i) {
@@ -1053,6 +1053,93 @@ export class SVG {
 
     /**
      * @public
+     * @param {boolean} notnot
+     * @returns {string}
+     */
+    booleanCompare() {
+        // Booleans are in a class of their own (greater than, less than, etc)
+        this._resetMinMax();
+        let yoffset =
+            this._radius * 2 +
+            2 * this._innieY2 +
+            this._inniesSpacer +
+            this._strokeWidth / 2.0 +
+            this._expandY;
+        const xoffset = this._strokeWidth / 2.0;
+
+        const yoff = this._radius * 2;
+        let svg = '<g transform="matrix(1,0,0,1,0,-' + yoff + ')"> ';
+
+        svg += this._newPath(xoffset, yoffset + this._radius);
+        this.docks.push([this._x * this._scale, (this._y - 2 * this._radius) * this._scale]);
+        this._radius -= this._strokeWidth;
+        svg += this._rarcTo(1, -1, 90, 0, 1);
+        this._radius += this._strokeWidth;
+        svg += this._rLineTo(this._strokeWidth, 0);
+        svg += this._rLineTo(0, -this._expandY);
+
+        yoffset = -2 * this._innieY2 - this._inniesSpacer - this._strokeWidth;
+        svg += this._rLineTo(0, yoffset + this._radius);
+
+        svg += this._rarcTo(1, -1, 90, 0, 1);
+        svg += this._rLineTo(this._radius / 2.0 + this._expandX, 0);
+        svg += this._rLineTo(0, this._radius);
+        const xx = this._x;
+        svg += this._doInnie();
+        this.docks[1][1] -= this._radius * 2 * this._scale;
+        svg += this._rLineTo(0, this._expandY);
+
+        if (this._porch) {
+            svg += this._doPorch(false);
+        } else {
+            svg += this._rLineTo(0, 2 * this._innieY2 + this._inniesSpacer);
+        }
+        svg += this._doInnie();
+        this.docks[2][1] -= this._radius * 2 * this._scale;
+        svg += this._rLineTo(0, this._innieExtra(1));
+        svg += this._rLineTo(0, this._radius);
+        svg += this._lineTo(xx, this._y);
+
+        svg += this._rLineTo(-this._expandX, 0);
+
+        svg += this._rLineTo(-this._radius * 1.5, 0);
+        svg += this._rLineTo(0, -this._radius);
+        svg += this._rLineTo(0, -this._strokeWidth);
+        svg += this._rLineTo(-this._strokeWidth, 0);
+        this._radius -= this._strokeWidth;
+        svg += this._rarcTo(-1, -1, 90, 0, 1);
+        this._radius += this._strokeWidth;
+        svg += this._closePath();
+        this._calculateWH(true);
+        svg += this._style();
+        svg += "</g>";
+
+        this.margins[0] = (this._radius + this._strokeWidth) * this._scale;
+        this.margins[1] = this._strokeWidth * this._scale;
+        this.margins[2] = this._strokeWidth * this._scale;
+
+        // Add a block label
+        const tx =
+            this._width -
+            2 * (this._innieX1 + this._innieX2) -
+            4 * this._strokeWidth +
+            this._labelOffset * this._scale;
+        const ty = this._height / 2 + this._fontSize / 2;
+        svg += this.text(
+            tx / this._scale,
+            ty / this._scale,
+            this._fontSize,
+            this._width,
+            "right",
+            "block_label"
+        );
+
+        svg += this._footer();
+        return this._header(false) + svg;
+    }
+
+    /**
+     * @public
      * @returns {string}
      */
     basicClamp() {
@@ -1098,11 +1185,7 @@ export class SVG {
                 if (this._innies[i]) {
                     svg += this._doInnie();
                 }
-                if (i === 0) {
-                    svg += this._rLineTo(0, this._expandY);
-                } else if (i === 1 && this._expandY2 > 0) {
-                    svg += this._rLineTo(0, this._expandY2);
-                }
+                svg += this._rLineTo(0, this._innieExtra(i));
                 if (i === 0 && this._porch) {
                     svg += this._doPorch(false);
                 } else if (this._innies.length - 1 > i) {
@@ -1110,7 +1193,7 @@ export class SVG {
                 }
             }
         } else if (this._bool) {
-            svg += this._rLineTo(0, 2 * this._padding + this._strokeWidth);
+            svg += this._rLineTo(0, 2 * this._padding + this._strokeWidth + this._innieExtra(0));
             svg += this._doBoolean();
             this.margins[2] = (this._x - this._strokeWidth + 0.5) * this._scale;
         } else {
@@ -1256,5 +1339,33 @@ export class SVG {
 
         svg += this._footer();
         return this._header(false) + svg;
+    }
+
+    /**
+     * Added for Turtle Draw. Extra height, in the same units as setExpand,
+     * under each socket, for blocks plugged in that are taller than a number
+     * box. One entry per socket.
+     * @public
+     * @param {number[]} list
+     * @returns {void}
+     */
+    setExpandYs(list) {
+        this._expandYs = list;
+    }
+
+    /**
+     * Added for Turtle Draw. The extra height under socket number i.
+     * @private
+     * @param {number} i
+     * @returns {number}
+     */
+    _innieExtra(i) {
+        if (this._expandYs) {
+            return this._expandYs[i] || 0;
+        }
+        if (i === 0) {
+            return this._expandY;
+        }
+        return i === 1 && this._expandY2 > 0 ? this._expandY2 : 0;
     }
 }

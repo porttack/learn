@@ -94,6 +94,9 @@ export function attachAbove(project, carried, target) {
  * stack, or null.
  */
 export function attachReporter(project, carried, parentBlock, argIndex, bumpX, bumpY) {
+  if (!canPlug(parentBlock, argIndex, carried.blocks[0])) {
+    throw new Error('That block does not fit in that socket.');
+  }
   removeStack(project, carried);
   const old = parentBlock.args[argIndex];
   parentBlock.args[argIndex] = carried.blocks[0];
@@ -103,6 +106,21 @@ export function attachReporter(project, carried, parentBlock, argIndex, bumpX, b
     return bumped;
   }
   return null;
+}
+
+/** What a socket takes: 'number' (round) or 'boolean' (pointed, for yes-or-no blocks). */
+export function socketType(parentBlock, index) {
+  return BLOCKS[parentBlock.op].args[index].type ?? 'number';
+}
+
+/** What a reporter hands back: 'number' or 'boolean'. */
+export function reporterType(block) {
+  return BLOCKS[block.op].returns ?? 'number';
+}
+
+/** A reporter only fits a socket of the same type: a yes-or-no block cannot go in a number box. */
+export function canPlug(parentBlock, index, reporterBlock) {
+  return socketType(parentBlock, index) === reporterType(reporterBlock);
 }
 
 /** True if the stack is just one block that reports a value (like x). */

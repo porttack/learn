@@ -197,3 +197,10 @@ test('box blocks are valid in a project file', () => {
   const data = { app: FORMAT_ID, version: 1, stacks: [{ x: 0, y: 0, blocks: [{ op: 'store1', args: [3] }, { op: 'forward', args: [{ op: 'box1' }] }] }] };
   assert.equal(validateProject(data).ok, true);
 });
+
+test('the Flow and Math blocks are valid in a project file, with an empty if socket and a plugged one', () => {
+  const stack = (condition) => ({ x: 0, y: 0, blocks: [{ op: 'start' }, { op: 'forever', body: [{ op: 'if', args: [condition], body: [{ op: 'stop' }] }, { op: 'wait', args: [5] }] }] });
+  for (const condition of [null, { op: 'less', args: [{ op: 'add', args: [1, { op: 'box1' }] }, 5] }]) {
+    assert.equal(validateProject({ app: FORMAT_ID, version: 1, stacks: [stack(condition)] }).ok, true);
+  }
+});

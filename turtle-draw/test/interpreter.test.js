@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { runBlocks, createContext, RunError } from '../js/core/interpreter.js';
+import { runBlocks, createContext, RunError, Wait } from '../js/core/interpreter.js';
 import { Turtle } from '../js/core/turtle.js';
 import { BLOCKS } from '../js/core/blocks-spec.js';
 
@@ -104,13 +104,27 @@ test('turtle and pen blocks all reach the turtle', () => {
   );
 });
 
+/** Run at most `limit` steps, so a block that never ends (forever) can be tried safely. */
+function runSome(blocks, limit = 20) {
+  const turtle = new Turtle();
+  const steps = runBlocks(blocks, createContext({ turtle }));
+  for (let i = 0; i < limit; i += 1) {
+    if (steps.next().done) break;
+  }
+  return turtle;
+}
+
 test('every block in the spec runs with the values it comes with', () => {
+  // A yes-or-no socket cannot be left empty, so give those a real condition.
+  const condition = { op: 'equal', args: [0, 0] };
   for (const [op, spec] of Object.entries(BLOCKS)) {
-    const args = spec.args.map((arg) => arg.default);
+    const args = spec.args.map((arg) => (arg.type === 'boolean' ? condition : arg.default));
     if (spec.kind === 'reporter') {
-      assert.doesNotThrow(() => run([block('forward', { op, args })]), `reporter ${op}`);
+      // A yes-or-no reporter goes in an if, a number reporter in a forward.
+      const user = spec.returns === 'boolean' ? { op: 'if', args: [{ op, args }], body: [] } : block('forward', { op, args });
+      assert.doesNotThrow(() => runSome([user]), `reporter ${op}`);
     } else {
-      assert.doesNotThrow(() => run([{ op, args, body: [] }]), `block ${op}`);
+      assert.doesNotThrow(() => runSome([{ op, args, body: [] }]), `block ${op}`);
     }
   }
 });
@@ -202,4 +216,151 @@ test('an error stops the program at that block, keeping what was already drawn',
   const turtle = new Turtle();
   assert.throws(() => run([block('forward', 10), block('forward', null), block('forward', 10)], turtle));
   assert.equal(turtle.y, 10);
+});
+
+// ---- Math, yes-or-no blocks, if, forever, wait, stop, print ----------------------------
+
+/** Run with extra context (a fixed random, a print collector) and return everything. */
+function runWith(blocks, extra = {}) {
+  const turtle = new Turtle();
+  const context = createContext({ turtle, ...extra });
+  const steps = [...runBlocks(blocks, context)];
+  return { turtle, steps, context };
+}
+
+const op = (name, ...args) => ({ op: name, args });
+const ifBlock = (condition, ...body) => ({ op: 'if', args: [condition], body });
+const forever = (...body) => ({ op: 'forever', args: [], body });
+const forwardBy = (value) => block('forward', value);
+
+test('the four operations, and blocks plugged into blocks', () => {
+  assert.equal(runWith([forwardBy(op('add', 3, 4))]).turtle.y, 7);
+  assert.equal(runWith([forwardBy(op('subtract', 10, 4))]).turtle.y, 6);
+  assert.equal(runWith([forwardBy(op('multiply', 6, 7))]).turtle.y, 42);
+  assert.equal(runWith([forwardBy(op('divide', 20, 8))]).turtle.y, 2.5);
+});
+
+test('nesting decides the order: the inner block is worked out first', () => {
+  // (2 + 3) x 4 is 20, and 2 + (3 x 4) is 14.
+  assert.equal(runWith([forwardBy(op('multiply', op('add', 2, 3), 4))]).turtle.y, 20);
+  assert.equal(runWith([forwardBy(op('add', 2, op('multiply', 3, 4)))]).turtle.y, 14);
+});
+
+test('a block with a reporter in either socket still gets the right numbers', () => {
+  const { turtle } = runWith([block('store1', 6), block('store2', 4), forwardBy(op('subtract', { op: 'box1' }, { op: 'box2' }))]);
+  assert.equal(turtle.y, 2);
+});
+
+test('dividing by zero is a friendly error that names the divide block', () => {
+  const bad = op('divide', 5, 0);
+  assert.throws(() => runWith([forwardBy(bad)]), (e) => e instanceof RunError && e.block === bad && /divide by zero/.test(e.message));
+});
+
+test('mod gives the remainder, never negative for a positive divisor, and rejects zero', () => {
+  assert.equal(runWith([forwardBy(op('mod', 10, 3))]).turtle.y, 1);
+  assert.equal(runWith([forwardBy(op('mod', -1, 5))]).turtle.y, 4);
+  assert.throws(() => runWith([forwardBy(op('mod', 5, 0))]), RunError);
+});
+
+test('random gives whole numbers for whole ends, and both ends can come up', () => {
+  const pick = (r) => runWith([forwardBy(op('random', 1, 6))], { random: () => r }).turtle.y;
+  assert.equal(pick(0), 1);
+  assert.equal(pick(0.9999999), 6);
+  assert.equal(pick(0.5), 4);
+});
+
+test('random with a decimal end gives a decimal, and low and high can be either way round', () => {
+  assert.equal(runWith([forwardBy(op('random', 0, 1.5))], { random: () => 0.5 }).turtle.y, 0.75);
+  assert.equal(runWith([forwardBy(op('random', 10, 1))], { random: () => 0 }).turtle.y, 1);
+});
+
+test('one of picks either number', () => {
+  assert.equal(runWith([forwardBy(op('oneof', 7, 9))], { random: () => 0.2 }).turtle.y, 7);
+  assert.equal(runWith([forwardBy(op('oneof', 7, 9))], { random: () => 0.8 }).turtle.y, 9);
+});
+
+test('less than, greater than and equals', () => {
+  const answer = (condition) => runWith([ifBlock(condition, forwardBy(1))]).turtle.y === 1;
+  assert.equal(answer(op('less', 1, 2)), true);
+  assert.equal(answer(op('less', 2, 2)), false);
+  assert.equal(answer(op('greater', 3, 2)), true);
+  assert.equal(answer(op('greater', 2, 3)), false);
+  assert.equal(answer(op('equal', 4, 4)), true);
+  assert.equal(answer(op('equal', 4, 5)), false);
+});
+
+test('equals ignores tiny rounding errors: 0.1 + 0.2 equals 0.3', () => {
+  const same = runWith([ifBlock(op('equal', op('add', 0.1, 0.2), 0.3), forwardBy(1))]).turtle.y;
+  assert.equal(same, 1);
+});
+
+test('if runs its blocks only when the condition is true, and always takes a step', () => {
+  const yes = runWith([ifBlock(op('less', 1, 2), forwardBy(5))]);
+  const no = runWith([ifBlock(op('less', 2, 1), forwardBy(5))]);
+  assert.equal(yes.turtle.y, 5);
+  assert.equal(no.turtle.y, 0);
+  assert.equal(no.steps.length, 1, 'a false if still takes one step');
+});
+
+test('an if with nothing plugged into it is an error that names the if', () => {
+  const bad = { op: 'if', args: [null], body: [] };
+  assert.throws(() => runWith([bad]), (e) => e instanceof RunError && e.block === bad && /yes or no/.test(e.message));
+});
+
+test('a number where a yes or no is needed, and the other way round, are errors', () => {
+  assert.throws(() => runWith([ifBlock(op('add', 1, 1))]), (e) => e instanceof RunError && /yes or no/.test(e.message));
+  assert.throws(() => runWith([forwardBy(op('less', 1, 2))]), (e) => e instanceof RunError && /number/.test(e.message));
+});
+
+test('forever keeps going, one lap after another, until the program stops it', () => {
+  const steps = runBlocks([forever(forwardBy(1))], createContext({ turtle: new Turtle() }));
+  for (let i = 0; i < 1000; i += 1) assert.equal(steps.next().done, false);
+});
+
+test('forever with nothing inside still pauses every lap, so it cannot freeze the tab', () => {
+  const steps = runBlocks([forever()], createContext({ turtle: new Turtle() }));
+  for (let i = 0; i < 100; i += 1) assert.equal(steps.next().done, false);
+});
+
+test('stop ends a forever, and so ends the whole program', () => {
+  const { turtle } = runWith([
+    block('store1', 0),
+    forever(block('store1', op('add', { op: 'box1' }, 1)), forwardBy(10), ifBlock(op('equal', { op: 'box1' }, 5), { op: 'stop', args: [] })),
+    forwardBy(1000),
+  ]);
+  assert.equal(turtle.y, 50, 'five laps, then stop skips everything after the forever');
+});
+
+test('stop inside a repeat and an if ends the whole program, not just the loop', () => {
+  const { turtle } = runWith([
+    { op: 'repeat', args: [10], body: [forwardBy(1), ifBlock(op('equal', { op: 'y' }, 3), { op: 'stop', args: [] })] },
+    forwardBy(100),
+  ]);
+  assert.equal(turtle.y, 3);
+});
+
+test('wait asks for a pause: tenths of a second become milliseconds', () => {
+  const waits = runWith([block('wait', 10), block('wait', 2.5)]).steps.filter((x) => x instanceof Wait);
+  assert.deepEqual(waits.map((w) => w.ms), [1000, 250]);
+});
+
+test('a negative wait is no wait, and a huge wait stays within what a timer can do', () => {
+  const [short, long] = runWith([block('wait', -5), block('wait', 1e15)]).steps;
+  assert.equal(short.ms, 0);
+  assert.equal(long.ms, 2 ** 31 - 1);
+});
+
+test('the wait step remembers its block, so it can be highlighted', () => {
+  const wait = block('wait', 3);
+  assert.equal(runWith([wait]).steps[0].block, wait);
+});
+
+test('print sends each value, tidied up, to the context', () => {
+  const lines = [];
+  runWith([block('print', 7), block('print', op('add', 0.1, 0.2)), block('print', { op: 'heading' })], { print: (line) => lines.push(line) });
+  assert.deepEqual(lines, ['7', '0.3', '0']);
+});
+
+test('print works when nobody is listening', () => {
+  assert.doesNotThrow(() => runWith([block('print', 1)]));
 });

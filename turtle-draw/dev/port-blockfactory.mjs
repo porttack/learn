@@ -25,6 +25,7 @@ const pieces = [
   [857, 931],   // header, transform, footer, style
   [945, 1069],  // basicBlock
   [1071, 1113], // basicBox
+  [1279, 1363], // booleanCompare (the shape of <, > and =)
   [1365, 1570], // basicClamp
 ];
 let body = pieces.map(([a, b]) => range(a, b)).join('\n\n');
@@ -80,6 +81,54 @@ patch('header filter',
             </filter>'`,
 `            this._transform(center)`);
 
+
+// 4. Room for tall things plugged into ANY socket. The original can only
+//    stretch for the first two sockets (and the second one shares a number
+//    with a clamp's mouth). Keep a list, one entry per socket instead.
+patch('expandYs field', '        this._expandY2 = 0;\n', '        this._expandY2 = 0;\n        this._expandYs = null; // extra height under each socket (see setExpandYs)\n');
+const oldStretch = `                if (i === 0) {
+                    svg += this._rLineTo(0, this._expandY);
+                } else if (i === 1 && this._expandY2 > 0) {
+                    svg += this._rLineTo(0, this._expandY2);
+                }`;
+if (body.split(oldStretch).length !== 3) throw new Error('expected the socket stretch code exactly twice (basicBlock and basicClamp)');
+body = body.split(oldStretch).join('                svg += this._rLineTo(0, this._innieExtra(i));');
+patch('boolean clamp header',
+  '            svg += this._rLineTo(0, 2 * this._padding + this._strokeWidth);\n            svg += this._doBoolean();',
+  '            svg += this._rLineTo(0, 2 * this._padding + this._strokeWidth + this._innieExtra(0));\n            svg += this._doBoolean();');
+patch('booleanCompare second socket',
+  '        this.docks[2][1] -= this._radius * 2 * this._scale;\n        svg += this._rLineTo(0, this._radius);',
+  '        this.docks[2][1] -= this._radius * 2 * this._scale;\n        svg += this._rLineTo(0, this._innieExtra(1));\n        svg += this._rLineTo(0, this._radius);');
+body += `
+
+    /**
+     * Added for Turtle Draw. Extra height, in the same units as setExpand,
+     * under each socket, for blocks plugged in that are taller than a number
+     * box. One entry per socket.
+     * @public
+     * @param {number[]} list
+     * @returns {void}
+     */
+    setExpandYs(list) {
+        this._expandYs = list;
+    }
+
+    /**
+     * Added for Turtle Draw. The extra height under socket number i.
+     * @private
+     * @param {number} i
+     * @returns {number}
+     */
+    _innieExtra(i) {
+        if (this._expandYs) {
+            return this._expandYs[i] || 0;
+        }
+        if (i === 0) {
+            return this._expandY;
+        }
+        return i === 1 && this._expandY2 > 0 ? this._expandY2 : 0;
+    }`;
+
 if (/platformColor|style="/.test(body.replace(/\/\/.*$/gm, ''))) throw new Error('unpatched style/platformColor remains');
 
 const header = `// Block shape generator.
@@ -101,9 +150,12 @@ const header = `// Block shape generator.
 //
 // Modified 2026 by Eric Brown for Turtle Draw:
 //   * converted to an ES module;
-//   * kept only the shapes Turtle Draw uses so far: basicBlock (commands
-//     and reporters with sockets), basicBox (number boxes and plain
-//     reporters) and basicClamp (blocks with a C-shaped mouth, like repeat);
+//   * kept only the shapes Turtle Draw uses: basicBlock (commands and
+//     reporters with sockets), basicBox (number boxes and plain reporters),
+//     booleanCompare (the yes-or-no blocks <, > and =) and basicClamp
+//     (blocks with a C-shaped mouth, like repeat);
+//   * added setExpandYs and _innieExtra, so a tall block plugged into any
+//     socket (not just the first two) makes room for itself;
 //   * fills, strokes and text are written as SVG attributes instead of
 //     style="..." attributes, because Turtle Draw's Content Security Policy
 //     does not allow inline styles;

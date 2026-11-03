@@ -348,3 +348,24 @@ body {
 }
 
 .boxes-readout[hidden] { display: none; }
+
+/* ---- Print output ---- */
+
+.output {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.75rem;
+  z-index: 4;
+  max-width: 16rem;
+  margin: 0;
+  padding: 0.4rem 0.9rem;
+  border: 2px solid #ff2c76;
+  border-radius: 0.7rem;
+  background: rgba(255, 255, 255, 0.95);
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.output[hidden] { display: none; }

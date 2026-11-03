@@ -14,6 +14,9 @@ import {
   attachReporter,
   removeStack,
   isReporterStack,
+  canPlug,
+  socketType,
+  reporterType,
 } from '../js/core/edit.js';
 import { validateProject, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 
@@ -170,4 +173,38 @@ test('a lone reporter is a reporter stack, anything else is not', () => {
   assert.equal(isReporterStack({ blocks: [{ op: 'x' }] }), true);
   assert.equal(isReporterStack({ blocks: [{ op: 'forward', args: [1] }] }), false);
   assert.equal(isReporterStack({ blocks: [{ op: 'x' }, { op: 'y' }] }), false);
+});
+
+test('number sockets take number blocks, and pointed sockets take yes-or-no blocks', () => {
+  const forward = newBlock('forward');
+  const ifBlock = newBlock('if');
+  assert.equal(socketType(forward, 0), 'number');
+  assert.equal(socketType(ifBlock, 0), 'boolean');
+  assert.equal(reporterType({ op: 'heading' }), 'number');
+  assert.equal(reporterType({ op: 'less' }), 'boolean');
+  assert.equal(canPlug(forward, 0, { op: 'heading' }), true);
+  assert.equal(canPlug(forward, 0, { op: 'add', args: [1, 1] }), true);
+  assert.equal(canPlug(forward, 0, { op: 'less', args: [0, 0] }), false);
+  assert.equal(canPlug(ifBlock, 0, { op: 'less', args: [0, 0] }), true);
+  assert.equal(canPlug(ifBlock, 0, { op: 'heading' }), false);
+});
+
+test('a new if block has an empty yes-or-no socket and an empty body', () => {
+  assert.deepEqual(newBlock('if'), { op: 'if', args: [null], body: [] });
+});
+
+test('plugging the wrong kind of block in is refused', () => {
+  const forward = newBlock('forward');
+  const carried = { x: 0, y: 0, blocks: [{ op: 'less', args: [0, 0] }] };
+  const project = projectWith({ x: 0, y: 0, blocks: [forward] }, carried);
+  assert.throws(() => attachReporter(project, carried, forward, 0, 0, 0), /does not fit/);
+  assert.deepEqual(forward.args, [100]);
+});
+
+test('pulling a block out of an if leaves its socket empty, not a number', () => {
+  const ifBlock = { op: 'if', args: [{ op: 'less', args: [1, 2] }], body: [] };
+  const project = projectWith({ x: 0, y: 0, blocks: [ifBlock] });
+  const carried = detachReporter(project, ifBlock, 0, 0, 0);
+  assert.deepEqual(ifBlock.args, [null]);
+  assert.equal(carried.blocks[0].op, 'less');
 });

@@ -44,12 +44,45 @@ async function openPalette(title) {
   await chrome.sleep(100);
 }
 
-/** Drag a block out of the open palette so its top-left corner lands at (left, top). */
+/**
+ * Drag a block out of the open palette so its top-left corner lands at
+ * (left, top). It grabs the block at a point that really is on the block,
+ * found by asking the page: the left edge of a reporter is a small notch and
+ * the middle of a clamp is its empty mouth, so a fixed offset would miss.
+ */
 async function dragFromPalette(op, left, top) {
   const rect = await flyoutRect(op);
-  const press = { x: rect.left + 8, y: rect.top + rect.h / 2 };
-  await chrome.drag(press, { x: left + 8, y: top + rect.h / 2 }, 10);
+  const press = await chrome.eval(`(() => {
+    const stack = document.querySelector('.flyout .stack[data-op=${op}]');
+    const r = stack.getBoundingClientRect();
+    for (let y = r.top + r.height / 2; y < r.bottom - 2; y += 3) {
+      for (let x = r.left + 4; x < r.right - 2; x += 3) {
+        if (document.elementFromPoint(x, y)?.closest('.stack') === stack) return { x, y };
+      }
+    }
+    return null;
+  })()`);
+  if (!press) throw new Error(`no point on the ${op} block in the palette to grab`);
+  await chrome.drag(press, { x: left + (press.x - rect.left), y: top + (press.y - rect.top) }, 10);
   await chrome.sleep(80);
+}
+
+/** Tap the last workspace block with this label, at a point that really is on it. */
+async function tapBlockNamed(label) {
+  const point = await chrome.eval(`(() => {
+    const nodes = [...document.querySelectorAll(${JSON.stringify(BLOCK_NODES)})].filter((n) => n.textContent.trim() === ${JSON.stringify(label)});
+    const node = nodes.at(-1);
+    const r = node.getBoundingClientRect();
+    for (let y = r.top + 4; y < r.bottom - 2; y += 3) {
+      for (let x = r.left + 4; x < r.right - 2; x += 3) {
+        if (document.elementFromPoint(x, y)?.closest('.node') === node) return { x, y };
+      }
+    }
+    return null;
+  })()`);
+  if (!point) throw new Error(`no point on the ${label} block to tap`);
+  await chrome.click(point.x, point.y);
+  await chrome.sleep(150);
 }
 
 /** Drag a workspace block by a point near its left edge, moving it by (dx, dy). */
@@ -65,7 +98,7 @@ try {
   await chrome.goto(BASE + '?speed=instant');
   check('Roboto loaded from the app itself', await chrome.eval(`[...document.fonts].some((f) => f.family === 'Roboto' && f.status === 'loaded')`));
   check('starts empty, with a hint', (await stacks()) === 0 && (await chrome.eval(`!document.querySelector('.hint').hidden`)));
-  check('four palettes have blocks so far', (await count('.palette-button')) === 4);
+  check('five palettes have blocks', (await count('.palette-button')) === 5);
 
   await openPalette('Turtle');
   check('the Turtle palette opens and lists its 11 blocks', (await chrome.eval(`!document.querySelector('.flyout').hidden`)) && (await count('.flyout .stack')) === 11,
@@ -73,7 +106,7 @@ try {
 
   // Every label, in every palette, must fit inside its block.
   const overflows = [];
-  for (const title of ['Turtle', 'Pen', 'Flow', 'My Blocks']) {
+  for (const title of ['Turtle', 'Pen', 'Math', 'Flow', 'My Blocks']) {
     await openPalette(title);
     const bad = await chrome.eval(`(() => {
       const bad = [];
@@ -234,7 +267,7 @@ try {
 
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Flow');
-  check('the Flow palette lists start and repeat', (await count('.flyout .stack')) === 2);
+  check('the Flow palette lists its six blocks', (await count('.flyout .stack')) === 6);
   await dragFromPalette('start', 450, 300);
   const startBlock = await nodeRect('start');
   await openPalette('Turtle');
@@ -399,6 +432,131 @@ try {
   await pressRun();
   check('each run starts with empty boxes: reading a box before storing in it always gives 0',
     near(await stepsUp(), 0, 1) && (await readoutText()) === 'box1 50 box2 0 box3 0', `${(await stepsUp()).toFixed(1)}px up`);
+
+  // ---- Math, if, forever, stop, wait, print --------------------------------------------------------
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Math');
+  check('the Math palette lists its eleven blocks', (await count('.flyout .stack')) === 11, `${await count('.flyout .stack')}`);
+
+  // Which blocks fit which sockets.
+  await openPalette('Flow');
+  await dragFromPalette('if', 450, 150);
+  const ifRect = await nodeRect('if');
+  await openPalette('Math');
+  await dragFromPalette('add', ifRect.left + ifRect.w - 12, ifRect.top + 2);
+  check('a number block does not fit the pointed socket of an if', (await stacks()) === 2, `${await stacks()} stacks`);
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Flow');
+  await dragFromPalette('if', 450, 150);
+  const ifRect2 = await nodeRect('if');
+  await openPalette('Math');
+  await dragFromPalette('less', ifRect2.left + ifRect2.w - 12, ifRect2.top + 2);
+  const lessBlock = await nodeRect('<');
+  const ifAfter = await nodeRect('if');
+  check('a yes-or-no block plugs into the pointed socket of an if', (await stacks()) === 1 && lessBlock !== null && lessBlock.left > ifAfter.left + 30,
+    `${await stacks()} stacks`);
+  check('the if grows tall enough to hold it', lessBlock.bottom <= ifAfter.bottom + 1);
+  await chrome.screenshot(SHOTS + 'editor-if-less.png');
+
+  const forwardSocket = async () => {
+    await chrome.goto(BASE + '?speed=instant');
+    await openPalette('Turtle');
+    await dragFromPalette('forward', 450, 200);
+    const box = await literalRect(0);
+    await openPalette('Math');
+    return box;
+  };
+  let box = await forwardSocket();
+  await dragFromPalette('less', box.left + 2, box.top + 2);
+  check('a yes-or-no block does not fit a number box', (await stacks()) === 2 && (await literalRect(0)) !== null, `${await stacks()} stacks`);
+
+  box = await forwardSocket();
+  await dragFromPalette('add', box.left + 2, box.top + 2);
+  check('a number block does fit a number box', (await stacks()) === 1 && (await count('.workspace .node.reporter')) === 1, `${await stacks()} stacks`);
+  const addRect = await nodeRect('+');
+  const firstSocket = await literalRect(0);
+  await dragFromPalette('multiply', firstSocket.left + 2, firstSocket.top + 2);
+  check('blocks plug into blocks, as deep as you like', (await stacks()) === 1 && (await count('.workspace .node.reporter')) === 2 && (await nodeRect('\u00d7')).left > addRect.left,
+    `${await stacks()} stacks, ${await count('.workspace .node.reporter')} reporters`);
+
+  // Stop, forever.
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 450, 150);
+  const f1 = await nodeRect('forward');
+  await openPalette('Flow');
+  await dragFromPalette('stop', f1.left + 6, f1.bottom + 4);
+  check('stop snaps under another block', (await stacks()) === 1);
+  const stopRect = await nodeRect('stop');
+  await openPalette('Turtle');
+  await dragFromPalette('back', stopRect.left + 6, stopRect.bottom + 4);
+  check('nothing snaps below a stop block', (await stacks()) === 2);
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 450, 300);
+  const f2 = await nodeRect('forward');
+  await openPalette('Flow');
+  const stopHeight = (await flyoutRect('stop')).h;
+  await dragFromPalette('stop', f2.left, f2.top - stopHeight + 4);
+  check('a stop block cannot go on top of a stack', (await stacks()) === 2);
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Flow');
+  await dragFromPalette('forever', 450, 150);
+  const foreverRect = await nodeRect('forever');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', foreverRect.left + 13.5 + 4, foreverRect.top + 31.5 + 4);
+  const inner = await nodeRect('forward');
+  check('a block dropped in the mouth of forever goes inside it', (await stacks()) === 1 && inner.left > foreverRect.left + 8);
+
+  // Programs, using the example programs.
+  await chrome.goto(BASE + '?demo=counting&speed=instant');
+  await pressRun();
+  check('forever with an if and a stop: counts five laps and stops itself', near(await stepsUp(), 50 * scale, 2) && (await readoutText()) === 'box1 5 box2 0 box3 0',
+    `${(await stepsUp()).toFixed(1)}px up, ${await readoutText()}`);
+  check('the program finished by itself', await chrome.eval(`!document.getElementById('run').disabled`));
+
+  await chrome.goto(BASE + '?demo=waiting&speed=instant');
+  const runNow = await chrome.centerOf('#run');
+  await chrome.click(runNow.x, runNow.y);
+  await chrome.sleep(200);
+  const early = await stepsUp();
+  await chrome.sleep(1100);
+  const late = await stepsUp();
+  check('wait really waits, even at instant speed', near(early, 0, 1) && near(late, 50 * scale, 2), `after 0.2s: ${early.toFixed(1)}px, after 1.3s: ${late.toFixed(1)}px`);
+
+  await chrome.goto(BASE + '?demo=longwait&speed=instant');
+  await pressRun();
+  await chrome.sleep(150);
+  check('while waiting, Run is off and Stop is on', await chrome.eval(`document.getElementById('run').disabled && !document.getElementById('stop').disabled`));
+  await clickButton('stop');
+  await chrome.sleep(150);
+  check('Stop cuts a long wait short', await chrome.eval(`!document.getElementById('run').disabled`) && near(await stepsUp(), 0, 1));
+
+  await chrome.goto(BASE + '?demo=printing&speed=instant');
+  await pressRun();
+  await chrome.sleep(200);
+  const printed = await chrome.eval(`(() => { const o = document.querySelector('.output'); return o.hidden ? null : o.textContent; })()`);
+  check('print shows its values in the output box', printed === '21\n0.1', JSON.stringify(printed));
+  await pressRun();
+  await chrome.sleep(200);
+  check('the output box starts fresh each run', (await chrome.eval(`document.querySelector('.output').textContent`)) === '21\n0.1');
+
+  await chrome.goto(BASE + '?demo=emptyif&speed=instant');
+  await pressRun();
+  await chrome.sleep(200);
+  check('an if with nothing plugged in explains itself', /yes or no/.test(await messageText()), await messageText());
+  check('and the if block is outlined in red', (await count('.workspace .node.error')) === 1);
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Math');
+  await dragFromPalette('add', 600, 300);
+  await tapBlockNamed('+');
+  check('tapping a lone + block shows its answer', (await messageText()) === 'Answer: 2', await messageText());
+  await dragFromPalette('less', 600, 450);
+  await tapBlockNamed('<');
+  check('tapping a lone < block shows true or false', (await messageText()) === 'Answer: false', await messageText());
 
   // ---- Zoom and pan -----------------------------------------------------------------------------
   await chrome.goto(BASE + '?demo=square&speed=instant');
