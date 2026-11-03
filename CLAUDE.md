@@ -128,11 +128,10 @@ whatever commit `gh-pages` points to when you update):
     git add working-in-python
     git commit -m "Update working-in-python mirror"
 
-### Turtle Draw (`turtle-draw/`)
+### TurtleLab (`turtlelab/`)
 
-A block-based turtle graphics app (working name, real name pending) for
-grades 6-11. **Before working on anything under `turtle-draw/`, read
-`turtle-draw/CLAUDE.md`** (licensing, privacy and "forbidden sources" rules,
+A block-based turtle graphics app for grades 6-11. **Before working on anything under `turtlelab/`, read
+`turtlelab/CLAUDE.md`** (licensing, privacy and "forbidden sources" rules,
 architecture, milestone status).
 
 The rules most often gotten wrong:
@@ -142,12 +141,12 @@ The rules most often gotten wrong:
 - Plain static files, like `python3d/`: no front matter, no collection, no
   build step. Its dev files (`CLAUDE.md`, `README.md`, `NOTICE.md`,
   `package.json`, `test/`, `dev/`) are excluded from the Jekyll build.
-- **Deploy gate:** while it has its placeholder name, the whole folder is
-  under `exclude:` in `_config.yml` so it is not published. Don't remove that
-  line, add the `/license/` paragraph, or add a `_data/pathways.yml` card
-  until the teacher has named it.
+- **Deploy gate:** while it is unfinished, the whole folder is under
+  `exclude:` in `_config.yml` so it is not published. Don't remove that line,
+  add the `/license/` paragraph, or add a `_data/pathways.yml` card until its
+  public pages (about, privacy, guide) exist.
 - Dev server on port **4011** (`python3 -m http.server 4011 --directory
-  turtle-draw`), unit tests with `cd turtle-draw && node --test`.
+  turtlelab`), unit tests with `cd turtlelab && node --test`.
 
 ### Teacher planning notes
 

@@ -50,10 +50,10 @@ file.
 
 https://creativecommons.org/licenses/by-nc-sa/3.0/
 
-## turtle-draw/
+## turtlelab/
 
-Everything under `turtle-draw/` is a separate program, licensed under the GNU
+Everything under `turtlelab/` is a separate program, licensed under the GNU
 Affero General Public License, version 3 or later, not under any of the
-licences above. See `turtle-draw/COPYING` for the licence text and
-`turtle-draw/NOTICE.md` for the third-party work it includes (notably Sugar
+licences above. See `turtlelab/COPYING` for the licence text and
+`turtlelab/NOTICE.md` for the third-party work it includes (notably Sugar
 Labs' Turtle Blocks JS).

@@ -1,0 +1,10 @@
+{
+  "name": "turtlelab",
+  "private": true,
+  "type": "module",
+  "description": "Block-based turtle graphics for the classroom. Runs entirely in the browser.",
+  "license": "AGPL-3.0-or-later",
+  "scripts": {
+    "test": "node --test"
+  }
+}

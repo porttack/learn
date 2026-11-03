@@ -80,17 +80,17 @@ exclude:
   - source/
   - vendor/
   - working-in-python/CNAME
-  # turtle-draw/ is an AGPL app under development with a placeholder name.
+  # turtlelab/ is TurtleLab, an AGPL app that is still being built.
   # The first line keeps the whole folder out of the published site. Remove
-  # it only once the app is named (see turtle-draw/CLAUDE.md, "Deploy gate").
+  # it when its public pages exist (see turtlelab/CLAUDE.md, "Deploy gate").
   # The rest are developer files that never get published, gate or no gate.
-  - turtle-draw/
-  - turtle-draw/CLAUDE.md
-  - turtle-draw/README.md
-  - turtle-draw/NOTICE.md
-  - turtle-draw/package.json
-  - turtle-draw/test/
-  - turtle-draw/dev/
+  - turtlelab/
+  - turtlelab/CLAUDE.md
+  - turtlelab/README.md
+  - turtlelab/NOTICE.md
+  - turtlelab/package.json
+  - turtlelab/test/
+  - turtlelab/dev/
 
 # working-in-python is a submodule holding a pre-built Sphinx site (not
 # Jekyll source). Its underscore-prefixed asset dirs would otherwise be
