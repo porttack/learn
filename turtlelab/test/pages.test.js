@@ -130,6 +130,13 @@ test('the Guide explains Save, Open, New and Ctrl+S, and no longer says saving i
   for (const word of ['Save', 'Open', 'New', 'Ctrl+S', 'shared computer', 'Sticky notes']) assert.ok(guide.includes(word), word);
 });
 
+test('the Guide says how to delete: drag to the left, where the trash can and its shark are', () => {
+  const guide = read('guide.html');
+  assert.match(guide, /Delete a block<\/td><td>Drag it to the left side, where the trash can is/);
+  assert.match(guide, /shark/);
+  assert.match(guide, /Undo brings them back/);
+});
+
 test('the Guide points to the Samples page', () => {
   assert.match(read('guide.html'), /<a href="samples\.html">/);
 });

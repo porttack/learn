@@ -13,10 +13,12 @@ import { newBlock } from '../core/edit.js';
 import { definitionHats, newCall, newDefinition, newInput } from '../core/definitions.js';
 import { PALETTE_COLORS } from './palette-colors.js';
 import { layoutStack, renderStack, stackBounds } from './block-view.js';
+import { Trash } from './trash.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const GAP = 14; // space between blocks in the flyout
 const MARGIN = 14;
+const ZONE_MARGIN = 8; // the delete zone reaches this far past the palette
 
 export class PaletteUI {
   /**
@@ -25,6 +27,7 @@ export class PaletteUI {
    * @param {import('./workspace.js').Workspace} options.workspace
    */
   constructor({ stage, workspace }) {
+    this.stage = stage;
     this.workspace = workspace;
     this.selected = null;
     this.entries = new Map(); // each block in the flyout, by its element: how to make one, and its tip
@@ -60,7 +63,16 @@ export class PaletteUI {
       this.buttons.set(palette.id, button);
     }
 
+    // The delete zone: the whole left column, not just the buttons. It is tinted
+    // while a block is held over it (between the paper and the blocks), and the
+    // trash can at the bottom of it, with its shark, shows what happens next.
+    this.band = document.createElement('div');
+    this.band.className = 'trash-band';
+    this.band.setAttribute('aria-hidden', 'true');
+    stage.insertBefore(this.band, workspace.svg);
+
     stage.append(this.nav, this.flyout);
+    this.trash = new Trash(stage, workspace.svg);
     this.flyoutSvg.addEventListener('pointerdown', (event) => this.pressFlyout(event));
   }
 
@@ -135,19 +147,37 @@ export class PaletteUI {
     this.workspace.pressPaletteBlock(event, entry, group.getBoundingClientRect());
   }
 
-  /** True if the screen point is over the palette column or its flyout. */
-  isOver(clientX, clientY) {
-    const inside = (el) => {
-      if (el.hidden) return false;
-      const box = el.getBoundingClientRect();
-      return clientX >= box.left && clientX <= box.right && clientY >= box.top && clientY <= box.bottom;
-    };
-    return inside(this.nav) || inside(this.flyout);
+  /**
+   * How far right the delete zone reaches: the palette column, or its open
+   * flyout if that is wider, and a little more.
+   */
+  deleteEdge() {
+    const reach = (el) => (el.hidden || el.offsetParent === null ? 0 : el.getBoundingClientRect().right);
+    return Math.max(reach(this.nav), reach(this.flyout)) + ZONE_MARGIN;
   }
 
-  /** Tint the palette while a block is held over it, to say "drop to delete". */
+  /**
+   * True if a block dropped here is deleted. That is the whole left column, top
+   * to bottom, as wide as the palette, and anything dragged past the left edge
+   * of the window: letting go anywhere along the side is "putting it away".
+   * (It used to be only the strip of buttons, so a block dropped just below or
+   * beside them stayed where it was.) Only the sideways position matters.
+   */
+  isOver(clientX) {
+    return clientX <= this.deleteEdge();
+  }
+
+  /** Tint the whole left column, and bring the shark up, while a block is held over it: "drop to delete". */
   setTrashHover(hovering) {
     this.nav.classList.toggle('trash', hovering);
     this.flyout.classList.toggle('trash', hovering);
+    this.band.classList.toggle('active', hovering);
+    if (hovering) this.band.style.width = `${this.deleteEdge() - this.stage.getBoundingClientRect().left}px`;
+    this.trash.setHungry(hovering);
+  }
+
+  /** What a deleted stack is fed to: where its mouth is on the screen, and a nudge to start chewing. */
+  get eater() {
+    return { mouthPoint: () => this.trash.mouthPoint(), feed: () => this.trash.feed() };
   }
 }

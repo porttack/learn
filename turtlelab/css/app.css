@@ -270,6 +270,89 @@ body {
   background: rgba(255, 190, 190, 0.95);
 }
 
+/* The delete zone, shown while a block is held over it: the whole left column. */
+.trash-band {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 1rem;
+  background: rgba(255, 150, 150, 0.35);
+  border-right: 3px dashed rgba(190, 40, 40, 0.55);
+  pointer-events: none;
+}
+
+.trash-band.active { display: flex; }
+
+/* The trash can at the bottom of the left side, and its shark. Which state it is in
+   is a class on .trash-can: hungry (a block is held over the side) or eating (one was
+   just dropped). The shark sinks behind the front of the can, which is what hides it. */
+.trash-can {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  width: 5rem;
+  pointer-events: none; /* and it sits under the blocks, so a stack held over it is on top */
+}
+
+.stage.blocks-hidden .trash-can { display: none; }
+
+.trash-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.trash-can .shark {
+  transform: translateY(84px);
+  transition: transform 0.22s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.trash-can .jaw {
+  transform: translateY(0);
+  transition: transform 0.18s ease-out;
+}
+
+.trash-can .lid {
+  transform-origin: 24px 73px;
+  transition: transform 0.2s ease-out;
+}
+
+.trash-can.hungry .shark,
+.trash-can.eating .shark { transform: translateY(-40px); }
+
+.trash-can.hungry .jaw,
+.trash-can.eating .jaw { transform: translateY(26px); }
+
+.trash-can.hungry .lid,
+.trash-can.eating .lid { transform: translate(-34px, -4px) rotate(-62deg); }
+
+.trash-can.chomp .jaw { animation: chomp 0.8s ease-in-out; }
+
+@keyframes chomp {
+  0% { transform: translateY(26px); }
+  20% { transform: translateY(0); }
+  40% { transform: translateY(22px); }
+  60% { transform: translateY(0); }
+  80% { transform: translateY(14px); }
+  100% { transform: translateY(0); }
+}
+
+/* A copy of a deleted stack on its way into the shark: it is only for looking at. */
+.workspace .ghost,
+.workspace .ghost * { pointer-events: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .trash-can .shark,
+  .trash-can .jaw,
+  .trash-can .lid { transition: none; }
+  .trash-can.chomp .jaw { animation: none; }
+}
+
 /* ---- Messages ---- */
 
 .message {

@@ -236,6 +236,179 @@ try {
   check('dropping it on the palette deletes it', (await count(BLOCK_NODES)) === 2 && (await nodeRect('right')) === null);
   check('the palette stops being red', await chrome.eval(`!document.querySelector('.palettes').classList.contains('trash')`));
 
+  // ---- The delete zone is the whole left column, not only the buttons -------------------------------
+  // Put a forward block on the page (flyout closed, or open), pick it up, and let go at `where`.
+  const dropForwardAt = async (where, { flyout = false } = {}) => {
+    await chrome.goto(BASE + '?speed=instant');
+    await openPalette('Turtle');
+    await dragFromPalette('forward', 600, 300);
+    if (!flyout) {
+      const button = await chrome.centerOf('.palette-button[title="Turtle"]');
+      await chrome.click(button.x, button.y); // tapping the open palette's button closes it
+      await chrome.sleep(100);
+    }
+    const r = await nodeRect('forward');
+    const target = typeof where === 'function' ? await where() : where;
+    await chrome.drag({ x: r.left + 10, y: r.top + r.h / 2 }, target, 12);
+    await chrome.sleep(120);
+    return stacks();
+  };
+  const flyoutBox = () => chrome.eval(`(() => { const r = document.querySelector('.flyout').getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }; })()`);
+
+  for (const [label, where] of [
+    ['below the buttons', { x: 30, y: 650 }],
+    ['beside the buttons, at the very edge', { x: 3, y: 200 }],
+    ['just to the right of the buttons', { x: 78, y: 200 }],
+    ['past the left edge of the window', { x: -40, y: 300 }],
+  ]) {
+    check(`letting go ${label} deletes the block`, (await dropForwardAt(where)) === 0);
+  }
+  check('letting go over the open flyout deletes it', (await dropForwardAt({ x: 170, y: 300 }, { flyout: true })) === 0);
+  check('letting go in the gap between the buttons and the open flyout deletes it', (await dropForwardAt({ x: 80, y: 300 }, { flyout: true })) === 0);
+  check('letting go well to the right of the closed palette keeps the block (this is the page)', (await dropForwardAt({ x: 160, y: 300 })) === 1);
+  check('letting go well to the right of the open flyout keeps it too', (await dropForwardAt(async () => ({ x: (await flyoutBox()).right + 50, y: 300 }), { flyout: true })) === 1);
+
+  // The column tells you: it turns red while a block is held over it, and not before.
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 300);
+  const heldRect = await nodeRect('forward');
+  const heldAt = { x: heldRect.left + 10, y: heldRect.top + heldRect.h / 2 };
+  const bandNow = () => chrome.eval(`(() => { const b = document.querySelector('.trash-band'); const r = b.getBoundingClientRect(); return { active: b.classList.contains('active'), shown: getComputedStyle(b).display !== 'none', width: r.width, height: r.height, text: b.textContent }; })()`);
+  await chrome.mouse('mouseMoved', heldAt.x, heldAt.y, { buttons: 0 });
+  await chrome.mouse('mousePressed', heldAt.x, heldAt.y);
+  for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', heldAt.x + ((450 - heldAt.x) * i) / 8, heldAt.y + ((200 - heldAt.y) * i) / 8);
+  check('while a block is held out in the page, no delete zone shows', !(await bandNow()).shown);
+  for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', 450 + ((30 - 450) * i) / 8, 200 + ((650 - 200) * i) / 8);
+  const band = await bandNow();
+  check('held over the left side, the whole column turns red', band.active && band.shown && band.width >= 70 && band.height > 500, JSON.stringify(band));
+  await chrome.sleep(350);
+  // What the page hears when a mouse-up was lost: the next move arrives with no button down. (A scripted
+  // move cannot do this, since the browser itself still thinks the button is held, so send the event.)
+  const strayMove = (x, y) =>
+    chrome.eval(`document.querySelector('svg.workspace').dispatchEvent(new PointerEvent('pointermove', { pointerId: 1, pointerType: 'mouse', isPrimary: true, buttons: 0, clientX: ${x}, clientY: ${y}, bubbles: true }))`);
+  const sharkAt = () => chrome.eval(`(() => { const can = document.querySelector('.trash-can'); const m = getComputedStyle(can.querySelector('.shark')).transform; return { hungry: can.classList.contains('hungry'), eating: can.classList.contains('eating'), lift: m === 'none' ? 0 : Number(m.match(/matrix\\(.*,\\s*(-?[\\d.]+)\\)/)[1]) }; })()`);
+  const up = await sharkAt();
+  check('and the lid comes off and a shark pops up out of the trash can, ready to eat it', up.hungry && up.lift <= -30, JSON.stringify(up));
+  for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', 30 + ((500 - 30) * i) / 8, 650 + ((250 - 650) * i) / 8);
+  check('and it stops being red when the block moves away, and the shark goes back down', !(await bandNow()).shown && !(await sharkAt()).hungry);
+  await chrome.mouse('mouseReleased', 500, 250);
+  await chrome.sleep(100);
+  check('letting go there keeps the block', (await stacks()) === 1);
+
+  // A block fresh from the flyout starts over the flyout, so the red waits until it has left and come back.
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  const fresh = await flyoutRect('forward');
+  const freshAt = { x: fresh.left + 10, y: fresh.top + fresh.h / 2 };
+  await chrome.mouse('mouseMoved', freshAt.x, freshAt.y, { buttons: 0 });
+  await chrome.mouse('mousePressed', freshAt.x, freshAt.y);
+  for (let i = 1; i <= 6; i += 1) await chrome.mouse('mouseMoved', freshAt.x + 6 * i, freshAt.y + 20 * i);
+  check('taking a new block out of the flyout does not flash the delete zone', !(await bandNow()).shown && (await chrome.eval(`!document.querySelector('.flyout').classList.contains('trash')`)));
+  for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', freshAt.x + 36 + ((600 - freshAt.x - 36) * i) / 8, freshAt.y + 120);
+  for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', 600 + ((170 - 600) * i) / 8, freshAt.y + 120);
+  check('but once it has been out in the page, bringing it back over the left side does', (await bandNow()).active);
+  await chrome.mouse('mouseReleased', 170, freshAt.y + 120);
+  await chrome.sleep(100);
+  check('and letting go there deletes it', (await stacks()) === 0);
+
+  // Letting go is eaten by the shark, and then everything goes back to rest.
+  const settled = () => chrome.eval(`(() => { const c = document.querySelector('.trash-can').classList; return !c.contains('hungry') && !c.contains('eating') && !c.contains('chomp'); })()`);
+  const ghosts = () => count('.workspace .ghost');
+  await chrome.goto(BASE + '?speed=instant');
+  check('at rest the shark is out of sight and the lid is on', (await settled()) && (await sharkAt()).lift >= 60);
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 300);
+  await dragFromPalette('right', 600, 500);
+  const toEat = await nodeRect('forward');
+  const eatFrom = { x: toEat.left + 10, y: toEat.top + toEat.h / 2 };
+  await chrome.drag(eatFrom, { x: 40, y: 560 }, 10);
+  await chrome.sleep(120);
+  check('a deleted stack flies into the shark as a copy, while the real one is already gone', (await ghosts()) === 1 && (await stacks()) === 1 && (await chrome.eval(`document.querySelector('.trash-can').classList.contains('eating')`)));
+  await chrome.sleep(1900);
+  check('then the copy is gone, and the shark and lid are back where they started', (await ghosts()) === 0 && (await settled()) && (await sharkAt()).lift >= 60);
+  check('only the stack that was eaten is gone', (await stacks()) === 1 && (await nodeRect('right')) !== null && (await nodeRect('forward')) === null);
+
+  // Nothing is left stuck: the other block can be picked up and moved normally, and moving the mouse alone moves nothing.
+  const keep = await nodeRect('right');
+  await chrome.mouse('mouseMoved', keep.left + 60, keep.top - 80, { buttons: 0 });
+  await chrome.mouse('mouseMoved', keep.left + 120, keep.top - 120, { buttons: 0 });
+  check('moving the mouse after a delete does not drag anything along', near((await nodeRect('right')).left, keep.left, 1) && near((await nodeRect('right')).top, keep.top, 1));
+  await dragBlock('right', 80, -60);
+  check('and the next block can be picked up and moved as usual', near((await nodeRect('right')).left - keep.left, 80, 2) && near((await nodeRect('right')).top - keep.top, -60, 2));
+
+  // The mouse button comes up somewhere the page cannot see it: the block must not stay stuck to the pointer.
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 300);
+  const lost = await nodeRect('forward');
+  await chrome.mouse('mouseMoved', lost.left + 10, lost.top + lost.h / 2, { buttons: 0 });
+  await chrome.mouse('mousePressed', lost.left + 10, lost.top + lost.h / 2);
+  for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', lost.left + 10 + ((40 - lost.left - 10) * i) / 8, lost.top + lost.h / 2 + ((450 - lost.top - lost.h / 2) * i) / 8);
+  check('held over the left side, the shark is up', (await sharkAt()).hungry);
+  // No mouse-up is heard: the next thing the page hears is the mouse moving with no button down.
+  await strayMove(41, 452);
+  await chrome.sleep(150);
+  check('if the button-up is never heard, the next move with no button down still lets go (and deletes)', (await stacks()) === 0);
+  await chrome.sleep(1900);
+  check('and nothing is left red or stuck afterwards', (await settled()) && !(await bandNow()).shown && (await ghosts()) === 0);
+
+  // The block was over the left side when the button came up unseen, and the mouse has wandered off since: it was dropped there.
+  const holdOverLeft = async (finish) => {
+    await chrome.goto(BASE + '?speed=instant');
+    await openPalette('Turtle');
+    await dragFromPalette('forward', 600, 300);
+    const at = await nodeRect('forward');
+    const from = { x: at.left + 10, y: at.top + at.h / 2 };
+    await chrome.mouse('mouseMoved', from.x, from.y, { buttons: 0 });
+    await chrome.mouse('mousePressed', from.x, from.y);
+    for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', from.x + ((300 - from.x) * i) / 8, from.y + ((250 - from.y) * i) / 8);
+    return finish;
+  };
+  await holdOverLeft();
+  for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', 300 - 270 * (i / 8), 250 + 200 * (i / 8));
+  await strayMove(640, 120);
+  await chrome.sleep(150);
+  check('a button-up never heard is a drop where the block last was: over the left side, so it is deleted', (await stacks()) === 0);
+
+  // But if the block was out in the page, a mouse that wanders over the left side with no button down deletes nothing.
+  await holdOverLeft();
+  await strayMove(38, 440);
+  await chrome.sleep(150);
+  check('a button-up never heard, with the block out in the page, keeps the block where it was', (await stacks()) === 1 && (await nodeRect('forward')) !== null);
+  await chrome.sleep(900);
+  check('and the shark and the red stay away', (await settled()) && !(await bandNow()).shown);
+
+  // The can sits under the blocks, so a stack carried over the shark is drawn on top of it.
+  check('the trash can is under the blocks, so a held stack is drawn on top of the shark',
+    await chrome.eval(`(() => { const kids = [...document.getElementById('stage').children]; const can = document.querySelector('.trash-can'); return kids.indexOf(can) < kids.indexOf(document.querySelector('svg.workspace')) && getComputedStyle(can).zIndex === 'auto'; })()`));
+
+  // The window loses focus in the middle of a drag: the block stays where it is, and nothing is stuck.
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 300);
+  const blurred = await nodeRect('forward');
+  await chrome.mouse('mouseMoved', blurred.left + 10, blurred.top + blurred.h / 2, { buttons: 0 });
+  await chrome.mouse('mousePressed', blurred.left + 10, blurred.top + blurred.h / 2);
+  for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', blurred.left + 10 + ((40 - blurred.left - 10) * i) / 8, blurred.top + blurred.h / 2 + ((450 - blurred.top - blurred.h / 2) * i) / 8);
+  await chrome.eval(`window.dispatchEvent(new Event('blur'))`);
+  await chrome.sleep(150);
+  check('losing the window mid-drag puts the drag down without deleting the block', (await stacks()) === 1 && !(await bandNow()).shown && !(await sharkAt()).hungry);
+  await chrome.mouse('mouseReleased', 40, 450);
+  await chrome.sleep(100);
+  check('and the late mouse-up does nothing', (await stacks()) === 1);
+
+  // Less motion: the block is simply deleted, with no flying copy and no chewing.
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 300);
+  const calm = await nodeRect('forward');
+  await chrome.drag({ x: calm.left + 10, y: calm.top + calm.h / 2 }, { x: 40, y: 450 }, 10);
+  await chrome.sleep(100);
+  check('with reduced motion on, it is deleted at once with no flying copy', (await stacks()) === 0 && (await ghosts()) === 0 && !(await chrome.eval(`document.querySelector('.trash-can').classList.contains('eating')`)));
+  await chrome.send('Emulation.setEmulatedMedia', { features: [] });
+
   // ---- Plugging a reporter into a number box ----------------------------------------------
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Turtle');

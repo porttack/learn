@@ -277,6 +277,7 @@ workspace = new Workspace({
   onRunStack: runStack,
   onRunPaletteBlock: (block) => runStack({ x: 0, y: 0, blocks: [block] }),
   onMessage: say,
+  eater: { mouthPoint: () => palettes.eater.mouthPoint(), feed: () => palettes.eater.feed() },
   isOverPalette: (x, y) => palettes.isOver(x, y),
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
 });

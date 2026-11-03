@@ -197,8 +197,26 @@ input could appear.
   out. The grab offset is measured from the press point, not from where the
   pointer is when the drag starts (a fast drag has already moved).
 - **Tapping** a stack runs it; tapping a palette block runs that one block
-  (a lone reporter shows its value in the message bar). Dropping on the
-  palette deletes; the palette tints red while you hover.
+  (a lone reporter shows its value in the message bar). **Dropping anywhere in
+  the left column deletes** (`PaletteUI.isOver`: everything left of the palette
+  or its open flyout, top to bottom, including past the window's edge). It used
+  to be only the strip of buttons, so a drop just below or beside them silently
+  kept the block, which a teacher reported as "delete does not work". The whole
+  column tints red (`.trash-band`) while a block is held over it, and a **trash
+  can with a shark** (`js/ui/trash.js`, original art, one inline SVG driven by
+  `hungry` / `eating` / `chomp` classes) sits at the bottom of it: the lid flips
+  off and the shark pops up with its jaw open, and on release a copy of the stack
+  (the "ghost", stripped of every class and id the app looks things up by)
+  shrinks into its mouth while the shark chomps and sinks. None of that tint or
+  shark shows for a block fresh from the flyout until it has left the zone, and
+  `prefers-reduced-motion` skips the flying copy. The can is under the blocks'
+  layer, so a stack being carried is drawn on top of it.
+- **A drag must always end.** The workspace also handles a mouse-up it never
+  hears (released off the window's edge): the next `pointermove` with no button
+  down lets go at the block's last known spot (`drag.over`), and a window blur or
+  `lostpointercapture` puts the drag down without deleting. Tests cannot use a
+  scripted move for that (the browser still thinks the button is held); they
+  dispatch a `PointerEvent` with `buttons: 0` (`strayMove` in editor-checks).
 - **Undo and redo** keep whole-project JSON snapshots (`core/history.js`,
   100 steps). `Workspace.onChange` fires after every committed edit and
   `main.js` records it; a change that leaves the project identical (a block

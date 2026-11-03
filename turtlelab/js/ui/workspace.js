@@ -11,7 +11,7 @@
 //                            stack of cards) and carry it. Near a place it
 //                            fits, a ring shows where it will snap.
 //   let go                   it snaps there, or stays where it is dropped.
-//   drop it on the palette   deleted.
+//   drop it on the left edge  deleted (the whole left column, not just the buttons).
 //   tap a block              run its stack.
 //   tap a number             type a new number.
 //   tap a name on a `to`     type the block's name, or an input's name.
@@ -48,6 +48,10 @@ const DRAG_THRESHOLD = 6; // how far a press must move before it is a drag
 const TOUCH_DRAG_THRESHOLD = 10; // fingers wobble more than mice
 const LONG_PRESS_MS = 500; // how long to hold a block for its help bubble
 const COPY_OFFSET = 30; // how far a copied stack lands from the original
+const EAT_MS = 380; // how long a deleted stack takes to be eaten
+const EATEN_SIZE = 0.12; // how small it is by the time it reaches the shark
+
+const prefersReducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export class Workspace {
   /**
@@ -60,6 +64,8 @@ export class Workspace {
    * @param {(text: string) => void} [options.onMessage] something to tell the student, like why a name was refused
    * @param {(x: number, y: number) => boolean} [options.isOverPalette] for deleting
    * @param {(hovering: boolean) => void} [options.onPaletteHover]
+   * @param {{ mouthPoint: () => ({x: number, y: number} | null), feed: () => void }} [options.eater]
+   *        what eats a deleted stack: where its mouth is on the screen, and a nudge to start chewing
    */
   constructor({
     stage,
@@ -70,6 +76,7 @@ export class Workspace {
     onMessage = () => {},
     isOverPalette = () => false,
     onPaletteHover = () => {},
+    eater = null,
   }) {
     this.stage = stage;
     this.project = project;
@@ -79,6 +86,7 @@ export class Workspace {
     this.onMessage = onMessage;
     this.isOverPalette = isOverPalette;
     this.onPaletteHover = onPaletteHover;
+    this.eater = eater;
 
     this.layouts = [];
     this.registry = new Map(); // element id -> what it is
@@ -182,6 +190,12 @@ export class Workspace {
     this.svg.addEventListener('pointermove', (event) => this.move(event));
     this.svg.addEventListener('pointerup', (event) => this.release(event));
     this.svg.addEventListener('pointercancel', (event) => this.cancel(event));
+    // A drag must always end. If the button comes up where this page cannot see it (over
+    // the browser's own edge, say), or the browser takes the pointer back, or the window
+    // loses focus, the block would otherwise stay stuck to the pointer.
+    this.svg.addEventListener('lostpointercapture', (event) => this.cancel(event));
+    window.addEventListener('pointerup', (event) => this.release(event));
+    window.addEventListener('blur', () => this.abandon());
     this.svg.addEventListener('contextmenu', (event) => {
       const entry = this.entryAt(event.target);
       if (entry?.type === 'block') {
@@ -229,6 +243,13 @@ export class Workspace {
 
   move(event) {
     if (!this.pointer || event.pointerId !== this.pointer.id) return;
+    // The mouse button is up but we never heard it come up (it was let go off the edge of
+    // the window, say). That is letting go, and where is where the block last was: the mouse
+    // may have wandered anywhere since, but the student meant to drop it there.
+    if (event.pointerType === 'mouse' && event.buttons === 0) {
+      this.release(event, { atLastSpot: true });
+      return;
+    }
     if (!this.drag) {
       const far = Math.hypot(event.clientX - this.pointer.startX, event.clientY - this.pointer.startY);
       if (far < this.pointer.threshold) return;
@@ -239,13 +260,13 @@ export class Workspace {
     this.carry(event);
   }
 
-  release(event) {
+  release(event, { atLastSpot = false } = {}) {
     if (!this.pointer || event.pointerId !== this.pointer.id) return;
     const { entry, palette, longPressed } = this.pointer;
     this.clearPressTimer();
     this.pointer = null;
     if (this.drag) {
-      this.drop(event);
+      this.drop(event, atLastSpot ? { over: this.drag.over } : {});
     } else if (longPressed) {
       // The help bubble is showing. Letting go is not a tap.
     } else if (palette) {
@@ -263,9 +284,15 @@ export class Workspace {
 
   cancel(event) {
     if (!this.pointer || event.pointerId !== this.pointer.id) return;
+    this.abandon();
+  }
+
+  /** End whatever press or drag is going on without doing anything with it: a carried block stays where it is. */
+  abandon() {
+    if (!this.pointer) return;
     this.clearPressTimer();
     this.pointer = null;
-    if (this.drag) this.drop(event, { keepWhereItIs: true });
+    if (this.drag) this.drop({ clientX: 0, clientY: 0 }, { keepWhereItIs: true });
   }
 
   clearPressTimer() {
@@ -345,7 +372,8 @@ export class Workspace {
         : detachCommands(this.project, node.stack, node.list, node.index, origin.x, origin.y);
     }
 
-    this.drag = { carried, grab: { x: pointer.x - origin.x, y: pointer.y - origin.y }, target: null };
+    // A block fresh from the palette starts out over the palette, so the delete tint waits until it has left.
+    this.drag = { carried, grab: { x: pointer.x - origin.x, y: pointer.y - origin.y }, target: null, fromPalette: Boolean(palette), over: false };
     this.render();
   }
 
@@ -367,23 +395,65 @@ export class Workspace {
     } else {
       this.snapRing.setAttribute('visibility', 'hidden');
     }
-    this.onPaletteHover(this.isOverPalette(event.clientX, event.clientY));
+    const over = this.isOverPalette(event.clientX, event.clientY);
+    this.drag.over = over; // where the block was last, for a button-up we never hear
+    if (!over) this.drag.fromPalette = false;
+    this.onPaletteHover(over && !this.drag.fromPalette);
   }
 
   /** Let go of the carried stack: snap it, delete it, or leave it. */
-  drop(event, { keepWhereItIs = false } = {}) {
+  drop(event, { keepWhereItIs = false, over = this.isOverPalette(event.clientX, event.clientY) } = {}) {
     const { carried, target } = this.drag;
     this.drag = null;
     this.snapRing.setAttribute('visibility', 'hidden');
     this.onPaletteHover(false);
 
-    if (!keepWhereItIs && this.isOverPalette(event.clientX, event.clientY)) {
+    let eaten = null;
+    if (!keepWhereItIs && over) {
+      eaten = this.ghostOf(carried);
       removeStack(this.project, carried);
     } else if (!keepWhereItIs && target) {
       this.snapTo(target, carried);
     }
     this.render();
     this.onChange();
+    if (eaten) this.swallow(eaten);
+  }
+
+  /**
+   * A copy of a stack that is about to be deleted, for showing it being eaten, or
+   * null if nothing is there to eat it (or the student asked for less motion).
+   */
+  ghostOf(carried) {
+    const layout = this.layoutOf(carried);
+    const mouth = this.eater?.mouthPoint();
+    if (!layout?.el || !mouth || prefersReducedMotion()) return null;
+    const box = layout.el.getBoundingClientRect();
+    // A picture only: it keeps none of the class names or ids the app looks things up by,
+    // so nothing can mistake it for a block that is really on the page.
+    const el = layout.el.cloneNode(true);
+    el.setAttribute('class', 'ghost');
+    for (const part of el.querySelectorAll('[data-nid]')) {
+      part.removeAttribute('data-nid');
+      part.setAttribute('class', 'ghost-part');
+    }
+    return { el, from: { x: carried.x, y: carried.y }, mouth, size: { w: box.width / this.view.zoom, h: box.height / this.view.zoom } };
+  }
+
+  /**
+   * Show a deleted stack shrinking into the shark's mouth, then take it away. The
+   * project has already lost it, so Undo brings it back whatever the picture is doing.
+   */
+  swallow({ el, from, mouth, size }) {
+    const goal = this.toWorld(mouth.x, mouth.y);
+    el.style.transform = `translate(${from.x}px, ${from.y}px)`;
+    this.overlay.append(el);
+    el.getBoundingClientRect(); // lets the browser see where it starts, so the move below is animated
+    el.style.transition = `transform ${EAT_MS}ms cubic-bezier(0.4, 0, 0.9, 0.6), opacity ${EAT_MS}ms`;
+    el.style.transform = `translate(${goal.x - (size.w * EATEN_SIZE) / 2}px, ${goal.y - (size.h * EATEN_SIZE) / 2}px) scale(${EATEN_SIZE})`;
+    el.style.opacity = '0.25';
+    this.eater.feed();
+    setTimeout(() => el.remove(), EAT_MS + 80);
   }
 
   snapTo(target, carried) {
