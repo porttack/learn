@@ -80,11 +80,9 @@ exclude:
   - source/
   - vendor/
   - working-in-python/CNAME
-  # turtlelab/ is TurtleLab, an AGPL app that is still being built.
-  # The first line keeps the whole folder out of the published site. Remove
-  # it when its public pages exist (see turtlelab/CLAUDE.md, "Deploy gate").
-  # The rest are developer files that never get published, gate or no gate.
-  - turtlelab/
+  # turtlelab/ is TurtleLab, an AGPL app published as plain static files.
+  # These are its developer files, which are never published. (Until
+  # 2026-11-03 a line here excluded the whole folder.)
   - turtlelab/CLAUDE.md
   - turtlelab/README.md
   - turtlelab/NOTICE.md

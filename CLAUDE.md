@@ -141,10 +141,11 @@ The rules most often gotten wrong:
 - Plain static files, like `python3d/`: no front matter, no collection, no
   build step. Its dev files (`CLAUDE.md`, `README.md`, `NOTICE.md`,
   `package.json`, `test/`, `dev/`) are excluded from the Jekyll build.
-- **Deploy gate:** while it is unfinished, the whole folder is under
-  `exclude:` in `_config.yml` so it is not published. Don't remove that line,
-  add the `/license/` paragraph, or add a `_data/pathways.yml` card until its
-  public pages (about, privacy, guide) exist.
+- **Published** at `/turtlelab/` since 2026-11-03 (home card, `/license/`
+  and `/privacy/` sections, and its own About, Privacy and Guide pages).
+  Pushing `learn` publishes it, so Claude never pushes. Its privacy pages
+  promise no network use, cookies or storage; when saving or autosave is
+  added, update them first (see `turtlelab/CLAUDE.md`, "Publishing").
 - Dev server on port **4011** (`python3 -m http.server 4011 --directory
   turtlelab`), unit tests with `cd turtlelab && node --test`.
 

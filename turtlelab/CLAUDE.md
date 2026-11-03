@@ -242,6 +242,8 @@ two blocks with dots and an arrow that are not in the brief. Ask what they
 are before building anything like them.
 
 Known limits to fix when they matter:
+- Nothing is saved yet (milestone c), so a refresh loses the blocks. The guide
+  says so. This is the biggest gap now that the app is published.
 - `?demo=name` (see `demos.js`) loads a program into the workspace for trying
   things out. It is a developer shortcut, not a feature for students.
 
@@ -268,15 +270,29 @@ block shape makes leaving slightly bigger, so keep the decision in mind. Keep
 adding every borrowed file to `NOTICE.md`. Not legal advice; ask a lawyer if
 it matters.
 
-## Deploy gate
+## Publishing
 
-While the app has its placeholder name, the whole `turtlelab/` folder is
-listed under `exclude:` in the repo's `_config.yml`, so pushing `learn` for
-other reasons does not publish it. Remove that line (keep the dev-file
-excludes) only after the teacher has named the app and the public pages
-(about, privacy, guide) exist. Also add the public paragraph to `/license/`
-and a card in `_data/pathways.yml` at that point. Confirm the `learn` repo is
-public so the AGPL source link works.
+TurtleLab has been part of learn.porttack.com since 2026-11-03, at
+`/turtlelab/` (lowercase: GitHub Pages paths are case-sensitive). The folder
+is plain static files, copied by Jekyll as they are; its developer files
+(`CLAUDE.md`, `README.md`, `NOTICE.md`, `package.json`, `test/`, `dev/`) are
+excluded in `_config.yml`. **Pushing `learn` publishes it**: Claude never
+pushes. The `learn` repo is public, so the source links on the About page
+work once the folder is pushed.
+
+Public pages: `about.html` (the Sugar Labs credit, the source link and the
+licence, which the AGPL requires), `privacy.html` (written for IT staff) and
+`guide.html`. The home page has a card (`_data/pathways.yml`), and
+`license.md` and the site's `privacy.md` each have a TurtleLab section.
+
+**The privacy pages make promises the code must keep:** no network requests
+after load, no cookies, nothing stored in the browser, nothing loaded from
+another site. `test/pages.test.js` and the "No backend" section of
+`dev/editor-checks.mjs` enforce them. **When saving or autosave is added
+(milestone c) it will store data in the browser, so before it ships update
+`privacy.html`, `guide.html` (which says saving is not built), the TurtleLab
+section of the site's `privacy.md`, and the checks that assert "stored
+nothing".**
 
 ## Commands
 
@@ -284,6 +300,13 @@ public so the AGPL source link works.
     python3 -m http.server 4011 --directory turtlelab          # dev server
     node turtlelab/dev/browser-checks.mjs                      # real Chrome: turtle, Run/Stop
     node turtlelab/dev/editor-checks.mjs                       # real Chrome: block editor, touch, privacy
+
+To test the site exactly as GitHub Pages will serve it, build it and point
+the checks at the `/turtlelab/` subpath:
+
+    bundle exec jekyll build --destination /some/new/folder
+    python3 -m http.server 4012 --directory /some/new/folder
+    TURTLE_URL=http://127.0.0.1:4012/turtlelab/ node turtlelab/dev/editor-checks.mjs
 
 Use port 4011 for this app's dev server. Never use 4000 (the author's own
 Jekyll) or kill processes you did not start. The final check of the built

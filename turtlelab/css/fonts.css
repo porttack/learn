@@ -1,0 +1,22 @@
+/*
+ * TurtleLab: fonts.
+ * Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
+ * See COPYING in the folder above this one.
+ */
+
+/* Roboto, Copyright 2011 Google Inc., Apache License 2.0 (fonts/roboto/).
+   It is served from this folder so the page never contacts a font server,
+   and so block text is the same width on every computer. */
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/roboto/Roboto-Regular.woff2) format('woff2');
+}
+
+@font-face {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 700;
+  src: url(../fonts/roboto/Roboto-Bold.woff2) format('woff2');
+}

@@ -6,7 +6,7 @@ permalink: /privacy/
 
 # Privacy Policy
 
-Effective date: August 10, 2026
+Effective date: November 3, 2026
 
 ## Short version
 
@@ -101,6 +101,16 @@ a real server over the network. Because there is no real server here,
 that check is inert: it has nothing to read and nothing meaningful to
 set. It plays no role in storing your notebooks and carries no
 information about you.)
+
+## TurtleLab
+
+[TurtleLab]({{ '/turtlelab/' | relative_url }}) is a block-based drawing tool
+that, like the rest of this site, is a folder of static files. It runs
+entirely in your browser tab. It makes no network requests while you use it,
+sets no cookies, and does not store anything in your browser. Its own
+[privacy page]({{ '/turtlelab/privacy.html' | relative_url }}) lists the
+details for IT staff and explains how to check each claim in your browser's
+developer tools.
 
 ## Hosting and standard web server logs
 

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- The same strict policy as the app itself: nothing here loads from anywhere else. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TurtleLab privacy</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='58' r='34' fill='%236cc600' stroke='%23037700' stroke-width='6'/%3E%3Ccircle cx='50' cy='16' r='12' fill='%236cc600' stroke='%23037700' stroke-width='6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <header class="page-head"><a href="./">TurtleLab</a></header>
+  <main>
+    <h1>TurtleLab privacy</h1>
+
+    <p class="small">Effective date: November 3, 2026</p>
+
+    <p><strong>The short version:</strong> TurtleLab does not collect, keep, or send anything about you. There are no accounts, no cookies, no analytics, no advertising, and no server of its own. Everything you do happens inside your browser tab, on your own device.</p>
+
+    <h2>Facts for IT staff</h2>
+
+    <table>
+      <tr><th>Question</th><th>Answer</th></tr>
+      <tr><td>Does it have a backend or server of its own?</td><td>No. It is a folder of ordinary files (web pages, scripts, styles, fonts and pictures) that GitHub Pages hands to the browser. Your browser runs them. Nothing runs on a server.</td></tr>
+      <tr><td>Are accounts or sign-in needed?</td><td>No. There is nowhere to type a name, an email address or a password.</td></tr>
+      <tr><td>Does it set cookies?</td><td>No.</td></tr>
+      <tr><td>Does it use analytics, trackers or ads?</td><td>No.</td></tr>
+      <tr><td>Does it load anything from another website?</td><td>No. The scripts, fonts, icons and styles all come from the same address as the page. There are no content delivery networks and no outside fonts.</td></tr>
+      <tr><td>Does the page send anything anywhere while it runs?</td><td>No. The code contains no network requests, no forms, and no way to upload data. The browser would also refuse them (see the policy below).</td></tr>
+      <tr><td>Does it keep anything on the device?</td><td>Not at the moment. Your blocks and drawing exist only while the tab is open. When a save feature is added, it will only write files that you choose to download, and any automatic backup will stay in your own browser's local storage on your device. It will never be sent anywhere. This page will be updated first if that changes.</td></tr>
+      <tr><td>Can it be checked?</td><td>Yes, easily. See below.</td></tr>
+    </table>
+
+    <h2>The browser enforces it</h2>
+
+    <p>Every TurtleLab page carries a Content Security Policy. This is an instruction the browser itself follows, and it means the page is not allowed to load or contact anything outside its own address, even if a mistake were made in the code:</p>
+
+    <pre>default-src 'self'; img-src 'self' data: blob:; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'</pre>
+
+    <p>In plain words: scripts, styles, fonts and requests may only come from this site; forms may not send anywhere; and nothing can be embedded from outside.</p>
+
+    <h2>How to check for yourself</h2>
+
+    <ul>
+      <li>Open the browser's developer tools (F12) and look at the Network tab while using TurtleLab. You will only see the page's own files loading, once, and then nothing more.</li>
+      <li>Look at the Application tab: there are no cookies, and local storage is empty.</li>
+      <li>Use View Source. There is no hidden code. The whole program is <a href="https://github.com/porttack/learn/tree/main/turtlelab">public</a>.</li>
+    </ul>
+
+    <h2>Hosting</h2>
+
+    <p>The site is hosted by GitHub through GitHub Pages. Like any web host, GitHub's own systems handle basic connection details (such as an IP address and which page was asked for) to deliver the files. That is part of how GitHub runs its service, and it is not something TurtleLab collects or can see. It is described in <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub's own Privacy Statement</a>.</p>
+
+    <h2>Student records</h2>
+
+    <p>Because TurtleLab collects nothing, it creates no student records of any kind. The wider statement for the whole learning site, including a section on FERPA, is at <a href="../privacy/">learn.porttack.com/privacy</a>.</p>
+  </main>
+</body>
+</html>

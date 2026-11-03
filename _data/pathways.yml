@@ -49,6 +49,15 @@
     and print. Same idea as the 2D shapes you already know, one more
     axis: boxes, cylinders, extruded text, booleans, holes.
 
+- id: turtlelab
+  title: "TurtleLab"
+  url: /turtlelab/
+  blurb: >-
+    Snap blocks together and watch a turtle draw: squares, spirals, flowers,
+    anything you can plan. A block-based drawing tool with variables, loops
+    and math. It runs entirely in your browser, with nothing to install and
+    nothing sent anywhere.
+
 - id: cs50psets
   title: "CS50 Problems"
   collection: cs50psets

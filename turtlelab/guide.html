@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- The same strict policy as the app itself: nothing here loads from anywhere else. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TurtleLab guide</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='58' r='34' fill='%236cc600' stroke='%23037700' stroke-width='6'/%3E%3Ccircle cx='50' cy='16' r='12' fill='%236cc600' stroke='%23037700' stroke-width='6'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+  <header class="page-head"><a href="./">TurtleLab</a></header>
+  <main>
+    <h1>TurtleLab guide</h1>
+
+    <p>For students and teachers. TurtleLab works in Chrome, with a mouse or a touchscreen.</p>
+
+    <p class="note"><strong>Saving is not built yet.</strong> Your blocks and drawing stay while this tab is open, but they are lost if you close or refresh the page. Keep the tab open until you are done, and ask your teacher how to keep your work.</p>
+
+    <h2>Your first minute</h2>
+
+    <ol>
+      <li>Tap a round button on the left to open a palette of blocks. Try the green turtle.</li>
+      <li>Drag a block out onto the page. Drag a second block just under the first. You will see a ring where it will snap.</li>
+      <li>Tap any block to run its whole stack. The turtle moves and draws.</li>
+      <li>Tap a number on a block to change it, then press Enter.</li>
+    </ol>
+
+    <p>To use the <strong>Run</strong> button, open the Flow palette and drag out a <strong>start</strong> block, then snap your blocks under it. Run begins at the start block. If there is no start block, Run uses the top stack on the page.</p>
+
+    <h2>The palettes</h2>
+
+    <table>
+      <tr><th>Palette</th><th>What is in it</th></tr>
+      <tr><td>Turtle</td><td>clean (wipe the paper and send the turtle home), forward, back, left, right, arc, set xy, set heading, and blocks that tell you x, y and heading</td></tr>
+      <tr><td>Pen</td><td>pen up and down, pen size, set color, fill screen, start and end fill, and blocks that tell you the pen size and color</td></tr>
+      <tr><td>Math</td><td>plus, minus, times, divide, % (the remainder), parentheses, random, one of, less than, greater than, equals, and print</td></tr>
+      <tr><td>Flow</td><td>start, repeat, forever, if, wait and stop</td></tr>
+      <tr><td>My Blocks</td><td>three boxes you can store numbers in, as variables</td></tr>
+    </table>
+
+    <h2>Things to know</h2>
+
+    <ul>
+      <li><strong>The paper</strong> is 700 wide and 560 tall. The middle is 0, 0. The turtle starts there, facing up. Turning right makes the heading go up: 90 is right, 180 is down, 270 is left.</li>
+      <li><strong>Colors</strong> are red, green and blue, each from 0 to 255. Black is 0, 0, 0. White is 255, 255, 255. A gray has the same number three times.</li>
+      <li><strong>Boxes</strong> hold a number. Use <em>store in box1</em> to put a number in, and the <em>box1</em> block to use it. Every time you run a program the boxes start at 0.</li>
+      <li><strong>Math blocks</strong> read left to right, like a sum on paper. Put one block inside another to say what is worked out first.</li>
+      <li><strong>print</strong> shows its number in the Output box at the top right.</li>
+      <li><strong>wait</strong> counts tenths of a second, so 10 is one second.</li>
+      <li><strong>Stop</strong> always works, even in a forever loop.</li>
+    </ul>
+
+    <h2>Handy moves</h2>
+
+    <table>
+      <tr><th>To do this</th><th>Do this</th></tr>
+      <tr><td>Delete a block</td><td>Drag it back onto the palette on the left</td></tr>
+      <tr><td>Pull a block out of a stack</td><td>Drag it. Everything under it comes too.</td></tr>
+      <tr><td>Copy a stack</td><td>Shift and drag it. On a touchscreen, press and hold a block, then tap Copy stack.</td></tr>
+      <tr><td>See what a block does</td><td>Press and hold it (or right-click it) for a tip</td></tr>
+      <tr><td>Undo and redo</td><td>The arrow buttons, or Ctrl+Z and Ctrl+Y (Cmd+Z on a Mac)</td></tr>
+      <tr><td>Zoom the blocks</td><td>The two size buttons, or hold Ctrl and scroll, or pinch with two fingers</td></tr>
+      <tr><td>Slide the blocks around</td><td>Drag empty space, or scroll</td></tr>
+      <tr><td>Move or turn the turtle</td><td>Drag its shell to move it, or its head to turn it (not while a program is running)</td></tr>
+      <tr><td>See your whole drawing</td><td>The eye button hides the blocks. Press it again to bring them back.</td></tr>
+      <tr><td>Watch it draw slowly</td><td>Choose Slow in the Speed menu. Instant draws it all at once.</td></tr>
+    </table>
+
+    <h2>When something goes wrong</h2>
+
+    <p>If a block has a problem, the program stops, the block gets a red outline, and a message under the drawing says what happened. For example, an <em>if</em> block with nothing plugged into it will ask for a yes or no block, like a less than block.</p>
+
+    <p class="small"><a href="about.html">About TurtleLab</a> and <a href="privacy.html">privacy</a>.</p>
+  </main>
+</body>
+</html>

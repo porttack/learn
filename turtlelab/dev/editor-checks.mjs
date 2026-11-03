@@ -816,9 +816,74 @@ try {
   await chrome.sleep(100);
   check('touch: pinching two fingers apart zooms in', (await pinchWidth()) > pw1 * 1.4, `x${((await pinchWidth()) / pw1).toFixed(2)}`);
 
+  // ---- No backend: what the app and its pages really do ----------------------------------------------
+  const own = (r) => r.method === 'GET' && (r.url.startsWith(BASE) || r.url.startsWith('data:'));
+  await chrome.goto(BASE + '?demo=counting&speed=instant');
+  await chrome.sleep(900);
+  const loadedRequests = chrome.requestLog.length;
+  await openPalette('Turtle');
+  await openPalette('Math');
+  await openPalette('Flow');
+  await dragFromPalette('forever', 600, 400);
+  await pressRun();
+  await clickButton('zoom-in');
+  await clickButton('undo');
+  await chrome.sleep(300);
+  const laterRequests = chrome.requestLog.slice(loadedRequests);
+  check('once the page has loaded, using it (palettes, dragging, running, zoom, undo) makes no network requests at all',
+    laterRequests.length === 0, laterRequests.map((r) => `${r.method} ${r.url}`).join(', '));
+  check('every request the page ever made was a plain GET for one of its own files', chrome.requestLog.every(own),
+    chrome.requestLog.filter((r) => !own(r)).map((r) => `${r.method} ${r.url}`).join(', '));
+  check('it opened no web sockets', chrome.webSockets === 0);
+  const { cookies } = await chrome.send('Network.getAllCookies');
+  check('it set no cookies', cookies.length === 0 && (await chrome.eval('document.cookie')) === '', JSON.stringify(cookies));
+  const stored = await chrome.eval(`(async () => ({
+    local: localStorage.length,
+    session: sessionStorage.length,
+    databases: (await indexedDB.databases()).length,
+    caches: typeof caches === 'undefined' ? 0 : (await caches.keys()).length,
+    workers: (await navigator.serviceWorker.getRegistrations()).length,
+  }))()`);
+  check('it stored nothing in the browser', Object.values(stored).every((n) => n === 0), JSON.stringify(stored));
+
+  for (const [file, heading] of [['about.html', 'About TurtleLab'], ['privacy.html', 'TurtleLab privacy'], ['guide.html', 'TurtleLab guide']]) {
+    const mark = chrome.requestLog.length;
+    await chrome.goto(BASE + file);
+    await chrome.sleep(400);
+    const h1 = await chrome.eval(`document.querySelector('h1').textContent`);
+    const fontOk = await chrome.eval(`[...document.fonts].some((f) => f.family === 'Roboto' && f.status === 'loaded')`);
+    check(`${file} loads with its heading and its font, and asks for nothing outside`,
+      h1 === heading && fontOk && chrome.requestLog.slice(mark).every(own), `${h1}, font loaded: ${fontOk}`);
+  }
+  const aboutLinks = await (async () => {
+    await chrome.goto(BASE + 'about.html');
+    return chrome.eval(`[...document.querySelectorAll('a')].map((a) => a.getAttribute('href'))`);
+  })();
+  check('About links to the source, the licence text, and the NOTICE file',
+    aboutLinks.some((h) => h.endsWith('/tree/main/turtlelab')) && aboutLinks.some((h) => h.endsWith('/turtlelab/COPYING')) && aboutLinks.some((h) => h.endsWith('/turtlelab/NOTICE.md')));
+
   check('no console errors, exceptions or CSP violations', chrome.problems.length === 0, chrome.problems.join(' | '));
   const elsewhere = chrome.requests.filter((url) => !url.startsWith(BASE) && !url.startsWith('data:') && !url.startsWith('blob:'));
   check('the page asked for nothing outside its own address', elsewhere.length === 0, `${chrome.requests.length} requests; outside: ${elsewhere.join(', ') || 'none'}`);
+
+  // Last of all (it deliberately provokes the browser's refusal, which logs a
+  // CSP violation and would count as a console error above): the page really
+  // is not allowed to reach another website, even if it tried.
+  await chrome.goto(BASE);
+  await chrome.sleep(500);
+  const before = chrome.problems.length;
+  const probe = await chrome.eval(`(async () => {
+    const result = {};
+    try { await fetch('https://example.com/', { mode: 'no-cors' }); result.fetch = 'went out'; } catch { result.fetch = 'refused'; }
+    result.image = await new Promise((resolve) => { const i = new Image(); i.onload = () => resolve('loaded'); i.onerror = () => resolve('refused'); i.src = 'https://example.com/x.png'; });
+    result.script = await new Promise((resolve) => { const t = document.createElement('script'); t.onload = () => resolve('ran'); t.onerror = () => resolve('refused'); t.src = 'https://example.com/x.js'; document.head.append(t); });
+    return result;
+  })()`);
+  await chrome.sleep(300);
+  const violations = chrome.problems.splice(before);
+  check('the browser itself refuses to contact other sites: a fetch, an image and a script all fail',
+    probe.fetch === 'refused' && probe.image === 'refused' && probe.script === 'refused' && violations.some((v) => /Content Security Policy/i.test(v)),
+    `${JSON.stringify(probe)}; ${violations.length} policy messages`);
 } finally {
   await chrome.close();
 }

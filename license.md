@@ -67,3 +67,13 @@ the bottom. Adaptations keep their source's license, page by page:
 Traditional games such as Nim are in the public domain; our write-ups of
 them are original.
 
+## TurtleLab
+
+[TurtleLab]({{ '/turtlelab/' | relative_url }}) is a program, not a lesson,
+so it is licensed differently from everything above. It is free software
+under the [GNU Affero General Public
+License](https://www.gnu.org/licenses/agpl-3.0.html), version 3 or later,
+copyright 2026 Eric Brown. Its look is adapted from Turtle Blocks JS by
+Walter Bender and Sugar Labs (also AGPL). TurtleLab's own
+[About page]({{ '/turtlelab/about.html' | relative_url }}) lists every borrowed
+part and links to the full source code.

@@ -36,14 +36,19 @@ export async function launch({ width = 1200, height = 800, port = 9333 } = {}) {
   const pending = new Map();
   const problems = []; // console errors, exceptions, CSP violations
   const requests = []; // every URL the page asked for
+  const requestLog = []; // the same, with the method: { url, method }
+  let webSockets = 0; // how many web sockets the page opened
   ws.onmessage = (event) => {
     const msg = JSON.parse(event.data);
     if (msg.id && pending.has(msg.id)) {
       const { resolve, reject } = pending.get(msg.id);
       pending.delete(msg.id);
       msg.error ? reject(new Error(JSON.stringify(msg.error))) : resolve(msg.result);
+    } else if (msg.method === 'Network.webSocketCreated') {
+      webSockets += 1;
     } else if (msg.method === 'Network.requestWillBeSent') {
       requests.push(msg.params.request.url);
+      requestLog.push({ url: msg.params.request.url, method: msg.params.request.method });
     } else if (msg.method === 'Runtime.exceptionThrown') {
       problems.push('exception: ' + (msg.params.exceptionDetails.exception?.description ?? msg.params.exceptionDetails.text));
     } else if (msg.method === 'Runtime.consoleAPICalled' && ['error', 'warning'].includes(msg.params.type)) {
@@ -66,6 +71,8 @@ export async function launch({ width = 1200, height = 800, port = 9333 } = {}) {
   const api = {
     problems,
     requests,
+    requestLog,
+    get webSockets() { return webSockets; },
     send,
     async goto(url) {
       await send('Page.navigate', { url });
