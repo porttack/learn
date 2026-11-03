@@ -53,7 +53,9 @@ export async function launch({ width = 1200, height = 800, port = 9333 } = {}) {
       problems.push('exception: ' + (msg.params.exceptionDetails.exception?.description ?? msg.params.exceptionDetails.text));
     } else if (msg.method === 'Runtime.consoleAPICalled' && ['error', 'warning'].includes(msg.params.type)) {
       problems.push(`console.${msg.params.type}: ` + msg.params.args.map((a) => a.value ?? a.description).join(' '));
-    } else if (msg.method === 'Log.entryAdded' && ['error', 'warning'].includes(msg.params.entry.level)) {
+    } else if (msg.method === 'Log.entryAdded' && ['error', 'warning'].includes(msg.params.entry.level)
+      // Chrome's note about reading pixels more than a few times. Only our own checks do that.
+      && !/willReadFrequently/.test(msg.params.entry.text)) {
       problems.push(`log.${msg.params.entry.level}: ${msg.params.entry.text} ${msg.params.entry.url ?? ''}`);
     }
   };
@@ -74,9 +76,36 @@ export async function launch({ width = 1200, height = 800, port = 9333 } = {}) {
     requestLog,
     get webSockets() { return webSockets; },
     send,
-    async goto(url) {
+    /**
+     * Go to a page. The site's stored data (autosave) is cleared so each test
+     * starts with a fresh page, unless `keepStorage` says to keep it. The old
+     * page is left FIRST: when a page unloads it autosaves its blocks, which
+     * would put back the very data we are clearing.
+     */
+    async goto(url, { keepStorage = false } = {}) {
+      if (!keepStorage && /^https?:/.test(url)) {
+        await send('Page.navigate', { url: 'about:blank' });
+        await sleep(150);
+        try {
+          await send('Storage.clearDataForOrigin', { origin: new URL(url).origin, storageTypes: 'all' });
+        } catch { /* nothing to clear yet */ }
+      }
       await send('Page.navigate', { url });
       await sleep(600);
+    },
+    /** Send downloads to this folder, without asking. */
+    async downloadsTo(dir) {
+      try {
+        await send('Browser.setDownloadBehavior', { behavior: 'allow', downloadPath: dir });
+      } catch {
+        await send('Page.setDownloadBehavior', { behavior: 'allow', downloadPath: dir });
+      }
+    },
+    /** Choose files for a file input, as if picked in the Open dialog. */
+    async setFileInput(selector, files) {
+      const { root } = await send('DOM.getDocument');
+      const { nodeId } = await send('DOM.querySelector', { nodeId: root.nodeId, selector });
+      await send('DOM.setFileInputFiles', { files, nodeId });
     },
     /** Evaluate JS in the page; returns the value. Rejects after `timeout` ms (frozen tab). */
     async eval(expression, timeout = 5000) {

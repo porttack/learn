@@ -77,6 +77,8 @@ the dashes out of them too for consistency.
       view.js         pan and zoom maths
       color.js        RGB 0-255
       project.js      project JSON: validate, find the Run stack
+      png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
+      project-file.js put a project inside a PNG, and read a PNG or .json back
     js/ui/            the browser side
       blockfactory.js PORTED from Turtle Blocks JS (see NOTICE.md; rebuilt by
                       dev/port-blockfactory.mjs). Draws block shapes.
@@ -86,6 +88,8 @@ the dashes out of them too for consistency.
       help-bubble.js  the tip bubble (press and hold, right-click) + Copy stack
       palette-colors.js, artwork.js (PORTED), demos.js
       canvas-view.js  paper canvas (1400x1120) + draggable turtle overlay
+      files.js        Save (download a PNG with the blocks inside), Open, drops
+      storage.js      autosave to local storage (one item: turtlelab-project)
       main.js         wiring
     css/app.css  fonts/roboto/  images/
     test/             node --test (core only)
@@ -191,6 +195,25 @@ the dashes out of them too for consistency.
   number you tap to type, and pulling a block out puts one back.
   `print` shows numbers in a box at the top right, captioned "Output" (last 8
   lines, cleared each run, redrawn once a frame). Tapping a lone math block shows its answer.
+- **Saving, opening and autosave** (milestone c).
+  - **Save** (button or Ctrl+S) turns the paper canvas into a PNG, tucks the
+    project JSON into an `iTXt` chunk just before `IEND` (keyword
+    `porttack-turtle-project`, uncompressed, written by `core/png-chunks.js`
+    with a hand-written CRC-32), and downloads it as `turtlelab-DATE-TIME.png`.
+    The picture is an ordinary PNG; the turtle sprite is not in it (it is a
+    separate layer). Only the project is stored: no name, date or device info.
+  - **Open** (button) and **dropping a file anywhere on the page** read a saved
+    PNG or a plain `.json` project, check it with `validateProject` (a bad or
+    newer file gets a friendly message and changes nothing), replace the
+    blocks, paint the saved picture onto the paper, and record an undo step.
+    Handling the drop also stops the browser from navigating to the file.
+  - **New** clears blocks and paper; Undo brings the blocks back.
+  - **Autosave** (`ui/storage.js`) keeps one copy of the project in
+    `localStorage` under `turtlelab-project`, debounced 400 ms and flushed on
+    page hide; an empty project removes the item; a damaged or newer item is
+    ignored; every use is in try/catch. A visit restores it unless `?demo=`
+    is given. It is the only thing the app stores, and the privacy pages and
+    checks say exactly that.
 - **Palettes with no blocks are hidden** (none now: all five have blocks).
 - **Coordinates:** paper 700 x 560, origin center, x right, y UP. Heading 0 is
   up and grows clockwise. Exact sin/cos at multiples of 90 so squares close.
@@ -234,16 +257,18 @@ numbers, tap to run, run highlight and error outline, Roboto vendored).
 wheel, drag and pinch, Shift-drag and press-and-hold copying, help bubble).
 **Boxes** (variables), done early at the teacher's request.
 **d** (the rest of Flow: forever, if, wait, stop; the Math palette; yes-or-no
-shapes; print). Not yet: save and autosave (c); the `to` block that makes
-your own blocks (e); SVG export and the public pages (f).
+shapes; print). **c** (Save as PNG with the blocks inside, Open, drag and drop,
+New, autosave). The public pages (About, Privacy, Guide) are done (they go live when `learn` is pushed).
+Not yet: the `to` block that makes your own blocks (e); SVG export for laser
+cutters and plotters (f).
 
 Unknown: the teacher's second screenshot of another app's Flow palette showed
 two blocks with dots and an arrow that are not in the brief. Ask what they
 are before building anything like them.
 
 Known limits to fix when they matter:
-- Nothing is saved yet (milestone c), so a refresh loses the blocks. The guide
-  says so. This is the biggest gap now that the app is published.
+- Autosave keeps the blocks, not the picture: after a refresh the paper is
+  blank until you press Run (or Open a saved picture).
 - `?demo=name` (see `demos.js`) loads a program into the workspace for trying
   things out. It is a developer shortcut, not a feature for students.
 
@@ -286,13 +311,14 @@ licence, which the AGPL requires), `privacy.html` (written for IT staff) and
 `license.md` and the site's `privacy.md` each have a TurtleLab section.
 
 **The privacy pages make promises the code must keep:** no network requests
-after load, no cookies, nothing stored in the browser, nothing loaded from
-another site. `test/pages.test.js` and the "No backend" section of
-`dev/editor-checks.mjs` enforce them. **When saving or autosave is added
-(milestone c) it will store data in the browser, so before it ships update
-`privacy.html`, `guide.html` (which says saving is not built), the TurtleLab
-section of the site's `privacy.md`, and the checks that assert "stored
-nothing".**
+after load, no cookies, nothing loaded from another site, and the one thing
+stored is the autosave item `turtlelab-project` in local storage (no session
+storage, databases, caches or service workers). `test/pages.test.js` and the
+"No backend" section of `dev/editor-checks.mjs` enforce them. **If the app
+ever stores anything new, update `privacy.html`, `guide.html`, the TurtleLab
+section of the site's `privacy.md` (its effective date too), and those
+checks, before it ships.** Saving a PNG is a download made inside the page
+(a `blob:` address), not a network request.
 
 ## Commands
 
@@ -307,6 +333,12 @@ the checks at the `/turtlelab/` subpath:
     bundle exec jekyll build --destination /some/new/folder
     python3 -m http.server 4012 --directory /some/new/folder
     TURTLE_URL=http://127.0.0.1:4012/turtlelab/ node turtlelab/dev/editor-checks.mjs
+
+The check driver (`dev/cdp.mjs`) leaves the page, then clears the site's
+stored data before each `goto`, so autosave from one test cannot leak into the
+next (pass `{ keepStorage: true }` to test a refresh). It also directs
+downloads to a temporary folder (`downloadsTo`) and can pick a file for the
+Open dialog (`setFileInput`).
 
 Use port 4011 for this app's dev server. Never use 4000 (the author's own
 Jekyll) or kill processes you did not start. The final check of the built

@@ -145,6 +145,14 @@ export class CanvasView {
     this.listenForDrags();
   }
 
+  /** Put a picture on the paper, replacing what is there. (Used when a saved picture is opened.) */
+  paintImage(image) {
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.fillStyle = '#ffffff';
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
+  }
+
   /** Draw an op the turtle just made. */
   applyOp(op) {
     paintOp(this.ctx, op);

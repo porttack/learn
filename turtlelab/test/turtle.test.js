@@ -274,6 +274,19 @@ test('clean forgets the picture, resets the turtle and cancels a fill', () => {
   assert.equal(t.ops.length, 1);
 });
 
+test('forget sends the turtle home and drops the recorded ops, but paints nothing', () => {
+  const seen = [];
+  const t = new Turtle({ onOp: (op) => seen.push(op) });
+  t.setColor(1, 2, 3);
+  t.forward(50);
+  const painted = seen.length;
+  t.forget();
+  assert.deepEqual([t.x, t.y, t.heading], [0, 0, 0]);
+  assert.deepEqual(t.color, [255, 0, 0]);
+  assert.deepEqual(t.ops, []);
+  assert.equal(seen.length, painted, 'no clear op was sent, so the picture stays');
+});
+
 test('every op reaches onOp, even when old ops are dropped to save memory', () => {
   const seen = [];
   const t = new Turtle({ maxOps: 10, onOp: (op) => seen.push(op) });

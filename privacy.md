@@ -15,11 +15,15 @@ from anyone who visits it. There are no accounts, no forms, and no
 analytics or tracking scripts. Almost every page is a static file with
 nowhere for visitor data to go, even if that were the intent.
 
-The one exception is the Working in Python pathway, which embeds an
-in-browser Python environment (JupyterLite) so you can run notebooks
-live. That environment uses your browser's own local storage to save
-your work between visits. That storage stays entirely on your device
-and is never transmitted to any server. It is explained in full below.
+There are two exceptions, and both keep your own work in your own
+browser. The Working in Python pathway embeds an in-browser Python
+environment (JupyterLite) so you can run notebooks live, and it uses
+your browser's local storage to save your work between visits.
+TurtleLab, a block-based drawing tool, keeps a copy of the blocks you
+are working on in your browser's local storage so that refreshing the
+page does not lose them. In both cases the storage stays entirely on
+your device and is never transmitted to any server. Both are explained
+in full below.
 
 ## Why that is true, technically
 
@@ -62,9 +66,9 @@ place.
   login
 - No forms, quizzes, or file uploads that transmit data anywhere
 - No cookies of any kind used to identify, track, or recognize you
-  across visits or across sites. (The Working in Python pathway saves
-  your notebook files locally using your browser's storage, not
-  cookies; explained in the next section.)
+  across visits or across sites. (The Working in Python pathway and
+  TurtleLab keep your work locally using your browser's storage, not
+  cookies; both are explained below.)
 
 ## Interactive Python notebooks (JupyterLite)
 
@@ -106,11 +110,21 @@ information about you.)
 
 [TurtleLab]({{ '/turtlelab/' | relative_url }}) is a block-based drawing tool
 that, like the rest of this site, is a folder of static files. It runs
-entirely in your browser tab. It makes no network requests while you use it,
-sets no cookies, and does not store anything in your browser. Its own
-[privacy page]({{ '/turtlelab/privacy.html' | relative_url }}) lists the
-details for IT staff and explains how to check each claim in your browser's
-developer tools.
+entirely in your browser tab. It makes no network requests while you use it
+and sets no cookies.
+
+So that refreshing the page does not lose your blocks, TurtleLab keeps one
+copy of your current blocks in your browser's local storage, as a single item
+named `turtlelab-project`. It is plain text, it stays on your own device, and
+it is never transmitted anywhere. It is removed when you press New or clear
+this site's data in your browser's settings. Because it lives in the browser,
+anyone who uses the same browser profile on that device can see it, so on a
+shared computer press New when you are finished. The Save button downloads a
+picture to your own device, and only when you press it.
+
+TurtleLab's own [privacy page]({{ '/turtlelab/privacy.html' | relative_url }})
+lists the details for IT staff and explains how to check each claim in your
+browser's developer tools.
 
 ## Hosting and standard web server logs
 
@@ -134,13 +148,17 @@ site maintains no such records, because:
 
 - It collects no student-identifiable information, as described above.
 - It stores no grades, assignments, submissions, or student work
-  product. Anything shown on this site (including course templates,
-  such as example engineering-team documents in the robotics pathway)
-  is instructional material, not a record about any individual student.
+  product on any server. (Work a student does in the browser, such as
+  notebooks or TurtleLab blocks, can be kept in that student's own
+  browser storage, as described above.) Anything shown on this site
+  (including course templates, such as example engineering-team
+  documents in the robotics pathway) is instructional material, not a
+  record about any individual student.
 - It has no database, account system, or backend that could persist
   any visitor's data, student or otherwise. This includes the
-  in-browser Python notebooks described above: work saved there is
-  written only to the student's own browser storage, never to a server,
+  in-browser Python notebooks and TurtleLab's automatic copy of your
+  blocks, both described above: work saved there is written only to the
+  student's own browser storage, never to a server,
   so it is not a record maintained by anyone but the student's own
   device.
 

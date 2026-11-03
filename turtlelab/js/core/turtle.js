@@ -136,6 +136,17 @@ export class Turtle {
     this.record({ type: 'clear' });
   }
 
+  /**
+   * Start over without touching the picture. Used when a saved picture has just
+   * been painted onto the paper: the turtle did not draw it, so it forgets any
+   * earlier drawing (and the ops kept for SVG export) but nothing is cleared.
+   */
+  forget() {
+    this.resetState();
+    this.ops.length = 0;
+    this.truncated = false;
+  }
+
   forward(distance) {
     const d = Number(distance);
     this.moveTo(

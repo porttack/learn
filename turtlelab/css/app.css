@@ -371,3 +371,10 @@ body {
 }
 
 .output[hidden] { display: none; }
+
+/* ---- Dropping a saved picture on the page ---- */
+
+.stage.drop-target {
+  outline: 4px dashed #ff2c76;
+  outline-offset: -10px;
+}

@@ -29,7 +29,8 @@
       <tr><td>Does it use analytics, trackers or ads?</td><td>No.</td></tr>
       <tr><td>Does it load anything from another website?</td><td>No. The scripts, fonts, icons and styles all come from the same address as the page. There are no content delivery networks and no outside fonts.</td></tr>
       <tr><td>Does the page send anything anywhere while it runs?</td><td>No. The code contains no network requests, no forms, and no way to upload data. The browser would also refuse them (see the policy below).</td></tr>
-      <tr><td>Does it keep anything on the device?</td><td>Not at the moment. Your blocks and drawing exist only while the tab is open. When a save feature is added, it will only write files that you choose to download, and any automatic backup will stay in your own browser's local storage on your device. It will never be sent anywhere. This page will be updated first if that changes.</td></tr>
+      <tr><td>Does it keep anything on the device?</td><td>Yes, one thing. So that refreshing the page does not lose your work, TurtleLab keeps a copy of your current blocks in your browser's local storage, as one item named <code>turtlelab-project</code>. It is plain text, it stays on this device, and it is never sent anywhere. It is removed when you press New or clear the site's data in the browser's settings. Anyone using the same browser profile on the device can see it, so on a shared computer a student should press New when finished. Nothing else is stored: no cookies, no databases, no cache.</td></tr>
+      <tr><td>What does the Save button do?</td><td>It turns the drawing into a PNG picture and offers it as an ordinary download to the device. Your blocks are tucked inside the picture as text, and nothing else is (no name, no date, nothing about the computer). The file is made inside the page and goes only to the folder you pick. Opening a saved picture reads it inside the page too.</td></tr>
       <tr><td>Can it be checked?</td><td>Yes, easily. See below.</td></tr>
     </table>
 
@@ -45,7 +46,7 @@
 
     <ul>
       <li>Open the browser's developer tools (F12) and look at the Network tab while using TurtleLab. You will only see the page's own files loading, once, and then nothing more.</li>
-      <li>Look at the Application tab: there are no cookies, and local storage is empty.</li>
+      <li>Look at the Application tab: there are no cookies, and local storage holds just the one item, <code>turtlelab-project</code>, which is your blocks as plain text.</li>
       <li>Use View Source. There is no hidden code. The whole program is <a href="https://github.com/porttack/learn/tree/main/turtlelab">public</a>.</li>
     </ul>
 
@@ -55,7 +56,7 @@
 
     <h2>Student records</h2>
 
-    <p>Because TurtleLab collects nothing, it creates no student records of any kind. The wider statement for the whole learning site, including a section on FERPA, is at <a href="../privacy/">learn.porttack.com/privacy</a>.</p>
+    <p>Because TurtleLab collects nothing, it creates no student records that the school, the teacher or anyone running the site could ever see. A student's blocks stay on the student's own device. The wider statement for the whole learning site, including a section on FERPA, is at <a href="../privacy/">learn.porttack.com/privacy</a>.</p>
   </main>
 </body>
 </html>

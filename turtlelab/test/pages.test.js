@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 import { APP_NAME, SOURCE_URL } from '../js/app-info.js';
+import { AUTOSAVE_KEY } from '../js/ui/storage.js';
 
 const here = new URL('../', import.meta.url);
 const read = (file) => readFileSync(new URL(file, here), 'utf8');
@@ -74,6 +75,21 @@ test('the Privacy page promises only what the code does', () => {
   for (const claim of ['no cookies', 'no analytics', 'no server of its own', 'GitHub Pages']) {
     assert.ok(privacy.toLowerCase().includes(claim.toLowerCase()), `says: ${claim}`);
   }
+});
+
+test('every page that describes what is stored names the one storage item the app really uses', () => {
+  assert.equal(AUTOSAVE_KEY, 'turtlelab-project');
+  assert.ok(read('privacy.html').includes(AUTOSAVE_KEY), 'the TurtleLab privacy page');
+  const siteWide = readFileSync(new URL('../privacy.md', here), 'utf8');
+  assert.ok(siteWide.includes(`\`${AUTOSAVE_KEY}\``), 'the site-wide privacy page');
+  assert.match(read('privacy.html'), /local storage/i);
+  assert.match(read('privacy.html'), /Save button/);
+});
+
+test('the Guide explains Save, Open, New and Ctrl+S, and no longer says saving is missing', () => {
+  const guide = read('guide.html');
+  assert.ok(!/not built yet|not yet/i.test(guide));
+  for (const word of ['Save', 'Open', 'New', 'Ctrl+S', 'shared computer']) assert.ok(guide.includes(word), word);
 });
 
 test('the app page links to Guide and About in a new tab, so no click loses your blocks', () => {

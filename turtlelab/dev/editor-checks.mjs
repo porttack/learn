@@ -6,6 +6,10 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { launch } from './cdp.mjs';
 import { tmpdir } from 'node:os';
+import { mkdtempSync, readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { readProjectFile } from '../js/core/project-file.js';
+import { DEMOS } from '../js/ui/demos.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
 const SHOTS = (process.env.SHOTS_DIR ?? tmpdir()) + '/';
@@ -816,8 +820,141 @@ try {
   await chrome.sleep(100);
   check('touch: pinching two fingers apart zooms in', (await pinchWidth()) > pw1 * 1.4, `x${((await pinchWidth()) / pw1).toFixed(2)}`);
 
+  // ---- Saving, opening, and autosave -------------------------------------------------------------------
+  const downloads = mkdtempSync(join(tmpdir(), 'turtlelab-downloads-'));
+  await chrome.downloadsTo(downloads);
+  const savedPngs = () => readdirSync(downloads).filter((f) => f.endsWith('.png')).sort();
+  const waitForPngCount = async (n) => {
+    for (let i = 0; i < 60; i += 1) {
+      if (savedPngs().length >= n) return savedPngs().at(n - 1);
+      await chrome.sleep(100);
+    }
+    return null;
+  };
+  const redPixels = (selector = 'canvas') =>
+    chrome.eval(`(() => { const c = document.querySelector(${JSON.stringify(selector)}); const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] === 255 && d[i + 1] === 0 && d[i + 2] === 0) n++; return n; })()`);
+
+  await chrome.goto(BASE + '?demo=square&speed=instant');
+  await pressRun();
+  check('the paper has the square drawn on it', (await redPixels()) > 5000);
+  for (const id of ['new', 'open', 'save']) check(`the ${id} button is in the toolbar`, (await count('#' + id)) === 1);
+  await clickButton('save');
+  const savedName = await waitForPngCount(1);
+  check('Save downloads a PNG named with the date and time', /^turtlelab-\d{4}-\d{2}-\d{2}-\d{4}\.png$/.test(savedName ?? ''), savedName);
+  check('and says so, and says how to get the blocks back', /Saved turtlelab-.*open it or drag it/.test(await messageText()), await messageText());
+
+  const savedPath = join(downloads, savedName);
+  const savedBytes = new Uint8Array(readFileSync(savedPath));
+  const savedView = new DataView(savedBytes.buffer);
+  check('it is a real PNG picture, the full 1400 by 1120', savedBytes[1] === 0x50 && savedView.getUint32(16) === 1400 && savedView.getUint32(20) === 1120,
+    `${savedView.getUint32(16)} by ${savedView.getUint32(20)}`);
+  const embedded = readProjectFile(savedBytes);
+  check('the blocks are inside it, exactly the blocks that were on the page', embedded.ok && JSON.stringify(embedded.project.stacks[0].blocks) === JSON.stringify(DEMOS.square),
+    embedded.ok ? 'same' : embedded.error);
+
+  const pixelsInSaved = await chrome.eval(`(async () => {
+    const image = new Image();
+    image.src = 'data:image/png;base64,${Buffer.from(savedBytes).toString('base64')}';
+    await image.decode();
+    const canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const context = canvas.getContext('2d');
+    context.drawImage(image, 0, 0);
+    const data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let red = 0, turtle = 0, white = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i] === 255 && data[i + 1] === 0 && data[i + 2] === 0) red++;
+      if (data[i] === 108 && data[i + 1] === 198 && data[i + 2] === 0) turtle++;
+      if (data[i] === 255 && data[i + 1] === 255 && data[i + 2] === 255) white++;
+    }
+    return { red, turtle, white };
+  })()`);
+  check('the picture shows the square on white paper, and the turtle is not in it', pixelsInSaved.red > 5000 && pixelsInSaved.turtle === 0 && pixelsInSaved.white > 100000, JSON.stringify(pixelsInSaved));
+
+  // (Two saves in the same minute get the same file name, and the browser decides what to do about
+  // that, so look for the app's own "Saved" message rather than counting files.)
+  await chrome.eval(`document.getElementById('message').textContent = ''`);
+  await key('s', 'KeyS', 83, CTRL);
+  await chrome.sleep(800);
+  check('Ctrl+S saves too', /^Saved turtlelab-/.test(await messageText()), await messageText());
+
+  await clickButton('new');
+  check('New clears the blocks and the paper', (await stacks()) === 0 && (await redPixels()) === 0);
+  check('and says Undo brings the blocks back', /Undo brings your blocks back/.test(await messageText()), await messageText());
+  await clickButton('undo');
+  check('Undo brings the blocks back after New', (await stacks()) === 1);
+  await clickButton('new');
+
+  await chrome.setFileInput('#open-file', [savedPath]);
+  await chrome.sleep(700);
+  check('Open brings the blocks back from the saved picture', (await stacks()) === 1 && (await nodeRect('repeat')) !== null && /Opened turtlelab-/.test(await messageText()), await messageText());
+  check('and the picture comes back too, without running anything', (await redPixels()) > 5000);
+  await clickButton('undo');
+  check('Undo after Open brings back the blocks from before', (await stacks()) === 0);
+  await clickButton('redo');
+  await pressRun();
+  check('the opened blocks run and draw the same square', (await redPixels()) > 5000 && (await stepsUp()) === 0 || near(await stepsUp(), 0, 1));
+
+  // Dropping a saved picture on the page, and what happens with files that will not work.
+  const dropOnPage = (setup) =>
+    chrome.eval(`(async () => {
+      ${setup}
+      const before = location.href;
+      document.body.dispatchEvent(new DragEvent('dragenter', { bubbles: true, cancelable: true, dataTransfer }));
+      const highlighted = document.querySelector('.stage').classList.contains('drop-target');
+      document.body.dispatchEvent(new DragEvent('dragover', { bubbles: true, cancelable: true, dataTransfer }));
+      const drop = new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer });
+      document.body.dispatchEvent(drop);
+      return { highlighted, handled: drop.defaultPrevented, stillHere: location.href === before, finished: !document.querySelector('.stage').classList.contains('drop-target') };
+    })()`);
+  const b64 = Buffer.from(savedBytes).toString('base64');
+  await clickButton('new');
+  const dropped = await dropOnPage(`const bytes = Uint8Array.from(atob('${b64}'), (c) => c.charCodeAt(0)); const dataTransfer = new DataTransfer(); dataTransfer.items.add(new File([bytes], 'my-drawing.png', { type: 'image/png' }));`);
+  await chrome.sleep(700);
+  check('dropping a saved picture on the page brings back the blocks and the picture', (await stacks()) === 1 && (await redPixels()) > 5000 && /Opened my-drawing\.png/.test(await messageText()), await messageText());
+  check('the page lights up while a file is over it, then settles, and the browser does not leave the page',
+    dropped.highlighted && dropped.finished && dropped.handled && dropped.stillHere, JSON.stringify(dropped));
+
+  const stacksAfterOpening = await stacks();
+  await dropOnPage(`const blob = await new Promise((resolve) => { const c = document.createElement('canvas'); c.width = 20; c.height = 20; c.toBlob(resolve, 'image/png'); }); const dataTransfer = new DataTransfer(); dataTransfer.items.add(new File([blob], 'plain.png', { type: 'image/png' }));`);
+  await chrome.sleep(500);
+  check('a picture with no program in it is turned down kindly and nothing changes', (await messageText()) === "This picture doesn't have a program inside it." && (await stacks()) === stacksAfterOpening, await messageText());
+  await dropOnPage(`const dataTransfer = new DataTransfer(); dataTransfer.items.add(new File([JSON.stringify({ app: 'porttack-turtle', version: 99, stacks: [] })], 'future.json', { type: 'application/json' }));`);
+  await chrome.sleep(500);
+  check('a project from a newer version is explained, and nothing changes', /newer version/.test(await messageText()) && (await stacks()) === stacksAfterOpening, await messageText());
+  await dropOnPage(`const dataTransfer = new DataTransfer(); dataTransfer.items.add(new File(['hello'], 'notes.txt', { type: 'text/plain' }));`);
+  await chrome.sleep(500);
+  check('some other kind of file is turned down kindly', /not a TurtleLab picture or project/.test(await messageText()) && (await stacks()) === stacksAfterOpening, await messageText());
+  await dropOnPage(`const dataTransfer = new DataTransfer(); dataTransfer.items.add(new File([JSON.stringify({ app: 'porttack-turtle', version: 1, stacks: [{ x: 50, y: 50, blocks: [{ op: 'start' }, { op: 'forward', args: [30] }] }] })], 'teacher.json', { type: 'application/json' }));`);
+  await chrome.sleep(500);
+  check('a plain project file in JSON opens too, onto clean paper', (await stacks()) === 1 && (await nodeRect('forward')) !== null && (await redPixels()) === 0, await messageText());
+
+  // Autosave.
+  const stored = () => chrome.eval(`localStorage.getItem('turtlelab-project')`);
+  await chrome.goto(BASE + '?speed=instant');
+  check('a fresh visit has nothing saved', (await stored()) === null);
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 450, 200);
+  await chrome.sleep(800);
+  const autosaved = JSON.parse(await stored());
+  check('after a change, a copy of the blocks is kept in this browser (one item, named turtlelab-project)',
+    autosaved?.app === 'porttack-turtle' && autosaved.stacks[0].blocks[0].op === 'forward' && (await chrome.eval(`Object.keys(localStorage).join()`)) === 'turtlelab-project');
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  check('after a refresh the blocks are still there, with a welcome back', (await stacks()) === 1 && (await nodeRect('forward')) !== null && /Welcome back/.test(await messageText()), await messageText());
+  await clickButton('new');
+  await chrome.sleep(800);
+  check('starting fresh leaves nothing saved at all', (await stored()) === null);
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  check('and a refresh then gives an empty page', (await stacks()) === 0 && (await messageText()) === '');
+  const problemsBefore = chrome.problems.length;
+  await chrome.eval(`localStorage.setItem('turtlelab-project', '{ this is not a project')`);
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  check('a damaged autosave is ignored: the page loads empty and without errors', (await stacks()) === 0 && chrome.problems.length === problemsBefore, chrome.problems.slice(problemsBefore).join(' | '));
+
   // ---- No backend: what the app and its pages really do ----------------------------------------------
-  const own = (r) => r.method === 'GET' && (r.url.startsWith(BASE) || r.url.startsWith('data:'));
+  // data: and blob: addresses are made from data already in the page, so no network is involved.
+  const own = (r) => r.method === 'GET' && (r.url.startsWith(BASE) || r.url.startsWith('data:') || r.url.startsWith('blob:'));
   await chrome.goto(BASE + '?demo=counting&speed=instant');
   await chrome.sleep(900);
   const loadedRequests = chrome.requestLog.length;
@@ -837,14 +974,16 @@ try {
   check('it opened no web sockets', chrome.webSockets === 0);
   const { cookies } = await chrome.send('Network.getAllCookies');
   check('it set no cookies', cookies.length === 0 && (await chrome.eval('document.cookie')) === '', JSON.stringify(cookies));
-  const stored = await chrome.eval(`(async () => ({
-    local: localStorage.length,
+  const storedInBrowser = await chrome.eval(`(async () => ({
+    keys: Object.keys(localStorage),
     session: sessionStorage.length,
     databases: (await indexedDB.databases()).length,
     caches: typeof caches === 'undefined' ? 0 : (await caches.keys()).length,
     workers: (await navigator.serviceWorker.getRegistrations()).length,
   }))()`);
-  check('it stored nothing in the browser', Object.values(stored).every((n) => n === 0), JSON.stringify(stored));
+  check('the only thing it stores is the autosave: one local storage item named turtlelab-project, and nothing else anywhere',
+    JSON.stringify(storedInBrowser.keys) === '["turtlelab-project"]' && storedInBrowser.session === 0 && storedInBrowser.databases === 0 && storedInBrowser.caches === 0 && storedInBrowser.workers === 0,
+    JSON.stringify(storedInBrowser));
 
   for (const [file, heading] of [['about.html', 'About TurtleLab'], ['privacy.html', 'TurtleLab privacy'], ['guide.html', 'TurtleLab guide']]) {
     const mark = chrome.requestLog.length;

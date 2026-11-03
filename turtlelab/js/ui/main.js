@@ -20,6 +20,8 @@ import { newBlock, cloneBlock, isReporterStack } from '../core/edit.js';
 import { CanvasView } from './canvas-view.js';
 import { Workspace } from './workspace.js';
 import { PaletteUI } from './palette.js';
+import { Autosave, loadAutosave } from './storage.js';
+import { savePicture, readFile, dragHasFiles } from './files.js';
 import { DEMOS } from './demos.js';
 
 const $ = (id) => document.getElementById(id);
@@ -58,6 +60,16 @@ if (demo && Object.hasOwn(DEMOS, demo)) {
     stacks: [{ x: 300, y: 70, blocks: cloneBlock(DEMOS[demo]) }],
   });
   if (loaded.ok) project.stacks = loaded.project.stacks;
+}
+
+// Pick up where you left off: the blocks from last time, kept in this browser.
+let welcomeBack = false;
+if (!(demo && Object.hasOwn(DEMOS, demo))) {
+  const saved = loadAutosave();
+  if (saved) {
+    project.stacks = saved.stacks;
+    welcomeBack = saved.stacks.length > 0;
+  }
 }
 
 // ---- Drawing, running ----------------------------------------------------
@@ -180,6 +192,7 @@ function runStack(stack) {
 // ---- Blocks --------------------------------------------------------------
 
 const history = new History(project);
+const autosave = new Autosave(project);
 
 function updateHistoryButtons() {
   undoButton.disabled = !history.canUndo;
@@ -194,6 +207,7 @@ function restore(snapshot) {
   workspace.setError(null);
   updateHistoryButtons();
   refreshBoxes();
+  autosave.schedule();
 }
 
 let palettes = null;
@@ -205,6 +219,7 @@ workspace = new Workspace({
     history.record(project);
     updateHistoryButtons();
     refreshBoxes();
+    autosave.schedule();
   },
   onRunStack: runStack,
   onRunPaletteBlock: (op) => runStack({ x: 0, y: 0, blocks: [newBlock(op)] }),
@@ -232,17 +247,128 @@ undoButton.addEventListener('click', () => restore(history.undo()));
 redoButton.addEventListener('click', () => restore(history.redo()));
 updateHistoryButtons();
 
+// ---- Saving, opening and starting over ------------------------------------
+
+/** Save the paper as a picture with the blocks tucked inside it. */
+async function savePictureNow() {
+  try {
+    const name = await savePicture(view.canvas, project);
+    say(`Saved ${name}. To get your blocks back, open it or drag it onto this page.`);
+  } catch (error) {
+    console.error(error);
+    say('Sorry, the picture could not be saved. Try again.');
+  }
+}
+
+/** Open a saved picture (or a project file): its blocks come back, and its picture. */
+async function openFile(file) {
+  if (!file || workspace.busy) return;
+  let read;
+  try {
+    read = await readFile(file);
+  } catch {
+    say('That file could not be read.');
+    return;
+  }
+  const { result, bytes } = read;
+  if (!result.ok) {
+    say(result.error);
+    return;
+  }
+  scheduler.stop();
+  project.stacks = result.project.stacks;
+  workspace.render();
+  workspace.setError(null);
+  history.record(project);
+  updateHistoryButtons();
+  clearOutput();
+  context = createContext({ turtle, print });
+  refreshBoxes();
+  autosave.schedule();
+
+  let note = `Opened ${file.name}. Undo brings your old blocks back.`;
+  if (result.kind === 'png') {
+    turtle.forget(); // the turtle did not draw this picture, so it forgets its old drawing
+    try {
+      const image = await createImageBitmap(new Blob([bytes], { type: 'image/png' }));
+      view.paintImage(image);
+      image.close();
+    } catch {
+      note = `Opened the blocks from ${file.name}, but its picture could not be shown. Press Run to draw it.`;
+    }
+  } else {
+    turtle.clean(); // a project file has no picture, so start with clean paper
+    note = `Opened ${file.name}. Press Run to draw it. Undo brings your old blocks back.`;
+  }
+  view.sync();
+  say(note);
+}
+
+/** Start over: no blocks, clean paper. Undo brings the blocks back. */
+function newProject() {
+  if (workspace.busy) return;
+  const hadBlocks = project.stacks.length > 0;
+  scheduler.stop();
+  project.stacks = [];
+  workspace.render();
+  workspace.setError(null);
+  turtle.clean();
+  history.record(project);
+  updateHistoryButtons();
+  clearOutput();
+  context = createContext({ turtle, print });
+  refreshBoxes();
+  autosave.schedule();
+  say(hadBlocks ? 'Starting fresh. Undo brings your blocks back.' : 'Starting fresh.');
+}
+
+$('save').addEventListener('click', savePictureNow);
+$('new').addEventListener('click', newProject);
+$('open').addEventListener('click', () => $('open-file').click());
+$('open-file').addEventListener('change', (event) => {
+  openFile(event.target.files[0]);
+  event.target.value = ''; // so the same file can be opened again
+});
+
+// Drop a saved picture anywhere on the page. (Handling the drop also stops the
+// browser from leaving the page to show the file, which would lose your blocks.)
+let dragDepth = 0;
+document.addEventListener('dragenter', (event) => {
+  if (!dragHasFiles(event)) return;
+  event.preventDefault();
+  dragDepth += 1;
+  stage.classList.add('drop-target');
+});
+document.addEventListener('dragover', (event) => {
+  if (!dragHasFiles(event)) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'copy';
+});
+document.addEventListener('dragleave', (event) => {
+  if (!dragHasFiles(event)) return;
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (dragDepth === 0) stage.classList.remove('drop-target');
+});
+document.addEventListener('drop', (event) => {
+  if (!dragHasFiles(event)) return;
+  event.preventDefault();
+  dragDepth = 0;
+  stage.classList.remove('drop-target');
+  openFile(event.dataTransfer.files[0]);
+});
+
 $('zoom-in').addEventListener('click', () => workspace.zoomBy(1.25));
 $('zoom-out').addEventListener('click', () => workspace.zoomBy(0.8));
 $('view-home').addEventListener('click', () => workspace.resetView());
 
-// Ctrl or Cmd with Z undoes; with Shift (or Ctrl+Y) it redoes. Typing in the
-// number box keeps its own undo, so leave the keys alone there.
+// Ctrl or Cmd with S saves; with Z it undoes; with Shift (or Ctrl+Y) it redoes.
+// Typing in the number box keeps its own undo, so leave the keys alone there.
 document.addEventListener('keydown', (event) => {
   if (event.target.matches?.('input, textarea, select')) return;
   if (!(event.ctrlKey || event.metaKey)) return;
   const key = event.key.toLowerCase();
-  if (key === 'z' && !event.shiftKey) restore(history.undo());
+  if (key === 's' && !event.shiftKey) savePictureNow();
+  else if (key === 'z' && !event.shiftKey) restore(history.undo());
   else if ((key === 'z' && event.shiftKey) || key === 'y') restore(history.redo());
   else return;
   event.preventDefault();
@@ -260,5 +386,7 @@ hideButton.addEventListener('click', () => {
   hideButton.setAttribute('aria-pressed', String(hidden));
   hideButton.title = hidden ? 'Show blocks' : 'Hide blocks';
 });
+
+if (welcomeBack) say('Welcome back. Your blocks from last time are here. Press Run to draw them again.');
 
 if (params.get('autorun') === '1') pressRun();
