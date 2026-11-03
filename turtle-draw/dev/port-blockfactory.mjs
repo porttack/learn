@@ -25,7 +25,6 @@ const pieces = [
   [857, 931],   // header, transform, footer, style
   [945, 1069],  // basicBlock
   [1071, 1113], // basicBox
-  [1279, 1363], // booleanCompare (the shape of <, > and =)
   [1365, 1570], // basicClamp
 ];
 let body = pieces.map(([a, b]) => range(a, b)).join('\n\n');
@@ -96,9 +95,6 @@ body = body.split(oldStretch).join('                svg += this._rLineTo(0, this
 patch('boolean clamp header',
   '            svg += this._rLineTo(0, 2 * this._padding + this._strokeWidth);\n            svg += this._doBoolean();',
   '            svg += this._rLineTo(0, 2 * this._padding + this._strokeWidth + this._innieExtra(0));\n            svg += this._doBoolean();');
-patch('booleanCompare second socket',
-  '        this.docks[2][1] -= this._radius * 2 * this._scale;\n        svg += this._rLineTo(0, this._radius);',
-  '        this.docks[2][1] -= this._radius * 2 * this._scale;\n        svg += this._rLineTo(0, this._innieExtra(1));\n        svg += this._rLineTo(0, this._radius);');
 body += `
 
     /**
@@ -150,10 +146,9 @@ const header = `// Block shape generator.
 //
 // Modified 2026 by Eric Brown for Turtle Draw:
 //   * converted to an ES module;
-//   * kept only the shapes Turtle Draw uses: basicBlock (commands and
-//     reporters with sockets), basicBox (number boxes and plain reporters),
-//     booleanCompare (the yes-or-no blocks <, > and =) and basicClamp
-//     (blocks with a C-shaped mouth, like repeat);
+//   * kept only the shapes Turtle Draw uses: basicBlock (commands),
+//     basicBox (number boxes and plain reporters) and basicClamp (blocks
+//     with a C-shaped mouth, like repeat and if);
 //   * added setExpandYs and _innieExtra, so a tall block plugged into any
 //     socket (not just the first two) makes room for itself;
 //   * fills, strokes and text are written as SVG attributes instead of

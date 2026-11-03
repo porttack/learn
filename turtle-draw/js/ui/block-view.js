@@ -105,16 +105,9 @@ function makeShape(spec, colors, extra) {
       shape.setInnies(sockets);
     }
     markup = shape.basicClamp();
-  } else if (spec.kind === 'reporter' && spec.returns === 'boolean') {
-    shape.setInnies(sockets);
-    markup = shape.booleanCompare();
   } else if (spec.kind === 'reporter' && sockets.length > 0) {
-    // A reporter with sockets (like +): plugs in on the left, no slot or tab.
-    shape.setInnies(sockets);
-    shape.setOutie(true);
-    shape.setSlot(false);
-    shape.setTab(false);
-    markup = shape.basicBlock();
+    // Reporters with sockets are drawn as a row by layoutRow, not by this.
+    throw new Error(`${spec.label} needs a layout (infix or prefix)`);
   } else if (spec.kind === 'reporter') {
     markup = shape.basicBox();
   } else {
@@ -141,6 +134,127 @@ function widthNeeded(spec, minimumWidth) {
   return Math.max(spec.kind === 'reporter' && spec.args.length === 0 ? 14 : 0, required - minimumWidth);
 }
 
+// ---- Blocks laid out as a row ------------------------------------------------
+//
+// Math and comparison blocks read left to right, like a sum on paper:
+//   [ 3 ] + [ 4 ]      [ 3 ] < [ 4 ]      random [ 1 ] [ 10 ]
+// The sockets sit side by side inside the block. A number goes in as a white
+// slot you can tap and type in, and another block plugs in over the slot, so
+// the block just grows to hold it. Putting one block inside another is how
+// you say which part of a sum is worked out first.
+// This is Turtle Draw's own drawing code. Number blocks borrow only the
+// plug on their left edge (from basicBox); yes-or-no blocks are pills.
+
+const SLOT_HEIGHT = 27; // a number slot
+const ROW_PAD_V = 5; // above and below the row of sockets
+const ROW_PAD_H = 7; // before the first and after the last item
+const ROW_GAP = 7; // between items
+
+let numberPlugCache = null;
+/** Where a number block plugs in: the same on every one, measured from its top-left corner. */
+function numberPlug() {
+  if (!numberPlugCache) {
+    const shape = new SVG();
+    shape.setScale(SCALE);
+    shape.basicBox();
+    numberPlugCache = shape.docks[0];
+  }
+  return numberPlugCache;
+}
+
+/** A number in a socket inside a row block: a white slot. */
+function layoutSlotLiteral(value, colors) {
+  const text = formatNumber(value);
+  const width = Math.max(32, textWidth(text) * SCALE + 14);
+  const fontSize = FONT_SIZE * SCALE;
+  const markup =
+    `<svg xmlns="${SVG_NS}" width="${width + 2}" height="${SLOT_HEIGHT + 2}">` +
+    `<rect x="1" y="1" width="${width}" height="${SLOT_HEIGHT}" rx="5" fill="#ffffff" stroke="${colors.stroke}" stroke-width="1.5"/>` +
+    `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="middle" x="${1 + width / 2}" y="${1 + SLOT_HEIGHT / 2 + fontSize * 0.35}">${escapeXml(text)}</text>` +
+    `</svg>`;
+  return { id: nextId++, value, text, markup, w: width + 2, h: SLOT_HEIGHT + 2, plug: [0, 0] };
+}
+
+/** The outline of a yes-or-no block: a pill. */
+function pillMarkup(width, height, colors) {
+  const r = height / 2;
+  const inset = 0.75; // so the outline is not cut off at the edge
+  const right = width - inset;
+  const bottom = height - inset;
+  const path =
+    `M ${r} ${inset} H ${right - r + inset} A ${r - inset} ${r - inset} 0 0 1 ${right - r + inset} ${bottom} ` +
+    `H ${r} A ${r - inset} ${r - inset} 0 0 1 ${r} ${inset} Z`;
+  return (
+    `<svg xmlns="${SVG_NS}" width="${width}" height="${height}">` +
+    `<path d="${path}" fill="${colors.fill}" stroke="${colors.stroke}" stroke-width="1.5"/>` +
+    `</svg>`
+  );
+}
+
+/** Finish the layout of a math or comparison block (its sockets are already laid out in node.args). */
+function layoutRow(node, spec, colors) {
+  const boolean = spec.returns === 'boolean';
+  const fontSize = FONT_SIZE * SCALE;
+  const labelWidth = textWidth(spec.label) * SCALE;
+  const sizeOf = (arg) => arg.child ?? arg.literal;
+
+  // The row is as tall as its tallest socket, with a little room above and below.
+  const contentHeight = Math.max(SLOT_HEIGHT + 2, ...node.args.map((arg) => sizeOf(arg).h));
+  const height = contentHeight + 2 * ROW_PAD_V;
+  const plug = numberPlug();
+
+  // Lay the items out left to right: the label sits between the two sockets
+  // (infix) or before them (prefix).
+  const order = spec.layout === 'infix' ? ['socket0', 'label', 'socket1'] : ['label', 'socket0', 'socket1'];
+  let x = boolean ? height / 2 + ROW_PAD_H - 2 : plug[0] + ROW_PAD_H;
+  let labelX = 0;
+  const socketAt = [];
+  order.forEach((item, k) => {
+    if (k > 0) x += ROW_GAP;
+    if (item === 'label') {
+      labelX = x;
+      x += labelWidth;
+    } else {
+      const index = Number(item.slice(-1));
+      const box = sizeOf(node.args[index]);
+      socketAt[index] = { x, y: ROW_PAD_V + (contentHeight - box.h) / 2 };
+      x += box.w;
+    }
+  });
+  const width = x + (boolean ? height / 2 + ROW_PAD_H - 2 : ROW_PAD_H);
+
+  const labelMarkup =
+    `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${labelX}" y="${height / 2 + fontSize * 0.35}">${escapeXml(spec.label)}</text>`;
+  let outline;
+  let size;
+  if (boolean) {
+    outline = pillMarkup(width, height, colors);
+    size = { w: width, h: height };
+  } else {
+    const shape = new SVG();
+    shape.setScale(SCALE);
+    shape.setFontSize(FONT_SIZE);
+    shape.setColors([colors.fill, colors.stroke]);
+    // basicBox is 13.5 wide and 31.5 tall with no stretch, and grows by SCALE per unit of stretch.
+    shape.setExpand((width - 13.5) / SCALE, (height - 31.5) / SCALE, 0, 0);
+    outline = shape.basicBox().replace('block_label', '');
+    size = { w: shape.getWidth(), h: shape.getHeight() };
+  }
+  node.markup = outline.replace(/<\/svg>\s*$/, `${labelMarkup}</svg>`);
+  node.w = size.w;
+  node.h = size.h;
+
+  // Plug on the left; each socket's dock is where a block's plug must land
+  // for that block to sit exactly over the slot.
+  const ownPlug = boolean ? [1, height / 2] : plug;
+  node.docks = [ownPlug, ...socketAt.map((at) => [at.x + plug[0], at.y + plug[1]])];
+  node.slot = node.docks[0];
+  node.tab = node.docks[node.docks.length - 1];
+  node.mouth = null;
+  node.argPos = socketAt.map((at) => ({ x: at.x, y: at.y }));
+  return node;
+}
+
 /**
  * Work out the size and shape of one block and everything plugged into it
  * or inside it. Positions are relative to the block's own top-left corner
@@ -158,8 +272,10 @@ export function layoutBlock(block) {
     const value = block.args?.[i];
     if (value !== null && typeof value === 'object') node.args.push({ child: layoutBlock(value) });
     else if (socket.type === 'boolean') node.args.push({});
-    else node.args.push({ literal: layoutLiteral(value) });
+    else node.args.push({ literal: spec.layout ? layoutSlotLiteral(value, colors) : layoutLiteral(value) });
   });
+
+  if (spec.layout) return layoutRow(node, spec, colors);
 
   // Make room for any socket content taller than a number box.
   const heightOf = (arg) => (arg.child ? arg.child.h : arg.literal ? arg.literal.h : 0);

@@ -104,27 +104,41 @@ try {
   check('the Turtle palette opens and lists its 11 blocks', (await chrome.eval(`!document.querySelector('.flyout').hidden`)) && (await count('.flyout .stack')) === 11,
     `${await count('.flyout .stack')} blocks`);
 
-  // Every label, in every palette, must fit inside its block.
-  const overflows = [];
+  // Every label, in every palette, must fit inside its block, and no two
+  // labels in one block may overlap each other. (Compared as rectangles on
+  // the screen, which works for every kind of block.)
+  const problemsWithLabels = [];
   for (const title of ['Turtle', 'Pen', 'Math', 'Flow', 'My Blocks']) {
     await openPalette(title);
     const bad = await chrome.eval(`(() => {
       const bad = [];
       for (const stack of document.querySelectorAll('.flyout .stack')) {
         for (const node of stack.querySelectorAll('.node')) {
-          const path = node.querySelector('path'); const box = path.getBBox();
-          for (const text of node.querySelectorAll('text')) {
-            if (!text.textContent.trim()) continue;
-            const t = text.getBBox();
-            if (t.x < box.x - 0.5 || t.x + t.width > box.x + box.width + 0.5) bad.push(stack.dataset.op + ':' + text.textContent.trim());
+          const outline = node.querySelector('path, rect').getBoundingClientRect();
+          const texts = [...node.querySelectorAll('text')].filter((t) => t.textContent.trim());
+          const boxes = texts.map((t) => t.getBoundingClientRect());
+          boxes.forEach((t, i) => {
+            if (t.left < outline.left - 0.5 || t.right > outline.right + 0.5) bad.push('outside ' + stack.dataset.op + ': ' + texts[i].textContent.trim());
+          });
+          for (let i = 0; i < boxes.length; i++) {
+            for (let j = i + 1; j < boxes.length; j++) {
+              const a = boxes[i], b = boxes[j];
+              // Text boxes include a little line spacing, so touching is fine.
+              // Overlapping means they share more than half the smaller one's height and some width.
+              const across = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+              const down = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+              if (across > 2 && down > 0.5 * Math.min(a.height, b.height)) {
+                bad.push('overlap ' + stack.dataset.op + ': ' + texts[i].textContent.trim() + ' / ' + texts[j].textContent.trim());
+              }
+            }
           }
         }
       }
       return bad;
     })()`);
-    overflows.push(...bad);
+    problemsWithLabels.push(...bad);
   }
-  check('every label in every palette fits inside its block', overflows.length === 0, overflows.join(', '));
+  check('every label fits inside its block, and no two labels overlap', problemsWithLabels.length === 0, problemsWithLabels.join(', '));
   await openPalette('Turtle');
 
   // ---- Dragging out of the palette ----------------------------------------
@@ -437,6 +451,22 @@ try {
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Math');
   check('the Math palette lists its eleven blocks', (await count('.flyout .stack')) === 11, `${await count('.flyout .stack')}`);
+  // Math and comparison blocks read left to right: both sockets on one row.
+  const rowSockets = (op) =>
+    chrome.eval(`(() => {
+      const stack = document.querySelector('.flyout .stack[data-op=${op}]');
+      const parts = [...stack.querySelectorAll('.node')].map((n) => ({ kind: n.getAttribute('class'), r: n.getBoundingClientRect() }));
+      const block = parts[0].r;
+      const slots = parts.filter((p) => p.kind.includes('literal')).map((p) => p.r);
+      return { block: { left: block.left, right: block.right, top: block.top, bottom: block.bottom }, slots: slots.map((r) => ({ left: r.left, right: r.right, top: r.top })) };
+    })()`);
+  for (const op of ['add', 'less', 'random']) {
+    const row = await rowSockets(op);
+    check(`${op}: the two number slots sit side by side inside the block`,
+      row.slots.length === 2 && near(row.slots[0].top, row.slots[1].top, 1) && row.slots[1].left > row.slots[0].right &&
+      row.slots[0].left >= row.block.left && row.slots[1].right <= row.block.right + 1,
+      JSON.stringify(row.slots));
+  }
 
   // Which blocks fit which sockets.
   await openPalette('Flow');
@@ -476,6 +506,12 @@ try {
   const addRect = await nodeRect('+');
   const firstSocket = await literalRect(0);
   await dragFromPalette('multiply', firstSocket.left + 2, firstSocket.top + 2);
+  // The multiply block was plugged into the + block, so the + block holds it.
+  const nestedRect = await nodeRect('\u00d7');
+  const holderRect = await nodeRect('+');
+  check('a block plugged into a math block sits inside it, and the block grows to fit',
+    nestedRect.left >= holderRect.left && nestedRect.right <= holderRect.right + 1 && holderRect.right - holderRect.left > 150,
+    `${nestedRect.left.toFixed(0)}-${nestedRect.right.toFixed(0)} inside ${holderRect.left.toFixed(0)}-${holderRect.right.toFixed(0)}`);
   check('blocks plug into blocks, as deep as you like', (await stacks()) === 1 && (await count('.workspace .node.reporter')) === 2 && (await nodeRect('\u00d7')).left > addRect.left,
     `${await stacks()} stacks, ${await count('.workspace .node.reporter')} reporters`);
 

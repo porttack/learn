@@ -17,10 +17,9 @@
 //
 // Modified 2026 by Eric Brown for Turtle Draw:
 //   * converted to an ES module;
-//   * kept only the shapes Turtle Draw uses: basicBlock (commands and
-//     reporters with sockets), basicBox (number boxes and plain reporters),
-//     booleanCompare (the yes-or-no blocks <, > and =) and basicClamp
-//     (blocks with a C-shaped mouth, like repeat);
+//   * kept only the shapes Turtle Draw uses: basicBlock (commands),
+//     basicBox (number boxes and plain reporters) and basicClamp (blocks
+//     with a C-shaped mouth, like repeat and if);
 //   * added setExpandYs and _innieExtra, so a tall block plugged into any
 //     socket (not just the first two) makes room for itself;
 //   * fills, strokes and text are written as SVG attributes instead of
@@ -1044,93 +1043,6 @@ export class SVG {
             this._fontSize,
             this._width,
             "left",
-            "block_label"
-        );
-
-        svg += this._footer();
-        return this._header(false) + svg;
-    }
-
-    /**
-     * @public
-     * @param {boolean} notnot
-     * @returns {string}
-     */
-    booleanCompare() {
-        // Booleans are in a class of their own (greater than, less than, etc)
-        this._resetMinMax();
-        let yoffset =
-            this._radius * 2 +
-            2 * this._innieY2 +
-            this._inniesSpacer +
-            this._strokeWidth / 2.0 +
-            this._expandY;
-        const xoffset = this._strokeWidth / 2.0;
-
-        const yoff = this._radius * 2;
-        let svg = '<g transform="matrix(1,0,0,1,0,-' + yoff + ')"> ';
-
-        svg += this._newPath(xoffset, yoffset + this._radius);
-        this.docks.push([this._x * this._scale, (this._y - 2 * this._radius) * this._scale]);
-        this._radius -= this._strokeWidth;
-        svg += this._rarcTo(1, -1, 90, 0, 1);
-        this._radius += this._strokeWidth;
-        svg += this._rLineTo(this._strokeWidth, 0);
-        svg += this._rLineTo(0, -this._expandY);
-
-        yoffset = -2 * this._innieY2 - this._inniesSpacer - this._strokeWidth;
-        svg += this._rLineTo(0, yoffset + this._radius);
-
-        svg += this._rarcTo(1, -1, 90, 0, 1);
-        svg += this._rLineTo(this._radius / 2.0 + this._expandX, 0);
-        svg += this._rLineTo(0, this._radius);
-        const xx = this._x;
-        svg += this._doInnie();
-        this.docks[1][1] -= this._radius * 2 * this._scale;
-        svg += this._rLineTo(0, this._expandY);
-
-        if (this._porch) {
-            svg += this._doPorch(false);
-        } else {
-            svg += this._rLineTo(0, 2 * this._innieY2 + this._inniesSpacer);
-        }
-        svg += this._doInnie();
-        this.docks[2][1] -= this._radius * 2 * this._scale;
-        svg += this._rLineTo(0, this._innieExtra(1));
-        svg += this._rLineTo(0, this._radius);
-        svg += this._lineTo(xx, this._y);
-
-        svg += this._rLineTo(-this._expandX, 0);
-
-        svg += this._rLineTo(-this._radius * 1.5, 0);
-        svg += this._rLineTo(0, -this._radius);
-        svg += this._rLineTo(0, -this._strokeWidth);
-        svg += this._rLineTo(-this._strokeWidth, 0);
-        this._radius -= this._strokeWidth;
-        svg += this._rarcTo(-1, -1, 90, 0, 1);
-        this._radius += this._strokeWidth;
-        svg += this._closePath();
-        this._calculateWH(true);
-        svg += this._style();
-        svg += "</g>";
-
-        this.margins[0] = (this._radius + this._strokeWidth) * this._scale;
-        this.margins[1] = this._strokeWidth * this._scale;
-        this.margins[2] = this._strokeWidth * this._scale;
-
-        // Add a block label
-        const tx =
-            this._width -
-            2 * (this._innieX1 + this._innieX2) -
-            4 * this._strokeWidth +
-            this._labelOffset * this._scale;
-        const ty = this._height / 2 + this._fontSize / 2;
-        svg += this.text(
-            tx / this._scale,
-            ty / this._scale,
-            this._fontSize,
-            this._width,
-            "right",
             "block_label"
         );
 

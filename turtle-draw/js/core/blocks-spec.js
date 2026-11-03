@@ -22,6 +22,12 @@
 //            socket that takes only a yes-or-no block, like the one in `if`).
 //   returns  for a reporter: 'number' (the usual) or 'boolean'. A reporter
 //            only fits a socket of the same type.
+//   layout   for a reporter with sockets: how it reads. 'infix' puts the
+//            label between its two sockets, like a sum: [ a ] + [ b ].
+//            'prefix' puts the label first: random [ a ] [ b ]. Either way
+//            the sockets sit side by side inside the block, so an expression
+//            reads left to right. (Blocks without a layout stack their
+//            sockets down the right edge.)
 //   endsStack  true for a block with nothing below it (like stop)
 //   help     the one-line tip shown when you press and hold the block
 
@@ -217,8 +223,8 @@ export const BLOCKS = {
   wait: {
     palette: 'flow',
     kind: 'command',
-    label: 'wait',
-    args: [{ label: 'tenths', default: 10 }],
+    label: 'wait tenths',
+    args: [{ default: 10 }],
     help: 'Pauses for this many tenths of a second. 10 is one second. Waiting always takes real time, even at Instant speed.',
   },
   stop: {
@@ -236,6 +242,7 @@ export const BLOCKS = {
   add: {
     palette: 'math',
     kind: 'reporter',
+    layout: 'infix',
     label: '+',
     args: [{ default: 1 }, { default: 1 }],
     help: 'Adds two numbers.',
@@ -243,6 +250,7 @@ export const BLOCKS = {
   subtract: {
     palette: 'math',
     kind: 'reporter',
+    layout: 'infix',
     label: '-',
     args: [{ default: 5 }, { default: 1 }],
     help: 'Subtracts the second number from the first.',
@@ -250,6 +258,7 @@ export const BLOCKS = {
   multiply: {
     palette: 'math',
     kind: 'reporter',
+    layout: 'infix',
     label: '\u00d7',
     args: [{ default: 2 }, { default: 2 }],
     help: 'Multiplies two numbers.',
@@ -257,6 +266,7 @@ export const BLOCKS = {
   divide: {
     palette: 'math',
     kind: 'reporter',
+    layout: 'infix',
     label: '\u00f7',
     args: [{ default: 10 }, { default: 2 }],
     help: 'Divides the first number by the second. You cannot divide by zero.',
@@ -264,6 +274,7 @@ export const BLOCKS = {
   mod: {
     palette: 'math',
     kind: 'reporter',
+    layout: 'infix',
     label: 'mod',
     args: [{ default: 10 }, { default: 3 }],
     help: 'The remainder left over when the first number is divided by the second. 10 mod 3 is 1.',
@@ -271,6 +282,7 @@ export const BLOCKS = {
   random: {
     palette: 'math',
     kind: 'reporter',
+    layout: 'prefix',
     label: 'random',
     args: [
       { label: 'low', default: 1 },
@@ -281,6 +293,7 @@ export const BLOCKS = {
   oneof: {
     palette: 'math',
     kind: 'reporter',
+    layout: 'prefix',
     label: 'one of',
     args: [
       { label: 'a', default: 0 },
@@ -292,6 +305,7 @@ export const BLOCKS = {
     palette: 'math',
     kind: 'reporter',
     returns: 'boolean',
+    layout: 'infix',
     label: '<',
     args: [{ default: 0 }, { default: 0 }],
     help: 'True if the first number is less than the second. Plug it into an if block.',
@@ -300,6 +314,7 @@ export const BLOCKS = {
     palette: 'math',
     kind: 'reporter',
     returns: 'boolean',
+    layout: 'infix',
     label: '>',
     args: [{ default: 0 }, { default: 0 }],
     help: 'True if the first number is greater than the second. Plug it into an if block.',
@@ -308,6 +323,7 @@ export const BLOCKS = {
     palette: 'math',
     kind: 'reporter',
     returns: 'boolean',
+    layout: 'infix',
     label: '=',
     args: [{ default: 0 }, { default: 0 }],
     help: 'True if the two numbers are the same. Plug it into an if block.',

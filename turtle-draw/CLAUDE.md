@@ -153,14 +153,27 @@ the dashes out of them too for consistency.
   `forever` and every loop yield each lap, so none can freeze the tab.
   `wait` takes tenths of a second and is **real time even at Instant speed**;
   Stop cuts it short. (`Wait` is yielded to the scheduler, which sleeps.)
+- **Math blocks read left to right.** `[ 3 ] + [ 4 ]`, `[ 3 ] < [ 4 ]`,
+  `random [ 1 ] [ 10 ]`: the sockets sit side by side inside the block (spec
+  field `layout`: `infix` puts the label between them, `prefix` before). A
+  number is a white slot you tap to type in; a block plugs in over the slot
+  and the parent grows (and gets taller if the child is). Nesting one block
+  inside another is how you say what is worked out first, so there are no
+  parenthesis blocks. Number blocks are rectangles with Sugar's plug on the
+  left; yes-or-no blocks are pills (so they can't be mistaken for numbers
+  and they fit the rounded socket of `if`). **This layout is Turtle Draw's
+  own drawing code** (`layoutRow` in `block-view.js`); only the plug and
+  rectangle outline come from Sugar's `basicBox`. The teacher liked how
+  another app lays out math and comparisons horizontally; nothing of that
+  app's artwork was used. All other blocks keep Sugar's right-edge sockets.
 - **Math.** `+ - x ÷ mod random one-of`, `< > =`, `print`. `mod` follows
   Python (never negative for a positive divisor). `random` of two whole
   numbers is a whole number and both ends can come up. `=` ignores tiny
   rounding errors. Divide or mod by zero is a friendly error naming the
   block. There is no separate `number` block: every socket already holds a
   number you tap to type, and pulling a block out puts one back.
-  `print` shows numbers in a box at the top right (last 8 lines, cleared each
-  run, redrawn once a frame). Tapping a lone math block shows its answer.
+  `print` shows numbers in a box at the top right, captioned "Output" (last 8
+  lines, cleared each run, redrawn once a frame). Tapping a lone math block shows its answer.
 - **Palettes with no blocks are hidden** (none now: all five have blocks).
 - **Coordinates:** paper 700 x 560, origin center, x right, y UP. Heading 0 is
   up and grows clockwise. Exact sin/cos at multiples of 90 so squares close.
@@ -231,9 +244,9 @@ To leave AGPL: write an independent shape generator (it must be genuinely
 independent in structure and constants, not a retyping; whoever wrote this
 code has seen the original), draw new turtle and icons, pick new colors,
 drop the AGPL notices, relicense. The blocks would stop looking like
-Sugar's. Milestone d (done) ported one more shape (`booleanCompare`) and
-extended the generator (`setExpandYs`), so the borrowed code grew a little;
-the seam is still just `block-view.js`. Every later milestone that adds a
+Sugar's. Milestone d (done) extended the generator (`setExpandYs`); the horizontal
+math blocks are original code and no longer use any Sugar shape beyond
+`basicBox`'s plug and outline. The seam is still just `block-view.js`. Any later milestone that adds a Sugar
 block shape makes leaving slightly bigger, so keep the decision in mind. Keep
 adding every borrowed file to `NOTICE.md`. Not legal advice; ask a lawyer if
 it matters.
