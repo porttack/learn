@@ -21,6 +21,8 @@ const ifElse = (condition, body, elseBody) => ({ op: 'ifelse', args: [condition]
 const sum = (a, c) => b('add', a, c);
 const minus = (a, c) => b('subtract', a, c);
 const box1 = { op: 'box1' };
+const input = (name) => ({ op: 'input', name });
+const call = (name, params, ...args) => ({ op: 'call', name, params, args });
 
 /**
  * The samples, easiest first. Fields:
@@ -31,6 +33,7 @@ const box1 = { op: 'box1' };
  *   concepts  the ideas it shows, as little tags on the Samples page
  *   note      the sticky note (300 characters at most)
  *   program   the blocks, starting with a Start block
+ *   defines   optional: blocks the sample makes, each { name, params, body }
  */
 export const SAMPLES = [
   {
@@ -241,6 +244,75 @@ export const SAMPLES = [
       ),
     ],
   },
+  {
+    id: 'own-block',
+    title: 'A block of your own',
+    summary: 'Teach the turtle a new trick once, then use it again and again.',
+    look: 'Three squares of growing size sharing one corner',
+    concepts: ['my own block', 'input'],
+    note: 'To makes a block of your own. This one is called square and has one input, size. The size block inside forward is whatever number you give it when you use it. Now one block draws a square of any size.',
+    defines: [{ name: 'square', params: ['size'], body: [rep(4, b('forward', input('size')), b('right', 90))] }],
+    program: [
+      b('start'),
+      b('clean'),
+      b('setpensize', 3),
+      call('square', ['size'], 40),
+      call('square', ['size'], 80),
+      call('square', ['size'], 120),
+    ],
+  },
+  {
+    id: 'calls-itself',
+    title: 'A block that calls itself',
+    summary: 'Each call draws a side, then calls the block again a little bigger, until it is time to stop.',
+    look: 'A square spiral winding outward',
+    concepts: ['my own block', 'input', 'calls itself'],
+    note: 'A block can use itself. Each time, size grows by 5. The if is the way to stop: once size is 150 or more, nothing else happens and the calls finish one by one. With no way to stop, it would go on forever.',
+    defines: [
+      {
+        name: 'spiral',
+        params: ['size'],
+        body: [
+          {
+            op: 'if',
+            args: [b('less', input('size'), 150)],
+            body: [b('forward', input('size')), b('right', 90), call('spiral', ['size'], sum(input('size'), 5))],
+          },
+        ],
+      },
+    ],
+    program: [b('start'), b('clean'), b('setpensize', 3), call('spiral', ['size'], 5)],
+  },
+  {
+    id: 'tree',
+    title: 'A tree',
+    summary: 'A block that calls itself twice draws branches that split into smaller branches.',
+    look: 'A green tree whose branches split again and again into smaller ones',
+    concepts: ['my own block', 'input', 'calls itself', 'speed'],
+    note: 'The tree block draws a branch, then two smaller trees on the end of it, then walks back. Each branch is 70 percent as long as the last, and it stops when a branch is too short. Speed 4 draws it all at once.',
+    defines: [
+      {
+        name: 'tree',
+        params: ['size'],
+        body: [
+          {
+            op: 'if',
+            args: [b('greater', input('size'), 10)],
+            body: [
+              b('forward', input('size')),
+              b('left', 30),
+              call('tree', ['size'], b('multiply', input('size'), 0.7)),
+              b('right', 60),
+              call('tree', ['size'], b('multiply', input('size'), 0.7)),
+              b('left', 30),
+              b('back', input('size')),
+            ],
+          },
+        ],
+      },
+    ],
+    program: [b('start'), b('clean'), b('speed', 4), b('setcolor', 20, 120, 40), b('setpensize', 2), call('tree', ['size'], 70)],
+  },
 ];
 
 export const SAMPLE_IDS = SAMPLES.map((sample) => sample.id);
@@ -258,6 +330,7 @@ export const LEFT = 90;
 export const TOP = 16;
 const NOTE_LINE_CHARS = 17;
 const GAP = 12;
+const NOTE_WIDTH = 200; // how wide a sticky note is drawn (block-view.js)
 
 /** How tall the note will be drawn. Matches the note layout in block-view.js, with room to spare. */
 export function noteHeight(text) {
@@ -265,14 +338,35 @@ export function noteHeight(text) {
   return 16 + lines * 18 + 10;
 }
 
+const SIDE = 24; // room left at the right edge of the page
+
 /**
- * The stacks for a sample: its note, then its program. In the app, pass the
- * real height of a note (block-view.js has it); the default is an estimate
- * that works without a page, for the tests.
+ * The stacks for a sample, in this order: its note, its program, then any blocks
+ * it makes. Without blocks of its own, the note and the program go down the left
+ * edge. With them, those go down the left edge and the note and program move to
+ * the right edge, so the middle of the page, where the drawing is, stays clear.
+ *
+ * In the app, `measure` gives the real sizes (block-view.js has them) and the
+ * width of the page: { noteHeight(text), stackSize(stack) -> { width, height },
+ * stageWidth }. The defaults are estimates that work without a page, for tests.
  */
-export function sampleStacks(sample, measureNote = noteHeight) {
-  return [
-    { x: LEFT, y: TOP, blocks: [{ op: 'note', text: sample.note }] },
-    { x: LEFT, y: TOP + measureNote(sample.note) + GAP, blocks: structuredClone(sample.program) },
-  ];
+export function sampleStacks(sample, measure = {}) {
+  const noteHigh = (measure.noteHeight ?? noteHeight)(sample.note);
+  const sizeOf = measure.stackSize ?? (() => ({ width: 300, height: 320 }));
+  const stageWidth = measure.stageWidth ?? 1366;
+
+  let y = TOP;
+  const made = (sample.defines ?? []).map((definition) => {
+    const stack = { x: LEFT, y, blocks: [{ op: 'to', name: definition.name, params: [...definition.params] }, ...structuredClone(definition.body)] };
+    y += sizeOf(stack).height + GAP;
+    return stack;
+  });
+
+  const program = { x: LEFT, y: TOP + noteHigh + GAP, blocks: structuredClone(sample.program) };
+  const note = { x: LEFT, y: TOP, blocks: [{ op: 'note', text: sample.note }] };
+  if (made.length > 0) {
+    const widest = Math.max(NOTE_WIDTH, sizeOf(program).width);
+    note.x = program.x = Math.max(LEFT, stageWidth - widest - SIDE);
+  }
+  return [note, program, ...made];
 }

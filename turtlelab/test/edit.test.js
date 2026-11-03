@@ -260,3 +260,22 @@ test('picking up a block from the else mouth takes the rest of that mouth only',
   assert.deepEqual(ops(carried.blocks), ['left', 'right']);
   assert.deepEqual(ops(ifelse.body), ['forward']);
 });
+
+// ---- Blocks you make yourself, in the editing rules -----------------------------------------------------
+
+test('a call socket knocked back to its default holds 100, and a number input plugs into it', () => {
+  const call = { op: 'call', name: 'go', params: ['d'], args: [{ op: 'input', name: 'd' }] };
+  const project = { stacks: [{ x: 0, y: 0, blocks: [call] }] };
+  const carried = detachReporter(project, call, 0, 5, 5);
+  assert.equal(call.args[0], 100);
+  assert.equal(carried.blocks[0].op, 'input');
+  assert.equal(canPlug(call, 0, carried.blocks[0]), true, 'an input is a number block, so it fits a number socket');
+  assert.equal(canPlug({ op: 'if', args: [null] }, 0, carried.blocks[0]), false, 'but not the yes-or-no socket of an if');
+  assert.equal(isReporterStack({ blocks: [carried.blocks[0]] }), true);
+});
+
+test('newBlock still makes the fixed blocks, and refuses the ones that need a name', () => {
+  assert.deepEqual(newBlock('forward'), { op: 'forward', args: [100] });
+  assert.throws(() => newBlock('call'), /made from a definition/);
+  assert.throws(() => newBlock('input'), /made from a definition/);
+});

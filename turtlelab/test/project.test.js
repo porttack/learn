@@ -274,3 +274,62 @@ test('blocks inside the else mouth are found by walkBlocks and usesBoxes', () =>
   assert.deepEqual(seen, ['ifelse', 'store2']);
   assert.equal(usesBoxes({ stacks: [{ x: 0, y: 0, blocks: [block] }] }), true);
 });
+
+// ---- Blocks you make yourself in project files ---------------------------------------------------------
+
+const madeProject = (...stacks) => ({ app: FORMAT_ID, version: 1, stacks });
+const madeStack = (...blocks) => ({ x: 0, y: 0, blocks });
+
+test('definitions, calls and inputs survive validation exactly', () => {
+  const data = madeProject(
+    madeStack({ op: 'to', name: 'square', params: ['size'] }, { op: 'forward', args: [{ op: 'input', name: 'size' }] }),
+    madeStack({ op: 'start' }, { op: 'call', name: 'square', params: ['size'], args: [60] }),
+  );
+  const result = validateProject(data);
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.project.stacks, data.stacks);
+});
+
+test('names read from a file are cleaned: odd characters dropped, long names cut, empty ones given a name', () => {
+  const result = validateProject(
+    madeProject(madeStack({ op: 'to', name: '  <b>Sq uare</b>!! ', params: ['size', 'SIZE', 'x'.repeat(40), '', 7, 'third'] }, { op: 'forward', args: [{ op: 'input', name: '' }] }, { op: 'call', name: 42, params: 'nope' })),
+  );
+  const [hat, forward, call] = result.project.stacks[0].blocks;
+  assert.equal(hat.name, 'bSq uareb', 'tags lose their brackets and slash, not their letters');
+  assert.deepEqual(hat.params, ['size', 'x'.repeat(10)], 'two inputs at most, no repeats, none empty');
+  assert.equal(forward.args[0].name, 'input');
+  assert.deepEqual(call, { op: 'call', name: 'myblock', params: [], args: [] });
+});
+
+test('a call has exactly one socket for each input, however the file says it', () => {
+  const messy = (args) => validateProject(madeProject(madeStack({ op: 'call', name: 'go', params: ['a', 'b'], args }))).project.stacks[0].blocks[0].args;
+  assert.deepEqual(messy([1]), [1, null], 'too few: the rest are empty');
+  assert.deepEqual(messy([1, 2, 3, 4]), [1, 2], 'too many: the extras go');
+  assert.deepEqual(messy(undefined), [null, null]);
+  assert.deepEqual(messy([{ op: 'input', name: 'a' }, 2]), [{ op: 'input', name: 'a' }, 2], 'a block can be plugged in');
+});
+
+test('a to block and an input have no sockets, whatever the file says', () => {
+  const result = validateProject(madeProject(madeStack({ op: 'to', name: 'a', params: [], args: [1] }, { op: 'forward', args: [{ op: 'input', name: 'q', args: [3] }] })));
+  const [hat, forward] = result.project.stacks[0].blocks;
+  assert.equal('args' in hat, false);
+  assert.equal('args' in forward.args[0], false);
+});
+
+test('Run never runs a definition: it runs the Start block, and falls back to loose commands, not to a to block', () => {
+  const def = { x: 0, y: 0, blocks: [{ op: 'to', name: 'square', params: [] }, { op: 'forward', args: [10] }] };
+  const start = { x: 0, y: 200, blocks: [{ op: 'start' }, { op: 'call', name: 'square', params: [], args: [] }] };
+  const loose = { x: 0, y: 100, blocks: [{ op: 'forward', args: [5] }] };
+  assert.equal(findRunStack({ stacks: [def, start] }).stack, start, 'a definition higher on the page does not win');
+  assert.equal(findRunStack({ stacks: [def, loose] }).stack, loose, 'no Start: the topmost loose commands, not the definition');
+  assert.equal(findRunStack({ stacks: [def] }).stack, null, 'only definitions: nothing to run');
+  assert.equal(findRunStack({ stacks: [def, start] }).startCount, 1);
+});
+
+test('walkBlocks and usesBoxes look inside calls and definitions too', () => {
+  const stackWith = madeStack({ op: 'to', name: 'a', params: ['n'] }, { op: 'store1', args: [{ op: 'input', name: 'n' }] });
+  const seen = [];
+  walkBlocks(stackWith.blocks, (b) => seen.push(b.op));
+  assert.deepEqual(seen, ['to', 'store1', 'input']);
+  assert.equal(usesBoxes({ stacks: [stackWith] }), true);
+});

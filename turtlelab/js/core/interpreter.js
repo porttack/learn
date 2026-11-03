@@ -17,7 +17,8 @@
 // Reporter blocks (the ones that hand back a number, like x) do not draw
 // anything, so they are ordinary functions that return a value right away.
 
-import { BLOCKS, BOX_COUNT, SPEED_NAMES } from './blocks-spec.js';
+import { BLOCKS, BOX_COUNT, SPEED_NAMES, specOf } from './blocks-spec.js';
+import { nameKey } from './names.js';
 import { round10 } from './turtle.js';
 import { formatNumber } from './format.js';
 
@@ -53,11 +54,31 @@ const LONGEST_WAIT_MS = 2 ** 31 - 1;
  * `random` gives numbers from 0 up to (not including) 1, `print` receives
  * each line a print block shows, and `setSpeed` is told the name of the speed
  * a speed block picks (the app hands it on to the scheduler). Tests replace
- * them to get fixed answers.
+ * them to get fixed answers. `definitions` is what the blocks the student made
+ * do (see definitionsOf), and `frames` is the stack of calls being run right
+ * now, each holding the numbers its inputs were given.
  */
-export function createContext({ turtle, boxes = null, random = Math.random, print = () => {}, setSpeed = () => {} }) {
-  return { turtle, boxes: boxes ?? new Array(BOX_COUNT).fill(0), random, print, setSpeed };
+export function createContext({
+  turtle,
+  boxes = null,
+  random = Math.random,
+  print = () => {},
+  setSpeed = () => {},
+  definitions = new Map(),
+}) {
+  return { turtle, boxes: boxes ?? new Array(BOX_COUNT).fill(0), random, print, setSpeed, definitions, frames: [] };
 }
+
+/**
+ * How many calls can be inside each other at once. A block that calls itself
+ * with no way to stop would otherwise run until the page ran out of room.
+ * Blocks inside blocks are generators inside generators, and the browser only
+ * has room for a few thousand of those, so a call plus the blocks around it
+ * costs a handful. 500 calls fit with room to spare even when each call is
+ * inside a few loops and ifs (a test checks that). Past what fits, the app
+ * still gives a friendly message instead of crashing (main.js).
+ */
+export const MAX_CALL_DEPTH = 500;
 
 /**
  * Run a list of blocks, one after another.
@@ -66,8 +87,19 @@ export function createContext({ turtle, boxes = null, random = Math.random, prin
  */
 export function* runBlocks(blocks, ctx) {
   for (const block of blocks) {
-    const signal = yield* runBlock(block, ctx);
-    if (signal === STOP) return STOP;
+    if (block === null || typeof block !== 'object') {
+      throw new RunError('Something in the program is not a block.', null);
+    }
+    const flow = FLOW[block.op];
+    if (flow) {
+      // Go straight to the flow block. Blocks inside blocks make generators inside
+      // generators, and the browser only has so much stack for that, so a block
+      // costs one layer here (and a command none) to let a block call itself deep.
+      if ((yield* flow(block, ctx)) === STOP) return STOP;
+    } else {
+      runCommand(block, ctx);
+      yield block;
+    }
   }
   return undefined;
 }
@@ -82,6 +114,9 @@ const COMMANDS = {
   start: () => {},
   // a note is words for people, so running one does nothing
   note: () => {},
+  // The `to` block only names a definition. It is never run: calling the block
+  // runs the blocks under it, not the hat.
+  to: () => {},
   clean: (t) => t.clean(),
   forward: (t, [steps]) => t.forward(steps),
   back: (t, [steps]) => t.back(steps),
@@ -159,29 +194,44 @@ const FLOW = {
     return undefined;
   },
 
+  // Run a block the student made. The numbers for its inputs are worked out
+  // first, in the caller's own frame, and then the blocks under its `to` run
+  // with a new frame holding them. `stop` in there only leaves this block.
+  *call(block, ctx) {
+    const found = ctx.definitions.get(nameKey(block.name ?? ''));
+    if (!found) {
+      throw new RunError(`There is no block called ${block.name}. Did you delete it or change its name?`, block);
+    }
+    const values = new Map();
+    found.params.forEach((param, i) => values.set(nameKey(param), evalNumber(block.args?.[i], ctx, block)));
+    if (ctx.frames.length >= MAX_CALL_DEPTH) {
+      throw new RunError(`Your block ${found.name} called itself more than ${MAX_CALL_DEPTH} times. Does it have a way to stop?`, block);
+    }
+    yield block; // so the call can be seen, the way an if can
+    ctx.frames.push({ name: found.name, values });
+    try {
+      yield* runBlocks(found.body, ctx);
+    } finally {
+      ctx.frames.pop();
+    }
+    return undefined;
+  },
+
   *stop(block) {
     yield block;
     return STOP;
   },
 };
 
-function* runBlock(block, ctx) {
-  if (block === null || typeof block !== 'object') {
-    throw new RunError('Something in the program is not a block.', null);
-  }
-  const flow = FLOW[block.op];
-  if (flow) return yield* flow(block, ctx);
-
+function runCommand(block, ctx) {
   const command = COMMANDS[block.op];
   if (!command) {
     throw new RunError(`I don't know a block called "${block.op}".`, block);
   }
   // Go by the sockets the block is supposed to have, so a block that is
   // missing an argument reports an empty box instead of running with NaN.
-  const args = BLOCKS[block.op].args.map((socket, i) => evalSocket(block.args?.[i], ctx, block, socket));
+  const args = specOf(block).args.map((socket, i) => evalSocket(block.args?.[i], ctx, block, socket));
   command(ctx.turtle, args, ctx);
-  yield block;
-  return undefined;
 }
 
 // ---- Reporters --------------------------------------------------------
@@ -232,6 +282,15 @@ const REPORTERS = {
 for (let n = 1; n <= BOX_COUNT; n += 1) {
   REPORTERS[`box${n}`] = (ctx) => ctx.boxes[n - 1];
 }
+// An input is the number the block it belongs to was called with.
+REPORTERS.input = (ctx, values, block) => {
+  const frame = ctx.frames.at(-1);
+  const key = nameKey(block.name ?? '');
+  if (!frame || !frame.values.has(key)) {
+    throw new RunError(`The input ${block.name} only works inside the block that has it.`, block);
+  }
+  return frame.values.get(key);
+};
 
 /**
  * Work out what goes in a socket, whatever it is: a plain number stays as
@@ -248,7 +307,7 @@ export function evalArg(arg, ctx, block) {
     if (!reporter) {
       throw new RunError(`"${arg.op}" is not a block that reports a value.`, arg);
     }
-    const sockets = BLOCKS[arg.op]?.args ?? [];
+    const sockets = specOf(arg)?.args ?? [];
     const values = sockets.map((socket, i) => evalSocket(arg.args?.[i], ctx, arg, socket));
     return reporter(ctx, values, arg);
   }

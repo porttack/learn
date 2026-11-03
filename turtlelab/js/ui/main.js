@@ -16,7 +16,8 @@ import { formatNumber, formatValue } from '../core/format.js';
 import { runBlocks, createContext, evalArg, RunError } from '../core/interpreter.js';
 import { emptyProject, findRunStack, usesBoxes, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
 import { BLOCKS, DEFAULT_SPEED } from '../core/blocks-spec.js';
-import { newBlock, cloneBlock, isReporterStack } from '../core/edit.js';
+import { definitionsOf, isDefinition } from '../core/definitions.js';
+import { cloneBlock, isReporterStack } from '../core/edit.js';
 import { CanvasView } from './canvas-view.js';
 import { Workspace } from './workspace.js';
 import { PaletteUI } from './palette.js';
@@ -24,7 +25,7 @@ import { Autosave, loadAutosave } from './storage.js';
 import { savePicture, readFile, dragHasFiles } from './files.js';
 import { DEMOS } from './demos.js';
 import { sampleById, sampleStacks, LEFT as SAMPLE_LEFT, TOP as SAMPLE_TOP } from './samples.js';
-import { noteHeight } from './block-view.js';
+import { noteHeight, stackSize } from './block-view.js';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -55,10 +56,13 @@ const project = emptyProject();
 const demo = params.get('demo');
 if (demo && Object.hasOwn(DEMOS, demo)) {
   // Run it through the same checks as a file from a student would get.
+  // A demo is a list of blocks (one stack), or { stacks: [...] } when it needs several
+  // (a block you make is a stack of its own).
+  const made = DEMOS[demo];
   const loaded = validateProject({
     app: FORMAT_ID,
     version: FORMAT_VERSION,
-    stacks: [{ x: 300, y: 70, blocks: cloneBlock(DEMOS[demo]) }],
+    stacks: Array.isArray(made) ? [{ x: 300, y: 70, blocks: cloneBlock(made) }] : cloneBlock(made.stacks),
   });
   if (loaded.ok) project.stacks = loaded.project.stacks;
 }
@@ -69,7 +73,7 @@ if (demo && Object.hasOwn(DEMOS, demo)) {
 const sampleName = params.get('sample');
 const sample = sampleName === null ? null : sampleById(sampleName);
 if (sample) {
-  const loaded = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: sampleStacks(sample, noteHeight) });
+  const loaded = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: sampleStacks(sample, { noteHeight, stackSize, stageWidth: stage.clientWidth }) });
   if (loaded.ok) project.stacks = loaded.project.stacks;
 }
 
@@ -96,11 +100,12 @@ const turtle = new Turtle({ onOp: (op) => view.applyOp(op) });
 // The boxes (variables) belong to the most recent run. Each run starts with
 // fresh boxes at 0. The readout shows them, but only when the project has a
 // box block in it, so it stays out of the way until it matters.
-/** A fresh set of boxes, and a way for a speed block to reach the scheduler. */
-const newContext = () =>
+/** A fresh set of boxes, the blocks the student made, and a way for a speed block to reach the scheduler. */
+const newContext = (definitions = new Map()) =>
   createContext({
     turtle,
     print,
+    definitions,
     setSpeed: (name) => {
       scheduler.speed = name;
     },
@@ -185,6 +190,9 @@ const scheduler = new Scheduler({
       if (result.error instanceof RunError) {
         workspace.setError(result.error.block);
         say(result.error.message);
+      } else if (result.error instanceof RangeError) {
+        // Blocks inside blocks inside blocks, more than the page can keep track of.
+        say('That program nests too deeply for the page to keep track of. Does one of your blocks call itself without a way to stop?');
       } else {
         say('Something went wrong inside the app. Try again.');
         console.error(result.error);
@@ -198,6 +206,11 @@ view = new CanvasView({ stage, turtle, isLocked: () => scheduler.running });
 /** Run a stack of blocks. A lone reporter (like x) just shows its value. */
 function runStack(stack) {
   if (BLOCKS[stack.blocks[0].op].kind === 'note') return; // a sticky note is not a program
+  if (isDefinition(stack)) {
+    // A block you made does nothing until something calls it.
+    say('This is a block you made. Put a call to it under a Start block and press Run.');
+    return;
+  }
   if (isReporterStack(stack)) {
     // Tapping a reporter reads from the boxes the last run left behind.
     // Looking at a value never changes it.
@@ -214,8 +227,14 @@ function runStack(stack) {
     }
     return;
   }
+  const { map: definitions, duplicate } = definitionsOf(project);
+  if (duplicate) {
+    workspace.setError(duplicate);
+    say(`Two of your blocks are both called ${duplicate.name}. Give one of them a different name.`);
+    return;
+  }
   clearOutput();
-  context = newContext();
+  context = newContext(definitions);
   scheduler.speed = startSpeed; // the last run's speed block does not carry over
   scheduler.start(runBlocks(stack.blocks, context));
 }
@@ -239,6 +258,7 @@ function restore(snapshot) {
   workspace.setError(null);
   updateHistoryButtons();
   refreshBoxes();
+  palettes.refresh();
   autosave.schedule();
 }
 
@@ -251,10 +271,12 @@ workspace = new Workspace({
     history.record(project);
     updateHistoryButtons();
     refreshBoxes();
+    palettes.refresh();
     autosave.schedule();
   },
   onRunStack: runStack,
-  onRunPaletteBlock: (op) => runStack({ x: 0, y: 0, blocks: [newBlock(op)] }),
+  onRunPaletteBlock: (block) => runStack({ x: 0, y: 0, blocks: [block] }),
+  onMessage: say,
   isOverPalette: (x, y) => palettes.isOver(x, y),
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
 });
@@ -269,7 +291,11 @@ if (sample) workspace.fitHeight(SAMPLE_LEFT, SAMPLE_TOP);
 function pressRun() {
   const { stack, startCount } = findRunStack(project);
   if (!stack) {
-    say('Drag some blocks onto the page first. Run begins at the Start block, which is in the Flow palette.');
+    say(
+      project.stacks.some(isDefinition)
+        ? 'Run begins at the Start block (in the Flow palette). Put one on the page, and under it a call to the block you made.'
+        : 'Drag some blocks onto the page first. Run begins at the Start block, which is in the Flow palette.',
+    );
     return;
   }
   runStack(stack);
@@ -319,6 +345,7 @@ async function openFile(file) {
   clearOutput();
   context = newContext();
   refreshBoxes();
+  palettes.refresh();
   autosave.schedule();
 
   let note = `Opened ${file.name}. Undo brings your old blocks back.`;
@@ -353,6 +380,7 @@ function newProject() {
   clearOutput();
   context = newContext();
   refreshBoxes();
+  palettes.refresh();
   autosave.schedule();
   say(hadBlocks ? 'Starting fresh. Undo brings your blocks back.' : 'Starting fresh.');
 }

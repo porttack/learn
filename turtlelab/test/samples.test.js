@@ -7,6 +7,7 @@ import { readFileSync, existsSync } from 'node:fs';
 
 import { SAMPLES, SAMPLE_IDS, sampleById, sampleStacks, noteHeight } from '../js/ui/samples.js';
 import { validateProject, findRunStack, walkBlocks, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
+import { definitionsOf } from '../js/core/definitions.js';
 import { runBlocks, createContext, Wait } from '../js/core/interpreter.js';
 import { Turtle, PAPER_W, PAPER_H } from '../js/core/turtle.js';
 import { NOTE_MAX_CHARS } from '../js/core/blocks-spec.js';
@@ -29,8 +30,9 @@ function seeded(seed) {
 function runSample(sample, seed = 1) {
   const turtle = new Turtle();
   const printed = [];
-  const context = createContext({ turtle, random: seeded(seed), print: (line) => printed.push(line) });
-  const { stack } = findRunStack(projectOf(sample));
+  const project = projectOf(sample);
+  const context = createContext({ turtle, random: seeded(seed), print: (line) => printed.push(line), definitions: definitionsOf(project).map });
+  const { stack } = findRunStack(project);
   let waits = 0;
   for (const step of runBlocks(stack.blocks, context)) if (step instanceof Wait) waits += 1;
   return { turtle, printed, waits };
@@ -57,10 +59,11 @@ test('every sample is a project the app accepts, so Open and autosave would acce
   }
 });
 
-test('every sample has a sticky note on top and one program, which begins at a Start block', () => {
+test('every sample has a sticky note on top and one program, which begins at a Start block, then the blocks it makes', () => {
   for (const sample of SAMPLES) {
-    const [note, program, ...rest] = sampleStacks(sample);
-    assert.equal(rest.length, 0, sample.id);
+    const [note, program, ...made] = sampleStacks(sample);
+    assert.equal(made.length, (sample.defines ?? []).length, `${sample.id}: one stack for each block it makes`);
+    for (const stack of made) assert.equal(stack.blocks[0].op, 'to', `${sample.id}: a block it makes starts with to`);
     assert.deepEqual(note.blocks.map((b) => b.op), ['note'], `${sample.id}: first stack is the note`);
     assert.equal(program.blocks[0].op, 'start', `${sample.id}: the program starts with Start`);
     assert.equal(program.blocks[1].op, 'clean', `${sample.id}: and cleans, so it draws the same each time`);
@@ -77,6 +80,21 @@ test('the note sits above the program with room to spare, both inside the left e
     assert.ok(note.x >= 80, `${sample.id}: clear of the palette buttons`);
     assert.ok(program.y >= note.y + noteHeight(sample.note), `${sample.id}: program starts below the note`);
   }
+});
+
+test('a sample with blocks of its own puts them down the left, and the note and program at the right edge, clear of the drawing', () => {
+  const withBlocks = SAMPLES.filter((s) => s.defines);
+  assert.ok(withBlocks.length >= 3, 'there are samples with blocks of their own');
+  for (const sample of withBlocks) {
+    const [note, program, ...made] = sampleStacks(sample, { stageWidth: 1366 });
+    assert.ok(made.every((stack) => stack.x < 100), `${sample.id}: its blocks are on the left`);
+    assert.ok(note.x > 700 && note.x === program.x, `${sample.id}: the note and program are right of the middle of a 1366 page (${note.x})`);
+    assert.ok(note.x + 200 <= 1366, `${sample.id}: and still on the page`);
+    const [two, ...others] = made;
+    if (others.length > 0) assert.ok(others[0].y > two.y, `${sample.id}: blocks stack down the left`);
+  }
+  const plain = sampleStacks(sampleById('square'));
+  assert.equal(plain[0].x, 90, 'a sample with none stays on the left');
 });
 
 test('every sample explains itself in a note that fits on a sticky note', () => {
@@ -109,11 +127,14 @@ test('every sample runs without an error and draws something', () => {
 });
 
 test('samples that name print, wait or fill really use them', () => {
+  // Look at everything the sample draws on the page, except its note.
   const uses = (sample, op) => {
     let found = false;
-    walkBlocks(sampleStacks(sample)[1].blocks, (block) => {
-      if (block.op === op) found = true;
-    });
+    for (const stack of sampleStacks(sample).slice(1)) {
+      walkBlocks(stack.blocks, (block) => {
+        if (block.op === op) found = true;
+      });
+    }
     return found;
   };
   for (const sample of SAMPLES) {
@@ -124,6 +145,20 @@ test('samples that name print, wait or fill really use them', () => {
     if (sample.concepts.includes('if else')) assert.ok(uses(sample, 'ifelse'), `${sample.id}: has an if else`);
     if (sample.concepts.includes('random')) assert.ok(uses(sample, 'random'), `${sample.id}: has a random`);
     if (sample.concepts.includes('boxes')) assert.ok(uses(sample, 'store1'), `${sample.id}: stores in a box`);
+    if (sample.concepts.includes('speed')) assert.ok(uses(sample, 'speed'), `${sample.id}: has a speed block`);
+    if (sample.concepts.includes('my own block')) assert.ok(uses(sample, 'to') && uses(sample, 'call'), `${sample.id}: makes a block and calls it`);
+    if (sample.concepts.includes('input')) assert.ok(uses(sample, 'input'), `${sample.id}: uses an input block`);
+    if (sample.concepts.includes('calls itself')) {
+      // some definition's own body has a call to that same name
+      const calls = sampleStacks(sample).slice(2).some((stack) => {
+        let self = false;
+        walkBlocks(stack.blocks.slice(1), (block) => {
+          if (block.op === 'call' && block.name === stack.blocks[0].name) self = true;
+        });
+        return self;
+      });
+      assert.ok(calls, `${sample.id}: a block calls itself`);
+    }
   }
 });
 

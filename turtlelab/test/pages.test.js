@@ -158,6 +158,12 @@ test('the home page has a TurtleLab card', () => {
   assert.match(pathways, /- id: turtlelab\n\s+title: "TurtleLab"\n\s+url: \/turtlelab\//);
 });
 
+test('the Guide explains making your own blocks: the to block, inputs, using itself, and what a rename or delete does', () => {
+  const guide = read('guide.html');
+  assert.match(guide, /<h2>Make your own blocks<\/h2>/);
+  for (const word of ['<strong>to</strong>', 'dashed', 'input', 'use itself', 'a way to stop', 'Undo brings it back']) assert.ok(guide.includes(word), word);
+});
+
 test('the toolbar has no speed menu: speed is a block, which you find in Flow', () => {
   const html = read('index.html');
   assert.ok(!/<select/i.test(html), 'no drop-down menus in the toolbar');

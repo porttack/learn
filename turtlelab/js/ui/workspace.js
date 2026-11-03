@@ -14,6 +14,7 @@
 //   drop it on the palette   deleted.
 //   tap a block              run its stack.
 //   tap a number             type a new number.
+//   tap a name on a `to`     type the block's name, or an input's name.
 //   hold a block, or         a bubble with a one-line tip, and a Copy stack
 //   right-click it           button. Shift-drag copies a stack too.
 //   drag empty space         slide the workspace (two fingers: pinch to zoom).
@@ -24,10 +25,11 @@
 
 import { layoutStack, renderStack, walkNodes } from './block-view.js';
 import { HelpBubble } from './help-bubble.js';
-import { BLOCKS, NOTE_MAX_CHARS } from '../core/blocks-spec.js';
+import { NOTE_MAX_CHARS, specOf } from '../core/blocks-spec.js';
+import { renameDefinition, setInput, uniquifyDefinition } from '../core/definitions.js';
+import { INPUT_MAX, NAME_MAX } from '../core/names.js';
 import { HOME_VIEW, zoomAbout, panBy, zoomToFit } from '../core/view.js';
 import {
-  newBlock,
   cloneBlock,
   detachCommands,
   detachReporter,
@@ -54,7 +56,8 @@ export class Workspace {
    * @param {object} options.project the project being edited (changed in place)
    * @param {() => void} [options.onChange] called after every edit
    * @param {(stack: object) => void} [options.onRunStack] a block was tapped
-   * @param {(op: string) => void} [options.onRunPaletteBlock] a palette block was tapped
+   * @param {(block: object) => void} [options.onRunPaletteBlock] a palette block was tapped (a fresh copy of it)
+   * @param {(text: string) => void} [options.onMessage] something to tell the student, like why a name was refused
    * @param {(x: number, y: number) => boolean} [options.isOverPalette] for deleting
    * @param {(hovering: boolean) => void} [options.onPaletteHover]
    */
@@ -64,6 +67,7 @@ export class Workspace {
     onChange = () => {},
     onRunStack = () => {},
     onRunPaletteBlock = () => {},
+    onMessage = () => {},
     isOverPalette = () => false,
     onPaletteHover = () => {},
   }) {
@@ -72,6 +76,7 @@ export class Workspace {
     this.onChange = onChange;
     this.onRunStack = onRunStack;
     this.onRunPaletteBlock = onRunPaletteBlock;
+    this.onMessage = onMessage;
     this.isOverPalette = isOverPalette;
     this.onPaletteHover = onPaletteHover;
 
@@ -200,10 +205,10 @@ export class Workspace {
     this.startPress(event, { entry, duplicate: event.shiftKey });
   }
 
-  /** A press on a block in the palette (called by the palette). */
-  pressPaletteBlock(event, op, rect) {
+  /** A press on a block in the palette (called by the palette). `entry` knows how to make a fresh one, and its tip. */
+  pressPaletteBlock(event, entry, rect) {
     if (this.pointer || (event.pointerType === 'mouse' && event.button !== 0)) return;
-    this.startPress(event, { palette: { op, rect } });
+    this.startPress(event, { palette: { make: entry.make, help: entry.help, rect } });
   }
 
   startPress(event, what) {
@@ -244,9 +249,11 @@ export class Workspace {
     } else if (longPressed) {
       // The help bubble is showing. Letting go is not a tap.
     } else if (palette) {
-      this.onRunPaletteBlock(palette.op);
+      this.onRunPaletteBlock(palette.make());
     } else if (entry.type === 'literal') {
       this.editNumber(entry);
+    } else if (entry.type === 'nameslot') {
+      this.editName(entry);
     } else if (entry.node.kind === 'note') {
       this.editNote(entry.node); // tapping a sticky note is for writing in it
     } else {
@@ -275,7 +282,7 @@ export class Workspace {
     if (!press || this.drag) return;
     if (press.palette) {
       press.longPressed = true;
-      this.bubble.show({ rect: press.palette.rect, text: BLOCKS[press.palette.op].help });
+      this.bubble.show({ rect: press.palette.rect, text: press.palette.help });
     } else if (press.entry.type === 'block') {
       press.longPressed = true;
       this.showHelp(press.entry.node);
@@ -287,7 +294,7 @@ export class Workspace {
   showHelp(node) {
     this.bubble.show({
       rect: node.el.getBoundingClientRect(),
-      text: BLOCKS[node.block.op].help,
+      text: specOf(node.block).help,
       onCopy: () => this.copyStack(node.stack),
     });
   }
@@ -300,6 +307,7 @@ export class Workspace {
       blocks: stack.blocks.map(cloneBlock),
     };
     this.project.stacks.push(copy);
+    uniquifyDefinition(this.project, copy); // two blocks of the same name would not make sense
     this.render();
     this.onChange();
   }
@@ -318,7 +326,7 @@ export class Workspace {
 
     if (palette) {
       origin = this.toWorld(palette.rect.left, palette.rect.top);
-      carried = { x: origin.x, y: origin.y, blocks: [newBlock(palette.op)] };
+      carried = { x: origin.x, y: origin.y, blocks: [palette.make()] };
       this.project.stacks.push(carried);
     } else if (this.pointer.duplicate) {
       // Shift-drag: carry a copy of the whole stack. It starts right on top of
@@ -327,6 +335,7 @@ export class Workspace {
       origin = { x: source.x, y: source.y };
       carried = { x: source.x, y: source.y, blocks: source.blocks.map(cloneBlock) };
       this.project.stacks.push(carried);
+      uniquifyDefinition(this.project, carried);
     } else {
       // A press on a number box picks up the block the number belongs to.
       const node = entry.type === 'literal' ? entry.owner : entry.node;
@@ -599,6 +608,56 @@ export class Workspace {
       if (event.key === 'Escape') finish(false);
     });
     area.addEventListener('blur', () => finish(true));
+  }
+
+  // ---- Typing the name of a block you make, or of one of its inputs --------
+
+  /**
+   * Put a text box over a name box on a `to` block. Enter or clicking away
+   * keeps what was typed, and Escape cancels. The first box is the block's
+   * name and the others are its inputs: emptying an input takes it away, and
+   * typing in the dashed one adds an input. If the name will not do (too long,
+   * odd characters, already taken) nothing changes and the student is told why.
+   */
+  editName(entry) {
+    const hat = entry.node.block;
+    const box = entry.node.nameSlots[entry.index].el.getBoundingClientRect();
+    const stageBox = this.stage.getBoundingClientRect();
+    const isName = entry.index === 0;
+    const input = document.createElement('input');
+    input.className = 'number-input';
+    input.type = 'text';
+    input.maxLength = isName ? NAME_MAX : INPUT_MAX;
+    input.value = entry.slot.text;
+    input.setAttribute('aria-label', isName ? 'Name of this block' : 'Name of an input');
+    input.style.left = `${box.left - stageBox.left}px`;
+    input.style.top = `${box.top - stageBox.top}px`;
+    input.style.width = `${Math.max(box.width, 96)}px`;
+    input.style.height = `${box.height}px`;
+    this.stage.append(input);
+    input.focus();
+    input.select();
+
+    let finished = false;
+    const finish = (keep) => {
+      if (finished) return;
+      finished = true;
+      const text = input.value;
+      input.remove();
+      if (!keep || text.trim() === entry.slot.text) return;
+      const result = isName ? renameDefinition(this.project, hat, text) : setInput(this.project, hat, entry.index - 1, text);
+      if (!result.ok) {
+        this.onMessage(result.error);
+        return;
+      }
+      this.render();
+      this.onChange();
+    };
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') finish(true);
+      else if (event.key === 'Escape') finish(false);
+    });
+    input.addEventListener('blur', () => finish(true));
   }
 
   // ---- Typing a number ---------------------------------------------------

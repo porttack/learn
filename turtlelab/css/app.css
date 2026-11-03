@@ -148,7 +148,8 @@ body {
   cursor: grab;
 }
 
-.workspace .node.literal { cursor: text; }
+.workspace .node.literal,
+.workspace .node.nameslot { cursor: text; }
 
 .block-text {
   font-family: Roboto, system-ui, sans-serif;

@@ -417,6 +417,60 @@ export const BLOCKS = {
 };
 
 // ---- My Blocks: boxes ---------------------------------------------------
+// ---- Blocks you make yourself ----------------------------------------------
+// A stack that starts with a `to` block is the DEFINITION of a block: its name and
+// inputs are typed on the hat, and the blocks under it are what it does. Using
+// it is a `call` block, and an `input` block hands back the number that was
+// given. These three are not fixed like the others: a call's label and sockets
+// come from the names stored in the block itself (see specOf), and the call and
+// input blocks are shown in the palette once a definition exists.
+BLOCKS.to = {
+  palette: 'myblocks',
+  kind: 'hat',
+  label: 'to',
+  args: [],
+  defines: true,
+  help: 'Makes a block of your own. Type its name, and add up to two inputs. Put blocks under it for what it does, then find your new block in this palette.',
+};
+BLOCKS.call = {
+  palette: 'myblocks',
+  kind: 'command',
+  label: 'call',
+  args: [],
+  dynamic: true,
+  help: 'Runs a block you made.',
+};
+BLOCKS.input = {
+  palette: 'myblocks',
+  kind: 'reporter',
+  label: 'input',
+  args: [],
+  dynamic: true,
+  help: 'The number this input was given. It only works inside the block that has it.',
+};
+
+/**
+ * The spec that goes with a block. For most blocks that is just BLOCKS[op].
+ * A block you made yourself is drawn from the names stored in it: a call is
+ * labelled with the name and has a socket for each input, and an input is
+ * labelled with its name.
+ */
+export function specOf(block) {
+  if (block.op === 'call') {
+    const params = Array.isArray(block.params) ? block.params : [];
+    return {
+      ...BLOCKS.call,
+      label: block.name ?? '',
+      args: params.map((label) => ({ label, default: 100 })),
+      help: `Runs your block ${block.name ?? ''}. ${params.length > 0 ? 'Type a number for each input.' : ''}`.trim(),
+    };
+  }
+  if (block.op === 'input') {
+    return { ...BLOCKS.input, label: block.name ?? '', help: `The number given to the input ${block.name ?? ''}. It only works inside the block that has it.` };
+  }
+  return BLOCKS[block.op];
+}
+
 // A box holds one number so you can use it later. It is a variable. There are
 // three of them, each with a block that stores a number in it (store1, store2,
 // store3) and a block that reports what is in it (box1, box2, box3). They are

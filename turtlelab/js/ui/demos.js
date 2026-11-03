@@ -10,6 +10,13 @@
 const b = (op, ...args) => ({ op, args });
 const repeat = (n, ...body) => ({ op: 'repeat', args: [n], body });
 
+// A demo is a list of blocks (one stack), or { stacks: [...] } for several: a block
+// you make is a stack of its own, and so is the program that calls it.
+const to = (name, params, ...body) => ({ x: 90, y: 70, blocks: [{ op: 'to', name, params }, ...body] });
+const program = (...blocks) => ({ x: 420, y: 70, blocks: [b('start'), b('clean'), ...blocks] });
+const call = (name, params, ...args) => ({ op: 'call', name, params, args });
+const input = (name) => ({ op: 'input', name });
+
 export const DEMOS = {
   square: [b('start'), b('clean'), repeat(4, b('forward', 150), b('right', 90))],
   flower: [
@@ -97,6 +104,28 @@ export const DEMOS = {
   slowdown: [b('start'), b('clean'), b('speed', 1), b('forward', 30), b('forward', 30), b('forward', 30), b('forward', 30)],
   // Slow, then instant: fifty slow steps would take 25 seconds, so finishing quickly proves the switch.
   speedup: [b('start'), b('clean'), b('speed', 1), b('forward', 30), b('speed', 4), repeat(50, b('forward', 2))],
+  // A block of your own with an input: a square of any size, used twice. Ends 120 up and 50 to the right.
+  squarefn: {
+    stacks: [
+      to('square', ['size'], repeat(4, b('forward', input('size')), b('right', 90))),
+      program(call('square', ['size'], 70), call('square', ['size'], 50)),
+    ],
+  },
+  // A block that calls itself, with a way to stop: a circle made 360 times over (depth 360).
+  circlefn: {
+    stacks: [
+      to('circle', ['n'], { op: 'if', args: [b('greater', input('n'), 0)], body: [b('forward', 1), b('right', 1), call('circle', ['n'], b('subtract', input('n'), 1))] }),
+      program(call('circle', ['n'], 360)),
+    ],
+  },
+  // A block that calls itself with no way to stop: the run ends with a friendly message.
+  forevercall: { stacks: [to('again', [], b('forward', 1), call('again', [])), program(call('again', []))] },
+  // A call to a block that is not there.
+  ghostcall: { stacks: [program(call('ghost', []))] },
+  // Two blocks with the same name.
+  twinblocks: { stacks: [to('twin', [], b('forward', 10)), { ...to('Twin', [], b('forward', 20)), y: 250 }, program(call('twin', []))] },
+  // Stop inside a block of your own only leaves that block.
+  stopinside: { stacks: [to('quit', [], b('forward', 10), { op: 'stop', args: [] }, b('forward', 1000)), program(call('quit', []), b('forward', 5))] },
   // Prints a calculation.
   printing: [
     b('start'),

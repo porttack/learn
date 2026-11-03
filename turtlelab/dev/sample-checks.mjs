@@ -45,7 +45,7 @@ const inkOnPaper = () =>
 const layout = () =>
   chrome.eval(`(() => {
     const rect = (el) => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom }; };
-    const stacks = [...document.querySelectorAll('.workspace .stack')].map((el) => ({ ...rect(el), note: !!el.querySelector('.node.note') }));
+    const stacks = [...document.querySelectorAll('.workspace .stack')].map((el) => ({ ...rect(el), note: !!el.querySelector('.node.note'), definition: !!el.querySelector('.node.nameslot') }));
     return { stacks, viewport: { width: innerWidth, height: innerHeight } };
   })()`);
 
@@ -56,12 +56,16 @@ try {
     const finished = await finishRun();
     const { stacks, viewport } = await layout();
     const note = stacks.find((s) => s.note);
-    const program = stacks.find((s) => !s.note);
-    check(`${sample.id}: opens with its note and its program, and runs by itself`, finished && stacks.length === 2 && !!note && !!program && (await inkOnPaper()) > 100,
+    const program = stacks.find((s) => !s.note && !s.definition);
+    const made = stacks.filter((s) => s.definition);
+    check(`${sample.id}: opens with its note, its program and the blocks it makes, and runs by itself`,
+      finished && stacks.length === 2 + (sample.defines?.length ?? 0) && made.length === (sample.defines?.length ?? 0) && !!note && !!program && (await inkOnPaper()) > 100,
       `${stacks.length} stacks, ${await inkOnPaper()} pixels of ink`);
-    check(`${sample.id}: the note is above the program, and both fit on a 1366 by 700 screen`,
-      !!note && !!program && note.bottom <= program.top && note.left >= 60 && program.bottom <= viewport.height - 4 && program.right <= viewport.width,
-      program ? `note ends ${Math.round(note.bottom)}, program ${Math.round(program.top)} to ${Math.round(program.bottom)} of ${viewport.height}` : 'no program');
+    check(`${sample.id}: the note is above the program, and everything fits on a 1366 by 700 screen`,
+      !!note && !!program && note.bottom <= program.top && note.left >= 60 && stacks.every((s) => s.bottom <= viewport.height - 4 && s.right <= viewport.width),
+      program ? `note ends ${Math.round(note.bottom)}, program ${Math.round(program.top)} to ${Math.round(program.bottom)}, lowest ${Math.round(Math.max(...stacks.map((s) => s.bottom)))} of ${viewport.height}` : 'no program');
+    check(`${sample.id}: the blocks do not sit on top of each other`,
+      stacks.every((a, i) => stacks.every((c, j) => i >= j || a.right <= c.left + 1 || c.right <= a.left + 1 || a.bottom <= c.top + 1 || c.bottom <= a.top + 1)));
     check(`${sample.id}: the note is shown whole, not cut off with ...`,
       await chrome.eval(`![...document.querySelectorAll('.workspace .node.note tspan')].some((t) => t.textContent.endsWith('...'))`));
     check(`${sample.id}: the message names the sample and says it is not saved`,

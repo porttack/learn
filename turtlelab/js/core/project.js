@@ -16,12 +16,15 @@
 //
 // A block is { op, args?, body? }. Each entry in `args` is a number, null
 // (an empty socket), or another block that reports a value. `body` holds the
-// blocks inside a clamp block such as repeat.
+// blocks inside a clamp block such as repeat. Blocks a student makes are a
+// stack that starts with { op: 'to', name, params } and calls to it,
+// { op: 'call', name, params, args } (see definitions.js).
 //
 // The "app" name is the file format's name. It stays the same even if the
 // app is renamed, so old saved pictures keep opening.
 
 import { BLOCKS, BODY_KEYS, NOTE_MAX_CHARS, isKnownOp, mouthCount } from './blocks-spec.js';
+import { INPUT_MAX, MAX_INPUTS, NAME_MAX, cleanName, nameKey } from './names.js';
 
 export const FORMAT_ID = 'porttack-turtle';
 export const FORMAT_VERSION = 1;
@@ -69,7 +72,9 @@ export function validateProject(data) {
  * ("Topmost" means the smallest y, and the smallest x breaks a tie.) If
  * there is no start block anywhere, it runs the topmost stack of commands
  * instead, so pressing Run always does something sensible with what is on
- * the page. A lone reporter (like x) is not a program, so it never counts.
+ * the page. A lone reporter (like x) is not a program, so it never counts,
+ * and neither is a definition (a stack that starts with `to`): it only
+ * says what a block does, and runs when something calls it.
  *
  * Returns { stack, startCount }. `stack` is null when there is nothing to
  * run, and `startCount` is how many start blocks there are, so the editor
@@ -82,7 +87,7 @@ export function findRunStack(project) {
   let startCount = 0;
   for (const stack of project.stacks) {
     const first = stack.blocks[0];
-    if (!first || BLOCKS[first.op].kind === 'note') continue; // a note is not a program
+    if (!first || BLOCKS[first.op].kind === 'note' || first.op === 'to') continue; // notes and definitions are not programs
     if (first.op === 'start') {
       startCount += 1;
       if (higher(stack, topStart)) topStart = stack;
@@ -152,6 +157,15 @@ function cleanBlock(block, depth) {
     if (!Array.isArray(block.args)) throw new ProjectError('A block in this file is damaged.');
     clean.args = block.args.map((arg) => cleanArg(arg, depth + 1));
   }
+  // Blocks a student made keep their own name, and calls keep the names of the inputs too.
+  if (block.op === 'to' || block.op === 'call') {
+    clean.name = cleanName(block.name, NAME_MAX, 'myblock');
+    clean.params = cleanParams(block.params);
+  }
+  if (block.op === 'input') clean.name = cleanName(block.name, INPUT_MAX, 'input');
+  if (block.op === 'to' || block.op === 'input') delete clean.args; // these have no sockets
+  // A call has one socket for each input, no more and no fewer.
+  if (block.op === 'call') clean.args = clean.params.map((_, i) => cleanArg(block.args?.[i] ?? null, depth + 1));
   // The blocks inside each mouth. Only a block that has that mouth can hold them
   // (so an else list on a block that has no else is quietly dropped).
   const mouths = mouthCount(BLOCKS[block.op]);
@@ -161,6 +175,16 @@ function cleanBlock(block, depth) {
     clean[key] = block[key].map((inner) => cleanBlock(inner, depth + 1));
   });
   return clean;
+}
+
+/** The names of a block's inputs: at most two, each a good name, none repeated. */
+function cleanParams(value) {
+  const params = [];
+  for (const item of Array.isArray(value) ? value : []) {
+    const name = cleanName(item, INPUT_MAX, '');
+    if (name !== '' && !params.some((other) => nameKey(other) === nameKey(name)) && params.length < MAX_INPUTS) params.push(name);
+  }
+  return params;
 }
 
 /** The words on a note: text only, with no control characters, and not too long. */

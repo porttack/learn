@@ -406,7 +406,7 @@ try {
   const readoutText = () => chrome.eval(`document.querySelector('.boxes-readout').textContent.replace(/\\s+/g, ' ').trim()`);
   check('the boxes readout stays hidden until a box is used', await readoutHidden());
   await openPalette('My Blocks');
-  check('My Blocks lists the six box blocks', (await count('.flyout .stack')) === 6);
+  check('My Blocks lists the to block and the six box blocks', (await count('.flyout .stack')) === 7);
   await dragFromPalette('store1', 450, 150);
   check('the readout appears once a box block is on the page', !(await readoutHidden()) && (await readoutText()) === 'box1 0 box2 0 box3 0', await readoutText());
 
@@ -725,6 +725,153 @@ try {
   await dragFromPalette('less', 600, 450);
   await tapBlockNamed('<');
   check('tapping a lone < block shows true or false', (await messageText()) === 'Answer: false', await messageText());
+
+  // ---- Blocks you make yourself (functions) -----------------------------------------------------
+  const typeAndEnter = async (text) => {
+    await chrome.sleep(100);
+    await chrome.send('Input.insertText', { text });
+    await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+    await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+    await chrome.sleep(120);
+  };
+  /** The little name boxes on `to` blocks, as { text, empty, rect }. */
+  const nameSlots = () =>
+    chrome.eval(`[...document.querySelectorAll('.workspace .node.nameslot')].map((n) => ({ text: n.textContent.trim(), rect: (${rectJs})(n) }))`);
+  const clickSlot = async (index) => {
+    const slot = (await nameSlots())[index];
+    await chrome.click(slot.rect.left + slot.rect.w / 2, slot.rect.top + slot.rect.h / 2);
+  };
+  const flyoutTexts = () => chrome.eval(`[...document.querySelectorAll('.flyout .stack')].map((s) => s.dataset.op + ':' + s.textContent.replace(/\\s+/g, ''))`);
+  const errorCount = () => count('.workspace .error');
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('My Blocks');
+  check('the My Blocks palette starts with a to block and the boxes, and no calls yet',
+    (await count('.flyout .stack')) === 7 && (await flyoutTexts())[0].startsWith('to:to') && (await count('.flyout .stack[data-op=call]')) === 0, (await flyoutTexts()).join(' '));
+
+  await dragFromPalette('to', 450, 150);
+  check('a to block lands as a stack of its own, with boxes for its name and for adding an input',
+    (await stacks()) === 1 && (await nameSlots()).map((x) => x.text).join('|') === 'myblock|input', (await nameSlots()).map((x) => x.text).join('|'));
+
+  await clickSlot(0);
+  await typeAndEnter('go');
+  check('typing in the first box names the block', (await nameSlots())[0].text === 'go', (await nameSlots())[0].text);
+  const afterName = await flyoutTexts();
+  check('and a call to it appears in the palette at once', afterName.some((t) => t === 'call:go'), afterName.join(' '));
+
+  await clickSlot(1);
+  await typeAndEnter('distance');
+  check('typing in the dashed box adds an input, and a new dashed box follows', (await nameSlots()).map((x) => x.text).join('|') === 'go|distance|input', (await nameSlots()).map((x) => x.text).join('|'));
+  const afterInput = await flyoutTexts();
+  check('the palette now has a call with a socket, and an input block to use inside', afterInput.some((t) => t.startsWith('call:go') && t.includes('distance')) && afterInput.includes('input:distance'), afterInput.join(' '));
+  check('the call in the palette comes out with a number socket', await chrome.eval(`document.querySelectorAll('.flyout .stack[data-op=call] .node.literal').length === 1`));
+
+  const hatRect = await nodeRect('to');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', hatRect.left + 6, hatRect.bottom + 4);
+  check('a block snaps under the to block: it is part of what the block does', (await stacks()) === 1 && (await count(BLOCK_NODES)) === 2);
+  const forwardSocket2 = await literalRect(0);
+  await openPalette('My Blocks');
+  await dragFromPalette('input', forwardSocket2.left + 2, forwardSocket2.top + 2);
+  check('the input block plugs into forward like any number block', (await count('.workspace .node.reporter')) === 1 && (await count('.workspace .node.literal')) === 0);
+
+  await openPalette('Flow');
+  await dragFromPalette('start', 450, 420);
+  const startRect = await nodeRect('start');
+  await openPalette('My Blocks');
+  await dragFromPalette('call', startRect.left + 6, startRect.bottom + 4);
+  check('the call snaps under Start', (await stacks()) === 2 && (await count('.workspace .node.command')) === 2);
+  const callSocket = await literalRect(0);
+  await chrome.click(callSocket.left + callSocket.w / 2, callSocket.top + callSocket.h / 2);
+  await typeAndEnter('60');
+  await pressRun();
+  check('running goes forward by the number given to the call', near(await stepsUp(), 60 * scale, 3), `${(await stepsUp()).toFixed(1)}px up, expected ${(60 * scale).toFixed(1)}`);
+
+  const upAfterFirst = await stepsUp();
+  await clickSlot(0);
+  await typeAndEnter('jump');
+  check('renaming the block renames the call to it', await chrome.eval(`[...document.querySelectorAll('.workspace .node.command')].some((n) => n.textContent.includes('jump'))`));
+  check('and the palette follows', (await flyoutTexts()).some((t) => t.startsWith('call:jump')));
+  await pressRun();
+  check('the renamed call still runs the block', near((await stepsUp()) - upAfterFirst, 60 * scale, 3), `${((await stepsUp()) - upAfterFirst).toFixed(1)}px more`);
+
+  const hatNow = await nodeRect('to');
+  const nav = await chrome.centerOf('.palette-button[title="Turtle"]');
+  await chrome.drag({ x: hatNow.left + 10, y: hatNow.top + hatNow.h / 2 }, { x: nav.x, y: nav.y }, 10);
+  await chrome.sleep(100);
+  check('dropping the to block on the palette deletes the block and its blocks', (await stacks()) === 1 && (await count('.workspace .node.nameslot')) === 0);
+  await pressRun();
+  check('the call that is left says the block is gone, and is outlined', /There is no block called jump/.test(await messageText()) && (await errorCount()) === 1, await messageText());
+  await clickButton('undo');
+  check('Undo brings the block back', (await stacks()) === 2 && (await count('.workspace .node.nameslot')) === 3);
+  await pressRun();
+  check('and the call works again', (await messageText()) === '' && (await errorCount()) === 0, await messageText());
+
+  // Names that will not do are refused, and the student is told why.
+  await clickSlot(0);
+  await typeAndEnter('no-dashes');
+  check('a name with odd characters is refused with a reason, and the old name stays', /letters, numbers/.test(await messageText()) && (await nameSlots())[0].text === 'jump', await messageText());
+  await clickSlot(1);
+  await chrome.sleep(100);
+  check('the name box will not take more letters than a name can have, so a name is never too long to type',
+    (await chrome.eval(`document.querySelector('.number-input').maxLength`)) === 10);
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.sleep(100);
+  check('Escape leaves the name as it was', (await nameSlots())[1].text === 'distance' && (await count('.number-input')) === 0);
+  await clickSlot(2);
+  await typeAndEnter('DISTANCE');
+  check('a second input with the same name is refused', /already has an input/.test(await messageText()), await messageText());
+
+  // Autosave keeps the blocks you made, and a reload brings them back.
+  await chrome.sleep(600);
+  const keptText = await chrome.eval(`localStorage.getItem('turtlelab-project')`);
+  check('autosave keeps the block you made', /"op":"to"/.test(keptText ?? '') && /"name":"jump"/.test(keptText ?? ''));
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  check('after a reload the block is back, and so is its call in the palette',
+    (await count('.workspace .node.nameslot')) === 3 && (await nameSlots())[0].text === 'jump' && (await (async () => { await openPalette('My Blocks'); return (await flyoutTexts()).some((t) => t.startsWith('call:jump')); })()));
+
+  // A block with no name clash: tapping it explains itself, and copies get a name of their own.
+  await chrome.goto(BASE + '?demo=squarefn&speed=instant');
+  const squareHat = await nodeRect('to');
+  await chrome.click(squareHat.left + 14, squareHat.top + squareHat.h / 2 + 4);
+  await chrome.sleep(150);
+  check('tapping a to block says what it is, and draws nothing', /block you made/.test(await messageText()) && near(await stepsUp(), 0, 2), await messageText());
+  const hatBox = await nodeRect('to');
+  await chrome.drag({ x: hatBox.left + 14, y: hatBox.top + hatBox.h / 2 + 4 }, { x: hatBox.left + 200, y: hatBox.top + 330 }, 8, { modifiers: SHIFT });
+  await chrome.sleep(150);
+  check('copying a block you made gives the copy a name of its own, so there are never two the same',
+    (await nameSlots()).map((x) => x.text).filter((t) => /^square/.test(t)).sort().join() === 'square,square2', (await nameSlots()).map((x) => x.text).join('|'));
+  check('and the copy is ready to use: its call is in the palette', await (async () => { await openPalette('My Blocks'); return (await flyoutTexts()).filter((t) => t.startsWith('call:square')).length === 2; })());
+
+  // The demos: each ends the way it should, in the real browser.
+  await chrome.goto(BASE + '?demo=squarefn&speed=instant');
+  await pressRun();
+  check('two squares from one block: it runs, draws, and ends where it began', (await messageText()) === '' && near(await stepsUp(), 0, 2));
+  await chrome.goto(BASE + '?demo=circlefn&speed=instant');
+  await pressRun();
+  const circleDone = (await timeRun(6000)) !== null;
+  check('a block that calls itself 360 deep runs to the end (a circle), with no message', circleDone && (await messageText()) === '', await messageText());
+  await chrome.goto(BASE + '?demo=stopinside&speed=instant');
+  await pressRun();
+  check('stop inside a block only leaves that block: 10 then the 5 after it', near(await stepsUp(), 15 * scale, 3), `${(await stepsUp()).toFixed(1)}px up, expected ${(15 * scale).toFixed(1)}`);
+  await chrome.goto(BASE + '?demo=forevercall&speed=instant');
+  await pressRun();
+  const runaway = await timeRun(6000);
+  check('a block that calls itself forever ends with a friendly message and one outlined block', runaway !== null && /called itself more than \d+ times\. Does it have a way to stop\?/.test(await messageText()) && (await errorCount()) === 1, await messageText());
+  await chrome.goto(BASE + '?demo=ghostcall&speed=instant');
+  await pressRun();
+  check('a call to a block that is not there says so', /There is no block called ghost/.test(await messageText()) && (await errorCount()) === 1, await messageText());
+  await chrome.goto(BASE + '?demo=twinblocks&speed=instant');
+  await pressRun();
+  check('two blocks with the same name: Run says so before running, and outlines the second', /Two of your blocks are both called Twin/.test(await messageText()) && (await errorCount()) === 1 && near(await stepsUp(), 0, 2), await messageText());
+
+  // The Run button on a page with only blocks you made.
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('My Blocks');
+  await dragFromPalette('to', 450, 200);
+  await pressRun();
+  check('with only a to block on the page, Run says to add a Start and a call', /Start block.*call to the block you made/.test(await messageText()), await messageText());
 
   // ---- Zoom and pan -----------------------------------------------------------------------------
   await chrome.goto(BASE + '?demo=square&speed=instant');

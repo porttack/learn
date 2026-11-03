@@ -76,6 +76,8 @@ the dashes out of them too for consistency.
       history.js      undo and redo (whole-project snapshots)
       view.js         pan and zoom maths
       color.js        RGB 0-255
+      names.js        what a name for a block or input may be (letters, numbers, _, spaces)
+      definitions.js  blocks you make yourself: find them, rename them, keep calls in step
       project.js      project JSON: validate, find the Run stack
       png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
       project-file.js put a project inside a PNG, and read a PNG or .json back
@@ -99,14 +101,16 @@ the dashes out of them too for consistency.
 
 ## Samples
 
-`js/ui/samples.js` holds the student samples (13 now, easiest first), each
+`js/ui/samples.js` holds the student samples (16 now, easiest first), each
 with `id`, `title`, `summary`, `look` (the picture's alt text), `concepts`
 (little tags), `note` (a sticky note, at most 250 characters so it is not cut
-off) and `program`. They are different from `demos.js`, which is for the
+off), `program` and optionally `defines` (blocks the sample makes). They are different from `demos.js`, which is for the
 checks. All wording is student-facing, so no dashes and no grade level.
 
 - **`?sample=square`** loads the note and the program down the left edge
-  (note on top; `sampleStacks`), zooms out until it fits the window
+  (note on top; `sampleStacks`). A sample with `defines` puts those down the
+  left and moves the note and program to the right edge, so the blocks stay out
+  of the middle of the page where the drawing is, zooms out until it fits the window
   (`workspace.fitHeight`, never below 0.6), and runs it. `&autorun=0` loads
   without running. An unknown or odd id (`toString`, `<img...>`) says so in a
   message and starts the normal way. The reset-view button brings full size back.
@@ -130,6 +134,45 @@ checks. All wording is student-facing, so no dashes and no grade level.
   fits a 1366 by 700 window with the note above it.
 - The toolbar and the Guide link to `samples.html`; each card on it is one
   link containing the picture, title and "Open in TurtleLab".
+
+## Blocks you make yourself (functions)
+
+A stack that starts with a `to` block IS the definition: `{ op: 'to', name,
+params }`, and the blocks under it are what it does. Nothing else is stored, so
+saving, undo, autosave, copying and deleting work with no extra code. Using it
+is `{ op: 'call', name, params, args }`; `{ op: 'input', name }` hands back a
+number the call was given. The fixed table `BLOCKS` stays fixed: `to`, `call`
+and `input` are generic entries (`call` and `input` have `dynamic: true`), and
+`specOf(block)` in blocks-spec.js builds the real spec from the names stored in
+the block. Use `specOf(block)`, never `BLOCKS[block.op]`, anywhere a call or an
+input could appear.
+
+- **Calls hold copies of the name and input names**, so a call can be drawn and
+  still makes sense after its definition is deleted (it says "There is no block
+  called x" when run). That means a change to a definition must change every
+  call: `renameDefinition`, `setInput` and `syncCalls` in definitions.js do that
+  (and rename the input blocks inside the definition). Names are unique ignoring
+  capitals (`nameKey`); two definitions with one name is refused when typing,
+  fixed on copy (`uniquifyDefinition`: square becomes square2), and reported at
+  Run if a file somehow has two.
+- **The `to` hat's boxes are not sockets.** They live in `node.nameSlots`, apart
+  from `node.args` (the snapping code treats every arg as a socket for blocks),
+  with their own click entry type `nameslot`. The dashed box adds an input (at
+  most two); emptying one removes it. `workspace.editName` is the typing overlay.
+- **Running.** `findRunStack` never picks a definition. `main.js` collects
+  `definitionsOf(project)` at each Run into `ctx.definitions`; a `call` pushes a
+  frame (`ctx.frames`) holding its inputs, runs the body, pops in a `finally`.
+  `stop` in a body only leaves that block (the call swallows STOP).
+- **Depth.** Blocks inside blocks are generators inside generators, and V8 takes
+  only about 4,400 of them, so deep recursion used to crash. `runBlocks` now
+  dispatches without a generator layer for commands, and `MAX_CALL_DEPTH` is
+  500 (a unit test runs 499 deep with an if and a repeat around each call).
+  Past what fits, a `RangeError` is turned into a friendly message in `main.js`
+  (proved in real Chrome by lifting the limit). Measure again before raising it.
+- **Palette.** My Blocks lists the `to` block, the boxes, then a call (and its
+  input blocks) for every definition. `PaletteUI.entriesFor` builds entries with
+  a `make()`, so a flyout block is made fresh when dragged; `refresh()` redraws
+  the open flyout and `main.js` calls it after every change to the project.
 
 ## Key design decisions
 
@@ -200,7 +243,7 @@ checks. All wording is student-facing, so no dashes and no grade level.
   The Pen palette puts all four readers at the bottom, like the Turtle
   palette.
 - **Flow.** `start` (hat), `repeat`, `forever`, `if`, `ifelse`, `wait`, `speed`, `stop`. `stop`
-  ends the whole program (inside a My Block it will leave just that block):
+  ends the whole program (inside a block you made it leaves just that block):
   it has a tail, so nothing snaps below it, and it cannot go on top of a stack.
   `forever` and every loop yield each lap, so none can freeze the tab.
   `wait` takes tenths of a second and is **real time even at Instant speed**;
@@ -323,9 +366,9 @@ wheel, drag and pinch, Shift-drag and press-and-hold copying, help bubble).
 **d** (the rest of Flow: forever, if, if else, wait, stop; the Math palette; yes-or-no
 shapes; print). **c** (Save as PNG with the blocks inside, Open, drag and drop,
 New, autosave). The public pages (About, Privacy, Guide) are done (they go live when `learn` is pushed).
-Also done: **if else** (a block with two mouths) and **13 samples** with a
-Samples page. Not yet: the `to` block that makes your own blocks (e); SVG export
-for laser cutters and plotters (f).
+Also done: **if else** (a block with two mouths), **16 samples** with a Samples
+page, and **blocks you make yourself** (e: functions, see below). Not yet: SVG
+export for laser cutters and plotters (f).
 
 Unknown: the teacher's second screenshot of another app's Flow palette showed
 two blocks with dots and an arrow that are not in the brief. Ask what they

@@ -3,7 +3,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { runBlocks, createContext, RunError, Wait } from '../js/core/interpreter.js';
+import { runBlocks, createContext, RunError, Wait, MAX_CALL_DEPTH } from '../js/core/interpreter.js';
+import { definitionsOf } from '../js/core/definitions.js';
 import { Turtle } from '../js/core/turtle.js';
 import { BLOCKS } from '../js/core/blocks-spec.js';
 
@@ -118,6 +119,7 @@ test('every block in the spec runs with the values it comes with', () => {
   // A yes-or-no socket cannot be left empty, so give those a real condition.
   const condition = { op: 'equal', args: [0, 0] };
   for (const [op, spec] of Object.entries(BLOCKS)) {
+    if (spec.dynamic) continue; // call and input mean nothing without a definition; the function tests below cover them
     const args = spec.args.map((arg) => (arg.type === 'boolean' ? condition : arg.default));
     if (spec.kind === 'reporter') {
       // A yes-or-no reporter goes in an if, a number reporter in a forward.
@@ -500,4 +502,154 @@ test('the speed can come from a calculation or a box, and it takes one step like
 test('a speed block with nothing plugged in says so, and without a listener it does nothing', () => {
   assert.throws(() => runWith([{ op: 'speed', args: [null] }]), (e) => e instanceof RunError);
   assert.doesNotThrow(() => runWith([block('speed', 4)]), 'tests and tools that give no setSpeed are fine');
+});
+
+// ---- Blocks you make yourself ----------------------------------------------------------------------
+
+const to = (name, params, ...body) => ({ x: 0, y: 0, blocks: [{ op: 'to', name, params }, ...body] });
+const callTo = (name, params, ...args) => ({ op: 'call', name, params, args });
+const input = (name) => ({ op: 'input', name });
+
+/** Run `main` in a project that also holds these definition stacks. */
+function runWithBlocks(definitions, main, extra = {}) {
+  const turtle = new Turtle();
+  const { map } = definitionsOf({ stacks: definitions });
+  const context = createContext({ turtle, definitions: map, ...extra });
+  const steps = [...runBlocks(main, context)];
+  return { turtle, steps, context };
+}
+
+test('a call runs the blocks under the to block, and the to block itself does nothing', () => {
+  const { turtle, steps } = runWithBlocks([to('square', [], repeat(4, forwardBy(100), block('right', 90)))], [callTo('square', [])]);
+  assert.equal(turtle.reportedX, 0);
+  assert.equal(turtle.reportedY, 0);
+  assert.equal(turtle.ops.filter((o) => o.type === 'line').length, 4);
+  assert.equal(steps[0].op, 'call', 'the call takes a step of its own, so it can be seen');
+});
+
+test('a block with no blocks under it is allowed and does nothing', () => {
+  assert.equal(runWithBlocks([to('empty', [])], [callTo('empty', []), forwardBy(5)]).turtle.y, 5);
+});
+
+test('the numbers given to a call arrive in the input blocks', () => {
+  const defs = [to('go', ['distance', 'turn'], forwardBy(input('distance')), block('right', input('turn')))];
+  const { turtle } = runWithBlocks(defs, [callTo('go', ['distance', 'turn'], 60, 90), callTo('go', ['distance', 'turn'], 10, 0)]);
+  assert.equal(turtle.reportedHeading, 90);
+  assert.equal(turtle.reportedX, 10);
+  assert.equal(turtle.reportedY, 60);
+});
+
+test('a call can be given a calculation or a box, worked out where the call is', () => {
+  const defs = [to('go', ['d'], forwardBy(input('d')))];
+  assert.equal(runWithBlocks(defs, [callTo('go', ['d'], op('add', 10, 5))]).turtle.y, 15);
+  assert.equal(runWithBlocks(defs, [block('store1', 30), callTo('go', ['d'], { op: 'box1' })]).turtle.y, 30);
+});
+
+test('inside a block, an input belongs to that block: a call from inside passes its own on', () => {
+  const defs = [
+    to('inner', ['m'], forwardBy(input('m'))),
+    to('outer', ['n'], callTo('inner', ['m'], op('add', input('n'), 1))),
+  ];
+  assert.equal(runWithBlocks(defs, [callTo('outer', ['n'], 10)]).turtle.y, 11);
+});
+
+test('each call has its own inputs, even when the block calls itself', () => {
+  // triangle numbers: forward n, then the same for n - 1, down to 1
+  const defs = [to('sum', ['n'], ifBlock(op('greater', input('n'), 0), forwardBy(input('n')), callTo('sum', ['n'], op('subtract', input('n'), 1))))];
+  assert.equal(runWithBlocks(defs, [callTo('sum', ['n'], 10)]).turtle.y, 55);
+});
+
+test('input names do not care about capital letters, and neither do block names', () => {
+  const defs = [to('Square', ['Size'], forwardBy(input('size')))];
+  assert.equal(runWithBlocks(defs, [callTo('SQUARE', ['Size'], 7)]).turtle.y, 7);
+});
+
+test('an input used outside the block it belongs to says so, and names the block', () => {
+  const stray = input('size');
+  const error = (() => {
+    try {
+      runWithBlocks([], [forwardBy(stray)]);
+    } catch (e) {
+      return e;
+    }
+  })();
+  assert.ok(error instanceof RunError);
+  assert.equal(error.block, stray);
+  assert.match(error.message, /input size only works inside the block that has it/);
+});
+
+test('an input that belongs to a different block than the one running is the same mistake', () => {
+  const stray = input('size');
+  const defs = [to('a', ['size'], forwardBy(1)), to('b', [], forwardBy(stray))];
+  assert.throws(() => runWithBlocks(defs, [callTo('b', [])]), (e) => e instanceof RunError && e.block === stray);
+});
+
+test('a call to a block that is not there says what to check', () => {
+  const lost = callTo('ghost', []);
+  assert.throws(() => runWithBlocks([], [lost]), (e) => e instanceof RunError && e.block === lost && /no block called ghost.*delete.*name/.test(e.message));
+});
+
+test('a call with an empty socket is an empty box error, like any other block', () => {
+  const defs = [to('go', ['d'], forwardBy(input('d')))];
+  const empty = { op: 'call', name: 'go', params: ['d'], args: [null] };
+  assert.throws(() => runWithBlocks(defs, [empty]), (e) => e instanceof RunError && e.block === empty && /empty box/.test(e.message));
+});
+
+test('stop inside a block only leaves that block, even from inside a loop', () => {
+  const defs = [to('quit', [], forwardBy(1), repeat(5, { op: 'stop', args: [] }, forwardBy(1000)), forwardBy(1000))];
+  assert.equal(runWithBlocks(defs, [callTo('quit', []), forwardBy(10)]).turtle.y, 11);
+});
+
+test('stop outside every block still ends the whole program', () => {
+  assert.equal(runWithBlocks([], [forwardBy(3), { op: 'stop', args: [] }, forwardBy(100)]).turtle.y, 3);
+});
+
+test('a block that calls itself works, as long as it has a way to stop', () => {
+  // a circle by going forward and turning 1 degree, 360 times, written as a block that calls itself
+  const defs = [to('circle', ['n'], ifBlock(op('greater', input('n'), 0), forwardBy(1), block('right', 1), callTo('circle', ['n'], op('subtract', input('n'), 1))))];
+  const { turtle, context } = runWithBlocks(defs, [callTo('circle', ['n'], MAX_CALL_DEPTH - 1)]);
+  assert.equal(turtle.ops.filter((o) => o.type === 'line').length, MAX_CALL_DEPTH - 1);
+  assert.equal(context.frames.length, 0, 'every call has finished');
+});
+
+test('calls nest as deep as the limit allows even inside loops and ifs, without running out of room', () => {
+  // each call sits inside an if and a repeat: the worst a student is likely to write
+  const defs = [to('down', ['n'], ifBlock(op('greater', input('n'), 0), repeat(1, callTo('down', ['n'], op('subtract', input('n'), 1)))))];
+  assert.doesNotThrow(() => runWithBlocks(defs, [callTo('down', ['n'], MAX_CALL_DEPTH - 1)]));
+});
+
+test('a block that calls itself forever stops with a friendly message that names the block and the limit', () => {
+  const again = callTo('forever', []);
+  const { context } = (() => {
+    const turtle = new Turtle();
+    const { map } = definitionsOf({ stacks: [to('forever', [], forwardBy(1), again)] });
+    const ctx = createContext({ turtle, definitions: map });
+    try {
+      [...runBlocks([callTo('forever', [])], ctx)];
+      assert.fail('it should not finish');
+    } catch (e) {
+      assert.ok(e instanceof RunError);
+      assert.equal(e.block, again, 'the call that went too far is outlined');
+      assert.match(e.message, new RegExp(`Your block forever called itself more than ${MAX_CALL_DEPTH} times\\. Does it have a way to stop\\?`));
+    }
+    return { context: ctx };
+  })();
+  assert.equal(context.frames.length, 0, 'the calls are unwound, so a new run starts clean');
+});
+
+test('the same block can be called many times in a row without the depth building up', () => {
+  const defs = [to('dot', [], forwardBy(1))];
+  const { turtle } = runWithBlocks(defs, [repeat(2000, callTo('dot', []))]);
+  assert.equal(turtle.y, 2000);
+});
+
+test('definitions can call each other, and blocks defined later work too', () => {
+  const defs = [to('first', [], callTo('second', [])), to('second', [], forwardBy(9))];
+  assert.equal(runWithBlocks(defs, [callTo('first', [])]).turtle.y, 9);
+});
+
+test('a speed block inside a block you made still reaches the scheduler', () => {
+  const asked = [];
+  runWithBlocks([to('slow', [], block('speed', 1))], [callTo('slow', [])], { setSpeed: (name) => asked.push(name) });
+  assert.deepEqual(asked, ['slow']);
 });

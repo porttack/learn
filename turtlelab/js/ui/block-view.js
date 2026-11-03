@@ -22,7 +22,8 @@
 //   reporter [ plug (its left edge), socket 0, socket 1, ... ]
 
 import { SVG } from './blockfactory.js';
-import { BLOCKS, BODY_KEYS, mouthCount } from '../core/blocks-spec.js';
+import { BODY_KEYS, mouthCount, specOf } from '../core/blocks-spec.js';
+import { MAX_INPUTS } from '../core/names.js';
 import { PALETTE_COLORS, NUMBER_COLORS } from './palette-colors.js';
 import { formatNumber } from '../core/format.js';
 
@@ -70,9 +71,17 @@ const labelLines = (spec) => spec.lines ?? [spec.label];
  * so with `fullSize` they are drawn in the same font as the block's name, and
  * moved down so they still sit in the middle of the band they label.
  */
-function withLabels(markup, lines, argLabels, fullSize = false) {
+function withLabels(markup, lines, argLabels, fullSize = false, labelShift = 0) {
   let out = markup;
   if (lines.length === 1) {
+    // The generator right-aligns the label and the captions beside sockets in the same
+    // place. When they share a row (a block you made), the label steps left to make room.
+    if (labelShift > 0) {
+      out = out.replace(
+        /<tspan x="(-?[\d.]+)" y="(-?[\d.]+)">block_label<\/tspan>/,
+        (all, x, y) => `<tspan x="${Number(x) - labelShift}" y="${y}">block_label</tspan>`,
+      );
+    }
     out = out.replace('block_label', () => escapeXml(lines[0]));
   } else {
     // A label over several lines, centered on the middle of the room the generator
@@ -156,7 +165,9 @@ function makeShape(spec, colors, extra) {
   // beside the mouths, not the sockets, so those are the words to give it.
   const mouthWords = spec.kind === 'clamp' && spec.args[0]?.type === 'boolean';
   const argLabels = mouthWords ? spec.mouthLabels ?? [] : spec.args.map((arg) => arg.label ?? '');
-  return { shape, markup: withLabels(markup, labelLines(spec), argLabels, mouthWords) };
+  const captionWidth = Math.max(0, ...spec.args.map((arg) => textWidth(arg.label ?? '', SMALL_FONT_SIZE)));
+  const labelShift = spec.dynamic && captionWidth > 0 ? captionWidth + 5 : 0;
+  return { shape, markup: withLabels(markup, labelLines(spec), argLabels, mouthWords, labelShift) };
 }
 
 /** How much wider than its minimum a block must be for its labels to fit. */
@@ -167,6 +178,8 @@ function widthNeeded(spec, minimumWidth) {
   // A reporter's label starts about 13 in from its left edge.
   if (spec.kind === 'reporter' && spec.args.length === 0) required = labelWidth + 17;
   else if (spec.kind === 'clamp') required = labelWidth + argLabelWidth + 30;
+  // A block you made is named by its label and its inputs by their captions, side by side.
+  else if (spec.dynamic && argLabelWidth > 0) required = labelWidth + argLabelWidth + 30;
   else required = Math.max(labelWidth, argLabelWidth) + 22;
   return Math.max(spec.kind === 'reporter' && spec.args.length === 0 ? 14 : 0, required - minimumWidth);
 }
@@ -295,6 +308,78 @@ function layoutRow(node, spec, colors) {
   return node;
 }
 
+// ---- The hat of a block you make --------------------------------------------------
+//
+// The `to` hat has the block's name and its inputs typed into little boxes on it:
+//
+//   to [ square ] [ size ] [ input ]
+//
+// The last box (dashed) is for adding an input, and is there only while the block
+// has room for another. They are not sockets: nothing plugs into them, so they are
+// kept in node.nameSlots, apart from node.args, and tapping one types a name.
+
+const NAME_SLOT_HEIGHT = 24;
+const HAT_PAD = 15; // from the left edge to the word "to"
+const HAT_GAP = 6; // between "to" and the first box, and between boxes
+const HAT_END = 12; // after the last box
+
+/**
+ * One little box for a name. `hint` is shown (dashed, faint) when `text` is empty.
+ * The faint box still has a fill: a box with none can only be pressed on its outline.
+ */
+function layoutNameSlot(text, hint, colors) {
+  const empty = text === '';
+  const shown = empty ? hint : text;
+  const fontSize = FONT_SIZE * SCALE;
+  const width = Math.max(44, textWidth(shown) * SCALE + 14);
+  const markup =
+    `<svg xmlns="${SVG_NS}" width="${width + 2}" height="${NAME_SLOT_HEIGHT + 2}">` +
+    `<rect x="1" y="1" width="${width}" height="${NAME_SLOT_HEIGHT}" rx="5" fill="#ffffff"${empty ? ' fill-opacity="0.35"' : ''} stroke="${colors.stroke}" stroke-width="1.5"${empty ? ' stroke-dasharray="4 3"' : ''}/>` +
+    `<text class="block-text" font-size="${fontSize}" fill="${empty ? '#7a6a00' : '#282828'}" text-anchor="middle" x="${1 + width / 2}" y="${1 + NAME_SLOT_HEIGHT / 2 + fontSize * 0.35}">${escapeXml(shown)}</text>` +
+    `</svg>`;
+  return { id: nextId++, text, empty, markup, w: width + 2, h: NAME_SLOT_HEIGHT + 2 };
+}
+
+/** Finish the layout of a `to` block: a hat with the word "to" and a box for its name and each input. */
+function layoutDefinitionHat(node, spec, colors) {
+  const params = node.block.params ?? [];
+  const slots = [layoutNameSlot(node.block.name ?? '', 'name', colors), ...params.map((param) => layoutNameSlot(param, '', colors))];
+  if (params.length < MAX_INPUTS) slots.push(layoutNameSlot('', 'input', colors));
+
+  const fontSize = FONT_SIZE * SCALE;
+  const toWidth = textWidth('to') * SCALE;
+  const contentWidth = HAT_PAD + toWidth + slots.reduce((sum, slot) => sum + HAT_GAP + slot.w, 0) + HAT_END;
+
+  // The hat's own outline, widened to hold everything. Its own label is left blank:
+  // "to" is drawn here, so the boxes can follow it.
+  const blank = { ...spec, label: '' };
+  const extra = { x: 0, ys: [], mouths: [] };
+  extra.x = Math.max(0, (contentWidth - makeShape(blank, colors, extra).shape.getWidth()) / SCALE);
+  const made = makeShape(blank, colors, extra);
+
+  // The generator puts a label's baseline in the middle of the block's body. Line "to"
+  // and the boxes up with that, so they sit below the hat's cap.
+  const baseline = Number(made.markup.match(/<tspan x="-?[\d.]+" y="(-?[\d.]+)"><\/tspan>/)?.[1] ?? 14) * SCALE;
+  const boxTop = baseline - fontSize * 0.35 - (NAME_SLOT_HEIGHT + 2) / 2;
+  let x = HAT_PAD + toWidth;
+  node.nameSlots = slots.map((slot) => {
+    x += HAT_GAP;
+    const placed = { slot, dx: x, dy: boxTop };
+    x += slot.w;
+    return placed;
+  });
+  const word = `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${HAT_PAD}" y="${baseline}">to</text>`;
+  node.markup = made.markup.replace(/<\/svg>\s*$/, `${word}</svg>`);
+  node.w = made.shape.getWidth();
+  node.h = made.shape.getHeight();
+  node.docks = made.shape.docks;
+  node.slot = node.docks[0];
+  node.tab = node.docks[node.docks.length - 1];
+  node.mouths = [];
+  node.argPos = [];
+  return node;
+}
+
 // ---- Sticky notes --------------------------------------------------------------
 //
 // A note is a pale yellow square with a folded corner and the words wrapped
@@ -385,7 +470,7 @@ function layoutNote(node, spec, colors) {
  * until placeNode() makes them absolute.
  */
 export function layoutBlock(block) {
-  const spec = BLOCKS[block.op];
+  const spec = specOf(block);
   const colors = PALETTE_COLORS[spec.palette];
   const node = { id: nextId++, block, spec, kind: spec.kind, args: [], bodies: [], ax: 0, ay: 0 };
   if (spec.kind === 'note') return layoutNote(node, spec, colors);
@@ -401,6 +486,7 @@ export function layoutBlock(block) {
   });
 
   if (spec.layout) return layoutRow(node, spec, colors);
+  if (spec.defines) return layoutDefinitionHat(node, spec, colors);
 
   // Make room for any socket content taller than a number box.
   const heightOf = (arg) => (arg.child ? arg.child.h : arg.literal ? arg.literal.h : 0);
@@ -482,6 +568,10 @@ function placeNode(node, x, y, home) {
   node.ax = x;
   node.ay = y;
   Object.assign(node, home); // stack, list, index, or argOf and argIndex
+  for (const placed of node.nameSlots ?? []) {
+    placed.ax = x + placed.dx;
+    placed.ay = y + placed.dy;
+  }
   node.args.forEach((arg, i) => {
     arg.ax = x + node.argPos[i].x;
     arg.ay = y + node.argPos[i].y;
@@ -548,6 +638,17 @@ export function renderStack(layout, register) {
     group.append(el);
     node.el = el;
     register(node.id, { type: 'block', node });
+    (node.nameSlots ?? []).forEach((placed, index) => {
+      const box = svgElement('g', {
+        class: 'node nameslot',
+        transform: `translate(${placed.ax} ${placed.ay})`,
+        'data-nid': placed.slot.id,
+      });
+      box.innerHTML = placed.slot.markup;
+      group.append(box);
+      placed.el = box;
+      register(placed.slot.id, { type: 'nameslot', node, index, slot: placed.slot });
+    });
     node.args.forEach((arg) => {
       if (arg.child) {
         renderNode(arg.child);
@@ -568,6 +669,11 @@ export function renderStack(layout, register) {
   layout.nodes.forEach(renderNode);
   layout.el = group;
   return group;
+}
+
+/** How big a stack will be drawn, for placing things beside it. Needs the page (fonts are measured). */
+export function stackSize(stack) {
+  return stackBounds(layoutStack(stack));
 }
 
 /** The size of a laid out stack: from its top-left corner to the far corner. */

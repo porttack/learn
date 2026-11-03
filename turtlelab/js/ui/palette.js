@@ -8,8 +8,9 @@
 // the new block and carries it). Dropping anything on the palette deletes it,
 // so this file also answers "is that point over the palette?".
 
-import { PALETTES, BLOCKS } from '../core/blocks-spec.js';
+import { PALETTES, BLOCKS, specOf } from '../core/blocks-spec.js';
 import { newBlock } from '../core/edit.js';
+import { definitionHats, newCall, newDefinition, newInput } from '../core/definitions.js';
 import { PALETTE_COLORS } from './palette-colors.js';
 import { layoutStack, renderStack, stackBounds } from './block-view.js';
 
@@ -26,6 +27,7 @@ export class PaletteUI {
   constructor({ stage, workspace }) {
     this.workspace = workspace;
     this.selected = null;
+    this.entries = new Map(); // each block in the flyout, by its element: how to make one, and its tip
 
     this.nav = document.createElement('nav');
     this.nav.className = 'palettes';
@@ -72,15 +74,48 @@ export class PaletteUI {
     if (this.selected) this.fillFlyout(this.selected);
   }
 
+  /**
+   * What a palette shows: for each block, a `make` that builds a fresh one
+   * (what gets dragged out, or run when tapped) and its tip. The My Blocks
+   * palette also has a call block for every block the student has made, and
+   * an input block for each of its inputs, so it changes as they make more.
+   */
+  entriesFor(id) {
+    const project = this.workspace.project;
+    const entries = [];
+    for (const [op, spec] of Object.entries(BLOCKS)) {
+      if (spec.palette !== id || spec.dynamic) continue;
+      entries.push({ op, make: () => (op === 'to' ? newDefinition(project) : newBlock(op)), help: spec.help });
+    }
+    if (id === 'myblocks') {
+      for (const hat of definitionHats(project)) {
+        const name = hat.name;
+        entries.push({ op: 'call', key: `call:${name}`, make: () => newCall(hat), help: specOf(newCall(hat)).help, spaceBefore: true });
+        for (const param of hat.params ?? []) {
+          entries.push({ op: 'input', key: `input:${name}:${param}`, make: () => newInput(param), help: specOf(newInput(param)).help });
+        }
+      }
+    }
+    return entries;
+  }
+
+  /** Draw the flyout again from the project, for when the blocks a student made have changed. */
+  refresh() {
+    if (this.selected) this.fillFlyout(this.selected);
+  }
+
   fillFlyout(id) {
     this.flyoutSvg.replaceChildren();
+    this.entries = new Map();
     let y = MARGIN;
     let widest = 0;
-    for (const [op, spec] of Object.entries(BLOCKS)) {
-      if (spec.palette !== id) continue;
-      const layout = layoutStack({ x: MARGIN, y, blocks: [newBlock(op)] });
+    for (const entry of this.entriesFor(id)) {
+      if (entry.spaceBefore) y += GAP;
+      const layout = layoutStack({ x: MARGIN, y, blocks: [entry.make()] });
       const group = renderStack(layout, () => {});
-      group.dataset.op = op;
+      group.dataset.op = entry.op;
+      if (entry.key) group.dataset.key = entry.key;
+      this.entries.set(group, entry);
       this.flyoutSvg.append(group);
       const { width, height } = stackBounds(layout);
       widest = Math.max(widest, width);
@@ -95,8 +130,9 @@ export class PaletteUI {
   /** A press on a block in the flyout: hand it to the workspace to carry. */
   pressFlyout(event) {
     const group = event.target.closest?.('.stack');
-    if (!group) return;
-    this.workspace.pressPaletteBlock(event, group.dataset.op, group.getBoundingClientRect());
+    const entry = group && this.entries.get(group);
+    if (!entry) return;
+    this.workspace.pressPaletteBlock(event, entry, group.getBoundingClientRect());
   }
 
   /** True if the screen point is over the palette column or its flyout. */

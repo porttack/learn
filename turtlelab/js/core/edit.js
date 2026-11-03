@@ -10,16 +10,22 @@
 // A project is { stacks: [ { x, y, blocks: [...] } ] }. A block is
 // { op, args?, body? }. See project.js for the full format.
 
-import { BLOCKS, BODY_KEYS, mouthCount } from './blocks-spec.js';
+import { BLOCKS, BODY_KEYS, mouthCount, specOf } from './blocks-spec.js';
 
 /** A copy of a block, and everything inside it, that shares nothing with it. */
 export function cloneBlock(block) {
   return JSON.parse(JSON.stringify(block));
 }
 
-/** A fresh block the way it comes out of the palette: sockets hold their defaults. */
+/**
+ * A fresh block the way it comes out of the palette: sockets hold their defaults.
+ * (A call or an input only means something with a name, so those come from
+ * newCall and newInput in definitions.js, and a to block with a free name from
+ * newDefinition.)
+ */
 export function newBlock(op) {
   const spec = BLOCKS[op];
+  if (spec.dynamic) throw new Error(`${op} blocks are made from a definition (see definitions.js).`);
   const block = { op, args: spec.args.map((arg) => arg.default ?? null) };
   // Every mouth of a clamp starts out empty.
   BODY_KEYS.slice(0, mouthCount(spec)).forEach((key) => {
@@ -61,7 +67,7 @@ export function detachCommands(project, stack, list, index, x, y) {
  */
 export function detachReporter(project, parentBlock, argIndex, x, y) {
   const reporter = parentBlock.args[argIndex];
-  parentBlock.args[argIndex] = BLOCKS[parentBlock.op].args[argIndex].default ?? null;
+  parentBlock.args[argIndex] = specOf(parentBlock).args[argIndex].default ?? null;
   const carried = { x, y, blocks: [reporter] };
   project.stacks.push(carried);
   return carried;
@@ -118,12 +124,12 @@ export function attachReporter(project, carried, parentBlock, argIndex, bumpX, b
 
 /** What a socket takes: 'number' (round) or 'boolean' (pointed, for yes-or-no blocks). */
 export function socketType(parentBlock, index) {
-  return BLOCKS[parentBlock.op].args[index].type ?? 'number';
+  return specOf(parentBlock).args[index].type ?? 'number';
 }
 
 /** What a reporter hands back: 'number' or 'boolean'. */
 export function reporterType(block) {
-  return BLOCKS[block.op].returns ?? 'number';
+  return specOf(block).returns ?? 'number';
 }
 
 /** A reporter only fits a socket of the same type: a yes-or-no block cannot go in a number box. */
@@ -133,5 +139,5 @@ export function canPlug(parentBlock, index, reporterBlock) {
 
 /** True if the stack is just one block that reports a value (like x). */
 export function isReporterStack(stack) {
-  return stack.blocks.length === 1 && BLOCKS[stack.blocks[0].op].kind === 'reporter';
+  return stack.blocks.length === 1 && specOf(stack.blocks[0]).kind === 'reporter';
 }
