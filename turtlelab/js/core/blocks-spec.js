@@ -48,6 +48,7 @@ export const PALETTES = [
   { id: 'pen', label: 'Pen' },
   { id: 'math', label: 'Math' },
   { id: 'flow', label: 'Flow' },
+  { id: 'boxes', label: 'Boxes' },
   { id: 'myblocks', label: 'My Blocks' },
   { id: 'notes', label: 'Notes' },
 ];
@@ -416,7 +417,6 @@ export const BLOCKS = {
   },
 };
 
-// ---- My Blocks: boxes ---------------------------------------------------
 // ---- Blocks you make yourself ----------------------------------------------
 // A stack that starts with a `to` block is the DEFINITION of a block: its name and
 // inputs are typed on the hat, and the blocks under it are what it does. Using
@@ -471,16 +471,18 @@ export function specOf(block) {
   return BLOCKS[block.op];
 }
 
+// ---- Boxes -------------------------------------------------------------
 // A box holds one number so you can use it later. It is a variable. There are
-// three of them, each with a block that stores a number in it (store1, store2,
-// store3) and a block that reports what is in it (box1, box2, box3). They are
-// six separate blocks, not one block with a menu, so nothing needs typing.
-// A box starts at 0 each time a program runs.
-export const BOX_COUNT = 3;
+// four of them, each with a block that stores a number in it (store1 to store4)
+// and a block that reports what is in it (box1 to box4). They are eight separate
+// blocks, not one block with a menu, so nothing needs typing. A box starts at 0
+// each time a program runs. (More boxes only means changing this number: every
+// list, test and readout is made from it. A project that used fewer boxes still opens.)
+export const BOX_COUNT = 4;
 
 for (let n = 1; n <= BOX_COUNT; n += 1) {
   BLOCKS[`store${n}`] = {
-    palette: 'myblocks',
+    palette: 'boxes',
     kind: 'command',
     label: `store in box${n}`,
     lines: ['store in', `box${n}`],
@@ -488,7 +490,7 @@ for (let n = 1; n <= BOX_COUNT; n += 1) {
     help: `Puts a number in box${n} so you can use it later. A box starts at 0 each time you run.`,
   };
   BLOCKS[`box${n}`] = {
-    palette: 'myblocks',
+    palette: 'boxes',
     kind: 'reporter',
     label: `box${n}`,
     args: [],

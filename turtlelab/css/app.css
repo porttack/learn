@@ -298,6 +298,11 @@ body {
   pointer-events: none; /* and it sits under the blocks, so a stack held over it is on top */
 }
 
+/* On a short window the column of palette buttons runs close to the can, so it shrinks. */
+@media (max-height: 700px) {
+  .trash-can { width: 4rem; }
+}
+
 .stage.blocks-hidden .trash-can { display: none; }
 
 .trash-svg {

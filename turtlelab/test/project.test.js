@@ -181,6 +181,7 @@ test('usesBoxes sees a box block anywhere, including plugged in and inside a cla
   assert.equal(usesBoxes(stack({ op: 'forward', args: [100] })), false);
   assert.equal(usesBoxes(stack({ op: 'store2', args: [5] })), true);
   assert.equal(usesBoxes(stack({ op: 'forward', args: [{ op: 'box3' }] })), true);
+  assert.equal(usesBoxes(stack({ op: 'forward', args: [{ op: 'box4' }] })), true, 'the fourth box counts too');
   assert.equal(usesBoxes(stack({ op: 'repeat', args: [2], body: [{ op: 'forward', args: [{ op: 'box1' }] }] })), true);
 });
 

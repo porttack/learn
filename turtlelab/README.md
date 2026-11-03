@@ -4,11 +4,11 @@ Block-based turtle graphics that runs entirely in your browser. Nothing you do
 is sent anywhere.
 
 **Status: published, and still growing.** You can drag blocks out of the
-palettes (Turtle, Pen, Math, Flow and boxes), snap them together, and run them,
+palettes (Turtle, Pen, Math, Flow, Boxes and My Blocks), snap them together, and run them,
 with undo, zoom and pan. Save a drawing as a PNG with your blocks inside it,
 and open it again later. Your blocks are also kept in your browser so a
-refresh does not lose them. My Blocks that you define yourself, and SVG
-export, are still to come. See `CLAUDE.md` for the plan and the rules this project
+refresh does not lose them. You can make blocks of your own, with inputs, and
+SVG export is still to come. See `CLAUDE.md` for the plan and the rules this project
 follows.
 
 ## Try it

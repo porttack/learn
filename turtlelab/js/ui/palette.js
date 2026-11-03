@@ -89,8 +89,9 @@ export class PaletteUI {
   /**
    * What a palette shows: for each block, a `make` that builds a fresh one
    * (what gets dragged out, or run when tapped) and its tip. The My Blocks
-   * palette also has a call block for every block the student has made, and
-   * an input block for each of its inputs, so it changes as they make more.
+   * palette has the `to` block, then a call block for every block the student
+   * has made and an input block for each of its inputs, so it changes as they
+   * make more.
    */
   entriesFor(id) {
     const project = this.workspace.project;

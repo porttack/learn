@@ -139,19 +139,25 @@ test('a number stored in a box can be read back and used', () => {
 test('boxes start at 0', () => {
   const { turtle } = run([block('forward', { op: 'box2' })]);
   assert.equal(turtle.y, 0);
-  assert.deepEqual(createContext({ turtle: new Turtle() }).boxes, [0, 0, 0]);
+  assert.deepEqual(createContext({ turtle: new Turtle() }).boxes, [0, 0, 0, 0], 'four boxes');
 });
 
-test('the three boxes are separate', () => {
+test('the four boxes are separate', () => {
   const { turtle } = run([
     block('store1', 10),
     block('store2', 20),
     block('store3', 30),
+    block('store4', 40),
     block('forward', { op: 'box1' }),
     block('forward', { op: 'box2' }),
     block('forward', { op: 'box3' }),
+    block('forward', { op: 'box4' }),
   ]);
-  assert.equal(turtle.y, 60);
+  assert.equal(turtle.y, 100);
+});
+
+test('there is no fifth box', () => {
+  assert.throws(() => run([block('store5', 1)]), (e) => e instanceof RunError && /store5/.test(e.message));
 });
 
 test('a box can hold a value reported by another block', () => {
@@ -400,12 +406,13 @@ test('the pen color readers report the red, green and blue of the pen', () => {
   ]);
   assert.deepEqual(turtle.color, [10, 20, 30]);
   const { context } = runWith([block('setcolor', 10, 20, 30), block('store1', { op: 'penred' }), block('store2', { op: 'pengreen' }), block('store3', { op: 'penblue' })]);
-  assert.deepEqual(context.boxes, [10, 20, 30]);
+  assert.deepEqual(context.boxes.slice(0, 3), [10, 20, 30]);
+  assert.equal(context.boxes[3], 0, 'the fourth box was not touched');
 });
 
 test('the pen color readers start at the default red pen', () => {
   const { context } = runWith([block('store1', { op: 'penred' }), block('store2', { op: 'pengreen' }), block('store3', { op: 'penblue' })]);
-  assert.deepEqual(context.boxes, [255, 0, 0]);
+  assert.deepEqual(context.boxes.slice(0, 3), [255, 0, 0]);
 });
 
 test('a color made with the readers can be used to make a darker one', () => {

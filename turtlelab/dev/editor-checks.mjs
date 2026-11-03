@@ -106,7 +106,7 @@ try {
   await chrome.goto(BASE + '?speed=instant');
   check('Roboto loaded from the app itself', await chrome.eval(`[...document.fonts].some((f) => f.family === 'Roboto' && f.status === 'loaded')`));
   check('starts empty, with a hint', (await stacks()) === 0 && (await chrome.eval(`!document.querySelector('.hint').hidden`)));
-  check('six palettes have blocks', (await count('.palette-button')) === 6);
+  check('seven palettes have blocks, with Boxes and My Blocks apart', (await count('.palette-button')) === 7 && (await chrome.eval(`[...document.querySelectorAll('.palette-button')].map((b) => b.title).join()`)) === 'Turtle,Pen,Math,Flow,Boxes,My Blocks,Notes');
 
   await openPalette('Turtle');
   check('the Turtle palette opens and lists its 11 blocks', (await chrome.eval(`!document.querySelector('.flyout').hidden`)) && (await count('.flyout .stack')) === 11,
@@ -578,10 +578,10 @@ try {
   const readoutHidden = () => chrome.eval(`document.querySelector('.boxes-readout').hidden`);
   const readoutText = () => chrome.eval(`document.querySelector('.boxes-readout').textContent.replace(/\\s+/g, ' ').trim()`);
   check('the boxes readout stays hidden until a box is used', await readoutHidden());
-  await openPalette('My Blocks');
-  check('My Blocks lists the to block and the six box blocks', (await count('.flyout .stack')) === 7);
+  await openPalette('Boxes');
+  check('the Boxes palette lists four store blocks and four box blocks, and nothing of your own', (await count('.flyout .stack')) === 8 && (await count('.flyout .stack[data-op=to]')) === 0);
   await dragFromPalette('store1', 450, 150);
-  check('the readout appears once a box block is on the page', !(await readoutHidden()) && (await readoutText()) === 'box1 0 box2 0 box3 0', await readoutText());
+  check('the readout appears once a box block is on the page', !(await readoutHidden()) && (await readoutText()) === 'box1 0 box2 0 box3 0 box4 0', await readoutText());
 
   const literalRect = (index) =>
     chrome.eval(`(() => { const n = document.querySelectorAll('.workspace .node.literal')[${index}]; return n ? (${rectJs})(n) : null; })()`);
@@ -597,7 +597,7 @@ try {
   await openPalette('Turtle');
   await dragFromPalette('forward', storeBlock.left + 6, storeBlock.bottom + 4);
   const forwardNumber = await literalRect(1);
-  await openPalette('My Blocks');
+  await openPalette('Boxes');
   await dragFromPalette('box1', forwardNumber.left + 2, forwardNumber.top + 2);
   check('box1 plugs into the forward block like any reporter', (await count('.workspace .node.reporter')) === 1 && (await count('.workspace .node.literal')) === 1);
 
@@ -605,7 +605,7 @@ try {
   await chrome.click(storeNow.left + 10, storeNow.top + storeNow.h / 2);
   await chrome.sleep(300);
   check('running it moves the turtle by what was stored in the box', near(await stepsUp(), 40 * scale, 3), `${(await stepsUp()).toFixed(1)}px up, expected ${(40 * scale).toFixed(1)}`);
-  check('the readout shows the stored number', (await readoutText()) === 'box1 40 box2 0 box3 0', await readoutText());
+  check('the readout shows the stored number', (await readoutText()) === 'box1 40 box2 0 box3 0 box4 0', await readoutText());
 
   await dragFromPalette('box1', 700, 450);
   // There are two box1 blocks now (one plugged in); the lone one is the last in the page.
@@ -616,17 +616,17 @@ try {
   await chrome.click(lone.left + 12, lone.top + lone.h / 2);
   await chrome.sleep(150);
   check('tapping a lone box1 shows what the last run left in it', /box1 is 40/.test(await messageText()), await messageText());
-  check('looking at a box does not change it', (await readoutText()) === 'box1 40 box2 0 box3 0');
+  check('looking at a box does not change it', (await readoutText()) === 'box1 40 box2 0 box3 0 box4 0');
 
   await chrome.goto(BASE + '?demo=boxes&speed=instant');
   await pressRun();
-  check('the boxes demo draws its square, sized by box1', near(await stepsUp(), 0, 2) && (await readoutText()) === 'box1 120 box2 0 box3 0', await readoutText());
+  check('the boxes demo draws its square, sized by box1', near(await stepsUp(), 0, 2) && (await readoutText()) === 'box1 120 box2 0 box3 0 box4 0', await readoutText());
 
   await chrome.goto(BASE + '?demo=boxorder&speed=instant');
   await pressRun();
   await pressRun();
   check('each run starts with empty boxes: reading a box before storing in it always gives 0',
-    near(await stepsUp(), 0, 1) && (await readoutText()) === 'box1 50 box2 0 box3 0', `${(await stepsUp()).toFixed(1)}px up`);
+    near(await stepsUp(), 0, 1) && (await readoutText()) === 'box1 50 box2 0 box3 0 box4 0', `${(await stepsUp()).toFixed(1)}px up`);
 
   // ---- Math, if, forever, stop, wait, print --------------------------------------------------------
   await chrome.goto(BASE + '?speed=instant');
@@ -814,7 +814,7 @@ try {
 
   await chrome.goto(BASE + '?demo=pencolor&speed=instant');
   await pressRun();
-  check('the pen color readers report red, green and blue', (await readoutText()) === 'box1 10 box2 20 box3 30', await readoutText());
+  check('the pen color readers report red, green and blue', (await readoutText()) === 'box1 10 box2 20 box3 30 box4 0', await readoutText());
 
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Pen');
@@ -854,7 +854,7 @@ try {
   // Programs, using the example programs.
   await chrome.goto(BASE + '?demo=counting&speed=instant');
   await pressRun();
-  check('forever with an if and a stop: counts five laps and stops itself', near(await stepsUp(), 50 * scale, 2) && (await readoutText()) === 'box1 5 box2 0 box3 0',
+  check('forever with an if and a stop: counts five laps and stops itself', near(await stepsUp(), 50 * scale, 2) && (await readoutText()) === 'box1 5 box2 0 box3 0 box4 0',
     `${(await stepsUp()).toFixed(1)}px up, ${await readoutText()}`);
   check('the program finished by itself', await chrome.eval(`!document.getElementById('run').disabled`));
 
@@ -919,8 +919,8 @@ try {
 
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('My Blocks');
-  check('the My Blocks palette starts with a to block and the boxes, and no calls yet',
-    (await count('.flyout .stack')) === 7 && (await flyoutTexts())[0].startsWith('to:to') && (await count('.flyout .stack[data-op=call]')) === 0, (await flyoutTexts()).join(' '));
+  check('the My Blocks palette starts with just a to block (the boxes are in their own palette), and no calls yet',
+    (await count('.flyout .stack')) === 1 && (await flyoutTexts())[0].startsWith('to:to') && (await count('.flyout .stack[data-op=call]')) === 0, (await flyoutTexts()).join(' '));
 
   await dragFromPalette('to', 450, 150);
   check('a to block lands as a stack of its own, with boxes for its name and for adding an input',

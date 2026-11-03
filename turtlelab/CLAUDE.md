@@ -169,8 +169,8 @@ input could appear.
   500 (a unit test runs 499 deep with an if and a repeat around each call).
   Past what fits, a `RangeError` is turned into a friendly message in `main.js`
   (proved in real Chrome by lifting the limit). Measure again before raising it.
-- **Palette.** My Blocks lists the `to` block, the boxes, then a call (and its
-  input blocks) for every definition. `PaletteUI.entriesFor` builds entries with
+- **Palette.** My Blocks lists the `to` block, then a call (and its
+  input blocks) for every definition. (The boxes are in the Boxes palette.) `PaletteUI.entriesFor` builds entries with
   a `make()`, so a flyout block is made fresh when dragged; `refresh()` redraws
   the open flyout and `main.js` calls it after every change to the project.
 
@@ -235,10 +235,14 @@ input could appear.
   Copy stack button. Right-click opens the same bubble. Holding a palette
   block shows its tip without a Copy button. Holding a number box does
   nothing (a tap there is for typing).
-- **Boxes are the variables.** Three of them, as six fixed blocks in the
-  My Blocks palette (`store in box1/2/3` with a number socket, and reporters
-  `box1/2/3`), with no dropdowns. They are generated from `BOX_COUNT` in
-  `core/blocks-spec.js` and the interpreter. Calling variables "boxes" is the
+- **Boxes are the variables.** Four of them, as eight fixed blocks in their own
+  **Boxes** palette (`store in box1` to `box4` with a number socket, and
+  reporters `box1` to `box4`), with no dropdowns. They are generated from
+  `BOX_COUNT` in `core/blocks-spec.js` and the interpreter, so a fifth box is a
+  one-number change (the palette, readout and tests all follow; an older project
+  with fewer boxes still opens). **My Blocks** is a separate palette (lilac)
+  for the blocks a student makes. Both palettes' colors and icons live in
+  `palette-colors.js` and `images/palette-<id>.svg`. Calling variables "boxes" is the
   teacher's choice. Their look is original (Sugar-style, yellow); nothing was
   taken from anyone's palette screenshot. **Each run starts with all boxes at
   0** (like a Python program), so a run never depends on an earlier one; the
@@ -372,7 +376,7 @@ input could appear.
 ## Milestones
 
 Plan: a scaffold + core, b1 block editor basics, b2 editor polish, c PNG
-save/load, d Math and Flow, e My Blocks and boxes, f SVG export, privacy and
+save/load, d Math and Flow, e My Blocks (and Boxes), f SVG export, privacy and
 guide pages, real name, deploy.
 
 Done: **a** (scaffold, core, canvas), **b1** (block editor: Turtle, Pen and

@@ -5,7 +5,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { BLOCKS, PALETTES, NOTE_MAX_CHARS, BODY_KEYS, mouthCount, SPEED_NAMES, DEFAULT_SPEED } from '../js/core/blocks-spec.js';
+import { BLOCKS, PALETTES, NOTE_MAX_CHARS, BODY_KEYS, mouthCount, SPEED_NAMES, DEFAULT_SPEED, BOX_COUNT } from '../js/core/blocks-spec.js';
+import { PALETTE_COLORS } from '../js/ui/palette-colors.js';
+import { existsSync } from 'node:fs';
 import { SPEEDS } from '../js/core/scheduler.js';
 
 const entries = Object.entries(BLOCKS);
@@ -130,4 +132,19 @@ test('the speed block uses the scheduler\'s own speeds, slowest first, and a run
   assert.ok(SPEED_NAMES.includes(DEFAULT_SPEED));
   assert.equal(BLOCKS.speed.palette, 'flow');
   assert.match(BLOCKS.speed.help, /1 is slow.*4 is instant/);
+});
+
+test('boxes and the blocks you make have palettes of their own, in that order, each with a color and an icon', () => {
+  const inPalette = (id) => entries.filter(([, spec]) => spec.palette === id).map(([op]) => op);
+  assert.deepEqual(PALETTES.map((p) => p.id), ['turtle', 'pen', 'math', 'flow', 'boxes', 'myblocks', 'notes']);
+  assert.equal(BOX_COUNT, 4);
+  const boxOps = Array.from({ length: BOX_COUNT }, (_, i) => [`store${i + 1}`, `box${i + 1}`]).flat();
+  assert.deepEqual(inPalette('boxes').sort(), boxOps.sort(), 'Boxes holds the four store blocks and the four box blocks, and only those');
+  assert.deepEqual(inPalette('myblocks').sort(), ['call', 'input', 'to'], 'My Blocks holds only what makes your own blocks');
+  assert.equal(BLOCKS.store5, undefined);
+  for (const palette of PALETTES) {
+    assert.ok(PALETTE_COLORS[palette.id], `${palette.id} has a color`);
+    assert.ok(existsSync(new URL(`../images/palette-${palette.id}.svg`, import.meta.url)), `${palette.id} has an icon`);
+  }
+  assert.notEqual(PALETTE_COLORS.boxes.fill, PALETTE_COLORS.myblocks.fill, 'the two do not look alike');
 });

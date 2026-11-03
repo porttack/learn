@@ -84,7 +84,7 @@ export const DEMOS = {
     b('clean'),
     b('forward', { op: 'multiply', args: [{ op: 'paren', args: [{ op: 'add', args: [2, 3] }] }, 4] }),
   ],
-  // Reads the pen color back into the three boxes.
+  // Reads the pen color back into boxes 1 to 3.
   pencolor: [
     b('start'),
     b('setcolor', 10, 20, 30),
