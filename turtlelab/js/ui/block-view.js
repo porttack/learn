@@ -318,12 +318,25 @@ function wrapText(text, maxWidth, fontSize) {
   return lines;
 }
 
+/** The lines a note shows: its words wrapped, or a hint if it is empty, and cut short if it is too long. */
+function noteLines(text) {
+  let lines = text === '' ? ['Tap to write a note.'] : wrapText(text, NOTE_TEXT_WIDTH, NOTE_FONT);
+  if (lines.length > NOTE_MAX_LINES) lines = [...lines.slice(0, NOTE_MAX_LINES - 1), `${lines[NOTE_MAX_LINES - 1]}...`.slice(0, 40)];
+  return lines;
+}
+
+const noteHeightFor = (lines) => 16 + Math.max(lines.length, NOTE_MIN_LINES) * NOTE_LINE + 10;
+
+/** How tall a note with these words is drawn. Needs the page (the font is measured). */
+export function noteHeight(text) {
+  return noteHeightFor(noteLines(text));
+}
+
 /** Lay out a sticky note: its size, and the SVG for it. */
 function layoutNote(node, spec, colors) {
   const text = node.block.text ?? '';
-  let lines = text === '' ? ['Tap to write a note.'] : wrapText(text, NOTE_TEXT_WIDTH, NOTE_FONT);
-  if (lines.length > NOTE_MAX_LINES) lines = [...lines.slice(0, NOTE_MAX_LINES - 1), `${lines[NOTE_MAX_LINES - 1]}...`.slice(0, 40)];
-  const height = 16 + Math.max(lines.length, NOTE_MIN_LINES) * NOTE_LINE + 10;
+  const lines = noteLines(text);
+  const height = noteHeightFor(lines);
   const width = NOTE_WIDTH;
   const ink = text === '' ? '#9a8f4a' : '#4a4100';
   const rows = lines

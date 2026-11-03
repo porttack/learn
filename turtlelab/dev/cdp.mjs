@@ -134,8 +134,9 @@ export async function launch({ width = 1200, height = 800, port = 9333 } = {}) {
     async centerOf(selector) {
       return api.eval(`(() => { const r = document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height, left: r.left, top: r.top }; })()`);
     },
-    async screenshot(path) {
-      const { data } = await send('Page.captureScreenshot', { format: 'png' });
+    /** Save a picture of the page. With `clip` ({ x, y, width, height, scale }), only that part of it. */
+    async screenshot(path, clip = null) {
+      const { data } = await send('Page.captureScreenshot', clip ? { format: 'png', clip } : { format: 'png' });
       writeFileSync(path, Buffer.from(data, 'base64'));
     },
     sleep,

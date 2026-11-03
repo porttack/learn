@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- The same strict policy as the app itself: nothing here loads from anywhere else. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TurtleLab samples</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="stylesheet" href="css/fonts.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/site-menu.css">
+</head>
+<body>
+  <header class="page-head">
+    <a href="./">TurtleLab</a>
+    <!-- The same list as the rest of the site's menu (a test keeps them in step). -->
+    <div class="site-menu">
+      <input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+      <label for="site-menu-trigger" class="site-menu-icon" aria-label="Site menu" title="The rest of the site">&#9776;</label>
+      <label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+      <nav class="site-menu-panel" aria-label="Site menu">
+        <a href="/">Home (learn.porttack.com)</a>
+        <a href="/pico/">MicroPython on Pi Pico and Projects</a>
+        <a href="/electronics101/">Electronics 101</a>
+        <a href="/working-in-python/">Working in Python</a>
+        <a href="/python3d/">Python in 3D</a>
+        <a href="/turtlelab/">TurtleLab</a>
+        <a href="/cs50-psets/">CS50 Problems</a>
+        <a href="/unplugged/">CS Unplugged</a>
+        <a href="/standards/">Standards</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wide">
+    <h1>TurtleLab samples</h1>
+
+    <p>Pick a sample to open it in TurtleLab. It runs by itself, so you can watch the turtle draw it. Then change the blocks and see what happens. The sticky note on the page explains what the program does and why.</p>
+
+    <p class="small">Nothing you change in a sample is saved unless you press Save, and the blocks you saved before are never touched. The eye button hides the blocks so you can see the whole picture. The samples are in order, easiest first.</p>
+
+    <ul class="sample-grid">
+      <li class="sample-card">
+        <a href="./?sample=square">
+          <img src="images/samples/square.png" alt="A blue square with thick sides" width="350" height="280">
+          <h2>A square</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>Four sides and four turns, written once and repeated.</p>
+        <p class="tags"><span>repeat</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=dotted-circle">
+          <img src="images/samples/dotted-circle.png" alt="A ring of short dashes forming a circle" width="350" height="280">
+          <h2>A dotted circle</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>Lift the pen between dashes to draw a ring of dots.</p>
+        <p class="tags"><span>repeat</span> <span>pen up and down</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=hexagon-flower">
+          <img src="images/samples/hexagon-flower.png" alt="Six green hexagons overlapping in a flower shape" width="350" height="280">
+          <h2>Hexagon flower</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>A repeat inside a repeat: the inside draws a hexagon, the outside spins it.</p>
+        <p class="tags"><span>repeat inside repeat</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=flower">
+          <img src="images/samples/flower.png" alt="A pink flower with twelve petals on a dark blue background" width="350" height="280">
+          <h2>Flower</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>Curved petals on a dark blue sky.</p>
+        <p class="tags"><span>arc</span> <span>fill screen</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=star">
+          <img src="images/samples/star.png" alt="A yellow five pointed star" width="350" height="280">
+          <h2>A filled star</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>Five lines and a lot of turning, filled with yellow.</p>
+        <p class="tags"><span>start fill</span> <span>pen up and down</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=polygon">
+          <img src="images/samples/polygon.png" alt="A red pentagon" width="350" height="280">
+          <h2>Any polygon</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>One box holds the number of sides. Change it to change the shape.</p>
+        <p class="tags"><span>boxes</span> <span>divide</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=spiral">
+          <img src="images/samples/spiral.png" alt="A square spiral winding outward" width="350" height="280">
+          <h2>Square spiral</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>Each side is a little longer than the last.</p>
+        <p class="tags"><span>boxes</span> <span>add</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=nested-squares">
+          <img src="images/samples/nested-squares.png" alt="Eight squares of growing size sharing one corner" width="350" height="280">
+          <h2>Nested squares</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>Print shows the size of every square as it is drawn.</p>
+        <p class="tags"><span>print</span> <span>boxes</span> <span>repeat inside repeat</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=spinning-squares">
+          <img src="images/samples/spinning-squares.png" alt="Thirty six squares rotated around one corner, fading from purple to blue and red" width="350" height="280">
+          <h2>Spinning squares</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>Squares turned a little each time, with colors made from a box.</p>
+        <p class="tags"><span>boxes</span> <span>color</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=color-burst">
+          <img src="images/samples/color-burst.png" alt="Fifty colorful lines spreading out from the middle like a firework" width="350" height="280">
+          <h2>Color burst</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>Fifty rays, each in a color picked by chance.</p>
+        <p class="tags"><span>random</span> <span>color</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=countdown">
+          <img src="images/samples/countdown.png" alt="An orange circle" width="350" height="280">
+          <h2>Countdown</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>Counts 3, 2, 1 and then draws a circle.</p>
+        <p class="tags"><span>wait</span> <span>print</span> <span>boxes</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=red-and-blue">
+          <img src="images/samples/red-and-blue.png" alt="A column of five alternating blue and red beads going up from the middle" width="350" height="280">
+          <h2>Red and blue</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>If else picks red or blue, depending on whether a number is even.</p>
+        <p class="tags"><span>if else</span> <span>remainder (%)</span> <span>boxes</span></p>
+      </li>
+      <li class="sample-card">
+        <a href="./?sample=wandering-turtle">
+          <img src="images/samples/wandering-turtle.png" alt="A path of right angle turns wandering around the paper" width="350" height="280">
+          <h2>Wandering turtle</h2>
+          <span class="open">Open in TurtleLab</span>
+        </a>
+        <p>A coin flip decides left or right, again and again.</p>
+        <p class="tags"><span>if else</span> <span>random</span></p>
+      </li>
+    </ul>
+
+    <p class="small"><a href="guide.html">Back to the guide</a></p>
+  </main>
+</body>
+</html>

@@ -23,6 +23,8 @@ import { PaletteUI } from './palette.js';
 import { Autosave, loadAutosave } from './storage.js';
 import { savePicture, readFile, dragHasFiles } from './files.js';
 import { DEMOS } from './demos.js';
+import { sampleById, sampleStacks, LEFT as SAMPLE_LEFT, TOP as SAMPLE_TOP } from './samples.js';
+import { noteHeight } from './block-view.js';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -62,9 +64,19 @@ if (demo && Object.hasOwn(DEMOS, demo)) {
   if (loaded.ok) project.stacks = loaded.project.stacks;
 }
 
+// A sample (?sample=square) loads its blocks and a sticky note instead. It is
+// not the student's own work, so it never reads what they saved and never saves
+// (see the autosave below).
+const sampleName = params.get('sample');
+const sample = sampleName === null ? null : sampleById(sampleName);
+if (sample) {
+  const loaded = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: sampleStacks(sample, noteHeight) });
+  if (loaded.ok) project.stacks = loaded.project.stacks;
+}
+
 // Pick up where you left off: the blocks from last time, kept in this browser.
 let welcomeBack = false;
-if (!(demo && Object.hasOwn(DEMOS, demo))) {
+if (!sample && !(demo && Object.hasOwn(DEMOS, demo))) {
   const saved = loadAutosave();
   if (saved) {
     project.stacks = saved.stacks;
@@ -194,6 +206,7 @@ function runStack(stack) {
 
 const history = new History(project);
 const autosave = new Autosave(project);
+if (sample) autosave.pause();
 
 function updateHistoryButtons() {
   undoButton.disabled = !history.canUndo;
@@ -228,6 +241,9 @@ workspace = new Workspace({
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
 });
 palettes = new PaletteUI({ stage, workspace });
+// The blocks are drawn big. On a short screen a sample would run off the bottom,
+// so zoom out until it fits (the reset button brings the full size back).
+if (sample) workspace.fitHeight(SAMPLE_LEFT, SAMPLE_TOP);
 
 // ---- Buttons -------------------------------------------------------------
 
@@ -390,4 +406,12 @@ hideButton.addEventListener('click', () => {
 
 if (welcomeBack) say('Welcome back. Your blocks from last time are here. Press Run to draw them again.');
 
-if (params.get('autorun') === '1') pressRun();
+if (sample) {
+  // It runs by itself, so the drawing is the first thing you see. Starting a
+  // run clears the message line, so the message goes up after it starts.
+  if (params.get('autorun') !== '0') pressRun();
+  say(`Sample: ${sample.title}. Change anything you like. It is not saved unless you press Save, and the blocks you saved before are untouched.`);
+} else {
+  if (sampleName !== null) say(`There is no sample called "${sampleName.slice(0, 40)}". The Samples page lists them all.`);
+  if (params.get('autorun') === '1') pressRun();
+}

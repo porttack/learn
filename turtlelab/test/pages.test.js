@@ -10,7 +10,7 @@ import { AUTOSAVE_KEY } from '../js/ui/storage.js';
 
 const here = new URL('../', import.meta.url);
 const read = (file) => readFileSync(new URL(file, here), 'utf8');
-const PAGES = ['index.html', 'about.html', 'privacy.html', 'guide.html'];
+const PAGES = ['index.html', 'about.html', 'privacy.html', 'guide.html', 'samples.html'];
 const policyOf = (html) => html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]*)"/)?.[1];
 
 test('every page has the same strict Content Security Policy', () => {
@@ -130,9 +130,13 @@ test('the Guide explains Save, Open, New and Ctrl+S, and no longer says saving i
   for (const word of ['Save', 'Open', 'New', 'Ctrl+S', 'shared computer', 'Sticky notes']) assert.ok(guide.includes(word), word);
 });
 
-test('the app page links to Guide and About in a new tab, so no click loses your blocks', () => {
+test('the Guide points to the Samples page', () => {
+  assert.match(read('guide.html'), /<a href="samples\.html">/);
+});
+
+test('the app page links to Samples, Guide and About in a new tab, so no click loses your blocks', () => {
   const html = read('index.html');
-  for (const target of ['guide.html', 'about.html']) {
+  for (const target of ['samples.html', 'guide.html', 'about.html']) {
     assert.match(html, new RegExp(`<a [^>]*href="${target}"[^>]*target="_blank"[^>]*rel="noopener"`), target);
   }
 });

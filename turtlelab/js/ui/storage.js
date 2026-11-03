@@ -37,6 +37,7 @@ export class Autosave {
     this.project = project;
     this.delay = delay;
     this.timer = null;
+    this.paused = false;
     // Save at once if the page is being closed or hidden, before the wait is over.
     addEventListener('pagehide', () => this.flush());
     document.addEventListener('visibilitychange', () => {
@@ -44,14 +45,27 @@ export class Autosave {
     });
   }
 
+  /**
+   * Stop saving for good (until the page is reloaded). A sample is opened this
+   * way: what is on the page is not the student's own work, so it must never
+   * replace what they saved, and a second tab must never overwrite the first.
+   */
+  pause() {
+    clearTimeout(this.timer);
+    this.timer = null;
+    this.paused = true;
+  }
+
   /** Something changed: save soon. Many quick changes make just one save. */
   schedule() {
+    if (this.paused) return;
     clearTimeout(this.timer);
     this.timer = setTimeout(() => this.flush(), this.delay);
   }
 
   /** Save now. An empty project removes the saved copy instead. */
   flush() {
+    if (this.paused) return;
     clearTimeout(this.timer);
     this.timer = null;
     try {

@@ -32,6 +32,20 @@ export function zoomAbout(view, factor, px, py) {
   };
 }
 
+/**
+ * How far to zoom out so a column of blocks fits in the window. `contentBottom`
+ * is how far down the blocks reach (in workspace units), `anchorY` is the top
+ * of the part we keep still, and `height` is how tall the window is. Returns
+ * a zoom from `minZoom` up to 1: it never zooms IN, and never goes smaller than
+ * `minZoom`, because tiny blocks are hard to read (past that, you slide the page).
+ */
+export function zoomToFit({ contentBottom, anchorY, height, margin = 12, minZoom = 0.6 }) {
+  const needed = contentBottom - anchorY;
+  const room = height - margin - anchorY;
+  if (needed <= 0 || needed <= room) return 1;
+  return Math.min(1, Math.max(minZoom, room / needed));
+}
+
 /** Slide the view by (dx, dy) screen pixels. Returns a new view. */
 export function panBy(view, dx, dy) {
   return { x: view.x + dx, y: view.y + dy, zoom: view.zoom };

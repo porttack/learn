@@ -25,7 +25,7 @@
 import { layoutStack, renderStack, walkNodes } from './block-view.js';
 import { HelpBubble } from './help-bubble.js';
 import { BLOCKS, NOTE_MAX_CHARS } from '../core/blocks-spec.js';
-import { HOME_VIEW, zoomAbout, panBy } from '../core/view.js';
+import { HOME_VIEW, zoomAbout, panBy, zoomToFit } from '../core/view.js';
 import {
   newBlock,
   cloneBlock,
@@ -480,6 +480,20 @@ export class Workspace {
   zoomBy(factor) {
     const box = this.svg.getBoundingClientRect();
     this.setView(zoomAbout(this.view, factor, box.width / 2, box.height / 2));
+  }
+
+  /**
+   * Zoom out, never in, so every stack fits above the bottom of the window,
+   * keeping the point (px, py) of the workspace where it is. See zoomToFit.
+   */
+  fitHeight(px, py) {
+    const box = this.svg.getBoundingClientRect();
+    let contentBottom = 0;
+    for (const el of this.stackLayer.children) {
+      contentBottom = Math.max(contentBottom, (el.getBoundingClientRect().bottom - box.top - this.view.y) / this.view.zoom);
+    }
+    const zoom = zoomToFit({ contentBottom, anchorY: py, height: box.height });
+    if (zoom < 1) this.setView(zoomAbout({ ...HOME_VIEW }, zoom, px, py));
   }
 
   resetView() {

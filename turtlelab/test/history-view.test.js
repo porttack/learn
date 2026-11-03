@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { History } from '../js/core/history.js';
-import { zoomAbout, panBy, clampZoom, MIN_ZOOM, MAX_ZOOM, HOME_VIEW } from '../js/core/view.js';
+import { zoomAbout, panBy, clampZoom, zoomToFit, MIN_ZOOM, MAX_ZOOM, HOME_VIEW } from '../js/core/view.js';
 
 const project = (...ops) => ({ stacks: [{ x: 0, y: 0, blocks: ops.map((op) => ({ op })) }] });
 
@@ -87,4 +87,23 @@ test('panning slides the view and leaves the zoom alone', () => {
 
 test('the home view is unzoomed and unmoved', () => {
   assert.deepEqual({ ...HOME_VIEW }, { x: 0, y: 0, zoom: 1 });
+});
+
+test('zoomToFit leaves blocks alone when they already fit, and never zooms in', () => {
+  assert.equal(zoomToFit({ contentBottom: 300, anchorY: 16, height: 600 }), 1);
+  assert.equal(zoomToFit({ contentBottom: 588, anchorY: 16, height: 600 }), 1, 'just fits, with the margin');
+  assert.equal(zoomToFit({ contentBottom: 0, anchorY: 16, height: 600 }), 1, 'nothing to fit');
+});
+
+test('zoomToFit zooms out just enough that the bottom lands one margin above the window edge', () => {
+  const zoom = zoomToFit({ contentBottom: 800, anchorY: 16, height: 600, margin: 12 });
+  assert.ok(zoom < 1 && zoom > MIN_ZOOM);
+  const bottomOnScreen = zoomAbout(HOME_VIEW, zoom, 90, 16).y + 800 * zoom;
+  assert.ok(Math.abs(bottomOnScreen - (600 - 12)) < 0.001, `the bottom is at ${bottomOnScreen}`);
+});
+
+test('zoomToFit stops at the smallest readable size, even if the blocks still do not fit', () => {
+  assert.equal(zoomToFit({ contentBottom: 5000, anchorY: 16, height: 600 }), 0.6);
+  assert.equal(zoomToFit({ contentBottom: 5000, anchorY: 16, height: 600, minZoom: 0.5 }), 0.5);
+  assert.ok(zoomToFit({ contentBottom: 5000, anchorY: 16, height: 600 }) >= MIN_ZOOM);
 });
