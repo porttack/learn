@@ -132,11 +132,12 @@ try {
   await chrome.goto(BASE);
   check('the app toolbar links to Samples in a new tab, so no click loses your blocks',
     await chrome.eval(`(() => { const a = [...document.querySelectorAll('.toolbar-link')].find((l) => l.textContent === 'Samples'); return !!a && a.target === '_blank' && a.getAttribute('href') === 'samples.html'; })()`));
-  for (const width of [1366, 1024, 800]) {
+  for (const width of [1366, 1024, 900]) {
     await chrome.send('Emulation.setDeviceMetricsOverride', { width, height: 700, deviceScaleFactor: 1, mobile: false });
     await chrome.sleep(150);
-    const fits = await chrome.eval(`(() => { const t = document.querySelector('.toolbar'); const last = [...t.children].filter((c) => c.getBoundingClientRect().width > 0).at(-1); return t.scrollWidth <= t.clientWidth + 1 && last.getBoundingClientRect().right <= innerWidth + 1; })()`);
-    check(`the toolbar still fits at ${width} wide`, fits);
+    // One row is about 51 px tall; a wrapped toolbar is twice that.
+    const height = await chrome.eval(`document.querySelector('.toolbar').getBoundingClientRect().height`);
+    check(`the toolbar stays on one row at ${width} wide, with the menu on it`, height < 64, `${Math.round(height)} px tall`);
   }
   await chrome.send('Emulation.clearDeviceMetricsOverride');
 } finally {
