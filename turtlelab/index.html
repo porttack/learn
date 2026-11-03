@@ -14,6 +14,7 @@
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/site-menu.css">
 </head>
 <body>
   <header class="toolbar">
@@ -66,6 +67,23 @@
     <!-- These open in a new tab, so a click never takes you away from your blocks. -->
     <a class="toolbar-link" href="guide.html" target="_blank" rel="noopener">Guide</a>
     <a class="toolbar-link" href="about.html" target="_blank" rel="noopener">About</a>
+    <!-- The same list as the rest of the site's menu (a test keeps them in step). New tab, so you keep your drawing. -->
+    <div class="site-menu">
+      <input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+      <label for="site-menu-trigger" class="site-menu-icon" aria-label="Site menu" title="The rest of the site">&#9776;</label>
+      <label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+      <nav class="site-menu-panel" aria-label="Site menu">
+        <a href="/" target="_blank" rel="noopener">Home (learn.porttack.com)</a>
+        <a href="/pico/" target="_blank" rel="noopener">MicroPython on Pi Pico and Projects</a>
+        <a href="/electronics101/" target="_blank" rel="noopener">Electronics 101</a>
+        <a href="/working-in-python/" target="_blank" rel="noopener">Working in Python</a>
+        <a href="/python3d/" target="_blank" rel="noopener">Python in 3D</a>
+        <a href="/turtlelab/" target="_blank" rel="noopener">TurtleLab</a>
+        <a href="/cs50-psets/" target="_blank" rel="noopener">CS50 Problems</a>
+        <a href="/unplugged/" target="_blank" rel="noopener">CS Unplugged</a>
+        <a href="/standards/" target="_blank" rel="noopener">Standards</a>
+      </nav>
+    </div>
   </header>
   <main id="stage" class="stage"></main>
   <p id="message" class="message" role="status" aria-live="polite"></p>

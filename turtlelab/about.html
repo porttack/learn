@@ -9,9 +9,29 @@
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/site-menu.css">
 </head>
 <body>
-  <header class="page-head"><a href="./">TurtleLab</a></header>
+  <header class="page-head">
+    <a href="./">TurtleLab</a>
+    <!-- The same list as the rest of the site's menu (a test keeps them in step). -->
+    <div class="site-menu">
+      <input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+      <label for="site-menu-trigger" class="site-menu-icon" aria-label="Site menu" title="The rest of the site">&#9776;</label>
+      <label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+      <nav class="site-menu-panel" aria-label="Site menu">
+        <a href="/">Home (learn.porttack.com)</a>
+        <a href="/pico/">MicroPython on Pi Pico and Projects</a>
+        <a href="/electronics101/">Electronics 101</a>
+        <a href="/working-in-python/">Working in Python</a>
+        <a href="/python3d/">Python in 3D</a>
+        <a href="/turtlelab/">TurtleLab</a>
+        <a href="/cs50-psets/">CS50 Problems</a>
+        <a href="/unplugged/">CS Unplugged</a>
+        <a href="/standards/">Standards</a>
+      </nav>
+    </div>
+  </header>
   <main>
     <h1>About TurtleLab</h1>
 

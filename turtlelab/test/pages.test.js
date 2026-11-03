@@ -39,7 +39,7 @@ test('no page loads anything from another website', () => {
     assert.ok(!/<(script|link|img|iframe|source|video|audio|embed|object)\b[^>]*\s(src|href|data)\s*=\s*"(https?:)?\/\//i.test(html), `${page}: loads an outside file`);
     assert.ok(!/<form\b/i.test(html), `${page}: has a form`);
   }
-  for (const css of ['css/app.css', 'css/pages.css', 'css/fonts.css']) {
+  for (const css of ['css/app.css', 'css/pages.css', 'css/fonts.css', 'css/site-menu.css']) {
     assert.ok(!/@import|url\(\s*['"]?(https?:)?\/\//i.test(read(css)), `${css}: reaches outside`);
   }
 });
@@ -60,6 +60,26 @@ test('the home page card has a banner, which is a PNG the size of the other card
   assert.deepEqual([...banner.subarray(0, 4)], [0x89, 0x50, 0x4e, 0x47]);
   assert.equal(banner.readUInt32BE(16), 1024, 'width');
   assert.equal(banner.readUInt32BE(20), 254, 'height');
+});
+
+test('the menu on every page is exactly the site menu, in the same order', () => {
+  const data = readFileSync(new URL('../_data/site_menu.yml', here), 'utf8');
+  const expected = [...data.matchAll(/^- title: (.+)\n  url: (\S+)/gm)].map((m) => ({ title: m[1].trim(), href: m[2] }));
+  assert.ok(expected.length >= 9, 'read the site menu');
+  assert.ok(expected.some((item) => item.title === 'TurtleLab' && item.href === '/turtlelab/'), 'TurtleLab is in the site menu');
+  for (const page of PAGES) {
+    const panel = read(page).match(/<nav class="site-menu-panel"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+    assert.ok(panel, `${page} has the menu`);
+    const actual = [...panel.matchAll(/<a href="([^"]+)"[^>]*>([^<]+)<\/a>/g)].map((m) => ({ title: m[2].trim(), href: m[1] }));
+    assert.deepEqual(actual, expected, `${page}: the menu has drifted from _data/site_menu.yml`);
+  }
+});
+
+test('in the app, the menu comes after About and its links open in a new tab, so no click loses your drawing', () => {
+  const html = read('index.html');
+  assert.ok(html.indexOf('>About</a>') < html.indexOf('class="site-menu"'), 'the menu is to the right of About');
+  const panel = html.match(/<nav class="site-menu-panel"[^>]*>([\s\S]*?)<\/nav>/)[1];
+  for (const link of panel.match(/<a [^>]*>/g)) assert.match(link, /target="_blank" rel="noopener"/, link);
 });
 
 test('every page says what it is: language, viewport, and a title with the app name', () => {

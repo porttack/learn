@@ -15,6 +15,9 @@ body {
 }
 
 .page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 0.6rem 1rem;
   background: #4da6ff;
 }

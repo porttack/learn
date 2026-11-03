@@ -1067,6 +1067,30 @@ try {
   }
   check('a saved picture carries the words of its notes', withNotes !== null && noteFileBefore >= 1);
 
+  // ---- The site menu (the hamburger) ---------------------------------------------------------------
+  await chrome.goto(BASE + '?speed=instant');
+  const aboutLink = await chrome.centerOf('a.toolbar-link[href="about.html"]');
+  const hamburger = await chrome.centerOf('.site-menu-icon');
+  check('the hamburger menu sits to the right of About', hamburger.x > aboutLink.x + aboutLink.w / 2 && near(hamburger.y, aboutLink.y, 25),
+    `About at ${Math.round(aboutLink.x)}, menu at ${Math.round(hamburger.x)}`);
+  const panelOpen = () => chrome.eval(`getComputedStyle(document.querySelector('.site-menu-panel')).display !== 'none'`);
+  check('the menu starts closed', !(await panelOpen()));
+  check('and while it is closed nothing covers the page: the palette button is what gets clicked',
+    await chrome.eval(`document.elementFromPoint(40, 95)?.closest('.palette-button') !== null`));
+  await chrome.click(hamburger.x, hamburger.y);
+  check('clicking the hamburger opens it, with TurtleLab and the rest of the site in it', (await panelOpen()) &&
+    (await chrome.eval(`[...document.querySelectorAll('.site-menu-panel a')].map((a) => a.textContent.trim()).join('|')`)).includes('TurtleLab|CS50 Problems'));
+  const panelBox = await chrome.eval(`(() => { const r = document.querySelector('.site-menu-panel').getBoundingClientRect(); return { right: r.right, bottom: r.bottom, left: r.left, width: window.innerWidth, height: window.innerHeight }; })()`);
+  check('the open menu fits on the screen', panelBox.left >= 0 && panelBox.right <= panelBox.width && panelBox.bottom <= panelBox.height, JSON.stringify(panelBox));
+  await chrome.click(400, 500);
+  check('clicking anywhere else closes it', !(await panelOpen()));
+  await chrome.click(hamburger.x, hamburger.y);
+  check('and the menu is above the blocks and palettes, so its links can be clicked', await chrome.eval(`(() => { const a = document.querySelector('.site-menu-panel a'); const r = a.getBoundingClientRect(); return document.elementFromPoint(r.left + 20, r.top + r.height / 2).closest('.site-menu-panel') !== null; })()`));
+  await chrome.goto(BASE + 'guide.html');
+  const pageIcon = await chrome.centerOf('.site-menu-icon');
+  await chrome.click(pageIcon.x, pageIcon.y);
+  check('the same menu works on the Guide page', await chrome.eval(`getComputedStyle(document.querySelector('.site-menu-panel')).display !== 'none' && document.querySelectorAll('.site-menu-panel a').length >= 9`));
+
   // ---- No backend: what the app and its pages really do ----------------------------------------------
   // data: and blob: addresses are made from data already in the page, so no network is involved.
   const own = (r) => r.method === 'GET' && (r.url.startsWith(BASE) || r.url.startsWith('data:') || r.url.startsWith('blob:'));

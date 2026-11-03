@@ -1,0 +1,80 @@
+/*
+ * TurtleLab: the site menu (the hamburger), in the toolbar and page headers.
+ * Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
+ * See COPYING in the folder above this one.
+ *
+ * A copy of the idea behind the rest of the site's menu, in plain CSS with no
+ * script: a hidden checkbox remembers whether the menu is open, the hamburger
+ * is its label, and a see-through cover over the page (also a label for the
+ * same checkbox) closes the menu when you click anywhere else.
+ *
+ * Every rule starts with .site-menu on purpose: the toolbar has a general rule
+ * for labels (.toolbar label) that would otherwise win and leave the cover
+ * over the page all the time, blocking every click.
+ */
+
+.site-menu {
+  position: relative;
+  z-index: 30; /* above the palettes, notes and everything else in the app */
+}
+
+.site-menu .site-menu-trigger {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.site-menu .site-menu-icon {
+  position: relative;
+  z-index: 2;
+  display: block;
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  cursor: pointer;
+  user-select: none;
+}
+
+.site-menu .site-menu-icon:hover { background: rgba(255, 255, 255, 0.25); }
+
+.site-menu .site-menu-trigger:focus-visible ~ .site-menu-icon { outline: 2px solid #fff; }
+
+.site-menu .site-menu-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  cursor: default;
+}
+
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+
+.site-menu .site-menu-panel {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 2;
+  min-width: 15rem;
+  margin-top: 0.35rem;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+
+.site-menu .site-menu-panel a {
+  display: block;
+  padding: 0.55rem 1rem;
+  color: #1b1f23;
+  font-weight: 400;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-menu .site-menu-panel a:hover { background: #e9edf1; }
