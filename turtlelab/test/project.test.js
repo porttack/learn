@@ -241,3 +241,36 @@ test('Run ignores a stack that is only a note, and starts elsewhere', () => {
   assert.equal(findRunStack({ stacks: [note, program] }).stack, program, 'a note higher up the page does not count');
   assert.deepEqual(findRunStack({ stacks: [note] }), { stack: null, startCount: 0 });
 });
+
+// ---- if else in project files -----------------------------------------------------------------------
+
+const ifElseProject = (block) => ({ app: FORMAT_ID, version: 1, stacks: [{ x: 0, y: 0, blocks: [block] }] });
+
+test('an if else keeps both of its lists through validation', () => {
+  const block = { op: 'ifelse', args: [null], body: [{ op: 'forward', args: [1] }], elseBody: [{ op: 'back', args: [1] }] };
+  const result = validateProject(ifElseProject(block));
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.project.stacks[0].blocks[0], block);
+});
+
+test('an else list on a block that has no else is quietly dropped', () => {
+  const sneaky = { op: 'repeat', args: [2], body: [], elseBody: [{ op: 'forward', args: [1] }] };
+  assert.deepEqual(validateProject(ifElseProject(sneaky)).project.stacks[0].blocks[0], { op: 'repeat', args: [2], body: [] });
+  const plainIf = { op: 'if', args: [null], elseBody: [{ op: 'forward', args: [1] }] };
+  assert.equal('elseBody' in validateProject(ifElseProject(plainIf)).project.stacks[0].blocks[0], false);
+});
+
+test('a damaged else list is refused, and unknown blocks inside it are refused too', () => {
+  assert.equal(validateProject(ifElseProject({ op: 'ifelse', args: [null], elseBody: 'oops' })).ok, false);
+  const result = validateProject(ifElseProject({ op: 'ifelse', args: [null], elseBody: [{ op: 'launchRockets' }] }));
+  assert.equal(result.ok, false);
+  assert.match(result.error, /launchRockets/);
+});
+
+test('blocks inside the else mouth are found by walkBlocks and usesBoxes', () => {
+  const block = { op: 'ifelse', args: [null], body: [], elseBody: [{ op: 'store2', args: [3] }] };
+  const seen = [];
+  walkBlocks([block], (b) => seen.push(b.op));
+  assert.deepEqual(seen, ['ifelse', 'store2']);
+  assert.equal(usesBoxes({ stacks: [{ x: 0, y: 0, blocks: [block] }] }), true);
+});

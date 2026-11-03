@@ -5,7 +5,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { BLOCKS, PALETTES, NOTE_MAX_CHARS } from '../js/core/blocks-spec.js';
+import { BLOCKS, PALETTES, NOTE_MAX_CHARS, BODY_KEYS, mouthCount } from '../js/core/blocks-spec.js';
 
 const entries = Object.entries(BLOCKS);
 
@@ -84,4 +84,26 @@ test('there is a Notes palette with a sticky note in it, and a note has no socke
   assert.equal(BLOCKS.note.kind, 'note');
   assert.deepEqual(BLOCKS.note.args, []);
   assert.equal(NOTE_MAX_CHARS, 300);
+});
+
+test('clamps have one or two mouths, and the labels beside mouths fit', () => {
+  for (const [op, spec] of entries) {
+    if (spec.kind !== 'clamp') {
+      assert.equal(spec.mouths, undefined, `${op}: only clamps have mouths`);
+      assert.equal(spec.mouthLabels, undefined, `${op}: only clamps have mouth labels`);
+      continue;
+    }
+    const mouths = spec.mouths ?? 1;
+    assert.ok([1, 2].includes(mouths), `${op}: ${mouths} mouths`);
+    assert.ok(BODY_KEYS.length >= mouths, `${op}: a place to keep each mouth's blocks`);
+    if (spec.mouthLabels) {
+      assert.equal(spec.args[0]?.type, 'boolean', `${op}: mouth labels go with the yes-or-no clamp shape`);
+      assert.equal(spec.mouthLabels.length, mouths, `${op}: one label per mouth`);
+    }
+  }
+  assert.equal(BLOCKS.ifelse.mouths, 2);
+  assert.deepEqual(BLOCKS.ifelse.mouthLabels, ['', 'else']);
+  assert.equal(mouthCount(BLOCKS.ifelse), 2);
+  assert.equal(mouthCount(BLOCKS.repeat), 1);
+  assert.equal(mouthCount(BLOCKS.forward), 0);
 });

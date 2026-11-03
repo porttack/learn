@@ -22,7 +22,7 @@
 //   reporter [ plug (its left edge), socket 0, socket 1, ... ]
 
 import { SVG } from './blockfactory.js';
-import { BLOCKS } from '../core/blocks-spec.js';
+import { BLOCKS, BODY_KEYS, mouthCount } from '../core/blocks-spec.js';
 import { PALETTE_COLORS, NUMBER_COLORS } from './palette-colors.js';
 import { formatNumber } from '../core/format.js';
 
@@ -58,9 +58,22 @@ function escapeXml(text) {
 
 let nextId = 1;
 
-/** Fill in the label placeholders the shape generator leaves in its SVG. */
-function withLabels(markup, label, argLabels) {
+/**
+ * Fill in the label placeholders the shape generator leaves in its SVG. The
+ * generator draws the small labels beside sockets in a small font. The words
+ * between the mouths of an if else (else) are keywords a student has to read,
+ * so with `fullSize` they are drawn in the same font as the block's name, and
+ * moved down so they still sit in the middle of the band they label.
+ */
+function withLabels(markup, label, argLabels, fullSize = false) {
   let out = markup.replace('block_label', () => escapeXml(label));
+  if (fullSize) {
+    const size = FONT_SIZE; // the block's own text is drawn at this size inside the scaled shape
+    out = out.replace(
+      /(<text class="block-text" font-size=")([\d.]+)("[^>]*><tspan x="-?\d+" y=")(-?\d+)(">arg_label_\d+<\/tspan>)/g,
+      (all, head, small, middle, y, tail) => `${head}${size}${middle}${Math.round(Number(y) + (size - small) * 0.35)}${tail}`,
+    );
+  }
   argLabels.forEach((text, i) => {
     out = out.replace(`arg_label_${i + 1}`, () => escapeXml(text));
   });
@@ -91,12 +104,13 @@ function makeShape(spec, colors, extra) {
   shape.setScale(SCALE);
   shape.setFontSize(FONT_SIZE);
   shape.setColors([colors.fill, colors.stroke]);
-  shape.setExpand(extra.x, extra.ys[0] || 0, 0, spec.kind === 'clamp' ? extra.mouth : extra.ys[1] || 0);
+  shape.setExpand(extra.x, extra.ys[0] || 0, 0, spec.kind === 'clamp' ? 0 : extra.ys[1] || 0);
+  if (spec.kind === 'clamp') shape.setMouthExtras(extra.mouths);
   shape.setExpandYs(extra.ys);
   const sockets = spec.args.map(() => true);
   let markup;
   if (spec.kind === 'clamp') {
-    shape.setClampCount(1);
+    shape.setClampCount(mouthCount(spec));
     if (spec.args[0]?.type === 'boolean') {
       // The pointed socket of an if: the shape draws it itself, so it has no round sockets.
       shape.setBoolean(true);
@@ -118,8 +132,11 @@ function makeShape(spec, colors, extra) {
     if (spec.endsStack) shape.setTail(true);
     markup = shape.basicBlock();
   }
-  const argLabels = spec.args.map((arg) => arg.label ?? '');
-  return { shape, markup: withLabels(markup, spec.label, argLabels) };
+  // For a clamp with a yes-or-no socket (if, if else) the generator's small labels sit
+  // beside the mouths, not the sockets, so those are the words to give it.
+  const mouthWords = spec.kind === 'clamp' && spec.args[0]?.type === 'boolean';
+  const argLabels = mouthWords ? spec.mouthLabels ?? [] : spec.args.map((arg) => arg.label ?? '');
+  return { shape, markup: withLabels(markup, spec.label, argLabels, mouthWords) };
 }
 
 /** How much wider than its minimum a block must be for its labels to fit. */
@@ -253,7 +270,7 @@ function layoutRow(node, spec, colors) {
   node.docks = [ownPlug, ...socketAt.map((at) => [at.x + plug[0], at.y + plug[1]])];
   node.slot = node.docks[0];
   node.tab = node.docks[node.docks.length - 1];
-  node.mouth = null;
+  node.mouths = [];
   node.argPos = socketAt.map((at) => ({ x: at.x, y: at.y }));
   return node;
 }
@@ -324,7 +341,7 @@ function layoutNote(node, spec, colors) {
   node.docks = [[0, 0], [0, 0]];
   node.slot = [0, 0];
   node.tab = [0, 0];
-  node.mouth = null;
+  node.mouths = [];
   node.argPos = [];
   return node;
 }
@@ -337,7 +354,7 @@ function layoutNote(node, spec, colors) {
 export function layoutBlock(block) {
   const spec = BLOCKS[block.op];
   const colors = PALETTE_COLORS[spec.palette];
-  const node = { id: nextId++, block, spec, kind: spec.kind, args: [], body: [], ax: 0, ay: 0 };
+  const node = { id: nextId++, block, spec, kind: spec.kind, args: [], bodies: [], ax: 0, ay: 0 };
   if (spec.kind === 'note') return layoutNote(node, spec, colors);
 
   // What is in each socket: a number box, another block plugged in, or (for
@@ -354,7 +371,11 @@ export function layoutBlock(block) {
 
   // Make room for any socket content taller than a number box.
   const heightOf = (arg) => (arg.child ? arg.child.h : arg.literal ? arg.literal.h : 0);
-  const extra = { x: 0, ys: node.args.map((arg) => Math.max(0, heightOf(arg) - BOX_HEIGHT) / SCALE), mouth: 0 };
+  const extra = {
+    x: 0,
+    ys: node.args.map((arg) => Math.max(0, heightOf(arg) - BOX_HEIGHT) / SCALE),
+    mouths: new Array(mouthCount(spec)).fill(0),
+  };
 
   // Pick the width from the smallest version of this shape.
   const smallest = makeShape(spec, colors, extra).shape;
@@ -362,17 +383,23 @@ export function layoutBlock(block) {
 
   let made = makeShape(spec, colors, extra);
 
+  node.bodyPos = [];
   if (spec.kind === 'clamp') {
-    // Stack the blocks that go inside the mouth, then make the mouth big
-    // enough to hold them.
-    node.body = (block.body ?? []).map(layoutBlock);
-    const mouth = made.shape.docks[1 + spec.args.length];
-    node.bodyPos = chainPositions(node.body, mouth);
-    if (node.body.length > 0) {
-      const last = node.body[node.body.length - 1];
-      const bodyBottom = node.bodyPos[node.body.length - 1].y + last.h;
-      extra.mouth = Math.max(0, bodyBottom - mouth[1] - EMPTY_MOUTH) / SCALE;
-      made = makeShape(spec, colors, extra);
+    // Stack the blocks that go inside each mouth, one mouth at a time from the
+    // top, and make each mouth big enough to hold what is in it. (Making an
+    // earlier mouth bigger pushes the later ones down, which is why they go in order.)
+    for (let k = 0; k < mouthCount(spec); k += 1) {
+      const children = (block[BODY_KEYS[k]] ?? []).map(layoutBlock);
+      const mouth = made.shape.docks[1 + spec.args.length + k];
+      const positions = chainPositions(children, mouth);
+      node.bodies.push(children);
+      node.bodyPos.push(positions);
+      if (children.length > 0) {
+        const last = children[children.length - 1];
+        const bodyBottom = positions[children.length - 1].y + last.h;
+        extra.mouths[k] = Math.max(0, bodyBottom - mouth[1] - EMPTY_MOUTH) / SCALE;
+        made = makeShape(spec, colors, extra);
+      }
     }
   }
 
@@ -383,7 +410,7 @@ export function layoutBlock(block) {
   node.docks = shape.docks;
   node.slot = shape.docks[0]; // top connection (commands) or plug (reporters)
   node.tab = shape.docks[shape.docks.length - 1]; // bottom connection
-  node.mouth = spec.kind === 'clamp' ? shape.docks[1 + spec.args.length] : null;
+  node.mouths = shape.docks.slice(1 + spec.args.length, 1 + spec.args.length + mouthCount(spec));
 
   // Where each socket's content sits, relative to this block.
   node.argPos = node.args.map((arg, i) => {
@@ -426,11 +453,13 @@ function placeNode(node, x, y, home) {
     arg.index = i;
     if (arg.child) placeNode(arg.child, arg.ax, arg.ay, { stack: home.stack, argOf: node, argIndex: i });
   });
-  node.body.forEach((child, j) => {
-    placeNode(child, x + node.bodyPos[j].x, y + node.bodyPos[j].y, {
-      stack: home.stack,
-      list: node.block.body,
-      index: j,
+  node.bodies.forEach((children, k) => {
+    children.forEach((child, j) => {
+      placeNode(child, x + node.bodyPos[k][j].x, y + node.bodyPos[k][j].y, {
+        stack: home.stack,
+        list: node.block[BODY_KEYS[k]],
+        index: j,
+      });
     });
   });
 }
@@ -450,7 +479,7 @@ export function walkNodes(layout, visit) {
   const walk = (node) => {
     visit(node);
     node.args.forEach((arg) => arg.child && walk(arg.child));
-    node.body.forEach(walk);
+    node.bodies.forEach((children) => children.forEach(walk));
   };
   layout.nodes.forEach(walk);
 }
@@ -498,7 +527,7 @@ export function renderStack(layout, register) {
         register(arg.literal.id, { type: 'literal', owner: node, index: arg.index, arg });
       }
     });
-    node.body.forEach(renderNode);
+    node.bodies.forEach((children) => children.forEach(renderNode));
   };
   layout.nodes.forEach(renderNode);
   layout.el = group;

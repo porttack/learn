@@ -384,7 +384,7 @@ export class Workspace {
         attachAfter(project, carried, target.node.list, target.node.index);
         break;
       case 'inside':
-        attachInside(project, carried, target.node.block);
+        attachInside(project, carried, target.node.block, target.mouth);
         break;
       case 'above': {
         // The blocks go on top, but the stack that was already there should
@@ -450,7 +450,7 @@ export class Workspace {
         } else if (node.kind !== 'reporter' && node.kind !== 'note' && canHang) {
           // Nothing goes below a block that ends a stack (like stop).
           if (!node.spec.endsStack) consider(at(layout, node, node.tab), topPoint, { kind: 'after', node });
-          if (node.mouth) consider(at(layout, node, node.mouth), topPoint, { kind: 'inside', node });
+          node.mouths.forEach((mouth, k) => consider(at(layout, node, mouth), topPoint, { kind: 'inside', node, mouth: k }));
         }
       });
       // Blocks can go on top of a stack, unless it starts with a hat (its

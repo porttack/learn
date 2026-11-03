@@ -10,7 +10,7 @@
 // A project is { stacks: [ { x, y, blocks: [...] } ] }. A block is
 // { op, args?, body? }. See project.js for the full format.
 
-import { BLOCKS } from './blocks-spec.js';
+import { BLOCKS, BODY_KEYS, mouthCount } from './blocks-spec.js';
 
 /** A copy of a block, and everything inside it, that shares nothing with it. */
 export function cloneBlock(block) {
@@ -21,7 +21,10 @@ export function cloneBlock(block) {
 export function newBlock(op) {
   const spec = BLOCKS[op];
   const block = { op, args: spec.args.map((arg) => arg.default ?? null) };
-  if (spec.kind === 'clamp') block.body = [];
+  // Every mouth of a clamp starts out empty.
+  BODY_KEYS.slice(0, mouthCount(spec)).forEach((key) => {
+    block[key] = [];
+  });
   if (spec.kind === 'note') block.text = '';
   return block;
 }
@@ -70,11 +73,15 @@ export function attachAfter(project, carried, list, index) {
   list.splice(index + 1, 0, ...carried.blocks);
 }
 
-/** Snap a carried stack into the mouth of a clamp block (like repeat), at the top. */
-export function attachInside(project, carried, clampBlock) {
+/**
+ * Snap a carried stack into a mouth of a clamp block (like repeat), at the top.
+ * `mouth` is 0 for the first mouth, and 1 for the else of an if else.
+ */
+export function attachInside(project, carried, clampBlock, mouth = 0) {
   removeStack(project, carried);
-  clampBlock.body ??= [];
-  clampBlock.body.unshift(...carried.blocks);
+  const key = BODY_KEYS[mouth];
+  clampBlock[key] ??= [];
+  clampBlock[key].unshift(...carried.blocks);
 }
 
 /**

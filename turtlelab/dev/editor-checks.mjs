@@ -55,6 +55,10 @@ async function openPalette(title) {
  * the middle of a clamp is its empty mouth, so a fixed offset would miss.
  */
 async function dragFromPalette(op, left, top) {
+  // The flyout scrolls up and down, and the longer Flow palette no longer fits
+  // in a short window, so bring the block into view first.
+  await chrome.eval(`document.querySelector('.flyout .stack[data-op=${op}]')?.scrollIntoView({ block: 'nearest' })`);
+  await chrome.sleep(50);
   const rect = await flyoutRect(op);
   const press = await chrome.eval(`(() => {
     const stack = document.querySelector('.flyout .stack[data-op=${op}]');
@@ -285,7 +289,7 @@ try {
 
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Flow');
-  check('the Flow palette lists its six blocks', (await count('.flyout .stack')) === 6);
+  check('the Flow palette lists its seven blocks', (await count('.flyout .stack')) === 7);
   await dragFromPalette('start', 450, 300);
   const startBlock = await nodeRect('start');
   await openPalette('Turtle');
@@ -505,6 +509,53 @@ try {
     `${await stacks()} stacks`);
   check('the if grows tall enough to hold it', lessBlock.bottom <= ifAfter.bottom + 1);
   await chrome.screenshot(SHOTS + 'editor-if-less.png');
+
+  // ---- if else: two mouths, and only one of them runs -------------------------------------------
+  // Build "if (condition) forward, else back" by dragging, then run it.
+  const buildIfElse = async (conditionOp) => {
+    await chrome.goto(BASE + '?speed=instant');
+    await openPalette('Flow');
+    await dragFromPalette('ifelse', 420, 100);
+    const empty = await nodeRect('ifelse');
+    await openPalette('Turtle');
+    // With both mouths empty, the else mouth starts 63 px below the first one.
+    await dragFromPalette('back', empty.left + 13.5 + 4, empty.top + 126 + 4);
+    const elsed = await nodeRect('back');
+    await dragFromPalette('forward', empty.left + 13.5 + 4, empty.top + 63 + 4);
+    const first = await nodeRect('forward');
+    const grown = await nodeRect('ifelse');
+    await openPalette('Math');
+    await dragFromPalette(conditionOp, grown.left + grown.w - 12, grown.top + 2);
+    return { empty, elsed, first, grown };
+  };
+
+  const yes = await buildIfElse('equal');
+  check('both mouths of an if else take a block, and they stay one stack', (await stacks()) === 1 && (await count('.workspace .node.command')) === 2, `${await stacks()} stacks`);
+  check('the first mouth holds forward, above the else mouth holding back', yes.first.bottom <= (await nodeRect('back')).top && (await nodeRect('forward')).top < (await nodeRect('back')).top);
+  check('the else label sits between the two mouths', await chrome.eval(`(() => {
+    const t = [...document.querySelectorAll('.workspace .node.clamp text')].find((x) => x.textContent === 'else');
+    if (!t) return false;
+    const y = t.getBoundingClientRect().top + t.getBoundingClientRect().height / 2;
+    const forward = [...document.querySelectorAll(${JSON.stringify(BLOCK_NODES)})].find((n) => n.textContent.trim() === 'forward').getBoundingClientRect();
+    const back = [...document.querySelectorAll(${JSON.stringify(BLOCK_NODES)})].find((n) => n.textContent.trim() === 'back').getBoundingClientRect();
+    return y > forward.bottom && y < back.top;
+  })()`));
+  await chrome.screenshot(SHOTS + 'editor-ifelse.png');
+  await tapBlockNamed('ifelse');
+  await chrome.sleep(300);
+  check('if else with a true condition runs only the first mouth (forward goes up)', (await stepsUp()) > 5, `${(await stepsUp()).toFixed(0)}px up`);
+
+  await buildIfElse('less');
+  await tapBlockNamed('ifelse');
+  await chrome.sleep(300);
+  check('if else with a false condition runs only the else mouth (back goes down)', (await stepsUp()) < -5, `${(await stepsUp()).toFixed(0)}px up (negative = down)`);
+
+  await chrome.goto(BASE + '?demo=ifelseyes&speed=instant');
+  await pressRun();
+  check('the true demo goes 100 steps up', near(await stepsUp(), 100 * scale, 3), `${(await stepsUp()).toFixed(0)}px up`);
+  await chrome.goto(BASE + '?demo=ifelseno&speed=instant');
+  await pressRun();
+  check('the false demo goes 100 steps down', near(-(await stepsUp()), 100 * scale, 3), `${(await stepsUp()).toFixed(0)}px up (negative = down)`);
 
   const forwardSocket = async () => {
     await chrome.goto(BASE + '?speed=instant');

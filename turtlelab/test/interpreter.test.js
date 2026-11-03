@@ -420,3 +420,55 @@ test('a note does nothing when it is run, but still takes a step', () => {
   assert.equal(turtle.y, 5);
   assert.equal(steps[0], note);
 });
+
+// ---- if else -------------------------------------------------------------------------------------
+
+const ifElse = (condition, thenBlocks, elseBlocks) => ({ op: 'ifelse', args: [condition], body: thenBlocks, elseBody: elseBlocks });
+
+test('if else runs the first mouth when the condition is true, and only that one', () => {
+  const { turtle } = runWith([ifElse(op('less', 1, 2), [forwardBy(10)], [forwardBy(1000)])]);
+  assert.equal(turtle.y, 10);
+});
+
+test('if else runs the else mouth when the condition is false, and only that one', () => {
+  const { turtle } = runWith([ifElse(op('less', 2, 1), [forwardBy(1000)], [block('back', 10)])]);
+  assert.equal(turtle.y, -10);
+});
+
+test('if else always does one or the other, even with an empty mouth', () => {
+  assert.equal(runWith([ifElse(op('less', 2, 1), [forwardBy(5)], [])]).turtle.y, 0);
+  assert.equal(runWith([ifElse(op('less', 1, 2), [], [forwardBy(5)])]).turtle.y, 0);
+  const noElse = { op: 'ifelse', args: [op('less', 2, 1)], body: [forwardBy(5)] };
+  assert.equal(runWith([noElse]).turtle.y, 0, 'a missing else list is the same as an empty one');
+});
+
+test('if else takes a step of its own, so it can be seen', () => {
+  const block = ifElse(op('less', 1, 2), [], []);
+  assert.equal(runWith([block]).steps[0], block);
+});
+
+test('an if else with nothing plugged in is an error that names it', () => {
+  const bad = { op: 'ifelse', args: [null], body: [], elseBody: [] };
+  assert.throws(() => runWith([bad]), (e) => e instanceof RunError && e.block === bad && /yes or no/.test(e.message));
+});
+
+test('stop inside the else mouth ends the whole program', () => {
+  const { turtle } = runWith([ifElse(op('less', 2, 1), [], [forwardBy(3), { op: 'stop', args: [] }, forwardBy(100)]), forwardBy(1000)]);
+  assert.equal(turtle.y, 3);
+});
+
+test('if else blocks nest, and a box decides which way each one goes', () => {
+  // Counting 1 to 6: even numbers go forward 10, odd numbers go back 1.
+  const { turtle } = runWith([
+    block('store1', 0),
+    {
+      op: 'repeat',
+      args: [6],
+      body: [
+        block('store1', op('add', { op: 'box1' }, 1)),
+        ifElse(op('equal', op('mod', { op: 'box1' }, 2), 0), [forwardBy(10)], [block('back', 1)]),
+      ],
+    },
+  ]);
+  assert.equal(turtle.y, 3 * 10 - 3 * 1);
+});

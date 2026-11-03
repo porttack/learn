@@ -33,6 +33,11 @@
 //            reads left to right. (Blocks without a layout stack their
 //            sockets down the right edge.)
 //   endsStack  true for a block with nothing below it (like stop)
+//   mouths   for a clamp: how many C-shaped holes it has (1 if not given).
+//            if else has 2. The blocks in each live in the block's `body`
+//            and `elseBody` (see BODY_KEYS).
+//   mouthLabels  for a clamp with a yes-or-no socket: the little word beside
+//            each mouth ('' for none), like the 'else' of if else.
 //   help     the one-line tip shown when you press and hold the block
 
 export const PALETTES = [
@@ -43,6 +48,14 @@ export const PALETTES = [
   { id: 'myblocks', label: 'My Blocks' },
   { id: 'notes', label: 'Notes' },
 ];
+
+/** Where the blocks inside a clamp's mouths are kept in a block, mouth by mouth. */
+export const BODY_KEYS = ['body', 'elseBody'];
+
+/** How many mouths a block has (0 if it is not a clamp). */
+export function mouthCount(spec) {
+  return spec.kind === 'clamp' ? spec.mouths ?? 1 : 0;
+}
 
 /** The most characters a sticky note can hold. */
 export const NOTE_MAX_CHARS = 300;
@@ -248,6 +261,15 @@ export const BLOCKS = {
     label: 'if',
     args: [{ type: 'boolean' }],
     help: 'Runs the blocks inside only if the yes-or-no block plugged into it is true. Plug a less than, greater than or equals block into it.',
+  },
+  ifelse: {
+    palette: 'flow',
+    kind: 'clamp',
+    mouths: 2,
+    label: 'if',
+    mouthLabels: ['', 'else'],
+    args: [{ type: 'boolean' }],
+    help: 'Runs the blocks in the top mouth if the yes-or-no block is true, and the blocks under else if it is false. It always does one or the other.',
   },
   wait: {
     palette: 'flow',

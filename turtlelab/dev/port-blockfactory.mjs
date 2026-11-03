@@ -92,6 +92,11 @@ const oldStretch = `                if (i === 0) {
                 }`;
 if (body.split(oldStretch).length !== 3) throw new Error('expected the socket stretch code exactly twice (basicBlock and basicClamp)');
 body = body.split(oldStretch).join('                svg += this._rLineTo(0, this._innieExtra(i));');
+patch('mouth extras field', '        this._expandYs = null; // extra height under each socket (see setExpandYs)\n',
+  '        this._expandYs = null; // extra height under each socket (see setExpandYs)\n        this._mouthExtras = null; // extra height inside each mouth of a clamp (see setMouthExtras)\n');
+patch('clamp mouth height',
+  '            svg += this._rLineTo(0, this._expandY2);\n            svg += this._iCorner(1, 1, 90, 0, 0, true, true);',
+  '            svg += this._rLineTo(0, this._mouthExtra(clamp));\n            svg += this._iCorner(1, 1, 90, 0, 0, true, true);');
 patch('boolean clamp header',
   '            svg += this._rLineTo(0, 2 * this._padding + this._strokeWidth);\n            svg += this._doBoolean();',
   '            svg += this._rLineTo(0, 2 * this._padding + this._strokeWidth + this._innieExtra(0));\n            svg += this._doBoolean();');
@@ -107,6 +112,28 @@ body += `
      */
     setExpandYs(list) {
         this._expandYs = list;
+    }
+
+    /**
+     * Added for TurtleLab. Extra height, in the same units as setExpand,
+     * inside each mouth of a clamp, so an if else can have a tall stack in one
+     * mouth and an empty other one. One entry per mouth.
+     * @public
+     * @param {number[]} list
+     * @returns {void}
+     */
+    setMouthExtras(list) {
+        this._mouthExtras = list;
+    }
+
+    /**
+     * Added for TurtleLab. The extra height inside mouth number i.
+     * @private
+     * @param {number} i
+     * @returns {number}
+     */
+    _mouthExtra(i) {
+        return this._mouthExtras ? this._mouthExtras[i] || 0 : this._expandY2;
     }
 
     /**
@@ -151,6 +178,8 @@ const header = `// Block shape generator.
 //     with a C-shaped mouth, like repeat and if);
 //   * added setExpandYs and _innieExtra, so a tall block plugged into any
 //     socket (not just the first two) makes room for itself;
+//   * added setMouthExtras and _mouthExtra, so each mouth of a clamp can be
+//     its own height (the original made every mouth the same);
 //   * fills, strokes and text are written as SVG attributes instead of
 //     style="..." attributes, because TurtleLab's Content Security Policy
 //     does not allow inline styles;

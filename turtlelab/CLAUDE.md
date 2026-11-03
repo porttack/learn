@@ -163,12 +163,23 @@ the dashes out of them too for consistency.
   app's color and shade readers). A gray is equal red, green and blue.
   The Pen palette puts all four readers at the bottom, like the Turtle
   palette.
-- **Flow.** `start` (hat), `repeat`, `forever`, `if`, `wait`, `stop`. `stop`
+- **Flow.** `start` (hat), `repeat`, `forever`, `if`, `ifelse`, `wait`, `stop`. `stop`
   ends the whole program (inside a My Block it will leave just that block):
   it has a tail, so nothing snaps below it, and it cannot go on top of a stack.
   `forever` and every loop yield each lap, so none can freeze the tab.
   `wait` takes tenths of a second and is **real time even at Instant speed**;
   Stop cuts it short. (`Wait` is yielded to the scheduler, which sleeps.)
+  `ifelse` is the one block with **two mouths** (spec `mouths: 2`, with
+  `mouthLabels: ['', 'else']`). A block's mouths are kept in the project as
+  `body` and `elseBody` (`BODY_KEYS` in blocks-spec.js; `walkBlocks`,
+  `cleanBlock`, `attachInside(..., mouth)` and the view all go through it, so
+  a third mouth would be a one-line change). The generator draws a clamp's
+  mouths itself; `port-blockfactory.mjs` patches in `setMouthExtras` so each
+  mouth grows on its own when something is put in it. The word `else` is
+  drawn in the block's own font size, not the small caption size.
+  The Flow flyout scrolls up and down; on a short window `stop` is below the
+  fold, and `dragFromPalette` in editor-checks scrolls a block into view
+  first.
 - **Math blocks read left to right.** `[ 3 ] + [ 4 ]`, `[ 3 ] < [ 4 ]`,
   `random [ 1 ] [ 10 ]`: the sockets sit side by side inside the block (spec
   field `layout`: `infix` puts the label between them, `prefix` before). A
@@ -265,7 +276,7 @@ numbers, tap to run, run highlight and error outline, Roboto vendored).
 **b2** (undo and redo with buttons and keys, zoom and pan with buttons,
 wheel, drag and pinch, Shift-drag and press-and-hold copying, help bubble).
 **Boxes** (variables), done early at the teacher's request.
-**d** (the rest of Flow: forever, if, wait, stop; the Math palette; yes-or-no
+**d** (the rest of Flow: forever, if, if else, wait, stop; the Math palette; yes-or-no
 shapes; print). **c** (Save as PNG with the blocks inside, Open, drag and drop,
 New, autosave). The public pages (About, Privacy, Guide) are done (they go live when `learn` is pushed).
 Not yet: the `to` block that makes your own blocks (e); SVG export for laser

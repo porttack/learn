@@ -21,7 +21,7 @@
 // The "app" name is the file format's name. It stays the same even if the
 // app is renamed, so old saved pictures keep opening.
 
-import { BLOCKS, NOTE_MAX_CHARS, isKnownOp } from './blocks-spec.js';
+import { BLOCKS, BODY_KEYS, NOTE_MAX_CHARS, isKnownOp, mouthCount } from './blocks-spec.js';
 
 export const FORMAT_ID = 'porttack-turtle';
 export const FORMAT_VERSION = 1;
@@ -100,7 +100,9 @@ export function walkBlocks(blocks, visit) {
     for (const arg of block.args ?? []) {
       if (arg !== null && typeof arg === 'object') walkBlocks([arg], visit);
     }
-    if (block.body) walkBlocks(block.body, visit);
+    for (const key of BODY_KEYS) {
+      if (block[key]) walkBlocks(block[key], visit);
+    }
   }
 }
 
@@ -150,10 +152,14 @@ function cleanBlock(block, depth) {
     if (!Array.isArray(block.args)) throw new ProjectError('A block in this file is damaged.');
     clean.args = block.args.map((arg) => cleanArg(arg, depth + 1));
   }
-  if (block.body !== undefined) {
-    if (!Array.isArray(block.body)) throw new ProjectError('A block in this file is damaged.');
-    clean.body = block.body.map((inner) => cleanBlock(inner, depth + 1));
-  }
+  // The blocks inside each mouth. Only a block that has that mouth can hold them
+  // (so an else list on a block that has no else is quietly dropped).
+  const mouths = mouthCount(BLOCKS[block.op]);
+  BODY_KEYS.forEach((key, k) => {
+    if (block[key] === undefined || (k > 0 && k >= mouths)) return;
+    if (!Array.isArray(block[key])) throw new ProjectError('A block in this file is damaged.');
+    clean[key] = block[key].map((inner) => cleanBlock(inner, depth + 1));
+  });
   return clean;
 }
 

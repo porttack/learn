@@ -223,3 +223,40 @@ test('a note can be picked up, copied and put back like any stack', () => {
   assert.deepEqual(cloneBlock(note), note);
   assert.notEqual(cloneBlock(note), note);
 });
+
+test('a new if else has a yes-or-no socket and two empty mouths', () => {
+  assert.deepEqual(newBlock('ifelse'), { op: 'ifelse', args: [null], body: [], elseBody: [] });
+  assert.deepEqual(newBlock('repeat'), { op: 'repeat', args: [4], body: [] }, 'a clamp with one mouth has no else list');
+});
+
+test('snapping into the second mouth of an if else goes into the else list, at the top', () => {
+  const ifelse = { op: 'ifelse', args: [null], body: [newBlock('forward')], elseBody: [newBlock('back')] };
+  const stack = { x: 0, y: 0, blocks: [ifelse] };
+  const carried = { x: 0, y: 0, blocks: [newBlock('left')] };
+  const project = projectWith(stack, carried);
+  attachInside(project, carried, ifelse, 1);
+  assert.deepEqual(ops(ifelse.body), ['forward'], 'the first mouth is untouched');
+  assert.deepEqual(ops(ifelse.elseBody), ['left', 'back']);
+  assert.deepEqual(project.stacks, [stack]);
+});
+
+test('the first mouth is the default, and a missing else list is made when needed', () => {
+  const ifelse = { op: 'ifelse', args: [null] };
+  const carried = { x: 0, y: 0, blocks: [newBlock('left')] };
+  attachInside(projectWith({ x: 0, y: 0, blocks: [ifelse] }, carried), carried, ifelse);
+  assert.deepEqual(ops(ifelse.body), ['left']);
+  const other = { op: 'ifelse', args: [null] };
+  const carried2 = { x: 0, y: 0, blocks: [newBlock('right')] };
+  attachInside(projectWith({ x: 0, y: 0, blocks: [other] }, carried2), carried2, other, 1);
+  assert.deepEqual(ops(other.elseBody), ['right']);
+});
+
+test('picking up a block from the else mouth takes the rest of that mouth only', () => {
+  const ifelse = { op: 'ifelse', args: [null], body: [newBlock('forward')], elseBody: [newBlock('back'), newBlock('left'), newBlock('right')] };
+  const stack = { x: 0, y: 0, blocks: [ifelse] };
+  const project = projectWith(stack);
+  const carried = detachCommands(project, stack, ifelse.elseBody, 1, 5, 5);
+  assert.deepEqual(ops(ifelse.elseBody), ['back']);
+  assert.deepEqual(ops(carried.blocks), ['left', 'right']);
+  assert.deepEqual(ops(ifelse.body), ['forward']);
+});

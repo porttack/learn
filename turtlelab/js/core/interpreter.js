@@ -138,6 +138,13 @@ const FLOW = {
     return yield* runBlocks(block.body ?? [], ctx);
   },
 
+  *ifelse(block, ctx) {
+    const condition = evalBoolean(block.args?.[0], ctx, block);
+    yield block;
+    // One mouth or the other, never both and never neither.
+    return yield* runBlocks((condition ? block.body : block.elseBody) ?? [], ctx);
+  },
+
   *wait(block, ctx) {
     const tenths = evalNumber(block.args?.[0], ctx, block);
     yield new Wait(block, Math.min(LONGEST_WAIT_MS, Math.max(0, tenths) * 100));

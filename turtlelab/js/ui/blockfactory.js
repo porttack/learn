@@ -22,6 +22,8 @@
 //     with a C-shaped mouth, like repeat and if);
 //   * added setExpandYs and _innieExtra, so a tall block plugged into any
 //     socket (not just the first two) makes room for itself;
+//   * added setMouthExtras and _mouthExtra, so each mouth of a clamp can be
+//     its own height (the original made every mouth the same);
 //   * fills, strokes and text are written as SVG attributes instead of
 //     style="..." attributes, because TurtleLab's Content Security Policy
 //     does not allow inline styles;
@@ -70,6 +72,7 @@ export class SVG {
         this._expandY = 0;
         this._expandY2 = 0;
         this._expandYs = null; // extra height under each socket (see setExpandYs)
+        this._mouthExtras = null; // extra height inside each mouth of a clamp (see setMouthExtras)
         this._clampCount = 1;
         this._clampSlots = [1];
         this._slotSize = 21; // TODO: Compute this.
@@ -1129,7 +1132,7 @@ export class SVG {
             if (this._clampSlots[clamp] > 1) {
                 svg += this._rLineTo(0, this._slotSize * (this._clampSlots[clamp] - 1));
             }
-            svg += this._rLineTo(0, this._expandY2);
+            svg += this._rLineTo(0, this._mouthExtra(clamp));
             svg += this._iCorner(1, 1, 90, 0, 0, true, true);
             const saveSlot = this._slot;
             this._slot = true;
@@ -1263,6 +1266,28 @@ export class SVG {
      */
     setExpandYs(list) {
         this._expandYs = list;
+    }
+
+    /**
+     * Added for TurtleLab. Extra height, in the same units as setExpand,
+     * inside each mouth of a clamp, so an if else can have a tall stack in one
+     * mouth and an empty other one. One entry per mouth.
+     * @public
+     * @param {number[]} list
+     * @returns {void}
+     */
+    setMouthExtras(list) {
+        this._mouthExtras = list;
+    }
+
+    /**
+     * Added for TurtleLab. The extra height inside mouth number i.
+     * @private
+     * @param {number} i
+     * @returns {number}
+     */
+    _mouthExtra(i) {
+        return this._mouthExtras ? this._mouthExtras[i] || 0 : this._expandY2;
     }
 
     /**

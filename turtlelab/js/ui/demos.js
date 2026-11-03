@@ -89,6 +89,10 @@ export const DEMOS = {
   longwait: [b('start'), b('clean'), b('wait', 600), b('forward', 50)],
   // An if with nothing plugged into it: Run must explain, and mark the if.
   emptyif: [b('start'), { op: 'if', args: [null], body: [b('forward', 10)] }],
+  // An if else with a true condition: only the first mouth runs, so the turtle
+  // ends 100 steps up. The false one runs only the else mouth, 100 steps down.
+  ifelseyes: [b('start'), b('clean'), { op: 'ifelse', args: [{ op: 'less', args: [1, 2] }], body: [b('forward', 100)], elseBody: [b('back', 100)] }],
+  ifelseno: [b('start'), b('clean'), { op: 'ifelse', args: [{ op: 'less', args: [2, 1] }], body: [b('forward', 100)], elseBody: [b('back', 100)] }],
   // Prints a calculation.
   printing: [
     b('start'),
