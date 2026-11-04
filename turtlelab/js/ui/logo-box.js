@@ -17,14 +17,16 @@ export class LogoBox {
    * @param {object} options.project the project to show (read every time it is refreshed)
    * @param {(text: string) => void} [options.onMessage] where to say "Copied" and the like
    * @param {(text: string) => void} [options.onRun] called with the text when Run Logo is pressed
+   * @param {() => void} [options.onClose] called when the X in the corner is pressed (the page hides the box and updates its button)
    * @param {(text: string, edited: boolean) => void} [options.onOpenReal] called when Open in real Logo is pressed, with
    *        the text and whether the student has changed it (if not, it is just the blocks)
    */
-  constructor({ stage, project, onMessage = () => {}, onRun = () => {}, onOpenReal = () => {} }) {
+  constructor({ stage, project, onMessage = () => {}, onRun = () => {}, onOpenReal = () => {}, onClose = () => {} }) {
     this.project = project;
     this.onMessage = onMessage;
     this.onRun = onRun;
     this.onOpenReal = onOpenReal;
+    this.onClose = onClose;
     this.generated = ''; // the last text written from the blocks
     this.edited = false; // has the student changed it?
 
@@ -58,7 +60,11 @@ export class LogoBox {
     const actions = document.createElement('span');
     actions.className = 'logo-actions';
     actions.append(this.followButton, copyButton, this.realButton, this.runButton);
-    head.append(title, shortLabel, actions);
+    // The X in the top right corner. (What you typed is kept: opening the box again shows it.)
+    const closeButton = this.button('logo-close', '\u00d7', 'Close the Logo box. What you typed stays here until you reload the page');
+    closeButton.setAttribute('aria-label', 'Close the Logo box');
+    closeButton.addEventListener('click', () => this.onClose());
+    head.append(title, shortLabel, actions, closeButton);
 
     this.area = document.createElement('textarea');
     this.area.className = 'logo-code';

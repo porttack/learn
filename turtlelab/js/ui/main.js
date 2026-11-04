@@ -365,7 +365,17 @@ workspace = new Workspace({
 });
 palettes = new PaletteUI({ stage, workspace });
 pythonBox = new PythonBox({ stage, project, onMessage: say });
-logoBox = new LogoBox({ stage, project, onMessage: say, onRun: runLogo, onOpenReal: openInRealLogo });
+logoBox = new LogoBox({
+  stage,
+  project,
+  onMessage: say,
+  onRun: runLogo,
+  onOpenReal: openInRealLogo,
+  onClose: () => {
+    logoBox.hide();
+    showCodeBoxes();
+  },
+});
 // The blocks are drawn big. On a short screen a sample would run off the bottom,
 // so zoom out until it fits (the reset button brings the full size back).
 if (sample) workspace.fitHeight(SAMPLE_LEFT, SAMPLE_TOP);

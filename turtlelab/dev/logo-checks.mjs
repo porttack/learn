@@ -151,6 +151,24 @@ try {
   await click('.logo-follow');
   await chrome.sleep(120);
 
+  // ---- The X in the corner -------------------------------------------------------------------------------------
+  const corner = await chrome.eval(`(() => { const box = document.getElementById('logo-box').getBoundingClientRect(); const x = document.querySelector('.logo-close').getBoundingClientRect(); return { right: box.right - x.right, top: x.top - box.top, size: x.width, label: document.querySelector('.logo-close').getAttribute('aria-label'), text: document.querySelector('.logo-close').textContent }; })()`);
+  check('there is an X in the top right corner of the box', corner.right >= 0 && corner.right <= 12 && corner.top >= 0 && corner.top <= 10 && corner.size >= 20 && corner.text === '\u00d7' && /Close/.test(corner.label), JSON.stringify(corner));
+  const beforeClose = await area();
+  await click('.logo-close');
+  await chrome.sleep(150);
+  check('pressing it closes the box and lets the toolbar button out', (await logoHidden()) && (await chrome.eval(`document.getElementById('logo-toggle').getAttribute('aria-pressed')`)) === 'false' && /Show your blocks as Logo/.test(await chrome.eval(`document.getElementById('logo-toggle').title`)));
+  await click('#logo-toggle');
+  await chrome.sleep(150);
+  check('and opening it again brings back the same text', !(await logoHidden()) && (await area()) === beforeClose);
+  await typeLogo('fd 7');
+  await click('.logo-close');
+  await click('#logo-toggle');
+  await chrome.sleep(150);
+  check('even Logo you typed is still there after the X (it is only hidden)', (await area()) === 'fd 7' && (await chrome.eval(`!document.querySelector('.logo-follow').hidden`)));
+  await click('.logo-follow');
+  await chrome.sleep(120);
+
   // ---- Following the blocks ----------------------------------------------------------------------------------
   await typeLogo('fd 5');
   await click('.logo-follow');

@@ -514,16 +514,36 @@ body {
 .logo-box[hidden] { display: none; }
 
 .logo-box header {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.25rem 0.6rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 2rem 0.25rem 0.5rem; /* room on the right for the X */
   background: #e9f1f9;
   border-bottom: 1px solid #b8c2cc;
   border-radius: 0.5rem 0.5rem 0 0;
   font-size: 0.8rem;
 }
+
+/* The X in the top right corner of the box. */
+.logo-box .logo-close {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.3rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  font: 700 1.2rem/1 sans-serif;
+  color: #3d4a57;
+  background: transparent;
+  border: 0;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.logo-box .logo-close:hover,
+.logo-box .logo-close:focus-visible { background: rgba(0, 0, 0, 0.12); }
 
 .logo-short { display: flex; align-items: center; gap: 0.2rem; cursor: pointer; }
 .logo-actions { display: flex; gap: 0.3rem; margin-left: auto; }
