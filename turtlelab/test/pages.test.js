@@ -203,3 +203,13 @@ test('the toolbar has no speed menu: speed is a block, which you find in Flow', 
   assert.ok(!/id="speed"/.test(html));
   assert.match(read('guide.html'), /speed<\/em> block/);
 });
+
+test('the Guide and the Privacy page explain the Logo box, and say what you type in it is not kept', () => {
+  const guide = read('guide.html');
+  assert.match(guide, /<h2>Write Logo, the language the turtle was made for<\/h2>/);
+  for (const word of ['Run Logo', 'Follow my blocks', 'Short words', 'forward 100</em> or <em>fd 100', 'is not saved', 'no longer match', 'repeat 4 [ forward 100 right 90 ]']) assert.ok(guide.includes(word), word);
+  assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf('Write Logo'), guide.indexOf('Things to know'))), 'no dashes in the new section');
+  const privacy = read('privacy.html');
+  assert.match(privacy, /What does the Logo box do\?/);
+  assert.match(privacy, /not saved, not kept in local storage and not sent anywhere/);
+});

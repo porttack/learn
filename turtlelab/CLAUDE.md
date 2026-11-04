@@ -80,6 +80,7 @@ the dashes out of them too for consistency.
       definitions.js  blocks you make yourself: find them, rename them, keep calls in step
       project.js      project JSON: validate, find the Run stack
       python.js       the blocks as Python (turtle module); see "Python box"
+      logo.js         the blocks as Logo text; logo-compile.js reads Logo text back as blocks; see "The Logo box"
       pdf.js          writes the one page PDF with no library; see "The PDF"
       squeeze.js      closes wide empty gaps between stacks, for the PDF's picture of the blocks
       fit.js          what has been drawn (even off the paper) and the zoom that fits it; the drawing "view"
@@ -100,6 +101,7 @@ the dashes out of them too for consistency.
       palette-colors.js, artwork.js (PORTED), demos.js (developer examples)
       samples.js      the student samples (see "Samples" below)
       python-box.js   the show/hide Python panel
+      logo-box.js     the show/hide Logo panel: shows the blocks as Logo, can be edited, has Run Logo
       export-menu.js  the list of ways to save, on a right-click or press and hold of Save
       code-image.js   the blocks as a picture for the PDF (SVG, then canvas)
       roboto-data.js  GENERATED: the Roboto font as text (dev/make-font-data.mjs)
@@ -276,6 +278,39 @@ missing, so run it where Python is.
   counted in a comment; a program that does not begin with `clean` is given
   TurtleLab's start (facing up, red pen, size 5) because Python's differs.
 - It is not a promise that students can paste it back: it is for reading.
+
+## The Logo box
+
+The **Logo** button (`fd`) opens `ui/logo-box.js`, a panel in the Python box's corner (only one is open at a time) that shows the blocks as Logo
+(`core/logo.js`, `toLogo(project, { short })`), **can be typed in**, and has **Run Logo**, Copy, Short words (fd, rt, pu instead of forward, right,
+penup) and Follow my blocks. The user asked for it: "allow the user to modify the logo (knowing that then the blocks will not match) and hit run".
+
+- **Logo is compiled into BLOCKS, not interpreted separately** (`core/logo-compile.js`, `compileLogo(text)` returns `{ ok, main, stacks }` or
+  `{ ok: false, error, line }`). The block trees are run by the existing interpreter and scheduler, so speed, Stop, wait, print, recursion and every
+  error message behave exactly as for blocks. The key test (`test/logo.test.js`) writes every sample and a program using every block out as Logo
+  (both styles), reads it back, runs both with the same seeded random, and requires the very same ops, final state, printed lines, waits and boxes.
+- **The dialect** (header comment of logo-compile.js is the list): fd/forward, bk/back, lt/left, rt/right, setxy, setx, sety, seth/setheading, home, arc,
+  pu/penup, pd/pendown, setpensize, setpc/setpencolor ([r g b], a color name, or three inputs), setsc/setscreencolor, cs/clearscreen/clean (= the clean
+  block, which also resets the pen), startfill, endfill, pr/print, setspeed, stop, wait, write |words| size, repeat, forever, if, ifelse, make, to ... end,
+  `+ - * / %`, `< > =`, `(random lo hi)`, `random n` (0 to n-1, like UCB Logo), oneof, sum/difference/product/quotient/modulo, xcor/ycor/heading/pensize/penred/...
+  It is deliberately NOT UCB Logo in these ways: colors are 0 to 255, `arc` moves the turtle (positive curves right), `%` is infix, `wait` IS in 60ths
+  (Logo's way; the block counts tenths, converted both ways), `setspeed` and `oneof` and `write` are ours. Real Logo words we lack (sqrt, and/or/not, lists,
+  output, local...) get "is real Logo, but it is not in TurtleLab Logo yet".
+- **Minus signs:** a `-` with a space before and none after is the number -5 starting the next input (`setxy 10 -20`), otherwise it is subtraction
+  (`10 - 5`, `10-5`). The tokenizer records `before` and `after` for this. The generator always spaces a subtraction.
+- **Variables:** `make "name v` and `:name`. Names called box1 to box4 ARE those boxes (reading before making is fine, as in blocks); other names take the
+  free boxes in order, and a fifth is an error (there are only four boxes). Inputs of a `to` are the `input` reporters (no limit on how many here, unlike the
+  editor's two). `make` cannot change an input. Reading a name never made is an error with the fix in it.
+- **Errors say the line** (`LogoError.line`, and each block carries `logoLine`, a non-enumerable property, so a run-time error such as division by zero can say
+  "Line 2: ..."; `main.js` sets `runningLogo` to tell a Logo run from a block run, and `LogoBox.showError` selects the line). Also: "Did you mean right?" by edit distance.
+- **No preamble:** the text starts with the program itself (or the first `to`). There is no heading comment and sticky notes are NOT written into the Logo
+  (the user asked for the opening comments to go). The only comments left are guidance at the end: stacks not connected to Start, or "Nothing runs yet".
+- **Names the generator writes** are made safe: spaces become underscores, words Logo already has get a trailing `_` (a block called forward is `forward_`), clashes are numbered.
+- **Not saved.** The text lives only in the textarea (max 20,000 letters): no autosave, not in the project or PNG, nothing stored (the privacy page says so; `dev/logo-checks.mjs`
+  checks storage and cookies). Until the student types, the box follows the blocks; once they have, it never overwrites their words (Follow my blocks does, on purpose).
+  Deeply nested input is refused politely (the compiler catches RangeError).
+- Tests: `test/logo.test.js` (unit, fast), `dev/logo-checks.mjs` (real Chrome, about half a minute, 37 checks: button, box, short words, run, edit, mistakes, Stop, follow, the shared corner,
+  keys, storage, toolbar width).
 
 ## The PDF
 
@@ -717,6 +752,7 @@ The editor checks assert that making a PDF sends zero requests.
     node turtlelab/dev/editor-checks.mjs                       # real Chrome: block editor, touch, privacy
     node turtlelab/dev/sample-checks.mjs                       # real Chrome: every sample, saved work stays safe
     node turtlelab/dev/view-checks.mjs                         # real Chrome: Fit, the grid, the PDF button's fit
+    node turtlelab/dev/logo-checks.mjs                         # real Chrome: the Logo box (short, about half a minute)
     EMBROIDERY_PYTHON=DIR/bin/python3 node turtlelab/dev/export-checks.mjs   # real Chrome: right-click Save, every file
     node turtlelab/dev/make-sample-thumbs.mjs                  # rewrite images/samples/*.png
     node turtlelab/dev/make-samples-page.mjs                   # rewrite samples.html from samples.js

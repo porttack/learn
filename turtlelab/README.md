@@ -10,7 +10,7 @@ and open it again later. Your blocks are also kept in your browser so a
 refresh does not lose them. You can make blocks of your own, with inputs. A PDF
 button makes a PDF (the blocks, and the drawing with a grid and the turtle on it; a big program gets a page of its own; the picture
 attached so the PDF opens in TurtleLab again), and a small box shows your blocks as
-Python. A Fit button zooms the drawing and the blocks so everything is in view (press it again to go back), a write block draws words in script with the pen, a grid
+Python. A Logo box shows them as Logo too, and you can change that Logo and run it. A Fit button zooms the drawing and the blocks so everything is in view (press it again to go back), a write block draws words in script with the pen, a grid
 button shows x and y, and right-clicking Save offers JPEG, SVG (a picture, and hairlines
 for a cutter), and `.pes` and `.dst` files for embroidery machines. See `CLAUDE.md` for the plan and the rules this project
 follows.

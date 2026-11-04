@@ -28,6 +28,8 @@ import { DEMOS } from './demos.js';
 import { sampleById, sampleStacks, LEFT as SAMPLE_LEFT, TOP as SAMPLE_TOP } from './samples.js';
 import { noteHeight, stackSize } from './block-view.js';
 import { PythonBox } from './python-box.js';
+import { LogoBox } from './logo-box.js';
+import { compileLogo } from '../core/logo-compile.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -48,6 +50,7 @@ const runButton = $('run');
 const stopButton = $('stop');
 const hideButton = $('hide-blocks');
 const pythonButton = $('python-toggle');
+const logoButton = $('logo-toggle');
 const undoButton = $('undo');
 const redoButton = $('redo');
 
@@ -161,6 +164,7 @@ function refreshBoxes() {
 showBoxes();
 
 let outlined = false; // is a block outlined as running right now?
+let runningLogo = false; // is what is running (or ran last) the Logo box's program, not the blocks?
 const scheduler = new Scheduler({
   speed: startSpeed,
   onStart: () => {
@@ -194,7 +198,10 @@ const scheduler = new Scheduler({
     if (result.status === 'error') {
       if (result.error instanceof RunError) {
         workspace.setError(result.error.block);
-        say(result.error.message);
+        // A mistake while the Logo box's program runs knows which line of the Logo it came from.
+        const line = runningLogo ? result.error.block?.logoLine : undefined;
+        say(line ? `Line ${line}: ${result.error.message}` : result.error.message);
+        if (line) logoBox.showError(line, result.error.message);
       } else if (result.error instanceof RangeError) {
         // Blocks inside blocks inside blocks, more than the page can keep track of.
         say('That program nests too deeply for the page to keep track of. Does one of your blocks call itself without a way to stop?');
@@ -242,7 +249,30 @@ function runStack(stack) {
   clearOutput();
   context = newContext(definitions);
   scheduler.speed = startSpeed; // the last run's speed block does not carry over
+  runningLogo = false;
   scheduler.start(runBlocks(stack.blocks, context));
+}
+
+/** Run the Logo in the Logo box. It is read into blocks and run by the same interpreter, so it behaves just like the blocks. */
+function runLogo(text) {
+  const compiled = compileLogo(text);
+  if (!compiled.ok) {
+    logoBox.showError(compiled.line, compiled.error);
+    say(`Line ${compiled.line}: ${compiled.error}`);
+    return;
+  }
+  if (compiled.main.length === 0) {
+    logoBox.say('There is nothing to run yet. Try: forward 100', true);
+    say('There is nothing in the Logo box to run yet.');
+    return;
+  }
+  logoBox.clearProblem();
+  view.resetDrawView({ force: true });
+  clearOutput();
+  context = newContext(definitionsOf({ stacks: compiled.stacks }).map);
+  scheduler.speed = startSpeed;
+  runningLogo = true;
+  scheduler.start(runBlocks(compiled.main, context));
 }
 
 // ---- Blocks --------------------------------------------------------------
@@ -270,11 +300,13 @@ function restore(snapshot) {
 
 let palettes = null;
 let pythonBox = null;
+let logoBox = null;
 
 /** The blocks changed (by editing, undo, open or new): what shows them elsewhere has to follow. */
 function projectChanged() {
   palettes.refresh();
   pythonBox.refresh();
+  logoBox.refresh();
 }
 
 workspace = new Workspace({
@@ -297,6 +329,7 @@ workspace = new Workspace({
 });
 palettes = new PaletteUI({ stage, workspace });
 pythonBox = new PythonBox({ stage, project, onMessage: say });
+logoBox = new LogoBox({ stage, project, onMessage: say, onRun: runLogo });
 // The blocks are drawn big. On a short screen a sample would run off the bottom,
 // so zoom out until it fits (the reset button brings the full size back).
 if (sample) workspace.fitHeight(SAMPLE_LEFT, SAMPLE_TOP);
@@ -520,10 +553,22 @@ document.addEventListener('keydown', (event) => {
 stopButton.addEventListener('click', () => scheduler.stop());
 stopButton.disabled = true;
 
+// The Python box and the Logo box sit in the same corner, so only one is open at a time.
+function showCodeBoxes() {
+  pythonButton.setAttribute('aria-pressed', String(pythonBox.visible));
+  pythonButton.title = pythonBox.visible ? 'Hide the Python code' : 'Show your blocks as Python code';
+  logoButton.setAttribute('aria-pressed', String(logoBox.visible));
+  logoButton.title = logoBox.visible ? 'Hide the Logo code' : 'Show your blocks as Logo code, which you can change and run';
+}
 pythonButton.addEventListener('click', () => {
-  const showing = pythonBox.toggle();
-  pythonButton.setAttribute('aria-pressed', String(showing));
-  pythonButton.title = showing ? 'Hide the Python code' : 'Show your blocks as Python code';
+  if (!pythonBox.visible) logoBox.hide();
+  pythonBox.toggle();
+  showCodeBoxes();
+});
+logoButton.addEventListener('click', () => {
+  if (!logoBox.visible) pythonBox.hide();
+  logoBox.toggle();
+  showCodeBoxes();
 });
 
 hideButton.addEventListener('click', () => {

@@ -52,6 +52,11 @@ export class PythonBox {
     return !this.el.hidden;
   }
 
+  /** Hide the box (for when something else takes its place). */
+  hide() {
+    this.el.hidden = true;
+  }
+
   /** Show the box if it is hidden, and hide it if it is showing. Returns whether it is showing now. */
   toggle() {
     this.el.hidden = !this.el.hidden;

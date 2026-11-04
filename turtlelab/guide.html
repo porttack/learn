@@ -116,6 +116,22 @@
 
     <p>Blocks you make become <em>def</em> functions, your inputs become parameters, boxes become variables, and notes become comments. A write block becomes a comment too, because Python's turtle has no way to draw TurtleLab's script letters. The two do not match everywhere. Python's turtle counts angles from the east and turns the other way, so a few lines look different from the blocks, such as <em>setheading(90 - 30)</em>. The Python is meant for reading and learning. Press the button again to hide the box.</p>
 
+    <h2>Write Logo, the language the turtle was made for</h2>
+
+    <p>The <strong>Logo</strong> button (the letters fd) opens a box with your blocks written as Logo. Unlike the Python box, you can type in this one. Change the Logo, or write a program from scratch, and press <strong>Run Logo</strong> (or Ctrl+Enter) to draw it on the same paper. Your blocks are never changed, so once you type, the blocks and the Logo no longer match. What you type is not saved, so press <strong>Copy</strong> if you want to keep it. <strong>Follow my blocks</strong> throws your changes away and shows the blocks again. <strong>Short words</strong> writes fd, rt and pu instead of forward, right and penup. Both ways work when you type.</p>
+
+    <table>
+      <tr><th>For this</th><th>Write this</th></tr>
+      <tr><td>Move</td><td><em>forward 100</em> or <em>fd 100</em>, <em>back</em> (<em>bk</em>), <em>left</em> (<em>lt</em>), <em>right</em> (<em>rt</em>), <em>setxy 50 -20</em>, <em>setheading 90</em> (<em>seth</em>), <em>home</em>, <em>arc 90 50</em></td></tr>
+      <tr><td>Pen</td><td><em>penup</em> (<em>pu</em>), <em>pendown</em> (<em>pd</em>), <em>setpensize 5</em>, <em>setpencolor [255 0 0]</em> (<em>setpc</em>), <em>setpc "red</em>, <em>setscreencolor [0 0 80]</em>, <em>clearscreen</em> (<em>cs</em>), <em>startfill</em>, <em>endfill</em></td></tr>
+      <tr><td>Repeat and decide</td><td><em>repeat 4 [ forward 100 right 90 ]</em>, <em>forever [ ... ]</em>, <em>if :size &gt; 10 [ ... ]</em>, <em>ifelse :n % 2 = 0 [ ... ] [ ... ]</em>, <em>stop</em>, <em>wait 60</em></td></tr>
+      <tr><td>Remember a number</td><td><em>make "size 50</em>, then <em>:size</em>. You can have four. They are the four boxes.</td></tr>
+      <tr><td>Blocks of your own</td><td><em>to square :size</em>, then the commands, then <em>end</em>. Use it by writing <em>square 100</em>.</td></tr>
+      <tr><td>Numbers</td><td><em>+ - * / %</em> (% is the remainder), <em>&lt; &gt; =</em>, brackets, <em>(random 1 6)</em>, <em>xcor ycor heading</em>, <em>print :size</em>. <em>write |Go Cougars| 60</em> writes words.</td></tr>
+    </table>
+
+    <p>Some things are a little different from other Logos. Colors run from 0 to 255. <em>arc</em> moves the turtle along the curve, the way the arc block does. <em>wait</em> counts 60ths of a second. Real Logo has more (and, or, not, lists, and blocks that give back an answer) that TurtleLab Logo does not have yet, and it says so if you try. A mistake tells you the line it is on and selects it.</p>
+
     <h2>Things to know</h2>
 
     <ul>
