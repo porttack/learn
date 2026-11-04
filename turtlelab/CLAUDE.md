@@ -82,6 +82,11 @@ the dashes out of them too for consistency.
       python.js       the blocks as Python (turtle module); see "Python box"
       pdf.js          writes the one page PDF with no library; see "The PDF"
       squeeze.js      closes wide empty gaps between stacks, for the PDF's picture of the blocks
+      fit.js          what has been drawn (even off the paper) and the zoom that fits it; the drawing "view"
+      grid.js         which grid lines to draw for a view, at nice numbers
+      svg-export.js   the drawing as SVG: a picture, or hairlines for a cutter
+      stitch-plan.js  a drawing as stitches for an embroidery machine (running stitch, one thread a color)
+      embroidery.js   writes .dst (Tajima) and .pes (Brother) files; the Brother thread palette
       png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
       project-file.js put a project inside a PNG, and read a PNG or .json back
     js/ui/            the browser side
@@ -94,6 +99,7 @@ the dashes out of them too for consistency.
       palette-colors.js, artwork.js (PORTED), demos.js (developer examples)
       samples.js      the student samples (see "Samples" below)
       python-box.js   the show/hide Python panel
+      export-menu.js  the list of ways to save, on a right-click or press and hold of Save
       code-image.js   the blocks as a picture for the PDF (SVG, then canvas)
       roboto-data.js  GENERATED: the Roboto font as text (dev/make-font-data.mjs)
       trash.js        the trash can and its shark (see Deleting, above)
@@ -108,7 +114,7 @@ the dashes out of them too for consistency.
 
 ## Samples
 
-`js/ui/samples.js` holds the student samples (16 now, easiest first), each
+`js/ui/samples.js` holds the student samples (19 now, easiest first, then three for an embroidery machine), each
 with `id`, `title`, `summary`, `look` (the picture's alt text), `concepts`
 (little tags), `note` (a sticky note, at most 250 characters so it is not cut
 off), `program` and optionally `defines` (blocks the sample makes). They are different from `demos.js`, which is for the
@@ -284,6 +290,71 @@ FlateDecode); text is the built-in Helvetica, so no font is embedded.
   offsets, the pictures coming out exactly as they went in, the attached bytes) and
   asks poppler (`pdfinfo`, `pdfdetach`, `pdftoppm`) what it thinks; the editor
   checks make a real one in Chrome, open it again, and assert **zero requests**.
+
+## Fit, the grid and other ways to save
+
+**The drawing has a view** (`core/fit.js`): `{ zoom, cx, cy }`, the part of the turtle's world the 700 by 560
+paper shows (default `{1, 0, 0}`). It is a change of VIEW only: x and y mean what they always did. The
+canvas is painted through it (`paintOp(ctx, op, view)`), and **a zoomed picture is painted again from the
+turtle's own op list** (`CanvasView.repaint`), with an opened picture lying under the ops as one image
+(`this.picture`, an `ImageBitmap` the canvas owns and closes). `clear` and `fillScreen` cover the whole
+canvas whatever the view is. If the turtle dropped old ops (`turtle.truncated`, after 200,000), painting
+again would lose the rest, so Fit and the house button refuse (a new Run forces the view back, because it
+is about to clean anyway).
+
+- **Fit** (`#fit`, four corners round a square): `fit()` finds a box round everything drawn since the last
+  clean (arcs by their real bulge, fills by the whole walk, pen thickness included, an opened picture counted
+  as the whole paper only if something was drawn on it), keeps the turtle in it, and zooms IN or OUT to fill
+  the paper less a 40 unit margin (zoom 0.001 to 10). It also calls `workspace.fitBlocks` (never zooms in
+  past 1, not out past 0.4, top left of the blocks at the top left of the room right of the palettes).
+  The PDF button does the same first, so the whole drawing is in the PDF. **A Run starts from the default view,**
+  and so do New and Open; the house button goes back too. The sprite and the turtle drag go through the view.
+  The zoom is not saved in a picture (a saved picture is what you saw).
+- **Grid** (`#grid`): a second canvas, `.paper-grid`, above the paper and under the turtle, so it is never in a
+  PNG, JPEG or PDF. Lines at 1, 2, 5, 10... times a power of ten, never closer than 50 paper units on the
+  screen (`core/grid.js`); axes darker; numbers along the axes, with a white halo, about 12 screen pixels
+  tall. Not saved anywhere (no new storage).
+- **The toolbar is full.** Two new icon buttons pushed it to two rows at 1000 px; below 1100 px the icon
+  buttons are 2.25rem and the gaps are squeezed (`css/app.css`), and `sample-checks.mjs` checks one row at 1366,
+  1100 and 1000.
+- **Other ways to save** (`ui/export-menu.js`, `EXPORTS` and `exportAs` in `ui/files.js`): right-click Save, or
+  press and hold it (the held press must not also save: the capture-phase click handler swallows it; a check
+  proves it). Formats: PNG with blocks (what Save does), PNG only, JPEG, SVG picture, SVG for a cutter, PES,
+  DST, Python, project JSON. Nothing is fetched or stored. SVG (`core/svg-export.js`) is made from the op list, so
+  it holds everything drawn; its arcs are real SVG arcs (a whole circle is two halves), a fill is drawn then its
+  edge again like the screen, and the cutter kind is red 0.1 step hairlines, 100 steps to an inch, joined lines
+  as one path. `dev/export-checks.mjs` lays the SVG over the screen's own painting for five examples and
+  compares pixels (a mutant with the arc flag flipped fails it).
+
+### Embroidery (.dst and .pes)
+
+`core/stitch-plan.js` turns the pen's lines and arcs into a running stitch (3 mm longest, 0.4 mm shortest,
+corners kept, curves followed within 0.15 mm), scaled so the longer side is 90 mm (fits a 4 inch hoop) and
+centered, in tenths of a millimeter with y UP. One thread per color, in order of first appearance, with all of a
+color stitched together; a hop between lines is a jump, cut first if over 3 mm. **Ignored on purpose:** pen
+thickness, and fills (only their pen-down outline is stitched; the message says so). `core/embroidery.js` writes
+the two files. The tests:
+
+- **They match pyembroidery byte for byte** (`test/embroidery.test.js`, "oracle" tests, which call
+  `test/embroidery-oracle.py`): the same stitches written by pyembroidery's own `.dst` and `.pes` writers give
+  exactly TurtleLab's bytes, including jumps, trims, color changes and thread numbers; and pyembroidery reads
+  TurtleLab's files back to the same stitches. pyembroidery (MIT) is NOT part of TurtleLab: the tests skip when it
+  is missing. To run them: `python3 -m venv DIR && DIR/bin/pip install pyembroidery`, then
+  `EMBROIDERY_PYTHON=DIR/bin/python3 node --test turtlelab/test/embroidery.test.js` (and the same variable for
+  `dev/export-checks.mjs`). Always run them after touching `embroidery.js`.
+- A `.dst` record holds a move of at most 121 (12.1 mm) in each direction (`dstRecord`; every move is
+  checked to read back). Longer moves are split into equal pieces rounded like pyembroidery's (half to even,
+  each piece rounded from what is still needed). A trim is three tiny jumps; a trim beside a color change is
+  dropped (the machine cuts at a color change anyway).
+- `.pes` is version 1 with the shape blocks (`CEmbOne`, `CSewSeg`) AND the machine's part (`PEC`): the
+  512 byte header, the stitches (7 bit numbers, 12 bit with a jump or trim flag, `FE B0 01/02` for a color change,
+  `FF` to end), a framed 48 by 38 picture of the design and one for each color. Thread colors are matched to Brother's
+  64 colors by the "redmean" distance, one Brother color per thread (never the same twice).
+- **Not tried on a real machine.** The school's machine takes `.pes` and `.dst`; test a new design on scrap cloth.
+  The three samples for an embroidery machine (`concepts` includes "for an embroidery machine") are tested to be
+  good to stitch: lines only, at most two threads, at most two hops, 80 to 600 stitches, no stitch over 3.1 mm.
+- Possible later work: a fill stitch for filled shapes, a size choice other than 90 mm, ordering lines to shorten
+  hops. Not done.
 
 ## Key design decisions
 
@@ -507,7 +578,7 @@ wheel, drag and pinch, Shift-drag and press-and-hold copying, help bubble).
 **d** (the rest of Flow: forever, if, if else, wait, stop; the Math palette; yes-or-no
 shapes; print). **c** (Save as PNG with the blocks inside, Open, drag and drop,
 New, autosave). The public pages (About, Privacy, Guide) are done (they go live when `learn` is pushed).
-Also done: **if else** (a block with two mouths), **16 samples** with a Samples
+Also done: **if else** (a block with two mouths), **19 samples** with a Samples
 page, and **blocks you make yourself** (e: functions, see below). Not yet: SVG
 export for laser cutters and plotters (f).
 
@@ -580,6 +651,8 @@ The editor checks assert that making a PDF sends zero requests.
     node turtlelab/dev/browser-checks.mjs                      # real Chrome: turtle, Run/Stop
     node turtlelab/dev/editor-checks.mjs                       # real Chrome: block editor, touch, privacy
     node turtlelab/dev/sample-checks.mjs                       # real Chrome: every sample, saved work stays safe
+    node turtlelab/dev/view-checks.mjs                         # real Chrome: Fit, the grid, the PDF button's fit
+    EMBROIDERY_PYTHON=DIR/bin/python3 node turtlelab/dev/export-checks.mjs   # real Chrome: right-click Save, every file
     node turtlelab/dev/make-sample-thumbs.mjs                  # rewrite images/samples/*.png
     node turtlelab/dev/make-samples-page.mjs                   # rewrite samples.html from samples.js
     node turtlelab/dev/make-font-data.mjs                      # rewrite js/ui/roboto-data.js (the PDF's font)

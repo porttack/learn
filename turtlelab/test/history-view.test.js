@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { History } from '../js/core/history.js';
-import { zoomAbout, panBy, clampZoom, zoomToFit, MIN_ZOOM, MAX_ZOOM, HOME_VIEW } from '../js/core/view.js';
+import { zoomAbout, panBy, clampZoom, zoomToFit, fitBlocksView, MIN_ZOOM, MAX_ZOOM, HOME_VIEW } from '../js/core/view.js';
 
 const project = (...ops) => ({ stacks: [{ x: 0, y: 0, blocks: ops.map((op) => ({ op })) }] });
 
@@ -106,4 +106,36 @@ test('zoomToFit stops at the smallest readable size, even if the blocks still do
   assert.equal(zoomToFit({ contentBottom: 5000, anchorY: 16, height: 600 }), 0.6);
   assert.equal(zoomToFit({ contentBottom: 5000, anchorY: 16, height: 600, minZoom: 0.5 }), 0.5);
   assert.ok(zoomToFit({ contentBottom: 5000, anchorY: 16, height: 600 }) >= MIN_ZOOM);
+});
+
+
+test('fitBlocksView: blocks that already fit stay full size, with their top left corner at the room corner', () => {
+  const view = fitBlocksView({ content: { left: 300, top: 200, right: 500, bottom: 400 }, room: { left: 80, top: 12, right: 900, bottom: 600 } });
+  assert.equal(view.zoom, 1);
+  assert.equal(view.x, 80 - 300);
+  assert.equal(view.y, 12 - 200);
+});
+
+test('fitBlocksView: tall blocks zoom out until the bottom fits', () => {
+  const view = fitBlocksView({ content: { left: 0, top: 0, right: 200, bottom: 1500 }, room: { left: 80, top: 12, right: 900, bottom: 612 } });
+  assert.ok(Math.abs(view.zoom - 600 / 1500) < 1e-9 || view.zoom === MIN_ZOOM);
+  // After zooming, the bottom of the content is inside the room.
+  assert.ok(1500 * view.zoom + view.y <= 612 + 1e-6 || view.zoom === MIN_ZOOM);
+});
+
+test('fitBlocksView: wide blocks zoom out until the right side fits, and everything lands inside the room', () => {
+  const content = { left: 50, top: 40, right: 1400, bottom: 300 };
+  const room = { left: 80, top: 12, right: 880, bottom: 600 };
+  const view = fitBlocksView({ content, room });
+  assert.ok(view.zoom < 1);
+  const left = content.left * view.zoom + view.x;
+  const right = content.right * view.zoom + view.x;
+  const top = content.top * view.zoom + view.y;
+  const bottom = content.bottom * view.zoom + view.y;
+  assert.ok(left >= room.left - 1e-6 && right <= room.right + 1e-6 && top >= room.top - 1e-6 && bottom <= room.bottom + 1e-6);
+});
+
+test('fitBlocksView: never zooms in, never out past the smallest zoom', () => {
+  assert.equal(fitBlocksView({ content: { left: 0, top: 0, right: 10, bottom: 10 }, room: { left: 0, top: 0, right: 900, bottom: 900 } }).zoom, 1);
+  assert.equal(fitBlocksView({ content: { left: 0, top: 0, right: 90000, bottom: 90000 }, room: { left: 0, top: 0, right: 900, bottom: 900 } }).zoom, MIN_ZOOM);
 });

@@ -50,3 +50,22 @@ export function zoomToFit({ contentBottom, anchorY, height, margin = 12, minZoom
 export function panBy(view, dx, dy) {
   return { x: view.x + dx, y: view.y + dy, zoom: view.zoom };
 }
+
+/**
+ * The view that puts every block inside the window, so all your code can be seen at once.
+ * `content` is the box that holds all the stacks, in workspace units. `room` is the part of
+ * the window to use, in screen pixels measured from the workspace's top left corner (the
+ * palettes along the left edge are not in it). It zooms OUT as far as `minZoom` to make
+ * everything fit, never IN past full size, and puts the top left corner of the blocks at the
+ * top left corner of the room. If they are still too big at `minZoom`, you slide the page.
+ */
+export function fitBlocksView({ content, room, minZoom = MIN_ZOOM, maxZoom = 1 }) {
+  const width = content.right - content.left;
+  const height = content.bottom - content.top;
+  const roomWidth = Math.max(1, room.right - room.left);
+  const roomHeight = Math.max(1, room.bottom - room.top);
+  let zoom = Math.min(width > 0 ? roomWidth / width : Infinity, height > 0 ? roomHeight / height : Infinity);
+  if (!Number.isFinite(zoom)) zoom = maxZoom;
+  zoom = Math.min(maxZoom, Math.max(minZoom, zoom));
+  return { x: room.left - content.left * zoom, y: room.top - content.top * zoom, zoom };
+}

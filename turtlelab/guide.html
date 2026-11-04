@@ -87,6 +87,7 @@
     <ul>
       <li><strong>Save</strong> (the arrow button, or Ctrl+S) downloads a picture of your drawing. Your blocks are tucked inside it. It is a normal PNG, so you can put it in a document or share it like any other picture.</li>
       <li><strong>PDF</strong> (the button with PDF on it) downloads a one page PDF: your blocks in the top half, laid out the way they are on your screen, and your drawing in the bottom half, with the turtle where it stopped so you can see which way it is facing. The picture with your blocks inside is attached to it, and that picture is just the drawing, with no turtle.</li>
+      <li><strong>Other ways to save.</strong> Right-click the Save button (or press and hold it, on a touchscreen) for a list: a JPEG, a PNG with no blocks inside, an SVG (lines that stay sharp at any size), an SVG for a cutter or plotter, files for an embroidery machine, your blocks as Python, or your blocks as a plain text file.</li>
       <li><strong>Open</strong> (the folder button), or <strong>dragging a saved picture or a PDF onto the page</strong>, brings your blocks back, and the drawing too. A PDF has to be one that TurtleLab saved. Undo takes you back to the blocks you had before.</li>
       <li><strong>New</strong> (the page with a plus) starts over with no blocks and clean paper. If you press it by mistake, Undo brings your blocks back.</li>
     </ul>
@@ -94,6 +95,20 @@
     <p class="note">On a shared computer, press <strong>New</strong> when you are finished, so the next person does not start with your blocks.</p>
 
     <p>Only your blocks, and the words on any notes you wrote, are saved inside the picture. It has no name, no date and nothing about the computer you used. Read your notes before you share a picture, because anyone who opens it can read them.</p>
+
+    <h2>Stitching it on an embroidery machine</h2>
+
+    <p>Right-click <strong>Save</strong> and choose <strong>Embroidery: PES</strong> for a Brother machine, or <strong>Embroidery: DST</strong> for most other machines. A Brother machine can read DST too. Run your program first, so the turtle has drawn something.</p>
+
+    <p>The machine stitches along every line the pen drew, about 3 millimeters at a time, and follows curves closely. TurtleLab makes the design 90 millimeters across its longer side (about 3.5 inches), which fits a 4 inch hoop, and puts it in the middle. All the lines of one color are stitched together, then the machine stops so you can change the thread, so every color is one more thread to change.</p>
+
+    <ul>
+      <li>The thickness of the pen is not copied. A line is always one row of stitches.</li>
+      <li>A filled shape is stitched round its edge only. Covering a whole area takes a different stitch.</li>
+      <li>Lines you draw with the pen up are not stitched. The needle hops across them.</li>
+      <li>One or two colors work best, and a few long lines work better than thousands of tiny ones. The three samples for an embroidery machine on the Samples page are a good start.</li>
+      <li>Stitch a new design on a scrap of cloth first.</li>
+    </ul>
 
     <h2>See your blocks as Python</h2>
 
@@ -129,6 +144,9 @@
       <tr><td>Slide the blocks around</td><td>Drag empty space, or scroll</td></tr>
       <tr><td>Move or turn the turtle</td><td>Drag its shell to move it, or its head to turn it (not while a program is running)</td></tr>
       <tr><td>See your whole drawing</td><td>The eye button hides the blocks. Press it again to bring them back.</td></tr>
+      <tr><td>Zoom so everything fits</td><td>The <strong>Fit</strong> button (four corners round a square). It zooms the paper until everything the turtle drew is on it, even lines that ran off the edge, and zooms and slides the blocks until all of them are in the window. The house button goes back to how it started, and pressing Run starts again from the normal view. The PDF button does a Fit first, so the whole drawing is in the PDF.</td></tr>
+      <tr><td>Read x and y off the paper</td><td>The <strong>grid</strong> button (a square with lines) shows a grid with numbers along the axes: the same x and y you type into <em>set xy</em>. It follows the zoom, and it is never in a saved picture.</td></tr>
+      <tr><td>Save a different kind of file</td><td>Right-click Save, or press and hold it</td></tr>
       <tr><td>Watch it draw slowly</td><td>Put a <em>speed</em> block (in Flow) under Start. 1 is slow, 2 is medium, 3 is fast and 4 draws it all at once. You can use it again further down to change the speed partway through.</td></tr>
     </table>
 

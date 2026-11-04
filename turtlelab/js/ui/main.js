@@ -22,13 +22,16 @@ import { CanvasView } from './canvas-view.js';
 import { Workspace } from './workspace.js';
 import { PaletteUI } from './palette.js';
 import { Autosave, loadAutosave } from './storage.js';
-import { savePicture, savePdf, readFile, dragHasFiles } from './files.js';
+import { savePicture, savePdf, readFile, dragHasFiles, exportAs, EXPORTS } from './files.js';
+import { ExportMenu } from './export-menu.js';
 import { DEMOS } from './demos.js';
 import { sampleById, sampleStacks, LEFT as SAMPLE_LEFT, TOP as SAMPLE_TOP } from './samples.js';
 import { noteHeight, stackSize } from './block-view.js';
 import { PythonBox } from './python-box.js';
 
 const $ = (id) => document.getElementById(id);
+
+const TOO_LONG_TO_ZOOM = 'That picture has so many lines that only some are remembered, so it cannot be zoomed. Run it again to draw it fresh.';
 const params = new URLSearchParams(location.search);
 
 document.title = APP_NAME;
@@ -235,6 +238,7 @@ function runStack(stack) {
     say(`Two of your blocks are both called ${duplicate.name}. Give one of them a different name.`);
     return;
   }
+  view.resetDrawView({ force: true }); // every run starts with the paper as it was, not zoomed from the last Fit
   clearOutput();
   context = newContext(definitions);
   scheduler.speed = startSpeed; // the last run's speed block does not carry over
@@ -333,6 +337,17 @@ async function savePictureNow() {
   }
 }
 
+/**
+ * Zoom the drawing so everything drawn (even off the edge of the paper) and the turtle are on it,
+ * and slide and zoom the blocks so all of them are inside the window.
+ */
+function fitEverything() {
+  const palettesEdge = document.querySelector('.palettes')?.getBoundingClientRect().right ?? 0;
+  const result = view.fit();
+  workspace.fitBlocks(Math.max(0, palettesEdge - workspace.svg.getBoundingClientRect().left));
+  return result;
+}
+
 /** Save a one page PDF: the blocks on top, the drawing below, and the picture with the blocks inside attached. */
 let makingPdf = false;
 async function savePdfNow() {
@@ -340,6 +355,7 @@ async function savePdfNow() {
   makingPdf = true;
   say('Making the PDF...');
   try {
+    fitEverything(); // so the whole drawing is on the paper that goes in the PDF
     const name = await savePdf(view.canvas, project, await view.paperWithTurtle());
     say(`Saved ${name}. The blocks are on top and the drawing is below. Drag the PDF onto this page to open the blocks again.`);
   } catch (error) {
@@ -383,8 +399,7 @@ async function openFile(file) {
     try {
       // For a PDF this is the PNG attached to it, not the PDF.
       const image = await createImageBitmap(new Blob([result.picture], { type: 'image/png' }));
-      view.paintImage(image);
-      image.close();
+      view.paintImage(image); // the paper keeps it, to paint again when the view changes
     } catch {
       note = `Opened the blocks from ${file.name}, but its picture could not be shown. Press Run to draw it.`;
     }
@@ -405,6 +420,7 @@ function newProject() {
   workspace.render();
   workspace.setError(null);
   turtle.clean();
+  view.resetDrawView();
   history.record(project);
   updateHistoryButtons();
   clearOutput();
@@ -416,6 +432,19 @@ function newProject() {
 }
 
 $('save').addEventListener('click', savePictureNow);
+new ExportMenu({
+  button: $('save'),
+  items: EXPORTS,
+  onPick: async (format) => {
+    try {
+      const { note } = await exportAs(format, { canvas: view.canvas, project, turtle });
+      say(note);
+    } catch (error) {
+      if (!/^There are no lines|^That way/.test(error.message)) console.error(error);
+      say(/^There are no lines|^That way/.test(error.message) ? error.message : 'Sorry, that file could not be saved. Try again.');
+    }
+  },
+});
 $('save-pdf').addEventListener('click', savePdfNow);
 $('new').addEventListener('click', newProject);
 $('open').addEventListener('click', () => $('open-file').click());
@@ -453,7 +482,24 @@ document.addEventListener('drop', (event) => {
 
 $('zoom-in').addEventListener('click', () => workspace.zoomBy(1.25));
 $('zoom-out').addEventListener('click', () => workspace.zoomBy(0.8));
-$('view-home').addEventListener('click', () => workspace.resetView());
+$('view-home').addEventListener('click', () => {
+  workspace.resetView();
+  if (!view.resetDrawView().ok) say(TOO_LONG_TO_ZOOM);
+});
+const gridButton = $('grid');
+gridButton.addEventListener('click', () => {
+  const on = !view.gridVisible;
+  view.setGridVisible(on);
+  gridButton.setAttribute('aria-pressed', String(on));
+  gridButton.title = on ? 'Hide the grid' : 'Show a grid with x and y numbers';
+  say(on ? 'The grid shows x and y, the same numbers you type into set xy. Press the button again to hide it. It is never part of a saved picture.' : '');
+});
+$('fit').addEventListener('click', () => {
+  const result = fitEverything();
+  say(result.ok
+    ? 'Zoomed to fit: everything you drew is on the paper and all your blocks are in the window. The house button goes back.'
+    : `${TOO_LONG_TO_ZOOM} Your blocks are in the window.`);
+});
 
 // Ctrl or Cmd with S saves; with Z it undoes; with Shift (or Ctrl+Y) it redoes.
 // Typing in the number box keeps its own undo, so leave the keys alone there.

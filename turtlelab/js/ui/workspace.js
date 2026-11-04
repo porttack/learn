@@ -28,7 +28,7 @@ import { HelpBubble } from './help-bubble.js';
 import { NOTE_MAX_CHARS, specOf } from '../core/blocks-spec.js';
 import { renameDefinition, setInput, uniquifyDefinition } from '../core/definitions.js';
 import { INPUT_MAX, NAME_MAX } from '../core/names.js';
-import { HOME_VIEW, zoomAbout, panBy, zoomToFit } from '../core/view.js';
+import { HOME_VIEW, zoomAbout, panBy, zoomToFit, fitBlocksView } from '../core/view.js';
 import {
   cloneBlock,
   detachCommands,
@@ -587,6 +587,32 @@ export class Workspace {
 
   resetView() {
     this.setView({ ...HOME_VIEW });
+  }
+
+  /**
+   * Zoom out (never in) and slide so that every stack is inside the window, so all the code
+   * can be seen. `leftInset` is how many pixels along the left edge are taken by the palettes.
+   * With no blocks it just goes back to the starting view.
+   */
+  fitBlocks(leftInset = 0) {
+    const box = this.svg.getBoundingClientRect();
+    const content = { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity };
+    for (const el of this.stackLayer.children) {
+      const r = el.getBoundingClientRect();
+      content.left = Math.min(content.left, (r.left - box.left - this.view.x) / this.view.zoom);
+      content.top = Math.min(content.top, (r.top - box.top - this.view.y) / this.view.zoom);
+      content.right = Math.max(content.right, (r.right - box.left - this.view.x) / this.view.zoom);
+      content.bottom = Math.max(content.bottom, (r.bottom - box.top - this.view.y) / this.view.zoom);
+    }
+    if (content.left > content.right) {
+      this.resetView();
+      return;
+    }
+    const margin = 12;
+    this.setView(fitBlocksView({
+      content,
+      room: { left: leftInset + margin, top: margin, right: box.width - margin, bottom: box.height - margin },
+    }));
   }
 
   /**

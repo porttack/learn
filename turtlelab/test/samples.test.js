@@ -11,6 +11,7 @@ import { definitionsOf } from '../js/core/definitions.js';
 import { runBlocks, createContext, Wait } from '../js/core/interpreter.js';
 import { Turtle, PAPER_W, PAPER_H } from '../js/core/turtle.js';
 import { NOTE_MAX_CHARS } from '../js/core/blocks-spec.js';
+import { planStitches } from '../js/core/stitch-plan.js';
 import { renderSamplesPage } from '../dev/make-samples-page.mjs';
 
 const projectOf = (sample) => ({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: sampleStacks(sample) });
@@ -247,4 +248,28 @@ test('the Samples page lists every sample once, with a link that opens it and a 
 test('samples.html is exactly what dev/make-samples-page.mjs makes from samples.js', () => {
   const onDisk = readFileSync(new URL('../samples.html', import.meta.url), 'utf8');
   assert.equal(onDisk, renderSamplesPage(), 'run: node turtlelab/dev/make-samples-page.mjs');
+});
+
+test('the embroidery samples are good to stitch: lines only, one or two threads, few hops, short stitches, and each is a real drawing', () => {
+  const forMachine = SAMPLES.filter((sample) => sample.concepts.includes('for an embroidery machine'));
+  assert.ok(forMachine.length >= 3, 'there are at least three samples for an embroidery machine');
+  for (const sample of forMachine) {
+    const { turtle } = runSample(sample);
+    assert.ok(!turtle.ops.some((op) => op.type === 'fill' || op.type === 'fillScreen'), `${sample.id}: no filled shapes (a machine would need a different stitch for them)`);
+    const plan = planStitches(turtle.ops, { name: sample.id });
+    assert.ok(plan, `${sample.id}: has something to stitch`);
+    assert.ok(plan.threads.length <= 2, `${sample.id}: ${plan.threads.length} threads`);
+    assert.ok(plan.jumps <= 2 && plan.trims === 0, `${sample.id}: ${plan.jumps} hops and ${plan.trims} cuts`);
+    assert.ok(plan.stitches >= 80 && plan.stitches <= 600, `${sample.id}: ${plan.stitches} stitches`);
+    assert.ok(Math.max(plan.widthMm, plan.heightMm) === 90, `${sample.id}: sized to fit a 4 inch hoop`);
+    assert.equal(plan.skippedFills, 0);
+    // A stitch is the step from one stitch to the next (a hop between lines is not a stitch).
+    plan.commands.forEach((command, i) => {
+      const before = plan.commands[i - 1];
+      if (command.cmd !== 'stitch' || before?.cmd !== 'stitch') return;
+      const length = Math.hypot(command.x - before.x, command.y - before.y);
+      assert.ok(length <= 31, `${sample.id}: a stitch ${length / 10} mm long`);
+    });
+    assert.ok(/PES or DST/.test(sample.note), `${sample.id}: the note says how to get the file`);
+  }
 });

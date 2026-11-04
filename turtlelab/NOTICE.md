@@ -55,5 +55,42 @@ Software Foundation (https://www.gnu.org/licenses/agpl-3.0.txt).
 ## Still to be added
 
 Entries are added when files are copied in. Still to come: any further toolbar
-icons from `header-icons/`, and any further block shapes. `images/undo.svg`, `redo.svg` and `palette-notes.svg` are original
+icons from `header-icons/`, and any further block shapes. `images/undo.svg`, `redo.svg`, `palette-notes.svg`, `fit-button.svg` and `grid-button.svg` are original
 drawings made for this project, not taken from anywhere.
+
+## Embroidery files
+
+`js/core/embroidery.js` writes `.dst` (Tajima) and `.pes` (Brother) files. The layouts of both are public: they are
+described in several places and written out in open source programs. The code is written fresh for TurtleLab, and
+is checked against **pyembroidery** (https://github.com/EmbroidePy/pyembroidery, MIT licence), which is used only
+by the tests, is not copied into this folder, and is not needed to use the app (`test/embroidery-oracle.py`).
+
+One piece of data does come from it: the table of Brother's 64 thread colors (names and colors) in
+`PEC_PALETTE`, which a `.pes` file refers to by number. It is Brother's own thread chart, as listed in pyembroidery's
+`EmbThreadPec.py` (author listed as Tatarize). pyembroidery is released under the MIT licence, which allows this and
+asks that its notice be kept, so here it is, as it appears in version 1.5.1:
+
+> MIT License
+>
+> Copyright (c) 2018
+>
+> Permission is hereby granted, free of charge, to any person obtaining a copy
+> of this software and associated documentation files (the "Software"), to deal
+> in the Software without restriction, including without limitation the rights
+> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+> copies of the Software, and to permit persons to whom the Software is
+> furnished to do so, subject to the following conditions:
+>
+> The above copyright notice and this permission notice shall be included in all
+> copies or substantial portions of the Software.
+>
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+> SOFTWARE.
+
+The color distance used to match a thread to a Brother color is the "redmean" measure described by Thiadmer
+Riemersma (https://www.compuphase.com/cmetric.htm).

@@ -12,9 +12,16 @@
 //               of the canvas, so it never ends up in a saved image.
 //
 // The turtle's drawing ops (see core/turtle.js) arrive through applyOp().
+//
+// The paper can be zoomed and slid to show a different part of the world (see core/fit.js).
+// That is a change of view only: the turtle's x and y mean the same thing, and the picture is
+// painted again from the turtle's list of ops. A picture opened from a file lies under those
+// ops as one image.
 
 import { PAPER_W, PAPER_H, arcAngles } from '../core/turtle.js';
 import { toCss } from '../core/color.js';
+import { DEFAULT_DRAW_VIEW, drawingBounds, fitView, paperToWorld, visibleOps } from '../core/fit.js';
+import { gridLines, labelFor } from '../core/grid.js';
 import { turtleSvg } from './artwork.js';
 
 /** Canvas pixels per paper unit. */
@@ -28,16 +35,25 @@ export const PDF_TURTLE_SIZE = 70;
 // ---- Painting ops onto a canvas ----------------------------------------
 
 /**
- * Switch the canvas to paper coordinates: (0, 0) in the middle, x to the
- * right, y UP. (A canvas normally has y pointing down, so we flip it.)
+ * Switch the canvas to the turtle's coordinates: x to the right, y UP. (A canvas normally
+ * has y pointing down, so we flip it.) In the default view (0, 0) is the middle of the paper
+ * and a unit is two canvas pixels; a zoomed view slides and scales that.
  */
-function usePaperCoordinates(ctx) {
+function usePaperCoordinates(ctx, view = DEFAULT_DRAW_VIEW) {
+  const scale = PIXEL_RATIO * view.zoom;
   ctx.setTransform(
-    PIXEL_RATIO, 0,
-    0, -PIXEL_RATIO,
-    (PAPER_W / 2) * PIXEL_RATIO,
-    (PAPER_H / 2) * PIXEL_RATIO,
+    scale, 0,
+    0, -scale,
+    (PAPER_W / 2 - view.cx * view.zoom) * PIXEL_RATIO,
+    (PAPER_H / 2 + view.cy * view.zoom) * PIXEL_RATIO,
   );
+}
+
+/** Cover the whole canvas with one color, whatever the view is. */
+function coverCanvas(ctx, color) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
 
 function strokeSegment(ctx, seg) {
@@ -65,18 +81,20 @@ function addSegment(path, seg) {
   }
 }
 
-/** Draw one op from the turtle onto the paper canvas. */
-export function paintOp(ctx, op) {
-  usePaperCoordinates(ctx);
+/** Draw one op from the turtle onto the paper canvas, as seen through `view`. */
+export function paintOp(ctx, op, view = DEFAULT_DRAW_VIEW) {
   switch (op.type) {
     case 'clear':
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(-PAPER_W / 2, -PAPER_H / 2, PAPER_W, PAPER_H);
-      break;
+      coverCanvas(ctx, '#ffffff');
+      return;
     case 'fillScreen':
-      ctx.fillStyle = toCss(op.color);
-      ctx.fillRect(-PAPER_W / 2, -PAPER_H / 2, PAPER_W, PAPER_H);
+      coverCanvas(ctx, toCss(op.color));
+      return;
+    default:
       break;
+  }
+  usePaperCoordinates(ctx, view);
+  switch (op.type) {
     case 'line':
     case 'arc':
       strokeSegment(ctx, op);
@@ -127,6 +145,9 @@ export class CanvasView {
     this.scale = 1; // screen pixels per paper unit
     this.spriteSize = 64;
     this.syncQueued = false;
+    this.drawView = { ...DEFAULT_DRAW_VIEW }; // how the paper is zoomed and slid (see core/fit.js)
+    this.picture = null; // an image opened from a file, lying under everything the turtle draws
+    this.gridVisible = false; // the grid lives on its own canvas, so it is never in a saved picture
 
     this.box = document.createElement('div');
     this.box.className = 'paper-box';
@@ -137,11 +158,18 @@ export class CanvasView {
     this.canvas.height = PAPER_H * PIXEL_RATIO;
     this.ctx = this.canvas.getContext('2d');
 
+    this.gridCanvas = document.createElement('canvas');
+    this.gridCanvas.className = 'paper-grid';
+    this.gridCanvas.width = PAPER_W * PIXEL_RATIO;
+    this.gridCanvas.height = PAPER_H * PIXEL_RATIO;
+    this.gridCanvas.hidden = true;
+    this.gridCtx = this.gridCanvas.getContext('2d');
+
     this.sprite = document.createElement('div');
     this.sprite.className = 'turtle-sprite';
     this.sprite.innerHTML = turtleSvg();
 
-    this.box.append(this.canvas, this.sprite);
+    this.box.append(this.canvas, this.gridCanvas, this.sprite);
     stage.append(this.box);
 
     paintOp(this.ctx, { type: 'clear' });
@@ -150,17 +178,166 @@ export class CanvasView {
     this.listenForDrags();
   }
 
-  /** Put a picture on the paper, replacing what is there. (Used when a saved picture is opened.) */
+  /**
+   * Put a picture on the paper, replacing what is there, at the default view. (Used when a saved
+   * picture is opened.) The turtle forgets its own drawing then, and what it draws next goes on top.
+   */
   paintImage(image) {
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.fillStyle = '#ffffff';
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height);
+    this.dropPicture();
+    this.picture = image;
+    this.drawView = { ...DEFAULT_DRAW_VIEW };
+    this.repaint();
+    this.viewChanged();
   }
 
   /** Draw an op the turtle just made. */
   applyOp(op) {
-    paintOp(this.ctx, op);
+    if (op.type === 'clear') this.dropPicture();
+    paintOp(this.ctx, op, this.drawView);
+  }
+
+  /** Let go of the opened picture (an ImageBitmap is memory the page has to give back). */
+  dropPicture() {
+    if (this.picture && typeof this.picture.close === 'function') this.picture.close();
+    this.picture = null;
+  }
+
+  /**
+   * Draw the whole picture again through the current view: the opened picture (if any), then
+   * the turtle's ops. A clear or a fill screen covers all before it, so those are skipped.
+   */
+  repaint() {
+    const { ops, start } = visibleOps(this.turtle.ops);
+    coverCanvas(this.ctx, '#ffffff');
+    if (start < 0 && this.picture) this.drawPicture();
+    for (let i = Math.max(0, start); i < this.turtle.ops.length; i += 1) paintOp(this.ctx, this.turtle.ops[i], this.drawView);
+    return ops.length;
+  }
+
+  /** The opened picture, in the place the paper would be if it were drawn in the turtle's world. */
+  drawPicture() {
+    const { zoom, cx, cy } = this.drawView;
+    const left = (PAPER_W / 2 + (-PAPER_W / 2 - cx) * zoom) * PIXEL_RATIO;
+    const top = (PAPER_H / 2 - (PAPER_H / 2 - cy) * zoom) * PIXEL_RATIO;
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.drawImage(this.picture, left, top, PAPER_W * zoom * PIXEL_RATIO, PAPER_H * zoom * PIXEL_RATIO);
+  }
+
+  /** Where a spot of the turtle's world is on the canvas, in canvas pixels. */
+  canvasPoint(x, y) {
+    const { zoom, cx, cy } = this.drawView;
+    return { x: (PAPER_W / 2 + (x - cx) * zoom) * PIXEL_RATIO, y: (PAPER_H / 2 - (y - cy) * zoom) * PIXEL_RATIO };
+  }
+
+  /**
+   * Zoom and slide the paper so everything drawn fits on it, including what was drawn off the
+   * edge, and where the turtle is. Nothing drawn gives the default view.
+   * Returns { ok: true, zoom } or { ok: false, reason } if the picture cannot be redrawn.
+   */
+  fit() {
+    // Only some of the lines were kept (a loop ran for ages), so drawing again would lose the rest.
+    if (this.turtle.truncated) return { ok: false, reason: 'too-long' };
+    const box = drawingBounds(this.turtle.ops, {
+      hasPicture: this.picture !== null,
+      extraPoints: [{ x: this.turtle.x, y: this.turtle.y }],
+    });
+    return this.showView(fitView(box));
+  }
+
+  /** Back to the default view: the paper as it was when you started. */
+  resetDrawView({ force = false } = {}) {
+    return this.showView({ ...DEFAULT_DRAW_VIEW }, { force });
+  }
+
+  /**
+   * Show the paper through a view, painting it again if the view changed. If only some of the
+   * lines were kept, painting again would lose the rest, so that is refused unless `force` says
+   * the old picture is about to be thrown away anyway (a new run).
+   */
+  showView(next, { force = false } = {}) {
+    const same = next.zoom === this.drawView.zoom && next.cx === this.drawView.cx && next.cy === this.drawView.cy;
+    if (!same) {
+      if (this.turtle.truncated && !force) return { ok: false, reason: 'too-long' };
+      this.drawView = { zoom: next.zoom, cx: next.cx, cy: next.cy };
+      this.repaint();
+      this.viewChanged();
+    }
+    return { ok: true, zoom: this.drawView.zoom };
+  }
+
+  viewChanged() {
+    this.sync();
+    this.drawGrid();
+  }
+
+  // ---- The grid ------------------------------------------------------------
+
+  /** Show or hide the grid of x and y numbers. It is drawn on its own canvas, above the paper. */
+  setGridVisible(visible) {
+    this.gridVisible = visible;
+    this.gridCanvas.hidden = !visible;
+    this.drawGrid();
+  }
+
+  /** Draw the grid for the current view: light lines, darker axes, and numbers along the axes. */
+  drawGrid() {
+    if (!this.gridVisible) return;
+    const ctx = this.gridCtx;
+    const { width, height } = this.gridCanvas;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    const { xs, ys } = gridLines(this.drawView);
+    const origin = this.canvasPoint(0, 0);
+
+    ctx.lineCap = 'butt';
+    for (const x of xs) {
+      const at = this.canvasPoint(x, 0).x;
+      ctx.lineWidth = x === 0 ? 3 : 1.5;
+      ctx.strokeStyle = x === 0 ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.16)';
+      ctx.beginPath();
+      ctx.moveTo(at, 0);
+      ctx.lineTo(at, height);
+      ctx.stroke();
+    }
+    for (const y of ys) {
+      const at = this.canvasPoint(0, y).y;
+      ctx.lineWidth = y === 0 ? 3 : 1.5;
+      ctx.strokeStyle = y === 0 ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.16)';
+      ctx.beginPath();
+      ctx.moveTo(0, at);
+      ctx.lineTo(width, at);
+      ctx.stroke();
+    }
+
+    // Numbers: about 12 screen pixels tall whatever the window size. They sit just beside the
+    // axes, or against the edge of the paper when an axis is off the paper.
+    const size = clamp(24 / this.scale, 18, 34);
+    ctx.font = `${size}px Roboto, Arial, sans-serif`;
+    ctx.lineJoin = 'round';
+    ctx.lineWidth = 5;
+    const write = (text, x, y, align) => {
+      ctx.textAlign = align;
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.strokeText(text, x, y);
+      ctx.fillStyle = '#333';
+      ctx.fillText(text, x, y);
+    };
+    const rowY = clamp(origin.y + size + 6, size + 6, height - 8);
+    for (const x of xs) {
+      const at = this.canvasPoint(x, 0).x;
+      const half = ctx.measureText(labelFor(x)).width / 2;
+      if (at - half < 4 || at + half > width - 4) continue;
+      write(labelFor(x), at, rowY, 'center');
+    }
+    for (const y of ys) {
+      if (y === 0) continue; // the 0 is already written along the x axis
+      const text = labelFor(y);
+      const left = clamp(origin.x + 8, 8, width - 8 - ctx.measureText(text).width);
+      write(text, left, this.canvasPoint(0, y).y - 6, 'left');
+    }
+    ctx.font = `bold ${size + 4}px Roboto, Arial, sans-serif`;
+    if (origin.y >= 0 && origin.y <= height) write('x', width - 22, origin.y - 8, 'center');
+    if (origin.x >= 0 && origin.x <= width) write('y', origin.x + 16, size + 12, 'center');
   }
 
   /**
@@ -186,7 +363,8 @@ export class CanvasView {
       const pixels = size * PIXEL_RATIO;
       // The same spot the sprite sits on the screen, in the paper's own pixels; the picture
       // faces up, so turning it clockwise by the heading points it the right way.
-      context.translate((x + PAPER_W / 2) * PIXEL_RATIO, (PAPER_H / 2 - y) * PIXEL_RATIO);
+      const at = this.canvasPoint(x, y);
+      context.translate(at.x, at.y);
       context.rotate((heading * Math.PI) / 180);
       context.drawImage(picture, -pixels / 2, -pixels / 2, pixels, pixels);
     } finally {
@@ -206,13 +384,15 @@ export class CanvasView {
     this.sprite.style.width = `${this.spriteSize}px`;
     this.sprite.style.height = `${this.spriteSize}px`;
     this.sync();
+    this.drawGrid();
   }
 
   /** Put the turtle picture where the turtle is. */
   sync() {
-    const { x, y, heading } = this.turtle;
-    const px = (x + PAPER_W / 2) * this.scale;
-    const py = (PAPER_H / 2 - y) * this.scale;
+    const { heading } = this.turtle;
+    const at = this.canvasPoint(this.turtle.x, this.turtle.y);
+    const px = (at.x / PIXEL_RATIO) * this.scale;
+    const py = (at.y / PIXEL_RATIO) * this.scale;
     const half = this.spriteSize / 2;
     this.sprite.style.transform = `translate(${px - half}px, ${py - half}px) rotate(${heading}deg)`;
   }
@@ -263,9 +443,9 @@ export class CanvasView {
       if (drag.mode === 'move') {
         const px = event.clientX - drag.grabX - rect.left;
         const py = event.clientY - drag.grabY - rect.top;
-        const x = clamp(Math.round(px / this.scale - PAPER_W / 2), -PAPER_W / 2, PAPER_W / 2);
-        const y = clamp(Math.round(PAPER_H / 2 - py / this.scale), -PAPER_H / 2, PAPER_H / 2);
-        this.turtle.place(x, y);
+        // The paper is what you see: dragging stays on it, whatever the zoom is.
+        const world = paperToWorld(this.drawView, clamp(px / this.scale, 0, PAPER_W), clamp(py / this.scale, 0, PAPER_H));
+        this.turtle.place(Math.round(world.x), Math.round(world.y));
       } else {
         const center = this.spriteCenter();
         const dx = event.clientX - center.x;
@@ -288,9 +468,10 @@ export class CanvasView {
   /** Where the middle of the turtle is on the screen. */
   spriteCenter() {
     const rect = this.box.getBoundingClientRect();
+    const at = this.canvasPoint(this.turtle.x, this.turtle.y);
     return {
-      x: rect.left + (this.turtle.x + PAPER_W / 2) * this.scale,
-      y: rect.top + (PAPER_H / 2 - this.turtle.y) * this.scale,
+      x: rect.left + (at.x / PIXEL_RATIO) * this.scale,
+      y: rect.top + (at.y / PIXEL_RATIO) * this.scale,
     };
   }
 }

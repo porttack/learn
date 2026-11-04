@@ -3,7 +3,8 @@
 // paper (with the blocks hidden). Run it again whenever a sample changes:
 //   python3 -m http.server 4011 --directory turtlelab
 //   node turtlelab/dev/make-sample-thumbs.mjs
-// The samples that use chance (random) come out a little different each time.
+// The samples that use chance (random) come out a little different each time. To make only some
+// (and leave the other pictures exactly as they are), name them:  ONLY=stitch-heart,stitch-star node ...
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { launch } from './cdp.mjs';
 import { mkdirSync } from 'node:fs';
@@ -30,7 +31,9 @@ const touchesEdge = (chrome) =>
 
 const chrome = await launch({ width: 1200, height: 800 });
 try {
+  const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
   for (const sample of SAMPLES) {
+    if (only && !only.includes(sample.id)) continue;
     // A sample that uses chance can wander off the paper. Run it again until the
     // picture fits, so the thumbnail shows all of it.
     const tries = sample.concepts.includes('random') ? 12 : 1;
