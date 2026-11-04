@@ -340,7 +340,7 @@ async function savePdfNow() {
   makingPdf = true;
   say('Making the PDF...');
   try {
-    const name = await savePdf(view.canvas, project);
+    const name = await savePdf(view.canvas, project, await view.paperWithTurtle());
     say(`Saved ${name}. The blocks are on top and the drawing is below. Drag the PDF onto this page to open the blocks again.`);
   } catch (error) {
     console.error(error);

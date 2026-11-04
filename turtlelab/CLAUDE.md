@@ -236,7 +236,7 @@ missing, so run it where Python is.
 ## The PDF
 
 The PDF button makes a one page US Letter PDF for handing in: **the blocks in the top
-half and the drawing in the bottom half**, with the file name above and a line of
+half and the drawing, with the turtle on it, in the bottom half**, with the file name above and a line of
 help below. `core/pdf.js` writes it by hand (numbered objects, a table of where
 each starts), with no library, just as `png-chunks.js` writes PNG chunks. The two
 pictures are raw RGB squashed with `CompressionStream('deflate')` (which is exactly
@@ -248,6 +248,19 @@ FlateDecode); text is the built-in Helvetica, so no font is embedded.
   because the bytes are plain, `project-file.js` can find the PNG inside the PDF by
   its signature (`findAttachedPng`), so **Open and drag-and-drop accept the PDF**.
   Poppler (`pdfdetach`) can pull the same PNG out, and any PNG viewer can then open it.
+- **The drawing in the PDF has the turtle on it; the PNG never does.** The teacher grades
+  from the PDF and wants to see which way the turtle was facing, so `CanvasView.paperWithTurtle()`
+  copies the 1400x1120 paper and stamps the turtle sprite (the same SVG as on the screen,
+  70 paper units wide, a bit bigger than on the screen so the nose is easy to see when
+  printed small: `PDF_TURTLE_SIZE`) at the turtle's position, turned clockwise by its
+  heading. `savePdf(canvas, project, shown)` shows `shown` on the page but still makes the
+  attached PNG from the bare `canvas`, so saving a PNG, or opening a PDF, never puts a turtle
+  on the paper. Both halves are tested (`dev/editor-checks.mjs`): poppler's rendering of the
+  page has the turtle's green in the bottom half only, the attached PNG has none, and a big
+  stamped turtle at six headings has its middle of mass behind its nose (the body is a little
+  heavier toward the tail, which is a sturdy way to test the direction without comparing
+  pictures by eye). A mutant with no `rotate()` and one that attached the stamped canvas both
+  fail those checks.
 - **The blocks picture** (`ui/code-image.js`) lays out every stack and note as the
   workspace does, puts them in one SVG, and draws that on a canvas at twice the
   sharpness. An SVG shown as an image cannot use the page's fonts, so the Roboto
@@ -422,7 +435,7 @@ FlateDecode); text is the built-in Helvetica, so no font is embedded.
     `porttack-turtle-project`, uncompressed, written by `core/png-chunks.js`
     with a hand-written CRC-32), and downloads it as `turtlelab-DATE-TIME.png`.
     The picture is an ordinary PNG; the turtle sprite is not in it (it is a
-    separate layer). Only the project is stored: no name, date or device info.
+    separate layer; only the PDF's page has one stamped on, see "The PDF"). Only the project is stored: no name, date or device info.
   - **Open** (button) and **dropping a file anywhere on the page** read a saved
     PNG or a plain `.json` project, check it with `validateProject` (a bad or
     newer file gets a friendly message and changes nothing), replace the

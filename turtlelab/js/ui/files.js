@@ -60,15 +60,18 @@ export async function savePicture(canvas, project) {
 
 /**
  * Save a one page PDF: the blocks on top, the drawing below, and the PNG (with the blocks
- * inside it) attached. Resolves to the file name the browser was asked to use.
+ * inside it) attached. `canvas` is the bare paper, which the attached PNG is made from.
+ * `shown` is what the page shows of the drawing, which can be the paper with the turtle
+ * on it (the PNG never has the turtle, the page for a teacher grading does).
+ * Resolves to the file name the browser was asked to use.
  */
-export async function savePdf(canvas, project) {
+export async function savePdf(canvas, project, shown = canvas) {
   const stamp = `turtlelab-${fileStamp()}`;
   const [picture, code] = await Promise.all([makePicture(canvas, project), renderCodeImage(project)]);
   const pdf = await buildPdf({
     title: stamp,
     code,
-    drawing: { width: canvas.width, height: canvas.height, rgb: canvasToRgb(canvas) },
+    drawing: { width: shown.width, height: shown.height, rgb: canvasToRgb(shown) },
     attachment: { name: `${stamp}.png`, bytes: picture },
   });
   download(new Blob([pdf], { type: 'application/pdf' }), `${stamp}.pdf`);

@@ -1501,7 +1501,90 @@ try {
     const pages = join(downloads, 'pdfpage');
     const drawn = spawnSync('pdftoppm', ['-png', '-r', '30', pdfPath, pages], { encoding: 'utf8' });
     check('and can draw the page', drawn.status === 0 && !/Error|Syntax/i.test(drawn.stderr));
+
+    // The turtle is on the PDF's drawing (the grader wants to see which way it faces), but the PNG attached
+    // to the same PDF is the bare paper. Count the turtle's green, in the page poppler draws and in the PNG.
+    const ppmBase = join(downloads, 'pdfcolor');
+    spawnSync('pdftoppm', ['-r', '100', pdfPath, ppmBase], { encoding: 'utf8' });
+    const ppm = readFileSync(`${ppmBase}-1.ppm`);
+    const [header, ppmWidth, ppmHeight] = /^P6\s+(\d+)\s+(\d+)\s+255\s/.exec(ppm.subarray(0, 40).toString('latin1'));
+    const isTurtleGreen = (r, g, b) => g > r + 40 && g > b + 100;
+    const greenIn = (fromRow, toRow) => {
+      let n = 0;
+      for (let row = fromRow; row < toRow; row += 1) {
+        for (let col = 0; col < Number(ppmWidth); col += 1) {
+          const at = header.length + (row * Number(ppmWidth) + col) * 3;
+          if (isTurtleGreen(ppm[at], ppm[at + 1], ppm[at + 2])) n += 1;
+        }
+      }
+      return n;
+    };
+    const half = Math.floor(Number(ppmHeight) / 2);
+    check('the turtle is on the drawing in the bottom half of the PDF page', greenIn(half, Number(ppmHeight)) > 500, `${greenIn(half, Number(ppmHeight))} green pixels`);
+    check('and not in the blocks above it', greenIn(0, half) === 0, `${greenIn(0, half)} green pixels`);
+    const attachedPng = readProjectFile(pdfBytes).picture;
+    const greenInAttached = await chrome.eval(`(async () => {
+      const image = new Image();
+      image.src = 'data:image/png;base64,${Buffer.from(attachedPng).toString('base64')}';
+      await image.decode();
+      const canvas = document.createElement('canvas');
+      canvas.width = image.width;
+      canvas.height = image.height;
+      const context = canvas.getContext('2d');
+      context.drawImage(image, 0, 0);
+      const data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let turtle = 0;
+      for (let i = 0; i < data.length; i += 4) if (data[i] === 108 && data[i + 1] === 198 && data[i + 2] === 0) turtle++;
+      return turtle;
+    })()`);
+    check('but the PNG attached to the PDF is the bare paper, with no turtle in it', greenInAttached === 0, `${greenInAttached} turtle pixels`);
   }
+
+  // paperWithTurtle (what the PDF's drawing is made from): the turtle is where it is and faces the way it faces, and the
+  // paper underneath is not touched. The turtle's body is a little heavier toward the tail, so the middle of its pixels sits
+  // a little behind where it is. Drawn big (so the difference is many pixels, not one), that offset must point away from the
+  // way it faces at every heading.
+  await chrome.goto(BASE + '?speed=instant');
+  const stamped = await chrome.eval(`(async () => {
+    const { CanvasView, PIXEL_RATIO } = await import('./js/ui/canvas-view.js');
+    const { PAPER_W, PAPER_H } = await import('./js/core/turtle.js');
+    const results = {};
+    for (const size of [undefined, 300]) {
+      for (const heading of [0, 45, 90, 135, 180, 270]) {
+        const turtle = { x: 80, y: -40, heading };
+        const view = new CanvasView({ stage: document.createElement('div'), turtle });
+        const before = view.canvas.toDataURL();
+        const copy = await view.paperWithTurtle(size);
+        const data = copy.getContext('2d').getImageData(0, 0, copy.width, copy.height).data;
+        let n = 0, sumX = 0, sumY = 0;
+        for (let i = 0; i < data.length; i += 4) {
+          if (data[i + 1] > data[i] + 40 && data[i + 1] > data[i + 2] + 100) {
+            const at = i / 4;
+            n += 1; sumX += at % copy.width; sumY += Math.floor(at / copy.width);
+          }
+        }
+        results[(size ?? 'normal') + ':' + heading] = { n, x: sumX / n, y: sumY / n, paperUntouched: view.canvas.toDataURL() === before,
+          sameSize: copy.width === view.canvas.width && copy.height === view.canvas.height,
+          anchorX: (80 + PAPER_W / 2) * PIXEL_RATIO, anchorY: (PAPER_H / 2 + 40) * PIXEL_RATIO };
+      }
+    }
+    return results;
+  })()`);
+  const headings = [0, 45, 90, 135, 180, 270];
+  const normal = (h) => stamped[`normal:${h}`];
+  const big = (h) => stamped[`300:${h}`];
+  check('paperWithTurtle draws the turtle (thousands of its pixels), and leaves the paper itself bare',
+    headings.every((h) => normal(h).n > 2000 && normal(h).paperUntouched && normal(h).sameSize && big(h).n > 50000 && big(h).paperUntouched), JSON.stringify(normal(0)));
+  const around = (found) => ({ dx: found.x - found.anchorX, dy: found.y - found.anchorY });
+  check('the turtle is at its own spot on the paper, whichever way it faces', headings.every((h) => Math.hypot(around(normal(h)).dx, around(normal(h)).dy) < 8),
+    headings.map((h) => `${h}:${around(normal(h)).dx.toFixed(1)},${around(normal(h)).dy.toFixed(1)}`).join(' '));
+  const behind = headings.map((h) => {
+    const { dx, dy } = around(big(h));
+    const ahead = dx * Math.sin((h * Math.PI) / 180) - dy * Math.cos((h * Math.PI) / 180); // how far toward the nose (screen y points down)
+    return { h, ahead };
+  });
+  check('and the middle of its pixels is behind it at every heading, so the nose points the way the heading says',
+    behind.every(({ ahead }) => ahead < -4), behind.map(({ h, ahead }) => `${h}:${ahead.toFixed(1)}`).join(' '));
 
   await clickButton('new');
   check('New clears the page', (await stacks()) === 0);

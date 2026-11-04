@@ -20,6 +20,11 @@ import { turtleSvg } from './artwork.js';
 /** Canvas pixels per paper unit. */
 export const PIXEL_RATIO = 2;
 
+// How big the turtle is on the PDF's drawing, in paper units. A little bigger than the sprite on
+// the screen (about 52 on an ordinary window), because the drawing is printed small and the
+// reader needs to see at a glance which way the nose points.
+export const PDF_TURTLE_SIZE = 70;
+
 // ---- Painting ops onto a canvas ----------------------------------------
 
 /**
@@ -156,6 +161,38 @@ export class CanvasView {
   /** Draw an op the turtle just made. */
   applyOp(op) {
     paintOp(this.ctx, op);
+  }
+
+  /**
+   * A copy of the paper with the turtle drawn on it, where it is now and facing the way it
+   * faces now, for the PDF (a teacher grading a drawing wants to see which way the turtle
+   * would go next). The paper itself is left alone, so a saved PNG never has a turtle in it.
+   * `size` is how big to draw it, in paper units (a test makes it big to see which way it points).
+   * Resolves to a new canvas the same size as the paper.
+   */
+  async paperWithTurtle(size = PDF_TURTLE_SIZE) {
+    const copy = document.createElement('canvas');
+    copy.width = this.canvas.width;
+    copy.height = this.canvas.height;
+    const context = copy.getContext('2d', { willReadFrequently: true });
+    context.drawImage(this.canvas, 0, 0);
+
+    const url = URL.createObjectURL(new Blob([turtleSvg()], { type: 'image/svg+xml' }));
+    try {
+      const picture = new Image();
+      picture.src = url;
+      await picture.decode();
+      const { x, y, heading } = this.turtle;
+      const pixels = size * PIXEL_RATIO;
+      // The same spot the sprite sits on the screen, in the paper's own pixels; the picture
+      // faces up, so turning it clockwise by the heading points it the right way.
+      context.translate((x + PAPER_W / 2) * PIXEL_RATIO, (PAPER_H / 2 - y) * PIXEL_RATIO);
+      context.rotate((heading * Math.PI) / 180);
+      context.drawImage(picture, -pixels / 2, -pixels / 2, pixels, pixels);
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+    return copy;
   }
 
   /** Fit the paper inside the stage, keeping its shape, and center it. */
