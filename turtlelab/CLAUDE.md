@@ -223,8 +223,9 @@ missing, so run it where Python is.
   is the single source of the name list, and the tests RUN every sample and a
   program with every block on it, and check names with `ast` (a name inside
   `except NameError` is allowed to be missing). **If EduBlocks changes, fetch that
-  file again and update `EDUBLOCKS_NAMES` in the runner.** Still untried by me:
-  pasting into the real editor in a browser.
+  file again and update `EDUBLOCKS_NAMES` in the runner.** The teacher pasted the
+  result into the real editor at edublocks.org and it ran (2026-11-03), so the stand-in
+  and the tests match what EduBlocks does.
 - **Names** are made safe for Python (spaces, digits, keywords, and the names the
   program itself uses, which get a trailing underscore), and two names that would
   collide get a number.
