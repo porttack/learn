@@ -309,7 +309,11 @@ penup) and Follow my blocks. The user asked for it: "allow the user to modify th
 - **Not saved.** The text lives only in the textarea (max 20,000 letters): no autosave, not in the project or PNG, nothing stored (the privacy page says so; `dev/logo-checks.mjs`
   checks storage and cookies). Until the student types, the box follows the blocks; once they have, it never overwrites their words (Follow my blocks does, on purpose).
   Deeply nested input is refused politely (the compiler catches RangeError).
-- Tests: `test/logo.test.js` (unit, fast), `dev/logo-checks.mjs` (real Chrome, about half a minute, 37 checks: button, box, short words, run, edit, mistakes, Stop, follow, the shared corner,
+- **Open in real Logo** (a button in the box): opens the program in JSLogo at `../jslogo/#...` on this same site (see the root CLAUDE.md, "JSLogo"). If the box has been
+  typed in, that text is compiled first (a mistake is shown and nothing is sent), and the variables keep the names the student gave them (`compileLogo` returns
+  `boxNames`, and `toLogo(..., { boxNames })` writes `:size` and not `:box1`). Then `toLogo(..., { jslogo: true })` writes it for JSLogo. `window.open` is called from the
+  click, so a blocked pop-up is noticed and said.
+- Tests: `test/logo.test.js` (unit, fast), `test/jslogo.test.js` (the JSLogo translation, run in JSLogo's own interpreter), `dev/logo-checks.mjs` (real Chrome, about half a minute, 37 checks: button, box, short words, run, edit, mistakes, Stop, follow, the shared corner,
   keys, storage, toolbar width).
 
 ## The PDF
@@ -753,6 +757,7 @@ The editor checks assert that making a PDF sends zero requests.
     node turtlelab/dev/sample-checks.mjs                       # real Chrome: every sample, saved work stays safe
     node turtlelab/dev/view-checks.mjs                         # real Chrome: Fit, the grid, the PDF button's fit
     node turtlelab/dev/logo-checks.mjs                         # real Chrome: the Logo box (short, about half a minute)
+    node turtlelab/dev/jslogo-checks.mjs                       # real Chrome: the JSLogo copy and the trip to it (needs the whole site: python3 -m http.server 4012 in the top folder)
     EMBROIDERY_PYTHON=DIR/bin/python3 node turtlelab/dev/export-checks.mjs   # real Chrome: right-click Save, every file
     node turtlelab/dev/make-sample-thumbs.mjs                  # rewrite images/samples/*.png
     node turtlelab/dev/make-samples-page.mjs                   # rewrite samples.html from samples.js

@@ -17,11 +17,14 @@ export class LogoBox {
    * @param {object} options.project the project to show (read every time it is refreshed)
    * @param {(text: string) => void} [options.onMessage] where to say "Copied" and the like
    * @param {(text: string) => void} [options.onRun] called with the text when Run Logo is pressed
+   * @param {(text: string, edited: boolean) => void} [options.onOpenReal] called when Open in real Logo is pressed, with
+   *        the text and whether the student has changed it (if not, it is just the blocks)
    */
-  constructor({ stage, project, onMessage = () => {}, onRun = () => {} }) {
+  constructor({ stage, project, onMessage = () => {}, onRun = () => {}, onOpenReal = () => {} }) {
     this.project = project;
     this.onMessage = onMessage;
     this.onRun = onRun;
+    this.onOpenReal = onOpenReal;
     this.generated = ''; // the last text written from the blocks
     this.edited = false; // has the student changed it?
 
@@ -48,11 +51,13 @@ export class LogoBox {
     this.followButton.addEventListener('click', () => this.follow());
     const copyButton = this.button('logo-copy', 'Copy', 'Copy this Logo');
     copyButton.addEventListener('click', () => this.copy());
+    this.realButton = this.button('logo-real', 'Open in real Logo', 'Open this program in JSLogo, a real Logo kept on this site, in a new tab. TurtleLab\'s Logo is a little different, so it is translated first');
+    this.realButton.addEventListener('click', () => this.onOpenReal(this.area.value, this.edited));
     this.runButton = this.button('logo-run', 'Run Logo', 'Run what is in this box (Ctrl+Enter)');
     this.runButton.addEventListener('click', () => this.run());
     const actions = document.createElement('span');
     actions.className = 'logo-actions';
-    actions.append(this.followButton, copyButton, this.runButton);
+    actions.append(this.followButton, copyButton, this.realButton, this.runButton);
     head.append(title, shortLabel, actions);
 
     this.area = document.createElement('textarea');

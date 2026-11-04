@@ -61,6 +61,15 @@
     and math. It runs entirely in your browser, with nothing to install and
     nothing sent anywhere.
 
+- id: jslogo
+  title: "JSLogo: a real Logo"
+  url: /jslogo/
+  blurb: >-
+    A real Logo interpreter that runs in your browser: type forward, repeat
+    and procedures of your own. It is a copy of Joshua Bell's open source
+    JSLogo, kept here so that nothing you type goes to another website.
+    TurtleLab's Logo box can open its programs in it.
+
 - id: turtlelessons
   title: "TurtleLab Lessons"
   collection: turtlelessons

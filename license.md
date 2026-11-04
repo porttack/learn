@@ -77,3 +77,14 @@ copyright 2026 Eric Brown. Its look is adapted from Turtle Blocks JS by
 Walter Bender and Sugar Labs (also AGPL). TurtleLab's own
 [About page]({{ '/turtlelab/about.html' | relative_url }}) lists every borrowed
 part and links to the full source code.
+
+## JSLogo
+
+[JSLogo]({{ '/jslogo/' | relative_url }}) is a real Logo interpreter that runs in the browser. It is
+open source software written by Joshua Bell, under the [Apache License, Version
+2.0](https://www.apache.org/licenses/LICENSE-2.0), and its editor, CodeMirror, is
+under the MIT license. We keep a copy on this site so that nothing a student types goes
+to another website, and so that TurtleLab's Logo box can send programs to it. We changed it
+only to remove outside requests and saving; the
+[list of changes]({{ '/jslogo/about-this-copy.html' | relative_url }}) is part of the copy, and so is a
+link to the original and its source code. It is not made or endorsed by its author.

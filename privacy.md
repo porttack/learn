@@ -23,7 +23,7 @@ TurtleLab, a block-based drawing tool, keeps a copy of the blocks and
 notes you are working on in your browser's local storage so that refreshing the
 page does not lose them. In both cases the storage stays entirely on
 your device and is never transmitted to any server. Both are explained
-in full below.
+in full below. (JSLogo, a Logo interpreter we host, keeps nothing at all.)
 
 ## Why that is true, technically
 
@@ -126,6 +126,19 @@ picture to your own device, and only when you press it.
 TurtleLab's own [privacy page]({{ '/turtlelab/privacy.html' | relative_url }})
 lists the details for IT staff and explains how to check each claim in your
 browser's developer tools.
+
+## JSLogo
+
+[JSLogo]({{ '/jslogo/' | relative_url }}) is a real Logo interpreter that runs in your
+browser. It is open source software by Joshua Bell, and we keep a copy on this site
+instead of sending you to the original, so that what you type never goes to another
+website. The copy makes no request to any other site (it is built so the browser would
+refuse one), sets no cookies, and keeps nothing in your browser: the original saved your
+procedures and history on your device, and that has been removed, so a refresh starts
+fresh. TurtleLab's Logo box has a button that opens your program in JSLogo. The program
+travels in the part of the address after the `#`, which stays in your browser, and it is
+opened on this same site. What changed from the original is listed on the
+[about page]({{ '/jslogo/about-this-copy.html' | relative_url }}).
 
 ## Hosting and standard web server logs
 

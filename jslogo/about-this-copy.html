@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About this copy of JSLogo</title>
+<style>
+  body { font: 16px/1.5 sans-serif; max-width: 42rem; margin: 1.5rem auto; padding: 0 1rem; color: #1b1f23; }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.2rem; margin-top: 1.6rem; }
+  code { background: #eef1f4; padding: 0 0.25em; border-radius: 3px; }
+  li { margin-bottom: 0.5rem; }
+</style>
+
+<h1>About this copy of JSLogo</h1>
+
+<p>This is a copy of <strong>JSLogo</strong>, a Logo interpreter that runs in the browser, written by Joshua Bell
+(inexorabletash). It is kept on this site so that students can try real Logo without leaving it, and so that nothing a
+student types ever goes to another website. <a href="./">Back to JSLogo</a> or <a href="../turtlelab/">to TurtleLab</a>.</p>
+
+<ul>
+  <li><strong>Original:</strong> <a href="https://github.com/inexorabletash/jslogo">github.com/inexorabletash/jslogo</a>
+    (live at <a href="https://www.calormen.com/jslogo/">calormen.com/jslogo</a>).</li>
+  <li><strong>Copied from:</strong> commit <code>26dfcac41daa4477182ce7c1a00acbd913ab5fd5</code>, 2 October 2026.</li>
+  <li><strong>License:</strong> Apache License, Version 2.0, the same as the original. The full text is in
+    <a href="LICENSE.md">LICENSE.md</a> and every JavaScript file keeps its own notice. Copyright is Joshua Bell's.
+    CodeMirror (in <code>vendor/codemirror/</code>) is MIT licensed, Copyright (C) Marijn Haverbeke and others; its license is
+    <a href="vendor/codemirror/LICENSE">vendor/codemirror/LICENSE</a>.</li>
+  <li><strong>This is not the original and is not made, endorsed or supported by its author.</strong> If something is
+    broken here, it may be our change. The original is the place for bug reports about Logo itself.</li>
+</ul>
+
+<h2>What we changed, and why</h2>
+
+<p>The changes are all about privacy: the page must not contact any other site, and must not keep anything on the
+student's computer. The interpreter itself (<code>logo.js</code>), the turtle (<code>turtle.js</code>) and the editor are
+as they were, apart from the small fixes at the end.</p>
+
+<ol>
+  <li><strong>No outside requests.</strong> The original loaded CodeMirror (the editor) from <code>cdnjs.cloudflare.com</code>,
+    a font from <code>fonts.googleapis.com</code>, and TogetherJS (a real-time collaboration service) from
+    <code>togetherjs.com</code>. Here, CodeMirror 5.61.1 is a file in <code>vendor/codemirror/</code>, the font is left out (the
+    heading uses the browser's own), and TogetherJS and its Collaborate link are removed, along with the code that talked to it.</li>
+  <li><strong>A policy that enforces it.</strong> <code>index.html</code> and <code>language.html</code> carry a
+    Content-Security-Policy that lets the page load only from itself (<code>default-src 'self'</code>, no inline scripts, no
+    <code>eval</code>, no form posts). If anything ever tried to reach another site, the browser would refuse. To make that
+    possible, the one inline script in <code>language.html</code> became the file <code>language.js</code>.</li>
+  <li><strong>Nothing is kept in the browser.</strong> The original saved your procedures and your history in the browser's
+    IndexedDB and loaded them again on every visit. That is removed (<code>initStorage</code> in <code>index.js</code> does
+    nothing), so the Library and History lists last for one visit and a refresh starts fresh.</li>
+  <li><strong>Left out to keep the copy small:</strong> the test page and tests (<code>tests.html</code>, <code>tests.js</code>),
+    <code>15word.html</code> and the contributor files. The language files are kept.</li>
+  <li><strong>Small fixes:</strong>
+    <ul>
+      <li>A program in the address (for example <code>/jslogo/#fd 100 rt 90</code>) that has several lines now opens in the big
+        editor box, so it can be read.</li>
+      <li>A message sent to the page with <code>postMessage</code> is only accepted from this site, and the reference page only
+        sends to this site.</li>
+      <li>Two links in the top bar changed: one back to TurtleLab, and one to this page.</li>
+      <li><code>to_arity</code> in <code>logo.js</code> no longer uses <code>eval</code> (it built a function from a string that
+        included the procedure's name). It does the same job without one. That is what lets the policy above forbid
+        <code>eval</code>, which Logo procedures (<code>to ... end</code>) would otherwise need, and it closes a way a strangely
+        named procedure could inject code.</li>
+    </ul>
+  </li>
+</ol>
+
+<h2>Sending code here from TurtleLab</h2>
+
+<p>TurtleLab's Logo box has an <strong>Open in real Logo</strong> button. It opens this page with the program in the part of the
+address after the <code>#</code>, which never leaves the browser, and the program runs at once. TurtleLab's own Logo has a few
+differences from this one, so the button writes the program again for this interpreter: colors become CSS color words, arcs become
+short straight steps, a clean puts the pen back the way TurtleLab leaves it, fills use <code>filled</code>, and anything that has no
+equivalent (such as the speed block) is left out, with a comment that says so. Underscores in an address are read as spaces here,
+so the button writes them as <code>%5F</code>.</p>

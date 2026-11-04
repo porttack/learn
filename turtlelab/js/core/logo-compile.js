@@ -285,7 +285,11 @@ class Compiler {
     }
     const stacks = definitions.map((found, k) => ({ x: 0, y: k, blocks: [{ op: 'to', name: found.name, params: found.params }, ...found.body] }));
     stacks.push({ x: 0, y: definitions.length, blocks: [{ op: 'start' }, ...main] });
-    return { main, definitions, stacks };
+    // The names the variables had, by box: box 1 is boxNames[0]. (Blocks only know box1 to box4, so these are kept to write the program
+    // out again with the same words. A box that no make named has no entry.)
+    const boxNames = [];
+    for (const [key, index] of this.globals) boxNames[index] = key;
+    return { main, definitions, stacks, boxNames };
   }
 
   definition() {
@@ -627,7 +631,7 @@ class Compiler {
  * Turn Logo text into blocks.
  *
  * @param {string} text
- * @returns {{ok: true, main: object[], definitions: object[], stacks: object[]} | {ok: false, error: string, line: number}}
+ * @returns {{ok: true, main: object[], definitions: object[], stacks: object[], boxNames: string[]} | {ok: false, error: string, line: number}}
  *   `stacks` is a project's stacks (a `to` stack for each of your blocks, then the program under a start block);
  *   `main` is the program's blocks on their own. Every block knows its line (`logoLine`) for error messages.
  */

@@ -113,6 +113,44 @@ try {
   await chrome.sleep(200);
   check('and Stop works', await chrome.eval(`!document.getElementById('run').disabled`));
 
+  // ---- Open in real Logo --------------------------------------------------------------------------------------
+  // The button opens a new tab. Here the page is told to remember the address instead of opening it, so it can be read.
+  await chrome.eval(`window.__opened = []; window.open = (url) => { window.__opened.push(String(url)); return {}; }`);
+  const opened = () => chrome.eval(`window.__opened.slice()`);
+  const decoded = async () => {
+    const urls = await opened();
+    const url = urls.at(-1) ?? '';
+    return { url, count: urls.length, code: url.includes('#') ? decodeURIComponent(url.slice(url.indexOf('#') + 1).replace(/_/g, ' ')) : '' };
+  };
+  check('the box has an Open in real Logo button, with a tooltip that says what it does',
+    await chrome.eval(`(() => { const b = document.querySelector('.logo-real'); return !!b && b.textContent === 'Open in real Logo' && /JSLogo/.test(b.title) && /translated/.test(b.title); })()`));
+  await click('.logo-follow');
+  await chrome.sleep(120);
+  await click('.logo-real');
+  await chrome.sleep(150);
+  let sent = await decoded();
+  check('pressing it opens JSLogo, from this site, with the program in the address after the #', sent.count === 1 && /^http:\/\/127\.0\.0\.1:\d+\/jslogo\/#/.test(sent.url), sent.url.slice(0, 60));
+  check('what is sent is the blocks written for JSLogo: the screen set up like TurtleLab, a CSS color, and the loop',
+    /^window\nclearscreen\npendown\nsetpensize 5\nsetpencolor "#ff0000\nsetpencolor "#005adc\nsetpensize 6\nrepeat 4 \[\n {2}forward 100\n {2}right 90\n\]\n$/.test(sent.code), JSON.stringify(sent.code.slice(0, 90)));
+  check('and it says it did, and that nothing leaves the site', /Opened real Logo \(JSLogo\) in a new tab/.test(await message()) && /Nothing leaves this site/.test(await message()));
+  check('the address has no spaces and no underscores in it (JSLogo reads underscores as spaces)', !/[ _]/.test(sent.url.slice(sent.url.indexOf('#'))));
+
+  await typeLogo('cs\nto spiral :n\n  repeat 3 [ arc 90 :n rt 30 ]\nend\nmake "size 40\nspiral :size\nprint :size % 7');
+  await click('.logo-real');
+  await chrome.sleep(150);
+  sent = await decoded();
+  check('if the Logo was typed in, it is the typed Logo that goes, translated', sent.count === 2 && /^to tlarc :angle :radius\n/.test(sent.code) && /^to tlmod :a :b$/m.test(sent.code) && /^to spiral :n$/m.test(sent.code) && /^ +tlarc 90 :n$/m.test(sent.code) && /^make "size 0$/m.test(sent.code) && /^make "size 40$/m.test(sent.code) && /\(tlmod :size 7\)/.test(sent.code) && !/box1/.test(sent.code), JSON.stringify(sent.code.slice(0, 60)));
+  await typeLogo('forward 10\nrigth 5');
+  await click('.logo-real');
+  await chrome.sleep(150);
+  check('a mistake in typed Logo is not sent: it is shown, with its line, and nothing opens', (await decoded()).count === 2 && /^Line 2: I do not know how to rigth/.test(await status()) && /Fix it first/.test(await message()));
+  await typeLogo('; only a comment');
+  await click('.logo-real');
+  await chrome.sleep(120);
+  check('a box with nothing to run says so, and nothing opens', (await decoded()).count === 2 && /nothing to open in real Logo/.test(await message()));
+  await click('.logo-follow');
+  await chrome.sleep(120);
+
   // ---- Following the blocks ----------------------------------------------------------------------------------
   await typeLogo('fd 5');
   await click('.logo-follow');

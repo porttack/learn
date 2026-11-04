@@ -30,6 +30,7 @@ import { noteHeight, stackSize } from './block-view.js';
 import { PythonBox } from './python-box.js';
 import { LogoBox } from './logo-box.js';
 import { compileLogo } from '../core/logo-compile.js';
+import { toLogo, jsLogoAddress } from '../core/logo.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -275,6 +276,41 @@ function runLogo(text) {
   scheduler.start(runBlocks(compiled.main, context));
 }
 
+/**
+ * Open the program in JSLogo, a real Logo kept on this site (/jslogo/), in a new tab, where it runs at once. The program goes in
+ * the part of the address after the #, which the browser never sends anywhere. TurtleLab's own Logo is a little different from
+ * JSLogo's, so it is written again for JSLogo (core/logo.js, `jslogo: true`). If the box has been typed in, that text is read
+ * first, so it is the student's Logo that goes (and a mistake in it is reported here, not sent).
+ */
+function openInRealLogo(text, edited) {
+  let stacks = project.stacks;
+  let boxNames = [];
+  let nothing = false;
+  if (edited) {
+    const compiled = compileLogo(text);
+    if (!compiled.ok) {
+      logoBox.showError(compiled.line, compiled.error);
+      say(`Line ${compiled.line}: ${compiled.error} Fix it first, then open it in real Logo.`);
+      return;
+    }
+    stacks = compiled.stacks;
+    boxNames = compiled.boxNames; // so the variables keep the names the student gave them
+    nothing = compiled.main.length === 0 && compiled.definitions.length === 0;
+  }
+  const code = toLogo({ stacks }, { jslogo: true, boxNames });
+  if (nothing || code.startsWith('; Drag some blocks')) {
+    say('There is nothing to open in real Logo yet.');
+    return;
+  }
+  const opened = window.open(new URL(jsLogoAddress(code), location.href).href, '_blank');
+  if (!opened) {
+    say('The browser did not open a new tab. Allow pop-ups for this page, then press the button again.');
+    return;
+  }
+  opened.opener = null;
+  say('Opened real Logo (JSLogo) in a new tab. It is translated, because TurtleLab\'s Logo is a little different. Nothing leaves this site.');
+}
+
 // ---- Blocks --------------------------------------------------------------
 
 const history = new History(project);
@@ -329,7 +365,7 @@ workspace = new Workspace({
 });
 palettes = new PaletteUI({ stage, workspace });
 pythonBox = new PythonBox({ stage, project, onMessage: say });
-logoBox = new LogoBox({ stage, project, onMessage: say, onRun: runLogo });
+logoBox = new LogoBox({ stage, project, onMessage: say, onRun: runLogo, onOpenReal: openInRealLogo });
 // The blocks are drawn big. On a short screen a sample would run off the bottom,
 // so zoom out until it fits (the reset button brings the full size back).
 if (sample) workspace.fitHeight(SAMPLE_LEFT, SAMPLE_TOP);

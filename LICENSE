@@ -50,6 +50,15 @@ file.
 
 https://creativecommons.org/licenses/by-nc-sa/3.0/
 
+## jslogo/
+
+`jslogo/` is a copy of JSLogo, a Logo interpreter for the browser written by Joshua
+Bell, under the Apache License, Version 2.0 (see `jslogo/LICENSE.md`), not under any
+of the licences above. We changed it only so that it makes no request to another site
+and keeps nothing in the browser; `jslogo/about-this-copy.html` lists every change. Its
+editor, CodeMirror (`jslogo/vendor/codemirror/`), is MIT licensed (see
+`jslogo/vendor/codemirror/LICENSE`).
+
 ## turtlelab/
 
 Everything under `turtlelab/` is a separate program, licensed under the GNU

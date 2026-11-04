@@ -177,6 +177,31 @@ The rules most often gotten wrong:
 - Dev server on port **4011** (`python3 -m http.server 4011 --directory
   turtlelab`), unit tests with `cd turtlelab && node --test`.
 
+### JSLogo (`jslogo/`)
+
+A copy of Joshua Bell's **JSLogo** (https://github.com/inexorabletash/jslogo, Apache-2.0, copied from commit 26dfcac, 2 Oct 2026), served at
+`/jslogo/` as plain static files, **outside `turtlelab/`** (the AGPL island takes no outside code; this is its own third-party folder, like
+`working-in-python/`). It exists so TurtleLab's Logo box can send a program to a *real* Logo without anything leaving the site. Rules:
+
+- **It must make no request to any other site and keep nothing in the browser.** The upstream loaded CodeMirror from cdnjs, a font from Google
+  and TogetherJS from togetherjs.com, and saved procedures and history in IndexedDB. All of that is removed (CodeMirror is vendored in
+  `vendor/codemirror/`; `initStorage` in `index.js` does nothing), both HTML pages carry a strict Content-Security-Policy (no inline script, no
+  `eval`, `connect-src 'self'`), and `to_arity` in `logo.js` no longer uses `eval`. `jslogo/about-this-copy.html` lists every change, as Apache-2.0 asks.
+  **If you ever update from upstream, re-apply those changes** (list is in that page) and run the checks below.
+- Do not add an analytics script, CDN link, font import or `eval`, and do not let it store anything. The site and TurtleLab privacy pages promise this.
+- **Programs arrive in the address:** `/jslogo/#<program>` runs at once (`?<program>` too). JSLogo turns every `_` into a space, so write `%5F`
+  (`jsLogoAddress` in `turtlelab/js/core/logo.js` does). Several lines open the big editor box (our fix).
+- **TurtleLab's Logo is not JSLogo's Logo,** so `toLogo(project, { jslogo: true })` writes the program again for JSLogo: colors as `"#rrggbb` words (JSLogo's
+  lists are 0 to 99), arcs as a `tlarc` helper of 3 degree steps (JSLogo's `arc` draws around the turtle and does not move it), `clean` as `clearscreen` plus
+  the pen put back (red, size 5, down), `%` as a `tlmod` helper (JSLogo's own `modulo` gives 1 for -7 mod 3), fills as `filled pencolor [ ... ]`, `window`
+  first (JSLogo wraps round the edges by default), boxes made 0, and `setspeed`, `write` (shown with `label`) and the pen color readers dropped or approximated
+  with one comment saying so. `test/jslogo.test.js` runs that Logo in JSLogo's real interpreter (loaded in Node by `test/jslogo-harness.mjs`, with a turtle that
+  records) and requires the same drawing as the blocks, for every sample.
+- Checks: `node turtlelab/dev/jslogo-checks.mjs` needs the WHOLE site served (`python3 -m http.server 4012` from the repo's top folder, never 4000): it checks no
+  outside requests, nothing stored, the policy refusing fetch, images, scripts and eval, and four TurtleLab programs opened in it from the Logo box.
+- It has a home page card in `_data/pathways.yml` and entries in `LICENSE`, `license.md` and `privacy.md`. It is not in the site menu (the menu is copied into several
+  pages and pinned by a test); add it there if you want it.
+
 ### Teacher planning notes
 
 Two non-collection, non-published directories (Jekyll ignores underscore

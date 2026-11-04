@@ -410,3 +410,18 @@ test('the Logo starts with the program itself: no heading and no comments from s
   assert.match(toLogo({ stacks: sampleStacks(SAMPLES.find((s) => s.id === 'square')) }), /^clearscreen\nsetpencolor/);
   assert.match(toLogo({ stacks: sampleStacks(SAMPLES.find((s) => s.id === 'own-block')) }), /^to square :size\n/);
 });
+
+test('compileLogo remembers what each variable was called, and toLogo can write the program out with those words', () => {
+  const typed = 'make "size 40 make "Angle 90 make "box3 7\nrepeat 4 [ fd :size rt :angle ]\nprint :box3';
+  const compiled = compileLogo(typed);
+  assert.equal(compiled.ok, true, compiled.error);
+  assert.deepEqual(compiled.boxNames, ['size', 'angle', 'box3'], 'box 1 is size, box 2 is angle, box 3 is called box3');
+  const text = toLogo({ stacks: compiled.stacks }, { boxNames: compiled.boxNames });
+  assert.match(text, /^make "size 40$/m);
+  assert.match(text, /^make "angle 90$/m);
+  assert.match(text, /^make "box3 7$/m);
+  assert.match(text, /^ {2}forward :size$/m);
+  assert.match(text, /^ {2}right :angle$/m);
+  // Without the names (the blocks on the page), a variable is just its box.
+  assert.match(toLogo({ stacks: compiled.stacks }), /^make "box1 40$/m);
+});
