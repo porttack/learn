@@ -160,12 +160,28 @@ export class PaletteUI {
   /**
    * True if a block dropped here is deleted. That is the whole left column, top
    * to bottom, as wide as the palette, and anything dragged past the left edge
-   * of the window: letting go anywhere along the side is "putting it away".
+   * of the window: letting go anywhere along the side is "putting it away". A
+   * stack lying on the trash can counts too (see coversCan).
    * (It used to be only the strip of buttons, so a block dropped just below or
    * beside them stayed where it was.) Only the sideways position matters.
    */
-  isOver(clientX) {
-    return clientX <= this.deleteEdge();
+  isOver(clientX, clientY, stackRect = null) {
+    if (clientX <= this.deleteEdge()) return true;
+    return stackRect !== null && this.coversCan(stackRect);
+  }
+
+  /**
+   * True if a stack of blocks (its rectangle on the screen) is lying on the trash can: the
+   * can's middle is under it. It does not matter where the stack was picked up. A wide stack
+   * grabbed by its far end can be right on top of the can with the pointer well away from
+   * it, and to the student that is "in the trash".
+   */
+  coversCan(rect) {
+    const can = this.trash.el.getBoundingClientRect();
+    if (can.width === 0 || can.height === 0) return false; // the can is not showing
+    const x = can.left + can.width / 2;
+    const y = can.top + can.height * 0.65;
+    return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
   }
 
   /** Tint the whole left column, and bring the shark up, while a block is held over it: "drop to delete". */

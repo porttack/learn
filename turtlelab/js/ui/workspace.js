@@ -62,7 +62,8 @@ export class Workspace {
    * @param {(stack: object) => void} [options.onRunStack] a block was tapped
    * @param {(block: object) => void} [options.onRunPaletteBlock] a palette block was tapped (a fresh copy of it)
    * @param {(text: string) => void} [options.onMessage] something to tell the student, like why a name was refused
-   * @param {(x: number, y: number) => boolean} [options.isOverPalette] for deleting
+   * @param {(x: number, y: number, stackRect: object | null) => boolean} [options.isOverPalette] for deleting:
+   *        the pointer's place, and the rectangle of the stack being carried
    * @param {(hovering: boolean) => void} [options.onPaletteHover]
    * @param {{ mouthPoint: () => ({x: number, y: number} | null), feed: () => void }} [options.eater]
    *        what eats a deleted stack: where its mouth is on the screen, and a nudge to start chewing
@@ -193,7 +194,8 @@ export class Workspace {
     // A drag must always end. If the button comes up where this page cannot see it (over
     // the browser's own edge, say), or the browser takes the pointer back, or the window
     // loses focus, the block would otherwise stay stuck to the pointer.
-    this.svg.addEventListener('lostpointercapture', (event) => this.cancel(event));
+    // (Deferred a moment: if the mouse-up comes right behind it, that is the end of the drag, not this.)
+    this.svg.addEventListener('lostpointercapture', (event) => setTimeout(() => this.cancel(event), 0));
     window.addEventListener('pointerup', (event) => this.release(event));
     window.addEventListener('blur', () => this.abandon());
     this.svg.addEventListener('contextmenu', (event) => {
@@ -282,9 +284,15 @@ export class Workspace {
     }
   }
 
+  /**
+   * The browser took the pointer away (a cancel, or it let go of its hold on it). A block
+   * being carried is dropped where it last was, the way a lost mouse-up is: over the trash
+   * can that deletes it, anywhere else it stays. A press that never became a drag is just ended.
+   */
   cancel(event) {
     if (!this.pointer || event.pointerId !== this.pointer.id) return;
-    this.abandon();
+    if (this.drag) this.release(event, { atLastSpot: true });
+    else this.abandon();
   }
 
   /** End whatever press or drag is going on without doing anything with it: a carried block stays where it is. */
@@ -395,15 +403,17 @@ export class Workspace {
     } else {
       this.snapRing.setAttribute('visibility', 'hidden');
     }
-    const over = this.isOverPalette(event.clientX, event.clientY);
+    const over = this.isOverPalette(event.clientX, event.clientY, layout.el.getBoundingClientRect());
     this.drag.over = over; // where the block was last, for a button-up we never hear
     if (!over) this.drag.fromPalette = false;
     this.onPaletteHover(over && !this.drag.fromPalette);
   }
 
   /** Let go of the carried stack: snap it, delete it, or leave it. */
-  drop(event, { keepWhereItIs = false, over = this.isOverPalette(event.clientX, event.clientY) } = {}) {
+  drop(event, { keepWhereItIs = false, over = null } = {}) {
     const { carried, target } = this.drag;
+    const stackRect = this.layoutOf(carried)?.el.getBoundingClientRect() ?? null;
+    over ??= this.isOverPalette(event.clientX, event.clientY, stackRect);
     this.drag = null;
     this.snapRing.setAttribute('visibility', 'hidden');
     this.onPaletteHover(false);

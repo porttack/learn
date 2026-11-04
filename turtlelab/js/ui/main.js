@@ -288,7 +288,7 @@ workspace = new Workspace({
   onRunPaletteBlock: (block) => runStack({ x: 0, y: 0, blocks: [block] }),
   onMessage: say,
   eater: { mouthPoint: () => palettes.eater.mouthPoint(), feed: () => palettes.eater.feed() },
-  isOverPalette: (x, y) => palettes.isOver(x, y),
+  isOverPalette: (x, y, rect) => palettes.isOver(x, y, rect),
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
 });
 palettes = new PaletteUI({ stage, workspace });

@@ -382,6 +382,89 @@ try {
   await chrome.sleep(900);
   check('and the shark and the red stay away', (await settled()) && !(await bandNow()).shown);
 
+  // A stack lying on the trash can is in the trash, wherever it was picked up. A wide one grabbed by its
+  // far end has the pointer well away from the can, but the block is on top of it.
+  const seedProject = async (project) => {
+    await chrome.goto(BASE + 'about.html');
+    await chrome.eval(`localStorage.setItem('turtlelab-project', ${JSON.stringify(JSON.stringify(project))})`);
+    await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+    await chrome.sleep(400);
+  };
+  const wide = { app: 'porttack-turtle', version: 1, stacks: [{ x: 300, y: 300, blocks: [{ op: 'to', name: 'foo', params: ['size'] }, { op: 'forward', args: [100] }] }] };
+  const plainRect = (selector, last = false) =>
+    chrome.eval(`(() => { const all = [...document.querySelectorAll(${JSON.stringify(selector)})]; const r = all.${last ? 'at(-1)' : 'at(0)'}.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width, height: r.height }; })()`);
+  const canRect = () => chrome.eval(`(() => { const r = document.querySelector('.trash-can').getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, width: r.width }; })()`);
+  /** Grab the wide stack by its last name box, move it so its left end is over the can (or `lift` above it), and hold there. */
+  const dragWideOver = async (lift = 0) => {
+    await seedProject(wide);
+    const hat = await plainRect('.workspace .node.hat');
+    const slot = await plainRect('.workspace .node.nameslot', true);
+    const can = await canRect();
+    const from = { x: slot.left + slot.width / 2, y: slot.top + slot.height / 2 };
+    const to = { x: can.left + 10 + (from.x - hat.left), y: can.top + 50 - lift };
+    await chrome.mouse('mouseMoved', from.x, from.y, { buttons: 0 });
+    await chrome.mouse('mousePressed', from.x, from.y);
+    for (let i = 1; i <= 14; i += 1) await chrome.mouse('mouseMoved', from.x + ((to.x - from.x) * i) / 14, from.y + ((to.y - from.y) * i) / 14);
+    return to;
+  };
+  const wideTo = await dragWideOver();
+  check('a wide stack grabbed by its far end, lying on the can with the pointer far from it, opens the can', (await sharkAt()).hungry && wideTo.x > 150, `pointer at ${Math.round(wideTo.x)}`);
+  await chrome.mouse('mouseReleased', wideTo.x, wideTo.y);
+  await chrome.sleep(150);
+  check('and letting go deletes it', (await stacks()) === 0);
+  await chrome.sleep(1900);
+
+  const nearCan = await dragWideOver(120); // the left end is 120 px above the middle of the can: close, but not on it
+  check('a stack that is only near the can does not open it', !(await sharkAt()).hungry);
+  await chrome.mouse('mouseReleased', nearCan.x, nearCan.y);
+  await chrome.sleep(150);
+  check('and letting go keeps it', (await stacks()) === 1);
+
+  // The browser can end a drag in more than one order. Whatever it does, a block over the can is deleted.
+  const finishWith = (script) => chrome.eval(`(() => { const svg = document.querySelector('svg.workspace'); const window_ = window; ${script} })()`);
+  const holdOverCan = async () => {
+    await chrome.goto(BASE + '?speed=instant');
+    await openPalette('Turtle');
+    await dragFromPalette('forward', 600, 300);
+    const at = await nodeRect('forward');
+    const from = { x: at.left + 10, y: at.top + at.h / 2 };
+    await chrome.mouse('mouseMoved', from.x, from.y, { buttons: 0 });
+    await chrome.mouse('mousePressed', from.x, from.y);
+    for (let i = 1; i <= 8; i += 1) await chrome.mouse('mouseMoved', from.x + ((40 - from.x) * i) / 8, from.y + ((450 - from.y) * i) / 8);
+  };
+  await holdOverCan();
+  await finishWith(`svg.dispatchEvent(new PointerEvent('lostpointercapture', { pointerId: 1, pointerType: 'mouse', bubbles: true })); window_.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, pointerType: 'mouse', clientX: 40, clientY: 450, bubbles: true }));`);
+  await chrome.sleep(150);
+  check('if the browser says it let go of the pointer just BEFORE the mouse-up, the mouse-up still deletes', (await stacks()) === 0);
+  await chrome.sleep(1900);
+
+  // ...but the mouse-up says where it was let go, and that wins over where the block last was.
+  await holdOverCan();
+  await finishWith(`svg.dispatchEvent(new PointerEvent('lostpointercapture', { pointerId: 1, pointerType: 'mouse', bubbles: true })); window_.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, pointerType: 'mouse', clientX: 700, clientY: 300, bubbles: true }));`);
+  await chrome.sleep(150);
+  check('and when that mouse-up is out in the page, away from the can, the block is not deleted', (await stacks()) === 1);
+  await chrome.sleep(900);
+
+  await holdOverCan();
+  await finishWith(`svg.dispatchEvent(new PointerEvent('pointercancel', { pointerId: 1, pointerType: 'mouse', bubbles: true }));`);
+  await chrome.sleep(150);
+  check('if the browser cancels the pointer while a block is over the can, it counts as dropping it there', (await stacks()) === 0);
+  await chrome.sleep(1900);
+
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 300);
+  const outside = await nodeRect('forward');
+  const outsideFrom = { x: outside.left + 10, y: outside.top + outside.h / 2 };
+  await chrome.mouse('mouseMoved', outsideFrom.x, outsideFrom.y, { buttons: 0 });
+  await chrome.mouse('mousePressed', outsideFrom.x, outsideFrom.y);
+  for (let i = 1; i <= 6; i += 1) await chrome.mouse('mouseMoved', outsideFrom.x + 8 * i, outsideFrom.y - 20 * i);
+  await finishWith(`svg.dispatchEvent(new PointerEvent('pointercancel', { pointerId: 1, pointerType: 'mouse', bubbles: true }));`);
+  await chrome.sleep(150);
+  check('a cancel with the block out in the page leaves it there, and nothing is red or stuck', (await stacks()) === 1 && !(await bandNow()).shown && (await settled()));
+  await strayMove(100, 100);
+  check('and the mouse moving after that moves nothing', near((await nodeRect('forward')).left, outside.left + 48, 3));
+
   // The can sits under the blocks, so a stack carried over the shark is drawn on top of it.
   check('the trash can is under the blocks, so a held stack is drawn on top of the shark',
     await chrome.eval(`(() => { const kids = [...document.getElementById('stage').children]; const can = document.querySelector('.trash-can'); return kids.indexOf(can) < kids.indexOf(document.querySelector('svg.workspace')) && getComputedStyle(can).zIndex === 'auto'; })()`));

@@ -276,10 +276,18 @@ FlateDecode); text is the built-in Helvetica, so no font is embedded.
   shark shows for a block fresh from the flyout until it has left the zone, and
   `prefers-reduced-motion` skips the flying copy. The can is under the blocks'
   layer, so a stack being carried is drawn on top of it.
+- **A stack lying on the can is in the trash, wherever it was picked up**
+  (`PaletteUI.coversCan`: the can's middle is under the stack's rectangle). Only
+  testing the pointer failed for wide stacks: grab a `to` block by its last box
+  and drop it so the block sits on the can, and the pointer is 150px from the
+  zone, so nothing happened and the shark never opened. Hover and drop use the
+  same test so what you see is what happens.
 - **A drag must always end.** The workspace also handles a mouse-up it never
   hears (released off the window's edge): the next `pointermove` with no button
-  down lets go at the block's last known spot (`drag.over`), and a window blur or
-  `lostpointercapture` puts the drag down without deleting. Tests cannot use a
+  down lets go at the block's last known spot (`drag.over`). A `pointercancel`
+  or `lostpointercapture` does the same (the capture-lost one is deferred a tick,
+  so a mouse-up right behind it, which says where it really was let go, wins). A
+  window blur puts the drag down without deleting. Tests cannot use a
   scripted move for that (the browser still thinks the button is held); they
   dispatch a `PointerEvent` with `buttons: 0` (`strayMove` in editor-checks).
 - **Undo and redo** keep whole-project JSON snapshots (`core/history.js`,
