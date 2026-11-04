@@ -105,13 +105,14 @@ test('the turtle blocks become the turtle module\'s calls', () => {
 test('clean becomes a small function, defined once at the top, with colormode set', () => {
   const text = toPython(projectOf(program(b('clean'), b('clean'))));
   assert.equal(text.match(/def clean\(\):/g).length, 1);
-  assert.match(text, /colormode\(255\)/);
+  assert.match(text, /^Screen\(\)\.colormode\(255\)$/m, 'colormode is on Screen(), the one spelling EduBlocks and Python share');
+  assert.doesNotMatch(text, /^colormode\(/m, 'never the bare colormode, which EduBlocks does not have');
   assert.match(text, /def clean\(\):\n    clear\(\)\n    penup\(\)\n    home\(\)\n    setheading\(90\)\n    pendown\(\)\n    color\(255, 0, 0\)\n    pensize\(5\)/);
 });
 
 test('a program that does not start with clean is given TurtleLab\'s start: facing up, red pen, size 5', () => {
   const text = toPython(projectOf(program(b('forward', 10))));
-  assert.match(text, /colormode\(255\)/);
+  assert.match(text, /^Screen\(\)\.colormode\(255\)$/m);
   assert.deepEqual(mainLines(projectOf(program(b('forward', 10)))), ['setheading(90)', 'color(255, 0, 0)', 'pensize(5)', 'forward(10)']);
 });
 
@@ -157,7 +158,7 @@ test('yes-or-no blocks become comparisons, and if and if else become if and else
   const lines = mainLines(
     projectOf(program(b('clean'), ifElse(op('less', { op: 'box1' }, 5), [b('forward', 1)], [b('back', 1)]), ifBlock(op('equal', 1, 1), b('stop')))),
   );
-  assert.deepEqual(lines.slice(1), ['if box1 < 5:', '    forward(1)', 'else:', '    backward(1)', 'if 1 == 1:', '    exit()']);
+  assert.deepEqual(lines.slice(1), ['if box1 < 5:', '    forward(1)', 'else:', '    backward(1)', 'if 1 == 1:', '    raise SystemExit']);
 });
 
 test('loops: repeat is for/range, floors a number, and forever is while True', () => {
@@ -294,4 +295,96 @@ test('blocks of your own agree: inputs, boxes, stop, calls inside calls, and rec
   assertSame(projectOf(two, outer, program(b('clean'), call('outer', ['n'], 10), call('go', ['d', 'turn'], 5, 5))), 'calls inside calls');
   const sum = hat('sum', ['n'], ifBlock(op('greater', input('n'), 0), b('forward', input('n')), call('sum', ['n'], op('subtract', input('n'), 1))));
   assertSame(projectOf(sum, program(b('clean'), call('sum', ['n'], 20))), 'recursion');
+});
+
+// ---- It runs in EduBlocks too --------------------------------------------------------------------
+//
+// edublocks.org runs Python in the browser with Skulpt, which has fewer turtle functions at the top
+// level than Python does. (colormode is only on Screen(), and a bare colormode(255) is a NameError there:
+// the first thing a student saw when they pasted the Python in.) So the names the program uses are
+// checked against the names Skulpt really provides.
+//
+// Skulpt's list comes from its source, github.com/skulpt/skulpt, src/lib/turtle.js (November 2026):
+// every method of its Turtle class is at the top level of the module, and so are these few Screen ones.
+
+const SKULPT_TURTLE = (
+  'back backward begin_fill bk circle clear clone color degrees delay distance done dot down end_fill fd fill fillcolor ' +
+  'forward getpen getscreen getturtle goto heading hideturtle home ht isdown isvisible left lt mainloop onclick ondrag ' +
+  'onrelease pd pencolor pendown pensize penup pos position pu radians reset right rt seth setheading setpos setposition ' +
+  'setundobuffer setx sety shape showturtle speed st stamp towards tracer undo undobufferentries up update width ' +
+  'window_height window_width write xcor ycor'
+).split(' ');
+const SKULPT_SCREEN_AT_TOP = (
+  'mainloop done bye tracer update delay window_width window_height title onkey listen register_shape clearscreen bgcolor ' +
+  'bgpic setworldcoordinates ontimer onscreenclick exitonclick resetscreen setup turtles'
+).split(' ');
+const SKULPT_NAMES = new Set([...SKULPT_TURTLE, ...SKULPT_SCREEN_AT_TOP, 'Turtle', 'Screen']);
+// Python's own words the program uses, which every Python has, Skulpt included.
+const BUILTINS_USED = new Set(['range', 'print', 'int', 'abs', 'SystemExit']);
+// Functions of modules the program imports, which Skulpt has too (random from _random.js, time.sleep from time.js).
+const SKULPT_MODULE_FUNCTIONS = new Set(['random.randint', 'random.uniform', 'random.choice', 'time.sleep']);
+
+/** A program that uses every block there is, so every kind of line the generator writes is checked. */
+function everything() {
+  const cond = op('less', { op: 'box1' }, 5);
+  return projectOf(
+    hat('spin', ['n', 'm'], b('forward', input('n')), b('left', input('m')), { op: 'stop', args: [] }),
+    program(
+      b('clean'), b('forward', 1), b('back', 1), b('left', 1), b('right', 1), b('arc', 90, 10), b('arc', { op: 'box1' }, 10), b('arc', -5, 5),
+      b('setxy', 1, 2), b('setheading', 30), b('setheading', { op: 'box1' }), b('penup'), b('pendown'), b('setpensize', 2), b('setcolor', 1, 2, 3),
+      b('fillscreen', 1, 2, 3), b('startfill'), b('endfill'),
+      b('forward', { op: 'x' }), b('forward', { op: 'y' }), b('forward', { op: 'heading' }), b('forward', { op: 'pensize' }),
+      b('forward', { op: 'penred' }), b('forward', { op: 'pengreen' }), b('forward', { op: 'penblue' }),
+      b('forward', op('paren', op('add', op('subtract', 5, 1), op('multiply', 2, op('divide', 8, op('mod', 7, 3)))))),
+      b('forward', op('random', 1, 6)), b('forward', op('random', 1, 2.5)), b('forward', op('oneof', 1, 2)),
+      b('store1', 3), b('store2', 4), b('store3', 5), b('store4', 6), b('print', { op: 'box4' }),
+      rep(3, b('forward', 1)), rep({ op: 'box1' }, b('forward', 1)), { op: 'forever', args: [], body: [{ op: 'stop', args: [] }] },
+      ifBlock(cond, b('forward', 1)), ifElse(op('equal', 1, 1), [b('forward', 1)], [ifBlock(op('greater', 2, 1), b('back', 1))]),
+      b('wait', 5), b('speed', 2), b('speed', 4), call('spin', ['n', 'm'], 10, 20), { op: 'stop', args: [] },
+    ),
+  );
+}
+
+function namesUsedBy(project) {
+  return runPython(toPython(project), 'names');
+}
+
+test('the Python never uses a name EduBlocks (Skulpt) does not have: that is how a bare colormode got through', needsPython, () => {
+  const projects = [everything(), ...SAMPLES.map((sample) => projectOf(...sampleStacks(sample)))];
+  for (const project of projects) {
+    const { free, attributes } = namesUsedBy(project);
+    const unknown = free.filter((name) => !SKULPT_NAMES.has(name) && !BUILTINS_USED.has(name));
+    assert.deepEqual(unknown, [], `names Skulpt does not provide: ${unknown.join(', ')}`);
+    const badAttributes = attributes.filter((attribute) => !SKULPT_MODULE_FUNCTIONS.has(attribute));
+    assert.deepEqual(badAttributes, [], `module functions Skulpt does not provide: ${badAttributes.join(', ')}`);
+  }
+});
+
+test('that check is not blind: it would have caught the bare colormode, and exit, and anything Python-only', needsPython, () => {
+  const { free } = runPython('from turtle import *\ncolormode(255)\nexit()\nforward(1)\nshowpoly()', 'names');
+  const unknown = free.filter((name) => !SKULPT_NAMES.has(name) && !BUILTINS_USED.has(name));
+  assert.deepEqual(unknown, ['colormode', 'exit', 'showpoly']);
+});
+
+test('the program that uses every block is valid Python, runs, and agrees with the blocks', needsPython, () => {
+  assert.doesNotThrow(() => runPython(toPython(everything()), 'check'));
+  // Everything ends with a stop, so only the part of it that does not depend on chance can be compared.
+  const calm = projectOf(program(b('clean'), b('forward', 10), b('arc', 90, 20), b('setxy', 5, 5), b('speed', 2), { op: 'stop', args: [] }, b('forward', 999)));
+  assertSame(calm, 'a stop at the top');
+});
+
+test('the names it uses really are the ones Python\'s own turtle module has too', needsPython, () => {
+  const result = spawnSync('python3', ['-I', '-c', `
+import json, sys
+names = json.loads(sys.stdin.read())
+try:
+    import turtle
+except Exception as error:   # no tkinter on this machine: nothing to check against
+    print(json.dumps({"skipped": str(error)})); sys.exit(0)
+print(json.dumps({"missing": [n for n in names if not hasattr(turtle, n)]}))
+`], { input: JSON.stringify([...SKULPT_NAMES].filter((name) => name !== 'Turtle')), encoding: 'utf8' });
+  const outcome = JSON.parse(result.stdout);
+  if (outcome.skipped) return; // this Python has no turtle module (no tkinter)
+  const used = namesUsedBy(everything()).free.filter((name) => SKULPT_NAMES.has(name));
+  assert.deepEqual(used.filter((name) => outcome.missing.includes(name)), [], 'every top-level name the program uses is in real Python\'s turtle too');
 });

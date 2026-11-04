@@ -10,8 +10,7 @@
 
 import { layoutStack, renderStack, stackBounds } from './block-view.js';
 import { ROBOTO_REGULAR_BASE64 } from './roboto-data.js';
-import { packInColumns, readableScale } from '../core/pack.js';
-import { HALF_PAGE } from '../core/pdf.js';
+import { squeezeGaps } from '../core/squeeze.js';
 
 const PADDING = 14; // round the blocks, in the units the workspace uses
 
@@ -36,7 +35,7 @@ export function canvasToRgb(canvas) {
 }
 
 /**
- * The blocks as a picture: { width, height, rgb, pixelsPerPoint }, or null if there are none.
+ * The blocks as a picture: { width, height, rgb, pixelsPerPoint, placements }, or null if there are none.
  * `pixelsPerPoint` is how many times sharper than the screen it is drawn (2 by default),
  * lowered if the picture would be enormous.
  */
@@ -48,21 +47,10 @@ export async function renderCodeImage(project, { sharpness = 2, maxPixels = 9_00
     return { stack, layout, ...stackBounds(layout) };
   });
 
-  // Where each stack goes in the picture: where the student put it, or, if that leaves so
-  // much empty space that the writing would come out much smaller, packed close together.
-  const left = Math.min(...placed.map(({ stack }) => stack.x));
-  const top = Math.min(...placed.map(({ stack }) => stack.y));
-  const asPlaced = {
-    width: Math.max(...placed.map(({ stack, width }) => stack.x + width)) - left,
-    height: Math.max(...placed.map(({ stack, height }) => stack.y + height)) - top,
-    where: new Map(placed.map(({ stack }) => [stack, { x: stack.x - left, y: stack.y - top }])),
-  };
-  const packed = packInColumns(
-    placed.map(({ stack, width, height }) => ({ id: stack, x: stack.x, y: stack.y, width, height })),
-    { aspect: HALF_PAGE.width / HALF_PAGE.height },
-  );
-  const scaleOf = (size) => readableScale(size.width + 2 * PADDING, size.height + 2 * PADDING, HALF_PAGE.width, HALF_PAGE.height);
-  const arrangement = scaleOf(packed) > scaleOf(asPlaced) * 1.1 ? { width: packed.width, height: packed.height, where: packed.places } : asPlaced;
+  // Every stack goes where it is on the page, so the picture looks like the screen. The one
+  // change: wide empty bands between stacks are closed up, because the picture has to fit half a
+  // page and empty space only makes the writing smaller. (Nothing else moves; see squeeze.js.)
+  const arrangement = squeezeGaps(placed.map(({ stack, width, height }) => ({ id: stack, x: stack.x, y: stack.y, width, height })));
   const width = Math.ceil(arrangement.width + 2 * PADDING);
   const height = Math.ceil(arrangement.height + 2 * PADDING);
   let pixelsPerPoint = sharpness;
@@ -71,7 +59,7 @@ export async function renderCodeImage(project, { sharpness = 2, maxPixels = 9_00
   const serializer = new XMLSerializer();
   const stacks = placed.map(({ stack, layout }) => {
     const group = renderStack(layout, () => {});
-    const at = arrangement.where.get(stack);
+    const at = arrangement.places.get(stack);
     group.setAttribute('transform', `translate(${at.x + PADDING} ${at.y + PADDING})`);
     return serializer.serializeToString(group);
   });
@@ -91,7 +79,9 @@ export async function renderCodeImage(project, { sharpness = 2, maxPixels = 9_00
     context.fillStyle = '#ffffff';
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    return { width: canvas.width, height: canvas.height, rgb: canvasToRgb(canvas), pixelsPerPoint, canvas };
+    // `placements` says where each stack went in the picture (a test checks it matches the screen).
+    const placements = placed.map(({ stack, width: wide, height: tall }) => ({ stack, ...arrangement.places.get(stack), width: wide, height: tall }));
+    return { width: canvas.width, height: canvas.height, rgb: canvasToRgb(canvas), pixelsPerPoint, canvas, placements };
   } finally {
     URL.revokeObjectURL(url);
   }

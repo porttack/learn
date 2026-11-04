@@ -1,14 +1,19 @@
 """Runs the Python that TurtleLab writes, for the tests. Not part of the app.
 
-It reads {"source": "...", "mode": "check" | "run"} from standard input.
+It reads {"source": "...", "mode": "check" | "names" | "run"} from standard input.
   check  only compiles the source, to prove it is valid Python.
+  names  lists the names the program uses without defining them (the turtle functions,
+         the builtins) and the module functions it calls (random.randint, ...), so a
+         test can check them against what EduBlocks' Python (Skulpt) really provides.
   run    runs it against a stand-in for Python's turtle module and prints where the
          turtle ended up, how far it drew, and what was printed.
 
 The stand-in follows the real module's rules (heading 0 is east and turns counter
-clockwise, and circle() uses the same steps as the real one), but draws nothing.
+clockwise, and circle() uses the same steps as the real one), but draws nothing. Like
+Skulpt it has no top-level colormode: that is only on Screen(), so a program that calls
+a bare colormode() fails here, as it does in EduBlocks.
 """
-import io, json, math, sys, time, types
+import ast, io, json, math, sys, time, types
 
 request = json.load(sys.stdin)
 source = request["source"]
@@ -16,6 +21,21 @@ source = request["source"]
 if request["mode"] == "check":
     compile(source, "program.py", "exec")
     print(json.dumps({"ok": True}))
+    sys.exit(0)
+
+if request["mode"] == "names":
+    defined, used, attributes = set(), set(), set()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.FunctionDef):
+            defined.add(node.name)
+            defined.update(a.arg for a in node.args.args)
+        elif isinstance(node, ast.Name):
+            (used if isinstance(node.ctx, ast.Load) else defined).add(node.id)
+        elif isinstance(node, ast.Import):
+            defined.update((a.asname or a.name).split(".")[0] for a in node.names)
+        elif isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
+            attributes.add(node.value.id + "." + node.attr)
+    print(json.dumps({"free": sorted(used - defined), "attributes": sorted(attributes)}))
     sys.exit(0)
 
 state = {"x": 0.0, "y": 0.0, "heading": 0.0, "down": True, "size": 1, "color": (0, 0, 0),
@@ -101,14 +121,19 @@ def heading():
 def speed(s=None):
     state["speeds"].append(s)
 
-def colormode(m=None):
-    if m is not None:
-        state["mode"] = m
+class _Screen:
+    def colormode(self, m=None):
+        if m is not None:
+            state["mode"] = m
+        return state["mode"]
+
+def Screen():
+    return _Screen()
 
 noop = lambda *a, **k: None
 fake = types.ModuleType("turtle")
 for name in ("forward backward left right goto setheading circle penup pendown pensize color pencolor "
-             "clear home xcor ycor heading speed colormode").split():
+             "clear home xcor ycor heading speed Screen").split():
     setattr(fake, name, globals()[name])
 fake.begin_fill = fake.end_fill = fake.bgcolor = fake.done = noop
 fake.__all__ = [n for n in dir(fake) if not n.startswith("_")]

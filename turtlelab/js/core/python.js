@@ -16,6 +16,11 @@
 //   boxes       plain variables, with `global` where a block of your own changes one.
 // Blocks you make are Python functions, and inputs are their parameters.
 //
+// It is written to run in two places: ordinary Python, and EduBlocks (edublocks.org), which
+// runs Python in the browser with Skulpt. Skulpt has fewer turtle functions at the top level
+// than Python does (colormode, for one, is only on Screen()), so only names both have are used.
+// test/python.test.js checks that against the list of what Skulpt provides.
+//
 // This only writes text. A test runs the Python it makes (against a stand-in for the
 // turtle module) and checks it ends up where TurtleLab's own interpreter does.
 
@@ -33,7 +38,7 @@ const PYTHON_WORDS = new Set(
   'False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield match case type'.split(' '),
 );
 const USED_BY_PROGRAM = new Set(
-  'forward backward left right goto setheading circle penup pendown pensize pencolor color begin_fill end_fill clear home xcor ycor heading speed bgcolor colormode done clean random time print range int abs exit'.split(' '),
+  'forward backward left right goto setheading circle penup pendown pensize pencolor color begin_fill end_fill clear home xcor ycor heading speed bgcolor colormode done clean random time print range int abs exit Screen SystemExit'.split(' '),
 );
 
 /** A Python speed (0 is fastest) for each TurtleLab speed: slow, medium, fast, instant. */
@@ -122,7 +127,8 @@ export function toPython(project) {
   if (uses.random) add('import random');
   if (uses.time) add('import time');
   add();
-  if (uses.colors) add('colormode(255)');
+  // Screen().colormode, not colormode: EduBlocks' Python (Skulpt) has colormode only on the Screen.
+  if (uses.colors) add('Screen().colormode(255)');
 
   if (uses.clean) {
     add();
@@ -278,7 +284,8 @@ function statement(block, depth, context) {
       return line(`speed(${PYTHON_SPEEDS[name]})  # ${name}`);
     }
     case 'stop':
-      return line(context.inFunction ? 'return' : 'exit()');
+      // (not exit(): Python made for EduBlocks has no exit, but every Python has SystemExit)
+      return line(context.inFunction ? 'return' : 'raise SystemExit');
     case 'repeat': {
       const n = block.args?.[0];
       const count = typeof n === 'number' ? fmt(Math.floor(n)) : `int(${expr(n, context).text})`;

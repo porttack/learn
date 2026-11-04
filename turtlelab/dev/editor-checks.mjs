@@ -1505,16 +1505,53 @@ try {
 
   await clickButton('new');
   check('New clears the page', (await stacks()) === 0);
+  // Dropping the PDF on the page works like dropping a picture: the browser must not open it in the tab instead.
+  const pdfB64 = Buffer.from(pdfBytes).toString('base64');
+  const droppedPdf = await dropOnPage(`const bytes = Uint8Array.from(atob('${pdfB64}'), (c) => c.charCodeAt(0)); const dataTransfer = new DataTransfer(); dataTransfer.items.add(new File([bytes], 'handed-in.pdf', { type: 'application/pdf' }));`);
+  await chrome.sleep(900);
+  check('dropping a TurtleLab PDF on the page brings back the blocks and the drawing', (await stacks()) === 2 && (await redPixels()) > 100 && /^Opened handed-in\.pdf/.test(await messageText()), await messageText());
+  check('and the browser keeps the page instead of opening the PDF in the tab', droppedPdf.handled && droppedPdf.stillHere && droppedPdf.highlighted && droppedPdf.finished, JSON.stringify(droppedPdf));
+  const droppedRects = await chrome.eval(`[...document.querySelectorAll('.workspace .stack')].map((g) => { const r = g.getBoundingClientRect(); return [Math.round(r.left), Math.round(r.top)]; })`);
+  await clickButton('new');
   await chrome.setFileInput('#open-file', [join(downloads, pdfName)]);
   await chrome.sleep(900);
   check('opening the PDF brings the blocks back, both stacks', (await stacks()) === 2 && (await count('.workspace .node.nameslot')) >= 1 && /^Opened turtlelab-.*\.pdf/.test(await messageText()), await messageText());
   check('and the drawing comes back too, from the picture attached to it', (await redPixels()) > 100);
+  const openedRects = await chrome.eval(`[...document.querySelectorAll('.workspace .stack')].map((g) => { const r = g.getBoundingClientRect(); return [Math.round(r.left), Math.round(r.top)]; })`);
+  check('and every stack is back exactly where it was on the screen', JSON.stringify(openedRects) === JSON.stringify(droppedRects) && openedRects.length === 2, `${JSON.stringify(openedRects)} vs ${JSON.stringify(droppedRects)}`);
   await chrome.sleep(700); // autosave
   check('and they are exactly the blocks that were saved', JSON.stringify(JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`))) === JSON.stringify(onPage));
   await chrome.goto(BASE + '?speed=instant');
   await clickButton('save-pdf');
   await chrome.sleep(1500);
   check('with nothing on the page, a PDF is still made (and says so)', /^Saved turtlelab-.*\.pdf/.test(await messageText()), await messageText());
+
+  // The picture of the blocks in the PDF looks like the screen: same arrangement, with only the wide empty bands closed up.
+  await chrome.goto(BASE + '?speed=instant');
+  const placement = await chrome.eval(`(async () => {
+    const { renderCodeImage } = await import('./js/ui/code-image.js');
+    const { sampleById, sampleStacks } = await import('./js/ui/samples.js');
+    const { noteHeight, stackSize } = await import('./js/ui/block-view.js');
+    const stacks = sampleStacks(sampleById('tree'), { noteHeight, stackSize, stageWidth: 1366 });
+    const image = await renderCodeImage({ stacks });
+    return image.placements.map((p) => ({ what: p.stack.blocks[0].op, x: p.x, y: p.y, width: p.width, height: p.height, screenX: p.stack.x, screenY: p.stack.y }));
+  })()`);
+  const [pNote, pProgram, pBlock] = placement; // the sample's order: its note, its program, then the block it makes
+  check('in the PDF the block you made is still on the left, with the note above the program on the right, as on the screen',
+    pBlock.x < pNote.x && pNote.x === pProgram.x && pNote.y < pProgram.y && pBlock.screenX < pNote.screenX, JSON.stringify(placement.map((p) => [p.what, p.x, p.y])));
+  check('and the note is the same distance above the program as on the screen', pProgram.y - pNote.y === pProgram.screenY - pNote.screenY, `${pProgram.y - pNote.y} vs ${pProgram.screenY - pNote.screenY}`);
+  check('the only change is the empty space: the band between the block and the note, which was over 600 wide, is now 40',
+    pNote.screenX - (pBlock.screenX + pBlock.width) > 600 && pNote.x - (pBlock.x + pBlock.width) === 40, `${pNote.screenX - (pBlock.screenX + pBlock.width)} became ${pNote.x - (pBlock.x + pBlock.width)}`);
+  await chrome.goto(BASE + '?sample=square&speed=instant');
+  const small = await chrome.eval(`(async () => {
+    const { renderCodeImage } = await import('./js/ui/code-image.js');
+    const { sampleById, sampleStacks } = await import('./js/ui/samples.js');
+    const { noteHeight, stackSize } = await import('./js/ui/block-view.js');
+    const stacks = sampleStacks(sampleById('square'), { noteHeight, stackSize, stageWidth: 1366 });
+    const image = await renderCodeImage({ stacks });
+    return image.placements.map((p) => ({ x: p.x, y: p.y, screenX: p.stack.x, screenY: p.stack.y }));
+  })()`);
+  check('a page that was already close together is not changed at all', small.every((p) => p.x === small[0].x && p.y - small[0].y === p.screenY - small[0].screenY), JSON.stringify(small));
 
   // A PDF that did not come from TurtleLab is turned away with a reason.
   const stranger = join(downloads, 'stranger.pdf');

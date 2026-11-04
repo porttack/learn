@@ -81,7 +81,7 @@ the dashes out of them too for consistency.
       project.js      project JSON: validate, find the Run stack
       python.js       the blocks as Python (turtle module); see "Python box"
       pdf.js          writes the hand-in PDF with no library; see "The PDF"
-      pack.js         packs stacks into columns so the PDF's blocks come out bigger
+      squeeze.js      closes wide empty gaps between stacks, for the PDF's picture of the blocks
       png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
       project-file.js put a project inside a PNG, and read a PNG or .json back
     js/ui/            the browser side
@@ -200,7 +200,17 @@ missing, so run it where Python is.
   `clean` as a helper function (it must not draw a line going home), boxes as
   globals with `global` where a block of your own changes one, `random.randint` only
   when both ends are whole-number literals, `stop` as `return` inside a block and
-  `exit()` outside, and parentheses only where precedence needs them.
+  `raise SystemExit` outside, and parentheses only where precedence needs them.
+- **It must also run in EduBlocks (edublocks.org).** EduBlocks runs Python in the
+  browser with Skulpt, which has fewer turtle names at the top level than Python.
+  The first student to paste the Python in got `NameError: name 'colormode' is not
+  defined`: in Skulpt `colormode` is only on `Screen()`, so the program says
+  `Screen().colormode(255)`, which both have. Also not `exit()` (Skulpt has none).
+  `test/python.test.js` lists the names Skulpt provides (read from its source,
+  `src/lib/turtle.js`; every Turtle method is top level, plus a few Screen ones) and
+  fails if the Python uses a name outside it, using `ast` to find them. The stand-in
+  turtle module has no top-level `colormode` either, so the old mistake fails the
+  run tests too. If EduBlocks (or Skulpt) changes, update that list.
 - **Names** are made safe for Python (spaces, digits, keywords, and the names the
   program itself uses, which get a trailing underscore), and two names that would
   collide get a number.
@@ -231,9 +241,13 @@ FlateDecode); text is the built-in Helvetica, so no font is embedded.
   fetched:** the privacy page promises no network requests, and a fetch of our own
   font would quietly break it. If the woff2 ever changes, run
   `node turtlelab/dev/make-font-data.mjs` (a test fails if they differ).
-- If the stacks are spread far apart the writing would come out tiny, so
-  `core/pack.js` packs them into columns, but only when that makes the text at
-  least 10% bigger. The student's own arrangement wins otherwise.
+- **The picture of the blocks looks like the screen.** Each stack is drawn where it is on
+  the page. The only change is that wide empty bands between stacks are narrowed to 40
+  (`core/squeeze.js`), because the picture must fit half a page and empty space only
+  makes the writing smaller. Nothing else moves: left stays left, above stays above,
+  what lined up still does, and (a test checks random layouts) nothing starts to
+  overlap. An earlier version packed the stacks into neat columns; the teacher
+  noticed at once that the PDF no longer looked like their screen. Do not do that.
 - Tests: `test/pdf.test.js` reads the PDF back with plain code (the table of
   offsets, the pictures coming out exactly as they went in, the attached bytes) and
   asks poppler (`pdfinfo`, `pdfdetach`, `pdftoppm`) what it thinks; the editor
