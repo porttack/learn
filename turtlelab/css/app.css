@@ -188,6 +188,7 @@ body {
 .stage.blocks-hidden .workspace,
 .stage.blocks-hidden .palettes,
 .stage.blocks-hidden .flyout,
+.stage.blocks-hidden .python-box,
 .stage.blocks-hidden .hint {
   display: none;
 }
@@ -423,6 +424,56 @@ body {
 }
 
 .boxes-readout[hidden] { display: none; }
+
+/* The Python box: small on purpose, it is for reading beside the blocks. */
+.python-box {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 3.6rem; /* above the boxes readout */
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  width: min(27rem, 46vw);
+  max-height: 55%;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid #b8c2cc;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.python-box[hidden] { display: none; }
+
+.python-box header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem;
+  background: #e9f1f9;
+  border-bottom: 1px solid #b8c2cc;
+  border-radius: 0.5rem 0.5rem 0 0;
+  font-size: 0.8rem;
+}
+
+.python-copy {
+  padding: 0.1rem 0.6rem;
+  font: inherit;
+  border: 1px solid #8aa3bb;
+  border-radius: 0.3rem;
+  background: #fff;
+  cursor: pointer;
+}
+
+.python-code {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  overflow: auto;
+  touch-action: pan-x pan-y; /* the page around it does not scroll, but this does */
+  user-select: text;
+  -webkit-user-select: text;
+  font: 11px/1.45 ui-monospace, Menlo, Consolas, monospace;
+  color: #1b1f23;
+  tab-size: 4;
+}
 
 /* ---- Print output ---- */
 

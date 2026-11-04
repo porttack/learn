@@ -43,6 +43,10 @@ Version 2.0." The license text is in `fonts/roboto/LICENSE-Apache-2.0.txt`
 (the official text from https://www.apache.org/licenses/LICENSE-2.0.txt).
 The Apache License 2.0 can be combined with this project's AGPL-3.0-or-later.
 
+`js/ui/roboto-data.js` is `Roboto-Regular.woff2` again, written out as text
+(by `dev/make-font-data.mjs`, with nothing changed) so the PDF can draw blocks with
+the right font without fetching anything. The same license applies.
+
 ## GNU Affero General Public License
 
 `COPYING` is the text of the GNU AGPL version 3 as published by the Free

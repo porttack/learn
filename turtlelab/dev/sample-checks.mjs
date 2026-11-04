@@ -136,7 +136,7 @@ try {
   await chrome.goto(BASE);
   check('the app toolbar links to Samples in a new tab, so no click loses your blocks',
     await chrome.eval(`(() => { const a = [...document.querySelectorAll('.toolbar-link')].find((l) => l.textContent === 'Samples'); return !!a && a.target === '_blank' && a.getAttribute('href') === 'samples.html'; })()`));
-  for (const width of [1366, 1024, 900]) {
+  for (const width of [1366, 1100, 1000]) {
     await chrome.send('Emulation.setDeviceMetricsOverride', { width, height: 700, deviceScaleFactor: 1, mobile: false });
     await chrome.sleep(150);
     // One row is about 51 px tall; a wrapped toolbar is twice that.

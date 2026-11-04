@@ -29,13 +29,16 @@
     <button id="new" class="icon-button" type="button" title="New: start over (Undo brings your blocks back)" aria-label="New">
       <img src="images/new-button.svg" alt="" draggable="false">
     </button>
-    <button id="open" class="icon-button" type="button" title="Open a saved picture" aria-label="Open">
+    <button id="open" class="icon-button" type="button" title="Open a saved picture or PDF" aria-label="Open">
       <img src="images/open-button.svg" alt="" draggable="false">
     </button>
     <button id="save" class="icon-button" type="button" title="Save a picture with your blocks inside (Ctrl+S)" aria-label="Save">
       <img src="images/save-button.svg" alt="" draggable="false">
     </button>
-    <input id="open-file" type="file" accept=".png,image/png,.json,application/json" hidden>
+    <button id="save-pdf" class="icon-button" type="button" title="Save a PDF to hand in: your blocks on top, your drawing below" aria-label="Save as PDF">
+      <img src="images/pdf-button.svg" alt="" draggable="false">
+    </button>
+    <input id="open-file" type="file" accept=".png,image/png,.pdf,application/pdf,.json,application/json" hidden>
     <span class="toolbar-gap" aria-hidden="true"></span>
     <button id="undo" class="icon-button" type="button" title="Undo (Ctrl+Z)" aria-label="Undo">
       <img src="images/undo.svg" alt="" draggable="false">
@@ -55,6 +58,9 @@
     </button>
     <button id="hide-blocks" class="icon-button" type="button" title="Hide blocks" aria-label="Hide or show blocks" aria-pressed="false">
       <img src="images/hide-blocks-button.svg" alt="" draggable="false">
+    </button>
+    <button id="python-toggle" class="icon-button" type="button" title="Show your blocks as Python code" aria-label="Show or hide the Python code" aria-pressed="false" aria-controls="python-box">
+      <img src="images/python-button.svg" alt="" draggable="false">
     </button>
     <!-- These open in a new tab, so a click never takes you away from your blocks. -->
     <a class="toolbar-link" href="samples.html" target="_blank" rel="noopener">Samples</a>

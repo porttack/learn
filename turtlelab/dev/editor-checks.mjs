@@ -6,9 +6,12 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { launch } from './cdp.mjs';
 import { tmpdir } from 'node:os';
-import { mkdtempSync, readdirSync, readFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
-import { readProjectFile } from '../js/core/project-file.js';
+import { readProjectFile, isPdf } from '../js/core/project-file.js';
+import { validateProject, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
+import { toPython } from '../js/core/python.js';
 import { DEMOS } from '../js/ui/demos.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
@@ -1373,6 +1376,106 @@ try {
   await chrome.eval(`localStorage.setItem('turtlelab-project', '{ this is not a project')`);
   await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
   check('a damaged autosave is ignored: the page loads empty and without errors', (await stacks()) === 0 && chrome.problems.length === problemsBefore, chrome.problems.slice(problemsBefore).join(' | '));
+
+  // ---- Saving a PDF to hand in ------------------------------------------------------------------------
+  const savedPdfs = () => readdirSync(downloads).filter((f) => f.endsWith('.pdf')).sort();
+  const waitForPdf = async () => {
+    for (let i = 0; i < 100; i += 1) {
+      if (savedPdfs().length > 0) return savedPdfs().at(-1);
+      await chrome.sleep(100);
+    }
+    return null;
+  };
+  const poppler = ['pdfinfo', 'pdfdetach', 'pdftoppm'].every((tool) => !spawnSync(tool, ['-v']).error);
+
+  await chrome.goto(BASE + '?demo=squarefn&speed=instant');
+  await pressRun();
+  check('the toolbar has a PDF button, with the PDF icon, that says what it does',
+    (await count('#save-pdf')) === 1 && (await chrome.eval(`document.querySelector('#save-pdf img').getAttribute('src')`)) === 'images/pdf-button.svg' && /Save a PDF to hand in/.test(await chrome.eval(`document.getElementById('save-pdf').title`)));
+  // The blocks on the page are the demo's, as the app cleans them when it loads them.
+  const onPage = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: structuredClone(DEMOS.squarefn.stacks) }).project;
+  const requestsBefore = chrome.requestLog.length;
+  await clickButton('save-pdf');
+  const pdfName = await waitForPdf();
+  check('Save as PDF downloads a PDF named with the date and time', /^turtlelab-\d{4}-\d{2}-\d{2}-\d{4}\.pdf$/.test(pdfName ?? ''), pdfName);
+  await chrome.sleep(300);
+  check('and says what is in it, and how to open it again', /Saved turtlelab-.*\.pdf\. The blocks are on top and the drawing is below\. Drag the PDF onto this page/.test(await messageText()), await messageText());
+  const pdfBytes = new Uint8Array(readFileSync(join(downloads, pdfName)));
+  check('it is a real PDF of a sensible size', isPdf(pdfBytes) && pdfBytes.length > 20000 && pdfBytes.length < 3000000, `${pdfBytes.length} bytes`);
+  const fromPdf = readProjectFile(pdfBytes);
+  check('the PNG inside it has the blocks: exactly the ones that were on the page, both stacks (the block and its program)',
+    fromPdf.ok && fromPdf.kind === 'pdf' && fromPdf.project.stacks.length === 2 && JSON.stringify(fromPdf.project) === JSON.stringify(onPage), fromPdf.ok ? JSON.stringify(fromPdf.project).slice(0, 120) : fromPdf.error);
+  const sent = chrome.requestLog.slice(requestsBefore).filter((r) => /^https?:/.test(r.url));
+  check('making it used no network at all: not one request, to this site or any other',
+    sent.length === 0, sent.map((r) => `${r.method} ${r.url}`).join(' | '));
+  check('and no sockets were opened', chrome.webSockets === 0);
+
+  if (poppler) {
+    const pdfPath = join(downloads, pdfName);
+    const info = spawnSync('pdfinfo', [pdfPath], { encoding: 'utf8' });
+    check('a real PDF reader (poppler) says it is one page of US Letter, with no complaints', info.status === 0 && /Pages:\s+1/.test(info.stdout) && /612 x 792 pts \(letter\)/.test(info.stdout) && !/Error|Syntax/i.test(info.stderr), info.stderr.slice(0, 120));
+    check('and lists the attached picture', /\.png/.test(spawnSync('pdfdetach', ['-list', pdfPath], { encoding: 'utf8' }).stdout));
+    const pages = join(downloads, 'pdfpage');
+    const drawn = spawnSync('pdftoppm', ['-png', '-r', '30', pdfPath, pages], { encoding: 'utf8' });
+    check('and can draw the page', drawn.status === 0 && !/Error|Syntax/i.test(drawn.stderr));
+  }
+
+  await clickButton('new');
+  check('New clears the page', (await stacks()) === 0);
+  await chrome.setFileInput('#open-file', [join(downloads, pdfName)]);
+  await chrome.sleep(900);
+  check('opening the PDF brings the blocks back, both stacks', (await stacks()) === 2 && (await count('.workspace .node.nameslot')) >= 1 && /^Opened turtlelab-.*\.pdf/.test(await messageText()), await messageText());
+  check('and the drawing comes back too, from the picture attached to it', (await redPixels()) > 100);
+  await chrome.sleep(700); // autosave
+  check('and they are exactly the blocks that were saved', JSON.stringify(JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`))) === JSON.stringify(onPage));
+  await chrome.goto(BASE + '?speed=instant');
+  await clickButton('save-pdf');
+  await chrome.sleep(1500);
+  check('with nothing on the page, a PDF is still made (and says so)', /^Saved turtlelab-.*\.pdf/.test(await messageText()), await messageText());
+
+  // A PDF that did not come from TurtleLab is turned away with a reason.
+  const stranger = join(downloads, 'stranger.pdf');
+  writeFileSync(stranger, '%PDF-1.4\n1 0 obj\n<< /Type /Catalog >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF\n');
+  await chrome.setFileInput('#open-file', [stranger]);
+  await chrome.sleep(600);
+  check('a PDF that TurtleLab did not make is turned away, saying why', /doesn't have a TurtleLab picture inside it/.test(await messageText()), await messageText());
+
+  // ---- The Python box ---------------------------------------------------------------------------------------
+  await chrome.goto(BASE + '?speed=instant');
+  const pythonShown = () => chrome.eval(`getComputedStyle(document.getElementById('python-box')).display !== 'none'`);
+  const pythonText = () => chrome.eval(`document.querySelector('.python-code').textContent`);
+  check('the Python box starts hidden, and its button says so', !(await pythonShown()) && (await chrome.eval(`document.getElementById('python-toggle').getAttribute('aria-pressed')`)) === 'false');
+  await clickButton('python-toggle');
+  check('the button shows it, and the button looks pressed', (await pythonShown()) && (await chrome.eval(`document.getElementById('python-toggle').getAttribute('aria-pressed')`)) === 'true' && /Hide/.test(await chrome.eval(`document.getElementById('python-toggle').title`)));
+  check('with nothing on the page it says what to do', /Drag some blocks onto the page/.test(await pythonText()), await pythonText());
+  check('the writing is small', (await chrome.eval(`parseFloat(getComputedStyle(document.querySelector('.python-code')).fontSize)`)) <= 12);
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 300);
+  check('a block dragged onto the page shows up in the Python at once', /forward\(100\)/.test(await pythonText()) && /from turtle import \*/.test(await pythonText()), await pythonText());
+  await chrome.sleep(700);
+  const pageProject = JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`));
+  check('it is exactly the Python for the blocks that are on the page', (await pythonText()) === toPython(pageProject));
+  await clickButton('undo');
+  check('Undo takes it back out of the Python', !/forward\(100\)/.test(await pythonText()));
+  await clickButton('redo');
+  check('and Redo puts it back', /forward\(100\)/.test(await pythonText()));
+  await clickButton('hide-blocks');
+  check('hiding the blocks hides the Python too, so the whole picture shows', !(await pythonShown()));
+  await clickButton('hide-blocks');
+  check('and showing the blocks brings it back', await pythonShown());
+  await chrome.eval(`document.getElementById('message').textContent = ''`);
+  const copy = await chrome.centerOf('.python-copy');
+  await chrome.click(copy.x, copy.y);
+  await chrome.sleep(300);
+  check('Copy copies it, or if the browser will not, selects it and says how to copy', /Copied the Python|The code is selected/.test(await messageText()), await messageText());
+  await clickButton('python-toggle');
+  check('the button hides it again', !(await pythonShown()));
+  await chrome.goto(BASE + '?demo=squarefn&speed=instant');
+  await clickButton('python-toggle');
+  check('blocks of your own show as Python functions, called by name', /def square\(size\):/.test(await pythonText()) && /^square\(70\)$/m.test(await pythonText()), (await pythonText()).slice(0, 80));
+  await chrome.goto(BASE + '?sample=tree&speed=instant');
+  await clickButton('python-toggle');
+  check('and so does a sample', /def tree\(size\):/.test(await pythonText()) && /tree\(size \* 0\.7\)/.test(await pythonText()));
 
   // ---- Sticky notes ----------------------------------------------------------------------------------
   const noteRect = () =>

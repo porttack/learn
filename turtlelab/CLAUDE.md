@@ -79,6 +79,9 @@ the dashes out of them too for consistency.
       names.js        what a name for a block or input may be (letters, numbers, _, spaces)
       definitions.js  blocks you make yourself: find them, rename them, keep calls in step
       project.js      project JSON: validate, find the Run stack
+      python.js       the blocks as Python (turtle module); see "Python box"
+      pdf.js          writes the hand-in PDF with no library; see "The PDF"
+      pack.js         packs stacks into columns so the PDF's blocks come out bigger
       png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
       project-file.js put a project inside a PNG, and read a PNG or .json back
     js/ui/            the browser side
@@ -90,6 +93,10 @@ the dashes out of them too for consistency.
       help-bubble.js  the tip bubble (press and hold, right-click) + Copy stack
       palette-colors.js, artwork.js (PORTED), demos.js (developer examples)
       samples.js      the student samples (see "Samples" below)
+      python-box.js   the show/hide Python panel
+      code-image.js   the blocks as a picture for the PDF (SVG, then canvas)
+      roboto-data.js  GENERATED: the Roboto font as text (dev/make-font-data.mjs)
+      trash.js        the trash can and its shark (see Deleting, above)
       canvas-view.js  paper canvas (1400x1120) + draggable turtle overlay
       files.js        Save (download a PNG with the blocks inside), Open, drops
       storage.js      autosave to local storage (one item: turtlelab-project)
@@ -173,6 +180,64 @@ input could appear.
   input blocks) for every definition. (The boxes are in the Boxes palette.) `PaletteUI.entriesFor` builds entries with
   a `make()`, so a flyout block is made fresh when dragged; `refresh()` redraws
   the open flyout and `main.js` calls it after every change to the project.
+
+## Python box
+
+`core/python.js` (DOM-free) turns the project into a program for Python's standard
+`turtle` module, shown in a small show/hide panel (`ui/python-box.js`, the `>>>`
+button) that follows the blocks through `projectChanged()` in `main.js`. It exists
+for students who are learning Python, so it favors reading over fidelity, but it is
+meant to be right, and a test proves it: `test/python.test.js` runs the Python
+(`test/python-runner.py`, a stand-in `turtle` module that copies CPython's own
+`circle` steps) and the blocks (TurtleLab's interpreter) on every sample and on
+hand-made tricky programs, and checks they end in the same place, facing the same
+way, having drawn as far and printed the same. It is skipped if `python3` is
+missing, so run it where Python is.
+
+- **The translations that are not obvious:** headings (`90 - heading`, since Python's
+  0 is east and counter-clockwise), arcs (a positive angle curves right, which is a
+  NEGATIVE radius in Python), `color()` for the one color that serves pen and fill,
+  `clean` as a helper function (it must not draw a line going home), boxes as
+  globals with `global` where a block of your own changes one, `random.randint` only
+  when both ends are whole-number literals, `stop` as `return` inside a block and
+  `exit()` outside, and parentheses only where precedence needs them.
+- **Names** are made safe for Python (spaces, digits, keywords, and the names the
+  program itself uses, which get a trailing underscore), and two names that would
+  collide get a number.
+- Sticky notes become comments at the top; stacks not connected to Start are only
+  counted in a comment; a program that does not begin with `clean` is given
+  TurtleLab's start (facing up, red pen, size 5) because Python's differs.
+- It is not a promise that students can paste it back: it is for reading.
+
+## The PDF
+
+The PDF button makes a one page US Letter PDF for handing in: **the blocks in the top
+half and the drawing in the bottom half**, with the file name above and a line of
+help below. `core/pdf.js` writes it by hand (numbered objects, a table of where
+each starts), with no library, just as `png-chunks.js` writes PNG chunks. The two
+pictures are raw RGB squashed with `CompressionStream('deflate')` (which is exactly
+FlateDecode); text is the built-in Helvetica, so no font is embedded.
+
+- **The picture inside is the real PNG, with the blocks in it, attached as a file**
+  (`/EmbeddedFile`) and stored plain, not squashed. A PDF image cannot carry PNG
+  metadata, so this is how "the picture in the PDF has the code in it" is true. And
+  because the bytes are plain, `project-file.js` can find the PNG inside the PDF by
+  its signature (`findAttachedPng`), so **Open and drag-and-drop accept the PDF**.
+  Poppler (`pdfdetach`) can pull the same PNG out, and any PNG viewer can then open it.
+- **The blocks picture** (`ui/code-image.js`) lays out every stack and note as the
+  workspace does, puts them in one SVG, and draws that on a canvas at twice the
+  sharpness. An SVG shown as an image cannot use the page's fonts, so the Roboto
+  font is written into it from `ui/roboto-data.js`. **That file exists so nothing is
+  fetched:** the privacy page promises no network requests, and a fetch of our own
+  font would quietly break it. If the woff2 ever changes, run
+  `node turtlelab/dev/make-font-data.mjs` (a test fails if they differ).
+- If the stacks are spread far apart the writing would come out tiny, so
+  `core/pack.js` packs them into columns, but only when that makes the text at
+  least 10% bigger. The student's own arrangement wins otherwise.
+- Tests: `test/pdf.test.js` reads the PDF back with plain code (the table of
+  offsets, the pictures coming out exactly as they went in, the attached bytes) and
+  asks poppler (`pdfinfo`, `pdfdetach`, `pdftoppm`) what it thinks; the editor
+  checks make a real one in Chrome, open it again, and assert **zero requests**.
 
 ## Key design decisions
 
@@ -448,7 +513,11 @@ storage, databases, caches or service workers). `test/pages.test.js` and the
 ever stores anything new, update `privacy.html`, `guide.html`, the TurtleLab
 section of the site's `privacy.md` (its effective date too), and those
 checks, before it ships.** Saving a PNG is a download made inside the page
-(a `blob:` address), not a network request.
+(a `blob:` address), not a network request. **So is saving a PDF, and it
+fetches nothing:** the picture of the blocks needs Roboto inside an SVG, so the
+font ships inside `js/ui/roboto-data.js` (generated from the woff2 by
+`dev/make-font-data.mjs`; a test keeps them in step) instead of being fetched.
+The editor checks assert that making a PDF sends zero requests.
 
 ## Commands
 
@@ -459,6 +528,7 @@ checks, before it ships.** Saving a PNG is a download made inside the page
     node turtlelab/dev/sample-checks.mjs                       # real Chrome: every sample, saved work stays safe
     node turtlelab/dev/make-sample-thumbs.mjs                  # rewrite images/samples/*.png
     node turtlelab/dev/make-samples-page.mjs                   # rewrite samples.html from samples.js
+    node turtlelab/dev/make-font-data.mjs                      # rewrite js/ui/roboto-data.js (the PDF's font)
 
 To test the site exactly as GitHub Pages will serve it, build it and point
 the checks at the `/turtlelab/` subpath:

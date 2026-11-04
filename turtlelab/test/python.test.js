@@ -1,0 +1,297 @@
+// Tests for the Python version of the blocks.
+//
+// Some check the text that comes out. The important ones RUN the Python (against a
+// stand-in for the turtle module, test/python-runner.py) and the blocks (with
+// TurtleLab's own interpreter) and check the turtle ends up in the same place, has
+// drawn as far, and has printed the same. They are skipped if python3 is not installed.
+
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+import { toPython } from '../js/core/python.js';
+import { findRunStack } from '../js/core/project.js';
+import { definitionsOf } from '../js/core/definitions.js';
+import { runBlocks, createContext } from '../js/core/interpreter.js';
+import { Turtle } from '../js/core/turtle.js';
+import { formatNumber } from '../js/core/format.js';
+import { SAMPLES, sampleStacks } from '../js/ui/samples.js';
+
+const RUNNER = fileURLToPath(new URL('./python-runner.py', import.meta.url));
+const hasPython = spawnSync('python3', ['--version']).status === 0;
+const needsPython = { skip: hasPython ? false : 'python3 is not installed' };
+
+// ---- Small ways to build programs ----------------------------------------------------------------
+
+const b = (op, ...args) => ({ op, args });
+const rep = (n, ...body) => ({ op: 'repeat', args: [n], body });
+const ifBlock = (cond, ...body) => ({ op: 'if', args: [cond], body });
+const ifElse = (cond, body, elseBody) => ({ op: 'ifelse', args: [cond], body, elseBody });
+const input = (name) => ({ op: 'input', name });
+const call = (name, params, ...args) => ({ op: 'call', name, params, args });
+const hat = (name, params, ...body) => ({ x: 0, y: 0, blocks: [{ op: 'to', name, params }, ...body] });
+const program = (...blocks) => ({ x: 300, y: 0, blocks: [b('start'), ...blocks] });
+const projectOf = (...stacks) => ({ stacks });
+
+/** The lines of Python between the start of the program and `done()`. */
+function mainLines(project) {
+  const lines = toPython(project).split('\n');
+  const from = lines.indexOf('# Your program starts here');
+  return lines.slice(from + 1, lines.lastIndexOf('done()'));
+}
+
+// ---- Running both and comparing ---------------------------------------------------------------------
+
+function runPython(source, mode = 'run') {
+  const result = spawnSync('python3', ['-I', RUNNER], { input: JSON.stringify({ source, mode }), encoding: 'utf8' });
+  assert.equal(result.status, 0, `python3 failed:\n${result.stderr}\n--- program ---\n${source}`);
+  return JSON.parse(result.stdout);
+}
+
+/** Run the blocks in TurtleLab's interpreter. Heading is given the way Python counts it. */
+function runBlocksHere(project) {
+  const turtle = new Turtle();
+  const printed = [];
+  const { map } = definitionsOf(project);
+  const { stack } = findRunStack(project);
+  const context = createContext({ turtle, definitions: map, print: (line) => printed.push(line), random: () => 0.5 });
+  [...runBlocks(stack.blocks, context)];
+  let length = 0;
+  for (const op of turtle.ops) {
+    if (op.type === 'line') length += Math.hypot(op.x2 - op.x1, op.y2 - op.y1);
+    if (op.type === 'arc') length += op.r * Math.abs(op.sweep) * (Math.PI / 180);
+  }
+  return { x: turtle.x, y: turtle.y, heading: (((90 - turtle.heading) % 360) + 360) % 360, length, printed };
+}
+
+const turnBetween = (a, b2) => Math.abs((((a - b2) % 360) + 540) % 360 - 180);
+
+/** Check that Python and the blocks agree about where the turtle ended up and how far it drew. */
+function assertSame(project, label) {
+  const source = toPython(project);
+  const python = runPython(source);
+  const here = runBlocksHere(project);
+  const near = (p, q, tolerance = 1e-6) => Math.abs(p - q) <= tolerance;
+  assert.ok(near(python.x, here.x), `${label}: x is ${python.x} in Python and ${here.x} in the blocks\n${source}`);
+  assert.ok(near(python.y, here.y), `${label}: y is ${python.y} in Python and ${here.y} in the blocks\n${source}`);
+  assert.ok(turnBetween(python.heading, here.heading) < 1e-6, `${label}: heading is ${python.heading} in Python and ${here.heading} in the blocks\n${source}`);
+  assert.ok(near(python.length, here.length, 0.005 * here.length + 1e-6), `${label}: drew ${python.length} in Python and ${here.length} in the blocks`);
+  assert.deepEqual(python.printed, here.printed.map(String), `${label}: printed`);
+}
+
+// ---- What comes out, block by block -------------------------------------------------------------------
+
+test('an empty page gives a friendly comment, not a program', () => {
+  assert.match(toPython({ stacks: [] }), /^# Drag some blocks onto the page/);
+});
+
+test('the turtle blocks become the turtle module\'s calls', () => {
+  const lines = mainLines(
+    projectOf(
+      program(
+        b('clean'), b('forward', 100), b('back', 20), b('left', 90), b('right', 45),
+        b('setxy', 10, -20), b('penup'), b('pendown'), b('setpensize', 3),
+        b('setcolor', 10, 20, 30), b('fillscreen', 1, 2, 3), b('startfill'), b('endfill'),
+      ),
+    ),
+  );
+  assert.deepEqual(lines, [
+    'clean()', 'forward(100)', 'backward(20)', 'left(90)', 'right(45)', 'goto(10, -20)', 'penup()', 'pendown()',
+    'pensize(3)', 'color(10, 20, 30)', 'bgcolor(1, 2, 3)', 'begin_fill()', 'end_fill()',
+  ]);
+});
+
+test('clean becomes a small function, defined once at the top, with colormode set', () => {
+  const text = toPython(projectOf(program(b('clean'), b('clean'))));
+  assert.equal(text.match(/def clean\(\):/g).length, 1);
+  assert.match(text, /colormode\(255\)/);
+  assert.match(text, /def clean\(\):\n    clear\(\)\n    penup\(\)\n    home\(\)\n    setheading\(90\)\n    pendown\(\)\n    color\(255, 0, 0\)\n    pensize\(5\)/);
+});
+
+test('a program that does not start with clean is given TurtleLab\'s start: facing up, red pen, size 5', () => {
+  const text = toPython(projectOf(program(b('forward', 10))));
+  assert.match(text, /colormode\(255\)/);
+  assert.deepEqual(mainLines(projectOf(program(b('forward', 10)))), ['setheading(90)', 'color(255, 0, 0)', 'pensize(5)', 'forward(10)']);
+});
+
+test('headings are turned around: TurtleLab counts clockwise from up, Python counter-clockwise from east', () => {
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), b('setheading', 30)))), ['clean()', 'setheading(60)']);
+  const lines = mainLines(projectOf(program(b('clean'), b('setheading', op('add', 10, 20)), b('store1', { op: 'heading' }))));
+  assert.deepEqual(lines.slice(1), ['setheading(90 - (10 + 20))', 'box1 = (90 - heading()) % 360']);
+});
+
+function op(name, ...args) {
+  return { op: name, args };
+}
+
+test('arcs: a positive angle curves right, which is a negative radius in Python', () => {
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), b('arc', 90, 100), b('arc', -45, 30)))).slice(1), ['circle(-100, 90)', 'circle(30, 45)']);
+  const lines = mainLines(projectOf(program(b('clean'), b('arc', { op: 'box1' }, op('add', 10, 20)))));
+  assert.equal(lines[1], 'circle(-(10 + 20) if box1 >= 0 else 10 + 20, abs(box1))');
+});
+
+test('the readers and the math blocks become expressions, with parentheses only where they are needed', () => {
+  const show = (arg) => mainLines(projectOf(program(b('clean'), b('forward', arg))))[1];
+  assert.equal(show(op('multiply', op('add', 2, 3), 4)), 'forward((2 + 3) * 4)');
+  assert.equal(show(op('add', 2, op('multiply', 3, 4))), 'forward(2 + 3 * 4)');
+  assert.equal(show(op('subtract', 10, op('subtract', 3, 2))), 'forward(10 - (3 - 2))');
+  assert.equal(show(op('subtract', op('subtract', 10, 3), 2)), 'forward(10 - 3 - 2)');
+  assert.equal(show(op('divide', 100, op('multiply', 5, 2))), 'forward(100 / (5 * 2))');
+  assert.equal(show(op('multiply', 2, op('divide', 10, 4))), 'forward(2 * (10 / 4))');
+  assert.equal(show(op('mod', op('add', 7, 1), 3)), 'forward((7 + 1) % 3)');
+  assert.equal(show(op('add', 5, -2)), 'forward(5 + (-2))');
+  assert.equal(show(op('multiply', -3, 2)), 'forward(-3 * 2)');
+  assert.equal(show(op('paren', op('add', 1, 2))), 'forward((1 + 2))', 'a paren block the student wrote stays');
+  assert.equal(show({ op: 'x' }), 'forward(xcor())');
+  assert.equal(show({ op: 'heading' }), 'forward((90 - heading()) % 360)');
+  assert.equal(show({ op: 'penred' }), 'forward(pencolor()[0])');
+  assert.equal(show({ op: 'pensize' }), 'forward(pensize())');
+  assert.equal(show(op('random', 1, 6)), 'forward(random.randint(1, 6))');
+  assert.equal(show(op('random', 1, 2.5)), 'forward(random.uniform(1, 2.5))');
+  assert.equal(show(op('oneof', 3, 4)), 'forward(random.choice([3, 4]))');
+  assert.match(toPython(projectOf(program(b('forward', op('random', 1, 6))))), /^import random$/m);
+});
+
+test('yes-or-no blocks become comparisons, and if and if else become if and else', () => {
+  const lines = mainLines(
+    projectOf(program(b('clean'), ifElse(op('less', { op: 'box1' }, 5), [b('forward', 1)], [b('back', 1)]), ifBlock(op('equal', 1, 1), b('stop')))),
+  );
+  assert.deepEqual(lines.slice(1), ['if box1 < 5:', '    forward(1)', 'else:', '    backward(1)', 'if 1 == 1:', '    exit()']);
+});
+
+test('loops: repeat is for/range, floors a number, and forever is while True', () => {
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), rep(4, b('forward', 1))))).slice(1), ['for _ in range(4):', '    forward(1)']);
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), rep(2.9, b('forward', 1))))).slice(1), ['for _ in range(2):', '    forward(1)'], 'TurtleLab uses the whole laps');
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), rep({ op: 'box1' }, b('forward', 1))))).slice(1), ['for _ in range(int(box1)):', '    forward(1)']);
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), { op: 'forever', args: [], body: [] })))[1], 'while True:');
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), rep(3))))[2], '    pass', 'an empty loop is pass');
+});
+
+test('boxes are variables, set to 0 first, and a block of your own that changes one says global', () => {
+  const text = toPython(
+    projectOf(hat('bump', [], b('store2', op('add', { op: 'box2' }, 1))), program(b('clean'), b('store1', 5), call('bump', []))),
+  );
+  assert.match(text, /^box1 = 0\nbox2 = 0$/m, 'only the boxes that are used');
+  assert.doesNotMatch(text, /box3/);
+  assert.match(text, /def bump\(\):\n    global box2\n    box2 = box2 \+ 1/);
+});
+
+test('wait is time.sleep in seconds, and speed becomes Python\'s speed', () => {
+  const text = toPython(projectOf(program(b('clean'), b('wait', 10), b('wait', 5), b('speed', 1), b('speed', 4), b('speed', 99), b('speed', op('add', 1, 1)))));
+  assert.match(text, /^import time$/m);
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), b('wait', 10), b('wait', 5), b('speed', 1), b('speed', 4), b('speed', 99), b('speed', op('add', 1, 1))))).slice(1), [
+    'time.sleep(1)', 'time.sleep(0.5)', 'speed(1)  # slow', 'speed(0)  # instant', 'speed(0)  # instant', '# speed block: 1 + 1 (1 is slow, 4 is instant)',
+  ]);
+});
+
+test('blocks you make are functions, inputs are parameters, and stop leaves the function with return', () => {
+  const text = toPython(
+    projectOf(
+      hat('square', ['size'], rep(4, b('forward', input('size')), b('right', 90)), { op: 'stop', args: [] }),
+      program(b('clean'), call('square', ['size'], 50)),
+    ),
+  );
+  assert.match(text, /def square\(size\):\n    for _ in range\(4\):\n        forward\(size\)\n        right\(90\)\n    return\n/);
+  assert.match(text, /^square\(50\)$/m);
+  assert.match(text, /^done\(\)$/m);
+});
+
+test('names are made safe for Python: spaces, digits, Python\'s own words and the program\'s own names', () => {
+  const names = ['my block', 'my_block', '2fast', 'class', 'forward', 'Square', 'café'];
+  const text = toPython(projectOf(...names.map((name) => hat(name, [])), program(b('clean'), ...names.map((name) => call(name, [])))));
+  for (const expected of ['def my_block():', 'def my_block2():', 'def _2fast():', 'def class_():', 'def forward_():', 'def Square():', 'def café():']) {
+    assert.ok(text.includes(expected), `${expected}\n${text}`);
+  }
+  assert.match(text, /^forward_\(\)$/m, 'and the call uses the new name');
+});
+
+test('inputs that are named like boxes or functions get a different name inside', () => {
+  const text = toPython(projectOf(hat('go', ['box1', 'go']), program(b('clean'), call('go', ['box1', 'go'], 1, 2))));
+  assert.match(text, /def go\(box1_, go2\):/);
+});
+
+test('a call to a block that is not there is kept, with a note saying so', () => {
+  assert.match(toPython(projectOf(program(b('clean'), call('ghost', [])))), /^ghost\(\)  # there is no block called ghost$/m);
+});
+
+test('an input used outside its block, and an empty socket, are kept so Python fails the way the blocks do', () => {
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), b('forward', input('size')), { op: 'forward', args: [null] }))).slice(1), ['forward(size)', 'forward(None)']);
+});
+
+test('sticky notes come first as comments, and stacks not connected to Start are counted', () => {
+  const text = toPython(
+    projectOf(
+      { x: 0, y: 0, blocks: [{ op: 'note', text: 'Draws a square with four sides.' }] },
+      program(b('clean'), b('forward', 1)),
+      { x: 0, y: 500, blocks: [b('forward', 99)] },
+      { x: 0, y: 600, blocks: [b('back', 99)] },
+    ),
+  );
+  assert.match(text, /^# Draws a square with four sides\.$/m);
+  assert.match(text, /# 2 other stacks of blocks are not connected to Start, so Run does not use them\./);
+});
+
+test('blocks with no Start still run the way Run would: the topmost loose stack is the program', () => {
+  const text = toPython(projectOf({ x: 0, y: 0, blocks: [b('clean'), b('forward', 7)] }));
+  assert.match(text, /^forward\(7\)$/m);
+});
+
+test('only blocks of your own: the functions are written, and a comment says what is missing', () => {
+  const text = toPython(projectOf(hat('go', [], b('forward', 1))));
+  assert.match(text, /def go\(\):\n    forward\(1\)/);
+  assert.match(text, /# Nothing runs yet: add a Start block/);
+  assert.doesNotMatch(text, /done\(\)/);
+});
+
+test('numbers are written the way the blocks show them, with no rounding noise', () => {
+  assert.equal(formatNumber(0.1 + 0.2), '0.3');
+  assert.deepEqual(mainLines(projectOf(program(b('clean'), b('forward', 0.1 + 0.2), b('left', 7.2)))).slice(1), ['forward(0.3)', 'left(7.2)']);
+});
+
+// ---- The Python and the blocks do the same thing ------------------------------------------------------
+
+test('it is valid Python for every sample', needsPython, () => {
+  for (const sample of SAMPLES) {
+    assert.doesNotThrow(() => runPython(toPython(projectOf(...sampleStacks(sample))), 'check'), sample.id);
+  }
+});
+
+test('every sample ends in the same place, having drawn as far, in Python and in the blocks', needsPython, () => {
+  for (const sample of SAMPLES) {
+    // The wandering turtle turns by chance, and Python's chance is not ours. It is only checked to be valid.
+    if (sample.id === 'wandering-turtle') continue;
+    assertSame(projectOf(...sampleStacks(sample)), sample.id);
+  }
+});
+
+test('headings, arcs and the math agree', needsPython, () => {
+  assertSame(projectOf(program(b('clean'), b('setheading', 30), b('forward', 100), b('store1', { op: 'heading' }), b('forward', { op: 'box1' }))), 'heading');
+  assertSame(projectOf(program(b('clean'), b('arc', 90, 100), b('arc', -90, 50), b('arc', 270, 30), b('forward', 10))), 'arcs');
+  assertSame(projectOf(program(b('clean'), b('store1', 70), b('arc', { op: 'box1' }, 40), b('store1', -70), b('arc', { op: 'box1' }, 40))), 'arcs by expression');
+  assertSame(projectOf(program(b('clean'), b('forward', op('mod', -1, 5)), b('forward', op('mod', 17, 5)))), 'mod');
+  assertSame(projectOf(program(b('clean'), b('forward', op('multiply', op('add', 2, 3), 4)), b('forward', op('subtract', 10, op('subtract', 3, 2))), b('forward', op('divide', 100, op('multiply', 5, 2))), b('forward', op('multiply', 2, op('divide', 10, 4))))), 'precedence');
+  assertSame(projectOf(program(b('clean'), b('setxy', 30, 40), b('penup'), b('setxy', -10, 5), b('pendown'), b('setxy', 0, 0))), 'setxy');
+  assertSame(projectOf(program(b('forward', 10), b('left', 45), b('forward', 10))), 'a program with no clean');
+  assertSame(projectOf(program(b('forward', 50), b('clean'), b('forward', 10))), 'clean in the middle');
+});
+
+test('loops, ifs, boxes and stop agree', needsPython, () => {
+  assertSame(projectOf(program(b('clean'), rep(2.9, b('forward', 10)), b('store1', 2.9), rep({ op: 'box1' }, b('forward', 1)))), 'repeat');
+  assertSame(projectOf(program(b('clean'), b('store1', 0), rep(10, b('store1', op('add', { op: 'box1' }, 1)), ifElse(op('equal', op('mod', { op: 'box1' }, 2), 0), [b('forward', 3)], [b('right', 20), b('forward', 1)])))), 'if else and mod');
+  assertSame(projectOf(program(b('clean'), b('forward', 5), { op: 'stop', args: [] }, b('forward', 500))), 'stop at the top');
+  assertSame(projectOf(program(b('clean'), b('store1', 1), ifBlock(op('greater', { op: 'box1' }, 0), b('forward', 30)), ifBlock(op('less', { op: 'box1' }, 0), b('forward', 900)))), 'if');
+  assertSame(projectOf(program(b('clean'), b('forward', op('random', 5, 5)), b('forward', op('oneof', 7, 7)), b('wait', 10), b('speed', 3), b('print', 42), b('print', op('add', 0.5, 0.25)))), 'random, wait, speed, print');
+});
+
+test('blocks of your own agree: inputs, boxes, stop, calls inside calls, and recursion', needsPython, () => {
+  const bump = hat('bump', [], b('store1', op('add', { op: 'box1' }, 10)));
+  assertSame(projectOf(bump, program(b('clean'), call('bump', []), call('bump', []), b('forward', { op: 'box1' }))), 'a block that changes a box');
+  const quit = hat('quit', [], b('forward', 1), rep(5, { op: 'stop', args: [] }, b('forward', 1000)), b('forward', 1000));
+  assertSame(projectOf(quit, program(b('clean'), call('quit', []), b('forward', 10))), 'stop only leaves the block');
+  const two = hat('go', ['d', 'turn'], b('forward', input('d')), b('right', input('turn')));
+  const outer = hat('outer', ['n'], call('go', ['d', 'turn'], op('add', input('n'), 1), 30), call('go', ['d', 'turn'], input('n'), 60));
+  assertSame(projectOf(two, outer, program(b('clean'), call('outer', ['n'], 10), call('go', ['d', 'turn'], 5, 5))), 'calls inside calls');
+  const sum = hat('sum', ['n'], ifBlock(op('greater', input('n'), 0), b('forward', input('n')), call('sum', ['n'], op('subtract', input('n'), 1))));
+  assertSame(projectOf(sum, program(b('clean'), call('sum', ['n'], 20))), 'recursion');
+});

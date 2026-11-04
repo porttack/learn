@@ -22,10 +22,11 @@ import { CanvasView } from './canvas-view.js';
 import { Workspace } from './workspace.js';
 import { PaletteUI } from './palette.js';
 import { Autosave, loadAutosave } from './storage.js';
-import { savePicture, readFile, dragHasFiles } from './files.js';
+import { savePicture, savePdf, readFile, dragHasFiles } from './files.js';
 import { DEMOS } from './demos.js';
 import { sampleById, sampleStacks, LEFT as SAMPLE_LEFT, TOP as SAMPLE_TOP } from './samples.js';
 import { noteHeight, stackSize } from './block-view.js';
+import { PythonBox } from './python-box.js';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -43,6 +44,7 @@ const message = $('message');
 const runButton = $('run');
 const stopButton = $('stop');
 const hideButton = $('hide-blocks');
+const pythonButton = $('python-toggle');
 const undoButton = $('undo');
 const redoButton = $('redo');
 
@@ -258,11 +260,19 @@ function restore(snapshot) {
   workspace.setError(null);
   updateHistoryButtons();
   refreshBoxes();
-  palettes.refresh();
+  projectChanged();
   autosave.schedule();
 }
 
 let palettes = null;
+let pythonBox = null;
+
+/** The blocks changed (by editing, undo, open or new): what shows them elsewhere has to follow. */
+function projectChanged() {
+  palettes.refresh();
+  pythonBox.refresh();
+}
+
 workspace = new Workspace({
   stage,
   project,
@@ -271,7 +281,7 @@ workspace = new Workspace({
     history.record(project);
     updateHistoryButtons();
     refreshBoxes();
-    palettes.refresh();
+    projectChanged();
     autosave.schedule();
   },
   onRunStack: runStack,
@@ -282,6 +292,7 @@ workspace = new Workspace({
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
 });
 palettes = new PaletteUI({ stage, workspace });
+pythonBox = new PythonBox({ stage, project, onMessage: say });
 // The blocks are drawn big. On a short screen a sample would run off the bottom,
 // so zoom out until it fits (the reset button brings the full size back).
 if (sample) workspace.fitHeight(SAMPLE_LEFT, SAMPLE_TOP);
@@ -322,7 +333,24 @@ async function savePictureNow() {
   }
 }
 
-/** Open a saved picture (or a project file): its blocks come back, and its picture. */
+/** Save a one page PDF: the blocks on top, the drawing below, and the picture with the blocks inside attached. */
+let makingPdf = false;
+async function savePdfNow() {
+  if (makingPdf) return;
+  makingPdf = true;
+  say('Making the PDF...');
+  try {
+    const name = await savePdf(view.canvas, project);
+    say(`Saved ${name}. The blocks are on top and the drawing is below. Drag the PDF onto this page to open the blocks again.`);
+  } catch (error) {
+    console.error(error);
+    say('Sorry, the PDF could not be made. Try again.');
+  } finally {
+    makingPdf = false;
+  }
+}
+
+/** Open a saved picture, a PDF saved by TurtleLab, or a project file: its blocks come back, and its picture. */
 async function openFile(file) {
   if (!file || workspace.busy) return;
   let read;
@@ -332,7 +360,7 @@ async function openFile(file) {
     say('That file could not be read.');
     return;
   }
-  const { result, bytes } = read;
+  const { result } = read;
   if (!result.ok) {
     say(result.error);
     return;
@@ -346,14 +374,15 @@ async function openFile(file) {
   clearOutput();
   context = newContext();
   refreshBoxes();
-  palettes.refresh();
+  projectChanged();
   autosave.schedule();
 
   let note = `Opened ${file.name}. Undo brings your old blocks back.`;
-  if (result.kind === 'png') {
+  if (result.picture) {
     turtle.forget(); // the turtle did not draw this picture, so it forgets its old drawing
     try {
-      const image = await createImageBitmap(new Blob([bytes], { type: 'image/png' }));
+      // For a PDF this is the PNG attached to it, not the PDF.
+      const image = await createImageBitmap(new Blob([result.picture], { type: 'image/png' }));
       view.paintImage(image);
       image.close();
     } catch {
@@ -381,12 +410,13 @@ function newProject() {
   clearOutput();
   context = newContext();
   refreshBoxes();
-  palettes.refresh();
+  projectChanged();
   autosave.schedule();
   say(hadBlocks ? 'Starting fresh. Undo brings your blocks back.' : 'Starting fresh.');
 }
 
 $('save').addEventListener('click', savePictureNow);
+$('save-pdf').addEventListener('click', savePdfNow);
 $('new').addEventListener('click', newProject);
 $('open').addEventListener('click', () => $('open-file').click());
 $('open-file').addEventListener('change', (event) => {
@@ -440,6 +470,12 @@ document.addEventListener('keydown', (event) => {
 
 stopButton.addEventListener('click', () => scheduler.stop());
 stopButton.disabled = true;
+
+pythonButton.addEventListener('click', () => {
+  const showing = pythonBox.toggle();
+  pythonButton.setAttribute('aria-pressed', String(showing));
+  pythonButton.title = showing ? 'Hide the Python code' : 'Show your blocks as Python code';
+});
 
 hideButton.addEventListener('click', () => {
   const hidden = stage.classList.toggle('blocks-hidden');

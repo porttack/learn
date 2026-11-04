@@ -171,6 +171,29 @@ test('the Guide explains making your own blocks: the to block, inputs, using its
   for (const word of ['<strong>to</strong>', 'dashed', 'input', 'use itself', 'a way to stop', 'Undo brings it back']) assert.ok(guide.includes(word), word);
 });
 
+test('the Guide, and the Privacy page, explain the PDF button and the Python box', () => {
+  const guide = read('guide.html');
+  assert.match(guide, /<strong>PDF<\/strong> \(the button with PDF on it\) downloads a one page PDF/);
+  assert.match(guide, /<h2>See your blocks as Python<\/h2>/);
+  for (const word of ['turtle</em> module', 'Copy', 'IDLE or Thonny', 'def</em> functions']) assert.ok(guide.includes(word), word);
+  const privacy = read('privacy.html');
+  assert.match(privacy, /What does the PDF button do\?/);
+  assert.match(privacy, /nothing is fetched to make it/);
+  assert.match(privacy, /What does the Python box do\?/);
+});
+
+test('the toolbar has the PDF and Python buttons, each with its own icon, and the PDF button says what it makes', () => {
+  const html = read('index.html');
+  assert.match(html, /<button id="save-pdf"[^>]*title="Save a PDF to hand in: your blocks on top, your drawing below"[^>]*>\s*<img src="images\/pdf-button\.svg"/);
+  assert.match(html, /<button id="python-toggle"[^>]*aria-pressed="false"[^>]*aria-controls="python-box"[^>]*>\s*<img src="images\/python-button\.svg"/);
+  assert.match(html, /accept="[^"]*\.pdf,application\/pdf/, 'Open takes PDFs');
+  for (const icon of ['pdf-button', 'python-button']) {
+    const svg = read(`images/${icon}.svg`);
+    assert.match(svg, /<svg[^>]*viewBox=/);
+    assert.ok(!/<script|style=|onload|href=|<text/i.test(svg), `${icon} is a plain, safe SVG drawn from shapes`);
+  }
+});
+
 test('the toolbar has no speed menu: speed is a block, which you find in Flow', () => {
   const html = read('index.html');
   assert.ok(!/<select/i.test(html), 'no drop-down menus in the toolbar');

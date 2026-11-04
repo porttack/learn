@@ -7,11 +7,16 @@
 // asked to download it. The download is made right here from data already in
 // the page, so nothing is sent anywhere.
 //
+// Save a PDF: the same picture is attached to a one page PDF that has the blocks in
+// the top half and the drawing in the bottom half, for handing in (see core/pdf.js).
+//
 // Open: read a file the person chose or dropped, whether it is a saved
-// picture or a plain project file. This file only reads it; main.js decides
-// what to do with the result.
+// picture, a TurtleLab PDF, or a plain project file. This file only reads it;
+// main.js decides what to do with the result.
 
 import { embedProject, readProjectFile } from '../core/project-file.js';
+import { buildPdf } from '../core/pdf.js';
+import { canvasToRgb, renderCodeImage } from './code-image.js';
 
 const two = (n) => String(n).padStart(2, '0');
 
@@ -34,18 +39,40 @@ function download(blob, name) {
   setTimeout(() => URL.revokeObjectURL(url), 10000);
 }
 
+/** The paper as PNG bytes, with the project tucked inside. */
+export async function makePicture(canvas, project) {
+  const blob = await new Promise((resolve, reject) => {
+    canvas.toBlob((made) => (made ? resolve(made) : reject(new Error('The paper could not be turned into a picture.'))), 'image/png');
+  });
+  return embedProject(new Uint8Array(await blob.arrayBuffer()), project);
+}
+
 /**
  * Save the paper as a PNG with the project inside it. Resolves to the file
  * name the browser was asked to use.
  */
 export async function savePicture(canvas, project) {
-  const blob = await new Promise((resolve, reject) => {
-    canvas.toBlob((made) => (made ? resolve(made) : reject(new Error('The paper could not be turned into a picture.'))), 'image/png');
-  });
-  const picture = new Uint8Array(await blob.arrayBuffer());
+  const picture = await makePicture(canvas, project);
   const name = `turtlelab-${fileStamp()}.png`;
-  download(new Blob([embedProject(picture, project)], { type: 'image/png' }), name);
+  download(new Blob([picture], { type: 'image/png' }), name);
   return name;
+}
+
+/**
+ * Save a one page PDF: the blocks on top, the drawing below, and the PNG (with the blocks
+ * inside it) attached. Resolves to the file name the browser was asked to use.
+ */
+export async function savePdf(canvas, project) {
+  const stamp = `turtlelab-${fileStamp()}`;
+  const [picture, code] = await Promise.all([makePicture(canvas, project), renderCodeImage(project)]);
+  const pdf = await buildPdf({
+    title: stamp,
+    code,
+    drawing: { width: canvas.width, height: canvas.height, rgb: canvasToRgb(canvas) },
+    attachment: { name: `${stamp}.png`, bytes: picture },
+  });
+  download(new Blob([pdf], { type: 'application/pdf' }), `${stamp}.pdf`);
+  return `${stamp}.pdf`;
 }
 
 /**
