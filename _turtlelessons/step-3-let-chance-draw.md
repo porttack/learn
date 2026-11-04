@@ -4,11 +4,6 @@ title: "Let chance draw"
 pathway: turtlelessons
 order: 3
 source: original
-time: 40
-grouping: "On your own"
-materials: "Chromebook, pencil, activity sheet"
-organizer: /turtle-lessons/activity-sheet/
-organizer_label: "Activity sheet"
 ---
 
 So far, every time you press Run you get the same picture. A loop repeats steps, but the steps are the same ones.
@@ -25,11 +20,11 @@ Open the <a href="{{ '/turtlelab/?sample=color-burst' | relative_url }}" target=
 A sample tab never saves anything, so a refresh puts the sample back. Press Ctrl+S to keep a copy of something you want to keep.
 </aside>
 
-Before you run it a second time, write your guess on your activity sheet: will the second picture match the first?
+Before you run it a second time, make a guess: will the second picture match the first?
 
 Then run it three times. Look at the `set color` block. Each of its three slots has a `random 0 255` block plugged into it. A color mixes red, green and blue, and each one is a number from 0 to 255. That is why the random numbers go from 0 to 255.
 
-Answer on your activity sheet:
+Work out:
 
 1. What is the smallest number `random 0 255` can give? The largest?
 2. The sample draws 50 rays and turns 7.2 each time. 50 × 7.2 is what? Why does that number make sense?
@@ -60,8 +55,8 @@ Scatter 60 dots on the paper, each in a random place and a random color. Start f
 Two hints about the paper. It runs from -350 to 350 across and from -280 to 280 up and down. And a very short line drawn with a fat pen looks like a dot.
 </aside>
 
-When your confetti works, run it twice. Do the two runs match? Write down why.
+When your confetti works, run it twice. Do the two runs match? Why or why not?
 
-## Hand it in
+## Save your work
 
-Press the **PDF** button and turn it in the way your teacher says.
+Press the **PDF** button to keep a copy of your blocks and your drawing.

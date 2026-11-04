@@ -31,6 +31,8 @@
 - title: TurtleLab
   url: /turtlelab/
   icon: /turtlelab/images/favicon.svg
+- title: TurtleLab Lessons
+  url: /turtle-lessons/
 - title: CS50 Problems
   url: /cs50-psets/
   icon: /assets/img/cs50psets/favicon.svg

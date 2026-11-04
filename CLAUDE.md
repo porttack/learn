@@ -60,6 +60,20 @@ CS Unplugged, CS50 Problems, and ROV Robotics. `docx_export: true` adds a
 shown; `assets/js/docx-export.js`); on for CS Unplugged. Add a pathway there when you
 create its collection, and add the collection to `_config.yml`.
 
+### TurtleLab Lessons (`_turtlelessons/`)
+
+Five steps that use TurtleLab (initials, loops, random, if/else, then a capstone), at
+`/turtle-lessons/`. It is a normal collection (original content, `source: original`), **not**
+inside `turtlelab/` (that folder is the AGPL app; CC lesson content stays out) and **not** named
+`turtlelab` (that would collide with the app's own `/turtlelab/` folder). Each step starts from a
+TurtleLab sample (`/turtlelab/?sample=ID`) the student changes, then a challenge aside that names
+tools and never shows the answer. Step 1 (initials) and Step 5 (capstone) each end with a PDF
+from TurtleLab's PDF button; the pages list what the capstone must include and deliberately give
+no points (the teacher writes the rubric). Nothing on the student pages mentions timing, a
+particular course or LMS, or "turn it in": `teacher-notes.md` (a `companion: true` page, with a
+hidden `?key=1` answer key) holds paste-ready assignment text. No app screenshots in these pages
+(its artwork is AGPL). "TurtleLab Lessons" is in the site menu and in TurtleLab's own toolbar.
+
 ### CS Unplugged (`_unplugged/`)
 
 **Before working on anything under `/unplugged/`, read `_unplugged/README.md`**

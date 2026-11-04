@@ -4,11 +4,6 @@ title: "Choose a path"
 pathway: turtlelessons
 order: 4
 source: original
-time: 45
-grouping: "On your own"
-materials: "Chromebook, pencil, activity sheet"
-organizer: /turtle-lessons/activity-sheet/
-organizer_label: "Activity sheet"
 ---
 
 So far your programs do the same steps every time, even when chance changes the numbers. Sometimes a program has to **decide**.
@@ -34,7 +29,7 @@ A sample tab never saves anything, so a refresh puts the sample back. Press Ctrl
 
 Find the question in the pointed slot. It reads `random 1 2 = 1`. Think of it as a coin flip: the random block gives 1 or 2. If it gives 1 (the answer is yes), the turtle takes the top mouth. If it gives 2 (the answer is no), it takes the `else` mouth.
 
-Answer on your activity sheet:
+Work out:
 
 1. When the random number is 1, which way does the turtle turn? Which way does it turn in the `else`?
 2. Can the turtle ever do both in one pass? Can it do neither?
@@ -42,9 +37,9 @@ Answer on your activity sheet:
 
 ### Trace it on paper
 
-Pretend the coin gave these six flips in a row: 1, 1, 2, 1, 2, 2. The turtle starts facing up (heading 0). On a 1 it turns right 90. On a 2 it turns left 90. Fill in the trace table on your activity sheet: which path ran, and what the heading is after each flip.
+Pretend the coin gave these six flips in a row: 1, 1, 2, 1, 2, 2. The turtle starts facing up (heading 0). On a 1 it turns right 90. On a 2 it turns left 90.
 
-The first row is done for you, so you can see the format.
+What is the heading after each of the six flips? Write the six headings down. The first one is 90, because the first flip is a 1 and `right 90` adds 90 to 0.
 
 <details markdown="1">
 <summary>Check your answers</summary>
@@ -86,6 +81,6 @@ The pointed slot needs a yes-or-no block, like `=`, `<` or `>` from the Math pal
 Make the turtle turn right only about 1 time in 4, and left the other 3 times. The tools you need are a `random` block with different numbers, and a `<` or `=` block. Run it a few times and see if the path leans the way you expect.
 </aside>
 
-## Hand it in
+## Save your work
 
-Press the **PDF** button and turn it in the way your teacher says.
+Press the **PDF** button to keep a copy of your blocks and your drawing.

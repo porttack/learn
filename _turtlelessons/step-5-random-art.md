@@ -1,23 +1,26 @@
 ---
 layout: lesson
-title: "Project: random art"
+title: "Capstone: random art"
 pathway: turtlelessons
 order: 5
 source: original
-time: 70
-grouping: "On your own"
-materials: "Chromebook, pencil, activity sheet"
-organizer: /turtle-lessons/activity-sheet/
-organizer_label: "Activity sheet"
 ---
 
-You now have three tools. A **loop** repeats. **Random** brings in chance. **If and else** makes a decision. Today you use all three in one piece of art that is yours.
+You now have three tools. A **loop** repeats. **Random** brings in chance. **If and else** makes a decision. In this capstone you use all three in one piece of art that is yours.
 
 Nobody will make the same picture as you, because you choose what repeats, what is random, and what gets decided.
 
+## What your capstone must include
+
+- A `repeat` that draws part of your picture.
+- `random` used somewhere you can see in the picture.
+- An `if` with an `else` that changes something you can see, like a color, a size, or a turn.
+- At least two colors.
+- A sticky note with your name, and one or two sentences saying what your loop, your random and your if and else each do.
+
 ## Pick a theme
 
-Choose one, or invent your own and check it with your teacher.
+Choose one, or invent your own.
 
 - **Night sky.** Stars at random places. A decision makes some stars big and bright and the others small and dim.
 - **Confetti party.** Dots at random places. A decision picks between two team colors.
@@ -25,17 +28,15 @@ Choose one, or invent your own and check it with your teacher.
 
 ## Plan it
 
-On your activity sheet, sketch what you imagine the finished picture looks like. Then finish these three sentences:
+Before you build, sketch on paper what you imagine the finished picture looks like. Then finish these three sentences. They make a good sticky note later.
 
 - My program repeats ______ times.
 - Each time, random picks ______.
 - The if and else decides ______.
 
-**Show your plan to your teacher or the substitute and get it initialed before you build.** Any honest plan counts.
-
 ## The shape of your program
 
-Every project has this shape. Your job is to decide what goes in the gaps.
+Every capstone has this shape. Your job is to decide what goes in the gaps.
 
 ```
 start
@@ -67,33 +68,11 @@ If your picture is slow to draw, add a `speed` block (Flow palette) near the top
 - Not what you pictured? Change one number at a time and run it again. The Stop button always works, and Ctrl+Z undoes a mistake.
 </aside>
 
-## Your checklist
+## Make your PDF
 
-Your teacher will open your PDF and check each one. The same checklist is on your activity sheet.
+The sticky note is in the Notes palette. Drag one out, tap it and type your name and your sentences.
 
-<table class="checkoff">
-  <thead>
-    <tr><th></th><th>What</th><th>Points</th></tr>
-  </thead>
-  <tbody>
-    <tr><td class="checkbox-cell">&#9744;</td><td>Plan and three sentences, initialed</td><td>1</td></tr>
-    <tr><td class="checkbox-cell">&#9744;</td><td>A <code>repeat</code> that draws part of your picture</td><td>2</td></tr>
-    <tr><td class="checkbox-cell">&#9744;</td><td><code>random</code> is used somewhere you can see in the picture</td><td>2</td></tr>
-    <tr><td class="checkbox-cell">&#9744;</td><td>An <code>if</code> with an <code>else</code> that changes something you can see</td><td>2</td></tr>
-    <tr><td class="checkbox-cell">&#9744;</td><td>At least two colors</td><td>1</td></tr>
-    <tr><td class="checkbox-cell">&#9744;</td><td>A sticky note with your name, and one or two sentences saying what your loop, your random and your if and else each do</td><td>1</td></tr>
-    <tr><td class="checkbox-cell">&#9744;</td><td>Your PDF turned in</td><td>1</td></tr>
-  </tbody>
-</table>
-
-The sticky note is in the Notes palette. Tap it to type. It shows up on your PDF.
-
-## Hand it in
-
-1. Make sure your sticky note has your name on it.
-2. Press the **PDF** button. Your blocks, your note and your drawing are all on the page.
-3. Turn it in the way your teacher says. If you save again later, the newest one counts.
-4. If you share this computer, press New so the next person starts fresh.
+Then press the **PDF** button. Your blocks, your note and your drawing are all on the page. If you share this computer, press New when you are done so the next person starts fresh.
 
 ## Going further
 
@@ -114,5 +93,5 @@ Open the <a href="{{ '/turtlelab/?sample=spiral' | relative_url }}" target="_bla
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: PREDICT AND CHECK**
 
-Explain your program to a neighbor without showing them the picture. Ask them to describe what it will draw. Then press Run together. Where was the picture different from what they said, and why?
+Explain your program to someone else without showing them the picture. Ask them to describe what it will draw. Then press Run together. Where was the picture different from what they said, and why?
 </aside>

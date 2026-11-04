@@ -1807,7 +1807,7 @@ try {
     await chrome.eval(`document.elementFromPoint(40, 95)?.closest('.palette-button') !== null`));
   await chrome.click(hamburger.x, hamburger.y);
   check('clicking the hamburger opens it, with TurtleLab and the rest of the site in it', (await panelOpen()) &&
-    (await chrome.eval(`[...document.querySelectorAll('.site-menu-panel a')].map((a) => a.textContent.trim()).join('|')`)).includes('TurtleLab|CS50 Problems'));
+    (await chrome.eval(`[...document.querySelectorAll('.site-menu-panel a')].map((a) => a.textContent.trim()).join('|')`)).includes('TurtleLab|TurtleLab Lessons|CS50 Problems'));
   const panelBox = await chrome.eval(`(() => { const r = document.querySelector('.site-menu-panel').getBoundingClientRect(); return { right: r.right, bottom: r.bottom, left: r.left, width: window.innerWidth, height: window.innerHeight }; })()`);
   check('the open menu fits on the screen', panelBox.left >= 0 && panelBox.right <= panelBox.width && panelBox.bottom <= panelBox.height, JSON.stringify(panelBox));
   await chrome.click(400, 500);

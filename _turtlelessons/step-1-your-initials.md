@@ -4,16 +4,11 @@ title: "Your initials"
 pathway: turtlelessons
 order: 1
 source: original
-time: 50
-grouping: "On your own"
-materials: "Chromebook, pencil, activity sheet"
-organizer: /turtle-lessons/activity-sheet/
-organizer_label: "Activity sheet"
 ---
 
-A computer does exactly what you tell it, in the order you tell it, and nothing else. It will not guess what you meant. Today you will give a turtle exact steps to draw your initials.
+A computer does exactly what you tell it, in the order you tell it, and nothing else. It will not guess what you meant. In this step you give a turtle exact steps to draw your initials. It is a small first project, and it ends with a PDF of your work.
 
-The plan on paper is what makes this fast. People who plan first finish early. People who skip it spend the whole hour fixing.
+The plan on paper is what makes this fast. People who plan first finish early. People who skip it spend the whole time fixing.
 
 <aside class="callout note" markdown="1">
 **Keep your work in a fresh tab**
@@ -23,7 +18,7 @@ Open TurtleLab with this link: <a href="{{ '/turtlelab/' | relative_url }}" targ
 
 ## How the turtle thinks
 
-You already know x and y from graphing (and from CMU CS Academy, if you have used it). The turtle's paper works the same way, with **one difference: here, y goes up.** A bigger y is higher on the page, like on a graph in math class. The middle of the paper is (0, 0).
+The turtle's paper has an x and a y, like a graph. The middle of the paper is (0, 0). **One thing to watch: y goes up.** A bigger y is higher on the page, like on a graph in math class.
 
 The turtle also faces a direction, called its **heading**.
 
@@ -54,7 +49,7 @@ Open a palette on the left, then drag a block out and snap the next one under it
 | `left` | Turtle | 90 |
 | `forward` | Turtle | 60 |
 
-**Before you press Run:** the turtle starts at (-150, 60) facing down. Where will it end up, and which way will it face? Write your prediction on your activity sheet, then press Run and check. Look at the turtle's nose.
+**Before you press Run:** the turtle starts at (-150, 60) facing down. Where will it end up, and which way will it face? Write your prediction down, then press Run and check. Look at the turtle's nose.
 
 <aside class="callout note" markdown="1">
 **Why `clean` and `pen up` come first**
@@ -64,11 +59,11 @@ Open a palette on the left, then drag a block out and snap the next one under it
 
 ## Plan your initials
 
-Draw your initials on the grid on your activity sheet, using straight lines first. A letter about 120 tall works well. Leave room: the paper is 700 wide and 560 tall.
+Sketch your initials on this grid with straight lines first. It is the same size as the turtle's paper, and the numbers are the x and y you type into `set xy`. A letter about 120 tall works well. Print this page, or copy the grid onto your own paper.
 
-Then fill in the plan table. For each letter, write where the turtle starts, which way it faces, and the moves, like `forward 120, left 90, forward 60`.
+{% include turtle-grid.html %}
 
-**Show your plan to your teacher or the substitute and get it initialed before you build.** Any honest plan counts. They only check that you planned something.
+For each letter, write down where the turtle starts, which way it faces, and the moves, like `forward 120, left 90, forward 60`. Then you are ready to build.
 
 ## Build your initials
 
@@ -91,7 +86,7 @@ Give each letter its own color. The `set color` block (Pen palette) takes red, g
 <aside class="callout challenge" markdown="1">
 **CHALLENGE: A FRAME**
 
-Draw a square frame around your initials. Then count: how many blocks did the frame take? Write the number on your activity sheet. Hold on to that number, because Step 2 is about getting it down.
+Draw a square frame around your initials. Then count: how many blocks did the frame take? Remember that number, because Step 2 is about getting it down.
 </aside>
 
 ## Check yourself
@@ -100,8 +95,10 @@ Draw a square frame around your initials. Then count: how many blocks did the fr
 - There are no stray lines between your letters.
 - You predicted where the L would end and which way it would face, and you checked.
 
-## Hand it in
+## Make your PDF
 
-Press the **PDF** button on the toolbar. It saves a one page PDF with your blocks on top and your drawing underneath, with the turtle where it stopped. Turn it in the way your teacher says.
+Add a sticky note first: open the Notes palette, drag out a note, tap it and type your name.
+
+Then press the **PDF** button on the toolbar. It saves a one page PDF with your blocks and note on top and your drawing underneath, with the turtle drawn where it stopped.
 
 **Keep that file.** Step 2 starts from it. To get your blocks back, press Open in TurtleLab and choose the PDF, or drag the PDF onto the page.

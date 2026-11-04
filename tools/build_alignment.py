@@ -111,6 +111,7 @@ SITE_MENU_HTML = """<div class="site-menu">
 <a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
 <a href="/python3d/"><span class="site-menu-item-icon" aria-hidden="true"></span>Python in 3D</a>
 <a href="/turtlelab/"><img src="/turtlelab/images/favicon.svg" class="site-menu-item-icon" alt="">TurtleLab</a>
+<a href="/turtle-lessons/"><span class="site-menu-item-icon" aria-hidden="true"></span>TurtleLab Lessons</a>
 <a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
 <a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
 <a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>

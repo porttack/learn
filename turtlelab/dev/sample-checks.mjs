@@ -136,6 +136,8 @@ try {
   await chrome.goto(BASE);
   check('the app toolbar links to Samples in a new tab, so no click loses your blocks',
     await chrome.eval(`(() => { const a = [...document.querySelectorAll('.toolbar-link')].find((l) => l.textContent === 'Samples'); return !!a && a.target === '_blank' && a.getAttribute('href') === 'samples.html'; })()`));
+  check('and to the TurtleLab Lessons in a new tab too, right after Samples',
+    await chrome.eval(`(() => { const links = [...document.querySelectorAll('.toolbar-link')].map((l) => l.textContent); const a = [...document.querySelectorAll('.toolbar-link')].find((l) => l.textContent === 'Lessons'); return links.join('|') === 'Samples|Lessons|Guide|About' && !!a && a.target === '_blank' && a.getAttribute('href') === '../turtle-lessons/'; })()`));
   for (const width of [1366, 1100, 1000]) {
     await chrome.send('Emulation.setDeviceMetricsOverride', { width, height: 700, deviceScaleFactor: 1, mobile: false });
     await chrome.sleep(150);

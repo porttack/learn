@@ -141,6 +141,10 @@ checks. All wording is student-facing, so no dashes and no grade level.
   fits a 1366 by 700 window with the note above it.
 - The toolbar and the Guide link to `samples.html`; each card on it is one
   link containing the picture, title and "Open in TurtleLab".
+- The toolbar also has a **Lessons** link (to `../turtle-lessons/`, the lesson pathway kept outside
+  this folder because it is CC content), and "TurtleLab Lessons" is in the site menu (all five pages'
+  copies, kept in step by a test). The toolbar is full: below 1100 px wide its gaps are squeezed in
+  `app.css` so it stays on one row down to 1000 px (`sample-checks.mjs` checks 1366, 1100, 1000).
 
 ## Blocks you make yourself (functions)
 
