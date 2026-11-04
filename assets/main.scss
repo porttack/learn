@@ -1922,3 +1922,21 @@ table.checkoff.light-message td {
 @media print {
   #fig-coded-numbers { break-inside: avoid; }
 }
+
+// ---- TurtleLab lessons ----------------------------------------------------
+
+// The planning grid (_includes/turtle-grid.html): a picture of TurtleLab's paper to sketch on.
+// It must print, so it is plain lines and borders, never background colors.
+.turtle-grid {
+  display: block;
+  width: 100%;
+  max-width: 31em;
+  height: auto;
+  margin: 1em 0;
+  break-inside: avoid;
+}
+
+// A bigger empty box to sketch in (the plan for a project).
+.draw-box.tall {
+  min-height: 11em;
+}

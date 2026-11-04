@@ -34,6 +34,11 @@ collections:
   unplugged:
     output: true
     permalink: /unplugged/:name/
+  # Lessons that use TurtleLab. Not `turtlelab`: /turtlelab/ is the app's own
+  # folder of static files, and a collection there would collide with it.
+  turtlelessons:
+    output: true
+    permalink: /turtle-lessons/:name/
 
 defaults:
   - scope: { path: "", type: "pico" }
@@ -57,6 +62,10 @@ defaults:
       layout: lesson
       pathway: unplugged
       label: "CS Unplugged activity"
+  - scope: { path: "", type: "turtlelessons" }
+    values:
+      layout: lesson
+      pathway: turtlelessons
 
 header_pages:
   - index.md
