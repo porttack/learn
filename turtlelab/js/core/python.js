@@ -16,10 +16,13 @@
 //   boxes       plain variables, with `global` where a block of your own changes one.
 // Blocks you make are Python functions, and inputs are their parameters.
 //
-// It is written to run in two places: ordinary Python, and EduBlocks (edublocks.org), which
-// runs Python in the browser with Skulpt. Skulpt has fewer turtle functions at the top level
-// than Python does (colormode, for one, is only on Screen()), so only names both have are used.
-// test/python.test.js checks that against the list of what Skulpt provides.
+// It is written to run in two places: ordinary Python, and EduBlocks (edublocks.org). EduBlocks
+// runs Python with PyScript and has a small turtle module of its own, with far less in it:
+// no colormode (its Screen has none either), no done(), a color that must be a string or three
+// WHOLE numbers, and no way to ask the pen for its color or size. So the program sticks to what
+// both have: colors are hex strings from a small rgb() helper, a program that asks for the pen's
+// color or size keeps track of them itself, and done() is allowed not to exist.
+// test/python-runner.py stands in for EduBlocks' turtle, and the tests run the program on it.
 //
 // This only writes text. A test runs the Python it makes (against a stand-in for the
 // turtle module) and checks it ends up where TurtleLab's own interpreter does.
@@ -38,8 +41,12 @@ const PYTHON_WORDS = new Set(
   'False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield match case type'.split(' '),
 );
 const USED_BY_PROGRAM = new Set(
-  'forward backward left right goto setheading circle penup pendown pensize pencolor color begin_fill end_fill clear home xcor ycor heading speed bgcolor colormode done clean random time print range int abs exit Screen SystemExit'.split(' '),
+  'forward backward left right goto setheading circle penup pendown pensize pencolor color begin_fill end_fill clear home xcor ycor heading speed bgcolor colormode done clean random time print range int abs round max min exit Screen SystemExit NameError rgb channel set_color set_pensize pen_color pen_size'.split(' '),
 );
+
+/** The line that makes the pen red, and the one that makes it size 5, going through the trackers if the program reads them. */
+const redPen = (track) => (track.color ? 'set_color(255, 0, 0)' : 'color(rgb(255, 0, 0))');
+const size5 = (track) => (track.size ? 'set_pensize(5)' : 'pensize(5)');
 
 /** A Python speed (0 is fastest) for each TurtleLab speed: slow, medium, fast, instant. */
 const PYTHON_SPEEDS = { slow: 1, medium: 3, fast: 6, instant: 0 };
@@ -67,12 +74,16 @@ function identifier(name, taken) {
 
 /** Which boxes, turtle features and modules a list of blocks uses. */
 function survey(stacks) {
-  const found = { boxes: new Set(), colors: false, random: false, time: false, clean: false };
+  const found = { boxes: new Set(), colors: false, trackColor: false, trackSize: false, random: false, time: false, clean: false };
   for (const blocks of stacks) {
     walkBlocks(blocks, (block) => {
       const box = /^(?:store|box)(\d+)$/.exec(block.op);
       if (box) found.boxes.add(Number(box[1]));
       if (['setcolor', 'fillscreen', 'penred', 'pengreen', 'penblue'].includes(block.op)) found.colors = true;
+      // Python's turtle can be asked its pen color and size, but EduBlocks' cannot, so a program
+      // that asks keeps track of them itself.
+      if (['penred', 'pengreen', 'penblue'].includes(block.op)) found.trackColor = true;
+      if (block.op === 'pensize') found.trackSize = true;
       if (block.op === 'random' || block.op === 'oneof') found.random = true;
       if (block.op === 'wait') found.time = true;
       if (block.op === 'clean') found.clean = found.colors = true;
@@ -116,6 +127,7 @@ export function toPython(project) {
 
   add('# Python version of your blocks, using the turtle module.');
   add('# It is written to do what the blocks do, but the two are not identical.');
+  add('# It only uses what Python and EduBlocks (edublocks.org) both have.');
   if (notes.length > 0) {
     add('#');
     for (const note of notes) {
@@ -126,9 +138,46 @@ export function toPython(project) {
   add('from turtle import *');
   if (uses.random) add('import random');
   if (uses.time) add('import time');
-  add();
-  // Screen().colormode, not colormode: EduBlocks' Python (Skulpt) has colormode only on the Screen.
-  if (uses.colors) add('Screen().colormode(255)');
+
+  // Colors are made as hex strings ("#ff0000"), which every turtle takes. Not color(255, 0, 0), which
+  // needs colormode(255) in Python, and EduBlocks has no colormode at all.
+  const track = { color: uses.trackColor, size: uses.trackSize };
+  if (uses.colors) {
+    add();
+    add();
+    add('# A turtle color from red, green and blue, each from 0 to 255');
+    add('def rgb(red, green, blue):');
+    add(`${INDENT}return "#%02x%02x%02x" % (channel(red), channel(green), channel(blue))`);
+    add();
+    add();
+    add('def channel(value):');
+    add(`${INDENT}return max(0, min(255, int(round(value))))`);
+  }
+  if (track.color) {
+    add();
+    add();
+    add('# EduBlocks cannot tell you the pen color, so it is kept here');
+    add('pen_color = [255, 0, 0]');
+    add();
+    add();
+    add('def set_color(red, green, blue):');
+    add(`${INDENT}pen_color[0] = channel(red)`);
+    add(`${INDENT}pen_color[1] = channel(green)`);
+    add(`${INDENT}pen_color[2] = channel(blue)`);
+    add(`${INDENT}color(rgb(red, green, blue))`);
+  }
+  if (track.size) {
+    add();
+    add();
+    add('# EduBlocks cannot tell you the pen size, so it is kept here');
+    add('pen_size = 5');
+    add();
+    add();
+    add('def set_pensize(size):');
+    add(`${INDENT}global pen_size`);
+    add(`${INDENT}pen_size = size`);
+    add(`${INDENT}pensize(size)`);
+  }
 
   if (uses.clean) {
     add();
@@ -139,18 +188,19 @@ export function toPython(project) {
     add(`${INDENT}home()`);
     add(`${INDENT}setheading(90)`);
     add(`${INDENT}pendown()`);
-    add(`${INDENT}color(255, 0, 0)`);
-    add(`${INDENT}pensize(5)`);
+    add(`${INDENT}${redPen(track)}`);
+    add(`${INDENT}${size5(track)}`);
   }
   const boxes = [...uses.boxes].sort((a, b) => a - b);
   if (boxes.length > 0) {
+    add();
     add();
     for (const n of boxes) add(`box${n} = 0`);
   }
 
   for (const found of defined) {
     const key = nameKey(found.name);
-    const context = { functionNames, parameters: parameterNames.get(key), inFunction: true, taken };
+    const context = { functionNames, parameters: parameterNames.get(key), inFunction: true, taken, track };
     const params = found.params.map((param) => parameterNames.get(key).get(nameKey(param))).join(', ');
     add();
     add();
@@ -165,17 +215,22 @@ export function toPython(project) {
   }
 
   if (main) {
-    const context = { functionNames, parameters: new Map(), inFunction: false, taken };
+    const context = { functionNames, parameters: new Map(), inFunction: false, taken, track };
     add();
     add();
     add('# Your program starts here');
     if (needsStart) {
       add('setheading(90)');
-      add('color(255, 0, 0)');
-      add('pensize(5)');
+      add(redPen(track));
+      add(size5(track));
     }
     body(mainBlocks, 0, context).forEach((line) => add(line));
-    add('done()');
+    // done() keeps the turtle window open when the program is run as a file. EduBlocks has no
+    // done(), and does not need one, so it is not allowed to be an error there.
+    add('try:');
+    add(`${INDENT}done()  # keeps the turtle window open when this is run as a file`);
+    add('except NameError:');
+    add(`${INDENT}pass  # EduBlocks has no done(), and does not need one`);
   } else {
     add();
     add('# Nothing runs yet: add a Start block, and under it a call to your block.');
@@ -262,11 +317,11 @@ function statement(block, depth, context) {
     case 'pendown':
       return line('pendown()');
     case 'setpensize':
-      return line(`pensize(${a(0)})`);
+      return line(context.track.size ? `set_pensize(${a(0)})` : `pensize(${a(0)})`);
     case 'setcolor':
-      return line(`color(${a(0)}, ${a(1)}, ${a(2)})`);
+      return line(context.track.color ? `set_color(${a(0)}, ${a(1)}, ${a(2)})` : `color(rgb(${a(0)}, ${a(1)}, ${a(2)}))`);
     case 'fillscreen':
-      return line(`bgcolor(${a(0)}, ${a(1)}, ${a(2)})`);
+      return line(`bgcolor(rgb(${a(0)}, ${a(1)}, ${a(2)}))`);
     case 'startfill':
       return line('begin_fill()');
     case 'endfill':
@@ -355,13 +410,13 @@ function build(arg, context) {
     case 'heading':
       return atom('(90 - heading()) % 360');
     case 'pensize':
-      return atom('pensize()');
+      return atom('pen_size');
     case 'penred':
-      return atom('pencolor()[0]');
+      return atom('pen_color[0]');
     case 'pengreen':
-      return atom('pencolor()[1]');
+      return atom('pen_color[1]');
     case 'penblue':
-      return atom('pencolor()[2]');
+      return atom('pen_color[2]');
     case 'paren':
       return atom(`(${expr(first, context).text})`);
     case 'add':

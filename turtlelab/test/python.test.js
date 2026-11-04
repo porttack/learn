@@ -34,11 +34,11 @@ const hat = (name, params, ...body) => ({ x: 0, y: 0, blocks: [{ op: 'to', name,
 const program = (...blocks) => ({ x: 300, y: 0, blocks: [b('start'), ...blocks] });
 const projectOf = (...stacks) => ({ stacks });
 
-/** The lines of Python between the start of the program and `done()`. */
+/** The lines of Python between the start of the program and the `try: done()` that ends it. */
 function mainLines(project) {
   const lines = toPython(project).split('\n');
   const from = lines.indexOf('# Your program starts here');
-  return lines.slice(from + 1, lines.lastIndexOf('done()'));
+  return lines.slice(from + 1, lines.lastIndexOf('try:'));
 }
 
 // ---- Running both and comparing ---------------------------------------------------------------------
@@ -62,7 +62,7 @@ function runBlocksHere(project) {
     if (op.type === 'line') length += Math.hypot(op.x2 - op.x1, op.y2 - op.y1);
     if (op.type === 'arc') length += op.r * Math.abs(op.sweep) * (Math.PI / 180);
   }
-  return { x: turtle.x, y: turtle.y, heading: (((90 - turtle.heading) % 360) + 360) % 360, length, printed };
+  return { x: turtle.x, y: turtle.y, heading: (((90 - turtle.heading) % 360) + 360) % 360, length, printed, color: [...turtle.color], size: turtle.penSize };
 }
 
 const turnBetween = (a, b2) => Math.abs((((a - b2) % 360) + 540) % 360 - 180);
@@ -78,6 +78,9 @@ function assertSame(project, label) {
   assert.ok(turnBetween(python.heading, here.heading) < 1e-6, `${label}: heading is ${python.heading} in Python and ${here.heading} in the blocks\n${source}`);
   assert.ok(near(python.length, here.length, 0.005 * here.length + 1e-6), `${label}: drew ${python.length} in Python and ${here.length} in the blocks`);
   assert.deepEqual(python.printed, here.printed.map(String), `${label}: printed`);
+  // The pen too. (A program that picks colors by chance cannot be compared: its chance is not ours.)
+  assert.equal(python.size, here.size, `${label}: pen size`);
+  if (!source.includes('random.')) assert.deepEqual(python.color, here.color, `${label}: pen color`);
 }
 
 // ---- What comes out, block by block -------------------------------------------------------------------
@@ -98,22 +101,49 @@ test('the turtle blocks become the turtle module\'s calls', () => {
   );
   assert.deepEqual(lines, [
     'clean()', 'forward(100)', 'backward(20)', 'left(90)', 'right(45)', 'goto(10, -20)', 'penup()', 'pendown()',
-    'pensize(3)', 'color(10, 20, 30)', 'bgcolor(1, 2, 3)', 'begin_fill()', 'end_fill()',
+    'pensize(3)', 'color(rgb(10, 20, 30))', 'bgcolor(rgb(1, 2, 3))', 'begin_fill()', 'end_fill()',
   ]);
 });
 
-test('clean becomes a small function, defined once at the top, with colormode set', () => {
+test('clean becomes a small function, defined once at the top, and colors are made by a small helper', () => {
   const text = toPython(projectOf(program(b('clean'), b('clean'))));
   assert.equal(text.match(/def clean\(\):/g).length, 1);
-  assert.match(text, /^Screen\(\)\.colormode\(255\)$/m, 'colormode is on Screen(), the one spelling EduBlocks and Python share');
-  assert.doesNotMatch(text, /^colormode\(/m, 'never the bare colormode, which EduBlocks does not have');
-  assert.match(text, /def clean\(\):\n    clear\(\)\n    penup\(\)\n    home\(\)\n    setheading\(90\)\n    pendown\(\)\n    color\(255, 0, 0\)\n    pensize\(5\)/);
+  assert.match(text, /def rgb\(red, green, blue\):\n    return "#%02x%02x%02x" % \(channel\(red\), channel\(green\), channel\(blue\)\)/);
+  assert.match(text, /def channel\(value\):\n    return max\(0, min\(255, int\(round\(value\)\)\)\)/);
+  assert.doesNotMatch(text, /colormode|Screen/, 'EduBlocks has no colormode, and its Screen has none either');
+  assert.match(text, /def clean\(\):\n    clear\(\)\n    penup\(\)\n    home\(\)\n    setheading\(90\)\n    pendown\(\)\n    color\(rgb\(255, 0, 0\)\)\n    pensize\(5\)/);
 });
 
 test('a program that does not start with clean is given TurtleLab\'s start: facing up, red pen, size 5', () => {
   const text = toPython(projectOf(program(b('forward', 10))));
-  assert.match(text, /^Screen\(\)\.colormode\(255\)$/m);
-  assert.deepEqual(mainLines(projectOf(program(b('forward', 10)))), ['setheading(90)', 'color(255, 0, 0)', 'pensize(5)', 'forward(10)']);
+  assert.match(text, /^def rgb\(red, green, blue\):$/m);
+  assert.deepEqual(mainLines(projectOf(program(b('forward', 10)))), ['setheading(90)', 'color(rgb(255, 0, 0))', 'pensize(5)', 'forward(10)']);
+});
+
+test('colors are plain hex strings, and a program with no color in it has no color helper', () => {
+  assert.doesNotMatch(toPython(projectOf(program(b('forward', 10), b('clean')))).replace(/def clean[\s\S]*?pensize\(5\)/, ''), /\bcolormode\b/);
+  const none = projectOf(program(b('penup')));
+  // a program that never starts with clean still gets the red start, so it does have the helper
+  assert.match(toPython(none), /def rgb/);
+});
+
+test('a program that reads the pen color or size keeps track of them itself, because EduBlocks cannot be asked', () => {
+  const reads = projectOf(program(b('clean'), b('setcolor', 1, 2, 3), b('setpensize', 4), b('forward', { op: 'penred' }), b('forward', { op: 'pensize' })));
+  const text = toPython(reads);
+  assert.match(text, /^pen_color = \[255, 0, 0\]$/m);
+  assert.match(text, /def set_color\(red, green, blue\):\n    pen_color\[0\] = channel\(red\)\n    pen_color\[1\] = channel\(green\)\n    pen_color\[2\] = channel\(blue\)\n    color\(rgb\(red, green, blue\)\)/);
+  assert.match(text, /^pen_size = 5$/m);
+  assert.match(text, /def set_pensize\(size\):\n    global pen_size\n    pen_size = size\n    pensize\(size\)/);
+  assert.deepEqual(mainLines(reads).slice(1), ['set_color(1, 2, 3)', 'set_pensize(4)', 'forward(pen_color[0])', 'forward(pen_size)']);
+  assert.match(text, /def clean\(\):[\s\S]*    set_color\(255, 0, 0\)\n    set_pensize\(5\)/, 'clean goes through them too');
+  const plain = toPython(projectOf(program(b('clean'), b('setcolor', 1, 2, 3), b('setpensize', 4))));
+  assert.doesNotMatch(plain, /pen_color|pen_size|set_color|set_pensize/, 'and a program that does not read them has none of it');
+  assert.doesNotMatch(plain, /pencolor|pensize\(\)/, 'the Python never asks the turtle for its pen');
+});
+
+test('the program ends by keeping the window open, unless done() does not exist, which is allowed', () => {
+  const text = toPython(projectOf(program(b('clean'), b('forward', 1))));
+  assert.match(text, /\ntry:\n    done\(\)  # keeps the turtle window open when this is run as a file\nexcept NameError:\n    pass  # EduBlocks has no done\(\), and does not need one\n$/);
 });
 
 test('headings are turned around: TurtleLab counts clockwise from up, Python counter-clockwise from east', () => {
@@ -146,8 +176,8 @@ test('the readers and the math blocks become expressions, with parentheses only 
   assert.equal(show(op('paren', op('add', 1, 2))), 'forward((1 + 2))', 'a paren block the student wrote stays');
   assert.equal(show({ op: 'x' }), 'forward(xcor())');
   assert.equal(show({ op: 'heading' }), 'forward((90 - heading()) % 360)');
-  assert.equal(show({ op: 'penred' }), 'forward(pencolor()[0])');
-  assert.equal(show({ op: 'pensize' }), 'forward(pensize())');
+  assert.equal(show({ op: 'penred' }), 'forward(pen_color[0])');
+  assert.equal(show({ op: 'pensize' }), 'forward(pen_size)');
   assert.equal(show(op('random', 1, 6)), 'forward(random.randint(1, 6))');
   assert.equal(show(op('random', 1, 2.5)), 'forward(random.uniform(1, 2.5))');
   assert.equal(show(op('oneof', 3, 4)), 'forward(random.choice([3, 4]))');
@@ -195,7 +225,7 @@ test('blocks you make are functions, inputs are parameters, and stop leaves the 
   );
   assert.match(text, /def square\(size\):\n    for _ in range\(4\):\n        forward\(size\)\n        right\(90\)\n    return\n/);
   assert.match(text, /^square\(50\)$/m);
-  assert.match(text, /^done\(\)$/m);
+  assert.match(text, /^try:\n    done\(\)/m);
 });
 
 test('names are made safe for Python: spaces, digits, Python\'s own words and the program\'s own names', () => {
@@ -242,7 +272,7 @@ test('only blocks of your own: the functions are written, and a comment says wha
   const text = toPython(projectOf(hat('go', [], b('forward', 1))));
   assert.match(text, /def go\(\):\n    forward\(1\)/);
   assert.match(text, /# Nothing runs yet: add a Start block/);
-  assert.doesNotMatch(text, /done\(\)/);
+  assert.doesNotMatch(text, /done\(\)/, 'no program, so no done()');
 });
 
 test('numbers are written the way the blocks show them, with no rounding noise', () => {
@@ -299,30 +329,18 @@ test('blocks of your own agree: inputs, boxes, stop, calls inside calls, and rec
 
 // ---- It runs in EduBlocks too --------------------------------------------------------------------
 //
-// edublocks.org runs Python in the browser with Skulpt, which has fewer turtle functions at the top
-// level than Python does. (colormode is only on Screen(), and a bare colormode(255) is a NameError there:
-// the first thing a student saw when they pasted the Python in.) So the names the program uses are
-// checked against the names Skulpt really provides.
-//
-// Skulpt's list comes from its source, github.com/skulpt/skulpt, src/lib/turtle.js (November 2026):
-// every method of its Turtle class is at the top level of the module, and so are these few Screen ones.
+// edublocks.org runs Python with PyScript, and its turtle module is a small file of its own
+// (https://app.edublocks.org/pyscript/turtle/turtle.py), with far less in it than Python's. It has no
+// colormode (hence `AttributeError: 'Screen' object has no attribute 'colormode'`, the first thing a
+// student saw), no done(), a color that must be one string or three WHOLE numbers, and no way to read the
+// pen's color or size back. test/python-runner.py stands in for it, and is also where the list of its names
+// lives. So the program is both RUN against it (every sample, and a program with every block in it) and
+// checked name by name.
 
-const SKULPT_TURTLE = (
-  'back backward begin_fill bk circle clear clone color degrees delay distance done dot down end_fill fd fill fillcolor ' +
-  'forward getpen getscreen getturtle goto heading hideturtle home ht isdown isvisible left lt mainloop onclick ondrag ' +
-  'onrelease pd pencolor pendown pensize penup pos position pu radians reset right rt seth setheading setpos setposition ' +
-  'setundobuffer setx sety shape showturtle speed st stamp towards tracer undo undobufferentries up update width ' +
-  'window_height window_width write xcor ycor'
-).split(' ');
-const SKULPT_SCREEN_AT_TOP = (
-  'mainloop done bye tracer update delay window_width window_height title onkey listen register_shape clearscreen bgcolor ' +
-  'bgpic setworldcoordinates ontimer onscreenclick exitonclick resetscreen setup turtles'
-).split(' ');
-const SKULPT_NAMES = new Set([...SKULPT_TURTLE, ...SKULPT_SCREEN_AT_TOP, 'Turtle', 'Screen']);
-// Python's own words the program uses, which every Python has, Skulpt included.
-const BUILTINS_USED = new Set(['range', 'print', 'int', 'abs', 'SystemExit']);
-// Functions of modules the program imports, which Skulpt has too (random from _random.js, time.sleep from time.js).
-const SKULPT_MODULE_FUNCTIONS = new Set(['random.randint', 'random.uniform', 'random.choice', 'time.sleep']);
+const BUILTINS_USED = new Set(['range', 'print', 'int', 'abs', 'round', 'max', 'min', 'SystemExit', 'NameError']);
+// Functions of modules the program imports. (Pyodide, which PyScript uses, is ordinary Python.)
+const MODULE_FUNCTIONS = new Set(['random.randint', 'random.uniform', 'random.choice', 'time.sleep']);
+const edublocksNames = () => new Set(runPython('', 'edublocks-names').names);
 
 /** A program that uses every block there is, so every kind of line the generator writes is checked. */
 function everything() {
@@ -338,9 +356,10 @@ function everything() {
       b('forward', op('paren', op('add', op('subtract', 5, 1), op('multiply', 2, op('divide', 8, op('mod', 7, 3)))))),
       b('forward', op('random', 1, 6)), b('forward', op('random', 1, 2.5)), b('forward', op('oneof', 1, 2)),
       b('store1', 3), b('store2', 4), b('store3', 5), b('store4', 6), b('print', { op: 'box4' }),
-      rep(3, b('forward', 1)), rep({ op: 'box1' }, b('forward', 1)), { op: 'forever', args: [], body: [{ op: 'stop', args: [] }] },
+      rep(3, b('forward', 1)), rep({ op: 'box1' }, b('forward', 1)),
       ifBlock(cond, b('forward', 1)), ifElse(op('equal', 1, 1), [b('forward', 1)], [ifBlock(op('greater', 2, 1), b('back', 1))]),
-      b('wait', 5), b('speed', 2), b('speed', 4), call('spin', ['n', 'm'], 10, 20), { op: 'stop', args: [] },
+      b('wait', 5), b('speed', 2), b('speed', 4), call('spin', ['n', 'm'], 10, 20),
+      { op: 'forever', args: [], body: [{ op: 'stop', args: [] }] },
     ),
   );
 }
@@ -349,28 +368,53 @@ function namesUsedBy(project) {
   return runPython(toPython(project), 'names');
 }
 
-test('the Python never uses a name EduBlocks (Skulpt) does not have: that is how a bare colormode got through', needsPython, () => {
+test('the Python never uses a name EduBlocks does not have: that is how colormode got through, twice', needsPython, () => {
+  const names = edublocksNames();
   const projects = [everything(), ...SAMPLES.map((sample) => projectOf(...sampleStacks(sample)))];
   for (const project of projects) {
     const { free, attributes } = namesUsedBy(project);
-    const unknown = free.filter((name) => !SKULPT_NAMES.has(name) && !BUILTINS_USED.has(name));
-    assert.deepEqual(unknown, [], `names Skulpt does not provide: ${unknown.join(', ')}`);
-    const badAttributes = attributes.filter((attribute) => !SKULPT_MODULE_FUNCTIONS.has(attribute));
-    assert.deepEqual(badAttributes, [], `module functions Skulpt does not provide: ${badAttributes.join(', ')}`);
+    const unknown = free.filter((name) => !names.has(name) && !BUILTINS_USED.has(name));
+    assert.deepEqual(unknown, [], `names EduBlocks does not provide: ${unknown.join(', ')}`);
+    const badAttributes = attributes.filter((attribute) => !MODULE_FUNCTIONS.has(attribute));
+    assert.deepEqual(badAttributes, [], `module functions that may not exist: ${badAttributes.join(', ')}`);
   }
 });
 
-test('that check is not blind: it would have caught the bare colormode, and exit, and anything Python-only', needsPython, () => {
-  const { free } = runPython('from turtle import *\ncolormode(255)\nexit()\nforward(1)\nshowpoly()', 'names');
-  const unknown = free.filter((name) => !SKULPT_NAMES.has(name) && !BUILTINS_USED.has(name));
-  assert.deepEqual(unknown, ['colormode', 'exit', 'showpoly']);
+test('that check is not blind: it catches colormode, done, exit and anything Python-only, but allows what is guarded', needsPython, () => {
+  const names = edublocksNames();
+  const unknownIn = (source) => runPython(source, 'names').free.filter((name) => !names.has(name) && !BUILTINS_USED.has(name));
+  assert.deepEqual(unknownIn('from turtle import *\ncolormode(255)\nexit()\nforward(1)\nshowpoly()\ndone()'), ['colormode', 'done', 'exit', 'showpoly']);
+  assert.deepEqual(unknownIn('from turtle import *\ntry:\n    done()\nexcept NameError:\n    pass\nforward(1)'), [], 'a guarded name is fine');
+  assert.ok(unknownIn('from turtle import *\ntry:\n    done()\nexcept ValueError:\n    pass').includes('done'), 'but only if it is guarded against NameError');
+  assert.ok(!names.has('colormode') && !names.has('done') && !names.has('mainloop'), 'the list really lacks them');
 });
 
-test('the program that uses every block is valid Python, runs, and agrees with the blocks', needsPython, () => {
+test('the stand-in really is as strict as EduBlocks: the old mistakes fail when run', needsPython, () => {
+  const fails = (source) => spawnSync('python3', ['-I', RUNNER], { input: JSON.stringify({ source: `from turtle import *\n${source}`, mode: 'run' }), encoding: 'utf8' });
+  assert.match(fails('colormode(255)').stderr, /NameError: name 'colormode' is not defined/);
+  assert.match(fails('Screen().colormode(255)').stderr, /Error/, 'and so does Screen().colormode');
+  assert.match(fails('done()').stderr, /NameError: name 'done'/);
+  assert.match(fails('print(pencolor())').stderr, /IndexError/, 'the pen color cannot be read back');
+  assert.match(fails('pensize()').stderr, /TypeError/, 'neither can the size');
+  assert.match(fails('color(1.5, 2, 3)').stderr, /TypeError/, 'a color from numbers needs whole numbers');
+  assert.equal(fails('color("#ff8000")\npensize(3)\nforward(1)').status, 0, 'and a hex color is fine');
+});
+
+test('the program that uses every block is valid, and RUNS against EduBlocks\' turtle without an error', needsPython, () => {
   assert.doesNotThrow(() => runPython(toPython(everything()), 'check'));
-  // Everything ends with a stop, so only the part of it that does not depend on chance can be compared.
-  const calm = projectOf(program(b('clean'), b('forward', 10), b('arc', 90, 20), b('setxy', 5, 5), b('speed', 2), { op: 'stop', args: [] }, b('forward', 999)));
-  assertSame(calm, 'a stop at the top');
+  const result = runPython(toPython(everything()), 'run');
+  assert.ok(Number.isFinite(result.x) && Number.isFinite(result.y));
+  assert.ok(result.printed.length >= 1, 'it printed');
+  assert.deepEqual(result.speeds, [3, 0], 'speed 2 is Python\'s 3, and speed 4 is 0');
+});
+
+test('the pen color and size agree, even when they are asked for, clamped, or fractions', needsPython, () => {
+  assertSame(projectOf(program(b('clean'), b('setcolor', 10, 20, 30), b('forward', { op: 'penred' }), b('forward', { op: 'pengreen' }), b('forward', { op: 'penblue' }))), 'reading the pen color');
+  assertSame(projectOf(program(b('clean'), b('setpensize', 7), b('forward', { op: 'pensize' }))), 'reading the pen size');
+  assertSame(projectOf(program(b('forward', { op: 'penred' }), b('forward', { op: 'pensize' }))), 'reading it when nothing has been set');
+  assertSame(projectOf(program(b('clean'), b('setcolor', 300, -5, 20.6), b('forward', { op: 'penred' }), b('forward', { op: 'pengreen' }), b('forward', { op: 'penblue' }))), 'colors past the ends, and fractions');
+  assertSame(projectOf(program(b('clean'), b('store1', 7.4), b('setcolor', { op: 'box1' }, op('multiply', { op: 'box1' }, 3), 255), b('forward', { op: 'pengreen' }))), 'colors from a calculation');
+  assertSame(projectOf(hat('tint', ['n'], b('setcolor', input('n'), 0, 0), b('forward', { op: 'penred' })), program(b('clean'), call('tint', ['n'], 99.6))), 'inside a block of your own');
 });
 
 test('the names it uses really are the ones Python\'s own turtle module has too', needsPython, () => {
@@ -382,9 +426,8 @@ try:
 except Exception as error:   # no tkinter on this machine: nothing to check against
     print(json.dumps({"skipped": str(error)})); sys.exit(0)
 print(json.dumps({"missing": [n for n in names if not hasattr(turtle, n)]}))
-`], { input: JSON.stringify([...SKULPT_NAMES].filter((name) => name !== 'Turtle')), encoding: 'utf8' });
+`], { input: JSON.stringify([...namesUsedBy(everything()).free].filter((name) => edublocksNames().has(name))), encoding: 'utf8' });
   const outcome = JSON.parse(result.stdout);
   if (outcome.skipped) return; // this Python has no turtle module (no tkinter)
-  const used = namesUsedBy(everything()).free.filter((name) => SKULPT_NAMES.has(name));
-  assert.deepEqual(used.filter((name) => outcome.missing.includes(name)), [], 'every top-level name the program uses is in real Python\'s turtle too');
+  assert.deepEqual(outcome.missing, [], 'every turtle name the program uses is in real Python\'s turtle too');
 });

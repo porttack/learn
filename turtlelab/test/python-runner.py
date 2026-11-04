@@ -1,69 +1,119 @@
 """Runs the Python that TurtleLab writes, for the tests. Not part of the app.
 
-It reads {"source": "...", "mode": "check" | "names" | "run"} from standard input.
-  check  only compiles the source, to prove it is valid Python.
-  names  lists the names the program uses without defining them (the turtle functions,
-         the builtins) and the module functions it calls (random.randint, ...), so a
-         test can check them against what EduBlocks' Python (Skulpt) really provides.
-  run    runs it against a stand-in for Python's turtle module and prints where the
-         turtle ended up, how far it drew, and what was printed.
+It reads {"source": "...", "mode": "..."} from standard input. The modes:
+  check           only compiles the source, to prove it is valid Python.
+  names           lists the names the program uses without defining them (the turtle
+                  functions, the builtins) and the module functions it calls
+                  (random.randint, ...), so a test can check them against what EduBlocks
+                  provides. A name used only inside `try: ... except NameError:` does not
+                  count: that is how the program says "if this exists".
+  edublocks-names lists every name EduBlocks' turtle module has (see below).
+  run             runs the program against a stand-in for the turtle module and prints
+                  where the turtle ended up, how far it drew, its pen, and what was printed.
 
-The stand-in follows the real module's rules (heading 0 is east and turns counter
-clockwise, and circle() uses the same steps as the real one), but draws nothing. Like
-Skulpt it has no top-level colormode: that is only on Screen(), so a program that calls
-a bare colormode() fails here, as it does in EduBlocks.
+The stand-in is EduBlocks, not Python. edublocks.org runs Python with PyScript, and its
+turtle module is a small file of its own, https://app.edublocks.org/pyscript/turtle/turtle.py
+(read in November 2026). The stand-in has exactly the names that file exports, takes a color
+the way that file does (one string, or three WHOLE numbers), and, like it, has no done(),
+no colormode(), and cannot be asked for the pen's color or size. So a program that runs
+here runs in EduBlocks, and one that calls colormode() fails here as it did there. The
+moves follow the real turtle module's rules (heading 0 is east and turns counter-clockwise,
+and circle() uses the same steps as the real one), but nothing is drawn.
 """
 import ast, io, json, math, sys, time, types
 
 request = json.load(sys.stdin)
 source = request["source"]
 
+# Every name in the __all__ of EduBlocks' turtle.py: its classes, its turtle functions and its screen functions.
+EDUBLOCKS_NAMES = (
+    "Turtle Screen "
+    "forward fd left lt backward bk back right rt goto setpos setposition circle width pensize color pencolor "
+    "fillcolor begin_fill end_fill penup pu pendown pd speed shape setheading seth write xcor ycor position pos "
+    "setx sety heading hideturtle ht showturtle st isvisible home dot distance towards clear reset stamp "
+    "clearstamp clearstamps undo turtlesize shapesize "
+    "bgcolor setup title tracer update window_width window_height"
+).split()
+
 if request["mode"] == "check":
     compile(source, "program.py", "exec")
     print(json.dumps({"ok": True}))
     sys.exit(0)
 
+if request["mode"] == "edublocks-names":
+    print(json.dumps({"names": EDUBLOCKS_NAMES}))
+    sys.exit(0)
+
 if request["mode"] == "names":
     defined, used, attributes = set(), set(), set()
-    for node in ast.walk(ast.parse(source)):
-        if isinstance(node, ast.FunctionDef):
+
+    class Collect(ast.NodeVisitor):
+        def visit_Try(self, node):
+            # `try: done() except NameError: pass` asks whether done exists: it is allowed not to.
+            guarded = any(isinstance(h.type, ast.Name) and h.type.id == "NameError" for h in node.handlers)
+            if not guarded:
+                self.generic_visit(node)
+                return
+            for part in node.handlers + node.orelse + node.finalbody:
+                self.visit(part)
+
+        def visit_FunctionDef(self, node):
             defined.add(node.name)
             defined.update(a.arg for a in node.args.args)
-        elif isinstance(node, ast.Name):
+            self.generic_visit(node)
+
+        def visit_Name(self, node):
             (used if isinstance(node.ctx, ast.Load) else defined).add(node.id)
-        elif isinstance(node, ast.Import):
+
+        def visit_Import(self, node):
             defined.update((a.asname or a.name).split(".")[0] for a in node.names)
-        elif isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
-            attributes.add(node.value.id + "." + node.attr)
+
+        def visit_Attribute(self, node):
+            if isinstance(node.value, ast.Name):
+                attributes.add(node.value.id + "." + node.attr)
+            self.generic_visit(node)
+
+    Collect().visit(ast.parse(source))
     print(json.dumps({"free": sorted(used - defined), "attributes": sorted(attributes)}))
     sys.exit(0)
 
-state = {"x": 0.0, "y": 0.0, "heading": 0.0, "down": True, "size": 1, "color": (0, 0, 0),
-         "length": 0.0, "speeds": [], "mode": 1.0}
+state = {"x": 0.0, "y": 0.0, "heading": 0.0, "down": True, "size": 1, "color": None,
+         "length": 0.0, "speeds": []}
+
+def get_color(args):
+    # As in EduBlocks' turtle.py: three whole numbers make a hex color, anything else is passed on as it is.
+    if len(args) == 3:
+        return "#%02x%02x%02x" % (args[0], args[1], args[2])
+    return args[0]  # no argument at all is an IndexError there, as it is here
+
+def remember_color(args):
+    value = get_color(args)
+    if isinstance(value, str) and value.startswith("#") and len(value) == 7:
+        state["color"] = [int(value[i:i + 2], 16) for i in (1, 3, 5)]
 
 def _go(dx, dy):
-    nx, ny = state["x"] + dx, state["y"] + dy
     if state["down"]:
         state["length"] += math.hypot(dx, dy)
-    state["x"], state["y"] = nx, ny
+    state["x"] += dx
+    state["y"] += dy
 
-def forward(d):
-    _go(d * math.cos(math.radians(state["heading"])), d * math.sin(math.radians(state["heading"])))
+def forward(distance):
+    _go(distance * math.cos(math.radians(state["heading"])), distance * math.sin(math.radians(state["heading"])))
 
-def backward(d):
-    forward(-d)
+def backward(distance):
+    forward(-distance)
 
-def left(a):
-    state["heading"] = (state["heading"] + a) % 360
+def left(angle):
+    state["heading"] = (state["heading"] + angle) % 360
 
-def right(a):
-    left(-a)
+def right(angle):
+    left(-angle)
 
-def goto(x, y):
+def goto(x, y=None):
     _go(x - state["x"], y - state["y"])
 
-def setheading(a):
-    state["heading"] = a % 360
+def setheading(angle):
+    state["heading"] = angle % 360
 
 def circle(radius, extent=None, steps=None):
     # The same steps as the real turtle module.
@@ -89,18 +139,17 @@ def penup():
 def pendown():
     state["down"] = True
 
-def pensize(n=None):
-    if n is None:
-        return state["size"]
-    state["size"] = n
+def pensize(width):  # a size is required, so the size cannot be read back
+    state["size"] = width
 
-def color(*rgb):
-    state["color"] = tuple(rgb)
+def color(*args):
+    remember_color(args)
 
-def pencolor(*rgb):
-    if not rgb:
-        return state["color"]
-    state["color"] = tuple(rgb)
+def pencolor(*args):
+    remember_color(args)
+
+def fillcolor(*args):
+    get_color(args)
 
 def clear():
     state["length"] = 0.0
@@ -118,25 +167,25 @@ def ycor():
 def heading():
     return state["heading"]
 
-def speed(s=None):
-    state["speeds"].append(s)
+def speed(speed):  # required, like EduBlocks'
+    state["speeds"].append(speed)
 
-class _Screen:
-    def colormode(self, m=None):
-        if m is not None:
-            state["mode"] = m
-        return state["mode"]
+def begin_fill():
+    pass
 
-def Screen():
-    return _Screen()
+def end_fill():
+    pass
 
-noop = lambda *a, **k: None
+def bgcolor(*args):
+    get_color(args)
+
 fake = types.ModuleType("turtle")
-for name in ("forward backward left right goto setheading circle penup pendown pensize color pencolor "
-             "clear home xcor ycor heading speed Screen").split():
-    setattr(fake, name, globals()[name])
-fake.begin_fill = fake.end_fill = fake.bgcolor = fake.done = noop
-fake.__all__ = [n for n in dir(fake) if not n.startswith("_")]
+for name in EDUBLOCKS_NAMES:
+    # the aliases are the same function; everything else that is not used here does nothing
+    impl = {"fd": forward, "lt": left, "bk": backward, "back": backward, "rt": right, "setpos": goto, "setposition": goto,
+            "width": pensize, "pu": penup, "pd": pendown, "seth": setheading}.get(name) or globals().get(name)
+    setattr(fake, name, impl if callable(impl) and name not in ("Turtle", "Screen") else (lambda *a, **k: None))
+fake.__all__ = list(EDUBLOCKS_NAMES)
 sys.modules["turtle"] = fake
 time.sleep = lambda s: None  # the tests do not wait
 
@@ -152,5 +201,6 @@ finally:
 
 print(json.dumps({
     "x": state["x"], "y": state["y"], "heading": state["heading"], "length": state["length"],
+    "color": state["color"], "size": state["size"],
     "speeds": state["speeds"], "printed": out.getvalue().split(),
 }))

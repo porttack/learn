@@ -201,16 +201,30 @@ missing, so run it where Python is.
   globals with `global` where a block of your own changes one, `random.randint` only
   when both ends are whole-number literals, `stop` as `return` inside a block and
   `raise SystemExit` outside, and parentheses only where precedence needs them.
-- **It must also run in EduBlocks (edublocks.org).** EduBlocks runs Python in the
-  browser with Skulpt, which has fewer turtle names at the top level than Python.
-  The first student to paste the Python in got `NameError: name 'colormode' is not
-  defined`: in Skulpt `colormode` is only on `Screen()`, so the program says
-  `Screen().colormode(255)`, which both have. Also not `exit()` (Skulpt has none).
-  `test/python.test.js` lists the names Skulpt provides (read from its source,
-  `src/lib/turtle.js`; every Turtle method is top level, plus a few Screen ones) and
-  fails if the Python uses a name outside it, using `ast` to find them. The stand-in
-  turtle module has no top-level `colormode` either, so the old mistake fails the
-  run tests too. If EduBlocks (or Skulpt) changes, update that list.
+- **It must also run in EduBlocks (edublocks.org), which is NOT ordinary Python
+  turtle, nor even stock Skulpt.** The teacher pastes the Python in, and was
+  failing on one missing thing at a time: `NameError: name 'colormode' is not
+  defined`, then `AttributeError: 'Screen' object has no attribute 'colormode'`
+  (my first "fix" was a guess from Skulpt's source, which was the wrong thing to
+  read). The truth is in EduBlocks' own file, which I fetched and read (November
+  2026): `https://app.edublocks.org/pyscript/turtle/turtle.py`, a ~10 KB wrapper
+  that PyScript loads. Its `__all__` is the whole list of names, and: **no
+  `colormode` anywhere, no `done()`/`mainloop`, `color(r, g, b)` only for whole
+  numbers (it builds a hex string with `%02x`), `pencolor()` and `pensize()` cannot
+  be read back (they need an argument), and the top-level `clear` is the Screen's.**
+  So the generator uses only what both Python and EduBlocks have:
+  colors are hex strings from a tiny `rgb()` helper (with `channel()` clamping and
+  rounding like the blocks do); a program that reads the pen color or size
+  (`penred`, `pensize` blocks) keeps `pen_color` and `pen_size` itself through
+  `set_color` and `set_pensize` (only such programs get that code); and the
+  program ends `try: done() except NameError: pass`.
+  `test/python-runner.py` is a stand-in for EduBlocks' turtle with exactly its
+  names and its strictness (the old mistakes fail there with the real errors), it
+  is the single source of the name list, and the tests RUN every sample and a
+  program with every block on it, and check names with `ast` (a name inside
+  `except NameError` is allowed to be missing). **If EduBlocks changes, fetch that
+  file again and update `EDUBLOCKS_NAMES` in the runner.** Still untried by me:
+  pasting into the real editor in a browser.
 - **Names** are made safe for Python (spaces, digits, keywords, and the names the
   program itself uses, which get a trailing underscore), and two names that would
   collide get a number.
