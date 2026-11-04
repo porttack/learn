@@ -73,6 +73,7 @@ If your picture is slow to draw, add a `speed` block (Flow palette) near the top
 
 - A **red outline** means that block has a problem. Read the message under the drawing.
 - Nothing happens? Check that your blocks are snapped under `start`.
+- Part of your picture off the edge of the paper? Press the **Fit** button on the toolbar (four corners round a square). It zooms until all of it is on the paper, and the PDF button does that for you too.
 - Not what you pictured? Change one number at a time and run it again. The Stop button always works, and Ctrl+Z undoes a mistake.
 </aside>
 

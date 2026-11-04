@@ -97,6 +97,6 @@ Press the PDF button in TurtleLab and attach the PDF to this assignment.
 
 ## What is in the PDF
 
-The PDF button saves a one page PDF: the blocks and sticky notes on top, laid out the way they are on the student's screen, and the drawing underneath with the turtle drawn where it stopped (so you can see which way it was facing). A picture of the drawing with the blocks inside it is attached to the PDF. Open it in TurtleLab (press Open, or drag the PDF onto the page) and the student's blocks come back, so you can run their program. A sticky note holds about 300 letters.
+The PDF button saves a one page PDF: the blocks and sticky notes on top, laid out the way they are on the student's screen, and the drawing underneath with the turtle drawn where it stopped (so you can see which way it was facing). A picture of the drawing with the blocks inside it is attached to the PDF. Open it in TurtleLab (press Open, or drag the PDF onto the page) and the student's blocks come back, so you can run their program. A sticky note holds about 300 letters. The PDF button zooms the drawing to fit first, so a drawing that ran off the edge of the paper is all there.
 
 Samples never read or write what a student saved. That is on purpose, so a sample can never wipe out someone's saved work.

@@ -61,7 +61,7 @@ Open a palette, drag a block out, and snap the next one under it. Build this sta
 
 ## Plan your initials
 
-Sketch your initials on this grid with straight lines first. It is the same size as the turtle's paper, and the numbers are the x and y you type into `set xy`. A letter about 120 tall works well. Print this page, or copy the grid onto your own paper.
+Sketch your initials on this grid with straight lines first. It is the same size as the turtle's paper, and the numbers are the x and y you type into `set xy`. A letter about 120 tall works well. Print this page, or copy the grid onto your own paper. TurtleLab can show the same grid over its own paper too: press the grid button on the toolbar (a square with lines in it).
 
 {% include turtle-grid.html %}
 
