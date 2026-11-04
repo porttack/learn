@@ -2,8 +2,8 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 // See COPYING in the folder above this one.
 //
-// A PDF for handing in: one page, the blocks in the top half and the drawing in the
-// bottom half, so a teacher can see both at a glance. No library is used. A PDF is
+// A PDF of your work: one page, the blocks in the top half and the drawing in the
+// bottom half, so both can be seen at a glance. No library is used. A PDF is
 // just numbered objects written one after another, then a table that says where each
 // one starts, and that is all that is written here.
 //

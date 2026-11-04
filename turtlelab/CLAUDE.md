@@ -80,7 +80,7 @@ the dashes out of them too for consistency.
       definitions.js  blocks you make yourself: find them, rename them, keep calls in step
       project.js      project JSON: validate, find the Run stack
       python.js       the blocks as Python (turtle module); see "Python box"
-      pdf.js          writes the hand-in PDF with no library; see "The PDF"
+      pdf.js          writes the one page PDF with no library; see "The PDF"
       squeeze.js      closes wide empty gaps between stacks, for the PDF's picture of the blocks
       png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
       project-file.js put a project inside a PNG, and read a PNG or .json back
@@ -240,7 +240,7 @@ missing, so run it where Python is.
 
 ## The PDF
 
-The PDF button makes a one page US Letter PDF for handing in: **the blocks in the top
+The PDF button makes a one page US Letter PDF of your work: **the blocks in the top
 half and the drawing, with the turtle on it, in the bottom half**, with the file name above and a line of
 help below. `core/pdf.js` writes it by hand (numbered objects, a table of where
 each starts), with no library, just as `png-chunks.js` writes PNG chunks. The two

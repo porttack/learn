@@ -8,7 +8,7 @@
 // the page, so nothing is sent anywhere.
 //
 // Save a PDF: the same picture is attached to a one page PDF that has the blocks in
-// the top half and the drawing in the bottom half, for handing in (see core/pdf.js).
+// the top half and the drawing in the bottom half (see core/pdf.js).
 //
 // Open: read a file the person chose or dropped, whether it is a saved
 // picture, a TurtleLab PDF, or a plain project file. This file only reads it;

@@ -24,3 +24,7 @@ You need a computer with Chrome and a pencil. There is nothing to install. Steps
 [Print all five steps]({{ '/turtle-lessons/print/' | relative_url }}) ·
 [Print the capstone planning sheet]({{ '/turtle-lessons/planning-sheet/' | relative_url }}) ·
 [More samples to try]({{ '/turtlelab/samples.html' | relative_url }})
+
+## For teachers
+
+[For teachers]({{ '/turtle-lessons/teacher-notes/' | relative_url }}): the sequence, assignment text to paste into your class site, and a substitute day plan.

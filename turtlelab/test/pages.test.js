@@ -184,7 +184,7 @@ test('the Guide, and the Privacy page, explain the PDF button and the Python box
 
 test('the toolbar has the PDF and Python buttons, each with its own icon, and the PDF button says what it makes', () => {
   const html = read('index.html');
-  assert.match(html, /<button id="save-pdf"[^>]*title="Save a PDF to hand in: your blocks on top, your drawing below"[^>]*>\s*<img src="images\/pdf-button\.svg"/);
+  assert.match(html, /<button id="save-pdf"[^>]*title="Save a PDF: your blocks on top, your drawing below"[^>]*>\s*<img src="images\/pdf-button\.svg"/);
   assert.match(html, /<button id="python-toggle"[^>]*aria-pressed="false"[^>]*aria-controls="python-box"[^>]*>\s*<img src="images\/python-button\.svg"/);
   assert.match(html, /accept="[^"]*\.pdf,application\/pdf/, 'Open takes PDFs');
   for (const icon of ['pdf-button', 'python-button']) {

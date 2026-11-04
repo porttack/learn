@@ -8,7 +8,7 @@ palettes (Turtle, Pen, Math, Flow, Boxes and My Blocks), snap them together, and
 with undo, zoom and pan. Save a drawing as a PNG with your blocks inside it,
 and open it again later. Your blocks are also kept in your browser so a
 refresh does not lose them. You can make blocks of your own, with inputs. A PDF
-button makes a one page hand-in (blocks on top, drawing below, with the picture
+button makes a one page PDF (blocks on top, drawing below, with the picture
 attached so the PDF opens in TurtleLab again), and a small box shows your blocks as
 Python. SVG export is still to come. See `CLAUDE.md` for the plan and the rules this project
 follows.

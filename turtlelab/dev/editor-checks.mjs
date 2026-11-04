@@ -1460,7 +1460,7 @@ try {
   await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
   check('a damaged autosave is ignored: the page loads empty and without errors', (await stacks()) === 0 && chrome.problems.length === problemsBefore, chrome.problems.slice(problemsBefore).join(' | '));
 
-  // ---- Saving a PDF to hand in ------------------------------------------------------------------------
+  // ---- Saving a PDF ------------------------------------------------------------------------
   const savedPdfs = () => readdirSync(downloads).filter((f) => f.endsWith('.pdf')).sort();
   const waitForPdf = async () => {
     for (let i = 0; i < 100; i += 1) {
@@ -1474,7 +1474,7 @@ try {
   await chrome.goto(BASE + '?demo=squarefn&speed=instant');
   await pressRun();
   check('the toolbar has a PDF button, with the PDF icon, that says what it does',
-    (await count('#save-pdf')) === 1 && (await chrome.eval(`document.querySelector('#save-pdf img').getAttribute('src')`)) === 'images/pdf-button.svg' && /Save a PDF to hand in/.test(await chrome.eval(`document.getElementById('save-pdf').title`)));
+    (await count('#save-pdf')) === 1 && (await chrome.eval(`document.querySelector('#save-pdf img').getAttribute('src')`)) === 'images/pdf-button.svg' && /Save a PDF: your blocks on top/.test(await chrome.eval(`document.getElementById('save-pdf').title`)));
   // The blocks on the page are the demo's, as the app cleans them when it loads them.
   const onPage = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: structuredClone(DEMOS.squarefn.stacks) }).project;
   const requestsBefore = chrome.requestLog.length;
@@ -1590,9 +1590,9 @@ try {
   check('New clears the page', (await stacks()) === 0);
   // Dropping the PDF on the page works like dropping a picture: the browser must not open it in the tab instead.
   const pdfB64 = Buffer.from(pdfBytes).toString('base64');
-  const droppedPdf = await dropOnPage(`const bytes = Uint8Array.from(atob('${pdfB64}'), (c) => c.charCodeAt(0)); const dataTransfer = new DataTransfer(); dataTransfer.items.add(new File([bytes], 'handed-in.pdf', { type: 'application/pdf' }));`);
+  const droppedPdf = await dropOnPage(`const bytes = Uint8Array.from(atob('${pdfB64}'), (c) => c.charCodeAt(0)); const dataTransfer = new DataTransfer(); dataTransfer.items.add(new File([bytes], 'saved-pdf.pdf', { type: 'application/pdf' }));`);
   await chrome.sleep(900);
-  check('dropping a TurtleLab PDF on the page brings back the blocks and the drawing', (await stacks()) === 2 && (await redPixels()) > 100 && /^Opened handed-in\.pdf/.test(await messageText()), await messageText());
+  check('dropping a TurtleLab PDF on the page brings back the blocks and the drawing', (await stacks()) === 2 && (await redPixels()) > 100 && /^Opened saved-pdf\.pdf/.test(await messageText()), await messageText());
   check('and the browser keeps the page instead of opening the PDF in the tab', droppedPdf.handled && droppedPdf.stillHere && droppedPdf.highlighted && droppedPdf.finished, JSON.stringify(droppedPdf));
   const droppedRects = await chrome.eval(`[...document.querySelectorAll('.workspace .stack')].map((g) => { const r = g.getBoundingClientRect(); return [Math.round(r.left), Math.round(r.top)]; })`);
   await clickButton('new');
