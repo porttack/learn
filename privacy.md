@@ -6,7 +6,7 @@ permalink: /privacy/
 
 # Privacy Policy
 
-Effective date: November 3, 2026
+Effective date: November 4, 2026
 
 ## Short version
 
@@ -114,7 +114,7 @@ entirely in your browser tab. It makes no network requests while you use it
 and sets no cookies.
 
 So that refreshing the page does not lose your blocks, TurtleLab keeps one
-copy of your current blocks, and the words on any sticky notes you typed, in
+copy of your current blocks, and the words on any sticky notes or write blocks you typed, in
 your browser's local storage, as a single item
 named `turtlelab-project`. It is plain text, it stays on your own device, and
 it is never transmitted anywhere. It is removed when you press New or clear

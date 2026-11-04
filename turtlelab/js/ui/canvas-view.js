@@ -20,7 +20,7 @@
 
 import { PAPER_W, PAPER_H, arcAngles } from '../core/turtle.js';
 import { toCss } from '../core/color.js';
-import { DEFAULT_DRAW_VIEW, drawingBounds, fitView, paperToWorld, visibleOps } from '../core/fit.js';
+import { DEFAULT_DRAW_VIEW, drawingBounds, fitView, isDefaultView, paperToWorld, sameView, visibleOps } from '../core/fit.js';
 import { gridLines, labelFor } from '../core/grid.js';
 import { turtleSvg } from './artwork.js';
 
@@ -232,16 +232,26 @@ export class CanvasView {
   /**
    * Zoom and slide the paper so everything drawn fits on it, including what was drawn off the
    * edge, and where the turtle is. Nothing drawn gives the default view.
-   * Returns { ok: true, zoom } or { ok: false, reason } if the picture cannot be redrawn.
+   *
+   * With `toggle`, a press that would change nothing (the paper is already fitted) goes back to
+   * the default view instead, so the button can be pressed to zoom in and pressed again to
+   * zoom back out. The PDF does not ask for that: it only ever wants the fitted picture.
+   *
+   * Returns { ok: true, zoom, back } or { ok: false, reason } if the picture cannot be redrawn.
+   * `back` is true when it went back to the default view.
    */
-  fit() {
+  fit({ toggle = false } = {}) {
     // Only some of the lines were kept (a loop ran for ages), so drawing again would lose the rest.
     if (this.turtle.truncated) return { ok: false, reason: 'too-long' };
     const box = drawingBounds(this.turtle.ops, {
       hasPicture: this.picture !== null,
       extraPoints: [{ x: this.turtle.x, y: this.turtle.y }],
     });
-    return this.showView(fitView(box));
+    const target = fitView(box);
+    if (toggle && !isDefaultView(target) && sameView(target, this.drawView)) {
+      return { ...this.resetDrawView(), back: true };
+    }
+    return { ...this.showView(target), back: false };
   }
 
   /** Back to the default view: the paper as it was when you started. */

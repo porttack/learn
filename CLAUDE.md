@@ -69,6 +69,9 @@ inside `turtlelab/` (that folder is the AGPL app; CC lesson content stays out) a
 TurtleLab sample (`/turtlelab/?sample=ID`) the student changes. No app screenshots in these pages
 (its artwork is AGPL). "TurtleLab Lessons" is in the site menu and in TurtleLab's own toolbar.
 
+TurtleLab has a `write` block (Notes palette) that draws words in script. Student Steps 1 and 5 say to skip it, and
+`teacher-notes.md` has the line for an assignment that should not allow it.
+
 **Two audiences, kept apart.** The student pages (steps, planning sheet, landing page) serve a kid
 working alone and never mention a teacher, class, substitute, grading, points, timing, an LMS or
 "turn it in" (a test of the words: grep them, expect none; "initials" is the topic of Step 1).

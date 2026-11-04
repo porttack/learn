@@ -133,6 +133,8 @@ const COMMANDS = {
   startfill: (t) => t.startFill(),
   endfill: (t) => t.endFill(),
   print: (t, [value], ctx) => ctx.print(formatNumber(value)),
+  // The words are on the block itself, not in a socket; the socket is how big the letters are.
+  write: (t, [size], ctx, block) => t.write(block.text ?? '', size),
   // 1 is slow and 4 is instant. Like a color, a number off the end is
   // pulled back to the nearest speed, and 2.6 counts as 3.
   speed: (t, [number], ctx) => {
@@ -231,7 +233,7 @@ function runCommand(block, ctx) {
   // Go by the sockets the block is supposed to have, so a block that is
   // missing an argument reports an empty box instead of running with NaN.
   const args = specOf(block).args.map((socket, i) => evalSocket(block.args?.[i], ctx, block, socket));
-  command(ctx.turtle, args, ctx);
+  command(ctx.turtle, args, ctx, block);
 }
 
 // ---- Reporters --------------------------------------------------------

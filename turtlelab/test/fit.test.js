@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { Turtle, PAPER_W, PAPER_H } from '../js/core/turtle.js';
 import {
   DEFAULT_DRAW_VIEW, FIT_MARGIN, MAX_DRAW_ZOOM, MIN_DRAW_ZOOM,
-  visibleOps, boundsOfOps, drawingBounds, fitView, worldToPaper, paperToWorld, isDefaultView,
+  visibleOps, boundsOfOps, drawingBounds, fitView, worldToPaper, paperToWorld, isDefaultView, sameView,
 } from '../js/core/fit.js';
 
 const near = (a, b, tolerance = 1e-6) => Math.abs(a - b) <= tolerance;
@@ -177,4 +177,17 @@ test('world and paper positions convert both ways, and the default view changes 
   }
   assert.deepEqual(worldToPaper(DEFAULT_DRAW_VIEW, 0, 0), { x: PAPER_W / 2, y: PAPER_H / 2 });
   assert.deepEqual(worldToPaper(DEFAULT_DRAW_VIEW, 100, 100), { x: PAPER_W / 2 + 100, y: PAPER_H / 2 - 100 });
+});
+
+test('sameView: the view a Fit just made is the same as itself, and a slightly different one is not', () => {
+  const fitted = fitView({ minX: -300, maxX: 500, minY: -100, maxY: 400 });
+  assert.ok(sameView(fitted, { ...fitted }));
+  // A tiny wobble in the numbers (under half a pixel, or a fifth of a percent) is not a different view.
+  assert.ok(sameView(fitted, { zoom: fitted.zoom * 1.001, cx: fitted.cx + 0.2 / fitted.zoom, cy: fitted.cy - 0.2 / fitted.zoom }));
+  // Anything a person could see is.
+  assert.ok(!sameView(fitted, { ...fitted, zoom: fitted.zoom * 1.01 }));
+  assert.ok(!sameView(fitted, { ...fitted, cx: fitted.cx + 2 / fitted.zoom }));
+  assert.ok(!sameView(fitted, { ...fitted, cy: fitted.cy - 2 / fitted.zoom }));
+  assert.ok(!sameView(fitted, DEFAULT_DRAW_VIEW));
+  assert.ok(sameView(DEFAULT_DRAW_VIEW, { zoom: 1, cx: 0, cy: 0 }));
 });

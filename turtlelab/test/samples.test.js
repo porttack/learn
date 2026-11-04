@@ -11,6 +11,7 @@ import { definitionsOf } from '../js/core/definitions.js';
 import { runBlocks, createContext, Wait } from '../js/core/interpreter.js';
 import { Turtle, PAPER_W, PAPER_H } from '../js/core/turtle.js';
 import { NOTE_MAX_CHARS } from '../js/core/blocks-spec.js';
+import { zoomToFit } from '../js/core/view.js';
 import { planStitches } from '../js/core/stitch-plan.js';
 import { renderSamplesPage } from '../dev/make-samples-page.mjs';
 
@@ -88,14 +89,37 @@ test('a sample with blocks of its own puts them down the left, and the note and 
   assert.ok(withBlocks.length >= 3, 'there are samples with blocks of their own');
   for (const sample of withBlocks) {
     const [note, program, ...made] = sampleStacks(sample, { stageWidth: 1366 });
-    assert.ok(made.every((stack) => stack.x < 100), `${sample.id}: its blocks are on the left`);
+    assert.ok(made[0].x < 100, `${sample.id}: its blocks start on the left`);
+    assert.ok(made.every((stack) => stack.x < program.x), `${sample.id}: every one of its blocks is left of the program`);
     assert.ok(note.x > 700 && note.x === program.x, `${sample.id}: the note and program are right of the middle of a 1366 page (${note.x})`);
-    assert.ok(note.x + 200 <= 1366, `${sample.id}: and still on the page`);
+    // The page zooms out to fit the tallest column and pulls everything toward the top left corner, so
+    // the program is placed further right than the page is wide, and lands on the right edge after the zoom.
+    const bottom = Math.max(...[program, ...made].map((stack) => stack.y + 320)); // the estimate for every stack's height
+    const zoom = zoomToFit({ contentBottom: bottom, anchorY: 16, height: 613 });
+    assert.ok(90 + (note.x - 90) * zoom + 200 * zoom <= 1366, `${sample.id}: and still on the page once it has zoomed (${note.x}, zoom ${zoom})`);
     const [two, ...others] = made;
-    if (others.length > 0) assert.ok(others[0].y > two.y, `${sample.id}: blocks stack down the left`);
+    if (others.length > 0) assert.ok(others[0].y > two.y || others[0].x > two.x, `${sample.id}: blocks stack down the left, then start a new column`);
   }
   const plain = sampleStacks(sampleById('square'));
   assert.equal(plain[0].x, 90, 'a sample with none stays on the left');
+});
+
+test('a long list of blocks you make runs in columns, so no column is taller than the page can show', () => {
+  const sample = SAMPLES.find((s) => (s.defines?.length ?? 0) >= 6);
+  const size = { width: 120, height: 400 };
+  const stageHeight = 613;
+  const stacks = sampleStacks(sample, { stageWidth: 1366, stageHeight, stackSize: () => size, noteHeight: () => 100 });
+  const [, program, ...made] = stacks;
+  const columns = [...new Set(made.map((stack) => stack.x))];
+  assert.ok(columns.length >= 2, `${columns.length} columns`);
+  const lowest = (x) => Math.max(...made.filter((stack) => stack.x === x).map((stack) => stack.y + size.height));
+  // At the smallest zoom (0.6) the page shows (613 - 12) / 0.6 units from the top of the page.
+  for (const x of columns) assert.ok(lowest(x) <= (stageHeight - 12) / 0.6 + 16, `the column at ${x} is too tall (${lowest(x)})`);
+  assert.deepEqual(columns, [...columns].sort((a, c) => a - c), 'columns go left to right in order');
+  assert.ok(Math.max(...columns) + size.width < program.x, 'the program is right of the last column');
+  // With few blocks (one column), nothing changes: they all start at the left edge and run down.
+  const few = sampleStacks({ ...sample, defines: sample.defines.slice(0, 2) }, { stageWidth: 1366, stageHeight, stackSize: () => ({ width: 120, height: 100 }) });
+  assert.deepEqual(few.slice(2).map((stack) => stack.x), [90, 90]);
 });
 
 test('every sample explains itself in a note that fits on a sticky note', () => {
@@ -252,14 +276,18 @@ test('samples.html is exactly what dev/make-samples-page.mjs makes from samples.
 
 test('the embroidery samples are good to stitch: lines only, one or two threads, few hops, short stitches, and each is a real drawing', () => {
   const forMachine = SAMPLES.filter((sample) => sample.concepts.includes('for an embroidery machine'));
-  assert.ok(forMachine.length >= 3, 'there are at least three samples for an embroidery machine');
+  assert.ok(forMachine.length >= 5, 'there are at least five samples for an embroidery machine');
   for (const sample of forMachine) {
     const { turtle } = runSample(sample);
     assert.ok(!turtle.ops.some((op) => op.type === 'fill' || op.type === 'fillScreen'), `${sample.id}: no filled shapes (a machine would need a different stitch for them)`);
     const plan = planStitches(turtle.ops, { name: sample.id });
     assert.ok(plan, `${sample.id}: has something to stitch`);
     assert.ok(plan.threads.length <= 2, `${sample.id}: ${plan.threads.length} threads`);
-    assert.ok(plan.jumps <= 2 && plan.trims === 0, `${sample.id}: ${plan.jumps} hops and ${plan.trims} cuts`);
+    // A sample with several separate shapes (the school's paw and letters) says how many hops it needs, and the
+    // machine cuts the thread at each long one. Every other sample is one line, or two with a thread change.
+    const hops = sample.maxHops ?? 2;
+    assert.ok(plan.jumps <= hops && (sample.maxHops ? plan.trims <= plan.jumps : plan.trims === 0), `${sample.id}: ${plan.jumps} hops and ${plan.trims} cuts`);
+    if (sample.maxHops) assert.ok(plan.jumps === sample.maxHops, `${sample.id}: says ${sample.maxHops} hops, has ${plan.jumps}`);
     assert.ok(plan.stitches >= 80 && plan.stitches <= 600, `${sample.id}: ${plan.stitches} stitches`);
     assert.ok(Math.max(plan.widthMm, plan.heightMm) === 90, `${sample.id}: sized to fit a 4 inch hoop`);
     assert.equal(plan.skippedFills, 0);

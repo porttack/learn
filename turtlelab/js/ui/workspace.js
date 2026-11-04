@@ -28,6 +28,7 @@ import { HelpBubble } from './help-bubble.js';
 import { NOTE_MAX_CHARS, specOf } from '../core/blocks-spec.js';
 import { renameDefinition, setInput, uniquifyDefinition } from '../core/definitions.js';
 import { INPUT_MAX, NAME_MAX } from '../core/names.js';
+import { LETTERING_MAX_CHARS, cleanLetteringText } from '../core/lettering.js';
 import { HOME_VIEW, zoomAbout, panBy, zoomToFit, fitBlocksView } from '../core/view.js';
 import {
   cloneBlock,
@@ -276,7 +277,8 @@ export class Workspace {
     } else if (entry.type === 'literal') {
       this.editNumber(entry);
     } else if (entry.type === 'nameslot') {
-      this.editName(entry);
+      if (entry.slot.editor === 'text') this.editText(entry);
+      else this.editName(entry);
     } else if (entry.node.kind === 'note') {
       this.editNote(entry.node); // tapping a sticky note is for writing in it
     } else {
@@ -756,6 +758,51 @@ export class Workspace {
         this.onMessage(result.error);
         return;
       }
+      this.render();
+      this.onChange();
+    };
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') finish(true);
+      else if (event.key === 'Escape') finish(false);
+    });
+    input.addEventListener('blur', () => finish(true));
+  }
+
+  // ---- Typing the words of a write block -----------------------------------
+
+  /**
+   * Put a text box over the words on a write block. Enter or clicking away keeps what was typed, and
+   * Escape cancels. Letters the script cannot draw are dropped, and the student is told if that happened.
+   */
+  editText(entry) {
+    const block = entry.node.block;
+    const box = entry.node.nameSlots[entry.index].el.getBoundingClientRect();
+    const stageBox = this.stage.getBoundingClientRect();
+    const input = document.createElement('input');
+    input.className = 'number-input';
+    input.type = 'text';
+    input.maxLength = LETTERING_MAX_CHARS;
+    input.value = block.text ?? '';
+    input.setAttribute('aria-label', 'The words to write');
+    input.style.left = `${box.left - stageBox.left}px`;
+    input.style.top = `${box.top - stageBox.top}px`;
+    input.style.width = `${Math.max(box.width, 220)}px`;
+    input.style.height = `${box.height}px`;
+    this.stage.append(input);
+    input.focus();
+    input.select();
+
+    let finished = false;
+    const finish = (keep) => {
+      if (finished) return;
+      finished = true;
+      const typed = input.value;
+      input.remove();
+      if (!keep) return;
+      const text = cleanLetteringText(typed);
+      if (text !== typed) this.onMessage('Some of those letters cannot be written. The script has the letters, numbers and symbols on an English keyboard.');
+      if (text === (block.text ?? '')) return;
+      block.text = text;
       this.render();
       this.onChange();
     };

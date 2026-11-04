@@ -1696,7 +1696,7 @@ try {
 
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Notes');
-  check('the Notes palette has just the sticky note', (await count('.flyout .stack')) === 1);
+  check('the Notes palette has the sticky note and the write block, and nothing else', (await count('.flyout .stack')) === 2 && (await count('.flyout .stack[data-op=note]')) === 1 && (await count('.flyout .stack[data-op=write]')) === 1);
   await dragFromPalette('note', 480, 120);
   check('a note dragged out lands on the page, asking to be written on', (await stacks()) === 1 && (await noteWords()) === 'Tap to write a note.');
 
@@ -1794,6 +1794,52 @@ try {
     }
   }
   check('a saved picture carries the words of its notes', withNotes !== null && noteFileBefore >= 1);
+
+  // ---- The write block: words in script, typed on the block ------------------------------------------------
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Notes');
+  await dragFromPalette('write', 480, 140);
+  const writeWords = () => chrome.eval(`document.querySelector('.workspace .node.textslot')?.textContent.trim()`);
+  const writeBlockText = () => chrome.eval(`document.querySelector('.workspace .stack').textContent.replace(/\\s+/g, '')`);
+  check('a write block dragged out shows its words in a box, with the size beside it', (await writeWords()) === 'Hello' && /write/.test(await writeBlockText()) && /size/.test(await writeBlockText()) && /60/.test(await writeBlockText()) && (await count('.workspace .node.textslot')) === 1, await writeBlockText());
+  const wordsBox = await plainRect('.workspace .node.textslot');
+  check('the words box sits inside the block, after the word write', await chrome.eval(`(() => { const b = document.querySelector('.workspace .stack .node.command').getBoundingClientRect(); const w = document.querySelector('.workspace .node.textslot').getBoundingClientRect(); return w.left > b.left + 30 && w.right < b.right - 10 && w.top >= b.top && w.bottom <= b.bottom; })()`));
+  await chrome.click(wordsBox.left + wordsBox.width / 2, wordsBox.top + wordsBox.height / 2);
+  await chrome.sleep(150);
+  check('tapping the words opens a box over them, with the words selected, and does not run anything',
+    (await count('.number-input')) === 1 && (await chrome.eval(`document.activeElement.getAttribute('aria-label')`)) === 'The words to write' && (await redPixels()) === 0);
+  await chrome.send('Input.insertText', { text: 'Go Cougars' });
+  await chrome.click(850, 640);
+  await chrome.sleep(200);
+  check('clicking away keeps what was typed, shown in the box', (await count('.number-input')) === 0 && (await writeWords()) === 'Go Cougars', await writeWords());
+  await pressRun();
+  check('running it writes the words on the paper, in the pen color', (await redPixels()) > 300, `${await redPixels()} red pixels`);
+  // Escape cancels, and letters the script has no way to draw are dropped with an explanation.
+  const box2 = await plainRect('.workspace .node.textslot');
+  await chrome.click(box2.left + box2.width / 2, box2.top + box2.height / 2);
+  await chrome.sleep(150);
+  await chrome.send('Input.insertText', { text: 'zzz' });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.sleep(150);
+  check('Escape leaves the words as they were', (await writeWords()) === 'Go Cougars' && (await count('.number-input')) === 0);
+  const box3 = await plainRect('.workspace .node.textslot');
+  await chrome.click(box3.left + box3.width / 2, box3.top + box3.height / 2);
+  await chrome.sleep(150);
+  await chrome.send('Input.insertText', { text: 'Caf\u00e9' });
+  await chrome.click(850, 640);
+  await chrome.sleep(200);
+  check('a letter the script cannot draw is left out, and the student is told', (await writeWords()) === 'Caf' && /cannot be written/.test(await chrome.eval(`document.getElementById('message').textContent`)), await writeWords());
+  // The words are part of the project: kept by autosave, and brought back after a refresh.
+  await chrome.sleep(700);
+  const writeSaved = JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`));
+  check('the words are kept by autosave, with the size', writeSaved.stacks[0].blocks[0].op === 'write' && writeSaved.stacks[0].blocks[0].text === 'Caf' && writeSaved.stacks[0].blocks[0].args[0] === 60, JSON.stringify(writeSaved.stacks[0].blocks[0]));
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  check('and are on the block after a refresh', (await writeWords()) === 'Caf');
+  // Long words are shortened on the block (the block keeps all of them), and the block grows to fit what it shows.
+  await seedProject({ app: 'porttack-turtle', version: 1, stacks: [{ x: 300, y: 200, blocks: [{ op: 'write', args: [60], text: 'The quick brown fox jumps over' }] }] });
+  check('words too long to show are shortened with dots on the block, which stays inside the window', await chrome.eval(`(() => { const t = document.querySelector('.workspace .node.textslot').textContent.trim(); const r = document.querySelector('.workspace .stack').getBoundingClientRect(); return t.endsWith('...') && r.right < window.innerWidth; })()`));
+  check('no label on the write block runs outside it', await chrome.eval(`(() => { const stack = document.querySelector('.workspace .stack').getBoundingClientRect(); return [...document.querySelectorAll('.workspace .stack text')].every((t) => { const r = t.getBoundingClientRect(); return r.left >= stack.left - 1 && r.right <= stack.right + 1; }); })()`));
 
   // ---- The site menu (the hamburger) ---------------------------------------------------------------
   await chrome.goto(BASE + '?speed=instant');

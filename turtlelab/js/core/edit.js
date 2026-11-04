@@ -32,6 +32,7 @@ export function newBlock(op) {
     block[key] = [];
   });
   if (spec.kind === 'note') block.text = '';
+  if (spec.textSlot) block.text = 'Hello';
   return block;
 }
 

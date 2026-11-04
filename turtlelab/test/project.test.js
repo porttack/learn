@@ -334,3 +334,15 @@ test('walkBlocks and usesBoxes look inside calls and definitions too', () => {
   assert.deepEqual(seen, ['to', 'store1', 'input']);
   assert.equal(usesBoxes({ stacks: [stackWith] }), true);
 });
+
+test('the words on a write block are kept, but only letters that can be drawn, and no more than the most', () => {
+  const stacks = (text) => ({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 0, y: 0, blocks: [{ op: 'write', args: [60], text }] }] });
+  const textOf = (result) => result.project.stacks[0].blocks[0].text;
+  assert.equal(textOf(validateProject(stacks('Go, Cougars!'))), 'Go, Cougars!');
+  assert.equal(textOf(validateProject(stacks('tab\there é€'))), 'tabhere ');
+  assert.equal(textOf(validateProject(stacks('x'.repeat(100)))).length, 40);
+  for (const odd of [undefined, null, 5, { a: 1 }]) assert.equal(textOf(validateProject(stacks(odd))), '', String(odd));
+  // Only a write block carries words this way: another block's text is not kept.
+  const other = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 0, y: 0, blocks: [{ op: 'forward', args: [10], text: 'sneaky' }] }] });
+  assert.equal(other.project.stacks[0].blocks[0].text, undefined);
+});

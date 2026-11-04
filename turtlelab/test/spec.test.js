@@ -148,3 +148,13 @@ test('boxes and the blocks you make have palettes of their own, in that order, e
   }
   assert.notEqual(PALETTE_COLORS.boxes.fill, PALETTE_COLORS.myblocks.fill, 'the two do not look alike');
 });
+
+test('the write block is a command in the Notes palette, with words on it and one socket for the size', () => {
+  assert.equal(BLOCKS.write.palette, 'notes');
+  assert.equal(BLOCKS.write.kind, 'command');
+  assert.deepEqual(BLOCKS.write.args.map((arg) => [arg.label, arg.default]), [['size', 60]]);
+  assert.equal(typeof BLOCKS.write.textSlot.hint, 'string');
+  // It is the only block with words on it besides the sticky note.
+  assert.deepEqual(entries.filter(([, spec]) => spec.textSlot).map(([op]) => op), ['write']);
+  assert.ok(!/[–—]/.test(BLOCKS.write.help), 'no dashes in the tip');
+});

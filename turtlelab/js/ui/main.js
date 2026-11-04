@@ -78,7 +78,7 @@ if (demo && Object.hasOwn(DEMOS, demo)) {
 const sampleName = params.get('sample');
 const sample = sampleName === null ? null : sampleById(sampleName);
 if (sample) {
-  const loaded = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: sampleStacks(sample, { noteHeight, stackSize, stageWidth: stage.clientWidth }) });
+  const loaded = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: sampleStacks(sample, { noteHeight, stackSize, stageWidth: stage.clientWidth, stageHeight: stage.clientHeight }) });
   if (loaded.ok) project.stacks = loaded.project.stacks;
 }
 
@@ -341,9 +341,9 @@ async function savePictureNow() {
  * Zoom the drawing so everything drawn (even off the edge of the paper) and the turtle are on it,
  * and slide and zoom the blocks so all of them are inside the window.
  */
-function fitEverything() {
+function fitEverything({ toggle = false } = {}) {
   const palettesEdge = document.querySelector('.palettes')?.getBoundingClientRect().right ?? 0;
-  const result = view.fit();
+  const result = view.fit({ toggle });
   workspace.fitBlocks(Math.max(0, palettesEdge - workspace.svg.getBoundingClientRect().left));
   return result;
 }
@@ -495,10 +495,11 @@ gridButton.addEventListener('click', () => {
   say(on ? 'The grid shows x and y, the same numbers you type into set xy. Press the button again to hide it. It is never part of a saved picture.' : '');
 });
 $('fit').addEventListener('click', () => {
-  const result = fitEverything();
-  say(result.ok
-    ? 'Zoomed to fit: everything you drew is on the paper and all your blocks are in the window. The house button goes back.'
-    : `${TOO_LONG_TO_ZOOM} Your blocks are in the window.`);
+  // Pressed again with the paper already fitted, it goes back to the normal paper.
+  const result = fitEverything({ toggle: true });
+  if (!result.ok) say(`${TOO_LONG_TO_ZOOM} Your blocks are in the window.`);
+  else if (result.back) say('Back to the normal paper. Press Fit again to zoom in on your drawing.');
+  else say('Zoomed to fit: everything you drew is on the paper and all your blocks are in the window. Press Fit again to go back to the normal paper.');
 });
 
 // Ctrl or Cmd with S saves; with Z it undoes; with Shift (or Ctrl+Y) it redoes.

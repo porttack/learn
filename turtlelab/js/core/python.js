@@ -287,6 +287,10 @@ function statement(block, depth, context) {
     case 'note':
     case 'to':
       return [];
+    case 'write':
+      // Python's own turtle writes in a different way (a font on the screen, not lines), and EduBlocks'
+      // turtle does not have write at all, so this block is left as a note to the reader.
+      return [pad(depth, `# write "${block.text ?? ''}": TurtleLab draws script letters that Python's turtle has no way to draw`), pad(depth, 'pass')];
     case 'clean':
       return line('clean()');
     case 'forward':

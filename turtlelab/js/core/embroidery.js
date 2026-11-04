@@ -170,21 +170,36 @@ function roundHalfEven(n) {
   return floor % 2 === 0 ? floor : floor + 1;
 }
 
-/** Cut a move into equal pieces, none bigger than `limit` along either axis, so the pieces add up exactly. */
-export function splitMove(dx, dy, limit) {
-  const pieces = Math.max(1, Math.ceil(Math.max(Math.abs(dx), Math.abs(dy)) / limit));
+/**
+ * Cut a move into equal pieces, none bigger than `limit` along either axis, so the pieces add up exactly.
+ *
+ * This is done the way pyembroidery does it, on purpose, so the files are the same to the byte: the even
+ * share is added on again and again from where the move starts (`startX`, `startY`, the needle's place on
+ * the whole design), and each piece is what is needed to reach that spot from where the last piece
+ * ended, rounded with halves going to the even number. Doing the sum another way (say, by multiplying)
+ * is just as even, but rounds a half the other way now and then.
+ */
+export function splitMove(dx, dy, limit, startX = 0, startY = 0) {
+  if (Math.abs(dx) <= limit && Math.abs(dy) <= limit) return [[dx, dy]];
+  const steps = Math.max(Math.ceil(Math.abs(dx / limit)), Math.ceil(Math.abs(dy / limit)));
+  const shareX = dx / steps;
+  const shareY = dy / steps;
   const out = [];
-  let doneX = 0;
-  let doneY = 0;
-  for (let i = 1; i <= pieces; i += 1) {
-    // Each piece is what is still needed to get to the next even share, rounded: the pieces
-    // then always add up exactly, whatever the rounding does along the way.
-    const stepX = roundHalfEven((dx * i) / pieces - doneX);
-    const stepY = roundHalfEven((dy * i) / pieces - doneY);
+  let wantX = startX;
+  let wantY = startY;
+  let doneX = startX;
+  let doneY = startY;
+  for (let i = 1; i < steps; i += 1) {
+    wantX += shareX;
+    wantY += shareY;
+    const stepX = roundHalfEven(wantX - doneX);
+    const stepY = roundHalfEven(wantY - doneY);
     out.push([stepX, stepY]);
     doneX += stepX;
     doneY += stepY;
   }
+  // The last piece lands exactly on the end of the move.
+  out.push([startX + dx - doneX, startY + dy - doneY]);
   return out;
 }
 
@@ -204,7 +219,7 @@ function limitMoves(commands, limit) {
       const dy = command.y - y;
       let atX = x;
       let atY = y;
-      for (const [sx, sy] of splitMove(dx, dy, limit)) {
+      for (const [sx, sy] of splitMove(dx, dy, limit, x, y)) {
         atX += sx;
         atY += sy;
         out.push({ cmd: command.cmd, x: atX, y: atY });
@@ -305,8 +320,10 @@ export function encodeDst(plan) {
   out.text(`CO:${padLeft(colorChanges, 3)}\r`);
   out.text(`+X:${padLeft(Math.abs(box.maxX), 5)}\r`);
   out.text(`-X:${padLeft(Math.abs(box.minX), 5)}\r`);
-  out.text(`+Y:${padLeft(Math.abs(box.maxY), 5)}\r`);
-  out.text(`-Y:${padLeft(Math.abs(box.minY), 5)}\r`);
+  // A .dst counts y the other way from the plan (its records are written with y turned over, below),
+  // so the plan's lowest point is the file's +Y and its highest point is the file's -Y.
+  out.text(`+Y:${padLeft(Math.abs(box.minY), 5)}\r`);
+  out.text(`-Y:${padLeft(Math.abs(box.maxY), 5)}\r`);
   out.text(`AX:${last.x >= 0 ? '+' : '-'}${padLeft(Math.abs(last.x), 5)}\r`);
   out.text(`AY:${last.y >= 0 ? '+' : '-'}${padLeft(Math.abs(last.y), 5)}\r`);
   out.text(`MX:+${padLeft(0, 5)}\r`);

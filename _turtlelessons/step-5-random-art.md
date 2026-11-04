@@ -91,6 +91,8 @@ Before you save, check that:
 
 Add the sticky note: open the Notes palette, drag out a note, tap it and type. A sticky note holds about 300 letters, so keep it short.
 
+The Notes palette also has a **write** block. Leave it out of this one, so the picture comes from your loop, your random and your if and else.
+
 Then press the **PDF** button. Your blocks, your note and your drawing are all on the page. Keep your PDF. If you share this computer, press New when you are done so the next person starts fresh.
 
 ## Done early?

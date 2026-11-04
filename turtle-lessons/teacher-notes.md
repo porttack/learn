@@ -95,6 +95,14 @@ Press the PDF button in TurtleLab and attach the PDF to this assignment.
 - Cannot find the saved PDF? It is in the Downloads folder.
 - Students can ask a neighbor for a hint, then keep their own work on their own screen.
 
+## The write block
+
+TurtleLab has a **write** block (Notes palette, next to the sticky note) that draws words in a single line of script. It can draw letters for a student, so the student pages for Step 1 (initials) and Step 5 (capstone) tell students to skip it. It is not in the Pen or Turtle palettes on purpose. If you want it off the table for an assignment, add this line to the assignment text:
+
+> Do not use the write block in this assignment. The letters and the picture have to come from your own blocks.
+
+It is fine, and fun, for names on a finished picture and for the embroidery samples.
+
 ## What is in the PDF
 
 The PDF button saves a one page PDF: the blocks and sticky notes on top, laid out the way they are on the student's screen, and the drawing underneath with the turtle drawn where it stopped (so you can see which way it was facing). A picture of the drawing with the blocks inside it is attached to the PDF. Open it in TurtleLab (press Open, or drag the PDF onto the page) and the student's blocks come back, so you can run their program. A sticky note holds about 300 letters. The PDF button zooms the drawing to fit first, so a drawing that ran off the edge of the paper is all there.

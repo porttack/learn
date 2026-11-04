@@ -71,6 +71,8 @@ For each letter, write down where the turtle starts, which way it faces, and the
 
 Build one letter at a time, and tap its stack to test it before you start the next one.
 
+The Notes palette also has a **write** block that writes words for you. Skip it in this step: building each letter yourself is how you learn to give the turtle exact steps.
+
 Between letters, the turtle has to travel without drawing. You already know the four blocks for that from the L: `pen up`, `set xy`, `set heading`, `pen down`.
 
 When your initials are done, draw a square frame around them. Then count: how many blocks did the frame take? Remember that number. You will see it again in Step 2.

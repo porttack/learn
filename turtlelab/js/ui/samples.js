@@ -15,6 +15,11 @@
 // Opening a sample never saves anything and never reads what is saved (see
 // main.js), so it cannot touch a student's own work.
 
+import { zoomToFit } from '../core/view.js';
+
+// The smallest the page zooms out to (zoomToFit's own limit in core/view.js).
+const MIN_SAMPLE_ZOOM = 0.6;
+
 const b = (op, ...args) => ({ op, args });
 const rep = (count, ...body) => ({ op: 'repeat', args: [count], body });
 const ifElse = (condition, body, elseBody) => ({ op: 'ifelse', args: [condition], body, elseBody });
@@ -23,6 +28,49 @@ const minus = (a, c) => b('subtract', a, c);
 const box1 = { op: 'box1' };
 const input = (name) => ({ op: 'input', name });
 const call = (name, params, ...args) => ({ op: 'call', name, params, args });
+
+// The school's cougar paw and SLV letters, traced from the school's own picture and turned into
+// turtle numbers (the paper is 700 by 560 and the whole logo is about 370 by 450). They are shared
+// by the paw samples near the end of the list. A `place` block lifts the pen, moves, and puts it
+// down again, so every shape in the main program is two blocks: place, then draw.
+const RED = [196, 30, 45];
+const place = (x, y) => call('place', ['x', 'y'], x, y);
+const PLACE = { name: 'place', params: ['x', 'y'], body: [b('penup'), b('setxy', input('x'), input('y')), b('pendown')] };
+// A toe is a rounded shape made of four quarter circles, two small and two big, so it is longer than it is wide.
+// It first turns the turtle to face the way it is told, which is what turns the whole toe.
+const TOE = { name: 'toe', params: ['direction'], body: [b('setheading', input('direction')), rep(2, b('arc', 90, 30), b('arc', 90, 75))] };
+const PAD = {
+  name: 'pad',
+  params: [],
+  body: [b('setheading', 52), b('arc', -13, 408), b('arc', 121, 45), b('arc', -35, 123), b('arc', 104, 31), b('arc', 42, 146), b('arc', 50, 128), b('arc', 91, 31)],
+};
+/** A letter is a closed shape drawn from corner to corner. */
+const letter = (name, corners) => ({
+  name: `letter ${name}`,
+  params: [],
+  body: [b('penup'), b('setxy', ...corners[0]), b('pendown'), ...corners.slice(1).map((corner) => b('setxy', ...corner)), b('setxy', ...corners[0])],
+});
+// The S is two halves that are exactly alike (turn the page upside down and it looks the same), so
+// one half is drawn twice: a big curve out, a small curve in, and a flat cut across the end of the stroke.
+const LETTER_S = {
+  name: 'letter S',
+  params: [],
+  body: [
+    b('penup'), b('setxy', -87, 196), b('setheading', 330), b('pendown'),
+    rep(2, b('arc', -240, 50), b('arc', 240, 10), b('left', 90), b('forward', 40), b('left', 90)),
+  ],
+};
+const LETTER_L = letter('L', [[-67, 225], [10, 226], [3, 145], [58, 150], [60, 101], [-70, 100]]);
+// The V has a thin slit down the middle of its top, which is its second, third and fourth corners.
+const LETTER_V = letter('V', [[45, 226], [118, 225], [121, 160], [124, 223], [182, 221], [135, 72], [92, 91]]);
+/** The four toes and the pad, lifted `up` so the paw alone sits in the middle of the paper. */
+const pawBlocks = (up) => [
+  place(-125, -12 + up), call('toe', ['direction'], 55),
+  place(-17, -44 + up), call('toe', ['direction'], 223),
+  place(41, 66 + up), call('toe', ['direction'], 59),
+  place(118, -128 + up), call('toe', ['direction'], 241),
+  place(-97, -135 + up), call('pad', []),
+];
 
 /**
  * The samples, easiest first. Fields:
@@ -34,6 +82,11 @@ const call = (name, params, ...args) => ({ op: 'call', name, params, args });
  *   note      the sticky note (300 characters at most)
  *   program   the blocks, starting with a Start block
  *   defines   optional: blocks the sample makes, each { name, params, body }
+
+ *   clearWidth  optional: how wide the drawing is, in turtle steps (the paper is 700). Blocks you make may use the
+ *             empty sides of the paper. Without it, the whole paper is kept clear.
+ *   maxHops   optional, for a sample made for an embroidery machine: how many separate lines it may have
+ *             (the machine stops and cuts the thread between them). Without it, at most 2.
  */
 export const SAMPLES = [
   {
@@ -378,6 +431,41 @@ export const SAMPLES = [
       b('arc', 360, 15),
     ],
   },
+  // The school's mascot, for the embroidery machine. One red thread, several separate shapes.
+  {
+    id: 'stitch-paw',
+    title: 'A cougar paw to stitch',
+    summary: 'Four toes and a pad. One toe block is used four times.',
+    look: 'A red outline of a cougar paw print: four toes above a large pad',
+    concepts: ['blocks you make', 'arc', 'for an embroidery machine'],
+    note: 'Every toe is the same toe block, turned and moved. The pad is seven curves. Each shape is a separate line, so the machine stops and cuts the thread between them. Right-click Save and choose PES or DST.',
+    clearWidth: 370,
+    maxHops: 5,
+    defines: [PLACE, TOE, PAD],
+    program: [b('start'), b('clean'), b('setcolor', ...RED), b('setpensize', 3), ...pawBlocks(78)],
+  },
+  {
+    id: 'stitch-paw-slv',
+    title: 'The SLV cougar to stitch',
+    summary: 'The paw with SLV above it, in one red thread.',
+    look: 'A red outline of a cougar paw print with the letters SLV above it',
+    concepts: ['blocks you make', 'for an embroidery machine'],
+    note: 'The paw is the paw sample, and each letter is a block made of straight lines from corner to corner. One red thread stitches all of it. Right-click Save and choose PES or DST.',
+    clearWidth: 380,
+    maxHops: 8,
+    defines: [PLACE, TOE, PAD, LETTER_S, LETTER_L, LETTER_V],
+    program: [b('start'), b('clean'), b('setcolor', ...RED), b('setpensize', 3), ...pawBlocks(0), call('letter S', []), call('letter L', []), call('letter V', [])],
+  },
+  {
+    id: 'stitch-cougars',
+    title: 'Cougars in script to stitch',
+    summary: 'The write block draws script letters with the pen, so a word becomes a line a machine can stitch.',
+    look: 'The word Cougars written in red cursive script as one thin line',
+    concepts: ['write', 'for an embroidery machine'],
+    note: 'The write block draws script letters with the pen, in its color and thickness. Pen up first so the turtle does not draw a line to the start. Change the words, the size or the color. Right-click Save and choose PES or DST.',
+    maxHops: 7,
+    program: [b('start'), b('clean'), b('setcolor', ...RED), b('setpensize', 3), b('penup'), b('setxy', -247, -30), { op: 'write', args: [110], text: 'Cougars' }],
+  },
 ];
 
 export const SAMPLE_IDS = SAMPLES.map((sample) => sample.id);
@@ -404,34 +492,110 @@ export function noteHeight(text) {
 }
 
 const SIDE = 24; // room left at the right edge of the page
+const COLUMN_GAP = 24; // between two columns of blocks you make
+const PAPER_WIDTH = 700; // turtle steps across the paper (core/turtle.js), in the middle of the page
+const PAPER_HEIGHT = 560;
 
 /**
  * The stacks for a sample, in this order: its note, its program, then any blocks
  * it makes. Without blocks of its own, the note and the program go down the left
- * edge. With them, those go down the left edge and the note and program move to
- * the right edge, so the middle of the page, where the drawing is, stays clear.
+ * edge. With them, the page is used like this, so the drawing in the middle stays clear:
+ *   - the program goes down the right edge (the note above it, or beside it if there is no room),
+ *   - the blocks it makes go down the left edge, in as many columns as it takes so none runs off
+ *     the bottom, and when the room left of the paper is used up, the next columns go in the room
+ *     right of the paper, next to the program.
+ *
+ * The page zooms out (never below 0.6) until the tallest column fits, keeping its top left corner
+ * where it is, so everything is placed in two steps: work out the zoom, then place each column
+ * where it will be seen once zoomed.
  *
  * In the app, `measure` gives the real sizes (block-view.js has them) and the
- * width of the page: { noteHeight(text), stackSize(stack) -> { width, height },
- * stageWidth }. The defaults are estimates that work without a page, for tests.
+ * size of the page: { noteHeight(text), stackSize(stack) -> { width, height },
+ * stageWidth, stageHeight }. The defaults are estimates that work without a page, for tests.
  */
 export function sampleStacks(sample, measure = {}) {
   const noteHigh = (measure.noteHeight ?? noteHeight)(sample.note);
   const sizeOf = measure.stackSize ?? (() => ({ width: 300, height: 320 }));
   const stageWidth = measure.stageWidth ?? 1366;
-
-  let y = TOP;
-  const made = (sample.defines ?? []).map((definition) => {
-    const stack = { x: LEFT, y, blocks: [{ op: 'to', name: definition.name, params: [...definition.params] }, ...structuredClone(definition.body)] };
-    y += sizeOf(stack).height + GAP;
-    return stack;
-  });
-
-  const program = { x: LEFT, y: TOP + noteHigh + GAP, blocks: structuredClone(sample.program) };
+  const stageHeight = measure.stageHeight ?? 613;
+  const program = { x: LEFT, y: TOP, blocks: structuredClone(sample.program) };
   const note = { x: LEFT, y: TOP, blocks: [{ op: 'note', text: sample.note }] };
-  if (made.length > 0) {
-    const widest = Math.max(NOTE_WIDTH, sizeOf(program).width);
-    note.x = program.x = Math.max(LEFT, stageWidth - widest - SIDE);
+  const programSize = sizeOf(program);
+
+  if (!sample.defines?.length) {
+    program.y = TOP + noteHigh + GAP;
+    return [note, program];
   }
-  return [note, program, ...made];
+
+  // A column of blocks may be as tall as fits at the smallest zoom (just inside the bottom of the page).
+  const tallest = (stageHeight - 4 - TOP) / MIN_SAMPLE_ZOOM;
+
+  // The note sits above the program if both fit in one column. If not, it is packed in with the blocks you make.
+  const noteBeside = noteHigh + GAP + programSize.height > tallest;
+  program.y = noteBeside ? TOP : TOP + noteHigh + GAP;
+  const items = sample.defines.map((definition) => {
+    const stack = { x: LEFT, y: TOP, blocks: [{ op: 'to', name: definition.name, params: [...definition.params] }, ...structuredClone(definition.body)] };
+    return { stack, ...sizeOf(stack) };
+  });
+  if (noteBeside) items.push({ stack: note, width: NOTE_WIDTH, height: noteHigh });
+  items.forEach((item, index) => { item.index = index; });
+
+  // Pack them into as few columns as possible: tallest first, each into the first column with room.
+  const columns = [];
+  for (const item of [...items].sort((one, two) => two.height - one.height || one.index - two.index)) {
+    let column = columns.find((candidate) => candidate.height + GAP + item.height <= tallest);
+    if (!column) {
+      column = { items: [], height: -GAP, width: 0 };
+      columns.push(column);
+    }
+    column.items.push(item);
+    column.height += GAP + item.height;
+    column.width = Math.max(column.width, item.width);
+  }
+  // Inside a column, in the order they were listed; the columns left to right by what they hold first.
+  for (const column of columns) {
+    column.items.sort((one, two) => one.index - two.index);
+    let y = TOP;
+    for (const item of column.items) {
+      item.stack.y = y;
+      y += item.height + GAP;
+    }
+  }
+  columns.sort((one, two) => one.items[0].index - two.items[0].index);
+
+  const zoom = zoomToFit({ contentBottom: Math.max(program.y + programSize.height, ...columns.map((column) => TOP + column.height)), anchorY: TOP, height: stageHeight });
+
+  // Zooming out pulls everything toward the top left corner (LEFT, TOP), so a spot that should be at
+  // screen x once zoomed has to be placed at toWork(x) before it.
+  const toWork = (screenX) => LEFT + (screenX - LEFT) / zoom;
+  const wide = (width) => (width + COLUMN_GAP) * zoom;
+  // How far from the middle of the page the drawing reaches on the screen. The paper is scaled to fit the page.
+  const scale = Math.min(stageWidth / PAPER_WIDTH, stageHeight / PAPER_HEIGHT);
+  const clearLeft = stageWidth / 2 - ((sample.clearWidth ?? PAPER_WIDTH) / 2) * scale;
+
+  // The right edge: the program (with the note above it, if it fits there).
+  let edge = stageWidth - SIDE - (noteBeside ? programSize.width : Math.max(NOTE_WIDTH, programSize.width)) * zoom;
+  program.x = toWork(edge);
+  if (!noteBeside) {
+    note.x = program.x;
+    note.y = TOP;
+  }
+  edge -= COLUMN_GAP * zoom;
+
+  // The left of the paper gets columns while they fit, the rest go right of the paper, nearest the program last.
+  let cursor = LEFT;
+  let leftColumns = 0;
+  for (const column of columns) {
+    if (leftColumns > 0 && cursor + column.width * zoom > clearLeft - 8) break;
+    for (const item of column.items) item.stack.x = toWork(cursor);
+    cursor += wide(column.width);
+    leftColumns += 1;
+  }
+  for (const column of columns.slice(leftColumns).reverse()) {
+    edge -= column.width * zoom;
+    for (const item of column.items) item.stack.x = toWork(edge);
+    edge -= COLUMN_GAP * zoom;
+  }
+  // If even that is not enough room, the columns still never overlap each other (they just cover some of the paper).
+  return [note, program, ...items.filter((item) => item.stack !== note).map((item) => item.stack)];
 }

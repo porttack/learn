@@ -68,7 +68,7 @@ function runBlocksHere(project) {
 const turnBetween = (a, b2) => Math.abs((((a - b2) % 360) + 540) % 360 - 180);
 
 /** Check that Python and the blocks agree about where the turtle ended up and how far it drew. */
-function assertSame(project, label) {
+function assertSame(project, label, { length = true } = {}) {
   const source = toPython(project);
   const python = runPython(source);
   const here = runBlocksHere(project);
@@ -76,7 +76,7 @@ function assertSame(project, label) {
   assert.ok(near(python.x, here.x), `${label}: x is ${python.x} in Python and ${here.x} in the blocks\n${source}`);
   assert.ok(near(python.y, here.y), `${label}: y is ${python.y} in Python and ${here.y} in the blocks\n${source}`);
   assert.ok(turnBetween(python.heading, here.heading) < 1e-6, `${label}: heading is ${python.heading} in Python and ${here.heading} in the blocks\n${source}`);
-  assert.ok(near(python.length, here.length, 0.005 * here.length + 1e-6), `${label}: drew ${python.length} in Python and ${here.length} in the blocks`);
+  if (length) assert.ok(near(python.length, here.length, 0.005 * here.length + 1e-6), `${label}: drew ${python.length} in Python and ${here.length} in the blocks`);
   assert.deepEqual(python.printed, here.printed.map(String), `${label}: printed`);
   // The pen too. (A program that picks colors by chance cannot be compared: its chance is not ours.)
   assert.equal(python.size, here.size, `${label}: pen size`);
@@ -292,7 +292,8 @@ test('every sample ends in the same place, having drawn as far, in Python and in
   for (const sample of SAMPLES) {
     // The wandering turtle turns by chance, and Python's chance is not ours. It is only checked to be valid.
     if (sample.id === 'wandering-turtle') continue;
-    assertSame(projectOf(...sampleStacks(sample)), sample.id);
+    // A write block draws letters that Python's turtle has no way to draw (see the test for it), so only where it ends is compared.
+    assertSame(projectOf(...sampleStacks(sample)), sample.id, { length: !sample.concepts.includes('write') });
   }
 });
 
@@ -430,4 +431,16 @@ print(json.dumps({"missing": [n for n in names if not hasattr(turtle, n)]}))
   const outcome = JSON.parse(result.stdout);
   if (outcome.skipped) return; // this Python has no turtle module (no tkinter)
   assert.deepEqual(outcome.missing, [], 'every turtle name the program uses is in real Python\'s turtle too');
+});
+
+test('a write block is left as a comment and a pass: Python\'s turtle cannot draw TurtleLab\'s script letters', needsPython, () => {
+  const write = { op: 'write', args: [60], text: 'Hi there' };
+  const lines = mainLines(projectOf(program(b('clean'), rep(2, write, b('forward', 10)))));
+  assert.deepEqual(lines.slice(1), ['for _ in range(2):', '    # write "Hi there": TurtleLab draws script letters that Python\'s turtle has no way to draw', '    pass', '    forward(10)']);
+  // On its own in a loop it still makes a valid body, and the program still ends in the same place.
+  const alone = projectOf(program(b('clean'), rep(3, write)));
+  assert.doesNotThrow(() => runPython(toPython(alone), 'check'));
+  assertSame(projectOf(program(b('clean'), write, b('forward', 40), write, b('right', 30))), 'a write block', { length: false });
+  // Nothing about it needs a name EduBlocks does not have.
+  assert.ok(!toPython(alone).includes('write('), 'no call to a write function');
 });

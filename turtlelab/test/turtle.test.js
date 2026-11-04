@@ -317,3 +317,59 @@ test('colors: clamping, css and hex forms', () => {
   assert.equal(toCss([1, 2, 3]), 'rgb(1, 2, 3)');
   assert.equal(toHex([255, 0, 16]), '#ff0010');
 });
+
+// ---- write: words with the pen ----------------------------------------------------------------------
+
+test('write draws lines in the pen color and thickness, and leaves the turtle where it was', () => {
+  const t = new Turtle();
+  t.setColor(10, 20, 30);
+  t.setPenSize(7);
+  t.setXY(-50, 25);
+  t.setHeading(33);
+  const before = [t.x, t.y, t.heading];
+  const opsBefore = t.ops.length;
+  t.write('Cougars', 80);
+  assert.deepEqual([t.x, t.y, t.heading], before, 'the turtle did not move or turn');
+  const drawn = t.ops.slice(opsBefore);
+  assert.ok(drawn.length > 100, `${drawn.length} lines`);
+  for (const op of drawn) {
+    assert.equal(op.type, 'line');
+    assert.deepEqual(op.color, [10, 20, 30]);
+    assert.equal(op.size, 7);
+  }
+  // The words start at the turtle and run to the right, whichever way it faces, and up from the line.
+  const xs = drawn.flatMap((op) => [op.x1, op.x2]);
+  const ys = drawn.flatMap((op) => [op.y1, op.y2]);
+  assert.ok(Math.min(...xs) >= -50 - 4 && Math.max(...xs) > -50 + 300, 'runs to the right');
+  assert.ok(Math.max(...ys) <= 25 + 80 + 1e-9 && Math.max(...ys) > 25 + 70, 'a capital letter is as tall as the size');
+});
+
+test('write does not care whether the pen is up, and a size of nothing writes nothing', () => {
+  const t = new Turtle();
+  t.setPenUp();
+  t.write('Hi', 40);
+  assert.ok(t.ops.length > 5, 'pen up still writes');
+  const count = t.ops.length;
+  for (const size of [0, -5, NaN]) t.write('Hi', size);
+  t.write('', 40);
+  t.write('é€', 40);
+  assert.equal(t.ops.length, count);
+});
+
+test('write keeps the size between 1 and 600, and does not disturb a fill that is being collected', () => {
+  const tiny = new Turtle();
+  tiny.write('H', 0.001);
+  const huge = new Turtle();
+  huge.write('H', 1e9);
+  const height = (t) => Math.max(...t.ops.flatMap((op) => [op.y1, op.y2]));
+  assert.ok(Math.abs(height(tiny) - 1) < 1e-9 && Math.abs(height(huge) - 600) < 1e-9);
+  const t = new Turtle();
+  t.startFill();
+  t.forward(10);
+  t.write('Hi', 30);
+  t.right(90);
+  t.forward(10);
+  t.endFill();
+  const fill = t.ops.find((op) => op.type === 'fill');
+  assert.equal(fill.segments.length, 2, 'only the two walks are in the fill, not the letters');
+});

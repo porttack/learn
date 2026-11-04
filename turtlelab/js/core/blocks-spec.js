@@ -41,6 +41,8 @@
 //            and `elseBody` (see BODY_KEYS).
 //   mouthLabels  for a clamp with a yes-or-no socket: the little word beside
 //            each mouth ('' for none), like the 'else' of if else.
+//   textSlot for a command that has words typed on it, like write: { hint } is what its empty
+//            box says. The words are kept in the block's `text` (see project.js), apart from its sockets.
 //   help     the one-line tip shown when you press and hold the block
 
 export const PALETTES = [
@@ -507,6 +509,19 @@ BLOCKS.note = {
   label: 'note',
   args: [],
   help: 'A sticky note. Tap it to write what your program does. Notes never change how your program runs.',
+};
+
+// ---- Writing ------------------------------------------------------------
+// The one block with words typed on it, apart from a sticky note. It lives with the notes: it is
+// not a way to draw, it is words on a drawing (and a student learning to draw letters with the
+// turtle, as in the lessons, should not reach for it).
+BLOCKS.write = {
+  palette: 'notes',
+  kind: 'command',
+  label: 'write',
+  args: [{ label: 'size', default: 60 }],
+  textSlot: { hint: 'words' },
+  help: 'Writes words in script with the pen: its color and thickness, left to right, starting where the turtle is. Tap the words to change them. Size is how tall a capital letter is. The turtle does not move.',
 };
 
 /** True if `op` names a real block. */

@@ -105,9 +105,23 @@ try {
   check('and every block is inside the window', blocksIn);
 
   await click('#fit');
-  await chrome.sleep(200);
-  const again = await redBox();
-  check('pressing Fit again changes nothing', JSON.stringify(again) === JSON.stringify(fitted), JSON.stringify(again));
+  await chrome.sleep(300);
+  check('pressing Fit a second time goes back to the normal paper, exactly as it was before the first press', (await paperData()) === first);
+  check('and says so', /Back to the normal paper/.test(await message()), await message());
+  await click('#fit');
+  await chrome.sleep(300);
+  const third = await redBox();
+  check('a third press fits again, the same as the first time', JSON.stringify(third) === JSON.stringify(fitted), JSON.stringify(third));
+  // The PDF button always wants the fitted picture, so on a paper that is already fitted it must NOT go back.
+  const pdfsBefore = readdirSync(downloads).filter((f) => f.endsWith('.pdf')).length;
+  await click('#save-pdf');
+  let pdfDone = false;
+  for (let i = 0; i < 60 && !pdfDone; i += 1) {
+    await chrome.sleep(150);
+    pdfDone = readdirSync(downloads).filter((f) => f.endsWith('.pdf')).length > pdfsBefore;
+  }
+  const stillFitted = await redBox();
+  check('the PDF button on an already fitted paper keeps it fitted (it never toggles back)', pdfDone && JSON.stringify(stillFitted) === JSON.stringify(fitted), JSON.stringify(stillFitted));
 
   await click('#view-home');
   await chrome.sleep(300);
@@ -144,10 +158,13 @@ try {
     await click('#fit');
     await chrome.sleep(200);
     const twice = await paperData();
+    await click('#fit');
+    await chrome.sleep(250);
+    const thrice = await paperData();
     await click('#view-home');
     await chrome.sleep(250);
-    check(`the ${demo} example: Fit and then the house button give back exactly the same picture, and Fit twice is the same as once`,
-      (await paperData()) === was && twice === fittedData && was.length > 5000);
+    check(`the ${demo} example: Fit, then Fit again, gives back exactly the first picture; a third press fits exactly as before; the house button also gives back the first`,
+      (await paperData()) === was && twice === was && thrice === fittedData && fittedData !== was && was.length > 5000);
   }
 
   // ---- Nothing drawn --------------------------------------------------------------------------------

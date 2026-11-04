@@ -279,3 +279,17 @@ test('newBlock still makes the fixed blocks, and refuses the ones that need a na
   assert.throws(() => newBlock('call'), /made from a definition/);
   assert.throws(() => newBlock('input'), /made from a definition/);
 });
+
+test('a write block comes out of the palette with some words and a size, and snaps like any command', () => {
+  const block = newBlock('write');
+  assert.deepEqual(block, { op: 'write', args: [60], text: 'Hello' });
+  const stack = { x: 0, y: 0, blocks: [newBlock('clean')] };
+  const carried = { x: 0, y: 0, blocks: [block] };
+  const project = projectWith(stack, carried);
+  attachAfter(project, carried, stack.blocks, 0);
+  assert.deepEqual(ops(stack.blocks), ['clean', 'write']);
+  // The words are copied with the block, and a copy is its own.
+  const copy = cloneBlock(block);
+  copy.text = 'Cougars';
+  assert.equal(block.text, 'Hello');
+});

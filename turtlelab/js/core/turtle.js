@@ -14,6 +14,8 @@
 
 import { makeColor } from './color.js';
 
+import { letteringStrokes, MIN_LETTER_SIZE, MAX_LETTER_SIZE } from './lettering.js';
+
 export const PAPER_W = 700;
 export const PAPER_H = 560;
 
@@ -283,6 +285,29 @@ export class Turtle {
     this.fillColor = null;
     if (!segments || segments.length === 0) return;
     this.record({ type: 'fill', color, segments });
+  }
+
+  /**
+   * Write words with the pen's color and thickness, left to right, with the start of the line (its
+   * baseline) where the turtle is. `size` is how tall a capital letter is, in steps. Which way the
+   * turtle faces does not matter, the turtle does not move, and neither does the pen being up: this is
+   * the turtle writing, not walking. Letters that cannot be drawn are skipped.
+   */
+  write(text, size) {
+    if (!(size > 0)) return;
+    const strokes = letteringStrokes(text, Math.min(MAX_LETTER_SIZE, Math.max(MIN_LETTER_SIZE, size)));
+    for (const stroke of strokes) {
+      for (let i = 1; i < stroke.length; i += 1) {
+        const [x1, y1] = stroke[i - 1];
+        const [x2, y2] = stroke[i];
+        this.record({
+          type: 'line',
+          x1: this.x + x1, y1: this.y + y1, x2: this.x + x2, y2: this.y + y2,
+          color: this.color.slice(),
+          size: this.penSize,
+        });
+      }
+    }
   }
 
   // ---- Helpers ---------------------------------------------------------

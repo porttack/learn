@@ -33,6 +33,15 @@ export function isDefaultView(view) {
 }
 
 /**
+ * Do two views show the paper the same way, near enough that nobody could see a difference?
+ * (Within a fifth of a percent of zoom, and half a pixel of slide.) A press of Fit that lands on
+ * the view you are already looking at is the one that should take you back.
+ */
+export function sameView(a, b) {
+  return Math.abs(a.zoom / b.zoom - 1) < 0.002 && Math.abs(a.cx - b.cx) * a.zoom < 0.5 && Math.abs(a.cy - b.cy) * a.zoom < 0.5;
+}
+
+/**
  * The ops that can still be seen: a clear or a fill screen covers everything before it,
  * so only the last one and what follows count. `covers` says whether there was one (a
  * picture that was opened from a file is covered too, then).

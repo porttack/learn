@@ -47,6 +47,22 @@ The Apache License 2.0 can be combined with this project's AGPL-3.0-or-later.
 (by `dev/make-font-data.mjs`, with nothing changed) so the PDF can draw blocks with
 the right font without fetching anything. The same license applies.
 
+## The Hershey fonts
+
+The script letters the **write** block draws (`js/core/lettering-data.js`, made by `dev/make-lettering-data.py`)
+are the Hershey Script Simplex font. The Hershey fonts are in the public domain, on these terms: the
+following acknowledgments must come with the font data, and the data must not be put in the format that
+the U.S. NTIS distributes (it is not: it is a short list of numbers for each letter).
+
+- The Hershey Fonts were originally created by Dr. A. V. Hershey while working at the U. S. National Bureau
+  of Standards.
+- The format of the font data in the distribution this was made from was originally created by James Hurt,
+  Cognition, Inc., 900 Technology Park Drive, Billerica, MA 01821.
+
+The data came from the `Hershey-Fonts` package on PyPI (MIT licence), which carries the original fonts. That
+package is used once, by the dev script, to write the data file. It is not part of TurtleLab and is not needed
+to run it. Only the numbers for the 95 printable characters of one font were kept.
+
 ## GNU Affero General Public License
 
 `COPYING` is the text of the GNU AGPL version 3 as published by the Free

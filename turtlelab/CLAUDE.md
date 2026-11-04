@@ -87,6 +87,7 @@ the dashes out of them too for consistency.
       svg-export.js   the drawing as SVG: a picture, or hairlines for a cutter
       stitch-plan.js  a drawing as stitches for an embroidery machine (running stitch, one thread a color)
       embroidery.js   writes .dst (Tajima) and .pes (Brother) files; the Brother thread palette
+      lettering.js    the write block's words as lines (single-stroke script); lettering-data.js is GENERATED
       png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
       project-file.js put a project inside a PNG, and read a PNG or .json back
     js/ui/            the browser side
@@ -114,7 +115,7 @@ the dashes out of them too for consistency.
 
 ## Samples
 
-`js/ui/samples.js` holds the student samples (19 now, easiest first, then three for an embroidery machine), each
+`js/ui/samples.js` holds the student samples (22 now, easiest first, then six for an embroidery machine), each
 with `id`, `title`, `summary`, `look` (the picture's alt text), `concepts`
 (little tags), `note` (a sticky note, at most 250 characters so it is not cut
 off), `program` and optionally `defines` (blocks the sample makes). They are different from `demos.js`, which is for the
@@ -151,6 +152,27 @@ checks. All wording is student-facing, so no dashes and no grade level.
   this folder because it is CC content), and "TurtleLab Lessons" is in the site menu (all five pages'
   copies, kept in step by a test). The toolbar is full: below 1100 px wide its gaps are squeezed in
   `app.css` so it stays on one row down to 1000 px (`sample-checks.mjs` checks 1366, 1100, 1000).
+
+### The school's logo samples and the layout of blocks around the paper
+
+`stitch-paw`, `stitch-paw-slv` and `stitch-cougars` are for the school's embroidery machine (the mascot is the
+cougar). The paw and SLV were **traced from the school's own picture** (a 360 by 223 PNG kept in `attic/`,
+which is gitignored and never committed; if it is lost the numbers in `samples.js` still draw the logo). The tracing was done once, with scratch scripts:
+the picture's red shapes were separated, each outline was fitted by a closed chain of turtle `arc`s (pure
+"angle, radius" numbers, so a toe is four quarter circles `arc 90 30, arc 90 75` twice, drawn by one `toe` block four
+times), and the S is two identical halves (`repeat 2 [arc -240 50, arc 240 10, left 90, forward 40, left 90]`).
+The L and V are plain polygons of `set xy`. It is close, not perfect, on purpose: stitched thread is not perfect either.
+`stitch-cougars` is one `write` block (see "The write block"). A sample may say `maxHops` (how many separate
+lines the machine stitches; the default is 2), and `clearWidth` (how wide its drawing is, in steps).
+
+`sampleStacks` puts a sample's blocks around the paper so the drawing stays clear. With blocks of its own: the
+program goes down the right edge (the note above it, or, if both would not fit, packed in with the definitions);
+the definitions are **packed into the fewest columns** (tallest first into the first column with room, never
+taller than fits at the smallest zoom, 0.6); the columns fill the room left of the drawing first, then the room
+right of it. Everything is placed for where it ends up AFTER the page zooms out (it keeps the top left corner
+still and pulls the rest toward it), not where it starts. Measured from the real page, so `stageHeight` is the
+workspace height (534 on a 1366 by 700 window, with the message bar below it). `test/samples.test.js` and
+`dev/sample-checks.mjs` check it (everything fits at 1366 by 700, nothing overlaps, no column is too tall).
 
 ## Blocks you make yourself (functions)
 
@@ -307,6 +329,8 @@ is about to clean anyway).
   as the whole paper only if something was drawn on it), keeps the turtle in it, and zooms IN or OUT to fill
   the paper less a 40 unit margin (zoom 0.001 to 10). It also calls `workspace.fitBlocks` (never zooms in
   past 1, not out past 0.4, top left of the blocks at the top left of the room right of the palettes).
+  **Pressed again with the paper already fitted, Fit goes back to the default view** (`sameView` in `core/fit.js`: within a fifth of a
+  percent and half a pixel; the blocks are fitted again, harmlessly); the PDF button calls `fit({ toggle: false })`, so it never toggles back.
   The PDF button does the same first, so the whole drawing is in the PDF. **A Run starts from the default view,**
   and so do New and Open; the house button goes back too. The sprite and the turtle drag go through the view.
   The zoom is not saved in a picture (a saved picture is what you saw).
@@ -343,7 +367,10 @@ the two files. The tests:
   `EMBROIDERY_PYTHON=DIR/bin/python3 node --test turtlelab/test/embroidery.test.js` (and the same variable for
   `dev/export-checks.mjs`). Always run them after touching `embroidery.js`.
 - A `.dst` record holds a move of at most 121 (12.1 mm) in each direction (`dstRecord`; every move is
-  checked to read back). Longer moves are split into equal pieces rounded like pyembroidery's (half to even,
+  checked to read back). Longer moves are split the way pyembroidery does (the even share is ADDED ON from the move's absolute start, in floats, and each piece is
+  what reaches it from the last record, rounded half to even: doing it by multiplication differs by one tenth mm now and then, which the
+  SLV logo found), and the header's +Y is the plan's lowest point and -Y its highest (the file counts y the other way; symmetric designs hid
+  a swap until one was an odd number of tenths tall). Pieces are rounded like pyembroidery's (half to even,
   each piece rounded from what is still needed). A trim is three tiny jumps; a trim beside a color change is
   dropped (the machine cuts at a color change anyway).
 - `.pes` is version 1 with the shape blocks (`CEmbOne`, `CSewSeg`) AND the machine's part (`PEC`): the
@@ -352,9 +379,31 @@ the two files. The tests:
   64 colors by the "redmean" distance, one Brother color per thread (never the same twice).
 - **Not tried on a real machine.** The school's machine takes `.pes` and `.dst`; test a new design on scrap cloth.
   The three samples for an embroidery machine (`concepts` includes "for an embroidery machine") are tested to be
-  good to stitch: lines only, at most two threads, at most two hops, 80 to 600 stitches, no stitch over 3.1 mm.
+  good to stitch: lines only, at most two threads, at most two hops (a sample of several shapes, like the paw and the script word, says its own `maxHops`), 80 to 600 stitches, no stitch over 3.1 mm.
 - Possible later work: a fill stitch for filled shapes, a size choice other than 90 mm, ordering lines to shorten
   hops. Not done.
+
+## The write block
+
+`write` draws words as lines, in a single-stroke script (Hershey Script Simplex). It is in the **Notes** palette, not
+Pen or Turtle, on purpose: the teacher worried students would use it as a shortcut for drawing letters (the lesson
+Steps 1 and 5 tell students to skip it), and the Notes palette is where words live.
+
+- **The block:** `{ op: 'write', args: [size], text }`. The words are in `block.text` (cleaned by `cleanLetteringText`: only the
+  95 printable ASCII characters, at most 40), the socket is how tall a capital letter is (default 60). Spec flag `textSlot`
+  (`{ hint }`); `newBlock('write')` starts with the words "Hello". It is the only block with words on it besides the sticky note.
+- **On screen:** `block-view.js` draws "write", a box for the words, then the size socket. The box is a `nameSlots` entry like the
+  hat's name boxes, with `editor: 'text'` (class `textslot`); `Workspace.editText` types into it; long words show shortened with `...`
+  (the block keeps all of them). The sample checks tell a definition from a write block by `.nameslot:not(.textslot)`.
+- **Drawing:** `Turtle.write(text, size)` records ordinary `line` ops (pen color and thickness), left to right starting at the turtle,
+  **whatever its heading and whether or not the pen is down**, and the turtle does not move. Because they are plain lines,
+  Fit, SVG, the PDF and the embroidery files all work with nothing extra. Letters the font lacks are skipped.
+- **Python:** the generator writes a comment and `pass` (EduBlocks' turtle has no `write`, and Python's draws a screen font, not lines). The
+  Python tests compare where the turtle ends, not how far it drew, for samples with the `write` concept.
+- **Data:** `js/core/lettering-data.js` is generated by `dev/make-lettering-data.py` from the Hershey-Fonts PyPI package
+  (public domain font; acknowledgments in the file and in NOTICE.md; the package is not used at run time).
+- **Storage:** the words are part of the project like a sticky note's, so `privacy.html`, `privacy.md` (effective Nov 4, 2026) and the
+  guide say "notes or write blocks".
 
 ## Key design decisions
 
@@ -656,6 +705,7 @@ The editor checks assert that making a PDF sends zero requests.
     node turtlelab/dev/make-sample-thumbs.mjs                  # rewrite images/samples/*.png
     node turtlelab/dev/make-samples-page.mjs                   # rewrite samples.html from samples.js
     node turtlelab/dev/make-font-data.mjs                      # rewrite js/ui/roboto-data.js (the PDF's font)
+    python3 turtlelab/dev/make-lettering-data.py               # rewrite js/core/lettering-data.js (needs pip install Hershey-Fonts)
 
 To test the site exactly as GitHub Pages will serve it, build it and point
 the checks at the `/turtlelab/` subpath:

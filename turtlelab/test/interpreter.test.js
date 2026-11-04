@@ -660,3 +660,22 @@ test('a speed block inside a block you made still reaches the scheduler', () => 
   runWithBlocks([to('slow', [], block('speed', 1))], [callTo('slow', [])], { setSpeed: (name) => asked.push(name) });
   assert.deepEqual(asked, ['slow']);
 });
+
+// ---- write ----------------------------------------------------------------------------------------
+
+test('a write block writes its own words, in the size in its socket', () => {
+  const turtle = new Turtle();
+  const context = createContext({ turtle });
+  [...runBlocks([{ op: 'clean' }, { op: 'penup' }, { op: 'setxy', args: [-100, 0] }, { op: 'write', args: [{ op: 'add', args: [20, 20] }], text: 'Hi' }], context)];
+  assert.ok(turtle.ops.filter((op) => op.type === 'line').length > 5);
+  const top = Math.max(...turtle.ops.filter((op) => op.type === 'line').flatMap((op) => [op.y1, op.y2]));
+  assert.ok(Math.abs(top - 40) < 1e-9, `the size came from the sum: ${top}`);
+  const empty = new Turtle();
+  [...runBlocks([{ op: 'write', args: [60], text: '' }, { op: 'write', args: [60] }], createContext({ turtle: empty }))];
+  assert.equal(empty.ops.length, 0, 'no words, no lines');
+});
+
+test('a write block with an empty size socket says so, like every block', () => {
+  const run = () => [...runBlocks([{ op: 'write', args: [null], text: 'Hi' }], createContext({ turtle: new Turtle() }))];
+  assert.throws(run, (error) => error instanceof RunError && error.block?.op === 'write');
+});

@@ -198,7 +198,20 @@ test('an empty plan still makes a file each format can hold', () => {
 
 // ---- Against another program ----------------------------------------------------------------------------
 
-for (const [label, make] of [['a hand made two color plan with jumps and trims', handPlan], ['a plan from a drawn circle and star', drawnPlan]]) {
+// A design that is not the same height above the middle as below it (a design TurtleLab centers can still be
+// a tenth of a millimeter out when its height is odd). The header's +Y and -Y must not be swapped.
+function lopsidedPlan() {
+  return {
+    name: 'Lopsided',
+    threads: [[196, 30, 45]],
+    commands: [
+      { cmd: 'jump', x: -40, y: -61 }, stitch(-40, -61), stitch(0, 0), stitch(40, 60), stitch(-40, -61),
+      { cmd: 'end', x: -40, y: -61 },
+    ],
+  };
+}
+
+for (const [label, make] of [['a hand made two color plan with jumps and trims', handPlan], ['a plan from a drawn circle and star', drawnPlan], ['a plan higher above the middle than below it', lopsidedPlan]]) {
   oracle_test(label, make);
 }
 
@@ -241,3 +254,16 @@ function planOfSample(sample) {
 for (const sample of SAMPLES.filter((s) => s.concepts.includes('for an embroidery machine'))) {
   oracle_test(`the ${sample.id} sample`, () => planOfSample(sample));
 }
+
+test('a long move is cut the way pyembroidery cuts it: the even share is added on from where the move starts', () => {
+  // A move of (-725, -7) starting at (-137, 17) in six pieces. Working each piece out by multiplying instead gives
+  // [-120, -2] third and [-121, -1] fourth, a tenth of a millimeter different. These are pyembroidery's pieces.
+  assert.deepEqual(splitMove(-725, -7, 121, -137, 17), [[-121, -1], [-121, -1], [-120, -1], [-121, -2], [-121, -1], [-121, -1]]);
+  // From the very start of a design the answer does not change, and a move that fits in one record stays whole.
+  assert.deepEqual(splitMove(100, -50, 121), [[100, -50]]);
+  for (const [dx, dy, x, y] of [[-725, -7, -137, 17], [1000, 333, 0, 0], [-4000, 4000, 25, -25], [121, -121, 5, 5], [122, 0, 0, 0]]) {
+    const pieces = splitMove(dx, dy, 121, x, y);
+    assert.deepEqual(pieces.reduce(([a, c], [sx, sy]) => [a + sx, c + sy], [0, 0]), [dx, dy], 'the pieces add up to the move');
+    assert.ok(pieces.every(([sx, sy]) => Math.abs(sx) <= 121 && Math.abs(sy) <= 121), 'and none is too big');
+  }
+});

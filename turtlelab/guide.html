@@ -65,7 +65,7 @@
       <tr><td>Flow</td><td>start, repeat, forever, if, if with an else, wait, speed and stop. The Flow list is long, so scroll it to see the blocks at the bottom.</td></tr>
       <tr><td>Boxes</td><td>four boxes you can store numbers in, as variables: a <em>store in</em> block and a block that gives the number back, for each box</td></tr>
       <tr><td>My Blocks</td><td>the <em>to</em> block for making blocks of your own, and the blocks you make</td></tr>
-      <tr><td>Notes</td><td>a sticky note, for explaining what your program does</td></tr>
+      <tr><td>Notes</td><td>a sticky note, for explaining what your program does, and the <em>write</em> block, which writes words on the drawing in script</td></tr>
     </table>
 
     <h2>Make your own blocks</h2>
@@ -94,7 +94,7 @@
 
     <p class="note">On a shared computer, press <strong>New</strong> when you are finished, so the next person does not start with your blocks.</p>
 
-    <p>Only your blocks, and the words on any notes you wrote, are saved inside the picture. It has no name, no date and nothing about the computer you used. Read your notes before you share a picture, because anyone who opens it can read them.</p>
+    <p>Only your blocks, and the words on any notes or write blocks you typed, are saved inside the picture. It has no name, no date and nothing about the computer you used. Read your notes before you share a picture, because anyone who opens it can read them.</p>
 
     <h2>Stitching it on an embroidery machine</h2>
 
@@ -114,7 +114,7 @@
 
     <p>Press the <strong>Python</strong> button (the three arrows, like the prompt in Python) and a small box shows your blocks written as Python. It uses the <em>turtle</em> module that comes with Python, so you can press <strong>Copy</strong>, paste it into IDLE or Thonny, and run it. It is also written to work in EduBlocks (edublocks.org). The box changes as you build, so you can watch the Python appear one block at a time.</p>
 
-    <p>Blocks you make become <em>def</em> functions, your inputs become parameters, boxes become variables, and notes become comments. The two do not match everywhere. Python's turtle counts angles from the east and turns the other way, so a few lines look different from the blocks, such as <em>setheading(90 - 30)</em>. The Python is meant for reading and learning. Press the button again to hide the box.</p>
+    <p>Blocks you make become <em>def</em> functions, your inputs become parameters, boxes become variables, and notes become comments. A write block becomes a comment too, because Python's turtle has no way to draw TurtleLab's script letters. The two do not match everywhere. Python's turtle counts angles from the east and turns the other way, so a few lines look different from the blocks, such as <em>setheading(90 - 30)</em>. The Python is meant for reading and learning. Press the button again to hide the box.</p>
 
     <h2>Things to know</h2>
 
@@ -127,6 +127,7 @@
       <li><strong>wait</strong> counts tenths of a second, so 10 is one second.</li>
       <li><strong>Stop</strong> always works, even in a forever loop.</li>
       <li><strong>Sticky notes</strong> are for explaining what you are doing, to yourself and to anyone who reads your program. Drag one out of the Notes palette and tap it to write. A note never changes how your program runs, and it does not snap to other blocks, so put it wherever it helps.</li>
+      <li><strong>write</strong> (in the Notes palette) writes words on the drawing in a single line of script, joined up like handwriting. It uses the pen's color and thickness and writes left to right, starting where the turtle is. Tap the words on the block to change them, up to 40 letters. <em>size</em> is how tall a capital letter is. The turtle does not move, and it writes even with the pen up. It is good for names and labels, and a single line is just what an embroidery machine wants. It does not turn into Python.</li>
     </ul>
 
     <h2>Handy moves</h2>
@@ -144,7 +145,7 @@
       <tr><td>Slide the blocks around</td><td>Drag empty space, or scroll</td></tr>
       <tr><td>Move or turn the turtle</td><td>Drag its shell to move it, or its head to turn it (not while a program is running)</td></tr>
       <tr><td>See your whole drawing</td><td>The eye button hides the blocks. Press it again to bring them back.</td></tr>
-      <tr><td>Zoom so everything fits</td><td>The <strong>Fit</strong> button (four corners round a square). It zooms the paper until everything the turtle drew is on it, even lines that ran off the edge, and zooms and slides the blocks until all of them are in the window. The house button goes back to how it started, and pressing Run starts again from the normal view. The PDF button does a Fit first, so the whole drawing is in the PDF.</td></tr>
+      <tr><td>Zoom so everything fits</td><td>The <strong>Fit</strong> button (four corners round a square). It zooms the paper until everything the turtle drew is on it, even lines that ran off the edge, and zooms and slides the blocks until all of them are in the window. Press <strong>Fit</strong> a second time and the paper goes back to normal. The house button also goes back to how it started, and pressing Run starts again from the normal view. The PDF button does a Fit first, so the whole drawing is in the PDF.</td></tr>
       <tr><td>Read x and y off the paper</td><td>The <strong>grid</strong> button (a square with lines) shows a grid with numbers along the axes: the same x and y you type into <em>set xy</em>. It follows the zoom, and it is never in a saved picture.</td></tr>
       <tr><td>Save a different kind of file</td><td>Right-click Save, or press and hold it</td></tr>
       <tr><td>Watch it draw slowly</td><td>Put a <em>speed</em> block (in Flow) under Start. 1 is slow, 2 is medium, 3 is fast and 4 draws it all at once. You can use it again further down to change the speed partway through.</td></tr>

@@ -45,7 +45,7 @@ const inkOnPaper = () =>
 const layout = () =>
   chrome.eval(`(() => {
     const rect = (el) => { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom }; };
-    const stacks = [...document.querySelectorAll('.workspace .stack')].map((el) => ({ ...rect(el), note: !!el.querySelector('.node.note'), definition: !!el.querySelector('.node.nameslot') }));
+    const stacks = [...document.querySelectorAll('.workspace .stack')].map((el) => ({ ...rect(el), note: !!el.querySelector('.node.note'), definition: !!el.querySelector('.node.nameslot:not(.textslot)') }));
     return { stacks, viewport: { width: innerWidth, height: innerHeight } };
   })()`);
 
@@ -61,8 +61,9 @@ try {
     check(`${sample.id}: opens with its note, its program and the blocks it makes, and runs by itself`,
       finished && stacks.length === 2 + (sample.defines?.length ?? 0) && made.length === (sample.defines?.length ?? 0) && !!note && !!program && (await inkOnPaper()) > 100,
       `${stacks.length} stacks, ${await inkOnPaper()} pixels of ink`);
-    check(`${sample.id}: the note is above the program, and everything fits on a 1366 by 700 screen`,
-      !!note && !!program && note.bottom <= program.top && note.left >= 60 && stacks.every((s) => s.bottom <= viewport.height - 4 && s.right <= viewport.width),
+    // The note is above the program, or (when the program is too tall for both) in a column of its own beside it.
+    check(`${sample.id}: the note is above the program, or beside it, and everything fits on a 1366 by 700 screen`,
+      !!note && !!program && (note.bottom <= program.top || note.right <= program.left || program.right <= note.left) && note.left >= 60 && stacks.every((s) => s.bottom <= viewport.height - 4 && s.right <= viewport.width),
       program ? `note ends ${Math.round(note.bottom)}, program ${Math.round(program.top)} to ${Math.round(program.bottom)}, lowest ${Math.round(Math.max(...stacks.map((s) => s.bottom)))} of ${viewport.height}` : 'no program');
     check(`${sample.id}: the blocks do not sit on top of each other`,
       stacks.every((a, i) => stacks.every((c, j) => i >= j || a.right <= c.left + 1 || c.right <= a.left + 1 || a.bottom <= c.top + 1 || c.bottom <= a.top + 1)));

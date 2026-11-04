@@ -322,14 +322,16 @@ const NAME_SLOT_HEIGHT = 24;
 const HAT_PAD = 15; // from the left edge to the word "to"
 const HAT_GAP = 6; // between "to" and the first box, and between boxes
 const HAT_END = 12; // after the last box
+const SLOT_SHOWS = 16; // letters of a write block's words shown in its box (it keeps them all)
 
 /**
- * One little box for a name. `hint` is shown (dashed, faint) when `text` is empty.
- * The faint box still has a fill: a box with none can only be pressed on its outline.
+ * One little box for a name (or, with `editor: 'text'`, for the words of a write block). `hint` is shown
+ * (dashed, faint) when `text` is empty. The faint box still has a fill: a box with none can only be pressed
+ * on its outline. Words too long to show are shortened with dots, but the block keeps all of them.
  */
-function layoutNameSlot(text, hint, colors) {
+function layoutNameSlot(text, hint, colors, editor = 'name') {
   const empty = text === '';
-  const shown = empty ? hint : text;
+  const shown = empty ? hint : text.length > SLOT_SHOWS ? `${text.slice(0, SLOT_SHOWS - 1)}...` : text;
   const fontSize = FONT_SIZE * SCALE;
   const width = Math.max(44, textWidth(shown) * SCALE + 14);
   const markup =
@@ -337,7 +339,7 @@ function layoutNameSlot(text, hint, colors) {
     `<rect x="1" y="1" width="${width}" height="${NAME_SLOT_HEIGHT}" rx="5" fill="#ffffff"${empty ? ' fill-opacity="0.35"' : ''} stroke="${colors.stroke}" stroke-width="1.5"${empty ? ' stroke-dasharray="4 3"' : ''}/>` +
     `<text class="block-text" font-size="${fontSize}" fill="${empty ? '#7a6a00' : '#282828'}" text-anchor="middle" x="${1 + width / 2}" y="${1 + NAME_SLOT_HEIGHT / 2 + fontSize * 0.35}">${escapeXml(shown)}</text>` +
     `</svg>`;
-  return { id: nextId++, text, empty, markup, w: width + 2, h: NAME_SLOT_HEIGHT + 2 };
+  return { id: nextId++, text, empty, editor, markup, w: width + 2, h: NAME_SLOT_HEIGHT + 2 };
 }
 
 /** Finish the layout of a `to` block: a hat with the word "to" and a box for its name and each input. */
@@ -499,11 +501,23 @@ export function layoutBlock(block) {
   // generator makes a block taller by making its first socket taller.
   if (spec.lines && spec.args.length > 0) extra.ys[0] = Math.max(extra.ys[0], (spec.lines.length - 1) * LINE_GAP);
 
-  // Pick the width from the smallest version of this shape.
-  const smallest = makeShape(spec, colors, extra).shape;
-  extra.x = widthNeeded(spec, smallest.getWidth() / SCALE);
+  // Pick the width from the smallest version of this shape. A block with words typed on it (write) is drawn
+  // here as "write", a box for the words, and then its sockets, so the label is left off the shape and
+  // the block is made wide enough for all three.
+  let shapeSpec = spec;
+  let textSlot = null;
+  if (spec.textSlot) {
+    textSlot = layoutNameSlot(block.text ?? '', spec.textSlot.hint, colors, 'text');
+    shapeSpec = { ...spec, label: '' };
+    const captionWidth = Math.max(0, ...spec.args.map((arg) => textWidth(arg.label ?? '', SMALL_FONT_SIZE))) * SCALE;
+    const wanted = HAT_PAD + textWidth(spec.label) * SCALE + HAT_GAP + textSlot.w + HAT_GAP + captionWidth + 30;
+    extra.x = Math.max(0, (wanted - makeShape(shapeSpec, colors, extra).shape.getWidth()) / SCALE);
+  } else {
+    const smallest = makeShape(spec, colors, extra).shape;
+    extra.x = widthNeeded(spec, smallest.getWidth() / SCALE);
+  }
 
-  let made = makeShape(spec, colors, extra);
+  let made = makeShape(shapeSpec, colors, extra);
 
   node.bodyPos = [];
   if (spec.kind === 'clamp') {
@@ -527,6 +541,15 @@ export function layoutBlock(block) {
 
   const { shape, markup } = made;
   node.markup = markup;
+  if (textSlot) {
+    // The generator puts a label's baseline in the middle of the block's body: line the word and the box up with that.
+    const fontSize = FONT_SIZE * SCALE;
+    const baseline = Number(markup.match(/<tspan x="-?[\d.]+" y="(-?[\d.]+)"><\/tspan>/)?.[1] ?? 14) * SCALE;
+    const wordWidth = textWidth(spec.label) * SCALE;
+    node.nameSlots = [{ slot: textSlot, dx: HAT_PAD + wordWidth + HAT_GAP, dy: baseline - fontSize * 0.35 - (NAME_SLOT_HEIGHT + 2) / 2 }];
+    const word = `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${HAT_PAD}" y="${baseline}">${escapeXml(spec.label)}</text>`;
+    node.markup = markup.replace(/<\/svg>\s*$/, `${word}</svg>`);
+  }
   node.w = shape.getWidth();
   node.h = shape.getHeight();
   node.docks = shape.docks;
@@ -640,7 +663,7 @@ export function renderStack(layout, register) {
     register(node.id, { type: 'block', node });
     (node.nameSlots ?? []).forEach((placed, index) => {
       const box = svgElement('g', {
-        class: 'node nameslot',
+        class: placed.slot.editor === 'text' ? 'node nameslot textslot' : 'node nameslot',
         transform: `translate(${placed.ax} ${placed.ay})`,
         'data-nid': placed.slot.id,
       });

@@ -248,10 +248,20 @@ try {
   // ---- When there is nothing to save ---------------------------------------------------------------------
   await chrome.goto(BASE + '?speed=instant');
   const requestsAfterLoad = chrome.requestLog.length;
-  const before = readdirSync(downloads).length;
+  // Count only finished files. A download still arriving from an earlier step, or one of Chrome's own temporary names
+  // (which come and go), would otherwise be counted as a save made now: that made this check flaky.
+  const finished = () => readdirSync(downloads).filter((f) => /^turtlelab-.*\.[a-z]+$/.test(f) && !f.endsWith('.crdownload'));
+  let settled = 0;
+  for (let i = 0; i < 40 && settled < 4; i += 1) {
+    const listing = finished().join('|');
+    await chrome.sleep(150);
+    settled = finished().join('|') === listing ? settled + 1 : 0;
+  }
+  const before = finished().length;
   for (const format of ['svg', 'svg-cut', 'pes', 'dst']) {
     await saveVia(format);
-    check(`${format} with nothing drawn says so, kindly, and saves nothing`, /There are no lines to save yet\. Press Run first/.test(await message()) && readdirSync(downloads).length === before, await message());
+    const now = finished();
+    check(`${format} with nothing drawn says so, kindly, and saves nothing`, /There are no lines to save yet\. Press Run first/.test(await message()) && now.length === before, `${await message()} (${now.length} files, was ${before}; newest: ${now.slice(-2).join(', ')})`);
   }
   await saveVia('png-plain');
   check('a picture of blank paper is still fine', /Saved turtlelab-.*\.png/.test(await message()));
