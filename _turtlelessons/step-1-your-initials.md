@@ -18,7 +18,7 @@ Open TurtleLab with this link: <a href="{{ '/turtlelab/' | relative_url }}" targ
 
 ## How the turtle thinks
 
-The turtle's paper has an x and a y, like a graph. The middle of the paper is (0, 0). **One thing to watch: y goes up.** A bigger y is higher on the page, like on a graph in math class.
+The turtle's paper has an x and a y, like a graph. The middle of the paper is (0, 0). **One thing to watch: y goes up.** A bigger y is higher on the page, like on a graph.
 
 The turtle also faces a direction, called its **heading**.
 
@@ -35,7 +35,9 @@ When the **pen is down**, moving draws a line. When the **pen is up**, the turtl
 
 ## Build an L
 
-Open a palette on the left, then drag a block out and snap the next one under it. Build this stack, top to bottom. Tap a number on a block to change it.
+The round buttons on the left open the palettes of blocks. Point at a button to see its name: Turtle, Pen, Math, Flow, Boxes, My Blocks and Notes.
+
+Open a palette, drag a block out, and snap the next one under it. Build this stack, top to bottom. Tap a number on a block to change it.
 
 | Block | Palette | Numbers |
 |---|---|---|
@@ -71,23 +73,7 @@ Build one letter at a time, and tap its stack to test it before you start the ne
 
 Between letters, the turtle has to travel without drawing. You already know the four blocks for that from the L: `pen up`, `set xy`, `set heading`, `pen down`.
 
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: CURVES**
-
-Letters like C, O, S, D, B and U have curves. Use the `arc` block (Turtle palette). It takes an angle and a radius. A positive angle curves right and a negative angle curves left. Find out what an `arc` of 180 with a radius of 50 looks like, then use arcs in your letters.
-</aside>
-
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: COLOR**
-
-Give each letter its own color. The `set color` block (Pen palette) takes red, green and blue, each from 0 to 255. Red is 255, 0, 0. Black is 0, 0, 0. White is 255, 255, 255. Mix your own.
-</aside>
-
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: A FRAME**
-
-Draw a square frame around your initials. Then count: how many blocks did the frame take? Remember that number, because Step 2 is about getting it down.
-</aside>
+When your initials are done, draw a square frame around them. Then count: how many blocks did the frame take? Remember that number. You will see it again in Step 2.
 
 ## Check yourself
 
@@ -101,4 +87,10 @@ Add a sticky note first: open the Notes palette, drag out a note, tap it and typ
 
 Then press the **PDF** button on the toolbar. It saves a one page PDF with your blocks and note on top and your drawing underneath, with the turtle drawn where it stopped.
 
-**Keep that file.** Step 2 starts from it. To get your blocks back, press Open in TurtleLab and choose the PDF, or drag the PDF onto the page.
+Keep your PDF. To get your blocks back later, press Open in TurtleLab and choose the PDF, or drag the PDF onto the page.
+
+## Done early?
+
+**Curves.** Letters like C, O, S, D, B and U have curves. Use the `arc` block (Turtle palette). It takes an angle and a radius. A positive angle curves right and a negative angle curves left. Find out what an `arc` of 180 with a radius of 50 looks like, then use arcs in your letters.
+
+**Color.** Give each letter its own color. The `set color` block (Pen palette) takes red, green and blue, each from 0 to 255. Red is 255, 0, 0. Black is 0, 0, 0. White is 255, 255, 255. Mix your own.

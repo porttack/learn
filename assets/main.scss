@@ -1935,3 +1935,44 @@ table.checkoff.light-message td {
   margin: 1em 0;
   break-inside: avoid;
 }
+
+// The capstone planning sheet (_turtlelessons/planning-sheet.md). On screen it is a plain page; in
+// print it must be exactly one US Letter page (its @page rule, with the 1.25 in left margin, is in
+// the page itself). Nothing here carries meaning in color alone: the check list uses box glyphs.
+.planning-sheet {
+  .sheet-sketch { min-height: 16em; }
+  .sheet-sentences { list-style: none; margin-left: 0; }
+  .sheet-check { list-style: none; margin-left: 0; }
+  .sheet-box { display: inline-block; width: 1.4em; font-size: 1.2em; line-height: 1; }
+  .sheet-shape { margin: 0.3em 0; }
+}
+
+@media print {
+  // The sheet's own title and footer stay small so everything fits on the one page.
+  // The page's own margins (1.25 in left, 0.5 in right) are the only margins: no extra padding on top of them.
+  .wrapper:has(.planning-sheet) {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .lesson:has(.planning-sheet) {
+    h1 { font-size: 14pt; margin: 0 0 0.06in; }
+    .lesson-label { display: none; }
+    .provenance { font-size: 6pt; margin-top: 0.05in; }
+  }
+
+  .planning-sheet {
+    font-size: 9.5pt;
+    line-height: 1.3;
+
+    p, ul { margin: 0 0 0.04in; }
+    .checkoff-fields { margin: 0 0 0.06in; }
+    .sheet-sketch { height: 4in; min-height: 0; margin: 0 0 0.06in; }
+    // Room to write on the lines: a fill-in sentence needs more height than a line of text.
+    .sheet-sentences li { margin: 0.04in 0; line-height: 1.9; }
+    .sheet-check li { margin: 0.01in 0; }
+    .sheet-note { font-size: 8.5pt; margin-top: -0.02in; }
+    .sheet-shape { font-size: 7.5pt; line-height: 1.2; margin: 0 0 0.05in; padding: 0.03in 0.1in; }
+  }
+}

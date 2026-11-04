@@ -6,9 +6,9 @@ order: 2
 source: original
 ---
 
-The frame around your initials took a lot of blocks: `forward` and `right`, four times over. Computers are very good at repeating things, so you only have to say it once.
+A square takes eight blocks the long way: `forward` and `right`, four times over. (If you did Step 1, your frame around your initials took eight blocks too.)
 
-The block for that is `repeat` (Flow palette). It runs the blocks inside it again and again.
+Computers are very good at repeating things, so you only have to say it once. The block for that is `repeat` (Flow palette). It runs the blocks inside it again and again.
 
 ## Try a sample
 
@@ -20,7 +20,7 @@ Open the <a href="{{ '/turtlelab/?sample=square' | relative_url }}" target="_bla
 A sample tab never saves anything, so a refresh puts the sample back. Press Ctrl+S to keep a copy of something you want to keep.
 </aside>
 
-Look at the blocks. The ones **inside** the `repeat` are the ones that repeat. The number on the `repeat` says how many times.
+Look at the blocks. The ones **inside** the `repeat` are the ones that repeat. The number on the `repeat` says how many times. The whole square is just one `forward` and one `right`, said once and repeated 4 times.
 
 1. Change the 4 on the `repeat` to a 3 and press Run. What shape did you get? Is it a triangle? Why not?
 2. The square's turn is 90. Find the turn that makes a triangle, a pentagon, a hexagon, an octagon and a shape with 12 sides. Change the `repeat` and the turn, then run it. If your numbers are right, the shape closes up.
@@ -38,22 +38,6 @@ Open the <a href="{{ '/turtlelab/?sample=dotted-circle' | relative_url }}" targe
 The loop draws a short dash, lifts the pen, moves a little, and turns. Before you change anything, work out: the loop runs 36 times and turns 10 each time. What is 36 × 10, and why does that number make sense?
 
 Then change it: set the loop to 72 and the turn to a number that still makes a full ring. Predict the turn first, then try it.
-
-## Take it further
-
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: SAY IT ONCE**
-
-Go back to your initials. Open the PDF you saved in Step 1 (press Open, or drag the PDF onto a fresh TurtleLab tab). Replace the blocks that draw your frame with one `repeat`. Count how many blocks you saved.
-</aside>
-
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: A BORDER YOU COULD NOT DRAW BY HAND**
-
-Use `repeat` to draw something around your initials that would be a pain to draw by hand: a ring of dots, a star, or a shape with 12 sides. The tools you need are `repeat`, `pen up`, `pen down` and `set color`.
-
-If you want a star: it is five lines, and the turns add up to 720, which is two full circles. What does each turn have to be? Work it out, then test it.
-</aside>
 
 ## See the Python
 

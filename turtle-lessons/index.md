@@ -6,9 +6,9 @@ permalink: /turtle-lessons/
 
 # TurtleLab Lessons
 
-Five steps with [TurtleLab]({{ '/turtlelab/' | relative_url }}), the block drawing tool where a turtle draws what you tell it. Each step starts from a sample you change and then take further. Step 1 is a small first project, a PDF of your initials. Step 5 is a capstone: a piece of art that uses a loop, random, and if and else.
+Five steps with [TurtleLab]({{ '/turtlelab/' | relative_url }}), the block drawing tool where a turtle draws what you tell it. Each step starts from a sample you change. You draw your initials, learn loops, use chance, and make the program decide. Then you put it all together in a capstone: a piece of art that uses a loop, random, and if and else.
 
-You need a computer with Chrome and a pencil. There is nothing to install.
+You need a computer with Chrome and a pencil. There is nothing to install. Steps 1, 4 and 5 end with a PDF of your work that you keep.
 
 ## Steps
 
@@ -22,8 +22,5 @@ You need a computer with Chrome and a pencil. There is nothing to install.
 </ol>
 
 [Print all five steps]({{ '/turtle-lessons/print/' | relative_url }}) ·
+[Print the capstone planning sheet]({{ '/turtle-lessons/planning-sheet/' | relative_url }}) ·
 [More samples to try]({{ '/turtlelab/samples.html' | relative_url }})
-
-## For teachers
-
-[For teachers]({{ '/turtle-lessons/teacher-notes/' | relative_url }}): the sequence, assignment text you can paste into your class site, and the answers.

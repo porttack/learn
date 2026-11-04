@@ -10,7 +10,7 @@ So far your programs do the same steps every time, even when chance changes the 
 
 Think of a fork in the road. A question has a yes or no answer. If the answer is yes, you take one road. If it is no, you take the other.
 
-The block for that is `if` with an `else` (Flow palette). It has a pointed slot for the question and two mouths:
+The block for that is `if` with an `else` (Flow palette). The Flow palette has two blocks that say `if`. Use the one with an `else` mouth. It has a pointed slot for the question and two mouths:
 
 - The **top mouth** runs when the answer is **yes**.
 - The **bottom mouth**, marked `else`, runs when the answer is **no**.
@@ -73,14 +73,12 @@ repeat 120
 The pointed slot needs a yes-or-no block, like `=`, `<` or `>` from the Math palette. A plain number will not fit there. Read the message under the drawing.
 </aside>
 
-## Take it further
-
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: UNFAIR COIN**
-
-Make the turtle turn right only about 1 time in 4, and left the other 3 times. The tools you need are a `random` block with different numbers, and a `<` or `=` block. Run it a few times and see if the path leans the way you expect.
-</aside>
-
 ## Save your work
 
-Press the **PDF** button to keep a copy of your blocks and your drawing.
+Your stack now has a `repeat`, a `random`, and an `if` and `else` that sets a color. Add a sticky note: open the Notes palette, drag out a note, tap it and type your name and one sentence saying what your if and else decides.
+
+Then press the **PDF** button and keep your PDF.
+
+## Done early?
+
+Make the turtle turn right only about 1 time in 4, and left the other 3 times. You need a `random` block with different numbers, and a `<` or `=` block.

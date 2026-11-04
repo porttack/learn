@@ -45,15 +45,13 @@ Make two changes to the sample, one at a time, and run it after each:
 A round block like `random` plugs into a round number slot. When you drop it on a slot, the slot grows to hold it. Drag the block back out to take it off, and a plain number comes back.
 </aside>
 
-## Take it further
+## Build confetti
 
-<aside class="callout challenge" markdown="1">
-**CHALLENGE: CONFETTI**
+This is the last practice before the capstone. Scatter 60 dots on the paper, each in a random place and a random color.
 
-Scatter 60 dots on the paper, each in a random place and a random color. Start from a fresh TurtleLab tab. The tools you need are `repeat`, `pen up`, `set xy` with a `random` block in each slot, `pen down`, `set color`, `set pen size`, and `forward`.
+Start from a fresh TurtleLab tab, because a sample tab does not save your work. The blocks you need are `repeat`, `pen up`, `set xy` with a `random` block in each slot, `pen down`, `set color`, `set pen size`, and `forward`.
 
 Two hints about the paper. It runs from -350 to 350 across and from -280 to 280 up and down. And a very short line drawn with a fat pen looks like a dot.
-</aside>
 
 When your confetti works, run it twice. Do the two runs match? Why or why not?
 

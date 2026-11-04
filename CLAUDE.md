@@ -66,13 +66,24 @@ Five steps that use TurtleLab (initials, loops, random, if/else, then a capstone
 `/turtle-lessons/`. It is a normal collection (original content, `source: original`), **not**
 inside `turtlelab/` (that folder is the AGPL app; CC lesson content stays out) and **not** named
 `turtlelab` (that would collide with the app's own `/turtlelab/` folder). Each step starts from a
-TurtleLab sample (`/turtlelab/?sample=ID`) the student changes, then a challenge aside that names
-tools and never shows the answer. Step 1 (initials) and Step 5 (capstone) each end with a PDF
-from TurtleLab's PDF button; the pages list what the capstone must include and deliberately give
-no points (the teacher writes the rubric). Nothing on the student pages mentions timing, a
-particular course or LMS, or "turn it in": `teacher-notes.md` (a `companion: true` page, with a
-hidden `?key=1` answer key) holds paste-ready assignment text. No app screenshots in these pages
+TurtleLab sample (`/turtlelab/?sample=ID`) the student changes. No app screenshots in these pages
 (its artwork is AGPL). "TurtleLab Lessons" is in the site menu and in TurtleLab's own toolbar.
+
+**Two audiences, kept apart.** The student pages (steps, planning sheet, landing page) serve a kid
+working alone and never mention a teacher, class, substitute, grading, points, timing, an LMS or
+"turn it in" (a test of the words: grep them, expect none; "initials" is the topic of Step 1).
+There are no "Challenge" boxes: extras go under a plain "Done early?" heading. Everything for
+classrooms lives only in `turtle-lessons/teacher-notes.md`: paste-ready assignment text for
+Schoology/Google Classroom (initials, practice PDF, capstone with its 10 point rubric), a
+substitute-day plan, a stuck list, and a hidden `?key=1` answer key. **That page is deliberately a
+plain page, not a collection member:** a member would show up as the pager link after Step 5
+("For teachers") on a student page. It is reachable only by its URL. PDFs: Step 1 (initials),
+Step 4 (practice), Step 5 (capstone). The capstone's one page printable is
+`_turtlelessons/planning-sheet.md` (a `companion: true` page, so it stays out of the contents and
+`/print/`); its `@page` rule (US Letter, 1.25 in left margin, 0.5 in right) is inside the page, and
+its print CSS in `main.scss` keeps it to exactly one page (check with Chrome print-to-PDF and
+`pdfinfo`, and keep a little spare height). Raw markdown does not render inside a bare HTML block
+in kramdown: the answer key's `<section>` needs `markdown="1"`.
 
 ### CS Unplugged (`_unplugged/`)
 
