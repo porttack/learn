@@ -72,6 +72,47 @@ const pawBlocks = (up) => [
   place(-97, -135 + up), call('pad', []),
 ];
 
+// The letters A, B and C for the two initials samples, drawn piece by piece (never by the write block). Each
+// letter is a block of its own that draws from wherever the turtle is, so it can be used anywhere (and by anyone's
+// initials): it starts at its bottom left corner, facing up, with the pen down. A `place` block moves the turtle
+// there without drawing. The letters are 120 tall. In every B the top part is a little smaller than the bottom part,
+// which is how you can tell which is which. The same A is in both samples.
+const INITIALS_BLUE = [30, 80, 200];
+const PLACE_FACING_UP = {
+  name: 'place',
+  params: ['x', 'y'],
+  body: [b('penup'), b('setxy', input('x'), input('y')), b('setheading', 0), b('pendown')],
+};
+const letterBlock = (name, ...body) => ({ name: `letter ${name}`, params: [], body });
+// Two slanted legs, then the bar across, found by walking back up the right leg with the pen up.
+const LETTER_A_BLOCK = letterBlock(
+  'A',
+  b('right', 25), b('forward', 132), b('right', 130), b('forward', 132),
+  b('penup'), b('back', 55), b('right', 115), b('pendown'), b('forward', 65),
+);
+// B in straight lines: up the spine, round the smaller top box and along the middle, then down and round the bigger bottom box.
+const STRAIGHT_B = letterBlock(
+  'B',
+  b('forward', 120), b('right', 90), b('forward', 51), b('right', 90), b('forward', 52), b('right', 90), b('forward', 51),
+  b('left', 90), b('forward', 68), b('left', 90), b('forward', 64), b('left', 90), b('forward', 68), b('left', 90), b('forward', 13),
+);
+// C starts at the bottom left like the others, so it hops to its bottom right end (pen up) and draws back along the bottom.
+const HOP_TO_BOTTOM_RIGHT = [b('penup'), b('right', 90), b('forward', 90), b('right', 180), b('pendown')];
+const STRAIGHT_C = letterBlock('C', ...HOP_TO_BOTTOM_RIGHT, b('forward', 90), b('right', 90), b('forward', 120), b('right', 90), b('forward', 90));
+// B with arcs: up the spine, then a top bowl (radius 26) and a bigger bottom bowl (radius 34).
+const CURVED_B = letterBlock(
+  'B',
+  b('forward', 120), b('right', 90), b('forward', 25), b('arc', 180, 26), b('forward', 25),
+  b('right', 180), b('forward', 30), b('arc', 180, 34), b('forward', 30),
+);
+const CURVED_C = letterBlock('C', ...HOP_TO_BOTTOM_RIGHT, b('forward', 30), b('arc', 180, 60), b('forward', 30));
+const initialsProgram = () => [
+  b('start'), b('clean'), b('setcolor', ...INITIALS_BLUE), b('setpensize', 6),
+  call('place', ['x', 'y'], -160, -60), call('letter A', []),
+  call('place', ['x', 'y'], -18, -60), call('letter B', []),
+  call('place', ['x', 'y'], 76, -60), call('letter C', []),
+];
+
 /**
  * The samples, easiest first. Fields:
  *   id        the name in ?sample=... (lowercase letters and dashes)
@@ -313,6 +354,28 @@ export const SAMPLES = [
       call('square', ['size'], 80),
       call('square', ['size'], 120),
     ],
+  },
+  {
+    id: 'initials-lines',
+    title: 'Initials with straight lines',
+    summary: 'The letters A, B and C built piece by piece, from straight lines.',
+    look: 'The letters A, B and C drawn in blue from straight lines',
+    concepts: ['forward and turn', 'pen up and down', 'my own block'],
+    note: 'Each letter block draws from wherever the turtle is, starting at its bottom left corner. Place moves the turtle there without drawing, so a letter can go anywhere. Look at the B: its top is a little smaller than its bottom.',
+    clearWidth: 340,
+    defines: [PLACE_FACING_UP, LETTER_A_BLOCK, STRAIGHT_B, STRAIGHT_C],
+    program: initialsProgram(),
+  },
+  {
+    id: 'initials-curves',
+    title: 'Initials with curves',
+    summary: 'The same A, with a B and a C that use the arc block.',
+    look: 'The letters A, B and C drawn in blue, with a rounded B and C',
+    concepts: ['arc', 'pen up and down', 'my own block'],
+    note: 'The A is the same, but B and C use arc. A bowl is forward, then an arc, then forward again. The top bowl of the B has a smaller radius (26) than the bottom bowl (34). Try changing a radius.',
+    clearWidth: 340,
+    defines: [PLACE_FACING_UP, LETTER_A_BLOCK, CURVED_B, CURVED_C],
+    program: initialsProgram(),
   },
   {
     id: 'calls-itself',

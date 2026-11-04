@@ -61,17 +61,28 @@ Open a palette, drag a block out, and snap the next one under it. Build this sta
 
 ## Plan your initials
 
-Sketch your initials on this grid with straight lines first. It is the same size as the turtle's paper, and the numbers are the x and y you type into `set xy`. A letter about 120 tall works well. Print this page, or copy the grid onto your own paper. TurtleLab can show the same grid over its own paper too: press the grid button on the toolbar (a square with lines in it).
+Sketch your initials on this grid with straight lines first. It is the same size as the turtle's paper, and the numbers are the x and y you type into `set xy`. A letter about 120 tall works well. Print this page, or copy the grid onto your own paper. TurtleLab can show the same grid over its own paper too: press the grid button on the toolbar (a square with lines in it). Your PDF always has it.
 
 {% include turtle-grid.html %}
 
 For each letter, write down where the turtle starts, which way it faces, and the moves, like `forward 120, left 90, forward 60`. Then you are ready to build.
 
+## See how it is done
+
+Here are the letters A, B and C drawn two ways. Open them in new tabs and read one letter at a time.
+
+- <a href="{{ '/turtlelab/?sample=initials-lines' | relative_url }}" target="_blank" rel="noopener">A, B and C with straight lines</a>
+- <a href="{{ '/turtlelab/?sample=initials-curves' | relative_url }}" target="_blank" rel="noopener">A, B and C with curves</a>, using the `arc` block
+
+Each letter has its own stack of blocks that starts with a block called `to`. A letter block draws from wherever the turtle is, so the same block could go anywhere on the page. You do not need to make blocks like that yet. They are there so each letter is easy to find and read.
+
+Look closely at the B. Its top part is a little smaller than its bottom part, so you can tell which is which. That is a choice the person who built it made. You will make choices like that for your own letters too.
+
 ## Build your initials
 
 Build one letter at a time, and tap its stack to test it before you start the next one.
 
-The Notes palette also has a **write** block that writes words for you. Skip it in this step: building each letter yourself is how you learn to give the turtle exact steps.
+**Draw every letter piece by piece.** Build each letter yourself, one line or one curve at a time, with blocks like `forward`, `left`, `right`, `set xy` and `arc`. **Do not use the `write` block** from the Notes palette in this step. It writes the letters for you, and building them yourself is the whole point of this step.
 
 Between letters, the turtle has to travel without drawing. You already know the four blocks for that from the L: `pen up`, `set xy`, `set heading`, `pen down`.
 
@@ -82,17 +93,18 @@ When your initials are done, draw a square frame around them. Then count: how ma
 - Every initial can be read by someone who has not seen your plan.
 - There are no stray lines between your letters.
 - You predicted where the L would end and which way it would face, and you checked.
+- You built every letter yourself, piece by piece, with no `write` block.
 
 ## Make your PDF
 
 Add a sticky note first: open the Notes palette, drag out a note, tap it and type your name.
 
-Then press the **PDF** button on the toolbar. It saves a one page PDF with your blocks and note on top and your drawing underneath, with the turtle drawn where it stopped.
+Then press the **PDF** button on the toolbar. It saves a PDF with your blocks and note and your drawing. The turtle is drawn where it stopped, and the drawing has a grid of x and y numbers on it, so anyone can check where each line is. If your blocks are too many to read on half a page, they get a page to themselves and the drawing is on page 2.
 
 Keep your PDF. To get your blocks back later, press Open in TurtleLab and choose the PDF, or drag the PDF onto the page.
 
 ## Done early?
 
-**Curves.** Letters like C, O, S, D, B and U have curves. Use the `arc` block (Turtle palette). It takes an angle and a radius. A positive angle curves right and a negative angle curves left. Find out what an `arc` of 180 with a radius of 50 looks like, then use arcs in your letters.
+**Curves.** Letters like C, O, S, D, B and U have curves. Use the `arc` block (Turtle palette). It takes an angle and a radius. A positive angle curves right and a negative angle curves left. Find out what an `arc` of 180 with a radius of 50 looks like, then use arcs in your letters. The curved B and C in the second sample above show one way.
 
 **Color.** Give each letter its own color. The `set color` block (Pen palette) takes red, green and blue, each from 0 to 255. Red is 255, 0, 0. Black is 0, 0, 0. White is 255, 255, 255. Mix your own.

@@ -18,7 +18,7 @@
 // main.js decides what to do with the result.
 
 import { embedProject, readProjectFile } from '../core/project-file.js';
-import { buildPdf } from '../core/pdf.js';
+import { buildPdf, chooseLayout, sizeInPoints } from '../core/pdf.js';
 import { opsToSvg } from '../core/svg-export.js';
 import { planStitches } from '../core/stitch-plan.js';
 import { encodeDst, encodePes, brotherColorsFor, PEC_PALETTE } from '../core/embroidery.js';
@@ -75,6 +75,7 @@ export async function savePicture(canvas, project) {
 export async function savePdf(canvas, project, shown = canvas) {
   const stamp = `turtlelab-${fileStamp()}`;
   const [picture, code] = await Promise.all([makePicture(canvas, project), renderCodeImage(project)]);
+  const { kind } = chooseLayout(code ? sizeInPoints(code) : null, { width: shown.width, height: shown.height });
   const pdf = await buildPdf({
     title: stamp,
     code,
@@ -82,7 +83,7 @@ export async function savePdf(canvas, project, shown = canvas) {
     attachment: { name: `${stamp}.png`, bytes: picture },
   });
   download(new Blob([pdf], { type: 'application/pdf' }), `${stamp}.pdf`);
-  return `${stamp}.pdf`;
+  return { name: `${stamp}.pdf`, kind }; // kind: where the blocks and drawing went (see chooseLayout)
 }
 
 /**

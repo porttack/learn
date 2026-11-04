@@ -173,11 +173,14 @@ test('the Guide explains making your own blocks: the to block, inputs, using its
 
 test('the Guide, and the Privacy page, explain the PDF button and the Python box', () => {
   const guide = read('guide.html');
-  assert.match(guide, /<strong>PDF<\/strong> \(the button with PDF on it\) downloads a one page PDF/);
+  assert.match(guide, /<strong>PDF<\/strong> \(the button with PDF on it\) downloads a PDF/);
+  assert.match(guide, /grid of x and y numbers on it/, 'the Guide says the PDF has the grid');
+  assert.match(guide, /on page 1 with the drawing on page 2/, 'and where a bigger program goes');
   assert.match(guide, /<h2>See your blocks as Python<\/h2>/);
   for (const word of ['turtle</em> module', 'Copy', 'IDLE or Thonny', 'def</em> functions']) assert.ok(guide.includes(word), word);
   const privacy = read('privacy.html');
   assert.match(privacy, /What does the PDF button do\?/);
+  assert.match(privacy, /always has a grid on its drawing/, 'the privacy page tells the one exception to the grid never being in a saved picture');
   assert.match(privacy, /nothing is fetched to make it/);
   assert.match(privacy, /What does the Python box do\?/);
 });

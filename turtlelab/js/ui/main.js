@@ -356,8 +356,10 @@ async function savePdfNow() {
   say('Making the PDF...');
   try {
     fitEverything(); // so the whole drawing is on the paper that goes in the PDF
-    const name = await savePdf(view.canvas, project, await view.paperWithTurtle());
-    say(`Saved ${name}. The blocks are on top and the drawing is below. Drag the PDF onto this page to open the blocks again.`);
+    const { name, kind } = await savePdf(view.canvas, project, await view.paperWithTurtle());
+    // Where things went depends on how big the program is (see chooseLayout in core/pdf.js).
+    const where = { stacked: 'The blocks are on top and the drawing is below.', side: 'The blocks are down the left and the drawing is on the right.', pages: 'The blocks are on page 1 and the drawing is on page 2.' }[kind];
+    say(`Saved ${name}. ${where} Drag the PDF onto this page to open the blocks again.`);
   } catch (error) {
     console.error(error);
     say('Sorry, the PDF could not be made. Try again.');
@@ -492,7 +494,7 @@ gridButton.addEventListener('click', () => {
   view.setGridVisible(on);
   gridButton.setAttribute('aria-pressed', String(on));
   gridButton.title = on ? 'Hide the grid' : 'Show a grid with x and y numbers';
-  say(on ? 'The grid shows x and y, the same numbers you type into set xy. Press the button again to hide it. It is never part of a saved picture.' : '');
+  say(on ? 'The grid shows x and y, the same numbers you type into set xy. Press the button again to hide it. It is never in a saved picture, but a PDF always has a grid on its drawing.' : '');
 });
 $('fit').addEventListener('click', () => {
   // Pressed again with the paper already fitted, it goes back to the normal paper.

@@ -115,7 +115,7 @@ the dashes out of them too for consistency.
 
 ## Samples
 
-`js/ui/samples.js` holds the student samples (22 now, easiest first, then six for an embroidery machine), each
+`js/ui/samples.js` holds the student samples (24 now, easiest first, then six for an embroidery machine), each
 with `id`, `title`, `summary`, `look` (the picture's alt text), `concepts`
 (little tags), `note` (a sticky note, at most 250 characters so it is not cut
 off), `program` and optionally `defines` (blocks the sample makes). They are different from `demos.js`, which is for the
@@ -152,6 +152,17 @@ checks. All wording is student-facing, so no dashes and no grade level.
   this folder because it is CC content), and "TurtleLab Lessons" is in the site menu (all five pages'
   copies, kept in step by a test). The toolbar is full: below 1100 px wide its gaps are squeezed in
   `app.css` so it stays on one row down to 1000 px (`sample-checks.mjs` checks 1366, 1100, 1000).
+
+### The initials samples (for Lesson 1)
+
+`initials-lines` and `initials-curves` draw A, B and C in blue, one without `arc` and one with, and **Step 1 of the
+lessons links both** (so keep their ids). The letters are 120 tall and drawn piece by piece, never with `write`, and each is a
+block of its own (`to letter A`) so the program stays short enough to fit the window; the same A is in both. **A letter block never
+uses `set xy`: it draws from wherever the turtle is** (starting at its bottom left corner, facing up, pen down), so it can be reused anywhere;
+the sample's `place x y` block (pen up, set xy, set heading 0, pen down) is what puts the turtle there. The C hops (pen up) to its
+bottom right end first so it can start at the bottom left like the others. In every B the top
+part is a little smaller than the bottom part (straight: boxes 51 and 64 wide; curved: bowl radius 26 and 34, the middle at y = 8),
+so a reader can tell which is which.
 
 ### The school's logo samples and the layout of blocks around the paper
 
@@ -268,9 +279,12 @@ missing, so run it where Python is.
 
 ## The PDF
 
-The PDF button makes a one page US Letter PDF of your work: **the blocks in the top
-half and the drawing, with the turtle on it, in the bottom half**, with the file name above and a line of
-help below. `core/pdf.js` writes it by hand (numbered objects, a table of where
+The PDF button makes a US Letter PDF of your work with **the blocks and the drawing (with the turtle and a grid on it)**, the file name above and a line of
+help below. **Where they go depends on the blocks** (`chooseLayout` in `core/pdf.js`, tested in `test/pdf.test.js`): the blocks are 15 points
+high when not shrunk and may not go below 8 (`READABLE_SCALE`). *Stacked* (blocks in the top half, drawing in the bottom half) if they stay readable; else *side*
+(blocks down the left at up to full height, drawing at the top right at least 300 wide, preferably 380); else *pages* (blocks fill page 1, drawing fills
+page 2). Programs are tall and thin, so half a page squeezed a dozen blocks to about 6 point writing, which is why. The first page's object numbers never
+change (catalog 1, pages 2, page 3, font 4, contents 5, info 6); a second page's come after them. The app's message says which layout was used. `core/pdf.js` writes it by hand (numbered objects, a table of where
 each starts), with no library, just as `png-chunks.js` writes PNG chunks. The two
 pictures are raw RGB squashed with `CompressionStream('deflate')` (which is exactly
 FlateDecode); text is the built-in Helvetica, so no font is embedded.
@@ -281,7 +295,9 @@ FlateDecode); text is the built-in Helvetica, so no font is embedded.
   because the bytes are plain, `project-file.js` can find the PNG inside the PDF by
   its signature (`findAttachedPng`), so **Open and drag-and-drop accept the PDF**.
   Poppler (`pdfdetach`) can pull the same PNG out, and any PNG viewer can then open it.
-- **The drawing in the PDF has the turtle on it; the PNG never does.** The teacher grades
+- **The drawing in the PDF has the turtle AND a grid on it; the PNG never has either.** The teacher grades from the PDF and asked for the grid always (not only when the
+  grid button is on): `paperWithTurtle()` calls `paintGrid(..., { strong: true })` on its copy of the paper first (stronger lines, 30 px numbers, since the
+  picture is shrunk onto a page). The paper canvas itself, the PNG, JPEG, SVG and the embedded PNG are still grid-free. **The drawing in the PDF has the turtle on it; the PNG never does.** The teacher grades
   from the PDF and wants to see which way the turtle was facing, so `CanvasView.paperWithTurtle()`
   copies the 1400x1120 paper and stamps the turtle sprite (the same SVG as on the screen,
   70 paper units wide, a bit bigger than on the screen so the nose is easy to see when
@@ -335,7 +351,7 @@ is about to clean anyway).
   and so do New and Open; the house button goes back too. The sprite and the turtle drag go through the view.
   The zoom is not saved in a picture (a saved picture is what you saw).
 - **Grid** (`#grid`): a second canvas, `.paper-grid`, above the paper and under the turtle, so it is never in a
-  PNG, JPEG or PDF. Lines at 1, 2, 5, 10... times a power of ten, never closer than 50 paper units on the
+  PNG, JPEG or SVG (the PDF paints its own copy, see "The PDF"). Lines at 1, 2, 5, 10... times a power of ten, never closer than 50 paper units on the
   screen (`core/grid.js`); axes darker; numbers along the axes, with a white halo, about 12 screen pixels
   tall. Not saved anywhere (no new storage).
 - **The toolbar is full.** Two new icon buttons pushed it to two rows at 1000 px; below 1100 px the icon

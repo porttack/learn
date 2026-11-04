@@ -256,3 +256,85 @@ test('the font that ships inside the page for the PDF is the same Roboto file th
   assert.equal(onDisk, fontModule());
   assert.match(onDisk, /Apache License 2\.0/);
 });
+
+// ---- Where the blocks and the drawing go ----------------------------------------------------------------
+
+import { chooseLayout, READABLE_SCALE, sizeInPoints } from '../js/core/pdf.js';
+
+const inside = (rect) => rect.x >= 36 - 1e-9 && rect.x + rect.width <= 612 - 36 + 1e-9 && rect.y >= 36 && rect.y + rect.height <= 792 - 36 + 1e-9;
+const overlap = (a, b) => a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
+const DRAWING = { width: 1400, height: 1120 };
+
+test('a small program keeps the old layout: blocks on the top half, drawing on the bottom half', () => {
+  const layout = chooseLayout({ width: 200, height: 250 }, DRAWING);
+  assert.equal(layout.kind, 'stacked');
+  assert.equal(layout.pages.length, 1);
+  const [{ code, drawing, divider }] = layout.pages;
+  assert.ok(code.y > 792 / 2 && drawing.y + drawing.height < 792 / 2 && divider > drawing.y + drawing.height && divider < code.y);
+  assert.deepEqual([code.width, code.height], [200, 250], 'blocks are never made bigger than they are');
+});
+
+test('with no blocks it is the old layout too, and the drawing is in the bottom half', () => {
+  const layout = chooseLayout(null, DRAWING);
+  assert.equal(layout.kind, 'stacked');
+  assert.equal(layout.pages[0].code, null);
+});
+
+test('a thin tall program (a dozen blocks) goes down the left with the drawing beside it, still one page', () => {
+  // 228 by 760 points: squeezed to the half page it would be about 6.5 point writing. Side by side it keeps 8 or more.
+  const code = { width: 228, height: 760 };
+  const layout = chooseLayout(code, DRAWING);
+  assert.equal(layout.kind, 'side');
+  const [{ code: blocks, drawing }] = layout.pages;
+  assert.ok(blocks.width / code.width >= READABLE_SCALE, `blocks at ${blocks.width / code.width}`);
+  assert.ok(Math.abs(blocks.width / code.width - blocks.height / code.height) < 1e-9, 'not squashed');
+  assert.ok(drawing.width >= 380 - 1e-9, `the drawing is ${drawing.width} wide`);
+  assert.ok(inside(blocks) && inside(drawing) && !overlap(blocks, drawing), 'both on the page, not on each other');
+  assert.ok(Math.abs(blocks.y + blocks.height - (792 - 36 - 18)) < 1e-9 && Math.abs(drawing.y + drawing.height - (792 - 36 - 18)) < 1e-9, 'both start at the top');
+});
+
+test('a wide or very long program gets page 1 to itself, and the drawing is page 2', () => {
+  for (const code of [{ width: 661, height: 883 }, { width: 1079, height: 853 }, { width: 228, height: 2400 }]) {
+    const layout = chooseLayout(code, DRAWING);
+    assert.equal(layout.kind, 'pages', JSON.stringify(code));
+    assert.equal(layout.pages.length, 2);
+    const [first, second] = layout.pages;
+    assert.ok(first.code && !first.drawing && !second.code && second.drawing);
+    assert.ok(inside(first.code) && inside(second.drawing));
+    assert.ok(second.drawing.width > 500, 'the drawing is big on its own page');
+    // Page 1 uses the whole page for the blocks, so they are bigger than the half page would have made them.
+    const stackedScale = Math.min(540 / code.width, 337 / code.height);
+    assert.ok(first.code.width / code.width > stackedScale + 1e-9);
+  }
+});
+
+test('whatever the program, the writing is as readable as the layouts can make it, and nothing is distorted', () => {
+  for (let width = 100; width <= 1200; width += 150) {
+    for (let height = 100; height <= 1500; height += 200) {
+      const layout = chooseLayout({ width, height }, DRAWING);
+      for (const page of layout.pages) {
+        for (const rect of [page.code, page.drawing].filter(Boolean)) assert.ok(inside(rect), `${width}x${height} ${layout.kind}`);
+        if (page.code && page.drawing) assert.ok(!overlap(page.code, page.drawing), `${width}x${height} ${layout.kind}`);
+        if (page.code) assert.ok(Math.abs(page.code.width / width - page.code.height / height) < 1e-9);
+      }
+      // The stacked layout is only used when it is readable; otherwise something better was found if there was one.
+      if (layout.kind === 'stacked') assert.ok(layout.pages[0].code.width / width >= READABLE_SCALE - 1e-9, `${width}x${height}`);
+    }
+  }
+});
+
+test('a PDF with the blocks on page 1 and the drawing on page 2 is a two page PDF that still opens in TurtleLab', async () => {
+  const code = { ...rainbow(661 * 2, 883 * 2), pixelsPerPoint: 2 };
+  assert.deepEqual(sizeInPoints(code), { width: 661, height: 883 });
+  const pdf = await makePdf({ code });
+  const text = latin1(pdf);
+  assert.match(text, /\/Type \/Pages \/Kids \[3 0 R 7 0 R\] \/Count 2/);
+  assert.equal([...text.matchAll(/\/Type \/Page /g)].length, 2);
+  assert.ok(text.includes('(turtlelab-2026-11-03-1409  \\(page 1 of 2\\)) Tj'));
+  assert.ok(text.includes('(turtlelab-2026-11-03-1409  \\(page 2 of 2\\)) Tj'));
+  const tableAt = Number(text.match(/startxref\n(\d+)\n%%EOF/)[1]);
+  const size = Number(text.match(/trailer\n<< \/Size (\d+)/)[1]);
+  const rows = text.slice(tableAt).split('\n').slice(2, 2 + size).map((row) => row.trim());
+  for (let id = 1; id < size; id += 1) assert.ok(text.startsWith(`${id} 0 obj\n`, Number(rows[id].slice(0, 10))), `object ${id}`);
+  assert.ok(isPdf(pdf));
+});

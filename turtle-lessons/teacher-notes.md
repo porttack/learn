@@ -39,6 +39,7 @@ Draw your initials with TurtleLab, then save a PDF.
 
 - Work through Step 1: [https://{{ site.print_host }}/turtle-lessons/step-1-your-initials/](https://{{ site.print_host }}/turtle-lessons/step-1-your-initials/)
 - Draw your initials so each letter can be read, with no stray lines between the letters.
+- Build each letter piece by piece. Do not use the write block.
 - Add a sticky note with your name.
 
 Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
@@ -105,6 +106,6 @@ It is fine, and fun, for names on a finished picture and for the embroidery samp
 
 ## What is in the PDF
 
-The PDF button saves a one page PDF: the blocks and sticky notes on top, laid out the way they are on the student's screen, and the drawing underneath with the turtle drawn where it stopped (so you can see which way it was facing). A picture of the drawing with the blocks inside it is attached to the PDF. Open it in TurtleLab (press Open, or drag the PDF onto the page) and the student's blocks come back, so you can run their program. A sticky note holds about 300 letters. The PDF button zooms the drawing to fit first, so a drawing that ran off the edge of the paper is all there.
+The PDF button saves a PDF with the blocks and sticky notes, laid out the way they are on the student's screen, and the drawing with the turtle drawn where it stopped (so you can see which way it was facing) and a grid of x and y numbers on it (so you can check where each line is). A small program has the blocks above the drawing on one page. A thin, taller program has the blocks down the left of the page with the drawing beside them. A wide or very long program has the blocks on page 1 and the drawing, bigger, on page 2. All so the writing in the blocks stays readable. A picture of the drawing with the blocks inside it is attached to the PDF. Open it in TurtleLab (press Open, or drag the PDF onto the page) and the student's blocks come back, so you can run their program. A sticky note holds about 300 letters. The PDF button zooms the drawing to fit first, so a drawing that ran off the edge of the paper is all there.
 
 Samples never read or write what a student saved. That is on purpose, so a sample can never wipe out someone's saved work.

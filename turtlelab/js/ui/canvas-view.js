@@ -32,6 +32,9 @@ export const PIXEL_RATIO = 2;
 // reader needs to see at a glance which way the nose points.
 export const PDF_TURTLE_SIZE = 70;
 
+/** How tall the grid's numbers are on the PDF's picture, in the paper canvas's own pixels (about 10 points on the page). */
+const PDF_GRID_TEXT = 30;
+
 // ---- Painting ops onto a canvas ----------------------------------------
 
 /**
@@ -289,21 +292,35 @@ export class CanvasView {
     this.drawGrid();
   }
 
-  /** Draw the grid for the current view: light lines, darker axes, and numbers along the axes. */
+  /** Draw the grid for the current view on its own canvas, above the paper (see paintGrid). */
   drawGrid() {
     if (!this.gridVisible) return;
     const ctx = this.gridCtx;
     const { width, height } = this.gridCanvas;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, height);
+    // Numbers about 12 screen pixels tall whatever the window size.
+    this.paintGrid(ctx, width, height, { size: clamp(24 / this.scale, 18, 34) });
+  }
+
+  /**
+   * Paint the grid for the current view onto a canvas of the paper's size: light lines, darker axes, and
+   * numbers along the axes. The numbers sit just beside the axes, or against the edge of the paper when an
+   * axis is off the paper. `size` is how tall the numbers are, in the canvas's own pixels. `strong` makes the
+   * lines darker and thicker, for a picture that will be shrunk onto a page (the PDF), where the thin faint
+   * lines of the screen would nearly vanish.
+   */
+  paintGrid(ctx, width, height, { size, strong = false }) {
     const { xs, ys } = gridLines(this.drawView);
     const origin = this.canvasPoint(0, 0);
+    const line = strong ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.16)';
+    const axis = strong ? 'rgba(0, 0, 0, 0.65)' : 'rgba(0, 0, 0, 0.5)';
 
     ctx.lineCap = 'butt';
     for (const x of xs) {
       const at = this.canvasPoint(x, 0).x;
-      ctx.lineWidth = x === 0 ? 3 : 1.5;
-      ctx.strokeStyle = x === 0 ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.16)';
+      ctx.lineWidth = x === 0 ? (strong ? 5 : 3) : strong ? 2.5 : 1.5;
+      ctx.strokeStyle = x === 0 ? axis : line;
       ctx.beginPath();
       ctx.moveTo(at, 0);
       ctx.lineTo(at, height);
@@ -311,17 +328,14 @@ export class CanvasView {
     }
     for (const y of ys) {
       const at = this.canvasPoint(0, y).y;
-      ctx.lineWidth = y === 0 ? 3 : 1.5;
-      ctx.strokeStyle = y === 0 ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.16)';
+      ctx.lineWidth = y === 0 ? (strong ? 5 : 3) : strong ? 2.5 : 1.5;
+      ctx.strokeStyle = y === 0 ? axis : line;
       ctx.beginPath();
       ctx.moveTo(0, at);
       ctx.lineTo(width, at);
       ctx.stroke();
     }
 
-    // Numbers: about 12 screen pixels tall whatever the window size. They sit just beside the
-    // axes, or against the edge of the paper when an axis is off the paper.
-    const size = clamp(24 / this.scale, 18, 34);
     ctx.font = `${size}px Roboto, Arial, sans-serif`;
     ctx.lineJoin = 'round';
     ctx.lineWidth = 5;
@@ -363,6 +377,9 @@ export class CanvasView {
     copy.height = this.canvas.height;
     const context = copy.getContext('2d', { willReadFrequently: true });
     context.drawImage(this.canvas, 0, 0);
+    // The grid goes on this copy always, whether or not it is showing on the screen, so whoever reads the PDF
+    // can read off x and y. (The numbers are a bit bigger than on the screen: the picture is shrunk onto a page.)
+    this.paintGrid(context, copy.width, copy.height, { size: PDF_GRID_TEXT, strong: true });
 
     const url = URL.createObjectURL(new Blob([turtleSvg()], { type: 'image/svg+xml' }));
     try {

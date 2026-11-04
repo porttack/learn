@@ -223,7 +223,7 @@ try {
     await chrome.eval(`document.querySelector('.paper-grid').hidden === false && document.getElementById('grid').getAttribute('aria-pressed') === 'true' && /Hide/.test(document.getElementById('grid').title)`));
   const gridInk = await chrome.eval(`(() => { const c = document.querySelector('canvas.paper-grid'); const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 0) n++; return n; })()`);
   check('it draws lines and numbers', gridInk > 20000, `${gridInk} pixels`);
-  check('the grid is never on the paper itself, so a saved picture or a PDF never has it', (await paperData()) === noGrid);
+  check('the grid is never on the paper itself, so a saved picture never has it (the PDF adds its own copy for its picture)', (await paperData()) === noGrid);
 
   const blueColumn = () => chrome.eval(`(() => {
     const c = document.querySelector('canvas.paper');

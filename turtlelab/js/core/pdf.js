@@ -59,6 +59,76 @@ export function fitInside(width, height, boxWidth, boxHeight, most = 1) {
 
 const num = (n) => String(Math.round(n * 100) / 100);
 
+// ---- Where things go on the page(s) ------------------------------------------------------------------
+//
+// Blocks are tall and thin, and half a page is wide and short, so a program of a dozen blocks is already
+// squeezed to a third of its size up there, and its writing is too small to read. So there are three layouts, and
+// the first one that keeps the writing readable is used:
+//   stacked  the blocks on the top half and the drawing on the bottom half (the way it always was)
+//   side     the blocks down the left, the drawing at the top of the right (a thin program gets the whole height)
+//   pages    the blocks fill page 1 and the drawing fills page 2 (a wide or very long program)
+
+/** The blocks' writing is 15 points when they are not shrunk. It may be shrunk to 8 points and no further. */
+export const READABLE_SCALE = 8 / 15;
+/** In the side by side layout the drawing wants to be at least this wide (and is happier at the first number). */
+const PREFERRED_DRAWING_WIDTH = 380;
+const LEAST_DRAWING_WIDTH = 300;
+const FULL_WIDTH = PAGE_W - 2 * MARGIN;
+const FULL_HEIGHT = TOP - BOTTOM;
+
+/**
+ * Work out the layout. `code` is the blocks' size in points ({ width, height }, or null if there are none) and
+ * `drawing` the drawing's. Returns { kind, pages } where each page has `code` and `drawing` as the exact
+ * rectangle { x, y, width, height } to put them in (or null), and `divider`, the height of a line to draw
+ * between the halves (or null). Nothing is distorted and nothing is made bigger than its own size.
+ */
+export function chooseLayout(code, drawing) {
+  const rectAt = (x, top, size) => ({ x, y: top - size.height, width: size.width, height: size.height });
+  const half = HALF_HEIGHT;
+
+  // The top and bottom halves, as they always were (also used when there are no blocks).
+  const stacked = () => {
+    const drawn = fitInside(drawing.width, drawing.height, FULL_WIDTH, half);
+    const blocks = code ? fitInside(code.width, code.height, FULL_WIDTH, half) : null;
+    return {
+      kind: 'stacked',
+      pages: [{
+        code: blocks ? rectAt(MARGIN, TOP, blocks) : null,
+        drawing: { x: MARGIN + (FULL_WIDTH - drawn.width) / 2, y: BOTTOM + (half - drawn.height) / 2, width: drawn.width, height: drawn.height },
+        divider: BOTTOM + half + GAP / 2,
+      }],
+    };
+  };
+  if (!code) return stacked();
+  const shrunk = fitInside(code.width, code.height, FULL_WIDTH, half).width / code.width;
+  if (shrunk >= READABLE_SCALE) return stacked();
+
+  // Side by side: the blocks as big as the page is tall (never past full size), but leaving the drawing its room.
+  const tallest = Math.min(1, FULL_HEIGHT / code.height);
+  for (const room of [PREFERRED_DRAWING_WIDTH, LEAST_DRAWING_WIDTH]) {
+    const scale = Math.min(tallest, (FULL_WIDTH - GAP - room) / code.width);
+    if (scale < READABLE_SCALE) continue;
+    const blocks = { width: code.width * scale, height: code.height * scale };
+    const left = MARGIN + blocks.width + GAP;
+    const drawn = fitInside(drawing.width, drawing.height, MARGIN + FULL_WIDTH - left, FULL_HEIGHT);
+    return { kind: 'side', pages: [{ code: rectAt(MARGIN, TOP, blocks), drawing: rectAt(left, TOP, drawn), divider: null }] };
+  }
+
+  // Two pages: each picture gets a whole page.
+  const blocks = fitInside(code.width, code.height, FULL_WIDTH, FULL_HEIGHT);
+  const drawn = fitInside(drawing.width, drawing.height, FULL_WIDTH, FULL_HEIGHT);
+  return {
+    kind: 'pages',
+    pages: [
+      { code: rectAt(MARGIN, TOP, blocks), drawing: null, divider: null },
+      { code: null, drawing: rectAt(MARGIN + (FULL_WIDTH - drawn.width) / 2, TOP, drawn), divider: null },
+    ],
+  };
+}
+
+/** The size in points of a picture that may have been drawn sharper than it is shown. */
+export const sizeInPoints = (picture) => ({ width: picture.width / (picture.pixelsPerPoint ?? 1), height: picture.height / (picture.pixelsPerPoint ?? 1) });
+
 /**
  * Make the PDF. Returns its bytes.
  *
@@ -72,16 +142,18 @@ const num = (n) => String(Math.round(n * 100) / 100);
  * @param {Date} [options.date]
  */
 export async function buildPdf({ title, code, drawing, attachment, date = new Date() }) {
-  // The two halves of the page.
-  const half = HALF_HEIGHT;
-  const bottom = BOTTOM;
-  const gap = GAP;
-  const codeBox = { x: MARGIN, y: TOP - half, width: HALF_PAGE.width, height: half };
-  const drawingBox = { x: MARGIN, y: BOTTOM, width: HALF_PAGE.width, height: half };
+  const layout = chooseLayout(code ? sizeInPoints(code) : null, { width: drawing.width, height: drawing.height });
 
-  // Objects are numbered from 1. Pictures and the attached file are added only if there.
+  // Objects are numbered from 1. The first page's numbers are always the same; a second page, the pictures and
+  // the attached file are added after them, only if there.
   const ids = { catalog: 1, pages: 2, page: 3, font: 4, contents: 5, info: 6 };
   let next = 7;
+  const pageIds = layout.pages.map((_, i) => {
+    if (i === 0) return { page: ids.page, contents: ids.contents };
+    const made = { page: next, contents: next + 1 };
+    next += 2;
+    return made;
+  });
   const pictures = [];
   const addPicture = (name, picture) => {
     const id = next;
@@ -89,32 +161,31 @@ export async function buildPdf({ title, code, drawing, attachment, date = new Da
     pictures.push({ id, name, picture });
     return id;
   };
-  const codeId = code ? addPicture('Code', code) : null;
-  const drawingId = addPicture('Drawing', drawing);
+  if (code) addPicture('Code', code);
+  addPicture('Drawing', drawing);
   const filespecId = next;
   const embeddedId = next + 1;
 
-  // What is drawn on the page.
-  const ops = [];
-  const place = (id, name, picture, box, { fromTop = false, most = 1, pixelsPerPoint = 1 } = {}) => {
-    const size = fitInside(picture.width / pixelsPerPoint, picture.height / pixelsPerPoint, box.width, box.height, most);
-    const x = fromTop ? box.x : box.x + (box.width - size.width) / 2;
-    const y = fromTop ? box.y + box.height - size.height : box.y + (box.height - size.height) / 2;
-    ops.push(`q ${num(size.width)} 0 0 ${num(size.height)} ${num(x)} ${num(y)} cm /${name} Do Q`);
-    return { x, y, ...size };
-  };
-  const text = (x, y, size, gray, words) => ops.push(`BT /F1 ${size} Tf ${gray} g ${num(x)} ${num(y)} Td ${pdfString(words)} Tj ET`);
-
-  text(MARGIN, PAGE_H - MARGIN - 9, 10, 0.15, title);
-  if (code) {
-    place(codeId, 'Code', code, codeBox, { fromTop: true, pixelsPerPoint: code.pixelsPerPoint ?? 1 });
-  } else {
-    text(MARGIN, codeBox.y + codeBox.height - 16, 11, 0.5, 'There are no blocks on the page.');
-  }
-  ops.push(`0.8 G 0.75 w ${num(MARGIN)} ${num(bottom + half + gap / 2)} m ${num(PAGE_W - MARGIN)} ${num(bottom + half + gap / 2)} l S`);
-  const drawn = place(drawingId, 'Drawing', drawing, drawingBox);
-  ops.push(`0.75 G 0.75 w ${num(drawn.x)} ${num(drawn.y)} ${num(drawn.width)} ${num(drawn.height)} re S`);
-  text(MARGIN, MARGIN - 4, 7, 0.45, 'The PNG attached to this PDF has the blocks inside it. Drag this PDF onto TurtleLab to open them again.');
+  // What is drawn on each page.
+  const text = (ops, x, y, size, gray, words) => ops.push(`BT /F1 ${size} Tf ${gray} g ${num(x)} ${num(y)} Td ${pdfString(words)} Tj ET`);
+  const picture = (ops, name, rect) => ops.push(`q ${num(rect.width)} 0 0 ${num(rect.height)} ${num(rect.x)} ${num(rect.y)} cm /${name} Do Q`);
+  const pageOps = layout.pages.map((page, index) => {
+    const ops = [];
+    const many = layout.pages.length > 1;
+    text(ops, MARGIN, PAGE_H - MARGIN - 9, 10, 0.15, many ? `${title}  (page ${index + 1} of ${layout.pages.length})` : title);
+    if (page.code) {
+      picture(ops, 'Code', page.code);
+    } else if (!code) {
+      text(ops, MARGIN, TOP - 16, 11, 0.5, 'There are no blocks on the page.');
+    }
+    if (page.divider !== null) ops.push(`0.8 G 0.75 w ${num(MARGIN)} ${num(page.divider)} m ${num(PAGE_W - MARGIN)} ${num(page.divider)} l S`);
+    if (page.drawing) {
+      picture(ops, 'Drawing', page.drawing);
+      ops.push(`0.75 G 0.75 w ${num(page.drawing.x)} ${num(page.drawing.y)} ${num(page.drawing.width)} ${num(page.drawing.height)} re S`);
+    }
+    text(ops, MARGIN, MARGIN - 4, 7, 0.45, 'The PNG attached to this PDF has the blocks inside it. Drag this PDF onto TurtleLab to open them again.');
+    return ops;
+  });
 
   // Writing the file: each piece is added and the position it starts at is remembered.
   const parts = [];
@@ -140,15 +211,17 @@ export async function buildPdf({ title, code, drawing, attachment, date = new Da
   write(Uint8Array.of(0x25, 0xe2, 0xe3, 0xcf, 0xd3, 0x0a)); // a comment of high bytes: it says "this file is not plain text"
   const attachmentName = pdfString(attachment.name);
   object(ids.catalog, `<< /Type /Catalog /Pages ${ids.pages} 0 R /Names << /EmbeddedFiles << /Names [${attachmentName} ${filespecId} 0 R] >> >> >>`);
-  object(ids.pages, `<< /Type /Pages /Kids [${ids.page} 0 R] /Count 1 >>`);
+  object(ids.pages, `<< /Type /Pages /Kids [${pageIds.map((p) => `${p.page} 0 R`).join(' ')}] /Count ${pageIds.length} >>`);
   const xobjects = pictures.map((p) => `/${p.name} ${p.id} 0 R`).join(' ');
-  object(
-    ids.page,
-    `<< /Type /Page /Parent ${ids.pages} 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] /Resources << /Font << /F1 ${ids.font} 0 R >> /XObject << ${xobjects} >> >> /Contents ${ids.contents} 0 R >>`,
-  );
   object(ids.font, '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
-  const content = encoder.encode(ops.join('\n'));
-  object(ids.contents, `<< /Length ${content.length} >>`, content);
+  pageIds.forEach((made, index) => {
+    object(
+      made.page,
+      `<< /Type /Page /Parent ${ids.pages} 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] /Resources << /Font << /F1 ${ids.font} 0 R >> /XObject << ${xobjects} >> >> /Contents ${made.contents} 0 R >>`,
+    );
+    const content = encoder.encode(pageOps[index].join('\n'));
+    object(made.contents, `<< /Length ${content.length} >>`, content);
+  });
   object(ids.info, `<< /Title ${pdfString(title)} /Creator (TurtleLab) /Producer (TurtleLab) /CreationDate ${pdfDate(date)} >>`);
   for (const { id, picture } of pictures) {
     const squashed = await deflate(picture.rgb);
