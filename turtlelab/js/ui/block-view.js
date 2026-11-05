@@ -27,6 +27,7 @@ import { MAX_INPUTS } from '../core/names.js';
 import { PALETTE_COLORS, NUMBER_COLORS } from './palette-colors.js';
 import { formatNumber } from '../core/format.js';
 import { LETTER_FONTS, cleanFont } from '../core/lettering.js';
+import { colorOfArgs, toHexUpper } from '../core/color.js';
 
 export { formatNumber };
 
@@ -363,6 +364,28 @@ function layoutFontSlot(font, colors) {
   return { id: nextId++, text: chosen.label, empty: false, editor: 'font', markup, w: width + 2, h: NAME_SLOT_HEIGHT + 2 };
 }
 
+/**
+ * The color box on a set color or fill screen block: filled with the color the three sockets make, with its hex written on it in black or white,
+ * whichever shows. It is always the same width, so choosing another color never changes the size of the block. If another block is plugged into a
+ * socket (a variable, an input, random...) there is no one color until the program runs, so the box is plain, dashed, and says N/A. Pressing it opens the color
+ * picker (js/ui/color-picker.js).
+ */
+function layoutColorSlot(block, spec, colors) {
+  const color = colorOfArgs(block.args, spec.args.map((arg) => arg.default));
+  const fontSize = FONT_SIZE * SCALE * 0.9;
+  const width = textWidth('#000000', FONT_SIZE * 0.9) * SCALE + 18;
+  const y = 1 + NAME_SLOT_HEIGHT / 2 + fontSize * 0.35;
+  const [r, g, b] = color ?? [255, 255, 255];
+  const dark = (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.55; // a dark color gets white writing
+  const text = color ? toHexUpper(color) : 'N/A';
+  const markup =
+    `<svg xmlns="${SVG_NS}" width="${width + 2}" height="${NAME_SLOT_HEIGHT + 2}">` +
+    `<rect x="1" y="1" width="${width}" height="${NAME_SLOT_HEIGHT}" rx="5" fill="rgb(${r}, ${g}, ${b})" stroke="${colors.stroke}" stroke-width="1.5"${color ? '' : ' stroke-dasharray="4 3"'}/>` +
+    `<text class="block-text" font-size="${fontSize}" fill="${color ? (dark ? '#ffffff' : '#282828') : '#7a6a00'}" text-anchor="middle" x="${1 + width / 2}" y="${y}"${color ? '' : ' font-style="italic"'}>${escapeXml(text)}</text>` +
+    `</svg>`;
+  return { id: nextId++, text, empty: false, editor: 'color', mixed: color === null, markup, w: width + 2, h: NAME_SLOT_HEIGHT + 2 };
+}
+
 /** Finish the layout of a `to` block: a hat with the word "to" and a box for its name and each input. */
 function layoutDefinitionHat(node, spec, colors) {
   const params = node.block.params ?? [];
@@ -528,14 +551,19 @@ export function layoutBlock(block) {
   let shapeSpec = spec;
   let textSlot = null;
   let fontSlot = null;
-  if (spec.textSlot || spec.fontSlot) {
+  let colorSlot = null;
+  if (spec.textSlot || spec.fontSlot || spec.colorSlot) {
     if (spec.textSlot) textSlot = layoutNameSlot(block.text ?? '', spec.textSlot.hint, colors, 'text');
     if (spec.fontSlot) fontSlot = layoutFontSlot(block.font, colors);
+    if (spec.colorSlot) colorSlot = layoutColorSlot(block, spec, colors);
     shapeSpec = { ...spec, label: '' };
     const captionWidth = Math.max(0, ...spec.args.map((arg) => textWidth(arg.label ?? '', SMALL_FONT_SIZE))) * SCALE;
     // Room for the sockets down the right edge, if there are any, or just a little after the last box.
     const afterBoxes = spec.args.length > 0 ? HAT_GAP + captionWidth + 30 : HAT_END;
-    const wanted = HAT_PAD + textWidth(spec.label) * SCALE + (textSlot ? HAT_GAP + textSlot.w : 0) + (fontSlot ? HAT_GAP + fontSlot.w : 0) + afterBoxes;
+    // (A color box goes under the word, not beside it, so the block only has to be as wide as the wider of the two.)
+    const wanted = colorSlot
+      ? HAT_PAD + Math.max(textWidth(spec.label) * SCALE, colorSlot.w) + afterBoxes
+      : HAT_PAD + textWidth(spec.label) * SCALE + (textSlot ? HAT_GAP + textSlot.w : 0) + (fontSlot ? HAT_GAP + fontSlot.w : 0) + afterBoxes;
     extra.x = Math.max(0, (wanted - makeShape(shapeSpec, colors, extra).shape.getWidth()) / SCALE);
   } else {
     const smallest = makeShape(spec, colors, extra).shape;
@@ -566,21 +594,30 @@ export function layoutBlock(block) {
 
   const { shape, markup } = made;
   node.markup = markup;
-  if (textSlot || fontSlot) {
+  if (textSlot || fontSlot || colorSlot) {
     // The generator puts a label's baseline in the middle of the block's body: line the word and the boxes up with that.
     const fontSize = FONT_SIZE * SCALE;
     const baseline = Number(markup.match(/<tspan x="-?[\d.]+" y="(-?[\d.]+)"><\/tspan>/)?.[1] ?? 14) * SCALE;
     const wordWidth = textWidth(spec.label) * SCALE;
     const top = baseline - fontSize * 0.35 - (NAME_SLOT_HEIGHT + 2) / 2;
     node.nameSlots = [];
-    let x = HAT_PAD + wordWidth;
-    for (const slot of [textSlot, fontSlot]) {
-      if (!slot) continue;
-      x += HAT_GAP;
-      node.nameSlots.push({ slot, dx: x, dy: top });
-      x += slot.w;
+    let wordBaseline = baseline;
+    if (colorSlot) {
+      // The word on top and the color box (with its hex) right under it, both in the middle of the block's height and lined up on the left.
+      const gap = 5;
+      const stackTop = baseline - fontSize * 0.35 - (fontSize + gap + colorSlot.h) / 2;
+      wordBaseline = stackTop + fontSize / 2 + fontSize * 0.35;
+      node.nameSlots.push({ slot: colorSlot, dx: HAT_PAD, dy: stackTop + fontSize + gap });
+    } else {
+      let x = HAT_PAD + wordWidth;
+      for (const slot of [textSlot, fontSlot]) {
+        if (!slot) continue;
+        x += HAT_GAP;
+        node.nameSlots.push({ slot, dx: x, dy: top });
+        x += slot.w;
+      }
     }
-    const word = `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${HAT_PAD}" y="${baseline}">${escapeXml(spec.label)}</text>`;
+    const word = `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${HAT_PAD}" y="${wordBaseline}">${escapeXml(spec.label)}</text>`;
     node.markup = markup.replace(/<\/svg>\s*$/, `${word}</svg>`);
   }
   node.w = shape.getWidth();
@@ -696,7 +733,7 @@ export function renderStack(layout, register) {
     register(node.id, { type: 'block', node });
     (node.nameSlots ?? []).forEach((placed, index) => {
       const box = svgElement('g', {
-        class: placed.slot.editor === 'font' ? 'node nameslot textslot fontslot' : placed.slot.editor === 'text' ? 'node nameslot textslot' : 'node nameslot',
+        class: placed.slot.editor === 'font' ? 'node nameslot textslot fontslot' : placed.slot.editor === 'text' ? 'node nameslot textslot' : placed.slot.editor === 'color' ? 'node colorslot' : 'node nameslot',
         transform: `translate(${placed.ax} ${placed.ay})`,
         'data-nid': placed.slot.id,
       });

@@ -242,3 +242,13 @@ test('the Guide and the privacy page tell about the program score: what it rewar
   assert.match(privacy, /not saved, not sent anywhere, and not put in a saved picture or a PDF/);
   assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf('Program score'), guide.indexOf('Turtle moods'))), 'no dashes in the new row');
 });
+
+test('the Guide tells about the color picker: hex, binary, that the numbers stay, and that Undo undoes a whole picking; the privacy page says nothing is sent', () => {
+  const guide = read('guide.html');
+  assert.match(guide, /<td>Pick a color<\/td>/);
+  for (const word of ['color box', '#FF8000', 'binary', '2 hex digits or 8 bits', 'The block keeps its three numbers', 'Undo puts back the color', 'N/A</em>', 'under the name of the block']) assert.ok(guide.includes(word), word);
+  assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf('Pick a color'), guide.indexOf('Program score'))), 'no dashes in the new row');
+  const privacy = read('privacy.html');
+  assert.match(privacy, /<td>Does the color picker send anything\?<\/td>/);
+  assert.match(privacy, /No\. It changes the three numbers/);
+});

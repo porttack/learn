@@ -111,6 +111,7 @@ the dashes out of them too for consistency.
       trash.js        the trash can and its shark (see Deleting, above)
       canvas-view.js  paper canvas (1400x1120) + sketch canvas for the hand drawn papers + draggable turtle overlay
       hand-drawn.js   makes the chalk grain tile into a picture for CSS mask-image (once, from numbers)
+      color-picker.js the picker panel that opens from a color box on set color / fill screen (number, hex, binary)
       score-badge.js  the score badge by the trash can, its details panel and the floating "+N"
       files.js        Save (download a PNG with the blocks inside), Open, drops
       fullscreen.js   the Full screen button (standard and webkit names; hides itself where the browser cannot)
@@ -419,6 +420,21 @@ is about to clean anyway).
   `?paper=blueprint`. Tests: `test/grid.test.js`, `paper.test.js`, `grid-paint.test.js` (a recording canvas), `pages.test.js`, and `dev/view-checks.mjs` (the real menu, pixels of each kind,
   each paper, forgetting on reload, the PDF still written). A bug worth remembering: `paintPolar` first passed `{dx, dy}` where `rayInside` wants `{x, y}`, so every heading label was silently
   skipped (nothing threw); the recording-canvas test now asserts every heading is written.
+- **The color picker on set color and fill screen (2026-11-05, the user: "make a way for set color and fill screen blocks to have a color picker (but keep the 3 numbers)... useful when explaining some binary stuff. I'd display hex too").**
+  Spec flag `colorSlot: true` on `setcolor` and `fillscreen` (`core/blocks-spec.js`; documented there). It is another *slot* on the block, like the font dropdown (`layoutColorSlot` in `ui/block-view.js`, drawn after the
+  label, class `node nameslot colorslot`): a rounded box filled with the color of the three sockets with its hex written on it (`#FF8000`, white writing on dark colors), **under the block's words** (the user asked for under, not beside:
+  the word on top and the box right under it, lined up on the left and centered in the block's height, so the block is also narrower), **always the same width** (so picking never resizes the block). **It has no
+  `nameslot` class** (just `node colorslot`): the sample checks and the editor checks count `.node.nameslot` as the names of blocks you made, and with the class every sample's program looked like a definition (40
+  failures "no program"; found by the sample suite). **The block keeps only its three numbers**: the slot has no data of its own, `colorOfArgs(block.args, defaults)` in `core/color.js` reads the sockets (a socket with another block in it means no one color: the
+  box is dashed and says `N/A` (it said "blocks" first; the user pointed out that a variable in a socket is not "blocks": N/A is true for a box variable, an input or random alike), and pressing it only shows a message in `Workspace.chooseColor`). Pressing the box (in the workspace, not the palette, whose blocks are patterns) opens `ui/color-picker.js`, a panel
+  with: the browser's own color chooser (`<input type="color">`), the whole color as hex (typed hex is read with or without `#`, any case, or 3 digits), and for each of red, green and blue a slider, the number, 2 hex
+  digits and 8 binary digits (shown `1111 1111`), plus a line "All 24 bits". **Every control is editable and the others follow** (`show(except)` does not overwrite the one being typed in; a number over 255 or a short
+  or non-hex entry just waits, and is put back when the box is left). `onLive` writes `block.args` and calls `workspace.render()` on each change (the block's box follows as you drag); `onCommit` (`workspace.onChange`, so the undo step, autosave, the score and the Python box)
+  fires **once, when the picker closes**, if the color is not what it was when it opened: so **a whole picking session is one undo step** and Undo puts back the color the block had before. (The first version committed
+  on each control's `change` event, which fires when you move from one box to the next, so one session made several undo steps; a browser check caught it.) Escape, Done, a press anywhere else, a file drop and Ctrl/Cmd
+  plus Z, Y or S all close it (keeping the change first), since Undo and Redo swap the whole project and the picker would be writing into a block that is gone.
+  It opens under the box, else above, else as far as it will go on screen (a short window covers its own block). Pure helpers with tests in `core/color.js` (`toHexUpper`, `channelHex`, `channelBinary`, `colorBits`,
+  `parseHex`, `parseChannelHex`, `parseBinary`, `colorOfArgs`): `test/color.test.js`; real typing and clicking in `dev/editor-checks.mjs` ("The color picker"). Nothing is stored or sent, Logo/Python/PNG are unchanged.
 - **The program score (2026-11-05, the user: "can we add a program complexity score somewhere? But we should reward students in the score for using loops, conditionals, and especially variables").**
   `core/complexity.js` (pure; `scoreProject(project)` returns `{ score, level, parts, ideas, tip }`; `POINTS` and `LEVELS` are the numbers, one place to change them). It rewards ideas, not length: plain blocks
   are 1 point each **up to 20**, so forty forwards are worth no more than twenty. **Variables pay most** (the user's word "especially"): a box (`store1..4` / `box1..4`; "variables" in this app are the four boxes) is

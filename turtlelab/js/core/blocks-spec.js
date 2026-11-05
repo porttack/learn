@@ -45,6 +45,8 @@
 //            box says. The words are kept in the block's `text` (see project.js), apart from its sockets.
 //   fontSlot true for a block that is a dropdown of fonts (set font). The choice is kept in the
 //            block's `font` (see project.js), apart from its sockets.
+//   colorSlot true for a block that has a color box on it (set color, fill screen): it shows the color of the three numbers and its hex, and pressing it
+//            opens the color picker, which changes the three numbers. It keeps nothing of its own: the color is the three sockets.
 //   help     the one-line tip shown when you press and hold the block
 
 export const PALETTES = [
@@ -189,23 +191,25 @@ export const BLOCKS = {
     palette: 'pen',
     kind: 'command',
     label: 'set color',
+    colorSlot: true,
     args: [
       { label: 'red', default: 255 },
       { label: 'green', default: 0 },
       { label: 'blue', default: 0 },
     ],
-    help: 'Sets the pen color from amounts of red, green and blue, each from 0 to 255. 0, 0, 0 is black and 255, 255, 255 is white.',
+    help: 'Sets the pen color from amounts of red, green and blue, each from 0 to 255. 0, 0, 0 is black and 255, 255, 255 is white. Tap the color box to pick a color, and see it as hex and binary too.',
   },
   fillscreen: {
     palette: 'pen',
     kind: 'command',
     label: 'fill screen',
+    colorSlot: true,
     args: [
       { label: 'red', default: 255 },
       { label: 'green', default: 255 },
       { label: 'blue', default: 255 },
     ],
-    help: 'Paints the whole paper one color, using red, green and blue from 0 to 255.',
+    help: 'Paints the whole paper one color, using red, green and blue from 0 to 255. Tap the color box to pick a color, and see it as hex and binary too.',
   },
   startfill: {
     palette: 'pen',

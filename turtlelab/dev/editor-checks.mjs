@@ -13,6 +13,7 @@ import { readProjectFile, isPdf } from '../js/core/project-file.js';
 import { validateProject, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { toPython } from '../js/core/python.js';
 import { scoreProject } from '../js/core/complexity.js';
+import { toHexUpper, colorBits } from '../js/core/color.js';
 import { DEMOS } from '../js/ui/demos.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
@@ -2030,16 +2031,27 @@ try {
   // The fish: ?fish=now sends one a moment after the page opens. It crosses the WHOLE window, and clicking it feeds it to the shark.
   await chrome.goto(BASE + '?fish=now');
   await chrome.sleep(900);
-  const fishNow = () => chrome.eval(`(() => { const f = document.querySelector('.fish'); const can = document.querySelector('.trash-can'); if (!f) return null; const r = f.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, peek: can.classList.contains('peek'), lookX: can.style.getPropertyValue('--look-x'), events: getComputedStyle(f).pointerEvents, hit: !!document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)?.closest('.fish'), inLayer: f.parentElement.classList.contains('sky'), layerEvents: getComputedStyle(f.parentElement).pointerEvents, hidden: f.getAttribute('aria-hidden') }; })()`);
+  const fishNow = () => chrome.eval(`(() => { const f = document.querySelector('.fish'); const can = document.querySelector('.trash-can'); if (!f) return null; const r = f.getBoundingClientRect(); const c = can.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, away: Math.abs(r.x + r.width / 2 - (c.left + c.width / 2)), peek: can.classList.contains('peek'), lookX: can.style.getPropertyValue('--look-x'), events: getComputedStyle(f).pointerEvents, hit: !!document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)?.closest('.fish'), inLayer: f.parentElement.classList.contains('sky'), layerEvents: getComputedStyle(f.parentElement).pointerEvents, hidden: f.getAttribute('aria-hidden') }; })()`);
   const fishWindow = await chrome.eval('window.innerWidth');
   const fish1 = await fishNow();
   check('?fish=now sends a fish swimming along above the trash can, in the layer above everything, and the fish itself can be clicked', fish1 !== null && fish1.events === 'auto' && fish1.hit && fish1.inLayer && fish1.layerEvents === 'none' && fish1.hidden === 'true' && fish1.y > 380, JSON.stringify(fish1));
   await chrome.sleep(1200);
   const fish2 = await fishNow();
-  check('it moves along, and the shark peeks over the rim and looks toward it', fish2 !== null && Math.abs(fish2.x - fish1.x) > 20 && fish2.peek && fish2.lookX !== '', `${Math.round(fish1.x)} then ${Math.round(fish2.x)}, peek ${fish2.peek}, looking ${fish2.lookX}`);
-  // Watch it go the whole way across the window (about 14 seconds at 110 pixels a second).
+  // The shark only peeks while the fish is near the can (within 190 px), and the fish comes in from either side by chance, so wait for it to get there
+  // (it crosses the whole window) rather than looking at one moment that is right for one direction and wrong for the other.
   let fishLow = Math.min(fish1.x, fish2.x);
   let fishHigh = Math.max(fish1.x, fish2.x);
+  let nearFish = fish2;
+  for (let i = 0; i < 200 && nearFish !== null && nearFish.away >= 150; i += 1) {
+    await chrome.sleep(100);
+    nearFish = await fishNow();
+    if (nearFish !== null) {
+      fishLow = Math.min(fishLow, nearFish.x);
+      fishHigh = Math.max(fishHigh, nearFish.x);
+    }
+  }
+  check('it moves along, and the shark peeks over the rim and looks toward it when the fish comes near', fish2 !== null && Math.abs(fish2.x - fish1.x) > 20 && nearFish !== null && nearFish.away < 150 && nearFish.peek && nearFish.lookX !== '', `${Math.round(fish1.x)} then ${Math.round(fish2.x)}, near: ${JSON.stringify(nearFish && { away: Math.round(nearFish.away), peek: nearFish.peek, look: nearFish.lookX })}`);
+  // Watch it go the whole way across the window (about 14 seconds at 110 pixels a second).
   for (let i = 0; i < 90; i += 1) {
     const f = await fishNow();
     if (f === null) break;
@@ -2584,6 +2596,128 @@ try {
   // Variables are the thing to reward most: the same program without the box has a lot less.
   const noBox = { ...counter, stacks: [{ ...counter.stacks[0], blocks: [counter.stacks[0].blocks[0], { op: 'repeat', args: [10], body: [{ op: 'forward', args: [10] }, { op: 'right', args: [30] }] }] }] };
   check('the same loop without the variable scores much less', scoreProject(noBox).score * 2 < counterScore.score, `${scoreProject(noBox).score} against ${counterScore.score}`);
+
+  // ---- The color picker on set color and fill screen -------------------------------------------------
+  // A color box on each of those blocks shows the color of the three numbers and its hex; pressing it opens a picker that changes the three numbers
+  // (which stay on the block) and shows each in hex and in binary.
+  const colorProject = { app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 230, y: 60, blocks: [
+    { op: 'start', args: [] }, { op: 'clean', args: [] },
+    { op: 'fillscreen', args: [30, 40, 90] },
+    { op: 'setcolor', args: [255, 128, 0] },
+    { op: 'setcolor', args: [{ op: 'random', args: [0, 255] }, 0, 0] },
+    { op: 'forward', args: [100] },
+  ] }] };
+  await chrome.goto(BASE + 'about.html');
+  await chrome.eval(`localStorage.setItem('turtlelab-project', ${JSON.stringify(JSON.stringify(colorProject))})`);
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  await chrome.sleep(600);
+  const boxes = () => chrome.eval(`[...document.querySelectorAll('.workspace .node.colorslot')].map((n) => ({ text: n.textContent.trim(), fill: n.querySelector('rect').getAttribute('fill') }))`);
+  const wantBoxes = [{ text: '#1E285A', fill: 'rgb(30, 40, 90)' }, { text: '#FF8000', fill: 'rgb(255, 128, 0)' }, { text: 'N/A', fill: 'rgb(255, 255, 255)' }];
+  const shown = await boxes();
+  check('a color box on each fill screen and set color block shows the color and its hex (one with another block in a socket says N/A)', JSON.stringify(shown) === JSON.stringify(wantBoxes), JSON.stringify(shown));
+  check('the three numbers are still on the blocks', (await count('.workspace .node.literal')) >= 8);
+  // The box is right under the words on the block, lined up with them on the left, and inside the block. (And it is not a name box: it does not have
+  // the class the checks use to count the names of blocks you made.)
+  const under = await chrome.eval(`(() => {
+    const out = [];
+    for (const label of ['fill screen', 'set color']) {
+      for (const block of document.querySelectorAll('.workspace .stack .node.command')) {
+        const word = [...block.querySelectorAll('text')].find((t) => t.textContent.trim() === label);
+        if (!word) continue;
+        const w = word.getBoundingClientRect();
+        const r = block.getBoundingClientRect();
+        out.push({ label, word: { left: w.left, bottom: w.bottom, top: w.top }, blockRect: { left: r.left, right: r.right, top: r.top, bottom: r.bottom } });
+        break;
+      }
+    }
+    return out;
+  })()`);
+  const colorBoxes = await chrome.eval(`[...document.querySelectorAll('.workspace .node.colorslot')].map((n) => { const r = n.getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, classes: n.getAttribute('class') }; })`);
+  check('the color box sits under the words of its block ("fill screen", "set color"), lined up with them on the left, inside the block',
+    [0, 1].every((i) => colorBoxes[i].top >= under[i].word.bottom - 2 && Math.abs(colorBoxes[i].left - under[i].word.left) <= 4 && colorBoxes[i].left >= under[i].blockRect.left && colorBoxes[i].bottom <= under[i].blockRect.bottom && colorBoxes[i].right <= under[i].blockRect.right),
+    JSON.stringify({ under, colorBoxes }));
+  check('and a color box is not a name box (it has no nameslot class, so it is never mistaken for the name of a block you made)', colorBoxes.every((b) => !/nameslot/.test(b.classes)) && (await count('.workspace .node.nameslot')) === 0, JSON.stringify(colorBoxes.map((b) => b.classes)));
+  const boxCenter = (i) => chrome.eval(`(() => { const r = [...document.querySelectorAll('.workspace .node.colorslot')][${i}].getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+  const pickerState = () => chrome.eval(`(() => { const p = document.querySelector('.color-picker'); if (!p) return null; const r = p.getBoundingClientRect(); return {
+    hex: p.querySelector('.cp-hex').value, native: p.querySelector('.cp-native').value,
+    numbers: [...p.querySelectorAll('.cp-number')].map((i) => i.value), hexes: [...p.querySelectorAll('.cp-chex')].map((i) => i.value), bins: [...p.querySelectorAll('.cp-bin')].map((i) => i.value),
+    sliders: [...p.querySelectorAll('.cp-slider')].map((i) => i.value), bits: p.querySelector('.cp-bits').textContent, inside: r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight - 0.5 }; })()`);
+  const at1 = await boxCenter(1);
+  await chrome.click(at1.x, at1.y);
+  await chrome.sleep(300);
+  const first = await pickerState();
+  check('pressing the color box opens the picker, showing the color as hex, as three numbers, in hex and in binary, and all 24 bits, and it fits in the window',
+    first && first.hex === '#FF8000' && first.native === '#ff8000' && first.numbers.join() === '255,128,0' && first.hexes.join() === 'FF,80,00'
+    && first.bins.join() === '1111 1111,1000 0000,0000 0000' && first.sliders.join() === '255,128,0' && first.bits === `All 24 bits: ${colorBits([255, 128, 0])}` && first.inside, JSON.stringify(first));
+  check('the picker has the focus on the first number, ready to type', await chrome.eval(`document.activeElement?.classList.contains('cp-number')`));
+
+  const typeInto = async (selector, text) => {
+    await chrome.eval(`(() => { const f = document.querySelector(${JSON.stringify(selector)}); f.focus(); f.select(); })()`);
+    await chrome.send('Input.insertText', { text });
+    await chrome.sleep(120);
+  };
+  await typeInto('.cp-green .cp-bin', '01000000');
+  const afterBinary = await pickerState();
+  check('typing 8 binary digits for green changes the other forms to match (64 is 40 in hex), and the color box on the block follows at once',
+    afterBinary.numbers.join() === '255,64,0' && afterBinary.hexes.join() === 'FF,40,00' && afterBinary.hex === '#FF4000' && afterBinary.sliders[1] === '64' && (await boxes())[1].text === '#FF4000', JSON.stringify([afterBinary, (await boxes())[1]]));
+  await typeInto('.cp-hex', '#0a141e');
+  const afterHex = await pickerState();
+  check('typing a whole hex color sets all three numbers (and any case will do)', afterHex.numbers.join() === '10,20,30' && afterHex.bins.join() === '0000 1010,0001 0100,0001 1110' && (await boxes())[1].text === '#0A141E', JSON.stringify(afterHex));
+  await typeInto('.cp-red .cp-chex', 'c8');
+  check('typing 2 hex digits for red sets red (C8 is 200)', (await pickerState()).numbers.join() === '200,20,30');
+  await typeInto('.cp-blue .cp-number', '255');
+  check('typing a number sets that one, and the binary follows', (await pickerState()).bins.join() === '1100 1000,0001 0100,1111 1111');
+  await typeInto('.cp-blue .cp-number', '300');
+  check('a number over 255 is not taken: the box waits with what was typed, and the color (and the block) stays as it was', (await pickerState()).sliders.join() === '200,20,255' && (await boxes())[1].text === '#C814FF', JSON.stringify([await pickerState(), (await boxes())[1]]));
+  await chrome.eval(`document.querySelector('.cp-blue .cp-number').blur()`);
+  await chrome.sleep(100);
+  check('and when you leave the box it goes back to the number that is really there', (await pickerState()).numbers.join() === '200,20,255');
+  await chrome.eval(`(() => { const s = document.querySelector('.cp-green .cp-slider'); s.value = '99'; s.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+  await chrome.sleep(100);
+  check('moving a slider sets that number and the others follow', (await pickerState()).numbers.join() === '200,99,255' && (await pickerState()).hexes.join() === 'C8,63,FF');
+  await chrome.eval(`(() => { const n = document.querySelector('.cp-native'); n.value = '#336699'; n.dispatchEvent(new Event('input', { bubbles: true })); })()`);
+  await chrome.sleep(100);
+  const afterNative = await pickerState();
+  check('the browser\'s own color chooser sets all three too', afterNative.numbers.join() === '51,102,153' && afterNative.hex === '#336699', JSON.stringify(afterNative));
+  check('while the picker is open nothing is saved yet, however many boxes you have typed in (it is one change, kept when it closes)', JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`)).stacks[0].blocks[3].args.join() === '255,128,0');
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.sleep(900);
+  const savedColor = JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`)).stacks[0].blocks[3];
+  check('Escape closes it and keeps the color: the block has the three numbers 51, 102, 153, and nothing else about the block changed', (await count('.color-picker')) === 0 && savedColor.op === 'setcolor' && savedColor.args.join() === '51,102,153', JSON.stringify(savedColor));
+  check('the Python box would say the same numbers: the block\'s color is really those numbers (the picker adds nothing to the project)', Object.keys(savedColor).sort().join() === 'args,op');
+  await chrome.eval(`document.getElementById('undo').click()`);
+  await chrome.sleep(500);
+  check('one Undo puts the old color back, all of it: the whole picking was one step', (await boxes())[1].text === '#FF8000' && (await count('.color-picker')) === 0, JSON.stringify(await boxes()));
+  await chrome.eval(`document.getElementById('redo').click()`);
+  await chrome.sleep(500);
+  check('and Redo brings the new one back', (await boxes())[1].text === '#336699');
+
+  // Pressing somewhere else closes it too; Done closes it; a block in a socket means there is nothing to pick.
+  const at0 = await boxCenter(0);
+  await chrome.click(at0.x, at0.y);
+  await chrome.sleep(250);
+  check('the fill screen block has a picker as well, opening on its own color', (await pickerState())?.hex === '#1E285A', JSON.stringify(await pickerState()));
+  await chrome.click(900, 150);
+  await chrome.sleep(250);
+  check('pressing somewhere else closes the picker, and changes nothing', (await count('.color-picker')) === 0 && (await boxes())[0].text === '#1E285A');
+  const at2 = await boxCenter(2);
+  await chrome.click(at2.x, at2.y);
+  await chrome.sleep(250);
+  check('with another block in a socket there is no picker, and the message says why', (await count('.color-picker')) === 0 && /no one color to pick/.test(await chrome.eval(`document.getElementById('message').textContent`)));
+  // The blocks in the palette have color boxes too, but a press there is not an edit.
+  await openPalette('Pen');
+  const paletteBoxes = await chrome.eval(`[...document.querySelectorAll('.flyout .node.colorslot')].map((n) => n.textContent.trim())`);
+  check('the set color and fill screen blocks in the palette show their color boxes too (red, and white)', paletteBoxes.join() === '#FF0000,#FFFFFF', paletteBoxes.join());
+  const pb = await chrome.eval(`(() => { const r = document.querySelector('.flyout .node.colorslot').getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+  await chrome.click(pb.x, pb.y);
+  await chrome.sleep(300);
+  check('and pressing a palette block\'s color box does not open a picker (that block is only a pattern to drag out)', (await count('.color-picker')) === 0);
+  await chrome.eval(`document.querySelector('.palette-button.selected')?.click()`);
+  // A color box makes the same project it always did: the picker adds nothing to the file, and Logo and Python are unchanged.
+  const forPython = toPython(validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 0, y: 0, blocks: [{ op: 'start', args: [] }, { op: 'setcolor', args: [51, 102, 153] }] }] }).project);
+  check('Python for a set color block is what it was, with the three numbers', /rgb\(51, 102, 153\)/.test(forPython), forPython.split('\n').filter((l) => /rgb\(51/.test(l)).join('|'));
+  check('and the color of those numbers has the hex #336699', toHexUpper([51, 102, 153]) === '#336699');
 
   check('no console errors, exceptions or CSP violations', chrome.problems.length === 0, chrome.problems.join(' | '));
   const elsewhere = chrome.requests.filter((url) => !url.startsWith(BASE) && !url.startsWith('data:') && !url.startsWith('blob:'));

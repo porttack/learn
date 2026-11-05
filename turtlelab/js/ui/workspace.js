@@ -26,6 +26,8 @@
 import { layoutStack, renderStack, walkNodes } from './block-view.js';
 import { HelpBubble } from './help-bubble.js';
 import { NOTE_MAX_CHARS, specOf } from '../core/blocks-spec.js';
+import { colorOfArgs } from '../core/color.js';
+import { openColorPicker } from './color-picker.js';
 import { renameDefinition, setInput, uniquifyDefinition } from '../core/definitions.js';
 import { INPUT_MAX, NAME_MAX } from '../core/names.js';
 import {
@@ -282,6 +284,7 @@ export class Workspace {
     } else if (entry.type === 'nameslot') {
       if (entry.slot.editor === 'text') this.editText(entry);
       else if (entry.slot.editor === 'font') this.chooseFont(entry);
+      else if (entry.slot.editor === 'color') this.chooseColor(entry);
       else this.editName(entry);
     } else if (entry.node.kind === 'note') {
       this.editNote(entry.node); // tapping a sticky note is for writing in it
@@ -958,6 +961,39 @@ export class Workspace {
     document.addEventListener('pointerdown', away, true);
     document.addEventListener('keydown', keys, true);
     options[LETTER_FONTS.findIndex((font) => font.id === current)].focus();
+  }
+
+  /**
+   * Open the color picker under the color box of a set color or fill screen block (js/ui/color-picker.js). It only changes the block's three
+   * numbers, which stay where they are: the block shows each change as it is made, and a finished change is one undo step. If another block is
+   * plugged into one of the sockets there is no one color to pick, so it says so instead.
+   */
+  chooseColor(entry) {
+    this.colorPickerClose?.();
+    this.closeFontMenu();
+    const block = entry.node.block;
+    const spec = entry.node.spec;
+    const color = colorOfArgs(block.args, spec.args.map((arg) => arg.default));
+    if (color === null) {
+      this.onMessage('This color comes from other blocks (a variable, an input or random, say), so it is N/A until the program runs and there is no one color to pick. Take the blocks out of the sockets and the color box picks for you.');
+      return;
+    }
+    const anchor = entry.node.nameSlots[entry.index].el.getBoundingClientRect();
+    const picker = openColorPicker({
+      stage: this.stage,
+      anchor,
+      color,
+      title: spec.label,
+      onLive: (next) => {
+        block.args = [next[0], next[1], next[2]];
+        this.render();
+      },
+      onCommit: () => this.onChange(),
+      onClose: () => {
+        this.colorPickerClose = null;
+      },
+    });
+    this.colorPickerClose = picker.close;
   }
 
   // ---- Typing a number ---------------------------------------------------
