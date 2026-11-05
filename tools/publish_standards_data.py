@@ -91,6 +91,7 @@ HUES = [
     ("#2f37c0", "#6d72cf"),  # 24 cobalt (porttack_society)
     ("#1b8a5a", "#2aa36e"),  # 25 emerald (socratic_seminar_kit)
     ("#7a2e8a", "#9d4bb5"),  # 26 purple (bootstrap_algebra)
+    ("#c25e00", "#e08a2e"),  # 27 burnt orange (turtlelessons; not run through validate_palette.js)
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -220,6 +221,17 @@ HUES = [
 # raspberry/jade dark-mode FAIL noted at slot 21's addition (unrelated to
 # this one).
 #
+# Slot 27 (burnt orange) added 2026-11-04 alongside turtlelessons, appended
+# after bootstrap_algebra so real sources stay contiguous. Picked to sit far
+# from its one new neighbor, slot 26 (purple, ~291 deg): a warm hue against a
+# cool one, so they differ in hue and in lightness for every kind of color
+# vision. It was NOT run through scripts/validate_palette.js (the validator
+# was not available in the session that added it, and an approximate check
+# was not possible either), the same caveat slot 20 carries. Run
+#   node scripts/validate_palette.js "#7a2e8a,#c25e00" --mode light
+#   node scripts/validate_palette.js "#9d4bb5,#e08a2e" --mode dark
+# before relying on this pair, and change the slot if either fails.
+#
 # Fixed source -> hue-slot assignment (not derived from directory order), so a
 # source's color stays the same across every combined view. supplement is
 # intentionally omitted -- excluded from this admin-facing view by direction,
@@ -261,6 +273,7 @@ SOURCE_ORDER = [
     "porttack_society",
     "socratic_seminar_kit",
     "bootstrap_algebra",
+    "turtlelessons",
 ]
 
 

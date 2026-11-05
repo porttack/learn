@@ -75,6 +75,8 @@
   collection: turtlelessons
   url: /turtle-lessons/
   item_label: "Step"
+  standards_carrier: turtlelessons
+  standards_locator: slug
   blurb: >-
     Five steps with TurtleLab, each starting from a sample you change and
     take further: draw your initials, repeat yourself with loops, let chance

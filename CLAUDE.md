@@ -69,6 +69,11 @@ inside `turtlelab/` (that folder is the AGPL app; CC lesson content stays out) a
 TurtleLab sample (`/turtlelab/?sample=ID`) the student changes. No app screenshots in these pages
 (its artwork is AGPL). "TurtleLab Lessons" is in the site menu and in TurtleLab's own toolbar.
 
+**Standards:** `_standards/carriers/turtlelessons.json` aligns the five steps to apcsp, castandards, csta2026 and the CTE
+ICT anchor (locators are the step slugs; `standards_locator: slug` on the pathway). Loops, if/else, random and run to run
+variation are the strong fits; variables and procedures are only `related` because they appear as optional or read-only
+material. The per-lesson widget shows each step's own codes. After editing it, run `tools/publish_standards.sh`.
+
 TurtleLab has a `write` block (Notes palette) that draws words in script. Student Steps 1 and 5 say to skip it, and
 `teacher-notes.md` has the line for an assignment that should not allow it.
 

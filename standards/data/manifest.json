@@ -224,6 +224,14 @@
    "abbrev": "BS-Alg",
    "hue_light": "#7a2e8a",
    "hue_dark": "#9d4bb5"
+  },
+  {
+   "slug": "turtlelessons",
+   "file": "turtlelessons.json",
+   "title": "TurtleLab Lessons",
+   "abbrev": "TURTLE",
+   "hue_light": "#c25e00",
+   "hue_dark": "#e08a2e"
   }
  ],
  "crosswalks": [
