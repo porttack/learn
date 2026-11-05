@@ -13,6 +13,10 @@
 //
 // The turtle's drawing ops (see core/turtle.js) arrive through applyOp().
 //
+// On the hand drawn papers (the whiteboard and chalkboard) a third layer, `.paper-sketch`, shows the same drawing wobbled (core/hand.js) and takes the
+// paper's place on the screen. The paper canvas itself is still painted exactly as before, hidden, because it is the real picture: it is what Save,
+// the PDF and every other export read, so none of them ever wobble.
+//
 // The paper can be zoomed and slid to show a different part of the world (see core/fit.js).
 // That is a change of view only: the turtle's x and y mean the same thing, and the picture is
 // painted again from the turtle's list of ops. A picture opened from a file lies under those
@@ -21,7 +25,11 @@
 import { PAPER_W, PAPER_H, arcAngles } from '../core/turtle.js';
 import { toCss } from '../core/color.js';
 import { DEFAULT_DRAW_VIEW, drawingBounds, fitView, isDefaultView, paperToWorld, sameView, visibleOps } from '../core/fit.js';
-import { gridLines, labelFor } from '../core/grid.js';
+import { DEFAULT_GRID, gridTypeById } from '../core/grid.js';
+import { DEFAULT_PAPER, paperById, printedLines, wipes, specks } from '../core/paper.js';
+import { paintGrid as paintGridKind } from './grid-paint.js';
+import { handPoint, handSegment, handOutline, newHandLook } from '../core/hand.js';
+import { chalkGrainUrl, GRAIN_SHOWN } from './hand-drawn.js';
 import { turtleSvg } from './artwork.js';
 import { spriteSvg, shellColors } from './turtle-look.js';
 import { sky, FLOAT_SPEED, riseDistance, riseTime, fallDistance, fallTime } from './sky.js';
@@ -46,6 +54,13 @@ const POOP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" focusa
 
 /** How long the wave lasts (the same as the stylesheet's animation, a little over). */
 const WAVE_MS = 1250;
+
+/** The soft dust round a chalk line: how much wider than the line it is, and how strong. */
+const CHALK_DUST_WIDTH = 5;
+const CHALK_DUST_ALPHA = 0.3;
+
+/** How many short pieces a streak of a smudge is drawn as (it is a curve). */
+const STREAK_STEPS = 14;
 
 /** How tall the grid's numbers are on the PDF's picture, in the paper canvas's own pixels (about 10 points on the page). */
 const PDF_GRID_TEXT = 30;
@@ -146,6 +161,61 @@ function paintFill(ctx, op) {
   }
 }
 
+// ---- Painting ops by hand ----------------------------------------------------
+
+/** Add a run of points to a path as a line. */
+function addPoints(path, points) {
+  path.moveTo(points[0].x, points[0].y);
+  for (let i = 1; i < points.length; i += 1) path.lineTo(points[i].x, points[i].y);
+}
+
+/** Stroke one line or arc as a hand would: wobbled (the way `look` says), and (chalk) with a soft dust round it first. */
+function strokeHand(ctx, seg, chalk, look) {
+  if (seg.size <= 0) return;
+  const path = new Path2D();
+  addPoints(path, handSegment(seg, look));
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = toCss(seg.color);
+  if (chalk) {
+    ctx.globalAlpha = CHALK_DUST_ALPHA;
+    ctx.lineWidth = seg.size + CHALK_DUST_WIDTH;
+    ctx.stroke(path);
+    ctx.globalAlpha = 1;
+  }
+  ctx.lineWidth = seg.size;
+  ctx.stroke(path);
+}
+
+/**
+ * Draw one op from the turtle onto the sketch canvas, as a hand would (see paintOp, which does the same exactly). The sketch canvas starts see-through,
+ * so a clear makes it see-through again and the paper shows.
+ */
+export function paintHandOp(ctx, op, view = DEFAULT_DRAW_VIEW, { chalk = false, look = {} } = {}) {
+  switch (op.type) {
+    case 'clear':
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+      return;
+    case 'fillScreen':
+      coverCanvas(ctx, toCss(op.color));
+      return;
+    default:
+      break;
+  }
+  usePaperCoordinates(ctx, view);
+  if (op.type === 'line' || op.type === 'arc') {
+    strokeHand(ctx, op, chalk, look);
+  } else if (op.type === 'fill') {
+    const path = new Path2D();
+    addPoints(path, handOutline(op.segments, look));
+    path.closePath();
+    ctx.fillStyle = toCss(op.color);
+    ctx.fill(path);
+    for (const seg of op.segments) if (seg.pen) strokeHand(ctx, seg, chalk, look);
+  }
+}
+
 // ---- The view -----------------------------------------------------------
 
 export class CanvasView {
@@ -166,15 +236,35 @@ export class CanvasView {
     this.drawView = { ...DEFAULT_DRAW_VIEW }; // how the paper is zoomed and slid (see core/fit.js)
     this.picture = null; // an image opened from a file, lying under everything the turtle draws
     this.gridVisible = false; // the grid lives on its own canvas, so it is never in a saved picture
+    this.gridType = DEFAULT_GRID; // which kind of grid it is when it shows (see GRID_TYPES)
+    this.paperId = DEFAULT_PAPER; // how the paper looks on the screen (see PAPERS); never in a saved picture either
+    this.hand = null; // 'marker' or 'chalk' on a hand drawn paper (see PAPERS), else null
+    this.handLook = newHandLook(); // how this hand drawn paper wobbles and how dirty it is: new each time one is chosen (core/hand.js)
 
     this.box = document.createElement('div');
-    this.box.className = 'paper-box';
+    this.box.className = 'paper-box paper-white';
 
     this.canvas = document.createElement('canvas');
     this.canvas.className = 'paper';
     this.canvas.width = PAPER_W * PIXEL_RATIO;
     this.canvas.height = PAPER_H * PIXEL_RATIO;
     this.ctx = this.canvas.getContext('2d');
+
+    // The drawing as a hand would have drawn it, shown instead of the paper on the whiteboard and chalkboard papers (nothing is on it otherwise).
+    this.sketchCanvas = document.createElement('canvas');
+    this.sketchCanvas.className = 'paper-sketch';
+    this.sketchCanvas.width = PAPER_W * PIXEL_RATIO;
+    this.sketchCanvas.height = PAPER_H * PIXEL_RATIO;
+    this.sketchCanvas.hidden = true;
+    this.sketchCtx = this.sketchCanvas.getContext('2d');
+
+    // What is printed on a graph or blueprint paper, and the color of a dark one. It lies over the paper, blended into it by the stylesheet.
+    this.styleCanvas = document.createElement('canvas');
+    this.styleCanvas.className = 'paper-style';
+    this.styleCanvas.width = PAPER_W * PIXEL_RATIO;
+    this.styleCanvas.height = PAPER_H * PIXEL_RATIO;
+    this.styleCanvas.hidden = true;
+    this.styleCtx = this.styleCanvas.getContext('2d');
 
     this.gridCanvas = document.createElement('canvas');
     this.gridCanvas.className = 'paper-grid';
@@ -205,7 +295,7 @@ export class CanvasView {
     this.breathing = false;
     this.poops = []; // the ones falling now: { el, timer }
     this.screen = { x: 0, y: 0 }; // where the turtle's middle is in the window, as of the last sync
-    this.box.append(this.canvas, this.gridCanvas, this.sprite);
+    this.box.append(this.canvas, this.sketchCanvas, this.styleCanvas, this.gridCanvas, this.sprite);
     // The Zzz and the bubbles float up off the top of the window, so they live in the layer above everything, not in the paper.
     sky().append(this.zzz, this.bubbles);
     stage.append(this.box);
@@ -232,6 +322,7 @@ export class CanvasView {
   applyOp(op) {
     if (op.type === 'clear') this.dropPicture();
     paintOp(this.ctx, op, this.drawView);
+    if (this.hand) paintHandOp(this.sketchCtx, op, this.drawView, { chalk: this.hand === 'chalk', look: this.handLook });
   }
 
   /** Let go of the opened picture (an ImageBitmap is memory the page has to give back). */
@@ -249,22 +340,50 @@ export class CanvasView {
     coverCanvas(this.ctx, '#ffffff');
     if (start < 0 && this.picture) this.drawPicture();
     for (let i = Math.max(0, start); i < this.turtle.ops.length; i += 1) paintOp(this.ctx, this.turtle.ops[i], this.drawView);
+    if (this.hand) this.repaintHand();
     return ops.length;
   }
 
-  /** The opened picture, in the place the paper would be if it were drawn in the turtle's world. */
-  drawPicture() {
+  /** Draw the sketch (the hand drawn picture) again from the same things repaint() uses. */
+  repaintHand() {
+    const { start } = visibleOps(this.turtle.ops);
+    const ctx = this.sketchCtx;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.sketchCanvas.width, this.sketchCanvas.height);
+    if (start < 0 && this.picture) this.drawPicture(ctx);
+    const chalk = this.hand === 'chalk';
+    for (let i = Math.max(0, start); i < this.turtle.ops.length; i += 1) paintHandOp(ctx, this.turtle.ops[i], this.drawView, { chalk, look: this.handLook });
+  }
+
+  /** The opened picture, in the place the paper would be if it were drawn in the turtle's world (on the paper canvas, or the one given). */
+  drawPicture(ctx = this.ctx) {
     const { zoom, cx, cy } = this.drawView;
     const left = (PAPER_W / 2 + (-PAPER_W / 2 - cx) * zoom) * PIXEL_RATIO;
     const top = (PAPER_H / 2 - (PAPER_H / 2 - cy) * zoom) * PIXEL_RATIO;
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.drawImage(this.picture, left, top, PAPER_W * zoom * PIXEL_RATIO, PAPER_H * zoom * PIXEL_RATIO);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.drawImage(this.picture, left, top, PAPER_W * zoom * PIXEL_RATIO, PAPER_H * zoom * PIXEL_RATIO);
   }
 
   /** Where a spot of the turtle's world is on the canvas, in canvas pixels. */
   canvasPoint(x, y) {
     const { zoom, cx, cy } = this.drawView;
     return { x: (PAPER_W / 2 + (x - cx) * zoom) * PIXEL_RATIO, y: (PAPER_H / 2 - (y - cy) * zoom) * PIXEL_RATIO };
+  }
+
+  /**
+   * Where a spot of the turtle's world is on the canvas as the picture SHOWS it: the same as canvasPoint, except on a hand drawn paper, where the hand has
+   * moved it a little. (The turtle sits there, so its nose stays on the end of the line it draws.)
+   */
+  drawnPoint(x, y) {
+    if (!this.hand) return this.canvasPoint(x, y);
+    const moved = handPoint(x, y, this.handLook);
+    return this.canvasPoint(moved.x, moved.y);
+  }
+
+  /** A spot on the canvas moved to where a hand would have drawn it: what the grid uses to wobble with the drawing. */
+  warpPoint(canvasX, canvasY) {
+    const world = paperToWorld(this.drawView, canvasX / PIXEL_RATIO, canvasY / PIXEL_RATIO);
+    return this.drawnPoint(world.x, world.y);
   }
 
   /**
@@ -315,16 +434,159 @@ export class CanvasView {
 
   viewChanged() {
     this.sync();
+    this.drawPaper();
     this.drawGrid();
   }
 
-  // ---- The grid ------------------------------------------------------------
+  // ---- The grid, and the look of the paper ----------------------------------
 
-  /** Show or hide the grid of x and y numbers. It is drawn on its own canvas, above the paper. */
+  /** Show or hide the grid. It is drawn on its own canvas, above the paper. */
   setGridVisible(visible) {
     this.gridVisible = visible;
     this.gridCanvas.hidden = !visible;
     this.drawGrid();
+  }
+
+  /** Choose which kind of grid shows (one of the ids in GRID_TYPES). An unknown one is ignored. It does not show or hide the grid. */
+  setGridType(id) {
+    if (!gridTypeById(id)) return false;
+    this.gridType = id;
+    this.drawGrid();
+    return true;
+  }
+
+  /**
+   * Choose how the paper looks on the screen (one of the ids in PAPERS: white, graph paper, a chalkboard, a blueprint). An unknown one is ignored.
+   * It is only a look: the paper the turtle draws on, and so every saved picture, stays white. A dark paper makes the grid draw in light colors.
+   */
+  setPaper(id) {
+    const paper = paperById(id);
+    if (!paper) return false;
+    this.paperId = id;
+    for (const name of [...this.box.classList]) if (name.startsWith('paper-') && name !== 'paper-box') this.box.classList.remove(name);
+    this.box.classList.add(`paper-${id}`);
+    // A board shows through wherever chalk skips, so the box is the board's color; the white paper is the box's own white.
+    this.box.style.backgroundColor = paper.board ?? '';
+    this.setHand(paper.hand);
+    this.drawPaper();
+    this.drawGrid();
+    return true;
+  }
+
+  /**
+   * Show the drawing hand drawn (`'marker'` or `'chalk'`) or plain (null), with a new random look each time (a new wobble, a little more or less of it, and
+   * different smudges: kept only while the page is open). The sketch canvas takes the paper's place on the screen, and for chalk a mask
+   * of grain lets the board show through the lines, the way chalk skips. The paper canvas underneath is not touched.
+   */
+  setHand(look) {
+    this.hand = look ?? null;
+    if (this.hand) this.handLook = newHandLook(); // every time one is chosen (even the same one again) it wobbles and is dirty in new ways
+    // (written on the box so the browser checks can know the look; it is shown only, never stored)
+    if (this.hand) this.box.dataset.handLook = JSON.stringify(this.handLook);
+    else delete this.box.dataset.handLook;
+    this.box.classList.toggle('paper-hand', this.hand !== null);
+    this.sketchCanvas.hidden = this.hand === null;
+    const mask = this.hand === 'chalk' ? `url(${chalkGrainUrl()})` : '';
+    for (const name of ['mask-image', '-webkit-mask-image']) {
+      if (mask) this.sketchCanvas.style.setProperty(name, mask);
+      else this.sketchCanvas.style.removeProperty(name);
+    }
+    if (mask) for (const name of ['mask-size', '-webkit-mask-size']) this.sketchCanvas.style.setProperty(name, `${GRAIN_SHOWN}px ${GRAIN_SHOWN}px`);
+    else for (const name of ['mask-size', '-webkit-mask-size']) this.sketchCanvas.style.removeProperty(name);
+    if (this.hand) {
+      this.repaintHand();
+    } else {
+      this.sketchCtx.setTransform(1, 0, 0, 1, 0, 0);
+      this.sketchCtx.clearRect(0, 0, this.sketchCanvas.width, this.sketchCanvas.height);
+    }
+    this.sync(); // the turtle sits on the end of the line as it is shown, which is not where it was a moment ago
+  }
+
+  /** Is the paper a dark one, light-on-dark? */
+  get darkPaper() {
+    return paperById(this.paperId)?.dark ?? false;
+  }
+
+  /**
+   * Draw what is on the paper itself (for the kinds that have something) for the current view, on its own canvas above the paper: the color of a
+   * board, the smudges where it was wiped, and the squares printed on graph or blueprint paper.
+   */
+  drawPaper() {
+    const paper = paperById(this.paperId);
+    const ctx = this.styleCtx;
+    const { width, height } = this.styleCanvas;
+    this.styleCanvas.hidden = !paper || (!paper.board && !paper.lines && !paper.wipes);
+    if (this.styleCanvas.hidden) return;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    if (paper.board) {
+      ctx.fillStyle = paper.board;
+      ctx.fillRect(0, 0, width, height);
+    }
+    if (paper.wipes) this.drawWipes(paper.wipes);
+    if (!paper.lines) return;
+    const { xs, ys } = printedLines(this.drawView);
+    ctx.lineCap = 'butt';
+    const stroke = ({ at, bold }, vertical) => {
+      ctx.lineWidth = bold ? 2.5 : 1.5;
+      ctx.strokeStyle = bold ? paper.lines.major : paper.lines.minor;
+      ctx.beginPath();
+      if (vertical) {
+        const x = this.canvasPoint(at, 0).x;
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+      } else {
+        const y = this.canvasPoint(0, at).y;
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+      }
+      ctx.stroke();
+    };
+    for (const line of xs) stroke(line, true);
+    for (const line of ys) stroke(line, false);
+  }
+
+  /**
+   * The smudges of a hand drawn board: broad swipes of a cloth (thin streaks side by side) and specks of dust. They are fixed to the board, not to the
+   * drawing, so they do not move when the picture is zoomed or slid, and they are the same until another paper is chosen (core/paper.js `wipes`, `specks`,
+   * from this paper's `handLook`: its seed, how dirty it is, and how many extra swipes).
+   */
+  drawWipes({ color, count, strength, dust }) {
+    const ctx = this.styleCtx;
+    const { width, height } = this.styleCanvas;
+    const { seed, dirt, swipes } = this.handLook;
+    ctx.lineCap = 'round';
+    for (const swipe of wipes(count + swipes, seed)) {
+      const from = { x: swipe.from.x * width, y: swipe.from.y * height };
+      const to = { x: swipe.to.x * width, y: swipe.to.y * height };
+      const length = Math.hypot(to.x - from.x, to.y - from.y) || 1;
+      const side = { x: -(to.y - from.y) / length, y: (to.x - from.x) / length }; // across the swipe
+      const bow = swipe.bend * height;
+      const middle = { x: (from.x + to.x) / 2 + side.x * bow, y: (from.y + to.y) / 2 + side.y * bow };
+      for (const streak of swipe.streaks) {
+        const shift = { x: side.x * streak.offset * height, y: side.y * streak.offset * height };
+        ctx.lineWidth = streak.width * height;
+        ctx.strokeStyle = `rgba(${color}, ${Math.min(1, streak.alpha * strength * dirt)})`;
+        ctx.beginPath();
+        // Part of the way along the bowed line, from `start` to `end`.
+        for (let step = 0; step <= STREAK_STEPS; step += 1) {
+          const t = streak.start + ((streak.end - streak.start) * step) / STREAK_STEPS;
+          const a = (1 - t) * (1 - t);
+          const b = 2 * (1 - t) * t;
+          const c = t * t;
+          const x = a * from.x + b * middle.x + c * to.x + shift.x;
+          const y = a * from.y + b * middle.y + c * to.y + shift.y;
+          if (step === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+    for (const speck of specks(Math.round(dust * dirt), seed + 1)) {
+      ctx.fillStyle = `rgba(${color}, ${speck.alpha})`;
+      const size = Math.max(1.5, speck.size * width);
+      ctx.fillRect(speck.x * width, speck.y * height, size, size);
+    }
   }
 
   /** Draw the grid for the current view on its own canvas, above the paper (see paintGrid). */
@@ -335,68 +597,18 @@ export class CanvasView {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, width, height);
     // Numbers about 12 screen pixels tall whatever the window size.
-    this.paintGrid(ctx, width, height, { size: clamp(24 / this.scale, 18, 34) });
+    this.paintGrid(ctx, width, height, { size: clamp(24 / this.scale, 18, 34), type: this.gridType, dark: this.darkPaper, hand: this.hand !== null });
   }
 
   /**
-   * Paint the grid for the current view onto a canvas of the paper's size: light lines, darker axes, and
-   * numbers along the axes. The numbers sit just beside the axes, or against the edge of the paper when an
-   * axis is off the paper. `size` is how tall the numbers are, in the canvas's own pixels. `strong` makes the
-   * lines darker and thicker, for a picture that will be shrunk onto a page (the PDF), where the thin faint
-   * lines of the screen would nearly vanish.
+   * Paint a grid for the current view onto a canvas of the paper's size (grid-paint.js draws each kind): light lines, darker axes, and
+   * numbers where the kind has them. `size` is how tall the numbers are, in the canvas's own pixels. `strong` makes the lines darker and
+   * thicker, for a picture that will be shrunk onto a page (the PDF), where the thin faint lines of the screen would nearly vanish. `dark`
+   * is for a dark paper: light lines. `hand` bends the lines the way the drawing is bent on a hand drawn paper.
    */
-  paintGrid(ctx, width, height, { size, strong = false }) {
-    const { xs, ys } = gridLines(this.drawView);
-    const origin = this.canvasPoint(0, 0);
-    const line = strong ? 'rgba(0, 0, 0, 0.3)' : 'rgba(0, 0, 0, 0.16)';
-    const axis = strong ? 'rgba(0, 0, 0, 0.65)' : 'rgba(0, 0, 0, 0.5)';
-
-    ctx.lineCap = 'butt';
-    for (const x of xs) {
-      const at = this.canvasPoint(x, 0).x;
-      ctx.lineWidth = x === 0 ? (strong ? 5 : 3) : strong ? 2.5 : 1.5;
-      ctx.strokeStyle = x === 0 ? axis : line;
-      ctx.beginPath();
-      ctx.moveTo(at, 0);
-      ctx.lineTo(at, height);
-      ctx.stroke();
-    }
-    for (const y of ys) {
-      const at = this.canvasPoint(0, y).y;
-      ctx.lineWidth = y === 0 ? (strong ? 5 : 3) : strong ? 2.5 : 1.5;
-      ctx.strokeStyle = y === 0 ? axis : line;
-      ctx.beginPath();
-      ctx.moveTo(0, at);
-      ctx.lineTo(width, at);
-      ctx.stroke();
-    }
-
-    ctx.font = `${size}px Roboto, Arial, sans-serif`;
-    ctx.lineJoin = 'round';
-    ctx.lineWidth = 5;
-    const write = (text, x, y, align) => {
-      ctx.textAlign = align;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-      ctx.strokeText(text, x, y);
-      ctx.fillStyle = '#333';
-      ctx.fillText(text, x, y);
-    };
-    const rowY = clamp(origin.y + size + 6, size + 6, height - 8);
-    for (const x of xs) {
-      const at = this.canvasPoint(x, 0).x;
-      const half = ctx.measureText(labelFor(x)).width / 2;
-      if (at - half < 4 || at + half > width - 4) continue;
-      write(labelFor(x), at, rowY, 'center');
-    }
-    for (const y of ys) {
-      if (y === 0) continue; // the 0 is already written along the x axis
-      const text = labelFor(y);
-      const left = clamp(origin.x + 8, 8, width - 8 - ctx.measureText(text).width);
-      write(text, left, this.canvasPoint(0, y).y - 6, 'left');
-    }
-    ctx.font = `bold ${size + 4}px Roboto, Arial, sans-serif`;
-    if (origin.y >= 0 && origin.y <= height) write('x', width - 22, origin.y - 8, 'center');
-    if (origin.x >= 0 && origin.x <= width) write('y', origin.x + 16, size + 12, 'center');
+  paintGrid(ctx, width, height, { size, strong = false, type = DEFAULT_GRID, dark = false, hand = false }) {
+    const warp = hand ? (x, y) => this.warpPoint(x, y) : null;
+    paintGridKind(ctx, width, height, { type, dark, strong, size, warp, view: this.drawView, point: (x, y) => this.canvasPoint(x, y) });
   }
 
   /**
@@ -414,7 +626,8 @@ export class CanvasView {
     context.drawImage(this.canvas, 0, 0);
     // The grid goes on this copy always, whether or not it is showing on the screen, so whoever reads the PDF
     // can read off x and y. (The numbers are a bit bigger than on the screen: the picture is shrunk onto a page.)
-    this.paintGrid(context, copy.width, copy.height, { size: PDF_GRID_TEXT, strong: true });
+    // It is always the squares with numbers, on white, whatever grid and paper are showing on the screen.
+    this.paintGrid(context, copy.width, copy.height, { size: PDF_GRID_TEXT, strong: true, type: 'numbers', dark: false });
 
     const url = URL.createObjectURL(new Blob([turtleSvg()], { type: 'image/svg+xml' }));
     try {
@@ -465,7 +678,7 @@ export class CanvasView {
     // While a write block is tracing letters, the turtle is shown at the tip of its pen, facing the way it is drawing.
     const shown = this.turtle.writing ?? this.turtle;
     const { heading } = shown;
-    const at = this.canvasPoint(shown.x, shown.y);
+    const at = this.drawnPoint(shown.x, shown.y);
     const px = (at.x / PIXEL_RATIO) * this.scale;
     const py = (at.y / PIXEL_RATIO) * this.scale;
     const half = this.spriteSize / 2;
@@ -660,7 +873,7 @@ export class CanvasView {
   /** Where the middle of the turtle is on the screen. */
   spriteCenter() {
     const rect = this.box.getBoundingClientRect();
-    const at = this.canvasPoint(this.turtle.x, this.turtle.y);
+    const at = this.drawnPoint(this.turtle.x, this.turtle.y);
     return {
       x: rect.left + (at.x / PIXEL_RATIO) * this.scale,
       y: rect.top + (at.y / PIXEL_RATIO) * this.scale,

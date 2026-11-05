@@ -24,6 +24,8 @@ import { PaletteUI } from './palette.js';
 import { Autosave, loadAutosave } from './storage.js';
 import { savePicture, savePdf, readFile, dragHasFiles, exportAs, EXPORTS } from './files.js';
 import { ExportMenu } from './export-menu.js';
+import { GRID_TYPES, gridTypeById } from '../core/grid.js';
+import { PAPERS, paperById, afterGridPress } from '../core/paper.js';
 import { DEMOS } from './demos.js';
 import { sampleById, sampleStacks, LEFT as SAMPLE_LEFT, TOP as SAMPLE_TOP } from './samples.js';
 import { noteHeight, stackSize } from './block-view.js';
@@ -637,13 +639,70 @@ $('view-home').addEventListener('click', () => {
   if (!view.resetDrawView().ok) say(TOO_LONG_TO_ZOOM);
 });
 const gridButton = $('grid');
-gridButton.addEventListener('click', () => {
-  const on = !view.gridVisible;
-  view.setGridVisible(on);
+// What is said when a kind of grid shows. A plain press only ever shows the numbers one, so the others (chosen from the menu) say how to change them.
+const GRID_SAY = {
+  numbers: 'The grid shows x and y, the same numbers you type into set xy. Press the button again to try the next paper, and once more at the end to put the blank screen back. It is never in a saved picture, but a PDF always has a grid on its drawing.',
+  squares: 'Squares, without the numbers. Right-click the button to choose another grid, or to hide it.',
+  dots: 'A dot wherever the lines would cross. Right-click the button to choose another grid, or to hide it.',
+  polar: 'The rings show how far from the middle, the number you use in forward. The numbers around the edge are headings, the ones in set heading: 0 is up and 90 is to the right. Right-click the button to choose another grid, or to hide it.',
+};
+/** What is said when a paper shows: it is only a look, and what the next press does. */
+const paperSay = (id, last) => `${paperById(id).label} is only how the paper looks on your screen. Saved pictures and PDFs still have white paper. ${last ? 'Press the button again to put the blank screen back.' : 'Press the button again for the next paper.'}`;
+/** Bring the grid button, its tooltip and the check marks in its menu up to date with the grid and paper that are showing. */
+function gridChanged() {
+  const on = view.gridVisible;
   gridButton.setAttribute('aria-pressed', String(on));
-  gridButton.title = on ? 'Hide the grid' : 'Show a grid with x and y numbers';
-  say(on ? 'The grid shows x and y, the same numbers you type into set xy. Press the button again to hide it. It is never in a saved picture, but a PDF always has a grid on its drawing.' : '');
+  const next = afterGridPress({ gridVisible: on, paperId: view.paperId });
+  const what = !on ? 'Show a grid with x and y numbers' : next.gridVisible ? `Next paper (this one is ${paperById(view.paperId).label})` : 'Put the blank screen back';
+  gridButton.title = `${what}. Right-click, or press and hold, to choose other grids and papers`;
+  gridMenu.setChecked([`grid:${on ? view.gridType : 'off'}`, `paper:${view.paperId}`]);
+}
+// A press: the grid on (squares with x and y), then on to each paper in turn, then the blank screen again.
+gridButton.addEventListener('click', () => {
+  const next = afterGridPress({ gridVisible: view.gridVisible, paperId: view.paperId });
+  const paperChanged = next.paperId !== view.paperId;
+  view.setGridType(next.gridType);
+  if (paperChanged) view.setPaper(next.paperId);
+  view.setGridVisible(next.gridVisible);
+  gridChanged();
+  if (!next.gridVisible) say('');
+  else if (paperChanged && next.paperId !== 'white') say(paperSay(next.paperId, afterGridPress({ gridVisible: true, paperId: next.paperId }).gridVisible === false));
+  else say(GRID_SAY[next.gridType]);
 });
+// Right-click (or press and hold) the grid button for the other kinds of grid, and the paper. The paper is only how the page looks on the screen.
+const gridMenu = new ExportMenu({
+  button: gridButton,
+  label: 'Grids and papers',
+  items: [
+    { heading: 'Grid' },
+    { id: 'grid:off', label: 'No grid', hint: 'Just the paper', radio: true },
+    ...GRID_TYPES.map((type) => ({ id: `grid:${type.id}`, label: type.label, hint: type.hint, radio: true })),
+    { heading: 'Paper' },
+    ...PAPERS.map((paper) => ({ id: `paper:${paper.id}`, label: paper.label, hint: paper.hint, radio: true })),
+  ],
+  onPick: (id) => {
+    const [kind, name] = id.split(':');
+    if (kind === 'grid' && name === 'off') {
+      view.setGridVisible(false);
+      say('');
+    } else if (kind === 'grid') {
+      view.setGridType(name);
+      view.setGridVisible(true);
+      say(GRID_SAY[name]);
+    } else {
+      view.setPaper(name);
+      say(name === 'white' ? '' : `${paperById(name).label} is only how the paper looks on your screen. Saved pictures and PDFs still have white paper. Press the grid button to go on to the next paper.`);
+    }
+    gridChanged();
+  },
+});
+// (?grid=polar shows that kind of grid, and ?paper=blueprint that paper, for trying them out)
+if (gridTypeById(params.get('grid'))) {
+  view.setGridType(params.get('grid'));
+  view.setGridVisible(true);
+}
+if (paperById(params.get('paper'))) view.setPaper(params.get('paper'));
+gridChanged();
 setupFullscreen({ button: $('fullscreen'), say });
 $('fit').addEventListener('click', () => {
   // Pressed again with the paper already fitted, it goes back to the normal paper.

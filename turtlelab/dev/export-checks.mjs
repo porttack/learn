@@ -30,7 +30,9 @@ const click = async (selector) => {
   await chrome.click(at.x, at.y);
 };
 const message = () => chrome.eval(`document.getElementById('message').textContent`);
-const menuOpen = () => chrome.eval(`(() => { const m = document.querySelector('.export-menu'); return !!m && !m.hidden; })()`);
+// The grid button has a menu built the same way (class export-menu too), so these look only at the one for Save.
+const SAVE_MENU = '.export-menu[aria-label="Ways to save"]';
+const menuOpen = () => chrome.eval(`(() => { const m = document.querySelector('${SAVE_MENU}'); return !!m && !m.hidden; })()`);
 const filesWith = (extension) => readdirSync(downloads).filter((f) => f.endsWith(`.${extension}`));
 const b = (op, ...args) => ({ op, args });
 
@@ -54,7 +56,7 @@ async function waitForFile(extension, count = 1) {
 /** Choose a way to save from the menu. */
 async function saveVia(format) {
   await rightClick('#save');
-  await click(`.export-item[data-format="${format}"]`);
+  await click(`${SAVE_MENU} .export-item[data-format="${format}"]`);
   await chrome.sleep(400);
 }
 
@@ -94,11 +96,11 @@ try {
   check('before anything, the menu is closed', !(await menuOpen()));
   await rightClick('#save');
   check('right-clicking Save opens the list of ways to save', await menuOpen());
-  const listed = await chrome.eval(`[...document.querySelectorAll('.export-item')].map((r) => r.dataset.format)`);
+  const listed = await chrome.eval(`[...document.querySelectorAll('${SAVE_MENU} .export-item')].map((r) => r.dataset.format)`);
   check('it lists every way to save, in order', JSON.stringify(listed) === JSON.stringify(EXPORTS.map((e) => e.id)), listed.join());
   check('each line says what it is and gives a hint, and a keyboard can reach them',
-    await chrome.eval(`[...document.querySelectorAll('.export-item')].every((r) => r.querySelector('.export-label').textContent.length > 5 && r.querySelector('.export-hint').textContent.length > 10 && r.getAttribute('role') === 'menuitem') && document.activeElement.classList.contains('export-item')`));
-  const where = await chrome.eval(`(() => { const r = document.querySelector('.export-menu').getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, w: innerWidth, h: innerHeight }; })()`);
+    await chrome.eval(`[...document.querySelectorAll('${SAVE_MENU} .export-item')].every((r) => r.querySelector('.export-label').textContent.length > 5 && r.querySelector('.export-hint').textContent.length > 10 && r.getAttribute('role') === 'menuitem') && document.activeElement.classList.contains('export-item')`));
+  const where = await chrome.eval(`(() => { const r = document.querySelector('${SAVE_MENU}').getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, w: innerWidth, h: innerHeight }; })()`);
   check('the menu is on the screen', where.left >= 0 && where.top >= 0 && where.right <= where.w && where.bottom <= where.h, JSON.stringify(where));
   await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await chrome.sleep(150);

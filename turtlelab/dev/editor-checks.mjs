@@ -1867,8 +1867,8 @@ try {
   check('with script chosen it writes in script (as it always did)', inkScript > 200, `${inkScript} red pixels`);
 
   await openFontList();
-  check('tapping the font box opens a list of the five fonts, script ticked, nothing else changed', JSON.stringify(await fontOptions()) === JSON.stringify(['script*', 'fancy', 'sans', 'bold', 'serif']) && (await count('.number-input')) === 0, JSON.stringify(await fontOptions()));
-  check('each choice shows a word drawn in that font', await chrome.eval(`[...document.querySelectorAll('.font-option')].every((o) => { const d = o.querySelector('svg path')?.getAttribute('d') ?? ''; return d.startsWith('M') && d.length > 100; }) && new Set([...document.querySelectorAll('.font-option path')].map((p) => p.getAttribute('d'))).size === 5`));
+  check('tapping the font box opens a list of the seven fonts, script ticked, nothing else changed', JSON.stringify(await fontOptions()) === JSON.stringify(['script*', 'fancy', 'sans', 'bold', 'serif', 'blocky', 'pixel']) && (await count('.number-input')) === 0, JSON.stringify(await fontOptions()));
+  check('each choice shows a word drawn in that font', await chrome.eval(`[...document.querySelectorAll('.font-option')].every((o) => { const d = o.querySelector('svg path')?.getAttribute('d') ?? ''; return d.startsWith('M') && d.length > 100; }) && new Set([...document.querySelectorAll('.font-option path')].map((p) => p.getAttribute('d'))).size === 7`));
   check('the list sits inside the window', await chrome.eval(`(() => { const r = document.querySelector('.font-menu').getBoundingClientRect(); return r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight; })()`));
   await pressKey('Escape', 'Escape', 27);
   check('Escape closes the list and changes nothing', (await count('.font-menu')) === 0 && (await fontBoxText()) === 'script');
@@ -1917,7 +1917,7 @@ try {
   await pressKey('ArrowUp', 'ArrowUp', 38);
   await pressKey('ArrowUp', 'ArrowUp', 38);
   await pressKey('ArrowUp', 'ArrowUp', 38);
-  check('and the arrow keys wrap round from the top to the end of the list (sans, up, up, up is serif)', await chrome.eval(`document.activeElement?.dataset?.font`) === 'serif');
+  check('and the arrow keys wrap round from the top to the end of the list (sans, up, up, up is pixel, the last)', await chrome.eval(`document.activeElement?.dataset?.font`) === 'pixel');
   await pressKey('Escape', 'Escape', 27);
 
   // The Python box leaves the font as a note.

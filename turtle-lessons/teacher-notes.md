@@ -98,7 +98,7 @@ Press the PDF button in TurtleLab and attach the PDF to this assignment.
 
 ## The write block
 
-TurtleLab has a **write** block (Notes palette, next to the sticky note) that draws words in a single line, in one of five fonts. It can draw letters for a student, so the student pages for Step 1 (initials) and Step 5 (capstone) tell students to skip it. It is not in the Pen or Turtle palettes on purpose. If you want it off the table for an assignment, add this line to the assignment text:
+TurtleLab has a **write** block (Notes palette, next to the sticky note) that draws words in a single line, in one of seven fonts. It can draw letters for a student, so the student pages for Step 1 (initials) and Step 5 (capstone) tell students to skip it. It is not in the Pen or Turtle palettes on purpose. If you want it off the table for an assignment, add this line to the assignment text:
 
 > Do not use the write block in this assignment. The letters and the picture have to come from your own blocks.
 

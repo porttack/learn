@@ -135,6 +135,40 @@ body {
 
 .paper-grid[hidden] { display: none; }
 
+/* How the paper looks on the screen (js/ui/canvas-view.js setPaper): never in a saved picture. The paper the turtle draws on stays white; a dark one
+   turns the picture light-on-dark here (black becomes white like chalk, red stays red), and a layer over it, blended in, gives the board its color and
+   prints the lines (graph and blueprint). The turtle and the grid lie over all of it. */
+.paper-style {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.paper-style[hidden] { display: none; }
+.paper-box.paper-graph .paper-style,
+.paper-box.paper-whiteboard .paper-style { mix-blend-mode: multiply; }
+.paper-box.paper-blueprint .paper { filter: invert(1) hue-rotate(180deg); }
+.paper-box.paper-chalkboard .paper-style,
+.paper-box.paper-blueprint .paper-style { mix-blend-mode: lighten; }
+
+/* The hand drawn papers (the whiteboard and the chalkboard): a sketch canvas, the same drawing wobbled (core/hand.js, painted by canvas-view.js), takes the
+   paper canvas's place on the screen. The paper canvas stays underneath, hidden and untouched: it is the real picture, what Save and the PDF read. The
+   sketch starts see-through, so the box shows through it: white for the whiteboard, and the board's own color (set by script) for the chalkboard. */
+.paper-sketch {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.paper-sketch[hidden] { display: none; }
+.paper-box.paper-hand .paper { visibility: hidden; }
+/* Chalk is light on dark like the other dark papers; its grain (a mask that lets the board show through) is put on by script. */
+.paper-box.paper-chalkboard .paper-sketch { filter: invert(1) hue-rotate(180deg); }
+
 .turtle-sprite {
   position: absolute;
   left: 0;
@@ -1139,6 +1173,27 @@ body {
 
 .export-label { font-weight: 700; }
 .export-hint { font-size: 0.85rem; color: #555; }
+
+/* The grid button's menu has headings over its groups, and a check mark on the line that is chosen. */
+.export-heading {
+  padding: 0.5rem 0.6rem 0.15rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #4a6a8a;
+}
+.export-heading:not(:first-child) { margin-top: 0.2rem; border-top: 1px solid #dde5ee; }
+.export-radio { position: relative; padding-left: 1.9rem; }
+.export-radio[aria-checked="true"]::before {
+  content: '\2713';
+  position: absolute;
+  left: 0.6rem;
+  top: 0.4rem;
+  font-weight: 700;
+  color: #1a6fc4;
+}
+.export-radio[aria-checked="true"] .export-label { color: #14558f; }
 
 /* ---- The list of fonts that opens from a write block ---- */
 

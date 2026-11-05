@@ -222,3 +222,13 @@ test('the Guide, the Privacy page and the teacher notes tell about Open in real 
   assert.match(privacy, /Open in real Logo<\/em> button opens the program in a new tab at <code>\/logo\/<\/code>/);
   assert.match(privacy, /makes no outside requests and keeps nothing in the browser/);
 });
+
+test('the Guide tells about the other grids and the papers, and that they are only a look and are not kept', () => {
+  const guide = read('guide.html');
+  assert.match(guide, /<td>Other grids and papers<\/td>/);
+  for (const word of ['Right-click', 'circles and angles', 'dots', 'whiteboard', 'hand drawn', 'wobbles', 'graph paper', 'chalkboard', 'blueprint', 'set heading', 'only how your screen looks', 'plain white paper and straight lines', 'does not remember', 'Press it again and the paper changes', 'blank screen comes back', 'plain press of the grid button', 'wobble and the dirt are different']) {
+    assert.ok(guide.includes(word), word);
+  }
+  const html = read('index.html');
+  assert.match(html, /<button id="grid"/, 'the grid button is the one the menu opens from');
+});

@@ -49,11 +49,15 @@ The Apache License 2.0 can be combined with this project's AGPL-3.0-or-later.
 (by `dev/make-font-data.mjs`, with nothing changed) so the PDF can draw blocks with
 the right font without fetching anything. The same license applies.
 
-## The Hershey fonts
+## The fonts for the write block
 
 The letters the **write** block draws (`js/core/lettering-data.js`, made by `dev/make-lettering-data.py`)
-are five Hershey fonts, one for each choice in the block's font list: Script Simplex (script), Script Complex
-(fancy), Futura Light (sans), Futura Medium (bold) and Times Roman (serif). The Hershey fonts are in the public domain, on these terms: the
+are seven fonts of lines, one for each choice in the block's font list: five Hershey fonts, EMS Osmotron (blocky), and one drawn for TurtleLab (pixel).
+
+### The Hershey fonts
+
+Script Simplex (script), Script Complex (fancy), Futura Light (sans), Futura Medium (bold) and Times Roman (serif).
+The Hershey fonts are in the public domain, on these terms: the
 following acknowledgments must come with the font data, and the data must not be put in the format that
 the U.S. NTIS distributes (it is not: it is a short list of numbers for each letter).
 
@@ -65,6 +69,32 @@ the U.S. NTIS distributes (it is not: it is a short list of numbers for each let
 The data came from the `Hershey-Fonts` package on PyPI (MIT licence), which carries the original fonts. That
 package is used once, by the dev script, to write the data file. It is not part of TurtleLab and is not needed
 to run it. Only the numbers for the 95 printable characters of each font were kept.
+
+### EMS Osmotron (blocky)
+
+Wide letters with square, cut off corners, in few lines. It is **EMS Osmotron** by Windell H. Oskay (Evil Mad Scientist
+Laboratories, https://gitlab.com/oskay/svg-fonts), a single line version, made for the Hershey Text program, of **Orbitron** by
+Matt McInerney (the League of Moveable Type). It is under the **SIL Open Font License, Version 1.1**. Orbitron's notice is
+"Copyright 2018 The Orbitron Project Authors (https://github.com/theleagueof/orbitron), with Reserved Font Name: Orbitron", so this
+font is not called Orbitron anywhere in TurtleLab (it is "blocky" in the font list, and "EMS Osmotron" here and on the About page).
+
+- The license text is `fonts/osmotron/OFL.txt` (Orbitron's own file, with its copyright line), and it is named in the header of
+  `js/core/lettering-data.js`. The font data in that file (the `blocky` entry) stays under the OFL, which allows it to be bundled with
+  this program; everything else in the file is under the AGPL.
+- `dev/fonts/EMSOsmotron.svg` is the font file exactly as published (its credits are inside it). `dev/make-lettering-data.py` reads it
+  (`read_svg`) once to write the data file. It is a development file: it is not served and not needed to run TurtleLab.
+- **What was changed**, as the license asks: only the 95 printable characters were kept; stems that poke past the baseline and the
+  capital height were trimmed to them (so that a capital letter is exactly the size asked for, as in every font here); each letter is
+  centered in its own box; and the numbers were scaled and rounded to whole numbers (a capital letter is 118 tall).
+- The font is never sold on its own, and nothing is fetched at run time: the numbers are in the page's own script.
+
+### Pixel
+
+Video game letters made of square pixels, drawn as the outline of the pixels. **These are original to TurtleLab**: each of the 95
+letters was drawn by hand as a small picture of lit and empty pixels, 5 wide and 7 tall, in the style of old games and dot matrix
+displays (`dev/fonts/pixel-5x7.txt`, a development file that is not served), and `dev/make-lettering-data.py` (`read_pixels`) turns each
+picture into lines. Nothing is taken from a font file, from a game's font, or from anyone's artwork, and no game is named in the app.
+They are under the AGPL, like the rest of TurtleLab.
 
 ## GNU Affero General Public License
 

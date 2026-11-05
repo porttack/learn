@@ -84,11 +84,13 @@ the dashes out of them too for consistency.
       pdf.js          writes the one page PDF with no library; see "The PDF"
       squeeze.js      closes wide empty gaps between stacks, for the PDF's picture of the blocks
       fit.js          what has been drawn (even off the paper) and the zoom that fits it; the drawing "view"
-      grid.js         which grid lines to draw for a view, at nice numbers
+      grid.js         which grid lines to draw for a view, at nice numbers; the four kinds of grid (squares with numbers, squares, dots, polar)
+      paper.js        the five papers (white, whiteboard, graph, chalkboard, blueprint), the lines printed on graph and blueprint paper, the smudges on the boards
+      hand.js         the wobble of a hand drawn line (a smooth noise of WHERE a point is) and the tile of chalk grain; see "Hand drawn papers"
       svg-export.js   the drawing as SVG: a picture, or hairlines for a cutter
       stitch-plan.js  a drawing as stitches for an embroidery machine (running stitch, one thread a color)
       embroidery.js   writes .dst (Tajima) and .pes (Brother) files; the Brother thread palette
-      lettering.js    the write block's words as lines (five single-stroke fonts, LETTER_FONTS); lettering-data.js is GENERATED
+      lettering.js    the write block's words as lines (seven fonts of lines, LETTER_FONTS); lettering-data.js is GENERATED
       png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
       project-file.js put a project inside a PNG, and read a PNG or .json back
     js/ui/            the browser side
@@ -106,7 +108,8 @@ the dashes out of them too for consistency.
       code-image.js   the blocks as a picture for the PDF (SVG, then canvas)
       roboto-data.js  GENERATED: the Roboto font as text (dev/make-font-data.mjs)
       trash.js        the trash can and its shark (see Deleting, above)
-      canvas-view.js  paper canvas (1400x1120) + draggable turtle overlay
+      canvas-view.js  paper canvas (1400x1120) + sketch canvas for the hand drawn papers + draggable turtle overlay
+      hand-drawn.js   makes the chalk grain tile into a picture for CSS mask-image (once, from numbers)
       files.js        Save (download a PNG with the blocks inside), Open, drops
       fullscreen.js   the Full screen button (standard and webkit names; hides itself where the browser cannot)
       storage.js      autosave to local storage (one item: turtlelab-project)
@@ -177,7 +180,7 @@ the picture's red shapes were separated, each outline was fitted by a closed cha
 "angle, radius" numbers, so a toe is four quarter circles `arc 90 30, arc 90 75` twice, drawn by one `toe` block four
 times), and the S is two identical halves (`repeat 2 [arc -240 50, arc 240 10, left 90, forward 40, left 90]`).
 The L and V are plain polygons of `set xy`. It is close, not perfect, on purpose: stitched thread is not perfect either.
-`stitch-cougars` is one `write` block (see "The write block"). Three samples show the text settings: `text-fonts` (set font, five rows), `words-around`
+`stitch-cougars` is one `write` block (see "The write block"). Three samples show the text settings: `text-fonts` (set font, seven rows), `words-around`
 (turning the turtle, and set curve as an arch and a bowl) and `stitch-badge` (an embroidery badge: two rings with SLV COUGARS arched over the top and GO TEAM
 bowled along the bottom, 580 stitches, 22 hops; its curve numbers and standing places were worked out from the words' widths, so if the words or the size change,
 work them out again and re-set `maxHops`). A sample may say `maxHops` (how many separate
@@ -397,7 +400,45 @@ is about to clean anyway).
 - **Grid** (`#grid`): a second canvas, `.paper-grid`, above the paper and under the turtle, so it is never in a
   PNG, JPEG or SVG (the PDF paints its own copy, see "The PDF"). Lines at 1, 2, 5, 10... times a power of ten, never closer than 50 paper units on the
   screen (`core/grid.js`); axes darker; numbers along the axes, with a white halo, about 12 screen pixels
-  tall. Not saved anywhere (no new storage).
+  tall. Not saved anywhere (no new storage). **Kinds of grid and paper looks: see "Other grids and papers" right below.**
+- **Other grids and papers (2026-11-05, the user: "Now implement the different types of grids"; earlier, "I do want to build the paper styles").** Right-click or press and hold the grid button
+  (`gridMenu` in `main.js`, which is the Save menu class `ExportMenu` generalized: it takes `{ heading }` rows, `radio: true` rows with `aria-checked` and a check mark, `setChecked(ids)`,
+  and an `aria-label`) for a list with two independent parts. **A plain click no longer just toggles (2026-11-05, the user: "make the grid button when it is clicked either go back to the blank screen or cycle thru the Paper options, but always with just squares with x and y"):** it is `afterGridPress` in `core/paper.js` (pure, tested): grid off turns it on (kind forced to `numbers`, paper kept); grid on goes to the next paper in `PAPERS` order (white, whiteboard, graph, chalkboard, blueprint) with kind `numbers`; after the last paper the blank screen comes back (no grid, white). So from blank: grid on white, whiteboard, graph, chalkboard, blueprint, blank. The tooltip says what the next press does, the message line says what the paper is. The menu is how to get other kinds of grid. **Grid** (radio): No grid, then `GRID_TYPES` in `core/grid.js`: `numbers` (the old grid:
+  squares with x and y numbers, the default), `squares` (no numbers), `dots`, `polar` (rings `step` apart, a spoke every 30 degrees, headings written just inside the paper's edge with
+  0 up and growing clockwise like set heading, and the ring distances up the 0 heading). **There was a fifth, `triangles`, and the user removed it ("triangles are silly",
+  2026-11-05): do not bring it back.** Choosing a kind turns the grid on. The geometry is pure (`gridLines`, `polarGrid`, unit tested) and `ui/grid-paint.js` draws it (`paintGrid`, with `rayInside` for the heading labels and `gridColors`); `CanvasView.paintGrid` delegates to it. **Paper** (radio): `PAPERS`
+  in `core/paper.js`: `white`, `whiteboard`, `graph`, `chalkboard`, `blueprint` (the whiteboard and chalkboard are hand drawn, see "Hand drawn papers" below). **It is only a look, never in a saved file:** the paper canvas stays white (so every PNG, JPEG, SVG, embroidery file and the
+  PDF are unchanged, and the PDF's copy always paints `type: 'numbers'`, `dark: false`, `strong: true`). Done with CSS on the box (class `paper-<id>`, set by `CanvasView.setPaper`): a dark paper
+  puts `filter: invert(1) hue-rotate(180deg)` on the picture (on `canvas.paper` for the blueprint, on `canvas.paper-sketch` for the chalkboard; black becomes white chalk, red stays about red; other colors shift a little, which is why it is a look and not the data)
+  and a third canvas `.paper-style` (between the paper and the grid) is filled with the board color and blended with `mix-blend-mode: lighten` (so black, after the invert, becomes the board color);
+  graph paper prints faint squares on `.paper-style` blended with `multiply` (`printedLines` in `core/paper.js`: squares never finer than 10 units, never closer than 8 screen pixels, a bold
+  line every 5th, so they zoom and slide with the drawing); blueprint is both. The grid draws light on a dark paper (`gridColors({ dark })`). **Nothing is remembered:** grid kind, paper and
+  on/off reset when the page closes, like the grid on/off always did, so the privacy pages' storage promise is unchanged (they and the Guide say so). Developer shortcuts: `?grid=polar` and
+  `?paper=blueprint`. Tests: `test/grid.test.js`, `paper.test.js`, `grid-paint.test.js` (a recording canvas), `pages.test.js`, and `dev/view-checks.mjs` (the real menu, pixels of each kind,
+  each paper, forgetting on reload, the PDF still written). A bug worth remembering: `paintPolar` first passed `{dx, dy}` where `rayInside` wants `{x, y}`, so every heading label was silently
+  skipped (nothing threw); the recording-canvas test now asserts every heading is written.
+- **Hand drawn papers (2026-11-05, the user: "make the chalk board look like it is hand drawn? I always want a bit of whimsy. Maybe a hand drawn whiteboard mode too?").** `whiteboard`
+  (`hand: 'marker'`) and `chalkboard` (`hand: 'chalk'`) in `PAPERS`; `paper.hand` names the look, `paper.wipes` says how the board is smudged. **A new random look each time one is chosen (2026-11-05, the user: "make the dirtyness and unstraight lines a bit more randomness everytime the user switches"):** `newHandLook()` in `core/hand.js` gives `{ seed, amount, dirt, swipes }`: `seed` moves the wobble's noise layers (`saltFor`; seed 0 is the plain wobble every older test used), `amount` is 0.75 to 1.5 times `HAND_WOBBLE` (so up to 4.5 units), `dirt` 0.7 to 1.5 times the smudge strength and dust, `swipes` 0 to 3 extra swipes. `CanvasView.setHand` rolls a new one every time a hand paper is chosen, even the same paper again (a shake), and keeps it in `handLook` (memory only; `box.dataset.handLook` shows it to the browser checks, deleted on other papers); `paintHandOp`, `drawnPoint`, `drawWipes` and the grid warp all read it, so a Fit or zoom repaints the same look. Nothing is stored. The whiteboard's smudge alpha can reach about 135 of 255 at the dirtiest, so the browser check allows under 170. **How it is done, and why not the obvious way:**
+  a third canvas, `.paper-sketch` (`CanvasView.sketchCanvas`, same 1400x1120, between the paper and the style layer), shows the same ops wobbled, and CSS hides the real paper canvas
+  (`.paper-hand .paper { visibility: hidden }`; it is still painted exactly as before, because it is the real picture Save, the PDF and every export read, so none of them wobble).
+  `paintHandOp` (canvas-view.js) mirrors `paintOp`: `clear` clears the sketch (see-through, so the box shows: white, or the board color set by `setPaper` as `box.style.backgroundColor`),
+  `fillScreen` covers it, lines and arcs are `Path2D`s of `handSegment` points, fills use `handOutline` plus their pen outlines. `applyOp` and `repaint()` (so also zoom, Fit, opened pictures)
+  keep the sketch up to date only while a hand paper is chosen (`setHand` repaints it on choosing). **`core/hand.js` is the wobble:** `wobbleAt(x, y)` is smooth value noise (two octaves,
+  wavelengths 64 and 27 units, at most `HAND_WOBBLE` = 3 units either way) of the point's place in the turtle's world, NOT of the line it is on, so lines that meet at a corner are moved
+  the same way there (a drawn square stays closed, an arc joins its neighbors), the same drawing wobbles the same way every paint, zooming scales the wobble with the drawing, and
+  lines are cut into pieces of at most `HAND_STEP` = 6 units (never more than `MAX_PIECES`) so they can bend. The turtle sprite sits on the wobbled point (`drawnPoint`, used by `sync`
+  and `spriteCenter`; `setHand` calls `sync`, which a browser check caught missing), and the grid wobbles with it: `paintGrid(..., { warp })` (`grid-paint.js`) draws lines and rings as
+  short pieces whose points go through `warp` (`CanvasView.warpPoint`: canvas pixel to world to wobbled), dots move, the numbers stay straight so they can be read; the PDF's copy
+  never passes `hand`, so it is straight. **Chalk:** every stroke gets a wider, faint dust stroke under it (`CHALK_DUST_WIDTH`, `CHALK_DUST_ALPHA`), the sketch is inverted by CSS like the
+  other dark papers, and a CSS `mask-image` of grain (`chalkGrain` in hand.js: a 256 px tile, about a quarter see-through, wraps so no seam; `hand-drawn.js` turns it into a PNG data
+  address once, shown at `GRAIN_SHOWN` css px) lets the board show through, so the line skips like chalk. CSP allows it (`img-src data:`). **The boards' smudges** (`wipes`, `specks`,
+  `seeded` in `core/paper.js`, a fixed seed so a board always has the same ones) are painted on the style canvas by `drawWipes`: swipes of 22 to 34 thin streaks with ragged ends, and
+  chalk dust; blended `lighten` on the chalkboard, `multiply` (gray) on the whiteboard; fixed to the board, so they do not move when the picture is zoomed.
+  **Not done first time, and why: an SVG filter** (`feTurbulence` plus `feDisplacementMap` on the paper canvas) looked right in a screenshot but dropped the frame rate to 38 fps
+  (whiteboard) and 19 fps (chalkboard) while a program drew, in headless Chrome without a GPU (worse on a retina screen or a weak Chromebook), because it is recomputed every time the canvas
+  changes. The vector sketch plus a static mask measures 60 fps on every paper; keep it that way (`dev` probe: run the `spiral` sample at `?speed=fast` and count `requestAnimationFrame`s).
+  Tests: `test/hand.test.js` (bounded, smooth, repeatable, corners meet, arcs, grain), `paper.test.js` (smudges), `grid-paint.test.js` (warp), `dev/view-checks.mjs` (wobble on the
+  sketch and not on the paper, the turtle on the drawn tip, grain mask, Fit round trip, grid wobble, White puts everything back).
 - **The toolbar is full.** Two new icon buttons pushed it to two rows at 1000 px; below 1100 px the icon
   buttons are 2.25rem and the gaps are squeezed (`css/app.css`), and `sample-checks.mjs` checks one row at 1366,
   1100 and 1000.
@@ -445,7 +486,7 @@ the two files. The tests:
 
 ## The write block
 
-`write` draws words as lines, in one of five single-stroke fonts (all Hershey fonts, public domain). It is in the **Notes** palette, not
+`write` draws words as lines, in one of seven fonts (five Hershey fonts, public domain, `blocky`, EMS Osmotron, under the SIL OFL, and `pixel`, drawn for TurtleLab). It is in the **Notes** palette, not
 Pen or Turtle, on purpose: the teacher worried students would use it as a shortcut for drawing letters (the lesson
 Steps 1 and 5 tell students to skip it), and the Notes palette is where words live.
 
@@ -464,6 +505,31 @@ Steps 1 and 5 tell students to skip it), and the Notes palette is where words li
   script and sans, about 23 to 29 in fancy, bold and serif, which the tips tell the student). The Hershey set also has blackletter, Greek and symbols; left
   out (many short strokes, or not Latin). Cursive was tried and dropped: it draws "Cougars" exactly like script. To change the list: edit `FONTS` in
   `dev/make-lettering-data.py` AND `LETTER_FONTS` (a test requires the same ids in the same order).
+  **`blocky` (2026-11-05, the user: "I want you to add a blocky font. Can you find one.")** is **EMS Osmotron**, a single line version of Orbitron (a squared, chamfered
+  techno face: wide letters with cut off corners). Found by searching for open licensed stroke fonts: most of the monoline archives online state no license at all (so they
+  cannot go in this repo); the Evil Mad Scientist `svg-fonts` set (https://gitlab.com/oskay/svg-fonts, made for Hershey Text) are derivatives of **SIL OFL** fonts with the credits in
+  each file, and Osmotron is the blocky one. Only straight lines (M and L), all 95 keys, and "Cougars" is 7 lines (fewer than any other font). **Licensing:** OFL 1.1 with Orbitron's
+  Reserved Font Name, so it is never *named* Orbitron in the app (the id and label are `blocky`; credits say "EMS Osmotron, from Orbitron"); `fonts/osmotron/OFL.txt` (Orbitron's own file with
+  its copyright line) ships, the header of `lettering-data.js`, `NOTICE.md` and the About page credit it, and the `blocky` entry stays under the OFL (the rest of the file is AGPL).
+  `dev/fonts/EMSOsmotron.svg` is the source file, unchanged (a dev file, not served), so the generator runs offline. **What the generator (`read_svg`) does to it**, because the
+  block promises "a capital letter is exactly `size` tall": the E's flat bottom and top are the baseline and the capital height and an o is the x height; for capitals and digits, and for
+  small letters with no ascender, every point's y is moved into that band (stems that poked out come back to the edge; letters with a tail keep it; marks like `.` `,` `'` are left alone);
+  each letter is centered in its box (the conversion left more room on the left than the right) with at least 40 units each side; coordinates are scaled by 0.2 to whole numbers (a capital is
+  **118** tall, where the Hershey fonts' is 21, so tests that check a font's height range are relative to its `cap`). **Do not clip instead of clamping:** the first version cut off every
+  segment outside the band, and the top bars of C, F, G and S (a few units above the cap line) vanished, so the C looked like a bracket; the thumbnail showed it, no test did. The
+  generator now stops if trimming takes away more than 15% of a letter's line, and `test/lettering.test.js` checks the bars exist. The five other fonts came out byte for byte the same.
+  **`pixel` (2026-11-05, the user: "I was looking for a minecraft style blocky font too.")** is video game lettering made of square pixels. **Original to TurtleLab, not found:** the
+  open pixel fonts online are bitmap or TrueType files (not lines), and a "Minecraft style" font from a game is not ours to use, so each of the 95 keys was drawn by hand as a picture of
+  `#` (lit) and `.` pixels, 5 wide by 7 tall (`dev/fonts/pixel-5x7.txt`, with the format explained at its top: `@ x` starts a letter, `--` is the baseline, rows listed from the top, small
+  letters are shorter, an `i` is 1 wide, one empty pixel between letters). Under the AGPL, no credit needed (NOTICE.md says so). **The app never names the game** (id and label `pixel`, the
+  tip says "video game letters"; a test fails if "minecraft" or "mojang" is in the tip). `read_pixels` in the generator turns each picture into the **outline of its lit pixels**: every edge
+  between a lit and an empty pixel, chained into closed loops (`pixel_outline`); where two pixels touch only at a corner the loop turns right, which joins them into one loop (the pen
+  goes through that corner twice, which looks the same and saves a lift: otherwise the lone pixel on the left of an `a` is a separate stroke). Corners in a straight run are dropped, the
+  loops are ordered biggest first then left to right so the file is the same every time, and the generator stops if a capital or digit does not fill rows 0 to 6. One pixel is **12**
+  units, so a capital is **84** (`cap`), every number is a multiple of 12, and the data is only horizontal and vertical lines. **Why outlines, not a line down the middle of each
+  stroke:** the pen draws round, and a one line skeleton of a 5 by 7 letter falls apart at the corners (pixels that touch diagonally do not join); the outline always keeps the square stair
+  shape whatever pen size the student picks, and a thick pen or a small size fills the letters in solid, like the game's, because the two lines of a one pixel stem meet. At size 60 with pen 3
+  they are crisp outlines; at size 40 with pen 3 they are nearly solid. "Cougars" is 10 strokes. Tests: `test/lettering.test.js` ("The pixel font").
 - **The dropdown** is the `set font` block's one `nameSlots` entry with `editor: 'font'` (classes `nameslot textslot fontslot`; the `textslot` class keeps the
   sample checks from mistaking it for a definition). It shows the font name and an arrow, always as wide as the longest name so the block never changes size.
   `Workspace.chooseFont` opens `.font-menu` under it (above if there is no room), one button per font, each showing the word Hello drawn with the real
@@ -503,8 +569,8 @@ Steps 1 and 5 tell students to skip it), and the Notes palette is where words li
   Fit, SVG, the PDF and the embroidery files all work with nothing extra. Letters the font lacks are skipped.
 - **Python:** the generator writes a comment and `pass` (EduBlocks' turtle has no `write`, and Python's draws a screen font, not lines). The
   Python tests compare where the turtle ends, not how far it drew, for samples with the `write` concept.
-- **Data:** `js/core/lettering-data.js` (`FONT_DATA`, about 62 KB) is generated by `dev/make-lettering-data.py` from the Hershey-Fonts PyPI package
-  (public domain fonts; acknowledgments in the file and in NOTICE.md; the package is not used at run time). The script font's numbers
+- **Data:** `js/core/lettering-data.js` (`FONT_DATA`, about 70 KB) is generated by `dev/make-lettering-data.py` from the Hershey-Fonts PyPI package
+  (public domain fonts), `dev/fonts/EMSOsmotron.svg` (OFL) and `dev/fonts/pixel-5x7.txt` (our own); acknowledgments are in the file and in NOTICE.md; neither source is used at run time. The script font's numbers
   are byte for byte what they were when it was the only font.
 - **Storage:** the words are part of the project like a sticky note's, so `privacy.html`, `privacy.md` (effective Nov 4, 2026) and the
   guide say "notes or write blocks".
@@ -642,10 +708,7 @@ touches a project, stores anything or fetches anything, and the art is TurtleLab
   treat at once; `?fish=now` and `?boat=now` still work. Tests: `test/reward.test.js`, `antics.test.js`, `fish.test.js`/`boat.test.js` (`auto: false`), and real block drops, a tap-run, a sample
   run and calm in `dev/editor-checks.mjs`. The numbers (8, 3, 4 min, 75 s) are guesses to tune after watching students; they are the constants at the top of `reward.js`.
   Other ideas from that list that were NOT built (so they can be picked up later): a stamp block (paw, heart, star, fish, shark as line art), a celebration when a shape
-  closes, seasonal shark outfits by date, a cougar-paw turtle skin, paper choices (see below), a ghost trail of pen-up walks, a confused turtle on an error.
-  **Paper choices were proposed, not built.** The grid button (`#grid`) is a numbered square grid only, whose spacing follows the zoom (`core/grid.js`: steps of 1, 2 or 5 times a
-  power of ten, never closer than 50 screen pixels), so it looks different after Fit or a zoom. If paper choices are added, the idea on the table is to reuse the
-  right-click or press-and-hold menu pattern of Save (`ui/export-menu.js`): paper (white, graph, chalkboard, blueprint) separate from the grid style, with the grid's colors adapting to the paper.
+  closes, seasonal shark outfits by date, a cougar-paw turtle skin, a ghost trail of pen-up walks, a confused turtle on an error.
 
 ## The picture shown when the address is pasted
 

@@ -207,7 +207,7 @@ test('setfont and setcurve are Logo too: a font name in quotes, and a number of 
 test('setfont with a font TurtleLab does not have, or none, says which it has', () => {
   const unknown = compileLogo('setfont "gothic');
   assert.equal(unknown.ok, false);
-  assert.match(unknown.error, /"gothic is not a font TurtleLab has\. The fonts are script, fancy, sans, bold, serif/);
+  assert.match(unknown.error, /"gothic is not a font TurtleLab has\. The fonts are script, fancy, sans, bold, serif, blocky, pixel/);
   assert.equal(unknown.line, 1);
   for (const bare of ['setfont', 'setfont 5', 'setfont "']) {
     const result = compileLogo(bare);

@@ -1,4 +1,5 @@
-// TurtleLab: the list of other ways to save, shown when you right-click the Save button.
+// TurtleLab: the list of other choices that opens when you right-click a toolbar button: the other ways to save (the Save button), or the other
+// grids and papers (the grid button).
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 // See COPYING in the folder above this one.
 //
@@ -7,6 +8,9 @@
 //   * on a right-click (or the menu key on a keyboard),
 //   * or when you press and hold the button (a touchscreen has no right button).
 // Choosing a line saves that kind of file. Escape, or clicking anywhere else, closes it.
+//
+// The same menu serves the grid button, which has two groups of choices to make: a line can be a heading (a label for the lines below it), and a
+// line can be one of a group of radio choices (`radio: true`), one of which is marked chosen (setChecked) the way the page shows it.
 
 const HOLD_MS = 500;
 const HOLD_SLOP = 8;
@@ -15,10 +19,11 @@ export class ExportMenu {
   /**
    * @param {object} options
    * @param {HTMLElement} options.button the Save button
-   * @param {{id: string, label: string, hint: string}[]} options.items what can be saved
+   * @param {({id: string, label: string, hint: string, radio?: boolean} | {heading: string})[]} options.items the lines: what can be saved, or chosen
    * @param {(id: string) => void} options.onPick called with the id of the line that was chosen
+   * @param {string} [options.label] what the menu is called for a screen reader
    */
-  constructor({ button, items, onPick }) {
+  constructor({ button, items, onPick, label: menuLabel = 'Ways to save' }) {
     this.button = button;
     this.onPick = onPick;
     this.swallowClick = false;
@@ -26,13 +31,22 @@ export class ExportMenu {
     this.menu = document.createElement('div');
     this.menu.className = 'export-menu';
     this.menu.setAttribute('role', 'menu');
-    this.menu.setAttribute('aria-label', 'Ways to save');
+    this.menu.setAttribute('aria-label', menuLabel);
     this.menu.hidden = true;
     for (const item of items) {
+      if (item.heading) {
+        const heading = document.createElement('div');
+        heading.className = 'export-heading';
+        heading.setAttribute('role', 'presentation');
+        heading.textContent = item.heading;
+        this.menu.append(heading);
+        continue;
+      }
       const row = document.createElement('button');
       row.type = 'button';
-      row.className = 'export-item';
-      row.setAttribute('role', 'menuitem');
+      row.className = item.radio ? 'export-item export-radio' : 'export-item';
+      row.setAttribute('role', item.radio ? 'menuitemradio' : 'menuitem');
+      if (item.radio) row.setAttribute('aria-checked', 'false');
       row.dataset.format = item.id;
       const label = document.createElement('span');
       label.className = 'export-label';
@@ -95,6 +109,11 @@ export class ExportMenu {
     return !this.menu.hidden;
   }
 
+  /** Mark these lines (by id) as the ones chosen, and every other radio line as not. */
+  setChecked(ids) {
+    for (const row of this.menu.querySelectorAll('.export-radio')) row.setAttribute('aria-checked', String(ids.includes(row.dataset.format)));
+  }
+
   open() {
     this.menu.hidden = false;
     const box = this.button.getBoundingClientRect();
@@ -105,7 +124,7 @@ export class ExportMenu {
     const top = Math.max(8, Math.min(box.bottom + 4, window.innerHeight - height - 8));
     this.menu.style.left = `${left}px`;
     this.menu.style.top = `${top}px`;
-    this.menu.querySelector('.export-item')?.focus();
+    (this.menu.querySelector('.export-item[aria-checked="true"]') ?? this.menu.querySelector('.export-item'))?.focus();
   }
 
   close() {

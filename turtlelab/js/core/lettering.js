@@ -3,7 +3,7 @@
 // See COPYING in the folder above this one.
 //
 // Single-stroke fonts (see lettering-data.js): every letter is a few lines drawn by one pen, so a
-// plotter or an embroidery machine can follow it. There are five to choose from (LETTER_FONTS). This
+// plotter or an embroidery machine can follow it. There are seven to choose from (LETTER_FONTS). This
 // file turns some words into lines on the page. It never touches the screen.
 //
 // Words are drawn left to right along a baseline, in "steps" (the turtle's own unit). A letter
@@ -24,6 +24,8 @@ export const LETTER_FONTS = [
   { id: 'sans', label: 'sans', tip: 'thin print letters, one line each. Few lines, so it stitches well.' },
   { id: 'bold', label: 'bold', tip: 'print letters drawn as double lines, so they stitch thick. More lines, so use a bigger size.' },
   { id: 'serif', label: 'serif', tip: 'print letters with feet. More lines, so use a bigger size.' },
+  { id: 'blocky', label: 'blocky', tip: 'wide letters with square, cut off corners, like a robot sign. Few lines, so it stitches well, but it is wider than the others, so words take more room.' },
+  { id: 'pixel', label: 'pixel', tip: 'video game letters made of square pixels, drawn as the outline of the pixels. A thick pen or a small size fills them in. About as few lines as script, but wider.' },
 ];
 
 /** The most the writing can be bent: all the way round a circle, either way. (Degrees.) */

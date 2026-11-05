@@ -2,7 +2,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { niceStep, labelFor, gridLines, MIN_LINE_GAP } from '../js/core/grid.js';
+import {
+  niceStep, labelFor, gridLines, MIN_LINE_GAP, GRID_TYPES, DEFAULT_GRID, gridTypeById, polarGrid,
+} from '../js/core/grid.js';
 import { DEFAULT_DRAW_VIEW, worldToPaper } from '../js/core/fit.js';
 import { PAPER_W, PAPER_H } from '../js/core/turtle.js';
 
@@ -53,4 +55,38 @@ test('labels are tidy numbers', () => {
   assert.equal(labelFor(-0), '0');
   assert.equal(labelFor(0.1 + 0.2), '0.3');
   assert.equal(labelFor(-250), '-250');
+});
+
+// ---- The kinds of grid ----------------------------------------------------------------------------------------
+
+test('there are four kinds of grid, the numbered squares first (the one the button always showed), each with words for the menu and no dashes in them', () => {
+  assert.deepEqual(GRID_TYPES.map((t) => t.id), ['numbers', 'squares', 'dots', 'polar']);
+  assert.equal(DEFAULT_GRID, 'numbers');
+  assert.equal(new Set(GRID_TYPES.map((t) => t.id)).size, GRID_TYPES.length);
+  for (const type of GRID_TYPES) {
+    assert.ok(type.label.length > 2 && type.hint.length > 5, type.id);
+    assert.ok(!/[\u2013\u2014]/.test(type.label + type.hint), `${type.id}: no em or en dashes`);
+    assert.ok(!/teacher|class|student|grade/i.test(type.label + type.hint), `${type.id}: words for whoever is drawing`);
+  }
+  assert.equal(gridTypeById('polar').label, 'Circles and angles');
+  assert.equal(gridTypeById('nope'), null);
+});
+
+test('the rings of the circles and angles grid are a nice step apart, and reach exactly as far as the paper does', () => {
+  const grid = polarGrid(DEFAULT_DRAW_VIEW);
+  assert.equal(grid.step, 50);
+  assert.deepEqual(grid.rings, [50, 100, 150, 200, 250, 300, 350, 400]);
+  assert.ok(Math.abs(grid.reach - Math.hypot(350, 280)) < 1e-9, 'the far corner of the paper');
+  assert.deepEqual(grid.spokes, [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330], 'a spoke every 30 degrees, 0 up, growing clockwise');
+});
+
+test('zoomed in, the rings keep a fingertip apart; panned away from the middle, only the rings that cross what is shown are listed; and there are never very many', () => {
+  const zoomed = polarGrid({ zoom: 5, cx: 0, cy: 0 });
+  assert.ok(zoomed.step * 5 >= MIN_LINE_GAP - 1e-9);
+  const away = polarGrid({ zoom: 1, cx: 2000, cy: 0 });
+  assert.ok(away.rings[0] >= 1600 && away.rings.at(-1) <= 2000 + 450, JSON.stringify([away.rings[0], away.rings.at(-1)]));
+  assert.ok(away.rings.every((r) => r > 1600 - away.step), 'none that miss the paper altogether');
+  for (const view of [{ zoom: 0.05, cx: 0, cy: 0 }, { zoom: 0.01, cx: 99999, cy: -99999 }, { zoom: 40, cx: 5, cy: 5 }]) {
+    assert.ok(polarGrid(view).rings.length <= 60, JSON.stringify(view));
+  }
 });
