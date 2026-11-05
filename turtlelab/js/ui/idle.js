@@ -11,8 +11,8 @@ export const IDLE_MS = 45000;
 export const GAP_MS = [30000, 80000];
 /** If the minute is up at a bad moment (a program is running, the tab is hidden), look again after this long. */
 export const RETRY_MS = 10000;
-/** The quiet time before the turtle starts to breathe (its color slowly fades and comes back), a little before the first antic. */
-export const BREATH_AFTER_MS = 30000;
+/** The quiet time before the turtle starts to breathe (its color slowly fades and comes back), well before the first antic. (It was 30 seconds; the user found it not distracting and asked for 5.) */
+export const BREATH_AFTER_MS = 5000;
 
 /** A number between `low` and `high` from random() (0 up to just under 1). */
 export function between([low, high], random) {

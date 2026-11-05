@@ -232,3 +232,13 @@ test('the Guide tells about the other grids and the papers, and that they are on
   const html = read('index.html');
   assert.match(html, /<button id="grid"/, 'the grid button is the one the menu opens from');
 });
+
+test('the Guide and the privacy page tell about the program score: what it rewards, that variables earn the most, and that it is not saved', () => {
+  const guide = read('guide.html');
+  assert.match(guide, /<td>Program score<\/td>/);
+  for (const word of ['bottom right corner', 'variables earn the most', 'repeat', 'if else', 'store in box1', 'plus 1', 'one thing to try next', 'not saved anywhere']) assert.ok(guide.includes(word), word);
+  const privacy = read('privacy.html');
+  assert.match(privacy, /<td>What is the score badge\?<\/td>/);
+  assert.match(privacy, /not saved, not sent anywhere, and not put in a saved picture or a PDF/);
+  assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf('Program score'), guide.indexOf('Turtle moods'))), 'no dashes in the new row');
+});

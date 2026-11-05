@@ -37,6 +37,7 @@ import { setupFullscreen } from './fullscreen.js';
 import { Fish } from './fish.js';
 import { Boat } from './boat.js';
 import { Idle, BREATH_AFTER_MS } from './idle.js';
+import { ScoreBadge } from './score-badge.js';
 import { makeAntics, idleAntics, makeRewards } from './antics.js';
 import { Reward, workMark, earnedWork, GOAL } from './reward.js';
 
@@ -371,12 +372,18 @@ let palettes = null;
 let pythonBox = null;
 let logoBox = null;
 
-/** The blocks changed (by editing, undo, open or new): what shows them elsewhere has to follow. */
-function projectChanged() {
+const scoreBadge = new ScoreBadge({ stage }); // the program score (see core/complexity.js)
+
+/**
+ * The blocks changed (by editing, undo, open or new): what shows them elsewhere has to follow. Only an `edit` (building) can float a "+N" from the
+ * score; opening a program, starting a new one and Undo just show the new score.
+ */
+function projectChanged({ edit = false } = {}) {
   lastMark = workMark(project.stacks);
   palettes.refresh();
   pythonBox.refresh();
   logoBox.refresh();
+  scoreBadge.refresh(project, { quiet: !edit });
 }
 
 workspace = new Workspace({
@@ -389,7 +396,7 @@ workspace = new Workspace({
     refreshBoxes();
     // Putting a block in, changing a number or rearranging blocks is work; moving a stack, taking blocks away and Undo are not (see reward.js).
     if (lastMark && earnedWork(lastMark, workMark(project.stacks))) reward?.edited();
-    projectChanged();
+    projectChanged({ edit: true });
     autosave.schedule();
   },
   onRunStack: runStack,
@@ -415,7 +422,7 @@ if (params.get('boat') === 'now') setTimeout(() => boat.sail(), 400);
 const idleSeconds = Number(params.get('idle'));
 const allAntics = makeAntics({ view, trash: palettes.trash, fish: { get el() { return fish.el || boat.el; } }, ...(params.get('poop') === 'two' ? { secondPoopChance: 1 } : {}) });
 idle = new Idle({
-  // After 30 seconds (with ?idle=N, N/2 of them) the turtle starts to breathe: its shell slowly goes lighter and deeper again, until anyone does anything.
+  // After 5 seconds (with ?idle=N, N/2 of them) the turtle starts to breathe: its shell slowly goes lighter and deeper again, until anyone does anything.
   ambient: [{ name: 'breath', afterMs: idleSeconds > 0 ? idleSeconds * 500 : BREATH_AFTER_MS, start: () => view.setColorBreathing(true), stop: () => view.setColorBreathing(false) }],
   antics: idleAntics(allAntics),
   busy: () => scheduler.running || workspace.busy,
@@ -434,6 +441,7 @@ reward = new Reward({
   ...(goalPoints > 0 ? { goal: goalPoints, cooldownMs: 5000 } : { goal: GOAL }),
 });
 lastMark = workMark(project.stacks); // (from here on, a change to the blocks can be work)
+scoreBadge.refresh(project, { quiet: true }); // the score of the program the page started with
 if (params.get('antic')) setTimeout(() => idle.playNow(params.get('antic')) || reward.playNow(params.get('antic')), 500);
 pythonBox = new PythonBox({ stage, project, onMessage: say });
 logoBox = new LogoBox({

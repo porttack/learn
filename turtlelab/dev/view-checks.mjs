@@ -396,7 +396,8 @@ try {
   const board = await stylePixel(10, 10);
   check('a chalkboard is dark green: the drawing is shown light on dark, and a layer gives the board its color', await chrome.eval(`(() => { const box = document.querySelector('.paper-box'); const style = document.querySelector('canvas.paper-style'); return box.classList.contains('paper-chalkboard') && !style.hidden && getComputedStyle(style).mixBlendMode === 'lighten' && /invert/.test(getComputedStyle(document.querySelector('canvas.paper-sketch')).filter); })()`)
     && board[0] === 0x2f && board[1] === 0x4a && board[2] === 0x3b && board[3] === 255, JSON.stringify(board));
-  const axisOnBoard = await gridPixel(700, 100);
+  // (The chalkboard is hand drawn, so the axis wanders a few pixels off x = 700: look for it along the row, not at one pixel.)
+  const axisOnBoard = await chrome.eval(`(() => { const d = document.querySelector('canvas.paper-grid').getContext('2d').getImageData(640, 100, 120, 1).data; let best = [0, 0, 0, 0]; for (let i = 0; i < d.length; i += 4) if (d[i + 3] > best[3]) best = [d[i], d[i + 1], d[i + 2], d[i + 3]]; return best; })()`);
   const chalk = await chrome.eval(`(() => { const box = document.querySelector('.paper-box'); const sketch = document.querySelector('canvas.paper-sketch'); return { classes: box.className, hidden: sketch.hidden, mask: getComputedStyle(sketch).maskImage || getComputedStyle(sketch).webkitMaskImage, background: box.style.backgroundColor, paperSeen: getComputedStyle(document.querySelector('canvas.paper')).visibility }; })()`);
   check('a chalkboard is hand drawn in chalk: a sketch with a grain mask (a picture the page made itself) that lets the board show through, over a board colored box', /paper-hand/.test(chalk.classes) && !chalk.hidden
     && /^url\("data:image\/png;base64,/.test(chalk.mask) && chalk.background === 'rgb(47, 74, 59)' && chalk.paperSeen === 'hidden', JSON.stringify({ ...chalk, mask: String(chalk.mask).slice(0, 40) }));

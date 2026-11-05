@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import { readProjectFile, isPdf } from '../js/core/project-file.js';
 import { validateProject, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { toPython } from '../js/core/python.js';
+import { scoreProject } from '../js/core/complexity.js';
 import { DEMOS } from '../js/ui/demos.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
@@ -2242,6 +2243,9 @@ try {
   }
   check('?idle=3 shortens the pauses between antics too: more than one happens in 22 seconds', started >= 2, `${started} antics started`);
   // The fishing boat: sails in, the shark peeks, the harpoon clangs on the can, the shark snaps, the boat leaves.
+  // Whether the boat starts off the right edge is seen by a recorder in the page that looks on every animation frame: polling from here every
+  // 120 ms or so missed the moment now and then when the machine was busy (it is a race, not a fault of the boat).
+  const recorder = await chrome.send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => { window.__boatOffscreen = false; const look = () => { const b = document.querySelector('.boat'); if (b && b.getBoundingClientRect().left >= window.innerWidth - 5) window.__boatOffscreen = true; requestAnimationFrame(look); }; requestAnimationFrame(look); })();` });
   await chrome.goto(BASE + '?boat=now&speed=instant');
   const sawBoat = { fromOffscreen: false, peek: false, clang: false, word: false, snap: false, spearAtCan: false, spearShown: false, throughBoat: null, inLayer: false, leftAgain: false };
   const boatStart = Date.now();
@@ -2265,6 +2269,8 @@ try {
     if (b.boat && b.right > windowWidth) sawBoat.leftAgain = sawBoat.leftAgain || sawBoat.snap;
     await chrome.sleep(120);
   }
+  sawBoat.fromOffscreen = sawBoat.fromOffscreen || (await chrome.eval('window.__boatOffscreen === true'));
+  await chrome.send('Page.removeScriptToEvaluateOnNewDocument', { identifier: recorder.identifier });
   check('a boat sails in from off the right edge of the window, in the layer above everything, and the boat itself can be clicked', sawBoat.fromOffscreen && sawBoat.inLayer, JSON.stringify(sawBoat));
   check('the shark peeks up as it comes near, and the harpoon flies out and lands on the can', sawBoat.peek && sawBoat.spearShown && sawBoat.spearAtCan, JSON.stringify(sawBoat));
   check('the can rings with a "clang!" where it was hit', sawBoat.clang && sawBoat.word, JSON.stringify(sawBoat));
@@ -2505,6 +2511,79 @@ try {
   })();
   check('About links to the source, the licence text, and the NOTICE file',
     aboutLinks.some((h) => h.endsWith('/tree/main/turtlelab')) && aboutLinks.some((h) => h.endsWith('/turtlelab/COPYING')) && aboutLinks.some((h) => h.endsWith('/turtlelab/NOTICE.md')));
+
+  // ---- The program score ---------------------------------------------------------------------------
+  // A badge near the trash can: the score of the blocks (core/complexity.js), "+N" when building raises it, and details on a press.
+  const badge = () => chrome.eval(`({ n: Number(document.querySelector('.score-number')?.textContent), title: document.querySelector('.score-pill')?.title, gain: document.querySelector('.score-gain')?.hidden === false ? document.querySelector('.score-gain').textContent : null })`);
+  await chrome.goto(BASE + '?speed=instant');
+  await chrome.sleep(500);
+  const emptyScore = await badge();
+  check('an empty page has a score badge that says 0 (a blank page)', emptyScore.n === 0 && /Blank page/.test(emptyScore.title), JSON.stringify(emptyScore));
+  await openPalette('Flow');
+  await dragFromPalette('repeat', 480, 150);
+  await chrome.sleep(900);
+  const afterRepeat = await badge();
+  const keptRepeat = JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`));
+  check('dragging a repeat block in raises the score, to what the same blocks score when worked out here', afterRepeat.n > 0 && afterRepeat.n === scoreProject(keptRepeat).score, `${JSON.stringify(afterRepeat)} against ${scoreProject(keptRepeat).score}`);
+  check('and "+N" floats up from the badge, N being the rise (and the level, if a new one was reached)', afterRepeat.gain !== null && new RegExp(`^\\+${afterRepeat.n}\\b`).test(afterRepeat.gain), JSON.stringify(afterRepeat));
+  await chrome.sleep(2200);
+  check('the "+N" goes away again by itself', (await badge()).gain === null);
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  await chrome.sleep(1100);
+  const reopened = await badge();
+  check('a page opened with that program shows its score and no "+N" (opening a program is not building one)', reopened.n === afterRepeat.n && reopened.gain === null, JSON.stringify(reopened));
+  // (Undo only goes back over what was done since the page opened, so build one more thing here first.)
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 480, 330);
+  await chrome.sleep(900);
+  const withForward = await badge();
+  check('another block raises the score a little more', withForward.n > reopened.n, JSON.stringify([reopened, withForward]));
+  await chrome.sleep(2200);
+  await chrome.eval(`document.getElementById('undo').click()`);
+  await chrome.sleep(900);
+  const afterUndo = await badge();
+  check('Undo takes the score back down to what it was, quietly (no "+N")', afterUndo.n === reopened.n && afterUndo.gain === null, JSON.stringify(afterUndo));
+  await chrome.eval(`document.getElementById('redo').click()`);
+  await chrome.sleep(900);
+  const afterRedo = await badge();
+  check('and Redo brings it back up, also with no "+N" (only building floats one)', afterRedo.n === withForward.n && afterRedo.gain === null, JSON.stringify(afterRedo));
+
+  // A program with a counter in a loop, put on the page ready made, to see the details.
+  const counter = { app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 160, y: 60, blocks: [
+    { op: 'start', args: [] }, { op: 'store1', args: [0] },
+    { op: 'repeat', args: [10], body: [{ op: 'store1', args: [{ op: 'add', args: [{ op: 'box1', args: [] }, 1] }] }, { op: 'forward', args: [{ op: 'box1', args: [] }] }, { op: 'right', args: [30] }] },
+  ] }] };
+  await chrome.goto(BASE + 'about.html');
+  await chrome.eval(`localStorage.setItem('turtlelab-project', ${JSON.stringify(JSON.stringify(counter))})`);
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  await chrome.sleep(600);
+  const counterScore = scoreProject(counter);
+  check('a program with a counter in a loop shows the score that its blocks are worth, a high one, in the Building level or above', (await badge()).n === counterScore.score && counterScore.score >= 40 && /Building|Clever|Expert/.test((await badge()).title), JSON.stringify([await badge(), counterScore.score]));
+  check('the details are shut until you press the badge', await chrome.eval(`document.querySelector('.score-panel').hidden === true && document.querySelector('.score-pill').getAttribute('aria-expanded') === 'false'`));
+  const pillAt = await chrome.centerOf('.score-pill');
+  await chrome.click(pillAt.x, pillAt.y);
+  await chrome.sleep(250);
+  const panel = await chrome.eval(`(() => { const p = document.querySelector('.score-panel'); const r = p.getBoundingClientRect(); return { open: !p.hidden, expanded: document.querySelector('.score-pill').getAttribute('aria-expanded'), rows: [...p.querySelectorAll('tr')].map((tr) => tr.dataset.part + ':' + tr.querySelector('.score-points').textContent), head: p.querySelector('.score-head').textContent, inside: r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight, tip: p.querySelector('.score-tip').textContent }; })()`);
+  const wantRows = counterScore.parts.map((part) => `${part.id}:${part.points > 0 ? '+' + part.points : '0'}`);
+  check('pressing it opens the details: each idea with its points, the biggest idea (variables) first, and the window has room for it', panel.open && panel.expanded === 'true' && JSON.stringify(panel.rows) === JSON.stringify(wantRows) && panel.rows[0].startsWith('variables:+') && panel.inside, JSON.stringify(panel));
+  check('the variables in this program are worth more than its loop', Number(panel.rows[0].split('+')[1]) > Number(panel.rows[1].split('+')[1]), panel.rows.join(' '));
+  check('the details say the number and the level, and give one thing to try next', new RegExp(`^${counterScore.score}`).test(panel.head) && panel.head.includes(counterScore.level.label) && panel.tip.length > 20, JSON.stringify([panel.head, panel.tip]));
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.sleep(150);
+  check('Escape closes the details and puts the focus back on the badge', await chrome.eval(`document.querySelector('.score-panel').hidden === true && document.activeElement === document.querySelector('.score-pill')`));
+  await chrome.click(pillAt.x, pillAt.y);
+  await chrome.sleep(200);
+  await chrome.click(700, 300);
+  await chrome.sleep(200);
+  check('pressing somewhere else closes them too', await chrome.eval(`document.querySelector('.score-panel').hidden === true`));
+  await chrome.eval(`document.getElementById('hide-blocks').click()`);
+  await chrome.sleep(250);
+  check('hiding the blocks hides the badge, so the whole picture shows, and showing them brings it back', await chrome.eval(`getComputedStyle(document.querySelector('.score-badge')).display === 'none'`)
+    && await (async () => { await chrome.eval(`document.getElementById('hide-blocks').click()`); await chrome.sleep(250); return chrome.eval(`getComputedStyle(document.querySelector('.score-badge')).display !== 'none'`); })());
+  // Variables are the thing to reward most: the same program without the box has a lot less.
+  const noBox = { ...counter, stacks: [{ ...counter.stacks[0], blocks: [counter.stacks[0].blocks[0], { op: 'repeat', args: [10], body: [{ op: 'forward', args: [10] }, { op: 'right', args: [30] }] }] }] };
+  check('the same loop without the variable scores much less', scoreProject(noBox).score * 2 < counterScore.score, `${scoreProject(noBox).score} against ${counterScore.score}`);
 
   check('no console errors, exceptions or CSP violations', chrome.problems.length === 0, chrome.problems.join(' | '));
   const elsewhere = chrome.requests.filter((url) => !url.startsWith(BASE) && !url.startsWith('data:') && !url.startsWith('blob:'));

@@ -159,8 +159,8 @@ function ambientSetup({ calm = false, busy = false, visible = true } = {}) {
   };
 }
 
-test('the turtle starts to breathe after half a minute, before the first antic, and stops the moment anyone does anything', () => {
-  assert.equal(BREATH_AFTER_MS, 30000, 'about 30 seconds, as asked');
+test('the turtle starts to breathe after five quiet seconds, before the first antic, and stops the moment anyone does anything', () => {
+  assert.equal(BREATH_AFTER_MS, 5000, 'five seconds, as asked');
   assert.ok(BREATH_AFTER_MS < IDLE_MS, 'before the antics begin');
   const page = ambientSetup();
   page.idle.start();

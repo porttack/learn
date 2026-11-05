@@ -86,6 +86,7 @@ the dashes out of them too for consistency.
       fit.js          what has been drawn (even off the paper) and the zoom that fits it; the drawing "view"
       grid.js         which grid lines to draw for a view, at nice numbers; the four kinds of grid (squares with numbers, squares, dots, polar)
       paper.js        the five papers (white, whiteboard, graph, chalkboard, blueprint), the lines printed on graph and blueprint paper, the smudges on the boards
+      complexity.js   the program complexity score: what a project's blocks are worth (variables most), see "The program score"
       hand.js         the wobble of a hand drawn line (a smooth noise of WHERE a point is) and the tile of chalk grain; see "Hand drawn papers"
       svg-export.js   the drawing as SVG: a picture, or hairlines for a cutter
       stitch-plan.js  a drawing as stitches for an embroidery machine (running stitch, one thread a color)
@@ -110,6 +111,7 @@ the dashes out of them too for consistency.
       trash.js        the trash can and its shark (see Deleting, above)
       canvas-view.js  paper canvas (1400x1120) + sketch canvas for the hand drawn papers + draggable turtle overlay
       hand-drawn.js   makes the chalk grain tile into a picture for CSS mask-image (once, from numbers)
+      score-badge.js  the score badge by the trash can, its details panel and the floating "+N"
       files.js        Save (download a PNG with the blocks inside), Open, drops
       fullscreen.js   the Full screen button (standard and webkit names; hides itself where the browser cannot)
       storage.js      autosave to local storage (one item: turtlelab-project)
@@ -417,6 +419,19 @@ is about to clean anyway).
   `?paper=blueprint`. Tests: `test/grid.test.js`, `paper.test.js`, `grid-paint.test.js` (a recording canvas), `pages.test.js`, and `dev/view-checks.mjs` (the real menu, pixels of each kind,
   each paper, forgetting on reload, the PDF still written). A bug worth remembering: `paintPolar` first passed `{dx, dy}` where `rayInside` wants `{x, y}`, so every heading label was silently
   skipped (nothing threw); the recording-canvas test now asserts every heading is written.
+- **The program score (2026-11-05, the user: "can we add a program complexity score somewhere? But we should reward students in the score for using loops, conditionals, and especially variables").**
+  `core/complexity.js` (pure; `scoreProject(project)` returns `{ score, level, parts, ideas, tip }`; `POINTS` and `LEVELS` are the numbers, one place to change them). It rewards ideas, not length: plain blocks
+  are 1 point each **up to 20**, so forty forwards are worth no more than twenty. **Variables pay most** (the user's word "especially"): a box (`store1..4` / `box1..4`; "variables" in this app are the four boxes) is
+  worth 12 once a number is stored in it, +3 for each store, +4 for each read (a box nothing was stored in earns nothing), **+8 for a counter** (a store block with the same box inside its own socket, box1 = box1 + 1),
+  and +15 for the first variable really used (stored then read); an input of a block you made (`to name input`) is 6 and +3 per use (only an `input` block inside its own definition counts). Loops are 6 (+4 if inside
+  another loop), conditionals 7 (+2 for an if else, +3 inside a loop), own blocks 8 when used (2 if only made), +2 per call up to 10, +10 for one that calls itself; math 2 and chance 3, up to 16. A bonus for each
+  of the four big ideas used (6; the variable one 10) and 10 more for all four. Notes and the `start`/`to` hats are not counted. A minimal variable program (store 5, forward box1) scores 47, a conditional 18, a
+  loop 14 (a test pins the order). Levels: Blank page, Just starting (1), Getting going (15), Building (40), Clever (80), Expert (140). The tip names the biggest idea not used yet, variables first.
+  **The badge** (`ui/score-badge.js`, created in `main.js`, refreshed from `projectChanged`): a pill in the **bottom right corner** (it was first bottom left beside the trash can, where it covered the last blocks of the open Flow palette, which the editor suite caught: the flyouts run the full height of the left side, up to 322 px wide; the print box is top right, the boxes readout moved left of the badge, the code boxes sit above both),
+  hidden with the blocks; press it (or Escape / click away) for the details table (variables first, rows that score 0 are dimmed with a hint), the next level and the tip. **"+N" floats up only for edits that
+  raise the score and then sit still for 500 ms** (`projectChanged({ edit: true })` from the workspace's `onChange`); opening a file or sample, a new page, Undo and Redo call `refresh(project, { quiet: true })`, which only shows
+  the number (loading a program someone else made must not pay out; a bug found by a probe: the badge said 0 on every loaded project until the startup `refresh` was added). Nothing is stored or sent. Tests:
+  `test/complexity.test.js`, and the end of `dev/editor-checks.mjs` (real drags, quiet loads, Undo, the panel, Escape, hiding blocks).
 - **Hand drawn papers (2026-11-05, the user: "make the chalk board look like it is hand drawn? I always want a bit of whimsy. Maybe a hand drawn whiteboard mode too?").** `whiteboard`
   (`hand: 'marker'`) and `chalkboard` (`hand: 'chalk'`) in `PAPERS`; `paper.hand` names the look, `paper.wipes` says how the board is smudged. **A new random look each time one is chosen (2026-11-05, the user: "make the dirtyness and unstraight lines a bit more randomness everytime the user switches"):** `newHandLook()` in `core/hand.js` gives `{ seed, amount, dirt, swipes }`: `seed` moves the wobble's noise layers (`saltFor`; seed 0 is the plain wobble every older test used), `amount` is 0.75 to 1.5 times `HAND_WOBBLE` (so up to 4.5 units), `dirt` 0.7 to 1.5 times the smudge strength and dust, `swipes` 0 to 3 extra swipes. `CanvasView.setHand` rolls a new one every time a hand paper is chosen, even the same paper again (a shake), and keeps it in `handLook` (memory only; `box.dataset.handLook` shows it to the browser checks, deleted on other papers); `paintHandOp`, `drawnPoint`, `drawWipes` and the grid warp all read it, so a Fit or zoom repaints the same look. Nothing is stored. The whiteboard's smudge alpha can reach about 135 of 255 at the dirtiest, so the browser check allows under 170. **How it is done, and why not the obvious way:**
   a third canvas, `.paper-sketch` (`CanvasView.sketchCanvas`, same 1400x1120, between the paper and the style layer), shows the same ops wobbled, and CSS hides the real paper canvas
@@ -666,7 +681,7 @@ touches a project, stores anything or fetches anything, and the art is TurtleLab
   at once on the click and its visit never reaches the clang or snap. `Trash.feed` is a plain `feed()` again (the visitors no longer feed it; `burp(chance)` keeps its chance argument).
   If the can is not showing `hunt` returns false and the visitor just goes. Tested in `test/hunt.test.js` (the whole trip on a fake page and clock, and the interruptions),
   `test/visitors.test.js`, `fish.test.js`, `boat.test.js`, `trash.test.js` (`swimTime`, `swimmerCorner`), and with real clicks in `dev/editor-checks.mjs` (the shark reaches the visitor, which
-  stood still; burp; everything gone afterwards). Timing, "a tad more often" (the fish and boat timers are now only the `auto` ones, see "Treats for work"): antics after 45 s then every 30 to 80 s, breathing after 30 s.
+  stood still; burp; everything gone afterwards). Timing, "a tad more often" (the fish and boat timers are now only the `auto` ones, see "Treats for work"): antics after 45 s then every 30 to 80 s, breathing after 30 s (now 5 s).
 - **Poop falls slower, and a fishing boat (2026-11-04, the user: "poop falls too fast. can you add a fishing boat like the fish and the boat tries to harpoon the shark (or garbage can)?"):**
   **Poop:** `fallTime` in `js/ui/sky.js` now uses a gravity of 120 (it was 1100, under a second): about 2.5 s from the middle of a 613 px window, 3.2 s from a 1100 px one, at least 1.2 s.
   **Boat** (`js/ui/boat.js`, the `Boat` class, a cousin of the fish; a treat for working like the fish, `auto: false` in main.js, but with `auto` true it comes the first 1 to 2 minutes after the page opens and then every 2 to 5 minutes, rarer than the fish) a little red fishing boat
@@ -680,7 +695,7 @@ touches a project, stores anything or fetches anything, and the art is TurtleLab
   the shark (or garbage can)", and the clang is the joke), and the shark never gets hurt.
 - **The turtle's color breathes (2026-11-04, the user: "after about 30 seconds, can you make the color of the turtle fade and unfade just a bit about 60 times per second like it is
   breathing?"):** 60 times a SECOND would be a flicker (no change you could see), so it was read as "smooth, at 60 frames a second", with a breath of about 4 seconds (`--breath` in
-  `css/app.css`; say so if 60 a minute, a breath a second, was what they meant). After `BREATH_AFTER_MS` (30 s; with `?idle=N` it is N/2 seconds) with no activity,
+  `css/app.css`; say so if 60 a minute, a breath a second, was what they meant). After `BREATH_AFTER_MS` (5 s since 2026-11-05, when the user said it is not distracting and asked for "only 5 seconds after nothing is happening"; it was 30 s; with `?idle=N` it is N/2 seconds) with no activity,
   `.turtle-sprite.breathing-color` runs on the turtle's SHELL only (`.shell` and `.scutes path`), until anyone does anything. It is an *ambient* thing in `Idle`
   (`ambient: [{ name, afterMs, start, stop }]`), not an antic: it starts at its own earlier time, carries on while an antic plays, waits for the same good moments (not while a program
   runs or the tab is hidden), and any activity ends it. Never under reduced motion. `?antic=breath` starts it at once. `CanvasView.setColorBreathing`.
