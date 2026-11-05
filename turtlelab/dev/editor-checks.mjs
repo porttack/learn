@@ -2000,6 +2000,135 @@ try {
   check('medium speed is gradual too, just quicker: partly written at a fifth of a second', inkMedium > 20 && inkMedium < inkAtOnce, `${inkMedium} of ${inkAtOnce} red pixels`);
   await chrome.sleep(900);
 
+  // ---- The turtle's look: shell color, a hover with the pen up, a squirm when held; and the occasional fish ----------
+  const look = () => chrome.eval(`(() => { const s = document.querySelector('.turtle-sprite'); const shell = getComputedStyle(s.querySelector('.shell')); const svg = getComputedStyle(s.querySelector('svg')); return { shellVar: s.style.getPropertyValue('--shell'), fill: shell.fill, penUp: s.classList.contains('pen-up'), scale: svg.scale, animation: svg.animationName, rotate: svg.rotate }; })()`);
+  await seedProject({ app: 'porttack-turtle', version: 1, stacks: [{ x: 120, y: 60, blocks: [{ op: 'start' }, { op: 'clean' }, { op: 'setcolor', args: [20, 70, 170] }, { op: 'forward', args: [60] }, { op: 'penup' }, { op: 'forward', args: [40] }] }] });
+  const startLook = await look();
+  check('before anything runs the shell is the pen\'s starting color, red, and the turtle sits on the paper', startLook.shellVar === '#ff0000' && startLook.fill === 'rgb(255, 0, 0)' && !startLook.penUp && startLook.scale === 'none', JSON.stringify(startLook));
+  await pressRun();
+  await chrome.sleep(300);
+  const penUp = await look();
+  check('after set color the shell is that color', penUp.shellVar === '#1446aa' && penUp.fill === 'rgb(20, 70, 170)', JSON.stringify(penUp));
+  check('with the pen up the turtle hovers (bigger, a shadow) and the shell is paler', penUp.penUp && penUp.scale === '1.14' && (await chrome.eval(`getComputedStyle(document.querySelector('.turtle-sprite .shell')).fillOpacity`)) === '0.4' && /drop-shadow/.test(await chrome.eval(`getComputedStyle(document.querySelector('.turtle-sprite svg')).filter`)));
+  await seedProject({ app: 'porttack-turtle', version: 1, stacks: [{ x: 120, y: 60, blocks: [{ op: 'start' }, { op: 'clean' }, { op: 'forward', args: [30] }] }] });
+  await pressRun();
+  await chrome.sleep(300);
+  const landed = await look();
+  check('with the pen down it lies flat on the paper in the pen color', !landed.penUp && landed.scale === 'none' && landed.shellVar === '#ff0000', JSON.stringify(landed));
+  const turtleAt = await chrome.centerOf('.turtle-sprite');
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mousePressed', x: turtleAt.x, y: turtleAt.y + 6, button: 'left', clickCount: 1 });
+  await chrome.sleep(110);
+  const held1 = await look();
+  await chrome.sleep(100);
+  const held2 = await look();
+  check('picked up, the turtle squirms: it wriggles from side to side while it is held', held1.animation === 'turtle-squirm' && held1.rotate !== 'none' && held1.rotate !== held2.rotate, `${held1.rotate} then ${held2.rotate}`);
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: turtleAt.x, y: turtleAt.y + 6, button: 'left', clickCount: 1 });
+  await chrome.sleep(120);
+  check('and stops squirming when it is let go', (await look()).animation === 'none');
+
+  // The fish: ?fish=now sends one a moment after the page opens.
+  await chrome.goto(BASE + '?fish=now');
+  await chrome.sleep(900);
+  const fishNow = () => chrome.eval(`(() => { const f = document.querySelector('.fish'); const can = document.querySelector('.trash-can'); if (!f) return null; const r = f.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, peek: can.classList.contains('peek'), lookX: can.style.getPropertyValue('--look-x'), events: getComputedStyle(f).pointerEvents, hit: !!document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)?.closest('.fish'), hidden: f.getAttribute('aria-hidden') }; })()`);
+  const fish1 = await fishNow();
+  check('?fish=now sends a fish swimming across above the trash can, for looking at only', fish1 !== null && fish1.events === 'none' && !fish1.hit && fish1.hidden === 'true' && fish1.y > 380, JSON.stringify(fish1));
+  await chrome.sleep(1200);
+  const fish2 = await fishNow();
+  check('it moves along, and the shark peeks over the rim and looks toward it', fish2 !== null && Math.abs(fish2.x - fish1.x) > 20 && fish2.peek && fish2.lookX !== '', `${Math.round(fish1.x)} then ${Math.round(fish2.x)}, peek ${fish2.peek}, looking ${fish2.lookX}`);
+  await chrome.sleep(6500);
+  check('and when it has crossed it is gone, the shark goes back down and looks straight ahead', (await fishNow()) === null && (await chrome.eval(`(() => { const c = document.querySelector('.trash-can'); return !c.classList.contains('peek') && c.style.getPropertyValue('--look-x') === ''; })()`)));
+  check('the fish never changes the project or stores anything', (await chrome.eval(`Object.keys(localStorage).filter((k) => k !== 'turtlelab-project').length`)) === 0 && (await chrome.eval(`sessionStorage.length`)) === 0);
+  // Asked for calm, there is no fish at all.
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await chrome.goto(BASE + '?fish=now');
+  await chrome.sleep(1200);
+  check('when the computer asks for reduced motion there is no fish, not even when asked for', (await fishNow()) === null);
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+  // Busy shark: a fish does not interrupt the shark eating.
+  await chrome.goto(BASE + '?speed=instant');
+
+  // ---- The turtle yawns on a long wait and waves when it is done; the shark burps after a meal and spits a stack back on Undo ----
+  const mood = () => chrome.eval(`(() => { const s = document.querySelector('.turtle-sprite'); const z = document.querySelector('.turtle-zzz'); return { yawning: s.classList.contains('yawning'), waving: s.classList.contains('waving'), zzz: !z.hidden && getComputedStyle(z).display !== 'none' }; })()`);
+  const clickRun = async () => { const at = await chrome.centerOf('#run'); await chrome.click(at.x, at.y); };
+  const waits = (tenths) => ({ app: 'porttack-turtle', version: 1, stacks: [{ x: 120, y: 60, blocks: [{ op: 'start' }, { op: 'clean' }, { op: 'forward', args: [30] }, { op: 'wait', args: [tenths] }, { op: 'forward', args: [30] }] }] });
+  await seedProject(waits(12));
+  await clickRun();
+  await chrome.sleep(500);
+  const yawn = await mood();
+  check('during a long wait (over a second) the turtle yawns, with a Zzz floating up', yawn.yawning && yawn.zzz && !yawn.waving, JSON.stringify(yawn));
+  await chrome.sleep(1100);
+  const done = await mood();
+  check('when the wait is over the yawn stops, and when the program has finished the turtle waves', !done.yawning && !done.zzz && done.waving, JSON.stringify(done));
+  await chrome.sleep(1500);
+  check('and the wave only lasts a moment', !(await mood()).waving);
+  await seedProject(waits(4));
+  await clickRun();
+  await chrome.sleep(150);
+  check('a short wait (under a second) is only a pause: no yawn', !(await mood()).yawning);
+  await seedProject(waits(60));
+  await clickRun();
+  await chrome.sleep(500);
+  check('a long wait yawns, and pressing Stop ends the yawn, with no wave (it did not finish)', (await mood()).yawning);
+  const stopButtonAt = await chrome.centerOf('#stop');
+  await chrome.click(stopButtonAt.x, stopButtonAt.y);
+  await chrome.sleep(200);
+  const stopped = await mood();
+  check('stopped: no yawn, no Zzz, and no wave', !stopped.yawning && !stopped.zzz && !stopped.waving, JSON.stringify(stopped));
+
+  // The shark: eat a stack (it may burp), then Undo brings the stack back by spitting it out.
+  const meal = { app: 'porttack-turtle', version: 1, stacks: [{ x: 120, y: 60, blocks: [{ op: 'start' }, { op: 'clean' }] }, { x: 120, y: 300, blocks: [{ op: 'penup', args: [] }, { op: 'pendown', args: [] }] }] };
+  const seedMeal = async (query) => {
+    await chrome.goto(BASE + 'about.html');
+    await chrome.eval(`localStorage.setItem('turtlelab-project', ${JSON.stringify(JSON.stringify(meal))})`);
+    await chrome.goto(BASE + query, { keepStorage: true });
+    await chrome.sleep(500);
+  };
+  const feedShark = async () => {
+    const from = await chrome.eval(`(() => { const r = document.querySelectorAll('.workspace .stack')[1].querySelector('.node').getBoundingClientRect(); return { x: r.x + 14, y: r.y + r.height / 2 }; })()`);
+    await chrome.drag(from, { x: 40, y: 540 });
+  };
+  const sharkNow = () => chrome.eval(`(() => ({ stacks: document.querySelectorAll('.workspace .stack').length, ghosts: document.querySelectorAll('.workspace .ghost').length, hidden: [...document.querySelectorAll('.workspace .stack')].filter((s) => s.style.opacity === '0').length, shark: document.querySelector('.trash-can').className, burp: !!document.querySelector('.burp') }))()`);
+  await seedMeal('?speed=instant&burp=always');
+  await feedShark();
+  await chrome.sleep(1050);
+  const afterMeal = await sharkNow();
+  check('the shark eats the stack and, with burps turned all the way up, a burp bubble comes out of it', afterMeal.stacks === 1 && afterMeal.burp, JSON.stringify(afterMeal));
+  check('the burp floats away, and the shark is back down', await (async () => { await chrome.sleep(2300); const s = await sharkNow(); return !s.burp && s.shark === 'trash-can'; })());
+  const undoAt = await chrome.centerOf('#undo');
+  await chrome.click(undoAt.x, undoAt.y);
+  await chrome.sleep(230);
+  const spitting = await sharkNow();
+  check('Undo brings the eaten stack back by spitting it out: the shark comes up, a copy flies out, and the real stack waits unseen', spitting.shark.includes('spitting') && spitting.ghosts === 1 && spitting.hidden === 1 && spitting.stacks === 2, JSON.stringify(spitting));
+  await chrome.sleep(900);
+  const landed2 = await sharkNow();
+  check('then it lands: the stack is on the page, no copy is left, and the shark goes back down', landed2.stacks === 2 && landed2.ghosts === 0 && landed2.hidden === 0 && landed2.shark === 'trash-can', JSON.stringify(landed2));
+  const redoAt = await chrome.centerOf('#redo');
+  await chrome.click(redoAt.x, redoAt.y);
+  await chrome.sleep(120);
+  const redone = await sharkNow();
+  check('Redo takes the stack away again at once, with no shark show', redone.stacks === 1 && redone.ghosts === 0, JSON.stringify(redone));
+  // An Undo of something that is not a deleted stack (moving a stack) has no spit.
+  await seedMeal('?speed=instant');
+  const mover = await chrome.eval(`(() => { const r = document.querySelectorAll('.workspace .stack')[0].querySelector('.node').getBoundingClientRect(); return { x: r.x + 14, y: r.y + r.height / 2 }; })()`);
+  await chrome.drag(mover, { x: mover.x + 120, y: mover.y + 60 });
+  await chrome.sleep(200);
+  await chrome.click(undoAt.x, undoAt.y);
+  await chrome.sleep(200);
+  const afterMove = await sharkNow();
+  check('undoing a move is not a stack coming back: no copy flies, the shark stays down', afterMove.ghosts === 0 && afterMove.shark === 'trash-can' && afterMove.stacks === 2, JSON.stringify(afterMove));
+  // Asked for calm: no burp, no flying copy.
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await seedMeal('?speed=instant&burp=always');
+  await feedShark();
+  await chrome.sleep(1050);
+  const calmMeal = await sharkNow();
+  await chrome.click(undoAt.x, undoAt.y);
+  await chrome.sleep(230);
+  const calmUndo = await sharkNow();
+  check('with reduced motion there is no burp and no flying copy: the stack just comes back', !calmMeal.burp && calmUndo.ghosts === 0 && calmUndo.hidden === 0 && calmUndo.stacks === 2, JSON.stringify([calmMeal, calmUndo]));
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+  await chrome.goto(BASE + '?speed=instant');
+
   // ---- The site menu (the hamburger) ---------------------------------------------------------------
   await chrome.goto(BASE + '?speed=instant');
   const aboutLink = await chrome.centerOf('a.toolbar-link[href="about.html"]');

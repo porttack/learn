@@ -9,6 +9,7 @@ import {
   findRunStack,
   usesBoxes,
   walkBlocks,
+  restoredStack,
   FORMAT_ID,
   FORMAT_VERSION,
 } from '../js/core/project.js';
@@ -358,4 +359,26 @@ test('the words on a write block are kept, but only letters that can be drawn, a
   // Only a write block carries words this way: another block's text is not kept.
   const other = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 0, y: 0, blocks: [{ op: 'forward', args: [10], text: 'sneaky' }] }] });
   assert.equal(other.project.stacks[0].blocks[0].text, undefined);
+});
+
+test('restoredStack finds the one stack an undo brought back whole, and nothing else', () => {
+  const stack = (x, y, ...ops) => ({ x, y, blocks: ops.map((op) => ({ op, args: [] })) });
+  const a = stack(10, 10, 'clean', 'penup');
+  const b = stack(300, 40, 'pendown', 'clean');
+  // The deleted stack comes back: that is the one the shark spits out.
+  assert.equal(restoredStack([a], [a, b]), b);
+  assert.equal(restoredStack([a], [b, a]), b, 'wherever it is in the list');
+  // Nothing came back when blocks went away (a redo), or nothing changed.
+  assert.equal(restoredStack([a, b], [a]), null);
+  assert.equal(restoredStack([a], [a]), null);
+  assert.equal(restoredStack([], []), null);
+  // A few blocks put back on the end of a stack that was already there are not "a stack coming back".
+  assert.equal(restoredStack([stack(10, 10, 'clean')], [stack(10, 10, 'clean', 'penup', 'pendown')]), null);
+  // Two new stacks at once (unclear which): none.
+  assert.equal(restoredStack([a], [a, b, stack(500, 90, 'clean')]), null);
+  // A new stack that happens to sit exactly where an old one is (they would be on top of each other) is not told apart: none.
+  assert.equal(restoredStack([a], [a, stack(10, 10, 'pendown')]), null);
+  // Blocks inside blocks count too.
+  const loop = { x: 50, y: 50, blocks: [{ op: 'repeat', args: [3], body: [{ op: 'forward', args: [10] }] }] };
+  assert.equal(restoredStack([a], [a, loop]), loop);
 });

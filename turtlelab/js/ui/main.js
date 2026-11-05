@@ -14,7 +14,7 @@ import { Scheduler, SPEEDS } from '../core/scheduler.js';
 import { History } from '../core/history.js';
 import { formatNumber, formatValue } from '../core/format.js';
 import { runBlocks, createContext, evalArg, RunError } from '../core/interpreter.js';
-import { emptyProject, findRunStack, usesBoxes, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
+import { emptyProject, findRunStack, restoredStack, usesBoxes, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
 import { BLOCKS, DEFAULT_SPEED } from '../core/blocks-spec.js';
 import { definitionsOf, isDefinition } from '../core/definitions.js';
 import { cloneBlock, isReporterStack } from '../core/edit.js';
@@ -32,6 +32,7 @@ import { LogoBox } from './logo-box.js';
 import { compileLogo } from '../core/logo-compile.js';
 import { toLogo, jsLogoAddress } from '../core/logo.js';
 import { setupFullscreen } from './fullscreen.js';
+import { Fish } from './fish.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -167,9 +168,18 @@ showBoxes();
 
 let outlined = false; // is a block outlined as running right now?
 let runningLogo = false; // is what is running (or ran last) the Logo box's program, not the blocks?
+/** A wait at least this long (milliseconds) makes the turtle yawn. A shorter one is just a pause. */
+const YAWN_AFTER_MS = 700;
+
 const scheduler = new Scheduler({
   speed: startSpeed,
+  onWait: (ms) => {
+    // A long wait: the turtle yawns and sways with a Zzz, until the next block runs (onStep) or the program ends.
+    if (ms >= YAWN_AFTER_MS) view.setYawning(true);
+  },
   onStart: () => {
+    view.stopWaving();
+    view.setYawning(false);
     turtle.stopWriting();
     runButton.disabled = true;
     stopButton.disabled = false;
@@ -178,6 +188,7 @@ const scheduler = new Scheduler({
     say('');
   },
   onStep: (block) => {
+    view.setYawning(false);
     view.requestSync();
     // Outlining every block would only slow down an instant run.
     if (scheduler.speed !== 'instant') {
@@ -194,6 +205,8 @@ const scheduler = new Scheduler({
     runButton.disabled = false;
     stopButton.disabled = true;
     view.sprite.classList.remove('locked');
+    view.setYawning(false);
+    if (result.status === 'done') view.wave(); // a finished program: the turtle waves
     turtle.stopWriting(); // Stop part way through a word: the turtle is shown where it really is, not where its pen was
     view.sync();
     workspace.setRunning(null);
@@ -326,8 +339,10 @@ function updateHistoryButtons() {
 }
 
 /** Put the project back to an earlier (or later) copy and redraw it. */
-function restore(snapshot) {
+function restore(snapshot, { spit = false } = {}) {
   if (!snapshot || workspace.busy) return;
+  // An Undo that brings a deleted stack back has the shark spit it out.
+  const back = spit ? restoredStack(project.stacks, snapshot.stacks) : null;
   project.stacks = snapshot.stacks;
   workspace.render();
   workspace.setError(null);
@@ -335,6 +350,7 @@ function restore(snapshot) {
   refreshBoxes();
   projectChanged();
   autosave.schedule();
+  if (back) workspace.spitOut(back);
 }
 
 let palettes = null;
@@ -362,11 +378,15 @@ workspace = new Workspace({
   onRunStack: runStack,
   onRunPaletteBlock: (block) => runStack({ x: 0, y: 0, blocks: [block] }),
   onMessage: say,
-  eater: { mouthPoint: () => palettes.eater.mouthPoint(), feed: () => palettes.eater.feed() },
+  eater: { mouthPoint: (options) => palettes.eater.mouthPoint(options), feed: () => palettes.eater.feed(), spit: (ms) => palettes.eater.spit(ms) },
   isOverPalette: (x, y, rect) => palettes.isOver(x, y, rect),
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
 });
-palettes = new PaletteUI({ stage, workspace });
+palettes = new PaletteUI({ stage, workspace, burpChance: params.get('burp') === 'always' ? 1 : undefined }); // (?burp=always makes the shark burp after every meal, for trying it out)
+// Now and then a fish swims past the trash can and the shark watches it. (?fish=now sends one at once, for trying it out.)
+const fish = new Fish({ stage, trash: palettes.trash, before: workspace.svg });
+fish.start();
+if (params.get('fish') === 'now') setTimeout(() => fish.swim(), 400);
 pythonBox = new PythonBox({ stage, project, onMessage: say });
 logoBox = new LogoBox({
   stage,
@@ -402,7 +422,7 @@ function pressRun() {
 
 runButton.addEventListener('click', pressRun);
 
-undoButton.addEventListener('click', () => restore(history.undo()));
+undoButton.addEventListener('click', () => restore(history.undo(), { spit: true }));
 redoButton.addEventListener('click', () => restore(history.redo()));
 updateHistoryButtons();
 
@@ -594,7 +614,7 @@ document.addEventListener('keydown', (event) => {
   if (!(event.ctrlKey || event.metaKey)) return;
   const key = event.key.toLowerCase();
   if (key === 's' && !event.shiftKey) savePictureNow();
-  else if (key === 'z' && !event.shiftKey) restore(history.undo());
+  else if (key === 'z' && !event.shiftKey) restore(history.undo(), { spit: true });
   else if ((key === 'z' && event.shiftKey) || key === 'y') restore(history.redo());
   else return;
   event.preventDefault();

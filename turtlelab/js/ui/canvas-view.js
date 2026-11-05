@@ -23,6 +23,7 @@ import { toCss } from '../core/color.js';
 import { DEFAULT_DRAW_VIEW, drawingBounds, fitView, isDefaultView, paperToWorld, sameView, visibleOps } from '../core/fit.js';
 import { gridLines, labelFor } from '../core/grid.js';
 import { turtleSvg } from './artwork.js';
+import { spriteSvg, shellColors } from './turtle-look.js';
 
 /** Canvas pixels per paper unit. */
 export const PIXEL_RATIO = 2;
@@ -31,6 +32,9 @@ export const PIXEL_RATIO = 2;
 // the screen (about 52 on an ordinary window), because the drawing is printed small and the
 // reader needs to see at a glance which way the nose points.
 export const PDF_TURTLE_SIZE = 70;
+
+/** How long the wave lasts (the same as the stylesheet's animation, a little over). */
+const WAVE_MS = 1250;
 
 /** How tall the grid's numbers are on the PDF's picture, in the paper canvas's own pixels (about 10 points on the page). */
 const PDF_GRID_TEXT = 30;
@@ -170,9 +174,18 @@ export class CanvasView {
 
     this.sprite = document.createElement('div');
     this.sprite.className = 'turtle-sprite';
-    this.sprite.innerHTML = turtleSvg();
+    this.sprite.innerHTML = spriteSvg();
+    this.shownColor = ''; // the pen color the shell was last painted for
 
-    this.box.append(this.canvas, this.gridCanvas, this.sprite);
+    // The "Zzz" that floats up while the turtle waits (it is its own piece, not turned with the turtle, so it always floats up).
+    this.zzz = document.createElement('div');
+    this.zzz.className = 'turtle-zzz';
+    this.zzz.hidden = true;
+    this.zzz.setAttribute('aria-hidden', 'true');
+    this.zzz.innerHTML = '<span>z</span><span>z</span><span>Z</span>';
+    this.yawning = false;
+    this.waveTimer = null;
+    this.box.append(this.canvas, this.gridCanvas, this.sprite, this.zzz);
     stage.append(this.box);
 
     paintOp(this.ctx, { type: 'clear' });
@@ -416,6 +429,15 @@ export class CanvasView {
 
   /** Put the turtle picture where the turtle is. */
   sync() {
+    // The shell is the color of the pen, and with the pen up the turtle hovers (the stylesheet does both).
+    const key = this.turtle.color.join(',');
+    if (key !== this.shownColor) {
+      this.shownColor = key;
+      const { shell, scute } = shellColors(this.turtle.color);
+      this.sprite.style.setProperty('--shell', shell);
+      this.sprite.style.setProperty('--scute', scute);
+    }
+    this.sprite.classList.toggle('pen-up', !this.turtle.penDown);
     // While a write block is tracing letters, the turtle is shown at the tip of its pen, facing the way it is drawing.
     const shown = this.turtle.writing ?? this.turtle;
     const { heading } = shown;
@@ -424,6 +446,29 @@ export class CanvasView {
     const py = (at.y / PIXEL_RATIO) * this.scale;
     const half = this.spriteSize / 2;
     this.sprite.style.transform = `translate(${px - half}px, ${py - half}px) rotate(${heading}deg)`;
+    if (this.yawning) this.zzz.style.transform = `translate(${px + half * 0.35}px, ${py - half * 1.05}px)`;
+  }
+
+  /** The turtle yawns and sways a little while a wait block waits, with a "Zzz" floating up (or stops). */
+  setYawning(on) {
+    if (on === this.yawning) return;
+    this.yawning = on;
+    this.zzz.hidden = !on;
+    this.sprite.classList.toggle('yawning', on);
+    if (on) this.sync();
+  }
+
+  /** The turtle waves a flipper hello (it does this when a program has finished). It lasts about a second. */
+  wave() {
+    this.stopWaving();
+    this.sprite.classList.add('waving');
+    this.waveTimer = setTimeout(() => this.stopWaving(), WAVE_MS);
+  }
+
+  stopWaving() {
+    clearTimeout(this.waveTimer);
+    this.waveTimer = null;
+    this.sprite.classList.remove('waving');
   }
 
   /**

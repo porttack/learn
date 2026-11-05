@@ -112,6 +112,24 @@ export function walkBlocks(blocks, visit) {
   }
 }
 
+/**
+ * After an undo: the one stack that came back whole, or null. It is what the shark spits out. A stack counts as having come back
+ * when the blocks on the page grew, and it is on the page now at a place where there was no stack before (so a few blocks put
+ * back on the end of a stack that was already there are not "a stack coming back"). Gives null when it is not clear which one.
+ */
+export function restoredStack(before, after) {
+  const count = (stacks) => {
+    let n = 0;
+    for (const stack of stacks) walkBlocks(stack.blocks, () => { n += 1; });
+    return n;
+  };
+  if (count(after) <= count(before)) return null;
+  const same = new Set(before.map((stack) => JSON.stringify(stack)));
+  const places = new Set(before.map((stack) => `${stack.x},${stack.y}`));
+  const fresh = after.filter((stack) => !same.has(JSON.stringify(stack)) && !places.has(`${stack.x},${stack.y}`));
+  return fresh.length === 1 ? fresh[0] : null;
+}
+
 /** True if any block in the project stores to or reads from a box. */
 export function usesBoxes(project) {
   let found = false;

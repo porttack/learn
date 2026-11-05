@@ -284,3 +284,15 @@ test('a Pace step reports its block to onStep, like a Wait does', async () => {
   await sched.start((function* () { yield new Pace(block, 0.5); yield new Pace(block, 0.5); })());
   assert.deepEqual(seen, [block, block]);
 });
+
+test('a wait block tells onWait how long it will wait, after onStep, and no other block does', async () => {
+  const log = [];
+  const time = fakeTime();
+  const block = { op: 'wait' };
+  const sched = new Scheduler({ ...time, speed: 'instant', onStep: (b) => log.push(['step', b.op]), onWait: (ms, b) => log.push(['wait', ms, b.op]) });
+  const done = sched.start((function* () { yield { op: 'forward' }; yield new Wait(block, 1500); yield { op: 'right' }; })());
+  await flush();
+  time.fire();
+  await done;
+  assert.deepEqual(log, [['step', 'forward'], ['step', 'wait'], ['wait', 1500, 'wait'], ['step', 'right']]);
+});

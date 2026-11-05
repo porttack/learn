@@ -52,6 +52,7 @@ const TOUCH_DRAG_THRESHOLD = 10; // fingers wobble more than mice
 const LONG_PRESS_MS = 500; // how long to hold a block for its help bubble
 const COPY_OFFSET = 30; // how far a copied stack lands from the original
 const EAT_MS = 380; // how long a deleted stack takes to be eaten
+const SPIT_MS = 520; // and how long a stack that Undo brought back takes to fly out of the shark
 const EATEN_SIZE = 0.12; // how small it is by the time it reaches the shark
 
 const prefersReducedMotion = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -68,7 +69,7 @@ export class Workspace {
    * @param {(x: number, y: number, stackRect: object | null) => boolean} [options.isOverPalette] for deleting:
    *        the pointer's place, and the rectangle of the stack being carried
    * @param {(hovering: boolean) => void} [options.onPaletteHover]
-   * @param {{ mouthPoint: () => ({x: number, y: number} | null), feed: () => void }} [options.eater]
+   * @param {{ mouthPoint: (options?: {raised?: boolean}) => ({x: number, y: number} | null), feed: () => void, spit?: (ms: number) => void }} [options.eater]
    *        what eats a deleted stack: where its mouth is on the screen, and a nudge to start chewing
    */
   constructor({
@@ -469,6 +470,40 @@ export class Workspace {
     el.style.opacity = '0.25';
     this.eater.feed();
     setTimeout(() => el.remove(), EAT_MS + 80);
+  }
+
+  /**
+   * An Undo brought a deleted stack back, so the shark spits it out: a copy flies from the shark's mouth to where the stack is, growing
+   * to full size, while the real stack waits out of sight (it is still clickable, so a quick click is not lost) and appears where the copy lands. Nothing happens for someone who asked for
+   * less motion, or when the shark is not showing.
+   */
+  spitOut(stack) {
+    const layout = this.layoutOf(stack);
+    const mouth = this.eater?.mouthPoint({ raised: true });
+    if (!layout?.el || !mouth || prefersReducedMotion()) return;
+    const real = layout.el;
+    const box = real.getBoundingClientRect();
+    const size = { w: box.width / this.view.zoom, h: box.height / this.view.zoom };
+    const ghost = real.cloneNode(true);
+    ghost.setAttribute('class', 'ghost');
+    for (const part of ghost.querySelectorAll('[data-nid]')) {
+      part.removeAttribute('data-nid');
+      part.setAttribute('class', 'ghost-part');
+    }
+    const from = this.toWorld(mouth.x, mouth.y);
+    ghost.style.transform = `translate(${from.x - (size.w * EATEN_SIZE) / 2}px, ${from.y - (size.h * EATEN_SIZE) / 2}px) scale(${EATEN_SIZE})`;
+    ghost.style.opacity = '0.25';
+    real.style.opacity = '0'; // out of sight while the copy flies, but still there to click if someone is quick
+    this.overlay.append(ghost);
+    ghost.getBoundingClientRect(); // lets the browser see where it starts, so the move below is animated
+    ghost.style.transition = `transform ${SPIT_MS}ms cubic-bezier(0.1, 0.7, 0.3, 1), opacity ${SPIT_MS}ms`;
+    ghost.style.transform = `translate(${stack.x}px, ${stack.y}px)`;
+    ghost.style.opacity = '1';
+    this.eater.spit?.(SPIT_MS + 200);
+    setTimeout(() => {
+      ghost.remove();
+      real.style.opacity = '';
+    }, SPIT_MS + 40);
   }
 
   snapTo(target, carried) {

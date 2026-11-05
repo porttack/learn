@@ -155,6 +155,85 @@ body {
 .turtle-sprite.dragging { cursor: grabbing; }
 .turtle-sprite.locked { cursor: default; }
 
+/* The shell is the color of the pen (the page sets --shell and --scute from it), and its markings a shade of it. */
+.turtle-sprite .shell { fill: var(--shell, #6cc600); transition: fill-opacity 0.18s ease-out; }
+.turtle-sprite .scutes path { fill: var(--scute, #037700); }
+
+/* With the pen up the turtle hovers: a little bigger, a shadow underneath, and a paler shell, as if the pen were lifted off the paper.
+   (scale and rotate here are the separate properties, so they never fight the sprite's own place and heading.) */
+.turtle-sprite svg {
+  transition: scale 0.18s ease-out, filter 0.18s ease-out;
+}
+.turtle-sprite.pen-up svg {
+  scale: 1.14;
+  filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.38));
+}
+.turtle-sprite.pen-up .shell { fill-opacity: 0.4; }
+
+/* Picked up, it squirms: it wriggles from side to side for as long as you hold it. */
+.turtle-sprite.dragging svg {
+  animation: turtle-squirm 0.3s ease-in-out infinite alternate;
+}
+@keyframes turtle-squirm {
+  from { rotate: -8deg; translate: -1px 0; }
+  to { rotate: 8deg; translate: 1px -1px; }
+}
+/* While a wait block waits the turtle yawns: it sways slowly, and a Zzz floats up from it (the page keeps the Zzz at the turtle). */
+.turtle-sprite.yawning svg {
+  animation: turtle-yawn 1.6s ease-in-out infinite alternate;
+}
+@keyframes turtle-yawn {
+  from { rotate: -5deg; translate: 0 0; }
+  to { rotate: 5deg; translate: 0 1px; }
+}
+.turtle-zzz {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2rem;
+  height: 2.2rem;
+  pointer-events: none;
+  font-weight: 700;
+  color: #5b7fa6;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff;
+}
+.turtle-zzz[hidden] { display: none; }
+.turtle-zzz span {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  opacity: 0;
+  animation: turtle-zzz 2.1s ease-out infinite;
+}
+.turtle-zzz span:nth-child(1) { font-size: 0.8rem; animation-delay: 0s; }
+.turtle-zzz span:nth-child(2) { font-size: 1.05rem; animation-delay: 0.6s; }
+.turtle-zzz span:nth-child(3) { font-size: 1.35rem; animation-delay: 1.2s; }
+@keyframes turtle-zzz {
+  0% { opacity: 0; transform: translate(0, 4px) rotate(-8deg); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(14px, -26px) rotate(8deg); }
+}
+
+/* When a program finishes the turtle waves: the front flipper on its right swings out and back, twice. */
+.turtle-sprite.waving .wave-flipper {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: turtle-wave 0.6s ease-in-out 2;
+}
+@keyframes turtle-wave {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-38deg); }
+  70% { transform: rotate(22deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .turtle-sprite svg { transition: none; }
+  .turtle-sprite.dragging svg,
+  .turtle-sprite.yawning svg { animation: none; }
+  .turtle-zzz { display: none; }
+  .turtle-sprite.waving .wave-flipper { animation: none; }
+}
+
 /* ---- Blocks ---- */
 
 /* The workspace covers the paper but lets clicks through, except on blocks. */
@@ -354,14 +433,67 @@ body {
   transition: transform 0.2s ease-out;
 }
 
+/* A fish is swimming by: the shark's head comes up over the lid, just its eyes and fin, and the pupils follow the fish (--look-x and --look-y). */
+.trash-can.peek .shark { transform: translateY(12px); }
+.trash-can .pupil {
+  transform: translate(var(--look-x, 0px), var(--look-y, 0px));
+  transition: transform 0.12s ease-out;
+}
+
 .trash-can.hungry .shark,
-.trash-can.eating .shark { transform: translateY(-40px); }
+.trash-can.eating .shark,
+.trash-can.spitting .shark { transform: translateY(-40px); }
 
 .trash-can.hungry .jaw,
-.trash-can.eating .jaw { transform: translateY(26px); }
+.trash-can.eating .jaw,
+.trash-can.spitting .jaw { transform: translateY(26px); }
 
 .trash-can.hungry .lid,
-.trash-can.eating .lid { transform: translate(-34px, -4px) rotate(-62deg); }
+.trash-can.eating .lid,
+.trash-can.spitting .lid { transform: translate(-34px, -4px) rotate(-62deg); }
+
+/* Now and then, after a meal, a bubble with a "burp" in it floats up out of the shark's mouth. */
+.burp {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.burp-dot,
+.burp-word {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  animation: burp-rise 1.6s ease-out forwards;
+}
+.burp-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border: 1.5px solid #6c98c4;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+}
+.burp-dot-1 { margin-left: -1.1rem; animation-delay: 0.05s; }
+.burp-dot-2 { width: 0.7rem; height: 0.7rem; margin-left: 0.9rem; animation-delay: 0.15s; }
+.burp-word {
+  margin: -0.5rem 0 0 -1.2rem;
+  padding: 0.12rem 0.55rem;
+  border: 1.5px solid #6c98c4;
+  border-radius: 999px;
+  background: #fff;
+  color: #3b6385;
+  font-size: 0.78rem;
+  font-weight: 700;
+  animation-delay: 0.2s;
+}
+@keyframes burp-rise {
+  0% { opacity: 0; transform: translateY(0) scale(0.4); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-4.2rem) scale(1.05); }
+}
 
 .trash-can.chomp .jaw { animation: chomp 0.8s ease-in-out; }
 
@@ -378,7 +510,35 @@ body {
 .workspace .ghost,
 .workspace .ghost * { pointer-events: none !important; }
 
+/* The occasional fish (js/ui/fish.js). It ignores clicks, and the stage gives it its place with a transform. */
+.fish {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.6rem;
+  z-index: 4;
+  pointer-events: none;
+}
+.fish-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.fish-tail {
+  transform-origin: 9px 14px;
+  animation: fish-wag 0.32s ease-in-out infinite alternate;
+}
+@keyframes fish-wag {
+  from { transform: rotate(-16deg); }
+  to { transform: rotate(16deg); }
+}
+.stage.blocks-hidden .fish { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
+  .fish-tail { animation: none; }
+  .burp { display: none; }
+  .trash-can .pupil { transition: none; }
   .trash-can .shark,
   .trash-can .jaw,
   .trash-can .lid { transition: none; }

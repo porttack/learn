@@ -25,8 +25,9 @@ export class PaletteUI {
    * @param {object} options
    * @param {HTMLElement} options.stage
    * @param {import('./workspace.js').Workspace} options.workspace
+   * @param {number} [options.burpChance] how often the shark burps after a meal (0 to 1), for trying it out
    */
-  constructor({ stage, workspace }) {
+  constructor({ stage, workspace, burpChance }) {
     this.stage = stage;
     this.workspace = workspace;
     this.selected = null;
@@ -72,7 +73,7 @@ export class PaletteUI {
     stage.insertBefore(this.band, workspace.svg);
 
     stage.append(this.nav, this.flyout);
-    this.trash = new Trash(stage, workspace.svg);
+    this.trash = new Trash(stage, workspace.svg, burpChance === undefined ? {} : { burpChance });
     this.flyoutSvg.addEventListener('pointerdown', (event) => this.pressFlyout(event));
   }
 
@@ -195,6 +196,6 @@ export class PaletteUI {
 
   /** What a deleted stack is fed to: where its mouth is on the screen, and a nudge to start chewing. */
   get eater() {
-    return { mouthPoint: () => this.trash.mouthPoint(), feed: () => this.trash.feed() };
+    return { mouthPoint: (options) => this.trash.mouthPoint(options), feed: () => this.trash.feed(), spit: (ms) => this.trash.spit(ms) };
   }
 }

@@ -55,6 +55,7 @@ export class Scheduler {
    * @param {object} [options]
    * @param {(block: object) => void} [options.onStep] after every block runs
    * @param {() => void} [options.onStart] when a program starts
+   * @param {(ms: number, block: object) => void} [options.onWait] when a wait block starts to wait, and for how long
    * @param {(result: {status: string, error?: Error}) => void} [options.onFinish]
    *        when it ends: status is 'done', 'stopped' or 'error'
    * @param {string} [options.speed] one of the keys of SPEEDS
@@ -69,6 +70,7 @@ export class Scheduler {
     this._nextFrame = merged.nextFrame;
     this.onStep = options.onStep ?? null;
     this.onStart = options.onStart ?? null;
+    this.onWait = options.onWait ?? null;
     this.onFinish = options.onFinish ?? null;
     this.speed = options.speed ?? 'medium';
     this.sliceMs = options.sliceMs ?? 12;
@@ -122,6 +124,7 @@ export class Scheduler {
       // A wait block asks for a real pause, whatever the speed. Stop can cut it short.
       if (step.value instanceof Wait) {
         if (this.onStep) this.onStep(step.value.block);
+        if (this.onWait) this.onWait(step.value.ms, step.value.block);
         await this._sleep(step.value.ms);
         sliceStart = this._now();
         continue;

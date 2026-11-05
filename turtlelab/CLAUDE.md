@@ -522,6 +522,49 @@ dependable iPad route is also offered: `index.html` carries `apple-mobile-web-ap
 The Guide says both. If a teacher reports the number boxes will not type in full screen on an iPad, that is the reason: tell them to use Add
 to Home Screen instead.
 
+## The turtle's look, the squirm, and the occasional fish
+
+Small delights the user asked for (2026-11-04, from a list of ideas after saying "i like the shark for the garbage"). All of it is for looking at: none of it
+touches a project, stores anything or fetches anything, and the art is TurtleLab's own (apart from Sugar's turtle, which is left as it is).
+
+- **The shell is the pen's color** (`js/ui/turtle-look.js`). `spriteSvg()` is the turtle from `artwork.js` with two parts named, `shell` (the big oval) and `scutes`
+  (the five markings), found by their path text (a test fails if the picture ever changes under it). `CanvasView.sync()` sets `--shell` and `--scute` on the sprite
+  from `turtle.color` (cached, so it only touches the style when the color changes) and the stylesheet uses them. The markings are a shade of the pen: darker on a light
+  pen, lighter on a dark one (`shellColors`), so they always show. **With the pen up the turtle hovers**: class `pen-up` makes the svg `scale: 1.14` with a drop shadow
+  and a paler shell (opacity 0.4), as if the pen were lifted off the paper (the pen is under the turtle, where the turtle's middle is; a pencil by the nose would have
+  looked like the pen was there). **The PDF's turtle is deliberately NOT tinted** (`paperWithTurtle` still stamps the plain `turtleSvg()`): the checks that find the turtle
+  in the PDF by its green and its heading, and the teacher grades from it, so it must look the same whatever the pen was.
+- **Squirm:** `.turtle-sprite.dragging svg` runs `turtle-squirm` (a wiggle of the separate `rotate` and `translate` properties, 0.3 s, alternating) for as long as the
+  turtle is held, moved or turned. It uses the individual transform properties on the inner svg, so it never fights the sprite's own inline `transform` (its place and heading).
+  The hover uses `scale` the same way.
+- **The fish** (`js/ui/fish.js`, the `Fish` class): 30 to 90 s after the page opens and then every 90 to 240 s, a little orange fish swims across just above the trash can
+  (7 s, bobbing, either direction, off the left edge and back), the shark's head comes up over the lid (`Trash.setPeek`, class `peek`) and its pupils follow the fish
+  (`Trash.look`, `--look-x` and `--look-y`). It is skipped, and tried again in 10 s, when the tab is hidden, the blocks are hidden, or the shark is hungry or eating; it
+  never appears when the computer asks for reduced motion (`prefers-reduced-motion`), not even with the address `?fish=now`, which is only the developer shortcut that
+  sends one 0.4 s after load (the same kind as `?speed=`). The fish layer ignores clicks, and nothing is stored. The timing, path and gaze are small pure functions
+  (`between`, `canSwim`, `swimPath`, `fishAt`, `gaze`, `isNear`), unit tested; the class is tested against stand-ins for the page, and the editor checks run a real one.
+- **Yawn, wave, spit and burp (2026-11-04, the user's next pick from that list: "Add the yawn and wave and undo and bubble"):**
+  - **Yawn:** a `wait` of 700 ms or more (`YAWN_AFTER_MS` in `main.js`) makes the sprite sway slowly and a "Zzz" float up (`CanvasView.setYawning`, class `yawning`,
+    the `.turtle-zzz` piece, positioned by `sync()` and not turned with the turtle). The scheduler tells the app about a wait through the new `onWait(ms, block)` option
+    (called after `onStep`); the next step (`onStep`), the end of the run or Stop turns it off. A shorter wait is only a pause.
+  - **Wave:** when a run ends with status `done` (not stopped, not an error) the front right flipper (`wave-flipper`, named in `turtle-look.js`) swings out and back twice
+    (`CanvasView.wave`, class `waving`, 1250 ms, `onStart` cancels it). Starting a run, or Stop, ends any wave.
+  - **Spit:** an **Undo** that brings a deleted stack back (`restoredStack` in `core/project.js`: the blocks on the page grew and exactly one stack is new, at a place where
+    there was no stack, so putting a few blocks back on the end of a stack, a move, or a redo do NOT count) has the shark come up (`Trash.spit`, class `spitting`, which
+    looks like hungry) and a copy of the stack fly from its mouth to the stack's place (`Workspace.spitOut`: the same ghost trick as eating, backward; the real stack is
+    `opacity: 0` until the copy lands, NOT `visibility: hidden`: a hidden stack ignores clicks, and an old editor check that names a restored block right after an Undo
+    failed because of it)). `mouthPoint({ raised: true })` gives where the mouth will be once the shark is up (it is still sunk when this starts).
+    Only Undo (button and Ctrl+Z) does this: `restore(snapshot, { spit: true })`. Redo and Open do not.
+  - **Burp:** after a meal, `Trash.burp` has a 30 percent chance (`BURP_CHANCE`, `shouldBurp`) of floating three bubbles, one with "burp" in it, up out of the can, starting
+    while the shark is still chewing. The address `?burp=always` makes it 100 percent, for trying it out.
+  - **All of these are skipped when the computer asks for reduced motion** (CSS for the yawn and wave, the code for the spit and burp), and none of it touches a project or
+    stores anything. The main.js hand-built `eater` object that the workspace gets must pass `spit` and the `raised` option on (it did not at first, which a probe caught).
+  Other ideas from that list that were NOT built (so they can be picked up later): a stamp block (paw, heart, star, fish, shark as line art), a celebration when a shape
+  closes, seasonal shark outfits by date, a cougar-paw turtle skin, paper choices (see below), a ghost trail of pen-up walks, a confused turtle on an error.
+  **Paper choices were proposed, not built.** The grid button (`#grid`) is a numbered square grid only, whose spacing follows the zoom (`core/grid.js`: steps of 1, 2 or 5 times a
+  power of ten, never closer than 50 screen pixels), so it looks different after Fit or a zoom. If paper choices are added, the idea on the table is to reuse the
+  right-click or press-and-hold menu pattern of Save (`ui/export-menu.js`): paper (white, graph, chalkboard, blueprint) separate from the grid style, with the grid's colors adapting to the paper.
+
 ## The picture shown when the address is pasted
 
 `index.html` has Open Graph and Twitter card tags (title, description, `og:image` = `https://learn.porttack.com/turtlelab/images/social.png`,

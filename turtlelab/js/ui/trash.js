@@ -55,13 +55,30 @@ const PICTURE = `
 const ARRIVE_MS = 340;
 const CHEW_MS = 800;
 
+/** How often a shark that has eaten a block burps a bubble, and how long the bubble floats. */
+export const BURP_CHANCE = 0.3;
+const BURP_MS = 1700;
+
+/** How far the shark's mouth moves between sunk down and up, in the picture's own units (its translateY, 84 and -40, in trash.css). */
+const SHARK_RISE = 124;
+const PICTURE_WIDTH = 140;
+
+const calm = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/** Does a shark that has just eaten burp this time? Never when the computer asked for calm. */
+export function shouldBurp(random, chance = BURP_CHANCE, quiet = false) {
+  return !quiet && random() < chance;
+}
+
 export class Trash {
   /**
    * @param {HTMLElement} stage the page the can sits in, at the bottom of the left side
    * @param {Node} [before] the blocks' layer: the can goes just under it, so a stack being
    *        carried over the can is drawn on top of the shark until it is let go
    */
-  constructor(stage, before = null) {
+  constructor(stage, before = null, { burpChance = BURP_CHANCE, random = Math.random } = {}) {
+    this.burpChance = burpChance;
+    this.random = random;
     this.el = document.createElement('div');
     this.el.className = 'trash-can';
     this.el.setAttribute('aria-hidden', 'true');
@@ -76,11 +93,32 @@ export class Trash {
     this.el.classList.toggle('hungry', hungry);
   }
 
-  /** Where the shark's mouth is on the screen, as { x, y }, or null if the can is not showing. */
-  mouthPoint() {
+  /** The shark looks up over the rim (a fish is swimming by), or goes back down. Being hungry or eating wins over this. */
+  setPeek(peeking) {
+    this.el.classList.toggle('peek', peeking);
+  }
+
+  /** Where the shark's eyes look: { x, y }, each from -1 (left, up) to 1 (right, down), or null to look straight ahead. */
+  look(at) {
+    if (!at) {
+      this.el.style.removeProperty('--look-x');
+      this.el.style.removeProperty('--look-y');
+      return;
+    }
+    this.el.style.setProperty('--look-x', `${(at.x * 2.8).toFixed(2)}px`);
+    this.el.style.setProperty('--look-y', `${(at.y * 2).toFixed(2)}px`);
+  }
+
+  /**
+   * Where the shark's mouth is on the screen, as { x, y }, or null if the can is not showing. With `raised`, where it is once the shark
+   * is up (which is where things are spat from), even if it is still sunk down now.
+   */
+  mouthPoint({ raised = false } = {}) {
     const box = this.mouth.getBoundingClientRect();
     if (box.width === 0 && box.height === 0) return null;
-    return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+    const up = ['hungry', 'eating', 'spitting'].some((name) => this.el.classList.contains(name));
+    const lift = raised && !up ? SHARK_RISE * (this.el.getBoundingClientRect().width / PICTURE_WIDTH) : 0;
+    return { x: box.left + box.width / 2, y: box.top + box.height / 2 - lift };
   }
 
   /**
@@ -93,14 +131,40 @@ export class Trash {
     this.el.classList.add('eating');
     this.timers = [
       setTimeout(() => this.el.classList.add('chomp'), ARRIVE_MS),
+      setTimeout(() => this.burp(), ARRIVE_MS + CHEW_MS - 420), // while it is still up, after the last big bite
       setTimeout(() => this.settle(), ARRIVE_MS + CHEW_MS),
     ];
+  }
+
+  /**
+   * Now and then, after a meal, a bubble comes up out of the shark's mouth, with a little "burp" in it. It floats up and goes.
+   * (A shark that is not fed does not burp, and neither does one on a computer that asked for calm.)
+   */
+  burp() {
+    if (!shouldBurp(this.random, this.burpChance, calm())) return;
+    const bubble = document.createElement('div');
+    bubble.className = 'burp';
+    bubble.setAttribute('aria-hidden', 'true');
+    bubble.innerHTML = '<span class="burp-dot burp-dot-1"></span><span class="burp-dot burp-dot-2"></span><span class="burp-word">burp</span>';
+    this.el.append(bubble);
+    setTimeout(() => bubble.remove(), BURP_MS);
+  }
+
+  /**
+   * A stack is being spat back out (an Undo brought it back): the shark comes up with its mouth open for `ms`, then sinks.
+   * Eating it again, or settle(), puts it back right away.
+   */
+  spit(ms) {
+    for (const id of this.timers) clearTimeout(id);
+    this.el.classList.remove('chomp', 'eating');
+    this.el.classList.add('spitting');
+    this.timers = [setTimeout(() => this.settle(), ms)];
   }
 
   /** Back to resting: lid on, shark down. Always safe to call. */
   settle() {
     for (const id of this.timers) clearTimeout(id);
     this.timers = [];
-    this.el.classList.remove('eating', 'chomp', 'hungry');
+    this.el.classList.remove('eating', 'chomp', 'hungry', 'spitting');
   }
 }
