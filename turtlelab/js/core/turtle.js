@@ -103,7 +103,14 @@ export class Turtle {
     this.truncated = false;
     this.fill = null; // the segments being collected, or null
     this.fillColor = null;
+    /** How far the turtle has walked since resetWalked, in steps, with the pen down and with it up (efficiency, see core/efficiency.js). */
+    this.walked = { up: 0, down: 0 };
     this.resetState();
+  }
+
+  /** Start counting how far the turtle walks from nothing (a program starting does this). It does not touch the picture. */
+  resetWalked() {
+    this.walked = { up: 0, down: 0 };
   }
 
   /** Put the turtle back to its starting state without touching the picture. */
@@ -212,6 +219,7 @@ export class Turtle {
     const x2 = cx + vx * c + vy * s;
     const y2 = cy - vx * s + vy * c;
 
+    this.walked[this.penDown ? 'down' : 'up'] += (r * Math.abs(sweep) * Math.PI) / 180;
     if (this.penDown) {
       this.record({
         type: 'arc',
@@ -423,6 +431,8 @@ export class Turtle {
   /** Walk in a straight line to (x2, y2). */
   moveTo(x2, y2) {
     const { x, y } = this;
+    const length = Math.hypot(x2 - x, y2 - y);
+    this.walked[this.penDown ? 'down' : 'up'] += Number.isFinite(length) ? length : 0;
     if (this.penDown) {
       this.record({
         type: 'line',

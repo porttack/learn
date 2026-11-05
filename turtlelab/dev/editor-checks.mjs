@@ -12,7 +12,7 @@ import { join } from 'node:path';
 import { readProjectFile, isPdf } from '../js/core/project-file.js';
 import { validateProject, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { toPython } from '../js/core/python.js';
-import { scoreProject } from '../js/core/complexity.js';
+import { assess, tenths } from '../js/core/quality.js';
 import { toHexUpper, colorBits } from '../js/core/color.js';
 import { DEMOS } from '../js/ui/demos.js';
 
@@ -256,6 +256,8 @@ try {
     const target = typeof where === 'function' ? await where() : where;
     await chrome.drag({ x: r.left + 10, y: r.top + r.h / 2 }, target, 12);
     await chrome.sleep(120);
+    // (A block dropped on the delete zone is gone a moment later, a little longer on a busy machine: wait for that, not for a fixed time.)
+    for (let i = 0; i < 6 && (await stacks()) !== 0; i += 1) await chrome.sleep(100);
     return stacks();
   };
   const flyoutBox = () => chrome.eval(`(() => { const r = document.querySelector('.flyout').getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }; })()`);
@@ -315,6 +317,7 @@ try {
   check('but once it has been out in the page, bringing it back over the left side does', (await bandNow()).active);
   await chrome.mouse('mouseReleased', 170, freshAt.y + 120);
   await chrome.sleep(100);
+  for (let i = 0; i < 6 && (await stacks()) !== 0; i += 1) await chrome.sleep(100); // gone a moment later on a busy machine
   check('and letting go there deletes it', (await stacks()) === 0);
 
   // Letting go is eaten by the shark, and then everything goes back to rest.
@@ -2524,62 +2527,79 @@ try {
   check('About links to the source, the licence text, and the NOTICE file',
     aboutLinks.some((h) => h.endsWith('/tree/main/turtlelab')) && aboutLinks.some((h) => h.endsWith('/turtlelab/COPYING')) && aboutLinks.some((h) => h.endsWith('/turtlelab/NOTICE.md')));
 
-  // ---- The program score ---------------------------------------------------------------------------
-  // A badge near the trash can: the score of the blocks (core/complexity.js), "+N" when building raises it, and details on a press.
-  const badge = () => chrome.eval(`({ n: Number(document.querySelector('.score-number')?.textContent), title: document.querySelector('.score-pill')?.title, gain: document.querySelector('.score-gain')?.hidden === false ? document.querySelector('.score-gain').textContent : null })`);
+  // ---- The badge: blocks, complexity, elegance, efficiency --------------------------------------------
+  // A card in the bottom right corner: how many blocks, and complexity, elegance and efficiency from 0.0 to 1.0 (core/quality.js), "+0.1 elegance" when
+  // building raises one, and the reasons on a press. Efficiency is about a run, so it says "run it" until a program has run.
+  const badge = () => chrome.eval(`(() => { const cell = (id) => document.querySelector('.score-cell[data-metric="' + id + '"] .score-value')?.textContent; return { blocks: cell('blocks'), complexity: cell('complexity'), elegance: cell('elegance'), efficiency: cell('efficiency'), title: document.querySelector('.score-pill')?.title, gain: document.querySelector('.score-gain')?.hidden === false ? document.querySelector('.score-gain').textContent : null }; })()`);
+  const wantFor = (project, run = null) => { const a = assess({ project, run }); return { blocks: String(a.blocks), complexity: tenths(a.complexity.value), elegance: a.elegance.value === null ? '?' : tenths(a.elegance.value) }; };
   await chrome.goto(BASE + '?speed=instant');
   await chrome.sleep(500);
-  const emptyScore = await badge();
-  check('an empty page has a score badge that says 0 (a blank page)', emptyScore.n === 0 && /Blank page/.test(emptyScore.title), JSON.stringify(emptyScore));
+  const emptyBadge = await badge();
+  check('an empty page has the badge: 0 blocks, complexity 0.0, elegance not yet, efficiency waiting for a run', emptyBadge.blocks === '0' && emptyBadge.complexity === '0.0' && emptyBadge.elegance === '?' && emptyBadge.efficiency === 'run it' && /0 blocks/.test(emptyBadge.title), JSON.stringify(emptyBadge));
   await openPalette('Flow');
   await dragFromPalette('repeat', 480, 150);
   await chrome.sleep(900);
   const afterRepeat = await badge();
   const keptRepeat = JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`));
-  check('dragging a repeat block in raises the score, to what the same blocks score when worked out here', afterRepeat.n > 0 && afterRepeat.n === scoreProject(keptRepeat).score, `${JSON.stringify(afterRepeat)} against ${scoreProject(keptRepeat).score}`);
-  check('and "+N" floats up from the badge, N being the rise (and the level, if a new one was reached)', afterRepeat.gain !== null && new RegExp(`^\\+${afterRepeat.n}\\b`).test(afterRepeat.gain), JSON.stringify(afterRepeat));
+  const wantRepeat = wantFor(keptRepeat);
+  check('dragging a repeat block in counts it and raises complexity, to what the same blocks come to when worked out here', afterRepeat.blocks === wantRepeat.blocks && afterRepeat.complexity === wantRepeat.complexity && Number(afterRepeat.complexity) > 0, `${JSON.stringify(afterRepeat)} against ${JSON.stringify(wantRepeat)}`);
+  check('and "+0.1 complexity" (or more) floats up from the badge', afterRepeat.gain !== null && /^\+\d\.\d complexity$/.test(afterRepeat.gain), JSON.stringify(afterRepeat));
   await chrome.sleep(2200);
-  check('the "+N" goes away again by itself', (await badge()).gain === null);
+  check('the "+" goes away again by itself', (await badge()).gain === null);
   await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
   await chrome.sleep(1100);
   const reopened = await badge();
-  check('a page opened with that program shows its score and no "+N" (opening a program is not building one)', reopened.n === afterRepeat.n && reopened.gain === null, JSON.stringify(reopened));
+  check('a page opened with that program shows its numbers and no "+" (opening a program is not building one)', reopened.blocks === afterRepeat.blocks && reopened.complexity === afterRepeat.complexity && reopened.gain === null, JSON.stringify(reopened));
   // (Undo only goes back over what was done since the page opened, so build one more thing here first.)
   await openPalette('Turtle');
   await dragFromPalette('forward', 480, 330);
   await chrome.sleep(900);
   const withForward = await badge();
-  check('another block raises the score a little more', withForward.n > reopened.n, JSON.stringify([reopened, withForward]));
+  check('another block is counted: one more block', Number(withForward.blocks) === Number(reopened.blocks) + 1, JSON.stringify([reopened, withForward]));
   await chrome.sleep(2200);
   await chrome.eval(`document.getElementById('undo').click()`);
   await chrome.sleep(900);
   const afterUndo = await badge();
-  check('Undo takes the score back down to what it was, quietly (no "+N")', afterUndo.n === reopened.n && afterUndo.gain === null, JSON.stringify(afterUndo));
+  check('Undo takes the count and the numbers back to what they were, quietly (no "+")', afterUndo.blocks === reopened.blocks && afterUndo.complexity === reopened.complexity && afterUndo.gain === null, JSON.stringify(afterUndo));
   await chrome.eval(`document.getElementById('redo').click()`);
   await chrome.sleep(900);
   const afterRedo = await badge();
-  check('and Redo brings it back up, also with no "+N" (only building floats one)', afterRedo.n === withForward.n && afterRedo.gain === null, JSON.stringify(afterRedo));
+  check('and Redo brings them back, also with no "+" (only building floats one)', afterRedo.blocks === withForward.blocks && afterRedo.gain === null, JSON.stringify(afterRedo));
 
-  // A program with a counter in a loop, put on the page ready made, to see the details.
+  // A program with a counter in a loop, ready made: numbers for all three, and efficiency after it has run.
+  const side = () => [{ op: 'forward', args: [100] }, { op: 'right', args: [90] }];
   const counter = { app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 160, y: 60, blocks: [
-    { op: 'start', args: [] }, { op: 'store1', args: [0] },
-    { op: 'repeat', args: [10], body: [{ op: 'store1', args: [{ op: 'add', args: [{ op: 'box1', args: [] }, 1] }] }, { op: 'forward', args: [{ op: 'box1', args: [] }] }, { op: 'right', args: [30] }] },
+    { op: 'start', args: [] }, { op: 'clean', args: [] }, { op: 'store1', args: [0] },
+    { op: 'repeat', args: [12], body: [{ op: 'store1', args: [{ op: 'add', args: [{ op: 'box1', args: [] }, 6] }] }, { op: 'forward', args: [{ op: 'box1', args: [] }] }, { op: 'right', args: [60] }] },
   ] }] };
-  await chrome.goto(BASE + 'about.html');
-  await chrome.eval(`localStorage.setItem('turtlelab-project', ${JSON.stringify(JSON.stringify(counter))})`);
-  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
-  await chrome.sleep(600);
-  const counterScore = scoreProject(counter);
-  check('a program with a counter in a loop shows the score that its blocks are worth, a high one, in the Building level or above', (await badge()).n === counterScore.score && counterScore.score >= 40 && /Building|Clever|Expert/.test((await badge()).title), JSON.stringify([await badge(), counterScore.score]));
-  check('the details are shut until you press the badge', await chrome.eval(`document.querySelector('.score-panel').hidden === true && document.querySelector('.score-pill').getAttribute('aria-expanded') === 'false'`));
+  const seedAndOpen = async (project) => {
+    await chrome.goto(BASE + 'about.html');
+    await chrome.eval(`localStorage.setItem('turtlelab-project', ${JSON.stringify(JSON.stringify(project))})`);
+    await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+    await chrome.sleep(600);
+  };
+  await seedAndOpen(counter);
+  const wantCounter = wantFor(counter);
+  const counterBadge = await badge();
+  check('a program with a counter in a loop shows its block count, complexity and elegance, as worked out here, and efficiency waits', counterBadge.blocks === wantCounter.blocks && counterBadge.complexity === wantCounter.complexity && counterBadge.elegance === wantCounter.elegance && counterBadge.efficiency === 'run it' && Number(counterBadge.complexity) >= 0.5, JSON.stringify([counterBadge, wantCounter]));
+  await pressRun();
+  await chrome.sleep(900);
+  const ranBadge = await badge();
+  check('after it runs there is an efficiency, and a neat spiral is 1.0', ranBadge.efficiency === '1.0' && /Efficiency 1\.0/.test(ranBadge.title), JSON.stringify(ranBadge));
+  await openPalette('Turtle');
+  await dragFromPalette('back', 480, 330);
+  await chrome.sleep(300);
+  check('changing the blocks makes efficiency wait for the next run again (it was about the blocks as they were)', (await badge()).efficiency === 'run it');
+
+  // The details: a column of reasons for each of the three.
   const pillAt = await chrome.centerOf('.score-pill');
   await chrome.click(pillAt.x, pillAt.y);
   await chrome.sleep(250);
-  const panel = await chrome.eval(`(() => { const p = document.querySelector('.score-panel'); const r = p.getBoundingClientRect(); return { open: !p.hidden, expanded: document.querySelector('.score-pill').getAttribute('aria-expanded'), rows: [...p.querySelectorAll('tr')].map((tr) => tr.dataset.part + ':' + tr.querySelector('.score-points').textContent), head: p.querySelector('.score-head').textContent, inside: r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight, tip: p.querySelector('.score-tip').textContent }; })()`);
-  const wantRows = counterScore.parts.map((part) => `${part.id}:${part.points > 0 ? '+' + part.points : '0'}`);
-  check('pressing it opens the details: each idea with its points, the biggest idea (variables) first, and the window has room for it', panel.open && panel.expanded === 'true' && JSON.stringify(panel.rows) === JSON.stringify(wantRows) && panel.rows[0].startsWith('variables:+') && panel.inside, JSON.stringify(panel));
-  check('the variables in this program are worth more than its loop', Number(panel.rows[0].split('+')[1]) > Number(panel.rows[1].split('+')[1]), panel.rows.join(' '));
-  check('the details say the number and the level, and give one thing to try next', new RegExp(`^${counterScore.score}`).test(panel.head) && panel.head.includes(counterScore.level.label) && panel.tip.length > 20, JSON.stringify([panel.head, panel.tip]));
+  const panel = await chrome.eval(`(() => { const p = document.querySelector('.score-panel'); const r = p.getBoundingClientRect(); return { open: !p.hidden, expanded: document.querySelector('.score-pill').getAttribute('aria-expanded'), head: p.querySelector('.score-head').textContent, sections: [...p.querySelectorAll('.score-section')].map((s) => s.dataset.metric + ':' + s.querySelector('.score-title-value').textContent), rows: [...p.querySelectorAll('tr')].map((tr) => tr.dataset.part + ':' + tr.querySelector('.score-points').textContent), reasons: [...p.querySelectorAll('.score-section-elegance .score-reason')].map((li) => li.className + '|' + li.textContent), effReasons: [...p.querySelectorAll('.score-section-efficiency .score-reason')].map((li) => li.textContent), inside: r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight }; })()`);
+  check('pressing the badge opens the details: the block count, then Complexity, Elegance and Efficiency, each with its number, and they fit in the window', panel.open && panel.expanded === 'true' && /^\d+ blocks?$/.test(panel.head) && panel.sections.length === 3 && panel.sections.map((x) => x.split(':')[0]).join() === 'complexity,elegance,efficiency' && panel.inside, JSON.stringify(panel));
+  check('complexity shows where its points came from, the variables first (the counter is worth the most)', panel.rows.length === 7 && panel.rows[0].startsWith('variables:+') && Number(panel.rows[0].split('+')[1]) > Number(panel.rows[1].split('+')[1]), panel.rows.join(' '));
+  check('elegance says what is good about it, with a tick', panel.reasons.some((r) => /score-good/.test(r) && /A loop does the repeating/.test(r)), JSON.stringify(panel.reasons));
+  check('efficiency says to run the program, since the blocks just changed', panel.effReasons.some((t) => /Run your program/.test(t)), JSON.stringify(panel.effReasons));
   await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
   await chrome.sleep(150);
@@ -2593,9 +2613,28 @@ try {
   await chrome.sleep(250);
   check('hiding the blocks hides the badge, so the whole picture shows, and showing them brings it back', await chrome.eval(`getComputedStyle(document.querySelector('.score-badge')).display === 'none'`)
     && await (async () => { await chrome.eval(`document.getElementById('hide-blocks').click()`); await chrome.sleep(250); return chrome.eval(`getComputedStyle(document.querySelector('.score-badge')).display !== 'none'`); })());
-  // Variables are the thing to reward most: the same program without the box has a lot less.
-  const noBox = { ...counter, stacks: [{ ...counter.stacks[0], blocks: [counter.stacks[0].blocks[0], { op: 'repeat', args: [10], body: [{ op: 'forward', args: [10] }, { op: 'right', args: [30] }] }] }] };
-  check('the same loop without the variable scores much less', scoreProject(noBox).score * 2 < counterScore.score, `${scoreProject(noBox).score} against ${counterScore.score}`);
+
+  // Copy and paste is less elegant, with the reason; going back over lines is less efficient, with the reason.
+  const unrolled = { app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 160, y: 60, blocks: [{ op: 'start', args: [] }, { op: 'clean', args: [] }, ...side(), ...side(), ...side(), ...side()] }] };
+  await seedAndOpen(unrolled);
+  const unrolledBadge = await badge();
+  check('a square with every side written out has low elegance (0.4), and the same 9 blocks as the loop version would', unrolledBadge.elegance === '0.4' && unrolledBadge.blocks === '9', JSON.stringify(unrolledBadge));
+  await chrome.click(pillAt.x, pillAt.y);
+  await chrome.sleep(250);
+  check('and the reason is plain: it comes 4 times in a row, a repeat block could do it, and how many blocks that saves', (await chrome.eval(`[...document.querySelectorAll('.score-section-elegance .score-reason')].map((li) => li.textContent)`)).some((t) => /forward 100, right 90 comes 4 times in a row\. A repeat block could do it, and save 6 blocks\./.test(t)));
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  const retrace = { app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 160, y: 60, blocks: [{ op: 'start', args: [] }, { op: 'clean', args: [] }, { op: 'repeat', args: [4], body: [{ op: 'forward', args: [100] }, { op: 'back', args: [100] }, { op: 'right', args: [90] }] }] }] };
+  await seedAndOpen(retrace);
+  await pressRun();
+  await chrome.sleep(900);
+  const retraced = await badge();
+  check('a program that goes back over each line has a lower efficiency (about 0.6)', Number(retraced.efficiency) >= 0.5 && Number(retraced.efficiency) <= 0.7, JSON.stringify(retraced));
+  await chrome.click(pillAt.x, pillAt.y);
+  await chrome.sleep(250);
+  check('and the reason says how much was drawn on top of lines already there', (await chrome.eval(`[...document.querySelectorAll('.score-section-efficiency .score-reason')].map((li) => li.textContent)`)).some((t) => /^\d+% of the lines are drawn on top of lines that were already there/.test(t)));
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 });
 
   // ---- The color picker on set color and fill screen -------------------------------------------------
   // A color box on each of those blocks shows the color of the three numbers and its hex; pressing it opens a picker that changes the three numbers

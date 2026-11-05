@@ -233,14 +233,14 @@ test('the Guide tells about the other grids and the papers, and that they are on
   assert.match(html, /<button id="grid"/, 'the grid button is the one the menu opens from');
 });
 
-test('the Guide and the privacy page tell about the program score: what it rewards, that variables earn the most, and that it is not saved', () => {
+test('the Guide and the privacy page tell about blocks, complexity, elegance and efficiency: what each means, that variables count the most, and that none of it is saved', () => {
   const guide = read('guide.html');
-  assert.match(guide, /<td>Program score<\/td>/);
-  for (const word of ['bottom right corner', 'variables earn the most', 'repeat', 'if else', 'store in box1', 'plus 1', 'one thing to try next', 'not saved anywhere']) assert.ok(guide.includes(word), word);
+  assert.match(guide, /<td>Blocks, complexity, elegance and efficiency<\/td>/);
+  for (const word of ['bottom right corner', '0.0 to 1.0', 'variables count the most', 'repeat', 'if else', 'copied and pasted', 'a number typed over and over', 'run it', 'drawing over the same line twice', 'arc', 'one thing to try next', 'not saved anywhere']) assert.ok(guide.includes(word), word);
+  assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf('Blocks, complexity, elegance'), guide.indexOf('Turtle moods'))), 'no dashes in the new row');
   const privacy = read('privacy.html');
-  assert.match(privacy, /<td>What is the score badge\?<\/td>/);
-  assert.match(privacy, /not saved, not sent anywhere, and not put in a saved picture or a PDF/);
-  assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf('Program score'), guide.indexOf('Turtle moods'))), 'no dashes in the new row');
+  assert.match(privacy, /<td>What are the numbers in the corner\?<\/td>/);
+  assert.match(privacy, /None of it is saved, sent anywhere, or put in a saved picture or a PDF/);
 });
 
 test('the Guide tells about the color picker: hex, binary, that the numbers stay, and that Undo undoes a whole picking; the privacy page says nothing is sent', () => {

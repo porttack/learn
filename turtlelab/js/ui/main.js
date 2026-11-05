@@ -14,7 +14,9 @@ import { Scheduler, SPEEDS } from '../core/scheduler.js';
 import { History } from '../core/history.js';
 import { formatNumber, formatValue } from '../core/format.js';
 import { runBlocks, createContext, evalArg, RunError } from '../core/interpreter.js';
-import { emptyProject, findRunStack, restoredStack, usesBoxes, validateProject, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
+import { emptyProject, findRunStack, restoredStack, usesBoxes, validateProject, walkBlocks, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
+import { visibleOps } from '../core/fit.js';
+import { drawingStats } from '../core/efficiency.js';
 import { BLOCKS, DEFAULT_SPEED } from '../core/blocks-spec.js';
 import { definitionsOf, isDefinition } from '../core/definitions.js';
 import { cloneBlock, isReporterStack } from '../core/edit.js';
@@ -178,6 +180,14 @@ showBoxes();
 
 let outlined = false; // is a block outlined as running right now?
 let runningLogo = false; // is what is running (or ran last) the Logo box's program, not the blocks?
+let runSteps = 0; // how many blocks the run has run so far (for efficiency, see core/efficiency.js)
+let runHasWrite = false; // does the program being run write words? (the words' lines are not judged for efficiency)
+/** Does any of these stacks have a write block in it? */
+function writesWords(stacks) {
+  let found = false;
+  for (const stack of stacks) walkBlocks(stack.blocks, (block) => { if (block.op === 'write') found = true; });
+  return found;
+}
 /** A wait at least this long (milliseconds) makes the turtle yawn. A shorter one is just a pause. */
 const YAWN_AFTER_MS = 700;
 
@@ -188,6 +198,9 @@ const scheduler = new Scheduler({
     if (ms >= YAWN_AFTER_MS) view.setYawning(true);
   },
   onStart: () => {
+    runSteps = 0;
+    turtle.resetWalked();
+    scoreBadge.setRun(null); // the last run is over: efficiency waits for this one
     idle?.poke();
     view.stopWaving();
     view.setYawning(false);
@@ -199,6 +212,7 @@ const scheduler = new Scheduler({
     say('');
   },
   onStep: (block) => {
+    runSteps += 1;
     view.setYawning(false);
     view.requestSync();
     // Outlining every block would only slow down an instant run.
@@ -223,6 +237,8 @@ const scheduler = new Scheduler({
       reward?.ran(); // and a program written (or changed) and run to the end is work
     }
     turtle.stopWriting(); // Stop part way through a word: the turtle is shown where it really is, not where its pen was
+    // How efficient the run was, from what it did: a run that finished or was stopped can be measured, one that went wrong cannot.
+    scoreBadge.setRun(result.status === 'error' ? null : drawingStats({ ops: visibleOps(turtle.ops).ops, walked: turtle.walked, steps: runSteps, hasWrite: runHasWrite, truncated: turtle.truncated }));
     view.sync();
     workspace.setRunning(null);
     outlined = false;
@@ -282,6 +298,7 @@ function runStack(stack) {
   context = newContext(definitions);
   scheduler.speed = startSpeed; // the last run's speed block does not carry over
   runningLogo = false;
+  runHasWrite = writesWords(project.stacks);
   scheduler.start(runBlocks(stack.blocks, context));
 }
 
@@ -304,6 +321,7 @@ function runLogo(text) {
   context = newContext(definitionsOf({ stacks: compiled.stacks }).map);
   scheduler.speed = startSpeed;
   runningLogo = true;
+  runHasWrite = writesWords(compiled.stacks);
   scheduler.start(runBlocks(compiled.main, context));
 }
 

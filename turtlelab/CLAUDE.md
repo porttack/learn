@@ -86,7 +86,10 @@ the dashes out of them too for consistency.
       fit.js          what has been drawn (even off the paper) and the zoom that fits it; the drawing "view"
       grid.js         which grid lines to draw for a view, at nice numbers; the four kinds of grid (squares with numbers, squares, dots, polar)
       paper.js        the five papers (white, whiteboard, graph, chalkboard, blueprint), the lines printed on graph and blueprint paper, the smudges on the boards
-      complexity.js   the program complexity score: what a project's blocks are worth (variables most), see "The program score"
+      complexity.js   the complexity points: what a project's blocks are worth (variables most), see "The badge"
+      elegance.js     elegance 0.0 to 1.0 from the blocks (copy and paste, repeated numbers, left over, nesting) with plain reasons
+      efficiency.js   efficiency 0.0 to 1.0 from a run (lines drawn over again, pen up walking, tiny lines, steps) with reasons
+      quality.js      puts the three together: assess(), complexity01 (points on a curve), tenths() for showing one decimal
       hand.js         the wobble of a hand drawn line (a smooth noise of WHERE a point is) and the tile of chalk grain; see "Hand drawn papers"
       svg-export.js   the drawing as SVG: a picture, or hairlines for a cutter
       stitch-plan.js  a drawing as stitches for an embroidery machine (running stitch, one thread a color)
@@ -112,7 +115,7 @@ the dashes out of them too for consistency.
       canvas-view.js  paper canvas (1400x1120) + sketch canvas for the hand drawn papers + draggable turtle overlay
       hand-drawn.js   makes the chalk grain tile into a picture for CSS mask-image (once, from numbers)
       color-picker.js the picker panel that opens from a color box on set color / fill screen (number, hex, binary)
-      score-badge.js  the score badge by the trash can, its details panel and the floating "+N"
+      score-badge.js  the card in the bottom right corner (blocks, complexity, elegance, efficiency), its details panel and the floating "+0.1 elegance"
       files.js        Save (download a PNG with the blocks inside), Open, drops
       fullscreen.js   the Full screen button (standard and webkit names; hides itself where the browser cannot)
       storage.js      autosave to local storage (one item: turtlelab-project)
@@ -435,19 +438,30 @@ is about to clean anyway).
   plus Z, Y or S all close it (keeping the change first), since Undo and Redo swap the whole project and the picker would be writing into a block that is gone.
   It opens under the box, else above, else as far as it will go on screen (a short window covers its own block). Pure helpers with tests in `core/color.js` (`toHexUpper`, `channelHex`, `channelBinary`, `colorBits`,
   `parseHex`, `parseChannelHex`, `parseBinary`, `colorOfArgs`): `test/color.test.js`; real typing and clicking in `dev/editor-checks.mjs` ("The color picker"). Nothing is stored or sent, Logo/Python/PNG are unchanged.
-- **The program score (2026-11-05, the user: "can we add a program complexity score somewhere? But we should reward students in the score for using loops, conditionals, and especially variables").**
-  `core/complexity.js` (pure; `scoreProject(project)` returns `{ score, level, parts, ideas, tip }`; `POINTS` and `LEVELS` are the numbers, one place to change them). It rewards ideas, not length: plain blocks
-  are 1 point each **up to 20**, so forty forwards are worth no more than twenty. **Variables pay most** (the user's word "especially"): a box (`store1..4` / `box1..4`; "variables" in this app are the four boxes) is
-  worth 12 once a number is stored in it, +3 for each store, +4 for each read (a box nothing was stored in earns nothing), **+8 for a counter** (a store block with the same box inside its own socket, box1 = box1 + 1),
-  and +15 for the first variable really used (stored then read); an input of a block you made (`to name input`) is 6 and +3 per use (only an `input` block inside its own definition counts). Loops are 6 (+4 if inside
-  another loop), conditionals 7 (+2 for an if else, +3 inside a loop), own blocks 8 when used (2 if only made), +2 per call up to 10, +10 for one that calls itself; math 2 and chance 3, up to 16. A bonus for each
-  of the four big ideas used (6; the variable one 10) and 10 more for all four. Notes and the `start`/`to` hats are not counted. A minimal variable program (store 5, forward box1) scores 47, a conditional 18, a
-  loop 14 (a test pins the order). Levels: Blank page, Just starting (1), Getting going (15), Building (40), Clever (80), Expert (140). The tip names the biggest idea not used yet, variables first.
-  **The badge** (`ui/score-badge.js`, created in `main.js`, refreshed from `projectChanged`): a pill in the **bottom right corner** (it was first bottom left beside the trash can, where it covered the last blocks of the open Flow palette, which the editor suite caught: the flyouts run the full height of the left side, up to 322 px wide; the print box is top right, the boxes readout moved left of the badge, the code boxes sit above both),
-  hidden with the blocks; press it (or Escape / click away) for the details table (variables first, rows that score 0 are dimmed with a hint), the next level and the tip. **"+N" floats up only for edits that
-  raise the score and then sit still for 500 ms** (`projectChanged({ edit: true })` from the workspace's `onChange`); opening a file or sample, a new page, Undo and Redo call `refresh(project, { quiet: true })`, which only shows
-  the number (loading a program someone else made must not pay out; a bug found by a probe: the badge said 0 on every loaded project until the startup `refresh` was added). Nothing is stored or sent. Tests:
-  `test/complexity.test.js`, and the end of `dev/editor-checks.mjs` (real drags, quiet loads, Undo, the panel, Escape, hiding blocks).
+- **The badge: blocks, complexity, elegance, efficiency (2026-11-05).** First "a program complexity score... reward loops, conditionals, and especially variables", one number (points); then the user asked "should we
+  give complexity, elegance and efficiency (0.0 to 1.0?)", then "we need to count blocks too. i love the reasons. whole decimals is fine I think? Let's try it. go". A card in the **bottom right corner** (`ui/score-badge.js`,
+  created in `main.js`; it was first bottom left, where it covered the last blocks of the open Flow palette, which the editor suite caught): four columns, **Blocks** (the count, hats and notes not counted) and three numbers shown to
+  one decimal (`tenths()`: 0.7; `?` when there is nothing to judge, `run it` for efficiency before a run), each with a small bar. Press it (or Escape / click away) for the details: a head with the block count, then
+  Complexity, Elegance and Efficiency each with its number, a meter, what it means, and **its reasons** (two columns on a window 820 px wide or more, one scrolling column below). Hidden with the blocks.
+  **Complexity** (`core/complexity.js` points, unchanged: plain blocks count 1 each up to 20; variables pay most: a box worth 12 once stored in, +3 per store, +4 per read, +8 for a counter like box1 + 1, +15 for the
+  first variable really used, an input of your own block 6 and 3 per use; loops 6 (+4 nested); conditionals 7 (+2 else, +3 in a loop); own blocks 8 when used; math 2/chance 3 to 16; bonus 6 per big idea, 10 for the
+  variable one, 10 for all four) goes on a curve: `complexity01(points) = 1 - exp(-points / 80)` (`COMPLEXITY_SCALE`): never 1.0, a counter in a loop (82 points) is 0.6. It measures ambition, not quality; the
+  panel still shows the points rows (dimmed with a hint when 0), the level (Blank page, Just starting, Getting going, Building, Clever, Expert) and the tip.
+  **Elegance** (`core/elegance.js`, from the blocks alone) starts at 1.0 and loses: *copy and paste* (one block 3+ times in a row, or 2 to 6 blocks twice or more in a row or in different places; the blocks that could be
+  saved as a share of all blocks times 1.5, at most 0.6; `findCopies` counts a repeated block's inside once), *the same number typed 4+ times* (not 0, 1, -1, and not inside copies: 0.03 plus 0.01 per extra, at most 0.2),
+  *left over* (a block of yours never used 0.05 each; a command stack not under start 0.05; blocks after a stop 0.05; an empty repeat/if 0.03), and *nesting past four deep* (0.05 a level). Tidy small programs reach 1.0
+  (the point: a four block square can be perfect). Fewer than 3 blocks (`MIN_BLOCKS`): no number. The reasons are plain sentences (ticks for good: a block of yours used often, a loop doing the repeating, a variable; arrows for
+  tips: "forward 100, right 90 comes 4 times in a row. A repeat block could do it, and save 6 blocks."); the good ones never change the number.
+  **Efficiency** (`core/efficiency.js`) is about the last run, so there is none until a program has run, and it goes back to `run it` the moment the blocks change (`refresh` clears the run; `onStart` clears it too).
+  `main.js` counts steps (`onStep`), resets `turtle.walked` (a new counter in `core/turtle.js`: distance walked with the pen up and down, by `moveTo` and `arc`; dragging the turtle and the write block do not count) at
+  `onStart`, and at `onFinish` (done or stopped, not an error) gives `drawingStats({ ops: visibleOps(turtle.ops).ops, walked, steps, hasWrite, truncated })` to `badge.setRun`. It loses: *lines drawn over again* (walk along each
+  line, 1 sample per step, in 2 step squares earlier lines went through, ignoring 3 steps at each end where lines meet; crossing lines do not count; 5% free, then 0.8 times the share, at most 0.4; at most 120,000 samples),
+  *pen up walking* (10% free, then 0.5 times, at most 0.25), *tiny lines* (80+ lines, over 60% under 4 steps: 0.1 plus 1/4000 a line, at most 0.25: "an arc block draws a curve in one block") and *steps run* (3000 free, then
+  0.25 per factor of ten, at most 0.3). It counts steps and distances, never time, so wait blocks do not hurt. **With a write block in the program only the walking and the steps are judged** (the words are many short
+  lines, some doubled on purpose: the bold and pixel fonts). A run that drew nothing has none. Measured: neat square 1.0, star 1.0 (crossing is not overdrawing), square drawn back and forth 0.64, circle as 360 tiny steps
+  0.81 against 1.0 for one arc block, two shapes 400 apart 0.77, 50,000 steps 0.70. Tests: `test/quality.test.js`, `test/complexity.test.js`, and the end of `dev/editor-checks.mjs`.
+  **"+0.1 elegance" floats up** only for edits that raise complexity or elegance (from a real earlier number) and then sit still for 500 ms (`projectChanged({ edit: true })`); opening a file or sample, a new page, Undo and
+  Redo and runs only show the numbers (`refresh(project, { quiet: true })`, `setRun`). Nothing is stored or sent.
 - **Hand drawn papers (2026-11-05, the user: "make the chalk board look like it is hand drawn? I always want a bit of whimsy. Maybe a hand drawn whiteboard mode too?").** `whiteboard`
   (`hand: 'marker'`) and `chalkboard` (`hand: 'chalk'`) in `PAPERS`; `paper.hand` names the look, `paper.wipes` says how the board is smudged. **A new random look each time one is chosen (2026-11-05, the user: "make the dirtyness and unstraight lines a bit more randomness everytime the user switches"):** `newHandLook()` in `core/hand.js` gives `{ seed, amount, dirt, swipes }`: `seed` moves the wobble's noise layers (`saltFor`; seed 0 is the plain wobble every older test used), `amount` is 0.75 to 1.5 times `HAND_WOBBLE` (so up to 4.5 units), `dirt` 0.7 to 1.5 times the smudge strength and dust, `swipes` 0 to 3 extra swipes. `CanvasView.setHand` rolls a new one every time a hand paper is chosen, even the same paper again (a shake), and keeps it in `handLook` (memory only; `box.dataset.handLook` shows it to the browser checks, deleted on other papers); `paintHandOp`, `drawnPoint`, `drawWipes` and the grid warp all read it, so a Fit or zoom repaints the same look. Nothing is stored. The whiteboard's smudge alpha can reach about 135 of 255 at the dirtiest, so the browser check allows under 170. **How it is done, and why not the obvious way:**
   a third canvas, `.paper-sketch` (`CanvasView.sketchCanvas`, same 1400x1120, between the paper and the style layer), shows the same ops wobbled, and CSS hides the real paper canvas
