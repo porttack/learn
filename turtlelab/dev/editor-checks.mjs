@@ -2026,18 +2026,53 @@ try {
   await chrome.sleep(120);
   check('and stops squirming when it is let go', (await look()).animation === 'none');
 
-  // The fish: ?fish=now sends one a moment after the page opens.
+  // The fish: ?fish=now sends one a moment after the page opens. It crosses the WHOLE window, and clicking it feeds it to the shark.
   await chrome.goto(BASE + '?fish=now');
   await chrome.sleep(900);
-  const fishNow = () => chrome.eval(`(() => { const f = document.querySelector('.fish'); const can = document.querySelector('.trash-can'); if (!f) return null; const r = f.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, peek: can.classList.contains('peek'), lookX: can.style.getPropertyValue('--look-x'), events: getComputedStyle(f).pointerEvents, hit: !!document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)?.closest('.fish'), hidden: f.getAttribute('aria-hidden') }; })()`);
+  const fishNow = () => chrome.eval(`(() => { const f = document.querySelector('.fish'); const can = document.querySelector('.trash-can'); if (!f) return null; const r = f.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, peek: can.classList.contains('peek'), lookX: can.style.getPropertyValue('--look-x'), events: getComputedStyle(f).pointerEvents, hit: !!document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)?.closest('.fish'), inLayer: f.parentElement.classList.contains('sky'), layerEvents: getComputedStyle(f.parentElement).pointerEvents, hidden: f.getAttribute('aria-hidden') }; })()`);
+  const fishWindow = await chrome.eval('window.innerWidth');
   const fish1 = await fishNow();
-  check('?fish=now sends a fish swimming across above the trash can, for looking at only', fish1 !== null && fish1.events === 'none' && !fish1.hit && fish1.hidden === 'true' && fish1.y > 380, JSON.stringify(fish1));
+  check('?fish=now sends a fish swimming along above the trash can, in the layer above everything, and the fish itself can be clicked', fish1 !== null && fish1.events === 'auto' && fish1.hit && fish1.inLayer && fish1.layerEvents === 'none' && fish1.hidden === 'true' && fish1.y > 380, JSON.stringify(fish1));
   await chrome.sleep(1200);
   const fish2 = await fishNow();
   check('it moves along, and the shark peeks over the rim and looks toward it', fish2 !== null && Math.abs(fish2.x - fish1.x) > 20 && fish2.peek && fish2.lookX !== '', `${Math.round(fish1.x)} then ${Math.round(fish2.x)}, peek ${fish2.peek}, looking ${fish2.lookX}`);
-  await chrome.sleep(6500);
+  // Watch it go the whole way across the window (about 14 seconds at 110 pixels a second).
+  let fishLow = Math.min(fish1.x, fish2.x);
+  let fishHigh = Math.max(fish1.x, fish2.x);
+  for (let i = 0; i < 90; i += 1) {
+    const f = await fishNow();
+    if (f === null) break;
+    fishLow = Math.min(fishLow, f.x);
+    fishHigh = Math.max(fishHigh, f.x);
+    await chrome.sleep(250);
+  }
+  check('the fish crosses the whole window, not just the part by the can', fishHigh - fishLow > fishWindow * 0.85, `from ${Math.round(fishLow)} to ${Math.round(fishHigh)} in a window ${fishWindow} wide`);
   check('and when it has crossed it is gone, the shark goes back down and looks straight ahead', (await fishNow()) === null && (await chrome.eval(`(() => { const c = document.querySelector('.trash-can'); return !c.classList.contains('peek') && c.style.getPropertyValue('--look-x') === ''; })()`)));
   check('the fish never changes the project or stores anything', (await chrome.eval(`Object.keys(localStorage).filter((k) => k !== 'turtlelab-project').length`)) === 0 && (await chrome.eval(`sessionStorage.length`)) === 0);
+  // Click a fish: it stops where it is, and the shark swims out of the can to it, chomps, and swims home.
+  await chrome.goto(BASE + '?fish=now');
+  await chrome.sleep(900);
+  const fishClickAt = await fishNow();
+  const clickedAt = { x: fishClickAt.x + fishClickAt.w / 2, y: fishClickAt.y + 10 };
+  await chrome.click(clickedAt.x, clickedAt.y);
+  const eatenSeen = { eaten: false, hunting: false, swimmerInLayer: false, reachedFish: false, burp: false, stoodStill: true };
+  let fishSpot = null;
+  for (let i = 0; i < 36; i += 1) {
+    const e = await chrome.eval(`(() => { const f = document.querySelector('.fish'); const sw = document.querySelector('.shark-swimmer'); const can = document.querySelector('.trash-can'); const r = f ? f.getBoundingClientRect() : null; const w = sw ? sw.getBoundingClientRect() : null; return { eaten: f ? f.classList.contains('eaten') : false, hunting: can.classList.contains('hunting'), swimmer: !!sw, inLayer: sw ? sw.parentElement.classList.contains('sky') : false, sx: w ? w.x + w.width / 2 : null, sy: w ? w.y + w.height * 0.32 : null, burp: !!document.querySelector('.burp'), fx: r ? r.x + r.width / 2 : null, fy: r ? r.y + r.height / 2 : null }; })()`);
+    if (e.eaten) eatenSeen.eaten = true;
+    if (e.hunting) eatenSeen.hunting = true;
+    if (e.swimmer && e.inLayer) eatenSeen.swimmerInLayer = true;
+    if (e.burp) eatenSeen.burp = true;
+    if (e.fx !== null) {
+      fishSpot ??= { x: e.fx, y: e.fy };
+      if (Math.hypot(e.fx - fishSpot.x, e.fy - fishSpot.y) > 4) eatenSeen.stoodStill = false;
+      if (e.sx !== null && Math.hypot(e.sx - e.fx, e.sy - e.fy) < 90) eatenSeen.reachedFish = true;
+    }
+    await chrome.sleep(125);
+  }
+  check('click the fish: it stops where it was, and the shark comes up and swims out to it in a copy of its head in the layer above everything', eatenSeen.hunting && eatenSeen.swimmerInLayer && eatenSeen.stoodStill && eatenSeen.reachedFish, JSON.stringify({ eatenSeen, fishSpot }));
+  check('the fish goes under the shark\'s jaws, and the shark burps when it is home', eatenSeen.eaten && eatenSeen.burp, JSON.stringify(eatenSeen));
+  check('and then the fish and the swimming shark are gone, the shark is back to resting, and no second fish swims right away', await chrome.eval(`!document.querySelector('.fish') && !document.querySelector('.shark-swimmer') && document.querySelector('.trash-can').className === 'trash-can'`));
   // Asked for calm, there is no fish at all.
   await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
   await chrome.goto(BASE + '?fish=now');
@@ -2126,6 +2161,275 @@ try {
   await chrome.sleep(230);
   const calmUndo = await sharkNow();
   check('with reduced motion there is no burp and no flying copy: the stack just comes back', !calmMeal.burp && calmUndo.ghosts === 0 && calmUndo.hidden === 0 && calmUndo.stacks === 2, JSON.stringify([calmMeal, calmUndo]));
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+  await chrome.goto(BASE + '?speed=instant');
+
+  // ---- When nobody is around: the turtle dances, scratches, yawns, blows bubbles (or worse), and the shark dreams ----------
+  const antic = () => chrome.eval(`(() => { const s = document.querySelector('.turtle-sprite'); const can = document.querySelector('.trash-can'); return { pose: [...s.classList].filter((c) => c.startsWith('pose-') || c === 'yawning').join(' '), bubbles: !document.querySelector('.turtle-bubbles').hidden, poop: !!document.querySelector('.turtle-poop'), dreaming: can.classList.contains('dreaming') && !!document.querySelector('.dream') }; })()`);
+  const nothing = (a) => a.pose === '' && !a.bubbles && !a.poop && !a.dreaming;
+  const wanted = { dance: (a) => a.pose === 'pose-dance', scratch: (a) => a.pose === 'pose-scratch', yawn: (a) => a.pose === 'yawning', breathe: (a) => a.bubbles, poop: (a) => a.poop, dream: (a) => a.dreaming };
+  for (const [name, isPlaying] of Object.entries(wanted)) {
+    await chrome.goto(BASE + `?antic=${name}&speed=instant`);
+    await chrome.sleep(1200);
+    const playing = await antic();
+    check(`?antic=${name} makes it happen (and nothing else does)`, isPlaying(playing) && Object.entries(wanted).filter(([other]) => other !== name).every(([, f]) => !f(playing)), JSON.stringify(playing));
+  }
+  await chrome.goto(BASE + '?antic=scratch&speed=instant');
+  await chrome.sleep(1100);
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 700, y: 300 });
+  await chrome.sleep(80);
+  check('any movement of the mouse stops it at once', nothing(await antic()));
+  await chrome.goto(BASE + '?antic=dance&speed=instant');
+  await chrome.sleep(1100);
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 700, y: 300 });
+  await chrome.sleep(300);
+  check('but dancing is a treat for working, not something for when nobody is there, so moving the mouse does not stop it', (await antic()).pose === 'pose-dance');
+  await chrome.goto(BASE + '?antic=dream&speed=instant');
+  await chrome.sleep(1200);
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Shift', code: 'ShiftLeft', windowsVirtualKeyCode: 16 });
+  await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Shift', code: 'ShiftLeft', windowsVirtualKeyCode: 16 });
+  await chrome.sleep(80);
+  check('and so does any key, and the shark wakes up with its bubble gone', nothing(await antic()));
+  // The bubbles and the Zzz float all the way off the top of the window, and the poop falls all the way off the bottom.
+  const reach = async (selector, ms) => {
+    let minTop = Infinity; let maxBottom = -Infinity; const started = Date.now();
+    while (Date.now() - started < ms) {
+      const boxes = await chrome.eval(`[...document.querySelectorAll(${JSON.stringify(selector)})].map((e) => { const b = e.getBoundingClientRect(); return b.width > 0 ? [b.top, b.bottom] : null; }).filter(Boolean)`);
+      for (const [top, bottom] of boxes) { minTop = Math.min(minTop, top); maxBottom = Math.max(maxBottom, bottom); }
+      await chrome.sleep(100);
+    }
+    return { minTop, maxBottom };
+  };
+  await chrome.goto(BASE + '?antic=breathe&speed=instant');
+  await chrome.sleep(400);
+  const bubbleReach = await reach('.turtle-bubbles span', 9500);
+  check('the bubbles float all the way up and off the top of the window', bubbleReach.minTop < -5, JSON.stringify(bubbleReach));
+  check('(and they are in the layer above everything, so nothing clips them on the way)', await chrome.eval(`document.querySelector('.turtle-bubbles').parentElement.classList.contains('sky') && getComputedStyle(document.querySelector('.sky')).pointerEvents === 'none'`));
+  await chrome.goto(BASE + '?antic=yawn&speed=instant');
+  await chrome.sleep(400);
+  const zReach = await reach('.turtle-zzz span', 9500);
+  check('the Zzz of a yawn float off the top of the window too', zReach.minTop < -5, JSON.stringify(zReach));
+  await chrome.goto(BASE + '?antic=dream&speed=instant');
+  await chrome.sleep(700);
+  check('the shark dreams of turtle soup, and says so in the bubble', (await chrome.eval(`document.querySelector('.dream text')?.textContent`)) === 'turtle soup' && (await chrome.eval(`!!document.querySelector('.dream svg .shell, .dream svg path')`)));
+  const sharkZ = await reach('.sky .turtle-zzz span', 11000);
+  check('and the shark\'s z\'s float off the top of the window as well', sharkZ.minTop < -5, JSON.stringify(sharkZ));
+  await chrome.goto(BASE + '?antic=poop&poop=two&speed=instant');
+  await chrome.sleep(450);
+  let lowest = -Infinity; let distinct = 0; let firstAt = null; let bottomAt = null; const poopStart = Date.now();
+  const windowHeight = await chrome.eval('window.innerHeight');
+  while (Date.now() - poopStart < 7500) {
+    const info = await chrome.eval(`(() => { let fresh = 0; const bottoms = []; for (const e of document.querySelectorAll('.turtle-poop')) { if (!e.dataset.seen) { e.dataset.seen = '1'; fresh += 1; } bottoms.push(e.querySelector('svg').getBoundingClientRect().bottom); } return { fresh, bottoms }; })()`);
+    distinct += info.fresh;
+    if (distinct > 0 && firstAt === null) firstAt = Date.now();
+    for (const bottom of info.bottoms) {
+      lowest = Math.max(lowest, bottom);
+      if (bottom > windowHeight && bottomAt === null) bottomAt = Date.now();
+    }
+    await chrome.sleep(60);
+  }
+  check('the poop falls all the way off the bottom of the window', lowest > windowHeight, `${Math.round(lowest)} in a window ${windowHeight} tall`);
+  check('and with ?poop=two there are two of them, one after the other', distinct === 2, `${distinct}`);
+  check('it falls slowly enough to watch: a couple of seconds from the turtle to the bottom, not a blink', bottomAt !== null && firstAt !== null && bottomAt - firstAt >= 1700, `${bottomAt - firstAt} ms`);
+  // With ?idle=3 the pauses between antics shrink too, so there is more than one in a short while.
+  await chrome.goto(BASE + '?idle=3&speed=instant');
+  let started = 0; let wasQuiet = true; const idleStart = Date.now();
+  while (Date.now() - idleStart < 22000) {
+    const quiet = nothing(await antic());
+    if (!quiet && wasQuiet) started += 1;
+    wasQuiet = quiet;
+    await chrome.sleep(200);
+  }
+  check('?idle=3 shortens the pauses between antics too: more than one happens in 22 seconds', started >= 2, `${started} antics started`);
+  // The fishing boat: sails in, the shark peeks, the harpoon clangs on the can, the shark snaps, the boat leaves.
+  await chrome.goto(BASE + '?boat=now&speed=instant');
+  const sawBoat = { fromOffscreen: false, peek: false, clang: false, word: false, snap: false, spearAtCan: false, spearShown: false, throughBoat: null, inLayer: false, leftAgain: false };
+  const boatStart = Date.now();
+  const windowWidth = await chrome.eval('window.innerWidth');
+  while (Date.now() - boatStart < 15500) {
+    const b = await chrome.eval(`(() => {
+      const boat = document.querySelector('.boat'); const can = document.querySelector('.trash-can'); const spear = document.querySelector('.boat-lines .spear');
+      const c = can.getBoundingClientRect();
+      const r = boat ? boat.getBoundingClientRect() : null;
+      let spearHit = false;
+      if (spear && spear.getAttribute('visibility') === 'visible') { const m = spear.getBoundingClientRect(); spearHit = m.left < c.right + 30 && m.right > c.left - 30 && m.top < c.bottom && m.bottom > c.top; }
+      return { boat: !!boat, left: r ? r.left : null, right: r ? r.right : null, inLayer: boat ? boat.parentElement.classList.contains('sky') : false, events: boat ? getComputedStyle(boat).pointerEvents : null,
+        peek: can.classList.contains('peek'), clang: can.classList.contains('clang'), word: !!document.querySelector('.clang-word'), snap: can.classList.contains('eating') && can.classList.contains('chomp'),
+        spearShown: !!spear && spear.getAttribute('visibility') === 'visible', spearHit };
+    })()`);
+    if (b.boat && b.left >= windowWidth - 5) sawBoat.fromOffscreen = true;
+    if (b.boat && b.left > windowWidth - 1 && sawBoat.snap) sawBoat.leftAgain = true;
+    if (b.boat && b.inLayer && b.events === 'auto') sawBoat.inLayer = true;
+    for (const key of ['peek', 'clang', 'word', 'snap', 'spearShown']) if (b[key]) sawBoat[key] = true;
+    if (b.spearHit) sawBoat.spearAtCan = true;
+    if (b.boat && b.right > windowWidth) sawBoat.leftAgain = sawBoat.leftAgain || sawBoat.snap;
+    await chrome.sleep(120);
+  }
+  check('a boat sails in from off the right edge of the window, in the layer above everything, and the boat itself can be clicked', sawBoat.fromOffscreen && sawBoat.inLayer, JSON.stringify(sawBoat));
+  check('the shark peeks up as it comes near, and the harpoon flies out and lands on the can', sawBoat.peek && sawBoat.spearShown && sawBoat.spearAtCan, JSON.stringify(sawBoat));
+  check('the can rings with a "clang!" where it was hit', sawBoat.clang && sawBoat.word, JSON.stringify(sawBoat));
+  check('then the shark pops up and snaps, and the boat sails off the way it came', sawBoat.snap && sawBoat.leftAgain, JSON.stringify(sawBoat));
+  check('when the visit is over the boat, its harpoon and the clang are gone, and the shark is back to resting', await chrome.eval(`!document.querySelector('.boat') && !document.querySelector('.boat-lines') && !document.querySelector('.clang-word') && document.querySelector('.trash-can').className === 'trash-can'`));
+  check('the boat never touches the project or stores anything', (await chrome.eval(`Object.keys(localStorage).filter((k) => k !== 'turtlelab-project').length`)) === 0);
+  // Click the boat: it stops where it is, its harpoon goes, and the shark swims out of the can to it, chomps, and swims home.
+  await chrome.goto(BASE + '?boat=now&speed=instant');
+  let boatClick = null;
+  for (let i = 0; i < 80 && !boatClick; i += 1) {
+    await chrome.sleep(100);
+    boatClick = await chrome.eval(`(() => { const b = document.querySelector('.boat'); if (!b) return null; const r = b.getBoundingClientRect(); if (r.right > window.innerWidth - 20 || r.left < 0) return null; return { x: r.x + r.width / 2, y: r.y + r.height * 0.45 }; })()`);
+  }
+  check('a boat sails into view to be clicked', boatClick !== null);
+  const boatHit = await chrome.eval(`!!document.elementFromPoint(${boatClick.x}, ${boatClick.y})?.closest('.boat')`);
+  check('the boat takes the click (nothing else in the layer does, not its harpoon and rope)', boatHit && (await chrome.eval(`getComputedStyle(document.querySelector('.boat-lines')).pointerEvents === 'none'`)));
+  await chrome.click(boatClick.x, boatClick.y);
+  const boatEaten = { eaten: false, linesGone: false, hunting: false, swimmerInLayer: false, reachedBoat: false, burp: false, stoodStill: true };
+  let boatSpot = null;
+  for (let i = 0; i < 40; i += 1) {
+    const e = await chrome.eval(`(() => { const b = document.querySelector('.boat'); const sw = document.querySelector('.shark-swimmer'); const can = document.querySelector('.trash-can'); const r = b ? b.getBoundingClientRect() : null; const w = sw ? sw.getBoundingClientRect() : null; return { eaten: b ? b.classList.contains('eaten') : false, lines: !!document.querySelector('.boat-lines'), hunting: can.classList.contains('hunting'), swimmer: !!sw, inLayer: sw ? sw.parentElement.classList.contains('sky') : false, sx: w ? w.x + w.width / 2 : null, sy: w ? w.y + w.height * 0.32 : null, burp: !!document.querySelector('.burp'), bx: r ? r.x + r.width / 2 : null, by: r ? r.y + r.height / 2 : null }; })()`);
+    if (e.eaten) { boatEaten.eaten = true; if (!e.lines) boatEaten.linesGone = true; }
+    if (e.hunting) boatEaten.hunting = true;
+    if (e.swimmer && e.inLayer) boatEaten.swimmerInLayer = true;
+    if (e.burp) boatEaten.burp = true;
+    if (e.bx !== null && !e.eaten) {
+      boatSpot ??= { x: e.bx, y: e.by };
+      if (Math.hypot(e.bx - boatSpot.x, e.by - boatSpot.y) > 4) boatEaten.stoodStill = false;
+    }
+    if (e.bx !== null && e.sx !== null && Math.hypot(e.sx - e.bx, e.sy - e.by) < 110) boatEaten.reachedBoat = true;
+    await chrome.sleep(125);
+  }
+  check('click the boat: it stops where it was, and the shark comes up and swims out to it in a copy of its head in the layer above everything', boatEaten.hunting && boatEaten.swimmerInLayer && boatEaten.stoodStill && boatEaten.reachedBoat, JSON.stringify({ boatEaten, boatSpot }));
+  check('its harpoon is gone at once, it goes under the jaws, and the shark burps when it is home', boatEaten.linesGone && boatEaten.eaten && boatEaten.burp, JSON.stringify(boatEaten));
+  check('and then the boat and the swimming shark are gone, with no clang and the shark back to resting', await chrome.eval(`!document.querySelector('.boat') && !document.querySelector('.boat-lines') && !document.querySelector('.shark-swimmer') && !document.querySelector('.clang-word') && document.querySelector('.trash-can').className === 'trash-can'`));
+  // No fish at the same time as a boat, and no boat when asked for calm.
+  await chrome.goto(BASE + '?boat=now&fish=now&speed=instant');
+  await chrome.sleep(1500);
+  check('a fish and a boat never share the shark: with both asked for at once, one comes and the other waits', (await chrome.eval(`[!!document.querySelector('.boat'), !!document.querySelector('.fish')].filter(Boolean).length`)) === 1);
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await chrome.goto(BASE + '?boat=now&speed=instant');
+  await chrome.sleep(1500);
+  check('when the computer asks for reduced motion there is no boat, not even when asked for', await chrome.eval(`!document.querySelector('.boat')`));
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+  await chrome.goto(BASE + '?speed=instant');
+
+  // ---- Treats for working: real changes to the blocks, and a program that ran after them, earn a dance, bubbles, a fish or a boat ----
+  const treat = () => chrome.eval(`(() => { const s = document.querySelector('.turtle-sprite'); return { dance: s.classList.contains('pose-dance'), bubbles: !document.querySelector('.turtle-bubbles').hidden, fish: !!document.querySelector('.fish'), boat: !!document.querySelector('.boat') }; })()`);
+  const gotTreat = (t) => t.dance || t.bubbles || t.fish || t.boat;
+  await chrome.goto(BASE + '?goal=2&speed=instant');
+  await chrome.sleep(500);
+  check('before any work there is no treat', !gotTreat(await treat()));
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 250);
+  await chrome.sleep(500);
+  check('one block put in is work, but not yet enough for a treat (the goal is 2 points here)', (await stacks()) === 1 && !gotTreat(await treat()));
+  for (let i = 0; i < 3; i += 1) await dragBlock('forward', 25, 35);
+  await chrome.sleep(400);
+  check('moving a stack around the page earns nothing', !gotTreat(await treat()));
+  const toDelete = await nodeRect('forward');
+  await chrome.drag({ x: toDelete.left + 10, y: toDelete.top + toDelete.h / 2 }, { x: 40, y: 300 }, 12);
+  await chrome.sleep(400);
+  check('and neither does deleting it', (await stacks()) === 0 && !gotTreat(await treat()));
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 420);
+  await chrome.sleep(700);
+  const earned = await treat();
+  check('another block in reaches the goal, and a treat plays (the turtle dances, blows bubbles, or a fish or a boat comes by)', gotTreat(earned), JSON.stringify(earned));
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 720, y: 330 });
+  await chrome.sleep(400);
+  check('it plays on while they keep working: moving the mouse does not stop it', gotTreat(await treat()));
+  // A program that ran after the blocks changed is worth more.
+  await chrome.goto(BASE + '?goal=4&speed=instant');
+  await chrome.sleep(500);
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 250);
+  await chrome.sleep(400);
+  check('(a block put in is 1 of the 4 points, so no treat yet)', !gotTreat(await treat()));
+  await tapBlockNamed('forward');
+  await chrome.sleep(900);
+  check('a program run to the end is worth 3 more, but the turtle waves first: no treat in that moment', !gotTreat(await treat()) && (await chrome.eval(`document.querySelector('.turtle-sprite').classList.contains('waving')`)));
+  await chrome.sleep(1600);
+  check('and once it has waved the treat comes', gotTreat(await treat()));
+  // Running blocks that were not changed earns nothing: open a sample and press Run.
+  await chrome.goto(BASE + '?sample=square&goal=3&speed=instant');
+  await chrome.sleep(600);
+  const runAtSample = await chrome.centerOf('#run');
+  await chrome.click(runAtSample.x, runAtSample.y);
+  await chrome.sleep(3500);
+  check('running a sample without changing anything earns no treat, however many times', !gotTreat(await treat()));
+  // Calm: no treats at all.
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await chrome.goto(BASE + '?goal=1&speed=instant');
+  await chrome.sleep(500);
+  await openPalette('Turtle');
+  await dragFromPalette('forward', 600, 250);
+  await chrome.sleep(900);
+  check('when the computer asks for reduced motion there are no treats, whatever the work', !gotTreat(await treat()));
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+  await chrome.goto(BASE + '?speed=instant');
+
+  // The turtle's color breathing: it fades and comes back, slowly, after half the quiet time, until anyone does anything.
+  const breath = () => chrome.eval(`(() => { const sp = document.querySelector('.turtle-sprite'); const r = sp.getBoundingClientRect(); const others = [...sp.querySelectorAll('svg path, svg circle, svg ellipse')].filter((el) => !el.classList.contains('shell') && !el.closest('.scutes')); const shell = getComputedStyle(sp.querySelector('.shell')); const scute = getComputedStyle(sp.querySelector('.scutes path')); const rgb = (c) => c.match(/[\\d.]+/g).slice(0, 3).map(Number); return { on: sp.classList.contains('breathing-color'), shell: rgb(shell.fill), scute: rgb(scute.fill), shellOpacity: Number(shell.fillOpacity), scuteOpacity: Number(scute.fillOpacity), sprite: getComputedStyle(sp).opacity + ' ' + getComputedStyle(sp).filter + ' ' + getComputedStyle(sp).transform, x: Math.round(r.x), y: Math.round(r.y), others: [...new Set(others.map((el) => getComputedStyle(el).fillOpacity + ' ' + getComputedStyle(el).fill))].join('|'), count: others.length }; })()`);
+  const distance = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  await chrome.goto(BASE + '?antic=breath&speed=instant');
+  await chrome.sleep(500);
+  const breaths = [];
+  for (let i = 0; i < 42; i += 1) {
+    breaths.push(await breath());
+    await chrome.sleep(105);
+  }
+  const trueShell = breaths.reduce((deepest, b) => (b.shell[1] + b.shell[2] < deepest[1] + deepest[2] ? b.shell : deepest), breaths[0].shell);
+  const lightest = breaths.reduce((far, b) => (distance(b.shell, trueShell) > distance(far, trueShell) ? b.shell : far), trueShell);
+  check('?antic=breath makes the color of the turtle\'s shell go lighter and come back to its full depth, over and over, like a breath', breaths.every((b) => b.on) && distance(lightest, trueShell) > 80 && distance(lightest, trueShell) < 330 && lightest[1] + lightest[2] > trueShell[1] + trueShell[2], `deepest ${trueShell}, lightest ${lightest}`);
+  check('it is a change of color and never of see-through: the shell stays fully solid the whole time', breaths.every((b) => b.shellOpacity === 1 && b.scuteOpacity === 1), `${[...new Set(breaths.map((b) => b.shellOpacity))]}`);
+  check('the markings on the shell change shade with it', Math.max(...breaths.map((b) => distance(b.scute, breaths[0].scute))) > 40);
+  check('only the colored top changes: the rest of the turtle (head, flippers, outline) never does', breaths[0].count >= 3 && breaths.every((b) => b.others === breaths[0].others), `${breaths[0].count} other parts`);
+  check('and the turtle itself stays exactly where it is, at full strength, with nothing moved or scaled', breaths.every((b) => b.sprite === breaths[0].sprite && b.x === breaths[0].x && b.y === breaths[0].y) && breaths[0].sprite.startsWith('1 none'), `${breaths[0].sprite} at ${breaths[0].x},${breaths[0].y}`);
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 760, y: 300 });
+  await chrome.sleep(400);
+  const stoppedBreath = await breath();
+  check('and any movement of the mouse stops it, back to the turtle\'s true color', !stoppedBreath.on && distance(stoppedBreath.shell, trueShell) < 3, JSON.stringify(stoppedBreath));
+  await chrome.goto(BASE + '?idle=4&speed=instant');
+  await chrome.sleep(700);
+  check('with a quiet time of 4 seconds the breathing has not started yet before half of it is up', !(await breath()).on);
+  await chrome.sleep(2200);
+  check('and it has by the time half of it is up (the breathing starts before the first antic)', (await breath()).on);
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 740, y: 320 });
+  await chrome.sleep(80);
+  check('touching anything ends it and the quiet starts over', !(await breath()).on);
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await chrome.goto(BASE + '?idle=2&antic=breath&speed=instant');
+  await chrome.sleep(2800);
+  check('when the computer asks for reduced motion the color never breathes', !(await breath()).on);
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
+  await chrome.goto(BASE + '?speed=instant');
+
+  // The minute of quiet (made 3 seconds by ?idle=3 so this does not take a minute).
+  await chrome.goto(BASE + '?idle=3&speed=instant');
+  await chrome.sleep(2200);
+  check('nothing happens before the quiet time is up', nothing(await antic()));
+  await chrome.sleep(1700);
+  check('and once it is up, one thing does', !nothing(await antic()));
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 650, y: 280 });
+  await chrome.sleep(80);
+  check('touching anything ends it, and the quiet time starts over', nothing(await antic()));
+  await chrome.sleep(2200);
+  check('(so nothing happens for a while after that)', nothing(await antic()));
+  // Not while a program is running.
+  await seedProject({ app: 'porttack-turtle', version: 1, stacks: [{ x: 120, y: 60, blocks: [{ op: 'start' }, { op: 'clean' }, { op: 'forever', args: [], body: [{ op: 'forward', args: [1] }, { op: 'right', args: [1] }] }] }] });
+  await chrome.goto(BASE + '?idle=2&speed=slow', { keepStorage: true });
+  await chrome.sleep(400);
+  const goButton = await chrome.centerOf('#run');
+  await chrome.click(goButton.x, goButton.y);
+  await chrome.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1200, y: 650 });
+  await chrome.sleep(4000);
+  const during = await antic();
+  const stopBtn = await chrome.centerOf('#stop');
+  await chrome.click(stopBtn.x, stopBtn.y);
+  check('nothing happens while a program is running, however quiet it is', nothing(during), JSON.stringify(during));
+  // Asked for calm: never.
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  await chrome.goto(BASE + '?idle=2&antic=dance&speed=instant');
+  await chrome.sleep(3600);
+  check('when the computer asks for reduced motion none of it ever happens, not even when asked for', nothing(await antic()));
   await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] });
   await chrome.goto(BASE + '?speed=instant');
 

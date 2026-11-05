@@ -537,12 +537,17 @@ touches a project, stores anything or fetches anything, and the art is TurtleLab
 - **Squirm:** `.turtle-sprite.dragging svg` runs `turtle-squirm` (a wiggle of the separate `rotate` and `translate` properties, 0.3 s, alternating) for as long as the
   turtle is held, moved or turned. It uses the individual transform properties on the inner svg, so it never fights the sprite's own inline `transform` (its place and heading).
   The hover uses `scale` the same way.
-- **The fish** (`js/ui/fish.js`, the `Fish` class): 30 to 90 s after the page opens and then every 90 to 240 s, a little orange fish swims across just above the trash can
-  (7 s, bobbing, either direction, off the left edge and back), the shark's head comes up over the lid (`Trash.setPeek`, class `peek`) and its pupils follow the fish
-  (`Trash.look`, `--look-x` and `--look-y`). It is skipped, and tried again in 10 s, when the tab is hidden, the blocks are hidden, or the shark is hungry or eating; it
-  never appears when the computer asks for reduced motion (`prefers-reduced-motion`), not even with the address `?fish=now`, which is only the developer shortcut that
-  sends one 0.4 s after load (the same kind as `?speed=`). The fish layer ignores clicks, and nothing is stored. The timing, path and gaze are small pure functions
-  (`between`, `canSwim`, `swimPath`, `fishAt`, `gaze`, `isNear`), unit tested; the class is tested against stand-ins for the page, and the editor checks run a real one.
+- **The fish** (`js/ui/fish.js`, the `Fish` class; **now a treat for working, not on a timer: see "Treats for work" below**; with `auto` true, its default, it still comes 20 to 60 s after the page opens and then every 60 to 150 s, and the tests cover that): a little orange fish swims ALL the way across the window just above the
+  trash can (at `FISH_SPEED` 110 px a second, so about 14 s on a laptop and never under 7 s or over 20 s; bobbing, either direction, in from off one edge and out past the other), the
+  shark's head comes up over the lid when it is near (`Trash.setPeek`, class `peek`) and its pupils follow the fish (`Trash.look`, `--look-x` and `--look-y`). It swims in the
+  window-sized layer above everything (`sky.js`, viewport coordinates), so the Fish no longer takes a `before` option. It is skipped, and tried again in 10 s, when the tab is
+  hidden, the blocks are hidden, or the shark is hungry, eating, spitting, dreaming or a boat is here; it leaves by itself if the blocks are hidden mid-swim (that layer is outside
+  the stage); it never appears when the computer asks for reduced motion (`prefers-reduced-motion`), not even with the address `?fish=now`, which is only the developer shortcut that
+  sends one 0.4 s after load (the same kind as `?speed=`). **Click the fish (2026-11-04) and the shark eats it:** the layer ignores clicks but the fish itself does not
+  (`pointer-events: auto`, `cursor: pointer`, with an invisible 0.9 rem border so a moving fish is easy to catch), and `pointerdown` runs `getEaten`: the fish stops and the shark swims out to it
+  (see "Eating a visitor" below).
+  Nothing is stored. The timing, path and gaze are small pure functions (`between`, `canSwim`, `swimPath`, `fishAt`, `gaze`, `isNear`), unit tested; the class is tested against stand-ins
+  for the page, and the editor checks run a real one, including a click.
 - **Yawn, wave, spit and burp (2026-11-04, the user's next pick from that list: "Add the yawn and wave and undo and bubble"):**
   - **Yawn:** a `wait` of 700 ms or more (`YAWN_AFTER_MS` in `main.js`) makes the sprite sway slowly and a "Zzz" float up (`CanvasView.setYawning`, class `yawning`,
     the `.turtle-zzz` piece, positioned by `sync()` and not turned with the turtle). The scheduler tells the app about a wait through the new `onWait(ms, block)` option
@@ -559,6 +564,83 @@ touches a project, stores anything or fetches anything, and the art is TurtleLab
     while the shark is still chewing. The address `?burp=always` makes it 100 percent, for trying it out.
   - **All of these are skipped when the computer asks for reduced motion** (CSS for the yawn and wave, the code for the spit and burp), and none of it touches a project or
     stores anything. The main.js hand-built `eater` object that the workspace gets must pass `spit` and the `raised` option on (it did not at first, which a probe caught).
+- **Idle antics (2026-11-04, the user: "if the student is doing nothing after a minute, randomly make the turtle dance or scratch his head or maybe just yawn or release a
+  bubble like it is breathing under water, or even poop (a poop emoji falling?). Or maybe the shark starts dreaming about turtle stew?"):** `js/ui/idle.js` (WHEN and WHICH,
+  pure and unit tested with fake timers) and `js/ui/antics.js` (WHAT, with `ANTIC_MS` the lengths). After `IDLE_MS` (45 s) with no `pointerdown`, `pointermove`, `keydown`,
+  `wheel` or `touchstart` (main.js listens on the document, capture, and a run starting or ending also counts), one antic plays, chosen by weight; while it stays quiet another
+  comes 30 to 80 s after each ends. ANY activity ends the current one at once (`Idle.poke`) and restarts the quiet time. It looks again 10 s later instead if a program is running
+  (`busy`), the tab is hidden, or nothing is possible, and **never happens when the computer asks for reduced motion** (the timer is not even started). The five idle ones (dance moved to the treats, see below), with weights:
+  scratch 3 (the front left flipper, named `scratch-flipper` in `turtle-look.js`, rubs the head), yawn 3 (the same yawn as a long
+  wait), breathe 3 (bubbles wobble up from the nose, wherever the turtle faces), dream 2 and poop 1. **Dream:** the shark comes up over the lid with its eyes shut (`eyes-shut` in
+  the can's picture; `Trash.setDreaming`, class `dreaming`) and a thought bubble with a pot of turtle stew (the turtle is our own turtle picture made small) floats above it; it
+  is only possible when the shark is resting and no fish is swimming past (`Trash.canDream`). **Poop:** a small cartoon pile drawn in SVG (not an emoji, so it looks the same
+  everywhere) drops from the tail, falls down the screen, bounces once and fades (`CanvasView.dropPoop`); it was the user's own suggestion and is the rarest, and it is one line in
+  `makeAntics` (`show('poop', ...)`) to remove if it is ever not wanted. Developer shortcuts: `?antic=scratch` (or yawn, breathe, poop, dream, and now also the treats dance, fish and boat) plays one 0.5 s after load,
+  `?idle=5` makes the quiet time 5 seconds (and the pauses between antics shrink in step, to 0.75 to 2 times that), `?poop=two` always drops two.
+  **Floating and falling go all the way off the window (the user: "make the bubbles go all the way off the top of the browser window, sleep the same, and poop all the way to the
+  bottom, maybe sometimes a 2nd poop too").** The turtle's Zzz and bubbles, the shark's z's and the poop live in one fixed, window-sized, click-proof layer above everything
+  (`js/ui/sky.js`, `.sky`, z-index 60, overflow hidden), not inside the paper, which would clip them. Distances come from where they start (`riseDistance`, `fallDistance`) and are
+  handed to the stylesheet as CSS variables (`--rise`, `--rise-time`, `--times` for the floaters, `--fall` and `--fall-time` for the poop), so a turtle low on the page takes longer
+  to be rid of its bubbles; the speeds are `FLOAT_SPEED` (100 px a second for bubbles, 85 for z's) and a fall speeds up like a dropped thing (`fallTime`). Because the rise is long,
+  an antic lasts as long as it needs (`makeAntics` takes the seconds `setBreathing`, `setYawning({ once: true })`, `dropPoop` and `Trash.setDreaming` give back), and any activity still
+  ends it at once. The turtle drops a second poop `SECOND_POOP_CHANCE` (0.4) of the time, 0.7 to 1.3 s after the first. The shark's dream bubble now has the words "turtle soup" under the
+  pot (a thought bubble, not a speech bubble, because it is a dream). **A mistake to avoid:** when `setDreaming` was rewritten, a replacement between two comment markers silently deleted
+  `Trash.setPeek`, `look` and `mouthPoint` (the fish and the undo spit use them); `test/trash.test.js` now lists every method the shark must have.
+- **Eating a visitor (2026-11-04, the user: "If user clicks on boat, can the shark come out and eat the boat? Same thing for the fish?"; then "can shark swim out to eat it rather than it moving
+  to shark?"; same first message: "maybe the fish should go all the way across the screen too. And maybe we need to have things happen a tad more often"):** the visitor STOPS where it was
+  clicked and the shark swims out to it. `js/ui/visitors.js` `eatVisitor({ el, trash, setTimer, onDone })` finds the middle of the visitor, stops the peeking and eye following, and calls
+  `Trash.hunt(target, { onBite, onDone })`; `onBite` gives the visitor the class `eaten` (the stylesheet spins and shrinks the svg inside, `visitor-eaten`, `OVER_MS` 480, and turns clicks off)
+  and takes it off the page after that; `onDone` is the fish's or boat's `finish(true)`, which waits for the next one. **`Trash.hunt`** (`HUNT` constants): class `hunting` (lid off, shark up, jaw
+  open, the same pose as `hungry`) for `RISE_MS` 240, then `swimming-out` hides the real shark and a COPY of its head, `.shark-swimmer` (`SWIMMER`, built from the same `SHARK` markup the can
+  uses, so it is the same picture, unclipped, in a box the can's size), is appended to the window-sized layer (`sky.js`) exactly where the shark was and swims, with a CSS transition
+  and a side to side wag, to put its MOUTH on the target (`swimmerCorner`; `swimTime` = distance at 800 px/s, 450 to 1300 ms). It arrives, `chomp`s for `CHOMP_MS` 800 (`onBite` at 170 ms),
+  swims back, the copy is removed and the real shark is there with a certain burp (`burp(1)`), and `BURP_HOLD_MS` 380 later `endHunt()` removes `hunting` (it sinks) and calls `onDone`.
+  **Anything else that needs the shark ends the trip at once** (`setHungry(true)`, `feed`, `spit`, `snap` call `endHunt()`, which still calls `onDone` exactly once), so a block dropped on the
+  can is never eaten by an empty can. `hunting` is in `NOT_RESTING`, in `mouthPoint`'s "already up" list, and in the fish's and the boat's busy lists. The boat's harpoon and rope are removed
+  at once on the click and its visit never reaches the clang or snap. `Trash.feed` is a plain `feed()` again (the visitors no longer feed it; `burp(chance)` keeps its chance argument).
+  If the can is not showing `hunt` returns false and the visitor just goes. Tested in `test/hunt.test.js` (the whole trip on a fake page and clock, and the interruptions),
+  `test/visitors.test.js`, `fish.test.js`, `boat.test.js`, `trash.test.js` (`swimTime`, `swimmerCorner`), and with real clicks in `dev/editor-checks.mjs` (the shark reaches the visitor, which
+  stood still; burp; everything gone afterwards). Timing, "a tad more often" (the fish and boat timers are now only the `auto` ones, see "Treats for work"): antics after 45 s then every 30 to 80 s, breathing after 30 s.
+- **Poop falls slower, and a fishing boat (2026-11-04, the user: "poop falls too fast. can you add a fishing boat like the fish and the boat tries to harpoon the shark (or garbage can)?"):**
+  **Poop:** `fallTime` in `js/ui/sky.js` now uses a gravity of 120 (it was 1100, under a second): about 2.5 s from the middle of a 613 px window, 3.2 s from a 1100 px one, at least 1.2 s.
+  **Boat** (`js/ui/boat.js`, the `Boat` class, a cousin of the fish; a treat for working like the fish, `auto: false` in main.js, but with `auto` true it comes the first 1 to 2 minutes after the page opens and then every 2 to 5 minutes, rarer than the fish) a little red fishing boat
+  with a fisherman in a yellow coat sails in from off the RIGHT edge along "the water" just above the can (the fish swim under that line), slows to a stop about 215 px to the right of the
+  can, and the scene runs on a fixed timeline (`PHASES`, 12.3 s): arrive 4.5 s, watch 0.9 (the shark peeks and its eyes follow the boat), throw 0.5 (the harpoon arcs to the can's lid, a
+  rope behind it), stuck 0.8 (it hits: `Trash.clang()` shakes the can and a "clang!" pops up), reel 0.9 (hauled back by the rope), snap 1.2 (the lid flips and the shark pops up and snaps,
+  `Trash.snap()`, which is the eating pose without a burp, while the boat spins round), leave 3.5 (it sails off the way it came, faster). The boat's place and the harpoon's are pure
+  functions of the time since it began (`boatAt`, `spearAt`, `phaseAt`), unit tested; the class draws them every frame in the window-sized layer (`sky.js`) and tells the shark what to do at
+  each phase change. Same manners as the fish: never when the computer asks for reduced motion (not even with `?boat=now`, the developer shortcut), not while the tab or the blocks are hidden,
+  and the fish and the boat never share the shark (`others` on both; the idle dream also waits for both). The harpoon always hits the can (it is a cartoon: the user said "tries to harpoon
+  the shark (or garbage can)", and the clang is the joke), and the shark never gets hurt.
+- **The turtle's color breathes (2026-11-04, the user: "after about 30 seconds, can you make the color of the turtle fade and unfade just a bit about 60 times per second like it is
+  breathing?"):** 60 times a SECOND would be a flicker (no change you could see), so it was read as "smooth, at 60 frames a second", with a breath of about 4 seconds (`--breath` in
+  `css/app.css`; say so if 60 a minute, a breath a second, was what they meant). After `BREATH_AFTER_MS` (30 s; with `?idle=N` it is N/2 seconds) with no activity,
+  `.turtle-sprite.breathing-color` runs on the turtle's SHELL only (`.shell` and `.scutes path`), until anyone does anything. It is an *ambient* thing in `Idle`
+  (`ambient: [{ name, afterMs, start, stop }]`), not an antic: it starts at its own earlier time, carries on while an antic plays, waits for the same good moments (not while a program
+  runs or the tab is hidden), and any activity ends it. Never under reduced motion. `?antic=breath` starts it at once. `CanvasView.setColorBreathing`.
+  **It went through three versions, each a correction from the user.** (1) Too faint ("too faint to see"): a small `saturate`/`brightness` filter. (2) Too much, and it MOVED: it faded the
+  whole sprite with `opacity`/`filter`, then with a `scale`, and "why is the turtle moving too -- didn't want that" and "fade is just the top colored part of turtle, not the entire turtle"
+  (a `scale` on the sprite scales its inline translate too, so the turtle drifted about 40 px; never put opacity, filter or a transform on the sprite for this). Faded only the shell's
+  `fill-opacity` to 0.08. (3) "over the top -- it fades all the way to transparent -- I was just thinking of making the color less and more deep, not transparent -- kind of breathing or
+  heartbeat." **Now it is a change of COLOR, never of see-through:** `shellColors` (`turtle-look.js`) also gives `shellBreath` and `scuteBreath`, a lighter shade (40% of the way to white; a
+  pen that is already very light breathes to a deeper shade instead, 30% toward black, so white still changes), `CanvasView.sync` sets them as `--shell-breath` and `--scute-breath`
+  next to `--shell` and `--scute`, and the keyframes only name the `50%` moment (`fill: var(--shell-breath)`), so each breath goes from the pen's true color to the lighter one and
+  back. `fill-opacity` is never touched (the pen-up pale shell still works). `dev/editor-checks.mjs` checks all of it (the shell changes color by a visible but modest amount, stays at
+  fill-opacity 1, the markings change shade, every other part never changes, the sprite's opacity, filter, transform and place never change, and the true color returns when stopped).
+- **Treats for work (2026-11-05, the user: "i want to reward the students for doing work, so maybe some of these things should happen if they're writing code rather than when they're doing
+  nothing"):** `js/ui/reward.js` (WHEN and WHICH, pure and unit tested with fake time, a sibling of `idle.js`) and the lists in `antics.js`. **Which is which:** idle antics (only when nobody is
+  doing anything, ended by any activity): scratch, yawn, bubbles, poop, dream (`IDLE_ANTICS`), plus the breathing. Treats (play while they work, NOT ended by activity): the dance, bubbles,
+  a fish swimming across, a fishing boat (`TREAT_ANTICS` + `makeRewards`); the fish and the boat no longer come on timers (`new Fish({ auto: false })`, `new Boat({ auto: false })`; the
+  `auto` option keeps the old timer behavior, default true, tested). Move a name between the lists to change it; the bubbles are in both on purpose. **Points:** `EDIT_POINTS` 1 for a
+  real change to the blocks, `RUN_POINTS` 3 for a program that ran to the end after the blocks changed since the last such run (so pressing Run again and again, or running an unchanged
+  sample, earns nothing). A change is "real" by `workMark`/`earnedWork`: the blocks' own description (stack positions left out) is different AND the block count did not go down, so
+  adding a block, changing a number and rearranging count, while moving a stack, deleting and Undo do not (`main.js` compares in `onChange`, against `lastMark`, which `projectChanged()`
+  refreshes for every path that replaces the blocks). When the points of the last `WINDOW_MS` (4 min) reach `GOAL` (8: about a square's worth of building then running it) one treat plays
+  (chosen by weight, never the same as the last one if another is possible; one that says no, like a fish while a boat is here, is skipped), the points start over, and there is a
+  `COOLDOWN_MS` (75 s) rest. A treat for a run waits `AFTER_RUN_MS` (1.7 s) so it does not pile onto the wave. Nothing happens when busy (a program running), the tab is hidden, or under
+  reduced motion (not even counted). All in memory: nothing is stored. Developer shortcuts: `?goal=3` (goal 3 points, 5 s rest), `?antic=dance` (or fish, boat, bubbles via breathe) plays a
+  treat at once; `?fish=now` and `?boat=now` still work. Tests: `test/reward.test.js`, `antics.test.js`, `fish.test.js`/`boat.test.js` (`auto: false`), and real block drops, a tap-run, a sample
+  run and calm in `dev/editor-checks.mjs`. The numbers (8, 3, 4 min, 75 s) are guesses to tune after watching students; they are the constants at the top of `reward.js`.
   Other ideas from that list that were NOT built (so they can be picked up later): a stamp block (paw, heart, star, fish, shark as line art), a celebration when a shape
   closes, seasonal shark outfits by date, a cougar-paw turtle skin, paper choices (see below), a ghost trail of pen-up walks, a confused turtle on an error.
   **Paper choices were proposed, not built.** The grid button (`#grid`) is a numbered square grid only, whose spacing follows the zoom (`core/grid.js`: steps of 1, 2 or 5 times a

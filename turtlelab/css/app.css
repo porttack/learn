@@ -178,6 +178,25 @@ body {
   from { rotate: -8deg; translate: -1px 0; }
   to { rotate: 8deg; translate: 1px -1px; }
 }
+/* After half a minute alone the turtle breathes: the color of its shell (the pen's color, and the markings on it) slowly goes lighter and then comes back to its
+   full depth, over and over, like a breath or a heartbeat, until somebody does something (js/ui/idle.js starts and stops it). It is a change of color, never of
+   see-through: the page works out the lighter shade from the pen's color (--shell-breath, --scute-breath, see turtle-look.js). Only the colored top changes: the
+   head, flippers and outline stay as they are, and nothing moves (no scale or other transform, which would also shift the sprite from its place). It goes on whatever
+   else the turtle is doing. A breath takes --breath (4 seconds). The keyframes name only the lighter moment, so each breath starts from, and returns to, the
+   shell's own color. */
+.turtle-sprite.breathing-color .shell {
+  animation: turtle-breath-shell var(--breath, 4s) ease-in-out infinite;
+}
+.turtle-sprite.breathing-color .scutes path {
+  animation: turtle-breath-scute var(--breath, 4s) ease-in-out infinite;
+}
+@keyframes turtle-breath-shell {
+  50% { fill: var(--shell-breath, #ff8080); }
+}
+@keyframes turtle-breath-scute {
+  50% { fill: var(--scute-breath, #ff8080); }
+}
+
 /* While a wait block waits the turtle yawns: it sways slowly, and a Zzz floats up from it (the page keeps the Zzz at the turtle). */
 .turtle-sprite.yawning svg {
   animation: turtle-yawn 1.6s ease-in-out infinite alternate;
@@ -198,20 +217,29 @@ body {
   text-shadow: 0 0 3px #fff, 0 0 3px #fff;
 }
 .turtle-zzz[hidden] { display: none; }
+/* Each z rises all the way off the top of the window (--rise is how far, --rise-time how long, --times how often, all set from where the
+   turtle is), one after another, swaying as it goes. */
 .turtle-zzz span {
   position: absolute;
   left: 0;
   bottom: 0;
   opacity: 0;
-  animation: turtle-zzz 2.1s ease-out infinite;
+  animation-name: turtle-zzz;
+  animation-duration: var(--rise-time, 2.1s);
+  animation-timing-function: linear;
+  animation-iteration-count: var(--times, infinite);
+  animation-fill-mode: backwards;
 }
 .turtle-zzz span:nth-child(1) { font-size: 0.8rem; animation-delay: 0s; }
-.turtle-zzz span:nth-child(2) { font-size: 1.05rem; animation-delay: 0.6s; }
-.turtle-zzz span:nth-child(3) { font-size: 1.35rem; animation-delay: 1.2s; }
+.turtle-zzz span:nth-child(2) { font-size: 1.05rem; animation-delay: calc(var(--rise-time, 2.1s) * 0.28); }
+.turtle-zzz span:nth-child(3) { font-size: 1.35rem; animation-delay: calc(var(--rise-time, 2.1s) * 0.56); }
 @keyframes turtle-zzz {
   0% { opacity: 0; transform: translate(0, 4px) rotate(-8deg); }
-  20% { opacity: 1; }
-  100% { opacity: 0; transform: translate(14px, -26px) rotate(8deg); }
+  6% { opacity: 1; }
+  25% { transform: translate(9px, calc(var(--rise, 26px) * -0.25)) rotate(8deg); }
+  50% { transform: translate(-5px, calc(var(--rise, 26px) * -0.5)) rotate(-8deg); }
+  75% { transform: translate(9px, calc(var(--rise, 26px) * -0.75)) rotate(8deg); }
+  100% { opacity: 1; transform: translate(0, calc(var(--rise, 26px) * -1)) rotate(-4deg); }
 }
 
 /* When a program finishes the turtle waves: the front flipper on its right swings out and back, twice. */
@@ -226,12 +254,126 @@ body {
   70% { transform: rotate(22deg); }
 }
 
+/* The idle antics (js/ui/antics.js), for when the turtle has been left alone a while. */
+
+/* Dance: a few hops and sways, then a full spin. It runs twice. */
+.turtle-sprite.pose-dance svg {
+  animation: turtle-dance 1.7s ease-in-out 2;
+}
+@keyframes turtle-dance {
+  0% { rotate: 0deg; translate: 0 0; }
+  12% { rotate: -14deg; translate: -2px -5px; }
+  25% { rotate: 14deg; translate: 2px 0; }
+  37% { rotate: -14deg; translate: -2px -5px; }
+  50% { rotate: 14deg; translate: 2px 0; }
+  60% { rotate: 0deg; translate: 0 0; }
+  100% { rotate: 360deg; translate: 0 0; }
+}
+
+/* Scratch its head: the front left flipper comes up to the head and rubs back and forth, while the turtle leans into it. */
+.turtle-sprite.pose-scratch svg {
+  animation: turtle-lean 2.6s ease-in-out 1;
+}
+@keyframes turtle-lean {
+  0%, 100% { rotate: 0deg; }
+  15%, 85% { rotate: -5deg; }
+}
+.turtle-sprite.pose-scratch .scratch-flipper {
+  transform-box: fill-box;
+  transform-origin: 100% 100%;
+  animation: turtle-scratch 0.22s ease-in-out 11 alternate;
+}
+@keyframes turtle-scratch {
+  from { transform: rotate(36deg); }
+  to { transform: rotate(64deg); }
+}
+
+/* Blow bubbles, as if breathing under water: little bubbles wobble up from the nose, one after another. */
+.turtle-bubbles {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.turtle-bubbles[hidden] { display: none; }
+.turtle-bubbles span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: 1.5px solid #6c98c4;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, rgba(255, 255, 255, 0.35));
+  opacity: 0;
+  animation-name: turtle-bubble;
+  animation-duration: var(--rise-time, 2.2s);
+  animation-timing-function: linear;
+  animation-iteration-count: var(--times, infinite);
+  animation-fill-mode: backwards;
+}
+.turtle-bubbles span:nth-child(1) { width: 0.4rem; height: 0.4rem; margin-left: -0.2rem; animation-delay: 0s; }
+.turtle-bubbles span:nth-child(2) { width: 0.65rem; height: 0.65rem; margin-left: 0.15rem; animation-delay: calc(var(--rise-time, 2.2s) * 0.2); }
+.turtle-bubbles span:nth-child(3) { width: 0.5rem; height: 0.5rem; margin-left: -0.35rem; animation-delay: calc(var(--rise-time, 2.2s) * 0.4); }
+.turtle-bubbles span:nth-child(4) { width: 0.8rem; height: 0.8rem; margin-left: 0.05rem; animation-delay: calc(var(--rise-time, 2.2s) * 0.6); }
+/* Each bubble wobbles from side to side as it rises, all the way off the top of the window, and swells a little as it goes. */
+@keyframes turtle-bubble {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  5% { opacity: 1; }
+  25% { transform: translate(8px, calc(var(--rise, 3rem) * -0.25)) scale(0.75); }
+  50% { transform: translate(-7px, calc(var(--rise, 3rem) * -0.5)) scale(0.95); }
+  75% { transform: translate(8px, calc(var(--rise, 3rem) * -0.75)) scale(1.1); }
+  100% { opacity: 1; transform: translate(-5px, calc(var(--rise, 3rem) * -1)) scale(1.25); }
+}
+
+/* And, rarely, what turtles do: a little pile drops from the tail, falls, bounces once and fades. */
+.turtle-poop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: -0.75rem 0 0 -0.75rem;
+  pointer-events: none;
+}
+.turtle-poop svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: turtle-poop var(--fall-time, 1.2s) ease-in forwards;
+}
+/* It drops from the tail and falls all the way off the bottom of the window (--fall is how far, --fall-time how long), tumbling as it goes. */
+@keyframes turtle-poop {
+  0% { opacity: 0; transform: translateY(0) scale(0.4) rotate(0deg); }
+  5% { opacity: 1; transform: translateY(calc(var(--fall, 4rem) * 0.01)) scale(1) rotate(0deg); }
+  100% { opacity: 1; transform: translateY(var(--fall, 4rem)) scale(1) rotate(200deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .turtle-sprite svg { transition: none; }
   .turtle-sprite.dragging svg,
-  .turtle-sprite.yawning svg { animation: none; }
-  .turtle-zzz { display: none; }
-  .turtle-sprite.waving .wave-flipper { animation: none; }
+  .turtle-sprite.yawning svg,
+  .turtle-sprite.pose-dance svg,
+  .turtle-sprite.pose-scratch svg { animation: none; }
+  .turtle-sprite.breathing-color .shell,
+  .turtle-sprite.breathing-color .scutes path { animation: none; }
+  .turtle-zzz,
+  .turtle-bubbles,
+  .turtle-poop { display: none; }
+  .turtle-sprite.waving .wave-flipper,
+  .turtle-sprite.pose-scratch .scratch-flipper { animation: none; }
+}
+
+/* The layer above everything, for what floats off the top of the window or falls off the bottom (js/ui/sky.js). */
+.sky {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 60;
+  overflow: hidden;
 }
 
 /* ---- Blocks ---- */
@@ -433,8 +575,14 @@ body {
   transition: transform 0.2s ease-out;
 }
 
-/* A fish is swimming by: the shark's head comes up over the lid, just its eyes and fin, and the pupils follow the fish (--look-x and --look-y). */
-.trash-can.peek .shark { transform: translateY(12px); }
+/* A fish is swimming by: the shark's head comes up over the lid, just its eyes and fin, and the pupils follow the fish (--look-x and --look-y).
+   Dozing off (dreaming) is the same pose with the eyes shut. */
+.trash-can.peek .shark,
+.trash-can.dreaming .shark { transform: translateY(12px); }
+.trash-can .eyes-shut { opacity: 0; }
+.trash-can.dreaming .eyes-shut { opacity: 1; }
+.trash-can.dreaming .eye,
+.trash-can.dreaming .pupil { opacity: 0; }
 .trash-can .pupil {
   transform: translate(var(--look-x, 0px), var(--look-y, 0px));
   transition: transform 0.12s ease-out;
@@ -442,15 +590,135 @@ body {
 
 .trash-can.hungry .shark,
 .trash-can.eating .shark,
-.trash-can.spitting .shark { transform: translateY(-40px); }
+.trash-can.spitting .shark,
+.trash-can.hunting .shark { transform: translateY(-40px); }
 
 .trash-can.hungry .jaw,
 .trash-can.eating .jaw,
-.trash-can.spitting .jaw { transform: translateY(26px); }
+.trash-can.spitting .jaw,
+.trash-can.hunting .jaw { transform: translateY(26px); }
 
 .trash-can.hungry .lid,
 .trash-can.eating .lid,
-.trash-can.spitting .lid { transform: translate(-34px, -4px) rotate(-62deg); }
+.trash-can.spitting .lid,
+.trash-can.hunting .lid { transform: translate(-34px, -4px) rotate(-62deg); }
+
+/* A fish or the boat was clicked: the shark comes up, then a copy of its head (in the layer above everything) swims out to it, chomps and swims home
+   (Trash.hunt). While the copy is out the real shark is hidden and the open can sits empty. */
+.trash-can.swimming-out .shark { visibility: hidden; }
+.shark-swimmer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.shark-swimmer .shark { transform: translateY(-40px); }
+.shark-swimmer .jaw { transform: translateY(26px); }
+.shark-swimmer .pupil { transform: translate(var(--look-x, 0px), 0); }
+.shark-swimmer.chomp .jaw { animation: chomp 0.8s ease-in-out; }
+/* Swimming, it wags from side to side (the separate rotate property, so it never fights the place the page gives it). */
+.shark-swimmer.swimming .trash-svg {
+  transform-origin: 50% 32%;
+  animation: swimmer-wag 0.28s ease-in-out infinite alternate;
+}
+@keyframes swimmer-wag {
+  from { rotate: -7deg; }
+  to { rotate: 7deg; }
+}
+
+/* The shark's dream of turtle stew: a thought bubble above the can, with a pot of stew in it, steam rising, and a few z's coming off the shark. */
+.dream {
+  position: absolute;
+  left: 3.4rem;
+  top: -6.4rem;
+  width: 9.5rem;
+  pointer-events: none;
+  animation: dream-float 8.5s ease-in-out forwards;
+}
+.dream-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+@keyframes dream-float {
+  0% { opacity: 0; transform: translateY(8px) scale(0.85); }
+  8% { opacity: 1; transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.02); }
+  92% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-6px) scale(0.95); }
+}
+.dream .steam { animation: dream-steam 1.8s ease-in-out infinite; }
+.dream .steam-2 { animation-delay: 0.6s; }
+.dream .steam-3 { animation-delay: 1.2s; }
+@keyframes dream-steam {
+  0%, 100% { opacity: 0.15; transform: translateY(2px); }
+  50% { opacity: 0.9; transform: translateY(-3px); }
+}
+/* The fishing boat that comes now and then to try to harpoon the shark (js/ui/boat.js). It and its harpoon float in the layer above everything.
+   The boat takes clicks (the shark comes up and eats it); its harpoon and rope do not. */
+.boat {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 5.8rem;
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: none;
+  will-change: transform;
+}
+.boat-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.boat-lines {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.boat-lines .rope {
+  stroke: #8a6a3a;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+/* The harpoon hits the can: it rings (a shake), and a "clang!" pops up. */
+.trash-can.clang {
+  transform-origin: 50% 100%;
+  animation: can-clang 0.55s ease-out;
+}
+@keyframes can-clang {
+  0% { rotate: 0deg; }
+  14% { rotate: -6deg; }
+  32% { rotate: 5deg; }
+  50% { rotate: -3deg; }
+  70% { rotate: 1.5deg; }
+  100% { rotate: 0deg; }
+}
+.clang-word {
+  position: absolute;
+  left: 50%;
+  top: 14%;
+  white-space: nowrap;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #c0392b;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
+  pointer-events: none;
+  animation: clang-pop 0.9s ease-out forwards;
+}
+@keyframes clang-pop {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.3) rotate(-8deg); }
+  18% { opacity: 1; transform: translate(-50%, -0.2rem) scale(1.3) rotate(-6deg); }
+  100% { opacity: 0; transform: translate(-50%, -1.6rem) scale(1) rotate(-4deg); }
+}
 
 /* Now and then, after a meal, a bubble with a "burp" in it floats up out of the shark's mouth. */
 .burp {
@@ -510,14 +778,22 @@ body {
 .workspace .ghost,
 .workspace .ghost * { pointer-events: none !important; }
 
-/* The occasional fish (js/ui/fish.js). It ignores clicks, and the stage gives it its place with a transform. */
+/* The occasional fish (js/ui/fish.js). It swims in the layer above everything, which is given its place with a transform, and it is the one thing in
+   that layer that takes clicks: click it and the shark eats it. The invisible border makes it an easier thing to catch. */
 .fish {
   position: absolute;
   left: 0;
   top: 0;
   width: 2.6rem;
-  z-index: 4;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
+  touch-action: none;
+  will-change: transform;
+}
+.fish::before {
+  content: '';
+  position: absolute;
+  inset: -0.9rem;
 }
 .fish-svg {
   display: block;
@@ -533,11 +809,29 @@ body {
   from { transform: rotate(-16deg); }
   to { transform: rotate(16deg); }
 }
-.stage.blocks-hidden .fish { display: none; }
+/* What the shark is eating (a fish or the boat): it spins and shrinks under the shark's jaws, and cannot be clicked again. */
+.fish.eaten,
+.boat.eaten { pointer-events: none; }
+.fish.eaten .fish-svg,
+.boat.eaten .boat-svg {
+  transform-origin: 50% 50%;
+  animation: visitor-eaten 0.48s ease-in forwards;
+}
+@keyframes visitor-eaten {
+  from { rotate: 0deg; scale: 1; opacity: 1; }
+  to { rotate: 200deg; scale: 0.15; opacity: 0.4; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .fish-tail { animation: none; }
-  .burp { display: none; }
+  .fish,
+  .shark-swimmer,
+  .burp,
+  .dream,
+  .boat,
+  .boat-lines,
+  .clang-word { display: none; }
+  .trash-can.clang { animation: none; }
   .trash-can .pupil { transition: none; }
   .trash-can .shark,
   .trash-can .jaw,

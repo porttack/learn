@@ -24,6 +24,7 @@ import { DEFAULT_DRAW_VIEW, drawingBounds, fitView, isDefaultView, paperToWorld,
 import { gridLines, labelFor } from '../core/grid.js';
 import { turtleSvg } from './artwork.js';
 import { spriteSvg, shellColors } from './turtle-look.js';
+import { sky, FLOAT_SPEED, riseDistance, riseTime, fallDistance, fallTime } from './sky.js';
 
 /** Canvas pixels per paper unit. */
 export const PIXEL_RATIO = 2;
@@ -32,6 +33,16 @@ export const PIXEL_RATIO = 2;
 // the screen (about 52 on an ordinary window), because the drawing is printed small and the
 // reader needs to see at a glance which way the nose points.
 export const PDF_TURTLE_SIZE = 70;
+
+/** A very small, very cartoon pile of poop, drawn here (not an emoji, so it looks the same everywhere). */
+const POOP = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" focusable="false">
+  <ellipse cx="15" cy="23.5" rx="12.5" ry="5.5" fill="#8a5a2b" stroke="#5a3a1a" stroke-width="1.4"/>
+  <ellipse cx="15" cy="17" rx="9.5" ry="5" fill="#9a6633" stroke="#5a3a1a" stroke-width="1.4"/>
+  <path d="M8.5 11.5 C8.5 6 15 5 17 1.5 C18.5 5 22 6.5 21.5 11.5 C20 14 10 14 8.5 11.5 Z" fill="#a8723a" stroke="#5a3a1a" stroke-width="1.4" stroke-linejoin="round"/>
+  <circle cx="12" cy="15.5" r="1.7" fill="#fff"/><circle cx="18" cy="15.5" r="1.7" fill="#fff"/>
+  <circle cx="12.3" cy="15.7" r="0.9" fill="#222"/><circle cx="18.3" cy="15.7" r="0.9" fill="#222"/>
+  <path d="M12.3 19.2 Q15 21.4 17.7 19.2" stroke="#3a2410" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+</svg>`;
 
 /** How long the wave lasts (the same as the stylesheet's animation, a little over). */
 const WAVE_MS = 1250;
@@ -185,7 +196,18 @@ export class CanvasView {
     this.zzz.innerHTML = '<span>z</span><span>z</span><span>Z</span>';
     this.yawning = false;
     this.waveTimer = null;
-    this.box.append(this.canvas, this.gridCanvas, this.sprite, this.zzz);
+    // Bubbles that float up from the turtle's nose now and then, as if it were breathing under water.
+    this.bubbles = document.createElement('div');
+    this.bubbles.className = 'turtle-bubbles';
+    this.bubbles.hidden = true;
+    this.bubbles.setAttribute('aria-hidden', 'true');
+    this.bubbles.innerHTML = '<span></span><span></span><span></span><span></span>';
+    this.breathing = false;
+    this.poops = []; // the ones falling now: { el, timer }
+    this.screen = { x: 0, y: 0 }; // where the turtle's middle is in the window, as of the last sync
+    this.box.append(this.canvas, this.gridCanvas, this.sprite);
+    // The Zzz and the bubbles float up off the top of the window, so they live in the layer above everything, not in the paper.
+    sky().append(this.zzz, this.bubbles);
     stage.append(this.box);
 
     paintOp(this.ctx, { type: 'clear' });
@@ -433,9 +455,11 @@ export class CanvasView {
     const key = this.turtle.color.join(',');
     if (key !== this.shownColor) {
       this.shownColor = key;
-      const { shell, scute } = shellColors(this.turtle.color);
+      const { shell, scute, shellBreath, scuteBreath } = shellColors(this.turtle.color);
       this.sprite.style.setProperty('--shell', shell);
       this.sprite.style.setProperty('--scute', scute);
+      this.sprite.style.setProperty('--shell-breath', shellBreath);
+      this.sprite.style.setProperty('--scute-breath', scuteBreath);
     }
     this.sprite.classList.toggle('pen-up', !this.turtle.penDown);
     // While a write block is tracing letters, the turtle is shown at the tip of its pen, facing the way it is drawing.
@@ -446,16 +470,110 @@ export class CanvasView {
     const py = (at.y / PIXEL_RATIO) * this.scale;
     const half = this.spriteSize / 2;
     this.sprite.style.transform = `translate(${px - half}px, ${py - half}px) rotate(${heading}deg)`;
-    if (this.yawning) this.zzz.style.transform = `translate(${px + half * 0.35}px, ${py - half * 1.05}px)`;
+    if (this.yawning || this.breathing || this.poops.length > 0) {
+      const box = this.box.getBoundingClientRect();
+      this.screen = { x: box.left + px, y: box.top + py };
+    }
+    if (this.yawning) this.zzz.style.transform = `translate(${this.screen.x + half * 0.35}px, ${this.screen.y - half * 1.05}px)`;
+    if (this.breathing) {
+      // The bubbles come from the nose, wherever the turtle is facing, and then float straight up the screen.
+      const turn = (heading * Math.PI) / 180;
+      this.bubbles.style.transform = `translate(${this.screen.x + Math.sin(turn) * half * 1.05}px, ${this.screen.y - Math.cos(turn) * half * 1.05}px)`;
+    }
   }
 
-  /** The turtle yawns and sways a little while a wait block waits, with a "Zzz" floating up (or stops). */
-  setYawning(on) {
-    if (on === this.yawning) return;
+  /**
+   * Strike a pose for the idle antics: 'dance' or 'scratch' (a class on the turtle that the stylesheet animates), or null to stand
+   * normally. Only one at a time.
+   */
+  setPose(pose) {
+    for (const name of ['dance', 'scratch']) this.sprite.classList.toggle(`pose-${name}`, pose === name);
+  }
+
+  /**
+   * Get a bunch of floating things (the Zzz, the bubbles) ready to rise from here to off the top of the window, at a steady speed.
+   * `times` is how many times each one rises (Infinity: for as long as it is showing). Gives back how many seconds it takes until the
+   * last one has gone, which is when an antic that lets them all leave can be over.
+   */
+  readyToRise(el, startY, speed, times, spread) {
+    const distance = riseDistance(startY);
+    const seconds = riseTime(distance, speed);
+    el.style.setProperty('--rise', `${distance}px`);
+    el.style.setProperty('--rise-time', `${seconds}s`);
+    el.style.setProperty('--times', times === Infinity ? 'infinite' : String(times));
+    return seconds * (spread + (times === Infinity ? 1 : times));
+  }
+
+  /**
+   * The turtle blows bubbles from its nose, as if breathing under water (or stops). They rise all the way off the top of the window, a
+   * few at a time. Gives back how many seconds until the last has gone.
+   */
+  setBreathing(on) {
+    if (on === this.breathing) return 0;
+    this.breathing = on;
+    this.bubbles.hidden = !on;
+    if (!on) return 0;
+    this.sync();
+    return this.readyToRise(this.bubbles, this.screen.y - this.spriteSize * 0.5, FLOAT_SPEED.bubbles, 2, 0.6);
+  }
+
+  /**
+   * The turtle drops a little something from its tail, which falls straight down the screen all the way off the bottom of the window.
+   * Gives back how many seconds the fall takes. (Dropping another before the first has gone is fine.)
+   */
+  dropPoop() {
+    const half = this.spriteSize / 2;
+    const box = this.box.getBoundingClientRect();
+    const at = this.canvasPoint(this.turtle.x, this.turtle.y);
+    const turn = (this.turtle.heading * Math.PI) / 180;
+    const x = box.left + (at.x / PIXEL_RATIO) * this.scale - Math.sin(turn) * half * 0.95;
+    const y = box.top + (at.y / PIXEL_RATIO) * this.scale + Math.cos(turn) * half * 0.95;
+    const distance = fallDistance(y, window.innerHeight);
+    const seconds = fallTime(distance);
+    const el = document.createElement('div');
+    el.className = 'turtle-poop';
+    el.setAttribute('aria-hidden', 'true');
+    el.innerHTML = POOP;
+    el.style.setProperty('--fall', `${distance}px`);
+    el.style.setProperty('--fall-time', `${seconds}s`);
+    el.style.transform = `translate(${x}px, ${y}px)`;
+    sky().append(el);
+    const poop = { el, timer: setTimeout(() => this.removePoop(poop), (seconds + 0.3) * 1000) };
+    this.poops.push(poop);
+    return seconds;
+  }
+
+  removePoop(poop) {
+    clearTimeout(poop.timer);
+    poop.el.remove();
+    this.poops = this.poops.filter((other) => other !== poop);
+  }
+
+  /** Take away every poop that is falling. */
+  clearPoop() {
+    for (const poop of [...this.poops]) this.removePoop(poop);
+  }
+
+  /**
+   * The turtle yawns and sways a little, with a "Zzz" floating up off the top of the window (or stops). During a wait the Zzz keeps coming
+   * until the wait is over. With `once` each z rises one time (for an antic). Gives back how many seconds until the last z has gone.
+   */
+  setYawning(on, { once = false } = {}) {
+    if (on === this.yawning) return 0;
     this.yawning = on;
     this.zzz.hidden = !on;
     this.sprite.classList.toggle('yawning', on);
-    if (on) this.sync();
+    if (!on) return 0;
+    this.sync();
+    return this.readyToRise(this.zzz, this.screen.y - this.spriteSize * 0.5, FLOAT_SPEED.zzz, once ? 1 : Infinity, 0.56);
+  }
+
+  /**
+   * The color of the turtle's shell slowly gets lighter and comes back to its full depth, as if the turtle were breathing (or stops). It is a slow, smooth
+   * change, drawn by the stylesheet, so it goes on while the turtle does other things. The shell never goes see-through.
+   */
+  setColorBreathing(on) {
+    this.sprite.classList.toggle('breathing-color', on);
   }
 
   /** The turtle waves a flipper hello (it does this when a program has finished). It lasts about a second. */

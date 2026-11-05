@@ -1,12 +1,16 @@
-// TurtleLab: an occasional fish. Every few minutes a little fish swims past above the trash can, and the shark peeks up over the
-// rim and watches it go.
+// TurtleLab: an occasional fish. Every minute or two a little fish swims all the way across the window, just above the trash can, and the
+// shark peeks up over the rim and watches it go. Click the fish, and the shark swims out and eats it.
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 // See COPYING in the folder above this one.
 //
 // It is only for fun. It never touches a project, stores nothing and fetches nothing (the art is drawn here, from simple shapes, and
 // is TurtleLab's own). It stays away when the person asked their computer for calm (prefers-reduced-motion), while the tab is
-// hidden, while the blocks are hidden, and while the shark is busy eating. The fish is on a layer that ignores clicks, so it
-// can never get in the way. The timing and the path are small plain functions at the top, so they can be tested without a browser.
+// hidden, while the blocks are hidden, and while the shark is busy eating or a boat is here. It floats in the layer above everything
+// (sky.js), and only the fish itself can be clicked, nothing else in the layer. The timing and the path are small plain functions at the
+// top, so they can be tested without a browser.
+
+import { sky } from './sky.js';
+import { eatVisitor } from './visitors.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -24,10 +28,10 @@ const PICTURE = `
 </svg>`;
 
 /** Milliseconds to wait before the first fish after the page opens, and between one fish and the next: [shortest, longest]. */
-export const FIRST_FISH_MS = [30000, 90000];
-export const NEXT_FISH_MS = [90000, 240000];
-/** How long a fish takes to cross, and how soon to try again if it was not a good moment. */
-export const SWIM_MS = 7000;
+export const FIRST_FISH_MS = [20000, 60000];
+export const NEXT_FISH_MS = [60000, 150000];
+/** How fast a fish swims, in pixels a second, and how soon to try again if it was not a good moment. */
+export const FISH_SPEED = 110;
 export const TRY_AGAIN_MS = 10000;
 /** How close the fish gets before the shark looks up (pixels to the side of the can's middle). */
 export const PEEK_DISTANCE = 190;
@@ -43,17 +47,21 @@ export function canSwim({ calm, visible, blocksHidden, sharkBusy }) {
 }
 
 /**
- * Where one swim goes, in pixels from the top left of the page the can sits in. The fish crosses the strip just above the can's
- * lid, going left to right or right to left (`direction` 1 or -1), starting and ending off the edge of the side.
+ * Where one swim goes, in pixels from the top left of the window. The fish crosses the whole window along the strip just above the can's
+ * lid, going left to right or right to left (`direction` 1 or -1), starting and ending off the edge of the window, at a lazy steady speed.
  * @param {object} options
  * @param {number} options.canTop the top of the can's picture (the shark's room is above its lid)
  * @param {number} options.canHeight how tall the picture is
+ * @param {number} options.width how wide the window is
  * @param {() => number} options.random
  */
-export function swimPath({ canTop, canHeight, random }) {
+export function swimPath({ canTop, canHeight, width, random }) {
   const direction = random() < 0.5 ? 1 : -1;
   const y = Math.max(70, canTop + canHeight * between([0.08, 0.3], random));
-  return { from: direction === 1 ? -70 : 230, to: direction === 1 ? 230 : -70, y, direction, bob: 5 + random() * 3, waves: 2 + Math.floor(random() * 3) };
+  const from = direction === 1 ? -70 : width + 70;
+  const to = direction === 1 ? width + 70 : -70;
+  const seconds = Math.min(20, Math.max(7, Math.abs(to - from) / FISH_SPEED));
+  return { from, to, y, direction, seconds, bob: 5 + random() * 3, waves: 4 + Math.floor(random() * 4) };
 }
 
 /** Where the fish is `t` (0 to 1) of the way through its swim: along the path, bobbing a little up and down. */
@@ -76,24 +84,27 @@ export class Fish {
   /**
    * @param {object} options
    * @param {HTMLElement} options.stage the page the can sits in
-   * @param {import('./trash.js').Trash} options.trash the can with the shark (it is asked to peek and to look)
-   * @param {Node} [options.before] the layer the fish goes under, the way the can does
-   * The rest are for tests: `random`, `now`, `setTimer`, `clearTimer`, `nextFrame`, `calm`, `visible`.
+   * @param {import('./trash.js').Trash} options.trash the can with the shark (it is asked to peek, to look, and to swim out and eat a clicked fish)
+   * @param {{ el: object | null }[]} [options.others] other things that need the shark (the boat): no fish while one of them is showing
+   * @param {boolean} [options.auto] true (the way it began) for fish that come by themselves every minute or two; false for a fish that only swims when `swim()`
+   *        is asked for (it is a reward for working: see reward.js)
+   * The rest are for tests: `random`, `now`, `setTimer`, `clearTimer`, `nextFrame`, `calm`, `visible`, `windowWidth`.
    */
-  constructor({ stage, trash, before = null, random = Math.random, now = () => performance.now(), setTimer = (fn, ms) => setTimeout(fn, ms),
+  constructor({ stage, trash, others = [], auto = true, random = Math.random, now = () => performance.now(), setTimer = (fn, ms) => setTimeout(fn, ms),
     clearTimer = (id) => clearTimeout(id), nextFrame = (fn) => requestAnimationFrame(fn),
     calm = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches,
-    visible = () => document.visibilityState !== 'hidden' }) {
-    Object.assign(this, { stage, trash, before, random, now, setTimer, clearTimer, nextFrame, calm, visible });
+    visible = () => document.visibilityState !== 'hidden', windowWidth = () => window.innerWidth }) {
+    Object.assign(this, { stage, trash, others, auto, random, now, setTimer, clearTimer, nextFrame, calm, visible, windowWidth });
     this.timer = null;
     this.el = null;
+    this.eaten = false; // clicked, and being eaten
     this.stopped = false;
   }
 
   /** Begin: the first fish comes some time after the page opens (never, if calm was asked for). */
   start() {
     this.stopped = false;
-    if (this.calm()) return;
+    if (!this.auto || this.calm()) return;
     this.later(between(FIRST_FISH_MS, this.random));
   }
 
@@ -124,26 +135,32 @@ export class Fish {
       calm: this.calm(),
       visible: this.visible(),
       blocksHidden: this.stage.classList.contains('blocks-hidden') || (can.width === 0 && can.height === 0),
-      sharkBusy: this.trash.el.classList.contains('hungry') || this.trash.el.classList.contains('eating'),
+      // (or a boat is here, or the shark is in the middle of something else)
+      sharkBusy: ['hungry', 'eating', 'spitting', 'dreaming', 'hunting'].some((name) => this.trash.el.classList.contains(name)) || this.others.some((other) => other.el),
     });
     if (!ok || this.el) return false;
 
-    const page = this.stage.getBoundingClientRect();
-    const path = swimPath({ canTop: can.top - page.top, canHeight: can.height, random: this.random });
+    const path = swimPath({ canTop: can.top, canHeight: can.height, width: this.windowWidth(), random: this.random });
     this.el = document.createElement('div');
     this.el.className = 'fish';
     this.el.setAttribute('aria-hidden', 'true');
     this.el.innerHTML = PICTURE;
-    this.stage.insertBefore(this.el, this.before);
+    // Click the fish and the shark eats it.
+    this.el.addEventListener('pointerdown', (event) => {
+      event.preventDefault();
+      this.getEaten();
+    });
+    sky().append(this.el);
     const half = { x: this.el.offsetWidth / 2, y: this.el.offsetHeight / 2 };
-    const canMiddle = { x: can.left - page.left + can.width / 2 };
-    const eyes = { x: canMiddle.x, y: can.top - page.top + can.height * (116 / 224) }; // the shark's eyes, from its picture
+    const canMiddle = { x: can.left + can.width / 2 };
+    const eyes = { x: canMiddle.x, y: can.top + can.height * (116 / 224) }; // the shark's eyes, from its picture
     const started = this.now();
 
     const step = () => {
-      if (!this.el) return;
-      const t = (this.now() - started) / SWIM_MS;
-      if (t >= 1) {
+      if (!this.el || this.eaten) return;
+      const t = (this.now() - started) / (path.seconds * 1000);
+      // (the layer the fish swims in is above the page, so it has to leave by itself when the blocks and shark are hidden)
+      if (t >= 1 || this.stage.classList.contains('blocks-hidden')) {
         this.finish(true);
         return;
       }
@@ -159,13 +176,24 @@ export class Fish {
     return true;
   }
 
+  /**
+   * The fish was clicked: it stops, and the shark swims out of the can to eat it (see visitors.js). Once the shark is home the fish is gone and the next one
+   * is waited for.
+   */
+  getEaten() {
+    if (!this.el || this.eaten) return;
+    this.eaten = true;
+    eatVisitor({ el: this.el, trash: this.trash, setTimer: this.setTimer, onDone: () => this.finish(true) });
+  }
+
   /** The fish has gone (or was sent away): take it off the page, let the shark go back down, and wait for the next one. */
   finish(again) {
     if (!this.el) return;
     this.el.remove();
     this.el = null;
+    this.eaten = false;
     this.trash.setPeek(false);
     this.trash.look(null);
-    if (again && !this.stopped) this.later(between(NEXT_FISH_MS, this.random));
+    if (again && this.auto && !this.stopped) this.later(between(NEXT_FISH_MS, this.random));
   }
 }

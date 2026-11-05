@@ -33,6 +33,10 @@ import { compileLogo } from '../core/logo-compile.js';
 import { toLogo, jsLogoAddress } from '../core/logo.js';
 import { setupFullscreen } from './fullscreen.js';
 import { Fish } from './fish.js';
+import { Boat } from './boat.js';
+import { Idle, BREATH_AFTER_MS } from './idle.js';
+import { makeAntics, idleAntics, makeRewards } from './antics.js';
+import { Reward, workMark, earnedWork, GOAL } from './reward.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -105,6 +109,9 @@ if (!sample && !(demo && Object.hasOwn(DEMOS, demo))) {
 const startSpeed = Object.hasOwn(SPEEDS, params.get('speed')) ? params.get('speed') : DEFAULT_SPEED;
 
 let view = null;
+let idle = null; // watches for quiet, and starts the little antics (set below)
+let reward = null; // watches for work, and gives treats for it (set below)
+let lastMark = null; // what the blocks were at the last change, to tell whether the next one is work
 let workspace = null;
 const turtle = new Turtle({ onOp: (op) => view.applyOp(op) });
 
@@ -178,6 +185,7 @@ const scheduler = new Scheduler({
     if (ms >= YAWN_AFTER_MS) view.setYawning(true);
   },
   onStart: () => {
+    idle?.poke();
     view.stopWaving();
     view.setYawning(false);
     turtle.stopWriting();
@@ -202,11 +210,15 @@ const scheduler = new Scheduler({
     }
   },
   onFinish: (result) => {
+    idle?.poke(); // a run is activity: the quiet minute starts from when it ends
     runButton.disabled = false;
     stopButton.disabled = true;
     view.sprite.classList.remove('locked');
     view.setYawning(false);
-    if (result.status === 'done') view.wave(); // a finished program: the turtle waves
+    if (result.status === 'done') {
+      view.wave(); // a finished program: the turtle waves
+      reward?.ran(); // and a program written (or changed) and run to the end is work
+    }
     turtle.stopWriting(); // Stop part way through a word: the turtle is shown where it really is, not where its pen was
     view.sync();
     workspace.setRunning(null);
@@ -359,6 +371,7 @@ let logoBox = null;
 
 /** The blocks changed (by editing, undo, open or new): what shows them elsewhere has to follow. */
 function projectChanged() {
+  lastMark = workMark(project.stacks);
   palettes.refresh();
   pythonBox.refresh();
   logoBox.refresh();
@@ -372,6 +385,8 @@ workspace = new Workspace({
     history.record(project);
     updateHistoryButtons();
     refreshBoxes();
+    // Putting a block in, changing a number or rearranging blocks is work; moving a stack, taking blocks away and Undo are not (see reward.js).
+    if (lastMark && earnedWork(lastMark, workMark(project.stacks))) reward?.edited();
     projectChanged();
     autosave.schedule();
   },
@@ -383,10 +398,41 @@ workspace = new Workspace({
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
 });
 palettes = new PaletteUI({ stage, workspace, burpChance: params.get('burp') === 'always' ? 1 : undefined }); // (?burp=always makes the shark burp after every meal, for trying it out)
-// Now and then a fish swims past the trash can and the shark watches it. (?fish=now sends one at once, for trying it out.)
-const fish = new Fish({ stage, trash: palettes.trash, before: workspace.svg });
-fish.start();
+// A fish swims across the window, and the shark watches it (and eats it if it is clicked). A fishing boat sails in and tries to harpoon the shark (and the can).
+// They are treats for doing work (reward.js), not something that happens on its own: `auto: false`. They never share the shark.
+// (?fish=now and ?boat=now send one 0.4 s after the page opens, for trying them out.)
+const fish = new Fish({ stage, trash: palettes.trash, auto: false });
 if (params.get('fish') === 'now') setTimeout(() => fish.swim(), 400);
+const boat = new Boat({ stage, trash: palettes.trash, others: [fish], auto: false });
+fish.others.push(boat);
+if (params.get('boat') === 'now') setTimeout(() => boat.sail(), 400);
+
+// After 45 seconds with nobody doing anything the turtle might scratch its head, yawn or blow bubbles, or the shark might doze off and
+// dream of turtle stew. Any click, key, touch or scroll stops it and starts the wait over. (?antic=scratch and so on plays one at once (?antic=breath is the color breathing), and
+// ?idle=5 makes the quiet time 5 seconds instead of 45, and ?poop=two always drops two, for trying them out.)
+const idleSeconds = Number(params.get('idle'));
+const allAntics = makeAntics({ view, trash: palettes.trash, fish: { get el() { return fish.el || boat.el; } }, ...(params.get('poop') === 'two' ? { secondPoopChance: 1 } : {}) });
+idle = new Idle({
+  // After 30 seconds (with ?idle=N, N/2 of them) the turtle starts to breathe: its shell slowly goes lighter and deeper again, until anyone does anything.
+  ambient: [{ name: 'breath', afterMs: idleSeconds > 0 ? idleSeconds * 500 : BREATH_AFTER_MS, start: () => view.setColorBreathing(true), stop: () => view.setColorBreathing(false) }],
+  antics: idleAntics(allAntics),
+  busy: () => scheduler.running || workspace.busy,
+  // (with ?idle=5 the pauses between one antic and the next shrink in step, so you do not wait a minute for the next)
+  ...(idleSeconds > 0 ? { idleMs: idleSeconds * 1000, gapMs: [idleSeconds * 750, idleSeconds * 2000] } : {}),
+});
+for (const name of ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart']) document.addEventListener(name, () => idle.poke(), { passive: true, capture: true });
+idle.start();
+// Treats for work: after enough real building and running (reward.js) the turtle dances or blows happy bubbles, or a fish or a boat comes by for the shark.
+// They play on while somebody works (unlike the idle antics, any click does not stop them). (?goal=3 makes the goal 3 points, with only 5 s of rest between
+// treats, for trying them out; ?antic=dance, fish or boat plays one at once.)
+const goalPoints = Number(params.get('goal'));
+reward = new Reward({
+  rewards: makeRewards({ antics: allAntics, fish, boat }),
+  busy: () => scheduler.running || workspace.busy,
+  ...(goalPoints > 0 ? { goal: goalPoints, cooldownMs: 5000 } : { goal: GOAL }),
+});
+lastMark = workMark(project.stacks); // (from here on, a change to the blocks can be work)
+if (params.get('antic')) setTimeout(() => idle.playNow(params.get('antic')) || reward.playNow(params.get('antic')), 500);
 pythonBox = new PythonBox({ stage, project, onMessage: say });
 logoBox = new LogoBox({
   stage,
