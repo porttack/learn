@@ -335,6 +335,19 @@ test('walkBlocks and usesBoxes look inside calls and definitions too', () => {
   assert.equal(usesBoxes({ stacks: [stackWith] }), true);
 });
 
+test('a set font block keeps its font when it is a real one, and is the default font otherwise; no other block keeps a font', () => {
+  const clean = (block) => validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 0, y: 0, blocks: [block] }] }).project.stacks[0].blocks[0];
+  for (const font of ['script', 'fancy', 'sans', 'bold', 'serif']) assert.equal(clean({ op: 'setfont', args: [], font }).font, font, font);
+  for (const odd of ['Script', 'gothic', '', 'toString', '__proto__', 5, null, {}, ['bold'], undefined]) {
+    assert.equal(clean({ op: 'setfont', args: [], font: odd }).font, 'script', `a font of ${JSON.stringify(odd)} is script`);
+  }
+  // A write block has no font of its own (an earlier build kept one there): it is dropped, and so is a font on anything else.
+  assert.ok(!('font' in clean({ op: 'write', args: [60], text: 'Hi', font: 'fancy' })));
+  assert.ok(!('font' in clean({ op: 'forward', args: [10], font: 'fancy' })));
+  assert.ok(!('font' in clean({ op: 'note', args: [], text: 'x', font: 'fancy' })));
+  assert.deepEqual(clean({ op: 'setcurve', args: [120] }), { op: 'setcurve', args: [120] });
+});
+
 test('the words on a write block are kept, but only letters that can be drawn, and no more than the most', () => {
   const stacks = (text) => ({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 0, y: 0, blocks: [{ op: 'write', args: [60], text }] }] });
   const textOf = (result) => result.project.stacks[0].blocks[0].text;

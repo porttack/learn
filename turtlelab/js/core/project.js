@@ -25,7 +25,7 @@
 
 import { BLOCKS, BODY_KEYS, NOTE_MAX_CHARS, isKnownOp, mouthCount } from './blocks-spec.js';
 import { INPUT_MAX, MAX_INPUTS, NAME_MAX, cleanName, nameKey } from './names.js';
-import { cleanLetteringText } from './lettering.js';
+import { cleanLetteringText, cleanFont } from './lettering.js';
 
 export const FORMAT_ID = 'porttack-turtle';
 export const FORMAT_VERSION = 1;
@@ -155,6 +155,8 @@ function cleanBlock(block, depth) {
   const clean = { op: block.op };
   if (BLOCKS[block.op].kind === 'note') clean.text = cleanNoteText(block.text);
   if (BLOCKS[block.op].textSlot) clean.text = cleanLetteringText(block.text);
+  // A set font block keeps its font (any other value, or none, is the default font). No other block has one.
+  if (BLOCKS[block.op].fontSlot) clean.font = cleanFont(block.font);
   if (block.args !== undefined) {
     if (!Array.isArray(block.args)) throw new ProjectError('A block in this file is damaged.');
     clean.args = block.args.map((arg) => cleanArg(arg, depth + 1));

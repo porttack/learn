@@ -7,9 +7,10 @@
 // A program is a list of blocks. We walk the list and do what each block
 // says. The trick is that the walker is a *generator* (the `function*`
 // syntax). A generator can pause itself with `yield` and be woken up later.
-// Every block that runs yields once when it is done, so whoever is driving
-// us (see scheduler.js) gets a chance to redraw the screen, wait a moment
-// so you can watch the turtle, or stop the program.
+// Every block that runs yields once when it is done (the write block, a little
+// at a time, once for each short line it draws), so whoever is driving us (see
+// scheduler.js) gets a chance to redraw the screen, wait a moment so you can
+// watch the turtle, or stop the program.
 //
 // That is also why a `forever` loop cannot freeze the browser: it yields
 // all the time, and the scheduler can always step in.
@@ -42,6 +43,18 @@ export class Wait {
   constructor(block, ms) {
     this.block = block;
     this.ms = ms;
+  }
+}
+
+/**
+ * Yielded by a block that takes only part of a step, like each short line of a letter the write block draws:
+ * `share` (0 to 1) of the wait a whole step would have at the speed the program has. The shares of one letter add up to
+ * 1, so a letter takes the time of one step however it is drawn, and the scheduler can show it a line at a time.
+ */
+export class Pace {
+  constructor(block, share) {
+    this.block = block;
+    this.share = share;
   }
 }
 
@@ -133,8 +146,10 @@ const COMMANDS = {
   startfill: (t) => t.startFill(),
   endfill: (t) => t.endFill(),
   print: (t, [value], ctx) => ctx.print(formatNumber(value)),
-  // The words are on the block itself, not in a socket; the socket is how big the letters are.
-  write: (t, [size], ctx, block) => t.write(block.text ?? '', size),
+  // The write block's settings are the turtle's, like the pen's. (write itself is not here: it is drawn a little at a time, so it is one of
+  // the flow blocks below.) The font is on the block; the curve is a number in its socket.
+  setfont: (t, args, ctx, block) => t.setFont(block.font),
+  setcurve: (t, [degrees]) => t.setCurve(degrees),
   // 1 is slow and 4 is instant. Like a color, a number off the end is
   // pulled back to the nearest speed, and 2.6 counts as 3.
   speed: (t, [number], ctx) => {
@@ -188,6 +203,21 @@ const FLOW = {
     yield block;
     // One mouth or the other, never both and never neither.
     return yield* runBlocks((condition ? block.body : block.elseBody) ?? [], ctx);
+  },
+
+  // The words are on the block itself, not in a socket; the socket is how big the letters are. The turtle traces the letters
+  // one short line at a time, and each line is a part of a step (a Pace), so the pen can be watched moving along every
+  // letter, and a letter takes the time of one step at the speed the program has (all at once at instant). A block with
+  // nothing to draw still takes one whole step, like any block, so a loop of them cannot freeze the page.
+  *write(block, ctx) {
+    const size = evalNumber(block.args?.[0], ctx, block);
+    let pieces = 0;
+    for (const share of ctx.turtle.writeSteps(block.text ?? '', size)) {
+      pieces += 1;
+      yield new Pace(block, share);
+    }
+    if (pieces === 0) yield block;
+    return undefined;
   },
 
   *wait(block, ctx) {

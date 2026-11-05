@@ -2,10 +2,13 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { CAP_HEIGHT, GLYPHS } from '../js/core/lettering-data.js';
+import { FONT_DATA } from '../js/core/lettering-data.js';
 import {
-  LETTERING_MAX_CHARS, canWrite, cleanLetteringText, letteringStrokes, letteringWidth,
+  LETTERING_MAX_CHARS, LETTER_FONTS, DEFAULT_FONT, canWrite, cleanFont, cleanLetteringText, isFont, letteringLetters, letteringStrokes, letteringWidth,
 } from '../js/core/lettering.js';
+
+// The first font is the one a block has until you choose another, and the one these older tests are about.
+const { cap: CAP_HEIGHT, glyphs: GLYPHS } = FONT_DATA[DEFAULT_FONT];
 
 const printable = Array.from({ length: 95 }, (_, i) => String.fromCharCode(32 + i));
 
@@ -63,4 +66,88 @@ test('letteringStrokes scales with size, starts at the left edge and the baselin
   assert.deepEqual(letteringStrokes('', 60), []);
   assert.deepEqual(letteringStrokes('   ', 60), []);
   assert.deepEqual(letteringStrokes('é€', 60), []);
+});
+
+// ---- The fonts to choose from ------------------------------------------------------------------------------
+
+test('the fonts offered are the fonts that have data, in order, with the default first', () => {
+  assert.deepEqual(LETTER_FONTS.map((f) => f.id), Object.keys(FONT_DATA));
+  assert.equal(DEFAULT_FONT, 'script');
+  assert.equal(LETTER_FONTS[0].id, DEFAULT_FONT);
+  for (const font of LETTER_FONTS) {
+    assert.ok(/^[a-z]+$/.test(font.id) && font.label === font.id, `${font.id}: the id is one lowercase word, and it is also the label`);
+    assert.ok(font.tip.length > 10 && !/[\u2013\u2014]/.test(font.tip), `${font.id} has a tip with no dashes`);
+  }
+});
+
+test('isFont and cleanFont only believe real font ids', () => {
+  for (const font of LETTER_FONTS) {
+    assert.ok(isFont(font.id), font.id);
+    assert.equal(cleanFont(font.id), font.id);
+  }
+  for (const odd of ['', 'Script', 'toString', '__proto__', 'constructor', 'gothic', undefined, null, 5, {}, ['sans'], true]) {
+    assert.ok(!isFont(odd), String(odd));
+    assert.equal(cleanFont(odd), DEFAULT_FONT, String(odd));
+  }
+});
+
+test('every font has exactly the letters the default one has, with whole numbers and a capital letter that is its cap height', () => {
+  const keys = Object.keys(FONT_DATA[DEFAULT_FONT].glyphs);
+  assert.equal(keys.length, 95);
+  for (const [id, { cap, glyphs }] of Object.entries(FONT_DATA)) {
+    assert.deepEqual(Object.keys(glyphs), keys, `${id} has the same 95 keys`);
+    assert.ok(Number.isInteger(cap) && cap > 0, `${id} cap ${cap}`);
+    for (const [ch, [advance, strokes]] of Object.entries(glyphs)) {
+      assert.ok(Number.isInteger(advance) && advance >= 0, `${id} "${ch}" advance ${advance}`);
+      for (const flat of strokes) {
+        assert.ok(flat.length >= 4 && flat.length % 2 === 0 && flat.every(Number.isInteger), `${id} "${ch}" is whole numbers, at least two points`);
+        for (let i = 0; i < flat.length; i += 2) assert.ok(flat[i + 1] >= -16 && flat[i + 1] <= 30, `${id} "${ch}" y ${flat[i + 1]} is not far off`);
+      }
+    }
+    assert.deepEqual(glyphs[' '][1], [], `${id}: a space draws nothing`);
+    assert.equal(Math.max(...glyphs.H[1].flatMap((flat) => flat.filter((_, i) => i % 2 === 1))), cap, `${id}: a capital H reaches the cap height`);
+    assert.ok(Math.min(...glyphs.g[1].flatMap((flat) => flat.filter((_, i) => i % 2 === 1))) < 0, `${id}: a g has a tail`);
+  }
+});
+
+test('size means the same in every font: a capital letter is as tall as asked', () => {
+  for (const { id } of LETTER_FONTS) {
+    for (const letter of 'HEL') assert.equal(Math.max(...letteringStrokes(letter, 80, id).flat().map((p) => p[1])), 80, `${id} ${letter}`);
+  }
+});
+
+test('the fonts really are different from each other, and no font means the default one', () => {
+  const shapes = LETTER_FONTS.map((f) => JSON.stringify(letteringStrokes('Cougars', 60, f.id)));
+  assert.equal(new Set(shapes).size, LETTER_FONTS.length, 'five different drawings');
+  assert.equal(JSON.stringify(letteringStrokes('Cougars', 60)), shapes[0]);
+  assert.equal(JSON.stringify(letteringStrokes('Cougars', 60, 'nonsense')), shapes[0], 'an unknown font is the default, not an error');
+  assert.equal(letteringWidth('Cougars', 60), letteringWidth('Cougars', 60, DEFAULT_FONT));
+  const widths = new Set(LETTER_FONTS.map((f) => Math.round(letteringWidth('Cougars', 60, f.id))));
+  assert.ok(widths.size > 1, 'widths differ from font to font');
+});
+
+test('each font stitches: few separate lines for the thin ones, and the thick ones stay in a sensible range', () => {
+  // The "Cougars" the embroidery samples write is 10 lines in script. These are the line counts per font.
+  const counts = Object.fromEntries(LETTER_FONTS.map((f) => [f.id, letteringStrokes('Cougars', 110, f.id).length]));
+  assert.ok(counts.script <= 12 && counts.sans <= 12, JSON.stringify(counts));
+  assert.ok(counts.fancy <= 40 && counts.bold <= 40 && counts.serif <= 40, JSON.stringify(counts));
+  assert.ok(counts.fancy > counts.script && counts.bold > counts.sans && counts.serif > counts.sans, 'the looped, double line and footed fonts have more lines, as the tips say');
+});
+
+// ---- A letter at a time ------------------------------------------------------------------------------------
+
+test('letteringLetters gives one entry for each letter that draws, and together they are exactly letteringStrokes', () => {
+  for (const { id } of LETTER_FONTS) {
+    const letters = letteringLetters('Go, Cougars! 2026', 70, id);
+    assert.equal(letters.length, 'Go,Cougars!2026'.length, `${id}: the two spaces draw nothing and are left out`);
+    assert.deepEqual(letters.flat(), letteringStrokes('Go, Cougars! 2026', 70, id), id);
+  }
+  assert.deepEqual(letteringLetters('', 60), []);
+  assert.deepEqual(letteringLetters('   ', 60), []);
+});
+
+test('a space still takes its room: the letters after it are where they would have been', () => {
+  const firstOfB = (text) => letteringLetters(text, 60)[1][0][0][0];
+  assert.ok(firstOfB('a b') > firstOfB('ab'));
+  assert.ok(Math.abs(firstOfB('a b') - (firstOfB('ab') + letteringWidth(' ', 60))) < 1e-9);
 });

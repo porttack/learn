@@ -22,7 +22,7 @@
 // angle curves right), like the blocks. Anything else that real Logo has gets a polite "not yet".
 
 import { BOX_COUNT } from './blocks-spec.js';
-import { cleanLetteringText, DEFAULT_LETTER_SIZE, LETTERING_MAX_CHARS } from './lettering.js';
+import { cleanLetteringText, DEFAULT_LETTER_SIZE, LETTERING_MAX_CHARS, LETTER_FONTS, isFont } from './lettering.js';
 
 /** A problem in the Logo, with the line it is on (counting from 1). */
 export class LogoError extends Error {
@@ -52,6 +52,7 @@ const SIMPLE = [
   { op: 'endfill', names: ['endfill'], argc: 0 },
   { op: 'print', names: ['print', 'pr'], short: 'pr', argc: 1 },
   { op: 'speed', names: ['setspeed'], argc: 1 },
+  { op: 'setcurve', names: ['setcurve'], argc: 1 },
   { op: 'stop', names: ['stop'], argc: 0 },
 ];
 
@@ -68,7 +69,7 @@ const IGNORED = new Set(['hideturtle', 'ht', 'showturtle', 'st']);
 const NO_INPUTS = { xcor: 'x', ycor: 'y', heading: 'heading', pensize: 'pensize', penred: 'penred', pengreen: 'pengreen', penblue: 'penblue' };
 const TWO_INPUTS = { sum: 'add', difference: 'subtract', product: 'multiply', quotient: 'divide', modulo: 'mod', mod: 'mod', oneof: 'oneof' };
 
-const SPECIAL_COMMANDS = ['repeat', 'forever', 'if', 'ifelse', 'make', 'write', 'setpencolor', 'setpc', 'setscreencolor', 'setsc', 'home', 'setx', 'sety', 'wait', 'to', 'end'];
+const SPECIAL_COMMANDS = ['repeat', 'forever', 'if', 'ifelse', 'make', 'write', 'setfont', 'setpencolor', 'setpc', 'setscreencolor', 'setsc', 'home', 'setx', 'sety', 'wait', 'to', 'end'];
 const REAL_LOGO_NOT_HERE = ['sqrt', 'abs', 'int', 'round', 'sin', 'cos', 'tan', 'arctan', 'and', 'or', 'not', 'word', 'list', 'first', 'last', 'butfirst', 'butlast', 'count', 'item', 'output', 'op', 'local', 'localmake', 'run', 'label', 'pick', 'power', 'exp', 'ln', 'log10', 'thing', 'foreach', 'for', 'while', 'until', 'do', 'test', 'iftrue', 'iffalse', 'cleartext', 'ct', 'pos', 'towards', 'distance', 'fill', 'bye', 'rerandom', 'remainder'];
 
 /** Every word the generator must not use as the name of one of your own blocks. */
@@ -379,6 +380,8 @@ class Compiler {
         return [this.make(token)];
       case 'write':
         return [this.write(token)];
+      case 'setfont':
+        return [this.setFont(token)];
       case 'setpencolor':
       case 'setpc':
         return [this.block('setcolor', this.color(token), token)];
@@ -427,6 +430,19 @@ class Compiler {
     if ([...words.value].length > LETTERING_MAX_CHARS) throw new LogoError(`write holds at most ${LETTERING_MAX_CHARS} letters.`, words.line);
     const size = this.argumentStarts() ? this.expression() : DEFAULT_LETTER_SIZE;
     return this.block('write', [size], token, { text });
+  }
+
+  /** setfont "fancy: the font the write commands after it use, one of the names in lettering.js. */
+  setFont(token) {
+    const name = this.next();
+    if (!name || name.type !== 'quoted' || name.value === '') {
+      throw new LogoError(`setfont needs the name of a font in quotes, like: setfont "fancy. The fonts are ${LETTER_FONTS.map((f) => f.id).join(', ')}.`, token.line);
+    }
+    const font = name.value.toLowerCase();
+    if (!isFont(font)) {
+      throw new LogoError(`${name.text} is not a font TurtleLab has. The fonts are ${LETTER_FONTS.map((f) => f.id).join(', ')}, like: setfont "fancy`, name.line);
+    }
+    return this.block('setfont', [], token, { font });
   }
 
   /** The three numbers of a color: a list like [255 0 0], a color name like "red, or three numbers. */

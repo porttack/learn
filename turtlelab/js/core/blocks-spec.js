@@ -43,6 +43,8 @@
 //            each mouth ('' for none), like the 'else' of if else.
 //   textSlot for a command that has words typed on it, like write: { hint } is what its empty
 //            box says. The words are kept in the block's `text` (see project.js), apart from its sockets.
+//   fontSlot true for a block that is a dropdown of fonts (set font). The choice is kept in the
+//            block's `font` (see project.js), apart from its sockets.
 //   help     the one-line tip shown when you press and hold the block
 
 export const PALETTES = [
@@ -521,7 +523,24 @@ BLOCKS.write = {
   label: 'write',
   args: [{ label: 'size', default: 60 }],
   textSlot: { hint: 'words' },
-  help: 'Writes words in script with the pen: its color and thickness, left to right, starting where the turtle is. Tap the words to change them. Size is how tall a capital letter is. The turtle does not move.',
+  help: 'Writes words with the pen: its color and thickness, in the font and curve you set, starting where the turtle is. The tops of the letters point the way the turtle faces. Tap the words to change them. Size is how tall a capital letter is. The turtle traces each letter, lifting the pen between strokes, at the speed your program has. The turtle does not move.',
+};
+
+// The settings the write block uses, kept by the turtle like the pen's color and thickness (and put back by clean).
+BLOCKS.setfont = {
+  palette: 'notes',
+  kind: 'command',
+  label: 'set font',
+  args: [],
+  fontSlot: true,
+  help: 'Chooses the font the write blocks after it use. Tap the font to pick another: each one shows the words in it. It starts as script, and clean puts it back.',
+};
+BLOCKS.setcurve = {
+  palette: 'notes',
+  kind: 'command',
+  label: 'set curve',
+  args: [{ default: 120 }],
+  help: 'Bends the words the write blocks after it write, this many degrees over the whole word. A positive number arches like a rainbow, a negative number is a bowl like a smile, 360 goes right round a circle, and 0 is straight. Bent words are centered on the turtle. Clean puts it back to 0.',
 };
 
 /** True if `op` names a real block. */

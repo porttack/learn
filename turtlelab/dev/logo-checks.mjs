@@ -129,7 +129,7 @@ try {
   await click('.logo-real');
   await chrome.sleep(150);
   let sent = await decoded();
-  check('pressing it opens JSLogo, from this site, with the program in the address after the #', sent.count === 1 && /^http:\/\/127\.0\.0\.1:\d+\/jslogo\/#/.test(sent.url), sent.url.slice(0, 60));
+  check('pressing it opens JSLogo, from this site, with the program in the address after the #', sent.count === 1 && /^http:\/\/127\.0\.0\.1:\d+\/logo\/#/.test(sent.url), sent.url.slice(0, 60));
   check('what is sent is the blocks written for JSLogo: the screen set up like TurtleLab, a CSS color, and the loop',
     /^window\nclearscreen\npendown\nsetpensize 5\nsetpencolor "#ff0000\nsetpencolor "#005adc\nsetpensize 6\nrepeat 4 \[\n {2}forward 100\n {2}right 90\n\]\n$/.test(sent.code), JSON.stringify(sent.code.slice(0, 90)));
   check('and it says it did, and that nothing leaves the site', /Opened real Logo \(JSLogo\) in a new tab/.test(await message()) && /Nothing leaves this site/.test(await message()));

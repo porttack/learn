@@ -28,7 +28,9 @@ import { HelpBubble } from './help-bubble.js';
 import { NOTE_MAX_CHARS, specOf } from '../core/blocks-spec.js';
 import { renameDefinition, setInput, uniquifyDefinition } from '../core/definitions.js';
 import { INPUT_MAX, NAME_MAX } from '../core/names.js';
-import { LETTERING_MAX_CHARS, cleanLetteringText } from '../core/lettering.js';
+import {
+  LETTERING_MAX_CHARS, LETTER_FONTS, cleanFont, cleanLetteringText, letteringStrokes, letteringWidth,
+} from '../core/lettering.js';
 import { HOME_VIEW, zoomAbout, panBy, zoomToFit, fitBlocksView } from '../core/view.js';
 import {
   cloneBlock,
@@ -278,6 +280,7 @@ export class Workspace {
       this.editNumber(entry);
     } else if (entry.type === 'nameslot') {
       if (entry.slot.editor === 'text') this.editText(entry);
+      else if (entry.slot.editor === 'font') this.chooseFont(entry);
       else this.editName(entry);
     } else if (entry.node.kind === 'note') {
       this.editNote(entry.node); // tapping a sticky note is for writing in it
@@ -811,6 +814,115 @@ export class Workspace {
       else if (event.key === 'Escape') finish(false);
     });
     input.addEventListener('blur', () => finish(true));
+  }
+
+  // ---- Choosing the font of a write block -----------------------------------
+
+  /** The words as a small picture in one font, for the list (the same lines the turtle would draw). */
+  fontPreview(words, fontId) {
+    const SIZE = 22;
+    const ABOVE = 5;
+    const BELOW = 9;
+    const width = Math.ceil(letteringWidth(words, SIZE, fontId)) + 6;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', String(width));
+    svg.setAttribute('height', String(SIZE + ABOVE + BELOW));
+    svg.setAttribute('class', 'font-preview');
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    const parts = [];
+    for (const stroke of letteringStrokes(words, SIZE, fontId)) {
+      stroke.forEach(([along, up], i) => parts.push(`${i === 0 ? 'M' : 'L'}${(3 + along).toFixed(1)} ${(ABOVE + SIZE - up).toFixed(1)}`));
+    }
+    path.setAttribute('d', parts.join(' '));
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', '#222');
+    path.setAttribute('stroke-width', '1.4');
+    path.setAttribute('stroke-linecap', 'round');
+    path.setAttribute('stroke-linejoin', 'round');
+    svg.append(path);
+    return svg;
+  }
+
+  /** Take the font list away, if it is showing. */
+  closeFontMenu() {
+    this.fontMenuClose?.();
+  }
+
+  /**
+   * Open the list of fonts under a write block's font box. Each choice shows the block's own words in that font, so you
+   * can see what you are picking. Choosing one changes the block (one undo step); clicking anywhere else, or Escape,
+   * closes the list and changes nothing.
+   */
+  chooseFont(entry) {
+    this.closeFontMenu();
+    const block = entry.node.block;
+    const box = entry.node.nameSlots[entry.index].el.getBoundingClientRect();
+    const stageBox = this.stage.getBoundingClientRect();
+    const current = cleanFont(block.font);
+    const words = 'Hello'; // (the words in the menu are only to show what each font looks like)
+
+    const menu = document.createElement('div');
+    menu.className = 'font-menu';
+    menu.setAttribute('role', 'listbox');
+    menu.setAttribute('aria-label', 'Font for the words');
+    const options = LETTER_FONTS.map((font) => {
+      const option = document.createElement('button');
+      option.type = 'button';
+      option.className = 'font-option';
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(font.id === current));
+      option.dataset.font = font.id;
+      option.title = font.tip;
+      const name = document.createElement('span');
+      name.className = 'font-name';
+      name.textContent = font.label;
+      option.append(name, this.fontPreview(words, font.id));
+      option.addEventListener('click', () => {
+        close();
+        if (font.id === current) return;
+        block.font = font.id;
+        this.render();
+        this.onChange();
+      });
+      menu.append(option);
+      return option;
+    });
+
+    let closed = false;
+    const away = (event) => {
+      if (!menu.contains(event.target)) close();
+    };
+    const keys = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close();
+      } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault();
+        const at = options.indexOf(document.activeElement);
+        const next = (at + (event.key === 'ArrowDown' ? 1 : -1) + options.length) % options.length;
+        options[next].focus();
+      }
+    };
+    const close = () => {
+      if (closed) return;
+      closed = true;
+      this.fontMenuClose = null;
+      document.removeEventListener('pointerdown', away, true);
+      document.removeEventListener('keydown', keys, true);
+      menu.remove();
+    };
+    this.fontMenuClose = close;
+
+    this.stage.append(menu);
+    // Under the box if there is room, otherwise above it, and never off the right side.
+    const room = this.stage.clientHeight - (box.bottom - stageBox.top) - 8;
+    const above = menu.offsetHeight > room && box.top - stageBox.top > menu.offsetHeight;
+    menu.style.left = `${Math.max(4, Math.min(box.left - stageBox.left, this.stage.clientWidth - menu.offsetWidth - 4))}px`;
+    menu.style.top = `${above ? box.top - stageBox.top - menu.offsetHeight - 4 : box.bottom - stageBox.top + 4}px`;
+    document.addEventListener('pointerdown', away, true);
+    document.addEventListener('keydown', keys, true);
+    options[LETTER_FONTS.findIndex((font) => font.id === current)].focus();
   }
 
   // ---- Typing a number ---------------------------------------------------

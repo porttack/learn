@@ -26,6 +26,7 @@ import { BODY_KEYS, mouthCount, specOf } from '../core/blocks-spec.js';
 import { MAX_INPUTS } from '../core/names.js';
 import { PALETTE_COLORS, NUMBER_COLORS } from './palette-colors.js';
 import { formatNumber } from '../core/format.js';
+import { LETTER_FONTS, cleanFont } from '../core/lettering.js';
 
 export { formatNumber };
 
@@ -342,6 +343,26 @@ function layoutNameSlot(text, hint, colors, editor = 'name') {
   return { id: nextId++, text, empty, editor, markup, w: width + 2, h: NAME_SLOT_HEIGHT + 2 };
 }
 
+/**
+ * The dropdown on a write block: the font's name and a small arrow. It is as wide as the longest font name, so
+ * choosing another font never makes the block change size.
+ */
+function layoutFontSlot(font, colors) {
+  const chosen = LETTER_FONTS.find((f) => f.id === cleanFont(font));
+  const fontSize = FONT_SIZE * SCALE;
+  const arrowRoom = 22;
+  const width = Math.max(...LETTER_FONTS.map((f) => textWidth(f.label) * SCALE)) + 14 + arrowRoom;
+  const arrowX = 1 + width - arrowRoom / 2 - 1;
+  const arrowY = 1 + NAME_SLOT_HEIGHT / 2;
+  const markup =
+    `<svg xmlns="${SVG_NS}" width="${width + 2}" height="${NAME_SLOT_HEIGHT + 2}">` +
+    `<rect x="1" y="1" width="${width}" height="${NAME_SLOT_HEIGHT}" rx="5" fill="#ffffff" stroke="${colors.stroke}" stroke-width="1.5"/>` +
+    `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="9" y="${1 + NAME_SLOT_HEIGHT / 2 + fontSize * 0.35}">${escapeXml(chosen.label)}</text>` +
+    `<path d="M${arrowX - 5} ${arrowY - 2.5} L${arrowX + 5} ${arrowY - 2.5} L${arrowX} ${arrowY + 3.5} Z" fill="#282828"/>` +
+    `</svg>`;
+  return { id: nextId++, text: chosen.label, empty: false, editor: 'font', markup, w: width + 2, h: NAME_SLOT_HEIGHT + 2 };
+}
+
 /** Finish the layout of a `to` block: a hat with the word "to" and a box for its name and each input. */
 function layoutDefinitionHat(node, spec, colors) {
   const params = node.block.params ?? [];
@@ -501,16 +522,20 @@ export function layoutBlock(block) {
   // generator makes a block taller by making its first socket taller.
   if (spec.lines && spec.args.length > 0) extra.ys[0] = Math.max(extra.ys[0], (spec.lines.length - 1) * LINE_GAP);
 
-  // Pick the width from the smallest version of this shape. A block with words typed on it (write) is drawn
-  // here as "write", a box for the words, and then its sockets, so the label is left off the shape and
-  // the block is made wide enough for all three.
+  // Pick the width from the smallest version of this shape. A block with a box on it (write has one for its words, set font a
+  // dropdown of fonts) is drawn here as its label, then the box, then its sockets, so the label is left off the shape and the
+  // block is made wide enough for all of them.
   let shapeSpec = spec;
   let textSlot = null;
-  if (spec.textSlot) {
-    textSlot = layoutNameSlot(block.text ?? '', spec.textSlot.hint, colors, 'text');
+  let fontSlot = null;
+  if (spec.textSlot || spec.fontSlot) {
+    if (spec.textSlot) textSlot = layoutNameSlot(block.text ?? '', spec.textSlot.hint, colors, 'text');
+    if (spec.fontSlot) fontSlot = layoutFontSlot(block.font, colors);
     shapeSpec = { ...spec, label: '' };
     const captionWidth = Math.max(0, ...spec.args.map((arg) => textWidth(arg.label ?? '', SMALL_FONT_SIZE))) * SCALE;
-    const wanted = HAT_PAD + textWidth(spec.label) * SCALE + HAT_GAP + textSlot.w + HAT_GAP + captionWidth + 30;
+    // Room for the sockets down the right edge, if there are any, or just a little after the last box.
+    const afterBoxes = spec.args.length > 0 ? HAT_GAP + captionWidth + 30 : HAT_END;
+    const wanted = HAT_PAD + textWidth(spec.label) * SCALE + (textSlot ? HAT_GAP + textSlot.w : 0) + (fontSlot ? HAT_GAP + fontSlot.w : 0) + afterBoxes;
     extra.x = Math.max(0, (wanted - makeShape(shapeSpec, colors, extra).shape.getWidth()) / SCALE);
   } else {
     const smallest = makeShape(spec, colors, extra).shape;
@@ -541,12 +566,20 @@ export function layoutBlock(block) {
 
   const { shape, markup } = made;
   node.markup = markup;
-  if (textSlot) {
-    // The generator puts a label's baseline in the middle of the block's body: line the word and the box up with that.
+  if (textSlot || fontSlot) {
+    // The generator puts a label's baseline in the middle of the block's body: line the word and the boxes up with that.
     const fontSize = FONT_SIZE * SCALE;
     const baseline = Number(markup.match(/<tspan x="-?[\d.]+" y="(-?[\d.]+)"><\/tspan>/)?.[1] ?? 14) * SCALE;
     const wordWidth = textWidth(spec.label) * SCALE;
-    node.nameSlots = [{ slot: textSlot, dx: HAT_PAD + wordWidth + HAT_GAP, dy: baseline - fontSize * 0.35 - (NAME_SLOT_HEIGHT + 2) / 2 }];
+    const top = baseline - fontSize * 0.35 - (NAME_SLOT_HEIGHT + 2) / 2;
+    node.nameSlots = [];
+    let x = HAT_PAD + wordWidth;
+    for (const slot of [textSlot, fontSlot]) {
+      if (!slot) continue;
+      x += HAT_GAP;
+      node.nameSlots.push({ slot, dx: x, dy: top });
+      x += slot.w;
+    }
     const word = `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${HAT_PAD}" y="${baseline}">${escapeXml(spec.label)}</text>`;
     node.markup = markup.replace(/<\/svg>\s*$/, `${word}</svg>`);
   }
@@ -663,7 +696,7 @@ export function renderStack(layout, register) {
     register(node.id, { type: 'block', node });
     (node.nameSlots ?? []).forEach((placed, index) => {
       const box = svgElement('g', {
-        class: placed.slot.editor === 'text' ? 'node nameslot textslot' : 'node nameslot',
+        class: placed.slot.editor === 'font' ? 'node nameslot textslot fontslot' : placed.slot.editor === 'text' ? 'node nameslot textslot' : 'node nameslot',
         transform: `translate(${placed.ax} ${placed.ay})`,
         'data-nid': placed.slot.id,
       });

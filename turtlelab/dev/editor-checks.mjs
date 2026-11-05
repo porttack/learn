@@ -1696,7 +1696,7 @@ try {
 
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Notes');
-  check('the Notes palette has the sticky note and the write block, and nothing else', (await count('.flyout .stack')) === 2 && (await count('.flyout .stack[data-op=note]')) === 1 && (await count('.flyout .stack[data-op=write]')) === 1);
+  check('the Notes palette has the sticky note and the three text blocks (write, set font, set curve), and nothing else', (await count('.flyout .stack')) === 4 && (await count('.flyout .stack[data-op=note]')) === 1 && (await count('.flyout .stack[data-op=write]')) === 1 && (await count('.flyout .stack[data-op=setfont]')) === 1 && (await count('.flyout .stack[data-op=setcurve]')) === 1);
   await dragFromPalette('note', 480, 120);
   check('a note dragged out lands on the page, asking to be written on', (await stacks()) === 1 && (await noteWords()) === 'Tap to write a note.');
 
@@ -1801,7 +1801,7 @@ try {
   await dragFromPalette('write', 480, 140);
   const writeWords = () => chrome.eval(`document.querySelector('.workspace .node.textslot')?.textContent.trim()`);
   const writeBlockText = () => chrome.eval(`document.querySelector('.workspace .stack').textContent.replace(/\\s+/g, '')`);
-  check('a write block dragged out shows its words in a box, with the size beside it', (await writeWords()) === 'Hello' && /write/.test(await writeBlockText()) && /size/.test(await writeBlockText()) && /60/.test(await writeBlockText()) && (await count('.workspace .node.textslot')) === 1, await writeBlockText());
+  check('a write block dragged out shows its words in a box, with the size beside it', (await writeWords()) === 'Hello' && /write/.test(await writeBlockText()) && /size/.test(await writeBlockText()) && /60/.test(await writeBlockText()) && (await count('.workspace .node.textslot:not(.fontslot)')) === 1, await writeBlockText());
   const wordsBox = await plainRect('.workspace .node.textslot');
   check('the words box sits inside the block, after the word write', await chrome.eval(`(() => { const b = document.querySelector('.workspace .stack .node.command').getBoundingClientRect(); const w = document.querySelector('.workspace .node.textslot').getBoundingClientRect(); return w.left > b.left + 30 && w.right < b.right - 10 && w.top >= b.top && w.bottom <= b.bottom; })()`));
   await chrome.click(wordsBox.left + wordsBox.width / 2, wordsBox.top + wordsBox.height / 2);
@@ -1840,6 +1840,165 @@ try {
   await seedProject({ app: 'porttack-turtle', version: 1, stacks: [{ x: 300, y: 200, blocks: [{ op: 'write', args: [60], text: 'The quick brown fox jumps over' }] }] });
   check('words too long to show are shortened with dots on the block, which stays inside the window', await chrome.eval(`(() => { const t = document.querySelector('.workspace .node.textslot').textContent.trim(); const r = document.querySelector('.workspace .stack').getBoundingClientRect(); return t.endsWith('...') && r.right < window.innerWidth; })()`));
   check('no label on the write block runs outside it', await chrome.eval(`(() => { const stack = document.querySelector('.workspace .stack').getBoundingClientRect(); return [...document.querySelectorAll('.workspace .stack text')].every((t) => { const r = t.getBoundingClientRect(); return r.left >= stack.left - 1 && r.right <= stack.right + 1; }); })()`));
+
+  // ---- The set font block: a dropdown of fonts, like set color is a setting ------------------------------------------------------------------
+  const pressKey = async (key, code, windowsVirtualKeyCode, text) => {
+    await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key, code, windowsVirtualKeyCode, ...(text ? { text } : {}) });
+    await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key, code, windowsVirtualKeyCode });
+    await chrome.sleep(150);
+  };
+  const fontBoxText = () => chrome.eval(`document.querySelector('.workspace .node.fontslot')?.textContent.trim()`);
+  const blockWidth = () => chrome.eval(`Math.round([...document.querySelectorAll('.workspace .stack .node.command')].find((n) => /setfont|set font/.test(n.textContent)).getBoundingClientRect().width)`);
+  const savedFont = async () => { await chrome.sleep(650); return JSON.parse(await chrome.eval(`localStorage.getItem('turtlelab-project')`)).stacks[0].blocks.find((b) => b.op === 'setfont').font; };
+  const openFontList = async () => {
+    const box = await plainRect('.workspace .node.fontslot');
+    await chrome.click(box.left + box.width / 2, box.top + box.height / 2);
+    await chrome.sleep(200);
+  };
+  const fontOptions = () => chrome.eval(`[...document.querySelectorAll('.font-option')].map((o) => o.dataset.font + (o.getAttribute('aria-selected') === 'true' ? '*' : ''))`);
+  const writeInk = async () => { await pressRun(); await chrome.sleep(300); return redPixels(); };
+
+  await seedProject({ app: 'porttack-turtle', version: 1, stacks: [{ x: 120, y: 60, blocks: [{ op: 'start' }, { op: 'clean' }, { op: 'penup' }, { op: 'setxy', args: [-150, -30] }, { op: 'setfont', args: [], font: 'script' }, { op: 'write', args: [90], text: 'Go' }] }] });
+  check('a set font block is a dropdown of fonts, showing script until you choose another', (await count('.workspace .node.fontslot')) === 1 && (await fontBoxText()) === 'script'
+    && await chrome.eval(`(() => { const f = document.querySelector('.workspace .node.fontslot').getBoundingClientRect(); const b = [...document.querySelectorAll('.workspace .stack .node.command')].find((n) => /set font/.test(n.textContent)).getBoundingClientRect(); return f.left > b.left + 30 && f.right <= b.right && f.top >= b.top && f.bottom <= b.bottom; })()`));
+  check('and a small arrow is drawn in it, and the write block beside it has no font box of its own', await chrome.eval(`!!document.querySelector('.workspace .node.fontslot path')`) && (await count('.workspace .node.fontslot')) === 1);
+  const widthScript = await blockWidth();
+  const inkScript = await writeInk();
+  check('with script chosen it writes in script (as it always did)', inkScript > 200, `${inkScript} red pixels`);
+
+  await openFontList();
+  check('tapping the font box opens a list of the five fonts, script ticked, nothing else changed', JSON.stringify(await fontOptions()) === JSON.stringify(['script*', 'fancy', 'sans', 'bold', 'serif']) && (await count('.number-input')) === 0, JSON.stringify(await fontOptions()));
+  check('each choice shows a word drawn in that font', await chrome.eval(`[...document.querySelectorAll('.font-option')].every((o) => { const d = o.querySelector('svg path')?.getAttribute('d') ?? ''; return d.startsWith('M') && d.length > 100; }) && new Set([...document.querySelectorAll('.font-option path')].map((p) => p.getAttribute('d'))).size === 5`));
+  check('the list sits inside the window', await chrome.eval(`(() => { const r = document.querySelector('.font-menu').getBoundingClientRect(); return r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight; })()`));
+  await pressKey('Escape', 'Escape', 27);
+  check('Escape closes the list and changes nothing', (await count('.font-menu')) === 0 && (await fontBoxText()) === 'script');
+  await openFontList();
+  await chrome.click(900, 90);
+  await chrome.sleep(150);
+  check('clicking anywhere else closes it and changes nothing', (await count('.font-menu')) === 0 && (await fontBoxText()) === 'script');
+  await openFontList();
+  await chrome.click((await chrome.centerOf('.font-option[data-font="script"]')).x, (await chrome.centerOf('.font-option[data-font="script"]')).y);
+  await chrome.sleep(150);
+  check('choosing the font it already has closes the list and is not an edit', (await count('.font-menu')) === 0 && (await fontBoxText()) === 'script' && (await chrome.eval(`document.getElementById('undo').disabled`)) === true);
+
+  await openFontList();
+  const bold = await chrome.centerOf('.font-option[data-font="bold"]');
+  await chrome.click(bold.x, bold.y);
+  await chrome.sleep(250);
+  check('choosing bold closes the list and puts bold in the box', (await count('.font-menu')) === 0 && (await fontBoxText()) === 'bold', await fontBoxText());
+  check('the block stays the same width whichever font it shows', (await blockWidth()) === widthScript, `${widthScript} then ${await blockWidth()}`);
+  const inkBold = await writeInk();
+  check('running it now writes in the new font (a different amount of ink than script did)', inkBold > 200 && Math.abs(inkBold - inkScript) > 100, `script ${inkScript}, bold ${inkBold}`);
+  check('the choice is kept by autosave', (await savedFont()) === 'bold');
+  await chrome.eval(`document.getElementById('undo').click()`);
+  await chrome.sleep(200);
+  check('Undo goes back to script, and the saved block says script', (await fontBoxText()) === 'script' && (await savedFont()) === 'script');
+  await openFontList();
+  const serif = await chrome.centerOf('.font-option[data-font="serif"]');
+  await chrome.click(serif.x, serif.y);
+  await chrome.sleep(250);
+  check('serif can be chosen too, and is kept', (await fontBoxText()) === 'serif' && (await savedFont()) === 'serif');
+  await chrome.goto(BASE + '?speed=instant', { keepStorage: true });
+  check('and is still chosen after a refresh', (await fontBoxText()) === 'serif');
+  await openFontList();
+  const toScript = await chrome.centerOf('.font-option[data-font="script"]');
+  await chrome.click(toScript.x, toScript.y);
+  await chrome.sleep(250);
+  check('choosing script again works, and a set font block keeps it (it is what sets the font back)', (await fontBoxText()) === 'script' && (await savedFont()) === 'script');
+
+  // The keyboard: open the list, arrow to a choice, and press Enter.
+  await openFontList();
+  check('the list opens with the current font focused, so the keyboard can start from it', await chrome.eval(`document.activeElement?.dataset?.font`) === 'script');
+  await pressKey('ArrowDown', 'ArrowDown', 40);
+  await pressKey('ArrowDown', 'ArrowDown', 40);
+  await pressKey('Enter', 'Enter', 13, '\r');
+  check('arrow keys and Enter choose a font (script, down, down is sans)', (await fontBoxText()) === 'sans' && (await count('.font-menu')) === 0, await fontBoxText());
+  await openFontList();
+  await pressKey('ArrowUp', 'ArrowUp', 38);
+  await pressKey('ArrowUp', 'ArrowUp', 38);
+  await pressKey('ArrowUp', 'ArrowUp', 38);
+  check('and the arrow keys wrap round from the top to the end of the list (sans, up, up, up is serif)', await chrome.eval(`document.activeElement?.dataset?.font`) === 'serif');
+  await pressKey('Escape', 'Escape', 27);
+
+  // The Python box leaves the font as a note.
+  await chrome.eval(`document.getElementById('python-toggle').click()`);
+  await chrome.sleep(200);
+  check('the Python box names the font in its note for a set font block', /set font sans/.test(await chrome.eval(`document.getElementById('python-box').textContent`)), (await chrome.eval(`document.getElementById('python-box').textContent`)).slice(0, 120));
+  await chrome.eval(`document.getElementById('python-toggle').click()`);
+
+
+  // ---- set curve, and the words following the turtle ---------------------------------------------------------------
+  await chrome.goto(BASE + '?speed=instant');
+  await openPalette('Notes');
+  check('the Notes palette lists the sticky note, write, set font and set curve, in that order', JSON.stringify(await chrome.eval(`[...document.querySelectorAll('.flyout .stack')].map((s) => s.dataset.op)`)) === JSON.stringify(['note', 'write', 'setfont', 'setcurve']));
+  await dragFromPalette('setcurve', 480, 140);
+  check('a set curve block comes out with 120 in its number box, like set pen size comes out with 5', /setcurve|set curve/.test(await chrome.eval(`document.querySelector('.workspace .stack').textContent`)) && /120/.test(await chrome.eval(`document.querySelector('.workspace .stack').textContent`)));
+  const redBox = () => chrome.eval(`(() => { const c = document.querySelector('canvas'); const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let x0 = 1e9, x1 = -1, y0 = 1e9, y1 = -1; for (let i = 0; i < d.length; i += 4) { if (d[i] === 255 && d[i + 1] === 0 && d[i + 2] === 0) { const p = i / 4; const x = p % c.width; const y = Math.floor(p / c.width); if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; } } return { w: x1 - x0, h: y1 - y0 }; })()`);
+  const writeWith = async (...before) => {
+    await seedProject({ app: 'porttack-turtle', version: 1, stacks: [{ x: 120, y: 60, blocks: [{ op: 'start' }, { op: 'clean' }, { op: 'penup' }, { op: 'setxy', args: [0, 150] }, ...before, { op: 'write', args: [60], text: 'HELLO' }] }] });
+    await pressRun();
+    await chrome.sleep(400);
+    return redBox();
+  };
+  const straight = await writeWith();
+  const arched = await writeWith({ op: 'setcurve', args: [120] });
+  const bowled = await writeWith({ op: 'setcurve', args: [-120] });
+  const turned = await writeWith({ op: 'setheading', args: [90] });
+  check('write goes straight along the page by default (wider than it is tall)', straight.w > straight.h * 2, JSON.stringify(straight));
+  check('set curve 120 bends the words either way: an arch and a bowl are both taller than straight words, and they are different (the bowl\'s letters stand inward, so it is the smaller)', arched.h > straight.h + 25 && bowled.h > straight.h + 25 && bowled.w < arched.w && bowled.h < arched.h, `straight ${JSON.stringify(straight)}, arch ${JSON.stringify(arched)}, bowl ${JSON.stringify(bowled)}`);
+  check('turning the turtle turns the words: facing right they run down the page (taller than wide)', turned.h > turned.w * 2, JSON.stringify(turned));
+  // ---- Writing takes the time the speed says: a letter at a time ----------------------------------------------
+  const cougars = { app: 'porttack-turtle', version: 1, stacks: [{ x: 120, y: 60, blocks: [{ op: 'write', args: [60], text: 'Cougars' }] }] };
+  const runAt = async (speed) => {
+    await chrome.goto(BASE + 'about.html');
+    await chrome.eval(`localStorage.setItem('turtlelab-project', ${JSON.stringify(JSON.stringify(cougars))})`);
+    await chrome.goto(BASE + `?speed=${speed}`, { keepStorage: true });
+    await chrome.sleep(400);
+    const button = await chrome.centerOf('#run');
+    const started = Date.now();
+    await chrome.click(button.x, button.y);
+    return started;
+  };
+  await runAt('instant');
+  await chrome.sleep(500);
+  const inkAtOnce = await redPixels();
+  check('at instant speed the whole word is on the paper at once', inkAtOnce > 300, `${inkAtOnce} red pixels`);
+  const slowStart = await runAt('slow');
+  // While it writes, watch the turtle: where its picture is and how it is turned, every 130 ms.
+  const spriteNow = () => chrome.eval(`(() => { const r = document.querySelector('.turtle-sprite').getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2, turn: (document.querySelector('.turtle-sprite').style.transform.match(/rotate\\((-?[\\d.]+)deg\\)/) ?? [])[1] }; })()`);
+  const paperCenter = await chrome.centerOf('.paper-box');
+  const spots = [];
+  let inkEarly = 0;
+  while (Date.now() - slowStart < 2400) {
+    spots.push(await spriteNow());
+    if (Date.now() - slowStart >= 1250 && inkEarly === 0) inkEarly = await redPixels();
+    await chrome.sleep(130);
+  }
+  const wandered = Math.max(...spots.map((p) => Math.hypot(p.x - paperCenter.x, p.y - paperCenter.y)));
+  check('at slow speed the turtle is seen travelling along the letters, away from where it started', wandered > 60, `${Math.round(wandered)} px from the middle of the paper`);
+  check('and it moves smoothly along, not a letter at a time: its place changes in most of the looks', new Set(spots.map((p) => `${Math.round(p.x)},${Math.round(p.y)}`)).size >= spots.length * 0.6, `${new Set(spots.map((p) => `${Math.round(p.x)},${Math.round(p.y)}`)).size} different places in ${spots.length} looks`);
+  check('and it turns to face the way it is drawing', new Set(spots.map((p) => Math.round(Number(p.turn)))).size >= 4, [...new Set(spots.map((p) => Math.round(Number(p.turn))))].join(', '));
+  await chrome.sleep(Math.max(0, 4300 - (Date.now() - slowStart)));
+  const inkLate = await redPixels();
+  check('at slow speed the word is only partly written a little way in (a letter every half second)', inkEarly > 20 && inkEarly < inkAtOnce * 0.8, `${inkEarly} of ${inkAtOnce} red pixels at 1.25 s`);
+  check('and finishes as the very same picture the instant run made', Math.abs(inkLate - inkAtOnce) <= 2, `${inkLate} against ${inkAtOnce} red pixels at 4.3 s`);
+  const home = await spriteNow();
+  check('when the word is finished the turtle is back where it started (writing never moves it)', Math.hypot(home.x - paperCenter.x, home.y - paperCenter.y) < 3 && Number(home.turn) % 360 === 0, `${Math.round(home.x - paperCenter.x)}, ${Math.round(home.y - paperCenter.y)} from the middle, turned ${home.turn}`);
+  // Stop in the middle of a word: the turtle goes home, and the part written stays.
+  const stopStart = await runAt('slow');
+  await chrome.sleep(Math.max(0, 1300 - (Date.now() - stopStart)));
+  const midway = await spriteNow();
+  const stopAt = await chrome.centerOf('#stop');
+  await chrome.click(stopAt.x, stopAt.y);
+  await chrome.sleep(250);
+  const afterStop = await spriteNow();
+  const inkStopped = await redPixels();
+  check('Stop part way through a word puts the turtle back where it really is, and leaves what was written', Math.hypot(midway.x - paperCenter.x, midway.y - paperCenter.y) > 40 && Math.hypot(afterStop.x - paperCenter.x, afterStop.y - paperCenter.y) < 3 && inkStopped > 20 && inkStopped < inkAtOnce, `${Math.round(Math.hypot(midway.x - paperCenter.x, midway.y - paperCenter.y))} px away, then ${Math.round(Math.hypot(afterStop.x - paperCenter.x, afterStop.y - paperCenter.y))} px; ${inkStopped} of ${inkAtOnce} red pixels`);
+  const midStart = await runAt('medium');
+  await chrome.sleep(Math.max(0, 200 - (Date.now() - midStart)));
+  const inkMedium = await redPixels();
+  check('medium speed is gradual too, just quicker: partly written at a fifth of a second', inkMedium > 20 && inkMedium < inkAtOnce, `${inkMedium} of ${inkAtOnce} red pixels`);
+  await chrome.sleep(900);
 
   // ---- The site menu (the hamburger) ---------------------------------------------------------------
   await chrome.goto(BASE + '?speed=instant');

@@ -14,7 +14,10 @@
 
 import { makeColor } from './color.js';
 
-import { letteringStrokes, MIN_LETTER_SIZE, MAX_LETTER_SIZE } from './lettering.js';
+import { letteringLetters, letteringWidth, curvePoint, cleanFont, DEFAULT_FONT, MIN_LETTER_SIZE, MAX_LETTER_SIZE, MIN_CURVE, MAX_CURVE } from './lettering.js';
+
+/** How much a step of walking between strokes counts for, against drawing the same distance (a hand moves faster when it is not writing). */
+const WALK_COST = 0.35;
 
 export const PAPER_W = 700;
 export const PAPER_H = 560;
@@ -113,6 +116,9 @@ export class Turtle {
     this.color = DEFAULTS.color.slice();
     this.fill = null;
     this.fillColor = null;
+    this.writing = null;
+    this.font = DEFAULT_FONT; // what the write block writes in
+    this.curve = 0; // how many degrees the written words bend (0 is straight)
   }
 
   /** Remember an op for SVG export and tell whoever is watching. */
@@ -287,27 +293,129 @@ export class Turtle {
     this.record({ type: 'fill', color, segments });
   }
 
+  /** Choose the font the write block writes in from now on (an id from lettering.js; anything else is the default font). */
+  setFont(id) {
+    this.font = cleanFont(id);
+  }
+
+  /** Choose how many degrees the words a write block writes bend: 0 is straight, positive arches like a rainbow, negative is a bowl. */
+  setCurve(degrees) {
+    const n = Number(degrees);
+    this.curve = Number.isFinite(n) ? Math.max(-MAX_CURVE, Math.min(MAX_CURVE, n)) : 0;
+  }
+
   /**
-   * Write words with the pen's color and thickness, left to right, with the start of the line (its
-   * baseline) where the turtle is. `size` is how tall a capital letter is, in steps. Which way the
-   * turtle faces does not matter, the turtle does not move, and neither does the pen being up: this is
-   * the turtle writing, not walking. Letters that cannot be drawn are skipped.
+   * Write words with the pen's color and thickness, in the turtle's font (`font` here only if you want another), with
+   * the start of the line (its baseline) where the turtle is. `size` is how tall a capital letter is, in steps. The words stand
+   * on the turtle's nose: the turtle facing up writes them upright, and turning it turns them with it. If the turtle has a
+   * curve (setCurve) they bend that many degrees and are centered on the turtle instead (see curvePoint). The turtle does not
+   * move, and neither does the pen being up: this is the turtle writing, not walking. Letters that cannot be drawn are skipped.
+   *
+   * This writes it all at once. The write block uses writeSteps instead, a piece of a line at a time.
    */
-  write(text, size) {
+  write(text, size, font = this.font) {
+    for (const _ of this.writeSteps(text, size, font)) { /* run it to the end */ }
+  }
+
+  /**
+   * The same writing, but a little at a time (it is a generator), so the turtle can be watched doing it the way a hand would:
+   * the pen is put down at the start of a stroke and drawn along it, lifted, walked to the start of the next stroke
+   * (a letter like H has three), put down, and drawn again. Each time you ask for the next, the pen tip (`writing`: where the
+   * picture of the turtle is shown while it writes, and which way it faces) moves a little further, drawing as it goes when
+   * the pen is down. A long line is cut into pieces so it can be seen growing; when a straight line is finished the pieces are
+   * joined back into the one line, so what is left is exactly what writing it all at once makes. (Bent words are made of the
+   * little pieces, because a curve is not a straight line.)
+   *
+   * It gives back how much of a step that piece took: its share of its letter, so the pieces of one letter add up to 1 and
+   * a letter takes the time of one step however it is drawn. (The pen walking between strokes counts for less than drawing,
+   * as a hand moves faster when it is not writing.) Spaces draw nothing and take no time. When it is done, or is dropped
+   * (stopWriting), the turtle is shown where it really is, which is where it started: writing never moves it.
+   */
+  *writeSteps(text, size, font = this.font) {
     if (!(size > 0)) return;
-    const strokes = letteringStrokes(text, Math.min(MAX_LETTER_SIZE, Math.max(MIN_LETTER_SIZE, size)));
-    for (const stroke of strokes) {
-      for (let i = 1; i < stroke.length; i += 1) {
-        const [x1, y1] = stroke[i - 1];
-        const [x2, y2] = stroke[i];
-        this.record({
-          type: 'line',
-          x1: this.x + x1, y1: this.y + y1, x2: this.x + x2, y2: this.y + y2,
-          color: this.color.slice(),
-          size: this.penSize,
-        });
+    const height = Math.min(MAX_LETTER_SIZE, Math.max(MIN_LETTER_SIZE, size));
+    const letters = letteringLetters(text, height, font);
+    const width = letteringWidth(text, height, font);
+    const bent = Math.abs(this.curve) >= MIN_CURVE;
+    const sin = sinDeg(this.heading);
+    const cos = cosDeg(this.heading);
+    // Where a point of the words lands, measured from the turtle: bend the words, then turn them the way the turtle is facing.
+    const place = ([u, v]) => {
+      const [x, y] = curvePoint(u, v, width, this.curve);
+      return [x * cos + y * sin, -x * sin + y * cos];
+    };
+    const lerp = (p, q, f) => [p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f];
+    const longest = Math.max(0.5, height / 16); // the longest piece of a line shown in one go, in steps
+    let tip = [0, 0]; // where the pen is, measured from the turtle (on the paper, after the bend and the turn)
+    try {
+      for (const strokes of letters) {
+        // Each stroke as a walk (pen up) to where it starts, then pieces of it drawn. Drawn pieces are cut from the stroke as it
+        // is in the letter and then placed, so a bent line follows the curve; a walk is a straight way across the paper.
+        const pieces = [];
+        for (const stroke of strokes) {
+          const start = place(stroke[0]);
+          const gap = Math.hypot(start[0] - tip[0], start[1] - tip[1]);
+          if (gap > 1e-9) {
+            const count = Math.max(1, Math.ceil(gap / longest));
+            for (let j = 1; j <= count; j += 1) {
+              const a = lerp(tip, start, (j - 1) / count);
+              const b = lerp(tip, start, j / count);
+              pieces.push({ draw: false, a, b, first: j === 1, last: j === count, count, cost: (WALK_COST * gap) / count });
+            }
+          }
+          for (let i = 1; i < stroke.length; i += 1) {
+            const from = stroke[i - 1];
+            const to = stroke[i];
+            const count = Math.max(1, Math.ceil(Math.hypot(to[0] - from[0], to[1] - from[1]) / longest));
+            for (let j = 1; j <= count; j += 1) {
+              const a = place(lerp(from, to, (j - 1) / count));
+              const b = place(lerp(from, to, j / count));
+              pieces.push({ draw: true, a, b, first: j === 1, last: j === count, count, whole: [place(from), place(to)], cost: Math.hypot(b[0] - a[0], b[1] - a[1]) });
+            }
+          }
+          tip = place(stroke[stroke.length - 1]);
+        }
+        const total = pieces.reduce((sum, piece) => sum + piece.cost, 0);
+        let given = 0;
+        let base = 0; // how many ops there were when the line being drawn was begun
+        for (let k = 0; k < pieces.length; k += 1) {
+          const { draw, a, b, first, last, count, whole } = pieces[k];
+          if (first) base = this.ops.length;
+          if (draw) {
+            this.record({
+              type: 'line',
+              x1: this.x + a[0], y1: this.y + a[1], x2: this.x + b[0], y2: this.y + b[1],
+              color: this.color.slice(),
+              size: this.penSize,
+            });
+          }
+          // The turtle faces the way the pen is going (0 is up, and turning right counts up).
+          const still = a[0] === b[0] && a[1] === b[1];
+          const facing = still ? this.writing?.heading ?? this.heading : normalizeHeading((Math.atan2(b[0] - a[0], b[1] - a[1]) * 180) / Math.PI);
+          this.writing = { x: this.x + b[0], y: this.y + b[1], heading: facing };
+          const share = k === pieces.length - 1 ? 1 - given : total > 0 ? pieces[k].cost / total : 1 / pieces.length;
+          given += share;
+          yield share;
+          // A straight line is done: join its pieces back into the one line they were cut from (unless the oldest ops were
+          // just thrown away to save memory, in which case they are not all there to join).
+          if (last && draw && !bent && count > 1 && this.ops.length === base + count) {
+            this.ops.splice(base, count, {
+              type: 'line',
+              x1: this.x + whole[0][0], y1: this.y + whole[0][1], x2: this.x + whole[1][0], y2: this.y + whole[1][1],
+              color: this.color.slice(),
+              size: this.penSize,
+            });
+          }
+        }
       }
+    } finally {
+      this.writing = null;
     }
+  }
+
+  /** Show the turtle where it really is again (the write block was stopped part way, or has finished). */
+  stopWriting() {
+    this.writing = null;
   }
 
   // ---- Helpers ---------------------------------------------------------

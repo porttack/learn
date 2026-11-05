@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { runBlocks, createContext, RunError, Wait, MAX_CALL_DEPTH } from '../js/core/interpreter.js';
+import { runBlocks, createContext, RunError, Wait, MAX_CALL_DEPTH, Pace } from '../js/core/interpreter.js';
 import { definitionsOf } from '../js/core/definitions.js';
 import { Turtle } from '../js/core/turtle.js';
 import { BLOCKS } from '../js/core/blocks-spec.js';
@@ -673,6 +673,58 @@ test('a write block writes its own words, in the size in its socket', () => {
   const empty = new Turtle();
   [...runBlocks([{ op: 'write', args: [60], text: '' }, { op: 'write', args: [60] }], createContext({ turtle: empty }))];
   assert.equal(empty.ops.length, 0, 'no words, no lines');
+});
+
+test('a write block is drawn a short line at a time, each a part of a step, and a letter adds up to one step', () => {
+  const stepsFor = (text, font) => {
+    const turtle = new Turtle();
+    const seen = [];
+    const gen = runBlocks([{ op: 'write', args: [60], text, ...(font ? { font } : {}) }], createContext({ turtle }));
+    for (const step of gen) seen.push([step, turtle.ops.length]);
+    return { seen, turtle };
+  };
+  const hello = stepsFor('Hello');
+  assert.ok(hello.seen.length > hello.turtle.ops.length, 'many steps, more than there are lines, because lines are drawn in pieces');
+  assert.ok(hello.seen.every(([step]) => step instanceof Pace && step.block.op === 'write'), 'each is a part of a step, and it is the write block that lights up');
+  assert.ok(hello.seen[0][1] < hello.turtle.ops.length / 2, 'after the first step only a little is on the paper');
+  const total = (steps) => steps.seen.reduce((sum, [step]) => sum + step.share, 0);
+  assert.ok(Math.abs(total(hello) - 5) < 1e-9, 'five letters add up to five whole steps');
+  assert.ok(Math.abs(total(stepsFor('Go Cougars!')) - 'GoCougars!'.length) < 1e-9, 'a space takes no time');
+  assert.equal(stepsFor('').seen.length, 1, 'an empty write block still takes one whole step, like any block, so a loop of them cannot freeze the page');
+  assert.ok(!(stepsFor('').seen[0][0] instanceof Pace));
+  assert.ok(Math.abs(total(stepsFor('Hello', 'fancy')) - 5) < 1e-9, 'in any font');
+  // And what ends up on the paper is what it always was.
+  const whole = new Turtle();
+  whole.write('Hello', 60);
+  assert.equal(JSON.stringify(hello.turtle.ops), JSON.stringify(whole.ops));
+});
+
+test('set font and set curve change what the write blocks after them draw, until a clean', () => {
+  const draw = (...blocks) => {
+    const turtle = new Turtle();
+    [...runBlocks(blocks, createContext({ turtle }))];
+    return JSON.stringify(turtle.ops);
+  };
+  const write = { op: 'write', args: [60], text: 'Hi' };
+  const plain = draw(write);
+  assert.equal(draw({ op: 'setfont', args: [], font: 'script' }, write), plain, 'script is the font it starts in');
+  const bold = draw({ op: 'setfont', args: [], font: 'bold' }, write);
+  assert.notEqual(bold, plain);
+  assert.notEqual(draw({ op: 'setfont', args: [], font: 'serif' }, write), bold);
+  assert.equal(draw({ op: 'setfont', args: [] }, write), plain, 'a set font block with no font sets the default');
+  // It stays for every write after it, and a clean sets it back.
+  const twice = draw({ op: 'setfont', args: [], font: 'bold' }, write, { op: 'penup', args: [] }, { op: 'setxy', args: [0, -100] }, write);
+  assert.ok(twice.length > bold.length && twice.includes(JSON.stringify(JSON.parse(bold)[0]).slice(1, 40)));
+  assert.equal(draw({ op: 'setfont', args: [], font: 'bold' }, { op: 'clean', args: [] }, write), draw({ op: 'clean', args: [] }, write), 'clean puts the font back');
+  // Curve is a number, which can be worked out, and it is bent and centered; clean puts it back to straight.
+  assert.notEqual(draw({ op: 'setcurve', args: [120] }, write), plain);
+  assert.equal(draw({ op: 'setcurve', args: [0] }, write), plain);
+  assert.equal(draw({ op: 'setcurve', args: [{ op: 'multiply', args: [30, 4] }] }, write), draw({ op: 'setcurve', args: [120] }, write));
+  assert.equal(draw({ op: 'setcurve', args: [90] }, { op: 'clean', args: [] }, write), draw({ op: 'clean', args: [] }, write));
+  // The words follow the turtle's heading.
+  assert.notEqual(draw({ op: 'right', args: [90] }, write), plain);
+  // A set curve block with an empty socket says so, like every block.
+  assert.throws(() => draw({ op: 'setcurve', args: [null] }), (error) => error instanceof RunError && error.block?.op === 'setcurve');
 });
 
 test('a write block with an empty size socket says so, like every block', () => {

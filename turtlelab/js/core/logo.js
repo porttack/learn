@@ -9,7 +9,7 @@
 // `short: true` writes the abbreviations (fd, rt, pu) and `short: false` the whole words (forward, right,
 // penup). Both are read the same way.
 //
-// `jslogo: true` writes the same program for JSLogo (the real Logo copy on this site, /jslogo/) instead, which
+// `jslogo: true` writes the same program for JSLogo (the real Logo copy on this site, /logo/) instead, which
 // differs from TurtleLab's Logo in a few places: colors, arc, clean, fills, % and oneof (see the jslogo
 // functions below). It is what the Logo box's "Open in real Logo" button sends.
 //
@@ -202,6 +202,10 @@ function jslogoStatement(block, depth, ctx) {
     case 'speed':
       ctx.state.dropped.add('setspeed');
       return [];
+    case 'setfont':
+    case 'setcurve':
+      ctx.state.dropped.add(block.op); // JSLogo's label has one font and always runs straight
+      return [];
     case 'write': {
       const words = labelWords(block.text).trim();
       ctx.state.dropped.add('write (shown with label)');
@@ -236,7 +240,7 @@ function statement(block, depth, ctx) {
       return wrap(block.text ?? '', 70).map((text) => pad(depth, `; ${text}`.trimEnd()));
     case 'to':
       return [];
-    case 'forward': case 'back': case 'left': case 'right': case 'setheading': case 'setpensize': case 'print': case 'speed':
+    case 'forward': case 'back': case 'left': case 'right': case 'setheading': case 'setpensize': case 'print': case 'speed': case 'setcurve':
       return one(`${word(block.op)} ${args(0)}`);
     case 'arc': case 'setxy':
       return one(`${word(block.op)} ${args(0)} ${args(1)}`);
@@ -256,6 +260,8 @@ function statement(block, depth, ctx) {
     }
     case 'write':
       return one(`write |${(block.text ?? '').replace(/\|/g, '')}| ${args(0)}`);
+    case 'setfont':
+      return one(`setfont "${block.font ?? 'script'}`);
     case 'repeat':
       return listed(`repeat ${args(0)}`, block.body, depth, ctx);
     case 'forever':
@@ -395,6 +401,6 @@ export function toLogo(project, { short = false, jslogo = false, boxNames = [] }
  * never sends anywhere). JSLogo turns every underscore in the address into a space, so those are written as %5F.
  * `base` is where JSLogo is, from the page this is called on.
  */
-export function jsLogoAddress(code, base = '../jslogo/') {
+export function jsLogoAddress(code, base = '../logo/') {
   return `${base}#${encodeURIComponent(code).replace(/_/g, '%5F')}`;
 }

@@ -4,6 +4,9 @@ _site/
 .jekyll-metadata
 Gemfile.lock
 vendor/
+# ...except JSLogo's own editor (CodeMirror), kept in the repo on purpose so the page loads nothing from another site.
+# Without this line the folder is silently left out of every commit and the published page has no editor.
+!logo/vendor/
 
 # Source books — working input, never committed. See CLAUDE.md.
 source/

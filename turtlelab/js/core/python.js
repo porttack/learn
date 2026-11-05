@@ -290,7 +290,7 @@ function statement(block, depth, context) {
     case 'write':
       // Python's own turtle writes in a different way (a font on the screen, not lines), and EduBlocks'
       // turtle does not have write at all, so this block is left as a note to the reader.
-      return [pad(depth, `# write "${block.text ?? ''}": TurtleLab draws script letters that Python's turtle has no way to draw`), pad(depth, 'pass')];
+      return [pad(depth, `# write "${block.text ?? ''}": TurtleLab draws these words as lines that Python's turtle has no way to draw`), pad(depth, 'pass')];
     case 'clean':
       return line('clean()');
     case 'forward':
@@ -320,6 +320,14 @@ function statement(block, depth, context) {
       return line('penup()');
     case 'pendown':
       return line('pendown()');
+    case 'setfont':
+    case 'setcurve': {
+      // Python's turtle writes in a screen font that only goes straight, so these settings are left as a note to the reader too.
+      const note = block.op === 'setfont'
+        ? `# set font ${block.font ?? 'script'}: the letters of the write blocks after this are drawn in this font, which Python's turtle cannot do`
+        : `# set curve ${a(0)}: the words of the write blocks after this are bent, which Python's turtle cannot do`;
+      return [pad(depth, note), pad(depth, 'pass')];
+    }
     case 'setpensize':
       return line(context.track.size ? `set_pensize(${a(0)})` : `pensize(${a(0)})`);
     case 'setcolor':

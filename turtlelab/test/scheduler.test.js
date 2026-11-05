@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { Scheduler, SPEEDS } from '../js/core/scheduler.js';
-import { RunError, Wait, runBlocks, createContext } from '../js/core/interpreter.js';
+import { RunError, Wait, Pace, runBlocks, createContext } from '../js/core/interpreter.js';
 import { Turtle } from '../js/core/turtle.js';
 
 /** A clock the test controls. */
@@ -242,4 +242,45 @@ test('a speed block can slow a run down as well as speed it up', async () => {
   assert.equal(time.timers[0].ms, SPEEDS.medium, 'the block after it waits at medium');
   sched.stop();
   await done;
+});
+
+test('a write block is drawn a short line at a time, and a letter takes one step of waiting in all', async () => {
+  const letters = 'GoCougars'.length; // the space draws nothing, so it takes no time
+  for (const speed of ['slow', 'medium', 'fast']) {
+    const time = fakeTime();
+    const turtle = new Turtle();
+    const ink = [];
+    const sched = new Scheduler({ ...time, speed, onStep: () => ink.push(turtle.ops.length) });
+    const done = sched.start(runBlocks([{ op: 'write', args: [60], text: 'Go Cougars' }, { op: 'forward', args: [10] }], createContext({ turtle })));
+    const waits = [];
+    for (let guard = 0; guard < 2000; guard += 1) {
+      await flush();
+      const live = time.timers.find((entry) => entry.live);
+      if (!live) break;
+      waits.push(live.ms);
+      time.fire();
+    }
+    assert.deepEqual(await done, { status: 'done' });
+    const total = waits.reduce((sum, ms) => sum + ms, 0);
+    assert.ok(Math.abs(total - (letters + 1) * SPEEDS[speed]) < 1e-6, `${speed}: ${letters} letters and a forward take ${letters + 1} steps of waiting (${total} ms)`);
+    assert.ok(waits.every((ms) => ms >= 16 - 1e-9), `${speed}: no wait is shorter than a frame, the short ones are saved up`);
+    assert.ok(ink[0] < ink[ink.length - 1] / 2, `${speed}: after the first step only a little is on the paper (${ink[0]} of ${ink[ink.length - 1]} lines)`);
+    if (speed === 'slow') assert.ok(waits.length > letters * 3, `slow: the letters are drawn in many small waits, not one wait a letter (${waits.length})`);
+    if (speed === 'fast') assert.ok(waits.length <= letters * 1.5 + 2 && waits.length >= letters / 2, `fast: a letter is about a frame, so about a wait a letter (${waits.length})`);
+  }
+  // At instant it runs straight through with nothing to wait for.
+  const time = fakeTime();
+  const sched = new Scheduler({ ...time, speed: 'instant' });
+  const result = await sched.start(runBlocks([{ op: 'write', args: [60], text: 'Go Cougars' }], createContext({ turtle: new Turtle() })));
+  assert.deepEqual(result, { status: 'done' });
+  assert.equal(time.timers.length, 0);
+});
+
+test('a Pace step reports its block to onStep, like a Wait does', async () => {
+  const seen = [];
+  const block = { op: 'write' };
+  const time = fakeTime();
+  const sched = new Scheduler({ ...time, speed: 'instant', onStep: (b) => seen.push(b) });
+  await sched.start((function* () { yield new Pace(block, 0.5); yield new Pace(block, 0.5); })());
+  assert.deepEqual(seen, [block, block]);
 });

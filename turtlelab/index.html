@@ -11,7 +11,28 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; font-src 'self'; style-src 'self'; script-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TurtleLab</title>
+  <meta name="description" content="Snap blocks together and watch a turtle draw. A block-based drawing tool that runs in your browser, with nothing to install and nothing sent anywhere.">
+  <!--
+    What a mail program, chat or social site shows when this address is pasted in. They want full web
+    addresses, and the picture is made by dev/make-banner.mjs. These are only words in the page: nothing
+    here is fetched by TurtleLab itself, so the page still asks for nothing outside its own folder.
+  -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="learn.porttack.com">
+  <meta property="og:title" content="TurtleLab: snap blocks together and watch a turtle draw">
+  <meta property="og:description" content="A block-based drawing tool with loops, variables and math. It runs in your browser, with nothing to install and nothing sent anywhere.">
+  <meta property="og:url" content="https://learn.porttack.com/turtlelab/">
+  <meta property="og:image" content="https://learn.porttack.com/turtlelab/images/social.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="TurtleLab: a stack of blocks that repeat a forward and a turn, and the spiral of lines a turtle draws with them.">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <!-- On an iPad, Share then Add to Home Screen opens TurtleLab with no browser bars at all, using this icon. -->
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="TurtleLab">
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/site-menu.css">
@@ -61,6 +82,9 @@
     </button>
     <button id="grid" class="icon-button" type="button" title="Show a grid with x and y numbers" aria-label="Show or hide the grid" aria-pressed="false">
       <img src="images/grid-button.svg" alt="" draggable="false">
+    </button>
+    <button id="fullscreen" class="icon-button" type="button" title="Full screen: hide the browser bars so your blocks and drawing fill the screen" aria-label="Full screen" aria-pressed="false">
+      <img src="images/fullscreen-button.svg" alt="" draggable="false">
     </button>
     <button id="hide-blocks" class="icon-button" type="button" title="Hide blocks" aria-label="Hide or show blocks" aria-pressed="false">
       <img src="images/hide-blocks-button.svg" alt="" draggable="false">

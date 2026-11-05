@@ -88,7 +88,7 @@ the dashes out of them too for consistency.
       svg-export.js   the drawing as SVG: a picture, or hairlines for a cutter
       stitch-plan.js  a drawing as stitches for an embroidery machine (running stitch, one thread a color)
       embroidery.js   writes .dst (Tajima) and .pes (Brother) files; the Brother thread palette
-      lettering.js    the write block's words as lines (single-stroke script); lettering-data.js is GENERATED
+      lettering.js    the write block's words as lines (five single-stroke fonts, LETTER_FONTS); lettering-data.js is GENERATED
       png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
       project-file.js put a project inside a PNG, and read a PNG or .json back
     js/ui/            the browser side
@@ -108,6 +108,7 @@ the dashes out of them too for consistency.
       trash.js        the trash can and its shark (see Deleting, above)
       canvas-view.js  paper canvas (1400x1120) + draggable turtle overlay
       files.js        Save (download a PNG with the blocks inside), Open, drops
+      fullscreen.js   the Full screen button (standard and webkit names; hides itself where the browser cannot)
       storage.js      autosave to local storage (one item: turtlelab-project)
       main.js         wiring
     css/app.css  css/pages.css  fonts/roboto/  images/  images/samples/
@@ -117,7 +118,7 @@ the dashes out of them too for consistency.
 
 ## Samples
 
-`js/ui/samples.js` holds the student samples (24 now, easiest first, then six for an embroidery machine), each
+`js/ui/samples.js` holds the student samples (27 now, easiest first, then seven for an embroidery machine), each
 with `id`, `title`, `summary`, `look` (the picture's alt text), `concepts`
 (little tags), `note` (a sticky note, at most 250 characters so it is not cut
 off), `program` and optionally `defines` (blocks the sample makes). They are different from `demos.js`, which is for the
@@ -153,7 +154,8 @@ checks. All wording is student-facing, so no dashes and no grade level.
 - The toolbar also has a **Lessons** link (to `../turtle-lessons/`, the lesson pathway kept outside
   this folder because it is CC content), and "TurtleLab Lessons" is in the site menu (all five pages'
   copies, kept in step by a test). The toolbar is full: below 1100 px wide its gaps are squeezed in
-  `app.css` so it stays on one row down to 1000 px (`sample-checks.mjs` checks 1366, 1100, 1000).
+  `app.css` so it stays on one row down to 1000 px (`sample-checks.mjs` checks 1366, 1100, 1000). The Full screen button made one icon too
+  many at 1000 px, so below 1060 px the icons are 2rem (a probe measured one row at 1000 and two rows from about 960 down, as before).
 
 ### The initials samples (for Lesson 1)
 
@@ -175,7 +177,10 @@ the picture's red shapes were separated, each outline was fitted by a closed cha
 "angle, radius" numbers, so a toe is four quarter circles `arc 90 30, arc 90 75` twice, drawn by one `toe` block four
 times), and the S is two identical halves (`repeat 2 [arc -240 50, arc 240 10, left 90, forward 40, left 90]`).
 The L and V are plain polygons of `set xy`. It is close, not perfect, on purpose: stitched thread is not perfect either.
-`stitch-cougars` is one `write` block (see "The write block"). A sample may say `maxHops` (how many separate
+`stitch-cougars` is one `write` block (see "The write block"). Three samples show the text settings: `text-fonts` (set font, five rows), `words-around`
+(turning the turtle, and set curve as an arch and a bowl) and `stitch-badge` (an embroidery badge: two rings with SLV COUGARS arched over the top and GO TEAM
+bowled along the bottom, 580 stitches, 22 hops; its curve numbers and standing places were worked out from the words' widths, so if the words or the size change,
+work them out again and re-set `maxHops`). A sample may say `maxHops` (how many separate
 lines the machine stitches; the default is 2), and `clearWidth` (how wide its drawing is, in steps).
 
 `sampleStacks` puts a sample's blocks around the paper so the drawing stays clear. With blocks of its own: the
@@ -291,7 +296,7 @@ penup) and Follow my blocks. The user asked for it: "allow the user to modify th
   (both styles), reads it back, runs both with the same seeded random, and requires the very same ops, final state, printed lines, waits and boxes.
 - **The dialect** (header comment of logo-compile.js is the list): fd/forward, bk/back, lt/left, rt/right, setxy, setx, sety, seth/setheading, home, arc,
   pu/penup, pd/pendown, setpensize, setpc/setpencolor ([r g b], a color name, or three inputs), setsc/setscreencolor, cs/clearscreen/clean (= the clean
-  block, which also resets the pen), startfill, endfill, pr/print, setspeed, stop, wait, write |words| size, repeat, forever, if, ifelse, make, to ... end,
+  block, which also resets the pen), startfill, endfill, pr/print, setspeed, stop, wait, write |words| size, setfont "name, setcurve n, repeat, forever, if, ifelse, make, to ... end,
   `+ - * / %`, `< > =`, `(random lo hi)`, `random n` (0 to n-1, like UCB Logo), oneof, sum/difference/product/quotient/modulo, xcor/ycor/heading/pensize/penred/...
   It is deliberately NOT UCB Logo in these ways: colors are 0 to 255, `arc` moves the turtle (positive curves right), `%` is infix, `wait` IS in 60ths
   (Logo's way; the block counts tenths, converted both ways), `setspeed` and `oneof` and `write` are ours. Real Logo words we lack (sqrt, and/or/not, lists,
@@ -309,7 +314,7 @@ penup) and Follow my blocks. The user asked for it: "allow the user to modify th
 - **Not saved.** The text lives only in the textarea (max 20,000 letters): no autosave, not in the project or PNG, nothing stored (the privacy page says so; `dev/logo-checks.mjs`
   checks storage and cookies). Until the student types, the box follows the blocks; once they have, it never overwrites their words (Follow my blocks does, on purpose).
   Deeply nested input is refused politely (the compiler catches RangeError).
-- **Open in real Logo** (a button in the box): opens the program in JSLogo at `../jslogo/#...` on this same site (see the root CLAUDE.md, "JSLogo"). If the box has been
+- **Open in real Logo** (a button in the box): opens the program in JSLogo at `../logo/#...` on this same site (see the root CLAUDE.md, "JSLogo"). If the box has been
   typed in, that text is compiled first (a mistake is shown and nothing is sent), and the variables keep the names the student gave them (`compileLogo` returns
   `boxNames`, and `toLogo(..., { boxNames })` writes `:size` and not `:box1`). Then `toLogo(..., { jslogo: true })` writes it for JSLogo. `window.open` is called from the
   click, so a blocked pop-up is noticed and said.
@@ -440,25 +445,91 @@ the two files. The tests:
 
 ## The write block
 
-`write` draws words as lines, in a single-stroke script (Hershey Script Simplex). It is in the **Notes** palette, not
+`write` draws words as lines, in one of five single-stroke fonts (all Hershey fonts, public domain). It is in the **Notes** palette, not
 Pen or Turtle, on purpose: the teacher worried students would use it as a shortcut for drawing letters (the lesson
 Steps 1 and 5 tell students to skip it), and the Notes palette is where words live.
 
-- **The block:** `{ op: 'write', args: [size], text }`. The words are in `block.text` (cleaned by `cleanLetteringText`: only the
+- **The block:** `{ op: 'write', args: [size], text, font? }`. The words are in `block.text` (cleaned by `cleanLetteringText`: only the
   95 printable ASCII characters, at most 40), the socket is how tall a capital letter is (default 60). Spec flag `textSlot`
   (`{ hint }`); `newBlock('write')` starts with the words "Hello". It is the only block with words on it besides the sticky note.
+- **Settings are blocks of their own (2026-11-04, user: "make the curve a separate block like we are with the font"):** the font and the curve are
+  the TURTLE's settings, like pen color and size, not parts of the write block (the dropdown was first built inside `write`; the user asked for a
+  `set font` block like `set color`, and an earlier reading of "the block itself" as the write block had been mine, not theirs). **`set font`**
+  (`{ op: 'setfont', args: [], font }`, Notes palette, spec flag `fontSlot: true`) picks `turtle.font`; **`set curve`** (`{ op: 'setcurve', args: [degrees] }`,
+  default 120) sets `turtle.curve`. Both are put back (script, 0) by `clean` and `resetState`, so a run never depends on the last one. A `write` block has no
+  font of its own (an earlier build kept one on it; `cleanBlock` now drops it). A `set font` block always keeps its `font` (an unknown value is script).
+- **Fonts** (`LETTER_FONTS` in `core/lettering.js`): `script` (Script Simplex, the default and the only font before 2026-11-04), `fancy` (Script Complex,
+  looped), `sans` (Futura Light), `bold` (Futura Medium, drawn as double lines so it stitches thick) and `serif` (Times Roman). Chosen because every one has
+  all 95 keys and a capital H that is `size` tall, and the thin ones are few long lines (so few jumps for an embroidery machine: "Cougars" is 10 lines in
+  script and sans, about 23 to 29 in fancy, bold and serif, which the tips tell the student). The Hershey set also has blackletter, Greek and symbols; left
+  out (many short strokes, or not Latin). Cursive was tried and dropped: it draws "Cougars" exactly like script. To change the list: edit `FONTS` in
+  `dev/make-lettering-data.py` AND `LETTER_FONTS` (a test requires the same ids in the same order).
+- **The dropdown** is the `set font` block's one `nameSlots` entry with `editor: 'font'` (classes `nameslot textslot fontslot`; the `textslot` class keeps the
+  sample checks from mistaking it for a definition). It shows the font name and an arrow, always as wide as the longest name so the block never changes size.
+  `Workspace.chooseFont` opens `.font-menu` under it (above if there is no room), one button per font, each showing the word Hello drawn with the real
+  lines (`fontPreview`); Escape, a click elsewhere or choosing closes it, arrow keys wrap, and choosing sets `block.font` (one undo step).
+- **The words follow the turtle (2026-11-04, user: "how would we move it if we wanted the words sideways?"):** the tops of the letters point the way the turtle
+  faces, so the turtle facing up (as it starts) writes upright text, and `right 90` makes the words run down the right side, `left 90` up the left. This
+  CHANGED the old rule "whatever its heading": the only sample with a write block (`stitch-cougars`) writes at heading 0, and the lessons tell students to
+  skip write. No new block: heading is the rotation (`Turtle.writeSteps` turns every point by the heading with `sinDeg`/`cosDeg`, so quarter turns are exact).
+- **Curved text (`set curve`):** `curve` is how many degrees the BASELINE bends over the whole length of the words (`curvePoint` in `core/lettering.js`, tested
+  against real circles): 0 straight, positive arches like a rainbow with the letters on the outside of the circle, negative is a bowl with the letters inside,
+  360 goes right round (the most; clamped). The radius follows from the length (`radius = width / curve in radians`), so one number works for any word. **Bent
+  words are centered on the turtle** (the top of the arch, the bottom of the bowl), unlike straight words, which start at the turtle; the user accepted that
+  mismatch ("Okay") over adding a left/center choice. To put an arch around the middle of a badge, stand at y = the radius (`width / curve`), as the
+  `stitch-badge` sample does with numbers worked out by a scratch script. Bent lines are NOT joined back into one line (a curve is not straight), so bent
+  text is made of the little pieces. Walks between strokes stay straight across the paper.
+- **Logo:** `setfont "fancy` (a quoted font name; an unknown one says which fonts there are) and `setcurve 120`; `write |Go| 60` is unchanged. The JSLogo
+  translation leaves both out and says so (`setfont`, `setcurve` in its one comment). Python gets a comment and `pass` for each, like write.
 - **On screen:** `block-view.js` draws "write", a box for the words, then the size socket. The box is a `nameSlots` entry like the
   hat's name boxes, with `editor: 'text'` (class `textslot`); `Workspace.editText` types into it; long words show shortened with `...`
   (the block keeps all of them). The sample checks tell a definition from a write block by `.nameslot:not(.textslot)`.
-- **Drawing:** `Turtle.write(text, size)` records ordinary `line` ops (pen color and thickness), left to right starting at the turtle,
-  **whatever its heading and whether or not the pen is down**, and the turtle does not move. Because they are plain lines,
+- **The turtle traces the letters (2026-11-04, user: "draw the text based on our speed parameter", then "simulate the turtle following the
+  vectors", then "letters like H just sort of appear in pieces instead of pen-up, move, pen-down, draw"):** `write` is a FLOW generator in the
+  interpreter. It steps `Turtle.writeSteps`, which yields a *share of a step* (the interpreter wraps it in a `Pace`) each time the pen tip moves a
+  little: **drawing** along a stroke, or **walking** (pen up, no ink) from where the pen was to the start of the next stroke. A letter like H has three
+  strokes, so the pen draws a side, walks to the next, draws it, walks to the bar, draws that. Script is joined, so it rarely walks. Each move is cut
+  into pieces of at most `size / 16` steps so a long line is seen growing, and **when a line is finished its pieces are joined back into the one op**
+  (`splice` in `writeSteps`), so the finished ops are byte for byte what `write` (all at once, which just runs the generator to the end) makes: SVG,
+  PDF and embroidery do not change. The pieces of one letter add up to share 1, so a letter takes one step's wait at the speed (500, 100, 20 ms, none
+  at instant); walking counts for `WALK_COST` (0.35) of drawing the same distance, as a hand moves faster when it is not writing. The scheduler saves
+  up waits shorter than a frame (16 ms, `FRAME_MS`) and does them together (`owed`), so medium and fast are not slowed by tiny timers and the total
+  time is exact. The picture of the turtle follows the pen tip (`Turtle.writing`, read by `CanvasView.sync`), turned the way it is going; `writing`
+  is not the turtle's state (`x`, `y` and `heading`, what `x`, `y`, `heading` blocks report, never change) and goes back to null at the end, on Stop
+  (`main.js` calls `turtle.stopWriting()` in onStart and onFinish, because a stopped generator is dropped, not finished), and on `clean`. Spaces take no
+  time; an empty block takes one whole step (so a loop of them cannot freeze the page). The turtle's return to where it started after the last letter is
+  instant, not walked. Slow is 0.5 s a letter, so 40 letters take 20 s. Tests: turtle, interpreter and scheduler (fake clock) unit tests. - **Drawing:** `Turtle.write(text, size, font = this.font)` records ordinary `line` ops (pen color and thickness), left to right starting at the turtle,
+  **whether or not the pen is down** (and turned with the turtle, see above), and the turtle does not move. Because they are plain lines,
   Fit, SVG, the PDF and the embroidery files all work with nothing extra. Letters the font lacks are skipped.
 - **Python:** the generator writes a comment and `pass` (EduBlocks' turtle has no `write`, and Python's draws a screen font, not lines). The
   Python tests compare where the turtle ends, not how far it drew, for samples with the `write` concept.
-- **Data:** `js/core/lettering-data.js` is generated by `dev/make-lettering-data.py` from the Hershey-Fonts PyPI package
-  (public domain font; acknowledgments in the file and in NOTICE.md; the package is not used at run time).
+- **Data:** `js/core/lettering-data.js` (`FONT_DATA`, about 62 KB) is generated by `dev/make-lettering-data.py` from the Hershey-Fonts PyPI package
+  (public domain fonts; acknowledgments in the file and in NOTICE.md; the package is not used at run time). The script font's numbers
+  are byte for byte what they were when it was the only font.
 - **Storage:** the words are part of the project like a sticky note's, so `privacy.html`, `privacy.md` (effective Nov 4, 2026) and the
   guide say "notes or write blocks".
+
+## Full screen
+
+The toolbar's `#fullscreen` button (two arrows pointing apart, `ui/fullscreen.js`) makes the whole page full screen and back. It uses the
+browser's Fullscreen API under either name (`requestFullscreen`, or `webkitRequestFullscreen` on an iPad's Safari) and **hides itself where the
+browser has neither** (an iPhone cannot do it for a page like this), so it never does nothing. It follows the browser's own
+`fullscreenchange` event, so Esc, or the browser's own way out, puts the icon right (`exit-fullscreen-button.svg` while on). Nothing is stored.
+`test/fullscreen.test.js` runs it against pretend documents (both names, refusal, Esc); `dev/view-checks.mjs` presses it in real Chrome.
+**Not tried on a real iPad.** Safari restricts typing while a page is full screen in some versions, and number boxes need the keyboard, so the
+dependable iPad route is also offered: `index.html` carries `apple-mobile-web-app-capable` tags and an `apple-touch-icon`
+(`images/apple-touch-icon.png`, the turtle on blue, 180 pixels), so Share, then Add to Home Screen, opens TurtleLab with no browser bars.
+The Guide says both. If a teacher reports the number boxes will not type in full screen on an iPad, that is the reason: tell them to use Add
+to Home Screen instead.
+
+## The picture shown when the address is pasted
+
+`index.html` has Open Graph and Twitter card tags (title, description, `og:image` = `https://learn.porttack.com/turtlelab/images/social.png`,
+1200 by 630, with its width, height and alt text). Mail programs (Apple Mail), chat and social sites read these when someone pastes
+`https://learn.porttack.com/turtlelab/`; they need FULL web addresses, so the page names its own domain (the tags are only words, the page
+fetches nothing from them). `images/social.png` is made by `dev/make-banner.mjs` (which also makes the home card's `banner.png`) and is recorded
+in `NOTICE.md` like the banner. It only works once the site is pushed. Gmail shows no preview of a pasted link at all, whatever the tags say; other
+programs may keep a stale preview for a while. Other pages (guide, samples, about) have no tags.
 
 ## Key design decisions
 

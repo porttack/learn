@@ -98,7 +98,7 @@ Press the PDF button in TurtleLab and attach the PDF to this assignment.
 
 ## The write block
 
-TurtleLab has a **write** block (Notes palette, next to the sticky note) that draws words in a single line of script. It can draw letters for a student, so the student pages for Step 1 (initials) and Step 5 (capstone) tell students to skip it. It is not in the Pen or Turtle palettes on purpose. If you want it off the table for an assignment, add this line to the assignment text:
+TurtleLab has a **write** block (Notes palette, next to the sticky note) that draws words in a single line, in one of five fonts. It can draw letters for a student, so the student pages for Step 1 (initials) and Step 5 (capstone) tell students to skip it. It is not in the Pen or Turtle palettes on purpose. If you want it off the table for an assignment, add this line to the assignment text:
 
 > Do not use the write block in this assignment. The letters and the picture have to come from your own blocks.
 
@@ -108,7 +108,7 @@ It is fine, and fun, for names on a finished picture and for the embroidery samp
 
 TurtleLab has a **Logo** button (the letters fd) that shows the blocks as Logo, the language the turtle was made for. A student can type in that box and press Run Logo to draw what they wrote, with either `forward` or `fd`. Two things to know when you grade. What a student types there is not saved anywhere, and it is not in the PDF. The PDF has the blocks and the drawing that is on the paper, so a drawing made by typing Logo will not match the blocks beside it. If you want the blocks, tell students to build the assignment with blocks. The Logo box is good for exploring, and for students who already know a text language.
 
-It also has an **Open in real Logo** button, which is mostly for you when you teach: it opens the program (the blocks, or the Logo a student typed) in [JSLogo]({{ '/jslogo/' | relative_url }}), a real Logo interpreter kept on this site, in a new tab, where it runs at once. Project that tab to show the same program as blocks, as TurtleLab's Logo, and as real Logo. The program is translated for JSLogo, because the two Logos differ a little (arcs, colors, and what happens on a clean), and anything JSLogo cannot do is left out with a note at the top. Nothing is sent to another website, and JSLogo keeps nothing between visits.
+It also has an **Open in real Logo** button, which is mostly for you when you teach: it opens the program (the blocks, or the Logo a student typed) in [JSLogo]({{ '/logo/' | relative_url }}), a real Logo interpreter kept on this site, in a new tab, where it runs at once. Project that tab to show the same program as blocks, as TurtleLab's Logo, and as real Logo. The program is translated for JSLogo, because the two Logos differ a little (arcs, colors, and what happens on a clean), and anything JSLogo cannot do is left out with a note at the top. Nothing is sent to another website, and JSLogo keeps nothing between visits.
 
 ## What is in the PDF
 

@@ -416,8 +416,10 @@ export class CanvasView {
 
   /** Put the turtle picture where the turtle is. */
   sync() {
-    const { heading } = this.turtle;
-    const at = this.canvasPoint(this.turtle.x, this.turtle.y);
+    // While a write block is tracing letters, the turtle is shown at the tip of its pen, facing the way it is drawing.
+    const shown = this.turtle.writing ?? this.turtle;
+    const { heading } = shown;
+    const at = this.canvasPoint(shown.x, shown.y);
     const px = (at.x / PIXEL_RATIO) * this.scale;
     const py = (at.y / PIXEL_RATIO) * this.scale;
     const half = this.spriteSize / 2;

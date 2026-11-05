@@ -63,7 +63,7 @@
 
 - id: jslogo
   title: "JSLogo: a real Logo"
-  url: /jslogo/
+  url: /logo/
   blurb: >-
     A real Logo interpreter that runs in your browser: type forward, repeat
     and procedures of your own. It is a copy of Joshua Bell's open source

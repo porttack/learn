@@ -429,6 +429,37 @@ export const SAMPLES = [
     ],
     program: [b('start'), b('clean'), b('speed', 4), b('setcolor', 20, 120, 40), b('setpensize', 2), call('tree', ['size'], 70)],
   },
+  {
+    id: 'text-fonts',
+    title: 'Words in five fonts',
+    summary: 'The set font block picks the font for every write block after it.',
+    look: 'The word Cougars written five times, in script, fancy, sans, bold and serif, one under another',
+    concepts: ['write', 'set font', 'my own block', 'input'],
+    note: 'Set font is a setting, like color and pen size: every write block after it uses it. The show block writes the same word each time, so you can compare the fonts, top to bottom: script, fancy, sans, bold, serif.',
+    defines: [{ name: 'show', params: ['y'], body: [b('penup'), b('setxy', -150, input('y')), { op: 'write', args: [60], text: 'Cougars' }] }],
+    program: [
+      b('start'), b('clean'), b('setcolor', 20, 70, 170), b('setpensize', 3),
+      { op: 'setfont', args: [], font: 'script' }, call('show', ['y'], 190),
+      { op: 'setfont', args: [], font: 'fancy' }, call('show', ['y'], 95),
+      { op: 'setfont', args: [], font: 'sans' }, call('show', ['y'], 0),
+      { op: 'setfont', args: [], font: 'bold' }, call('show', ['y'], -95),
+      { op: 'setfont', args: [], font: 'serif' }, call('show', ['y'], -190),
+    ],
+  },
+  {
+    id: 'words-around',
+    title: 'Words every which way',
+    summary: 'Turn the turtle and the words turn with it. Set curve bends them into an arch or a bowl.',
+    look: 'The word RAINBOW arched over the top, SMILE curved like a bowl below, and SIDEWAYS running down the right side',
+    concepts: ['write', 'set curve', 'turning'],
+    note: 'The tops of the letters point the way the turtle faces, so turning the turtle turns the words. Set curve bends them: positive arches like a rainbow, negative is a bowl. Bent words are centered on the turtle.',
+    program: [
+      b('start'), b('clean'), b('setcolor', 200, 40, 90), b('setpensize', 3), b('penup'),
+      b('setxy', 0, 190), b('setcurve', 120), { op: 'write', args: [50], text: 'RAINBOW' },
+      b('setxy', 0, -210), b('setcurve', -120), { op: 'write', args: [50], text: 'SMILE' },
+      b('setcurve', 0), b('setxy', 280, 230), b('setheading', 90), { op: 'write', args: [36], text: 'SIDEWAYS' },
+    ],
+  },
   // These three are made for a stitching (embroidery) machine: only lines, no filled shapes, as few
   // separate lines as possible, and no more than two colors. Right-click Save and choose PES or DST.
   {
@@ -525,9 +556,30 @@ export const SAMPLES = [
     summary: 'The write block draws script letters with the pen, so a word becomes a line a machine can stitch.',
     look: 'The word Cougars written in red cursive script as one thin line',
     concepts: ['write', 'for an embroidery machine'],
-    note: 'The write block draws script letters with the pen, in its color and thickness. Pen up first so the turtle does not draw a line to the start. Change the words, the size or the color. Right-click Save and choose PES or DST.',
+    note: 'The write block draws script letters with the pen, in its color and thickness. Pen up first so the turtle does not draw a line to the start. Change the words, the font, the size or the color. Right-click Save and choose PES or DST.',
     maxHops: 7,
     program: [b('start'), b('clean'), b('setcolor', ...RED), b('setpensize', 3), b('penup'), b('setxy', -247, -30), { op: 'write', args: [110], text: 'Cougars' }],
+  },  {
+    id: 'stitch-badge',
+    title: 'A badge with curved words to stitch',
+    summary: 'Two rings, with words curved round the top and the bottom of the badge.',
+    look: 'A round badge: two circles, SLV COUGARS arched along the top and GO TEAM curved along the bottom, in blue script',
+    concepts: ['write', 'set curve', 'my own block', 'input', 'for an embroidery machine'],
+    note: 'Curved words are centered on the turtle, so the turtle stands at the top of the arch and the bottom of the bowl. The curve is how many degrees the words bend. Right-click Save and choose PES or DST.',
+    maxHops: 22,
+    defines: [
+      {
+        name: 'ring',
+        params: ['radius'],
+        body: [b('penup'), b('setxy', 0, input('radius')), b('setheading', 90), b('pendown'), b('arc', 360, input('radius')), b('penup'), b('setheading', 0)],
+      },
+    ],
+    program: [
+      b('start'), b('clean'), b('setcolor', ...RED), b('setpensize', 3),
+      call('ring', ['radius'], 180), call('ring', ['radius'], 100), b('setcolor', 20, 70, 170),
+      b('setxy', 0, 118), b('setcurve', 192), { op: 'write', args: [36], text: 'SLV COUGARS' },
+      b('setxy', 0, -161), b('setcurve', -93), { op: 'write', args: [36], text: 'GO TEAM' },
+    ],
   },
 ];
 

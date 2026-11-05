@@ -129,7 +129,7 @@ browser's developer tools.
 
 ## JSLogo
 
-[JSLogo]({{ '/jslogo/' | relative_url }}) is a real Logo interpreter that runs in your
+[JSLogo]({{ '/logo/' | relative_url }}) is a real Logo interpreter that runs in your
 browser. It is open source software by Joshua Bell, and we keep a copy on this site
 instead of sending you to the original, so that what you type never goes to another
 website. The copy makes no request to any other site (it is built so the browser would
@@ -138,7 +138,7 @@ procedures and history on your device, and that has been removed, so a refresh s
 fresh. TurtleLab's Logo box has a button that opens your program in JSLogo. The program
 travels in the part of the address after the `#`, which stays in your browser, and it is
 opened on this same site. What changed from the original is listed on the
-[about page]({{ '/jslogo/about-this-copy.html' | relative_url }}).
+[about page]({{ '/logo/about-this-copy.html' | relative_url }}).
 
 ## Hosting and standard web server logs
 

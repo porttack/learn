@@ -1,4 +1,4 @@
-// A way to run JSLogo (the real Logo copy in ../../jslogo, written by Joshua Bell) from the tests, with no browser:
+// A way to run JSLogo (the real Logo copy in ../../logo, written by Joshua Bell) from the tests, with no browser:
 // its interpreter is loaded as it is, and given a turtle that only writes down what it is told to do.
 // The tests use it to check that the Logo TurtleLab sends to JSLogo (core/logo.js with `jslogo: true`) draws what
 // TurtleLab's own blocks draw. This file is not part of the app.
@@ -6,7 +6,7 @@
 import vm from 'node:vm';
 import { existsSync, readFileSync } from 'node:fs';
 
-const LOGO_JS = new URL('../../jslogo/logo.js', import.meta.url);
+const LOGO_JS = new URL('../../logo/logo.js', import.meta.url);
 
 /** Is the copy of JSLogo there to test against? */
 export const hasJsLogo = existsSync(LOGO_JS);
@@ -96,7 +96,7 @@ function loadInterpreter() {
   };
   sandbox.self = sandbox;
   vm.createContext(sandbox);
-  vm.runInContext(`${readFileSync(LOGO_JS, 'utf8')}\nthis.LogoInterpreter = LogoInterpreter;`, sandbox, { filename: 'jslogo/logo.js' });
+  vm.runInContext(`${readFileSync(LOGO_JS, 'utf8')}\nthis.LogoInterpreter = LogoInterpreter;`, sandbox, { filename: 'logo/logo.js' });
   return sandbox.LogoInterpreter;
 }
 

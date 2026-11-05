@@ -74,7 +74,7 @@ ICT anchor (locators are the step slugs; `standards_locator: slug` on the pathwa
 variation are the strong fits; variables and procedures are only `related` because they appear as optional or read-only
 material. The per-lesson widget shows each step's own codes. After editing it, run `tools/publish_standards.sh`.
 
-TurtleLab has a `write` block (Notes palette) that draws words in script. Student Steps 1 and 5 say to skip it, and
+TurtleLab has a `write` block (Notes palette) that draws words in one of five fonts. Student Steps 1 and 5 say to skip it, and
 `teacher-notes.md` has the line for an assignment that should not allow it.
 
 **Two audiences, kept apart.** The student pages (steps, planning sheet, landing page) serve a kid
@@ -182,19 +182,22 @@ The rules most often gotten wrong:
 - Dev server on port **4011** (`python3 -m http.server 4011 --directory
   turtlelab`), unit tests with `cd turtlelab && node --test`.
 
-### JSLogo (`jslogo/`)
+### JSLogo (`logo/`)
 
 A copy of Joshua Bell's **JSLogo** (https://github.com/inexorabletash/jslogo, Apache-2.0, copied from commit 26dfcac, 2 Oct 2026), served at
-`/jslogo/` as plain static files, **outside `turtlelab/`** (the AGPL island takes no outside code; this is its own third-party folder, like
+`/logo/` as plain static files (moved there from `/jslogo/` on 2026-11-04; the folder is still called JSLogo in code, tests and
+the home card's id, and a tiny `jslogo/` folder remains only to forward old links, keeping a program in the address; delete it when nothing links there), **outside `turtlelab/`** (the AGPL island takes no outside code; this is its own third-party folder, like
 `working-in-python/`). It exists so TurtleLab's Logo box can send a program to a *real* Logo without anything leaving the site. Rules:
 
 - **It must make no request to any other site and keep nothing in the browser.** The upstream loaded CodeMirror from cdnjs, a font from Google
   and TogetherJS from togetherjs.com, and saved procedures and history in IndexedDB. All of that is removed (CodeMirror is vendored in
   `vendor/codemirror/`; `initStorage` in `index.js` does nothing), both HTML pages carry a strict Content-Security-Policy (no inline script, no
-  `eval`, `connect-src 'self'`), and `to_arity` in `logo.js` no longer uses `eval`. `jslogo/about-this-copy.html` lists every change, as Apache-2.0 asks.
+  `eval`, `connect-src 'self'`), and `to_arity` in `logo.js` no longer uses `eval`. `logo/about-this-copy.html` lists every change, as Apache-2.0 asks.
   **If you ever update from upstream, re-apply those changes** (list is in that page) and run the checks below.
+- **`vendor/` is in `.gitignore` (for Bundler), so `!logo/vendor/` re-includes the editor.** Without that line CodeMirror was silently left out of every commit
+  (found 2026-11-04: the pushed page had no editor, though it worked from the disk). `test/jslogo.test.js` fails if any file the JSLogo pages load is ignored.
 - Do not add an analytics script, CDN link, font import or `eval`, and do not let it store anything. The site and TurtleLab privacy pages promise this.
-- **Programs arrive in the address:** `/jslogo/#<program>` runs at once (`?<program>` too). JSLogo turns every `_` into a space, so write `%5F`
+- **Programs arrive in the address:** `/logo/#<program>` runs at once (`?<program>` too). JSLogo turns every `_` into a space, so write `%5F`
   (`jsLogoAddress` in `turtlelab/js/core/logo.js` does). Several lines open the big editor box (our fix).
 - **TurtleLab's Logo is not JSLogo's Logo,** so `toLogo(project, { jslogo: true })` writes the program again for JSLogo: colors as `"#rrggbb` words (JSLogo's
   lists are 0 to 99), arcs as a `tlarc` helper of 3 degree steps (JSLogo's `arc` draws around the turtle and does not move it), `clean` as `clearscreen` plus

@@ -6,7 +6,9 @@
 // the next step, it runs one block and pauses. The scheduler's job is to keep
 // asking, and to decide what to do between steps:
 //
-//   slow, medium, fast  wait a little after every block so you can watch.
+//   slow, medium, fast  wait a little after every block so you can watch. (The
+//                       write block is drawn a short line at a time, each a part of
+//                       a step, so a letter takes one step's wait in all.)
 //   instant             don't wait. Run for about 12 milliseconds, then let
 //                       the browser draw a frame, then carry on. That way
 //                       even `forever` never locks up the page.
@@ -16,7 +18,13 @@
 // Time comes in through options (now, setTimer, ...) so tests can use a fake
 // clock and run in an instant.
 
-import { Wait } from './interpreter.js';
+import { Pace, Wait } from './interpreter.js';
+
+/**
+ * A part of a step shorter than this is not worth stopping for: the browser draws about once in this long, so the wait
+ * is saved up until it adds up to a frame (see Pace), and nothing is lost. (Milliseconds.)
+ */
+const FRAME_MS = 16;
 
 /** Milliseconds to wait after each block at each speed. */
 export const SPEEDS = Object.freeze({
@@ -98,6 +106,7 @@ export class Scheduler {
 
   async _run(generator, token) {
     let sliceStart = this._now();
+    let owed = 0; // waiting saved up from parts of a step, not yet done
     while (true) {
       // stop() or a newer start() already told everyone, so just leave.
       if (token !== this._token) return { status: 'stopped' };
@@ -118,11 +127,32 @@ export class Scheduler {
         continue;
       }
 
+      const delay = SPEEDS[this.speed] ?? SPEEDS.medium;
+
+      // A part of a step (a short line of a letter being written): its share of the wait, saved up until it is worth a frame.
+      if (step.value instanceof Pace) {
+        if (this.onStep) this.onStep(step.value.block);
+        if (delay > 0) {
+          owed += delay * step.value.share;
+          if (owed >= FRAME_MS) {
+            const wait = owed;
+            owed = 0;
+            await this._sleep(wait);
+            sliceStart = this._now();
+          }
+        } else if (this._now() - sliceStart >= this.sliceMs) {
+          await this._nextFrame();
+          sliceStart = this._now();
+        }
+        continue;
+      }
+
       if (this.onStep) this.onStep(step.value);
 
-      const delay = SPEEDS[this.speed] ?? SPEEDS.medium;
       if (delay > 0) {
-        await this._sleep(delay);
+        const wait = delay + owed; // any waiting still saved up is done now, so a letter never takes less than its time
+        owed = 0;
+        await this._sleep(wait);
         sliceStart = this._now();
       } else if (this._now() - sliceStart >= this.sliceMs) {
         await this._nextFrame();

@@ -149,11 +149,24 @@ test('boxes and the blocks you make have palettes of their own, in that order, e
   assert.notEqual(PALETTE_COLORS.boxes.fill, PALETTE_COLORS.myblocks.fill, 'the two do not look alike');
 });
 
+test('set font and set curve are Notes blocks beside write: a font dropdown, and one number in degrees', () => {
+  assert.equal(BLOCKS.setfont.palette, 'notes');
+  assert.equal(BLOCKS.setfont.kind, 'command');
+  assert.deepEqual(BLOCKS.setfont.args, []);
+  assert.equal(BLOCKS.setfont.fontSlot, true);
+  assert.equal(BLOCKS.setcurve.palette, 'notes');
+  assert.deepEqual(BLOCKS.setcurve.args.map((arg) => arg.default), [120]);
+  assert.deepEqual(entries.filter(([, spec]) => spec.fontSlot).map(([op]) => op), ['setfont']);
+  assert.deepEqual(entries.filter(([, spec]) => spec.palette === 'notes').map(([op]) => op), ['note', 'write', 'setfont', 'setcurve'], 'the Notes palette lists them in this order');
+  for (const op of ['setfont', 'setcurve']) assert.ok(!/[\u2013\u2014]/.test(BLOCKS[op].help), `no dashes in the tip of ${op}`);
+});
+
 test('the write block is a command in the Notes palette, with words on it and one socket for the size', () => {
   assert.equal(BLOCKS.write.palette, 'notes');
   assert.equal(BLOCKS.write.kind, 'command');
   assert.deepEqual(BLOCKS.write.args.map((arg) => [arg.label, arg.default]), [['size', 60]]);
   assert.equal(typeof BLOCKS.write.textSlot.hint, 'string');
+  assert.equal(BLOCKS.write.fontSlot, undefined, 'the font is chosen by a block of its own, not on the write block');
   // It is the only block with words on it besides the sticky note.
   assert.deepEqual(entries.filter(([, spec]) => spec.textSlot).map(([op]) => op), ['write']);
   assert.ok(!/[–—]/.test(BLOCKS.write.help), 'no dashes in the tip');

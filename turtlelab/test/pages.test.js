@@ -216,9 +216,9 @@ test('the Guide and the Privacy page explain the Logo box, and say what you type
 
 test('the Guide, the Privacy page and the teacher notes tell about Open in real Logo, and that it stays on this site', () => {
   const guide = read('guide.html');
-  assert.ok(guide.includes('<strong>Open in real Logo</strong>') && guide.includes('href="../jslogo/"'));
+  assert.ok(guide.includes('<strong>Open in real Logo</strong>') && guide.includes('href="../logo/"'));
   assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf('Write Logo'), guide.indexOf('Things to know'))), 'no dashes in the Logo section');
   const privacy = read('privacy.html');
-  assert.match(privacy, /Open in real Logo<\/em> button opens the program in a new tab at <code>\/jslogo\/<\/code>/);
+  assert.match(privacy, /Open in real Logo<\/em> button opens the program in a new tab at <code>\/logo\/<\/code>/);
   assert.match(privacy, /makes no outside requests and keeps nothing in the browser/);
 });

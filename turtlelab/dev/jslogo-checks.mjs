@@ -1,4 +1,4 @@
-// Dev tool, not part of the app. Checks, in a real headless Chrome, the copy of JSLogo kept at /jslogo/ and the trip to it from
+// Dev tool, not part of the app. Checks, in a real headless Chrome, the copy of JSLogo kept at /logo/ and the trip to it from
 // TurtleLab's Logo box: it runs a program from the address, makes no request outside the site, keeps nothing in the browser,
 // and the browser itself refuses anything else. About 20 seconds.
 // It needs the WHOLE site served (JSLogo is outside the turtlelab folder). From the repo's top folder:
@@ -27,7 +27,7 @@ const editorText = () => chrome.eval(`[...document.querySelectorAll('.CodeMirror
 const outside = () => chrome.requests.filter((url) => !url.startsWith(SITE) && !url.startsWith('data:') && !url.startsWith('blob:'));
 async function openJsLogo(code) {
   await chrome.goto(`${SITE}turtlelab/about.html`); // a different page first, so this is a fresh load and not a change of #
-  await chrome.goto(`${SITE}jslogo/#${encode(code)}`);
+  await chrome.goto(`${SITE}logo/#${encode(code)}`);
   await chrome.sleep(1500);
 }
 
@@ -37,7 +37,7 @@ try {
   check('JSLogo opens from this site and runs a program given in the address', (await ink()) > 300, `${await ink()} pixels`);
   check('it says nothing is wrong', chrome.problems.length === 0 && !(await chrome.eval(`document.body.innerText.includes('Error:')`)), chrome.problems.join(' | '));
   check('it asked for nothing outside this site (no CDN, no fonts, no collaboration service)', outside().length === 0, outside().join(', '));
-  check('the editor is ours: CodeMirror came from this site', chrome.requests.some((url) => url.includes('/jslogo/vendor/codemirror/codemirror.min.js')) && typeof (await chrome.eval(`typeof CodeMirror`)) === 'string' && (await chrome.eval(`typeof CodeMirror`)) === 'function');
+  check('the editor is ours: CodeMirror came from this site', chrome.requests.some((url) => url.includes('/logo/vendor/codemirror/codemirror.min.js')) && typeof (await chrome.eval(`typeof CodeMirror`)) === 'string' && (await chrome.eval(`typeof CodeMirror`)) === 'function');
   check('TogetherJS and the Collaborate link are gone', (await chrome.eval(`typeof window.TogetherJS`)) === 'undefined' && !(await chrome.eval(`document.body.innerText.includes('Collaborate')`)));
   check('both pages carry a policy that lets them load only from this site', await chrome.eval(`/default-src 'self'/.test(document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.content ?? '') && !/unsafe-eval/.test(document.querySelector('meta[http-equiv="Content-Security-Policy"]').content)`));
   const referencePolicy = await chrome.eval(`fetch('language.html').then((r) => r.text()).then((t) => /Content-Security-Policy/.test(t) && !/<script>/.test(t))`);
@@ -51,7 +51,7 @@ try {
   check('and it opens the big box, so it can be read', await chrome.eval(`document.body.classList.contains('multi')`) && /tri_angle/.test(await editorText()), (await editorText()).slice(0, 40));
 
   // Nothing is kept for next time.
-  await chrome.goto(`${SITE}jslogo/`);
+  await chrome.goto(`${SITE}logo/`);
   await chrome.sleep(1200);
   check('after a refresh the library and history are empty again (nothing was kept)', (await chrome.eval(`document.querySelectorAll('#library .snippets > *, #history .snippets > *').length`)) === 0 && (await chrome.eval(`(async () => (await indexedDB.databases()).length)()`)) === 0);
 
@@ -64,6 +64,12 @@ try {
   const frameOk = await chrome.eval(`(() => { const e = document.getElementById('reference').contentDocument?.querySelector('.example'); if (!e) return false; e.click(); return e.textContent.trim().length > 0; })()`);
   await chrome.sleep(300);
   check('and clicking an example on the reference page really does that', frameOk && (await editorText()).trim().length > 0 && !/^fd 5$/.test((await editorText()).trim()), (await editorText()).slice(0, 30));
+
+  // The old address, /jslogo/, only forwards: to the new one, with the program that was in the address.
+  await chrome.goto(`${SITE}turtlelab/about.html`);
+  await chrome.goto(`${SITE}jslogo/#${encode('repeat 4 [fd 100 rt 90]')}`);
+  await chrome.sleep(2200);
+  check('the old address /jslogo/ forwards to /logo/ and the program in it still runs', (await chrome.eval(`location.pathname`)) === '/logo/' && (await ink()) > 300, `${await chrome.eval(`location.href`)}; ${await ink()} pixels`);
 
   // ---- The trip from TurtleLab ---------------------------------------------------------------------------------
   const sent = [];
@@ -81,7 +87,7 @@ try {
     const url = (await chrome.eval(`window.__opened`))[0] ?? '';
     sent.push([sample, url]);
   }
-  check('from TurtleLab, the button sends each program to /jslogo/ on this same site', sent.every(([, url]) => url.startsWith(`${SITE}jslogo/#`)), sent.map(([, u]) => u.slice(0, 40)).join(' | '));
+  check('from TurtleLab, the button sends each program to /logo/ on this same site', sent.every(([, url]) => url.startsWith(`${SITE}logo/#`)), sent.map(([, u]) => u.slice(0, 40)).join(' | '));
   for (const [sample, url] of sent) {
     await chrome.goto(`${SITE}turtlelab/about.html`);
     await chrome.goto(url);
@@ -91,7 +97,7 @@ try {
   check('and none of that asked for anything outside the site, or caused a console error', outside().length === 0 && chrome.problems.length === 0, `${outside().join(', ')} ${chrome.problems.join(' | ')}`);
 
   // ---- Last of all (it provokes the browser's refusal, which logs policy messages) --------------------------------
-  await chrome.goto(`${SITE}jslogo/`);
+  await chrome.goto(`${SITE}logo/`);
   await chrome.sleep(800);
   const before = chrome.problems.length;
   const probe = await chrome.eval(`(async () => {

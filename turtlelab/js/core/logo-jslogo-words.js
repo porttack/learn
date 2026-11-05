@@ -2,7 +2,7 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 // See COPYING in the folder above this one.
 //
-// MADE from the interpreter in ../../jslogo by asking it for its list of built-in words (test/logo.test.js checks
+// MADE from the interpreter in ../../logo by asking it for its list of built-in words (test/logo.test.js checks
 // it is still the same list, so if JSLogo is ever updated the test says to make this again). Lower case.
 
 export const JSLOGO_WORDS = new Set([

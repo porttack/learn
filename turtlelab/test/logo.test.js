@@ -179,6 +179,46 @@ test('random: (random low high) and random n, with the same chance as the blocks
   assert.deepEqual(printedBy('repeat 20 [ print (oneof 3 4) ]').filter((x) => x !== '3' && x !== '4'), []);
 });
 
+test('setfont and setcurve are Logo too: a font name in quotes, and a number of degrees', () => {
+  const result = compileLogo('setfont "fancy setcurve 120 write |Go| 50 setfont "SANS setcurve -45 write |Hi| 30 setcurve 0');
+  assert.deepEqual(JSON.parse(JSON.stringify(result.main)), [
+    { op: 'setfont', args: [], font: 'fancy' },
+    { op: 'setcurve', args: [120] },
+    { op: 'write', args: [50], text: 'Go' },
+    { op: 'setfont', args: [], font: 'sans' },
+    { op: 'setcurve', args: [-45] },
+    { op: 'write', args: [30], text: 'Hi' },
+    { op: 'setcurve', args: [0] },
+  ]);
+  const project = { stacks: [{ x: 0, y: 0, blocks: [b('start'), { op: 'setfont', args: [], font: 'bold' }, b('setcurve', { op: 'box1' }), { op: 'write', args: [50], text: 'Go' }, { op: 'setfont', args: [] }] }] };
+  const code = toLogo(project);
+  assert.match(code, /setfont "bold\n/);
+  assert.match(code, /setcurve :box1\n/);
+  assert.match(code, /setfont "script$/m, 'a set font block with no font is script');
+  assert.ok(!/write \|Go\| 50 "/.test(code), 'the write command has no font of its own');
+  assert.deepEqual(JSON.parse(JSON.stringify(compileLogo(code).main.filter((x) => x.op === 'setfont' || x.op === 'setcurve'))), [
+    { op: 'setfont', args: [], font: 'bold' }, { op: 'setcurve', args: [{ op: 'box1', args: [] }] }, { op: 'setfont', args: [], font: 'script' },
+  ]);
+  const turned = runLogo('setfont "bold setcurve 90 write |Go| 40');
+  const plain = runLogo('write |Go| 40');
+  assert.notEqual(JSON.stringify(turned.ops), JSON.stringify(plain.ops), 'they change what is drawn');
+});
+
+test('setfont with a font TurtleLab does not have, or none, says which it has', () => {
+  const unknown = compileLogo('setfont "gothic');
+  assert.equal(unknown.ok, false);
+  assert.match(unknown.error, /"gothic is not a font TurtleLab has\. The fonts are script, fancy, sans, bold, serif/);
+  assert.equal(unknown.line, 1);
+  for (const bare of ['setfont', 'setfont 5', 'setfont "']) {
+    const result = compileLogo(bare);
+    assert.equal(result.ok, false, bare);
+    assert.match(result.error, /setfont needs the name of a font in quotes/, bare);
+  }
+  // Both words are Logo words now, so a block of your own cannot be called that.
+  assert.match(compileLogo('to setfont forward 1 end').error ?? '', /already a Logo word/);
+  assert.match(compileLogo('to setcurve forward 1 end').error ?? '', /already a Logo word/);
+});
+
 test('write, with words in bars or in quotes', () => {
   const result = compileLogo('write |Go Cougars| 50 write "Hi 30');
   assert.deepEqual(JSON.parse(JSON.stringify(result.main)), [{ op: 'write', args: [50], text: 'Go Cougars' }, { op: 'write', args: [30], text: 'Hi' }]);
@@ -331,7 +371,7 @@ function everything() {
         { op: 'ifelse', args: [{ op: 'greater', args: [{ op: 'box4' }, 4] }], body: [b('forward', { op: 'oneof', args: [10, 20] })], elseBody: [b('back', { op: 'random', args: [1, 3.5] })] },
         { op: 'if', args: [{ op: 'equal', args: [{ op: 'heading' }, 45] }], body: [b('print', { op: 'pensize' }), b('print', { op: 'penred' }), b('print', { op: 'pengreen' }), b('print', { op: 'penblue' }), b('print', { op: 'y' })] },
         b('print', { op: 'mod', args: [-7, 3] }), b('print', { op: 'divide', args: [1, 3] }), b('print', { op: 'paren', args: [{ op: 'add', args: [0.1, 0.2] }] }),
-        b('wait', 0.5), b('wait', { op: 'box1' }), { op: 'write', args: [40], text: 'Go' }, { op: 'forever', args: [], body: [b('forward', 1), { op: 'if', args: [{ op: 'less', args: [-50, { op: 'x' }] }], body: [b('stop')] }] },
+        b('wait', 0.5), b('wait', { op: 'box1' }), { op: 'write', args: [40], text: 'Go' }, { op: 'setfont', args: [], font: 'fancy' }, b('setcurve', 90), { op: 'write', args: [30], text: 'Cougars' }, b('setcurve', { op: 'box1' }), { op: 'setfont', args: [], font: 'serif' }, { op: 'write', args: [{ op: 'box1' }], text: 'Hi' }, b('right', 90), b('setcurve', -45), { op: 'forever', args: [], body: [b('forward', 1), { op: 'if', args: [{ op: 'less', args: [-50, { op: 'x' }] }], body: [b('stop')] }] },
         b('forward', { op: 'box3' }), b('forward', { op: 'penred' }), b('forward', 12345),
       ] },
     ],

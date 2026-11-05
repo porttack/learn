@@ -359,7 +359,7 @@ function everything() {
       b('store1', 3), b('store2', 4), b('store3', 5), b('store4', 6), b('print', { op: 'box4' }),
       rep(3, b('forward', 1)), rep({ op: 'box1' }, b('forward', 1)),
       ifBlock(cond, b('forward', 1)), ifElse(op('equal', 1, 1), [b('forward', 1)], [ifBlock(op('greater', 2, 1), b('back', 1))]),
-      b('wait', 5), b('speed', 2), b('speed', 4), call('spin', ['n', 'm'], 10, 20),
+      b('wait', 5), b('speed', 2), b('speed', 4), { op: 'setfont', args: [], font: 'bold' }, b('setcurve', 90), b('setcurve', { op: 'box1' }), call('spin', ['n', 'm'], 10, 20),
       { op: 'forever', args: [], body: [{ op: 'stop', args: [] }] },
     ),
   );
@@ -433,10 +433,17 @@ print(json.dumps({"missing": [n for n in names if not hasattr(turtle, n)]}))
   assert.deepEqual(outcome.missing, [], 'every turtle name the program uses is in real Python\'s turtle too');
 });
 
-test('a write block is left as a comment and a pass: Python\'s turtle cannot draw TurtleLab\'s script letters', needsPython, () => {
+test('set font and set curve are notes to the reader too, and make a valid body on their own in a loop', needsPython, () => {
+  const lines = mainLines(projectOf(program(b('clean'), rep(2, { op: 'setfont', args: [], font: 'fancy' }, b('setcurve', 90)))));
+  assert.deepEqual(lines.slice(1), ['for _ in range(2):', '    # set font fancy: the letters of the write blocks after this are drawn in this font, which Python\'s turtle cannot do', '    pass', '    # set curve 90: the words of the write blocks after this are bent, which Python\'s turtle cannot do', '    pass']);
+  const alone = projectOf(program(b('clean'), rep(3, b('setcurve', 45))));
+  assert.doesNotThrow(() => runPython(toPython(alone), 'check'));
+});
+
+test('a write block is left as a comment and a pass: Python\'s turtle cannot draw TurtleLab\'s letters', needsPython, () => {
   const write = { op: 'write', args: [60], text: 'Hi there' };
   const lines = mainLines(projectOf(program(b('clean'), rep(2, write, b('forward', 10)))));
-  assert.deepEqual(lines.slice(1), ['for _ in range(2):', '    # write "Hi there": TurtleLab draws script letters that Python\'s turtle has no way to draw', '    pass', '    forward(10)']);
+  assert.deepEqual(lines.slice(1), ['for _ in range(2):', '    # write "Hi there": TurtleLab draws these words as lines that Python\'s turtle has no way to draw', '    pass', '    forward(10)']);
   // On its own in a loop it still makes a valid body, and the program still ends in the same place.
   const alone = projectOf(program(b('clean'), rep(3, write)));
   assert.doesNotThrow(() => runPython(toPython(alone), 'check'));

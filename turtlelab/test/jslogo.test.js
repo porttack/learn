@@ -1,9 +1,11 @@
 // Tests for the Logo that TurtleLab sends to JSLogo (core/logo.js with `jslogo: true`). JSLogo's own interpreter (the copy in
-// ../../jslogo) runs the Logo, with a turtle that records what it is told, and what it draws is compared with what
+// ../../logo) runs the Logo, with a turtle that records what it is told, and what it draws is compared with what
 // TurtleLab's blocks draw. Skipped if the copy of JSLogo is not there.
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 
 import { SAMPLES, sampleStacks } from '../js/ui/samples.js';
 import { toLogo, jsLogoAddress } from '../js/core/logo.js';
@@ -16,7 +18,7 @@ import { Turtle } from '../js/core/turtle.js';
 import { boundsOfOps, visibleOps } from '../js/core/fit.js';
 import { runJsLogo, jsLogoPrimitives, hasJsLogo } from './jslogo-harness.mjs';
 
-const needsJsLogo = { skip: hasJsLogo ? false : 'the copy of JSLogo in ../jslogo is not there' };
+const needsJsLogo = { skip: hasJsLogo ? false : 'the copy of JSLogo in ../logo is not there' };
 const b = (op, ...args) => ({ op, args });
 const rep = (count, ...body) => ({ op: 'repeat', args: [count], body });
 const call = (name, params, ...args) => ({ op: 'call', name, params, args });
@@ -82,7 +84,7 @@ const hasWorkedOutColor = (stacks) => {
 };
 const usesChance = (sample) => /random|oneof/.test(JSON.stringify(sample.program) + JSON.stringify(sample.defines ?? []));
 /** The write block's script letters are lines in TurtleLab but only text in JSLogo (label), so the pictures differ on purpose. */
-const usesWrite = (sample) => JSON.stringify(sample.program).includes('"op":"write"');
+const usesWrite = (sample) => JSON.stringify([sample.program, sample.defines ?? []]).includes('"op":"write"'); // (a block of the sample's own can write too)
 
 // ---- The list of JSLogo's words ---------------------------------------------------------------------------
 
@@ -259,9 +261,30 @@ test('the address carries the program after the # exactly, underscores and all, 
   const asJsLogoReadsIt = (address) => decodeURIComponent(address.slice(address.indexOf('#') + 1).replace(/_/g, ' '));
   for (const code of ['fd 100', 'to letter_A\n  fd 5\nend\nletter_A\n', 'setpc "#1e50c8\nprint "hello world', 'a_b__c % 100 & ? = \' " < > [x] (y)\n\n  indented', 'café → 100%', '#hash # in # it']) {
     const address = jsLogoAddress(code);
-    assert.ok(address.startsWith('../jslogo/#'), address);
+    assert.ok(address.startsWith('../logo/#'), address);
     assert.ok(!address.includes('_') && !address.slice(address.indexOf('#') + 1).includes(' '), 'no underscore or space is left as it is');
     assert.equal(asJsLogoReadsIt(address), code);
   }
-  assert.equal(jsLogoAddress('fd 1', 'https://example.org/jslogo/'), 'https://example.org/jslogo/#fd%201');
+  assert.equal(jsLogoAddress('fd 1', 'https://example.org/logo/'), 'https://example.org/logo/#fd%201');
+});
+
+// ---- The copy has to reach the published site ------------------------------------------------------------------
+
+test('every file the JSLogo pages load from this site is there, and git does not ignore it (so a push publishes it)', needsJsLogo, (t) => {
+  // This once failed in real life: the repo's .gitignore says `vendor/` (for Bundler), which quietly left out the editor
+  // (logo/vendor/codemirror) from every commit, so the published page had no editor while it worked from the disk.
+  // (--no-index: judge by the rules alone, not by whether the file happens to be in the index already.)
+  const folder = new URL('../../logo/', import.meta.url);
+  const probe = spawnSync('git', ['check-ignore', '-q', 'logo/index.html'], { cwd: new URL('../..', import.meta.url).pathname });
+  if (probe.error || probe.status === 128) return t.skip('not inside a git checkout');
+  for (const page of ['index.html', 'language.html', 'about-this-copy.html']) {
+    const html = readFileSync(new URL(page, folder), 'utf8');
+    const wanted = [...html.matchAll(/(?:src|href)=["']?([^"'\s>]+)/g)].map((m) => m[1]).filter((u) => !/^(?:[a-z]+:|\/\/|#|\.\.|\/)/i.test(u) && !u.startsWith('./'));
+    for (const file of wanted.map((u) => u.split(/[?#]/)[0]).filter(Boolean)) {
+      if (file.endsWith('/')) continue;
+      assert.ok(existsSync(new URL(file, folder)), `${page} loads ${file}, which is missing`);
+      const ignored = spawnSync('git', ['check-ignore', '--no-index', '-q', `logo/${file}`], { cwd: new URL('../..', import.meta.url).pathname });
+      assert.equal(ignored.status, 1, `${page} loads ${file}, but git ignores it, so it would never be published`);
+    }
+  }
 });

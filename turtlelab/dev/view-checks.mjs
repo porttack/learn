@@ -261,6 +261,28 @@ try {
   await chrome.sleep(200);
   check('the grid button turns it off again', await chrome.eval(`document.querySelector('.paper-grid').hidden === true && document.getElementById('grid').getAttribute('aria-pressed') === 'false'`));
 
+  // ---- Full screen ---------------------------------------------------------------------------------
+  await openWith([{ x: 20, y: 20, blocks: [b('start'), b('forward', 50)] }]);
+  const fullState = () => chrome.eval(`({ on: Boolean(document.fullscreenElement), pressed: document.getElementById('fullscreen').getAttribute('aria-pressed'), icon: document.querySelector('#fullscreen img').getAttribute('src'), hidden: document.getElementById('fullscreen').hidden })`);
+  const before = await fullState();
+  check('the Full screen button is on the toolbar, visible, and starts as "not full screen"', !before.hidden && !before.on && before.pressed === 'false' && /\/fullscreen-button\.svg$|^images\/fullscreen-button\.svg$/.test(before.icon), JSON.stringify(before));
+  await click('#fullscreen');
+  await chrome.sleep(700);
+  const during = await fullState();
+  check('pressing it makes the page full screen, and the icon and pressed state follow', during.on && during.pressed === 'true' && /exit-fullscreen-button\.svg$/.test(during.icon), JSON.stringify(during));
+  check('the app is still there and still lays out in full screen (toolbar and paper both visible)', await chrome.eval(`(() => { const t = document.querySelector('.toolbar').getBoundingClientRect(); const p = document.querySelector('.paper-box').getBoundingClientRect(); return t.width > 300 && t.height > 20 && p.width > 100 && p.height > 100 && p.bottom <= innerHeight + 1; })()`));
+  await click('#fullscreen');
+  await chrome.sleep(700);
+  const after = await fullState();
+  check('pressing it again leaves full screen and puts the icon back', !after.on && after.pressed === 'false' && /^images\/fullscreen-button\.svg$/.test(after.icon), JSON.stringify(after));
+  // The browser can end full screen by itself (Esc, or its own button): the icon must notice.
+  await click('#fullscreen');
+  await chrome.sleep(700);
+  await chrome.eval(`document.exitFullscreen()`);
+  await chrome.sleep(700);
+  const escaped = await fullState();
+  check('when the browser leaves full screen on its own (like the Esc key), the button is put right', !escaped.on && escaped.pressed === 'false' && /^images\/fullscreen-button\.svg$/.test(escaped.icon), JSON.stringify(escaped));
+
   // ---- Nothing new is stored ----------------------------------------------------------------------
   await chrome.sleep(600);
   check('none of this stores anything new: the only item is still the autosave',

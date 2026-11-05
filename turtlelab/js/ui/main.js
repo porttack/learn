@@ -31,6 +31,7 @@ import { PythonBox } from './python-box.js';
 import { LogoBox } from './logo-box.js';
 import { compileLogo } from '../core/logo-compile.js';
 import { toLogo, jsLogoAddress } from '../core/logo.js';
+import { setupFullscreen } from './fullscreen.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -169,6 +170,7 @@ let runningLogo = false; // is what is running (or ran last) the Logo box's prog
 const scheduler = new Scheduler({
   speed: startSpeed,
   onStart: () => {
+    turtle.stopWriting();
     runButton.disabled = true;
     stopButton.disabled = false;
     view.sprite.classList.add('locked');
@@ -192,6 +194,7 @@ const scheduler = new Scheduler({
     runButton.disabled = false;
     stopButton.disabled = true;
     view.sprite.classList.remove('locked');
+    turtle.stopWriting(); // Stop part way through a word: the turtle is shown where it really is, not where its pen was
     view.sync();
     workspace.setRunning(null);
     outlined = false;
@@ -277,7 +280,7 @@ function runLogo(text) {
 }
 
 /**
- * Open the program in JSLogo, a real Logo kept on this site (/jslogo/), in a new tab, where it runs at once. The program goes in
+ * Open the program in JSLogo, a real Logo kept on this site (/logo/), in a new tab, where it runs at once. The program goes in
  * the part of the address after the #, which the browser never sends anywhere. TurtleLab's own Logo is a little different from
  * JSLogo's, so it is written again for JSLogo (core/logo.js, `jslogo: true`). If the box has been typed in, that text is read
  * first, so it is the student's Logo that goes (and a mistake in it is reported here, not sent).
@@ -575,6 +578,7 @@ gridButton.addEventListener('click', () => {
   gridButton.title = on ? 'Hide the grid' : 'Show a grid with x and y numbers';
   say(on ? 'The grid shows x and y, the same numbers you type into set xy. Press the button again to hide it. It is never in a saved picture, but a PDF always has a grid on its drawing.' : '');
 });
+setupFullscreen({ button: $('fullscreen'), say });
 $('fit').addEventListener('click', () => {
   // Pressed again with the paper already fitted, it goes back to the normal paper.
   const result = fitEverything({ toggle: true });
