@@ -433,6 +433,13 @@ if (params.get('fish') === 'now') setTimeout(() => fish.swim(), 400);
 const boat = new Boat({ stage, trash: palettes.trash, others: [fish], auto: false });
 fish.others.push(boat);
 if (params.get('boat') === 'now') setTimeout(() => boat.sail(), 400);
+// Poking the can (as many times as its score, or once if it has none) calls a visitor: a fish or the boat, in whichever order the dice say, and if the
+// first cannot come now (one is already out, say) the other is tried. (?canscore=5 starts the can with a score, for trying it out.)
+palettes.trash.onSummon = () => {
+  const sends = Math.random() < 0.5 ? [() => fish.swim(), () => boat.sail()] : [() => boat.sail(), () => fish.swim()];
+  return sends.some((send) => send());
+};
+if (Number(params.get('canscore')) > 0) palettes.trash.setScore(params.get('canscore'));
 
 // After 45 seconds with nobody doing anything the turtle might scratch its head, yawn or blow bubbles, or the shark might doze off and
 // dream of turtle stew. Any click, key, touch or scroll stops it and starts the wait over. (?antic=scratch and so on plays one at once (?antic=breath is the color breathing), and

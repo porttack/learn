@@ -15,8 +15,13 @@ function setup({ canShowing = true } = {}) {
       classes,
       setAttribute(name, value) { this.attributes[name] = value; },
       append(...items) { this.children.push(...items); },
+      addEventListener() {},
       remove() { this.removed = true; },
-      querySelector: () => ({ getBoundingClientRect: () => (canShowing ? { left: 38, top: 480, width: 17, height: 11 } : { left: 0, top: 0, width: 0, height: 0 }) }),
+      // (whatever is looked for: the mouth, the score's sticker and its number, each a stand-in that can be written on)
+      querySelector: () => ({
+        getBoundingClientRect: () => (canShowing ? { left: 38, top: 480, width: 17, height: 11 } : { left: 0, top: 0, width: 0, height: 0 }),
+        setAttribute() {}, textContent: '', classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+      }),
       getBoundingClientRect: () => (canShowing ? { left: 8, top: 450, width: 80, height: 128 } : { left: 0, top: 0, width: 0, height: 0 }),
       offsetWidth: 80,
     };
@@ -127,3 +132,94 @@ test('a block dropped on the can (or held over it) calls the shark home at once,
     }
   }
 });
+
+// ---- The score on the can, and poking it ---------------------------------------------------------------------------
+
+test('each thing the shark eats is a point on the can: a block thrown in, and a fish or boat it swims out to eat when the jaws close on it', () => {
+  const page = setup();
+  try {
+    assert.equal(page.trash.points, 0);
+    assert.ok(!page.trash.el.classList.contains('has-score'), 'no sticker with no score');
+    page.trash.feed();
+    assert.equal(page.trash.points, 1);
+    assert.ok(page.trash.el.classList.contains('has-score'));
+    page.trash.feed();
+    assert.equal(page.trash.points, 2);
+    page.advance(2000);
+    const home = page.trash.mouthPoint({ raised: true });
+    const target = { x: 400, y: 440 };
+    const ms = swimTime(Math.hypot(target.x - home.x, target.y - home.y));
+    assert.equal(page.trash.hunt(target), true);
+    page.advance(HUNT.RISE_MS + ms);
+    assert.equal(page.trash.points, 2, 'not yet: the jaws have not closed');
+    page.advance(HUNT.BITE_AT_MS);
+    assert.equal(page.trash.points, 3, 'the bite is the point');
+    page.advance(5000);
+    assert.equal(page.trash.points, 3, 'and only one');
+  } finally { page.restore(); }
+});
+
+test('a harpoon on the can takes a point off, and at the last point the sticker comes off', () => {
+  const page = setup();
+  try {
+    page.trash.setScore(2);
+    assert.ok(page.trash.el.classList.contains('has-score'));
+    page.trash.clang();
+    assert.equal(page.trash.points, 1);
+    assert.ok(page.trash.el.classList.contains('has-score'));
+    page.trash.clang();
+    assert.equal(page.trash.points, 0);
+    assert.ok(!page.trash.el.classList.contains('has-score'), 'zero is no sticker');
+    page.trash.clang();
+    assert.equal(page.trash.points, 0, 'a harpoon with no score does not go below nothing');
+    page.trash.feed();
+    assert.equal(page.trash.points, 1, 'the next meal starts it again');
+  } finally { page.restore(); }
+});
+
+test('poking: as many quick pokes as the score call a visitor; a slow poke starts the count again; with no score one poke does', () => {
+  const page = setup();
+  try {
+    let now = 0;
+    page.trash.now = () => now;
+    const sent = [];
+    page.trash.onSummon = () => { sent.push(now); return true; };
+    page.trash.setScore(3);
+    page.trash.poke();
+    now = 400;
+    page.trash.poke();
+    assert.deepEqual(sent, [], 'two pokes of three');
+    assert.equal(page.trash.leftLabel.textContent, '1 more', 'and it says so');
+    now = 800;
+    page.trash.poke();
+    assert.deepEqual(sent, [800], 'the third calls a visitor');
+    assert.equal(page.trash.leftLabel, null, 'no bubble when one comes');
+    now = 1000;
+    page.trash.poke();
+    now = 5000; // a long pause
+    page.trash.poke();
+    assert.deepEqual(sent, [800], 'the pause started the count again');
+    assert.equal(page.trash.leftLabel.textContent, '2 more');
+    page.trash.setScore(0);
+    now = 9000;
+    page.trash.poke();
+    assert.deepEqual(sent, [800, 9000], 'with no score one poke is enough');
+  } finally { page.restore(); }
+});
+
+test('if no visitor can come just now (one is already out), the can says so, and on a computer that asked for calm poking does nothing at all', () => {
+  const page = setup();
+  try {
+    page.trash.onSummon = () => false;
+    page.trash.poke();
+    assert.equal(page.trash.leftLabel.textContent, 'not now');
+    page.trash.showLeft(null);
+    globalThis.matchMedia = () => ({ matches: true });
+    let asked = 0;
+    page.trash.onSummon = () => { asked += 1; return true; };
+    page.trash.poke();
+    assert.equal(asked, 0);
+    assert.equal(page.trash.leftLabel, null);
+  } finally { page.restore(); }
+});
+

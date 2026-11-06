@@ -90,6 +90,7 @@ the dashes out of them too for consistency.
       elegance.js     elegance 0.0 to 1.0 from the blocks (copy and paste, repeated numbers, left over, nesting) with plain reasons
       efficiency.js   efficiency 0.0 to 1.0 from a run (lines drawn over again, pen up walking, tiny lines, steps) with reasons
       quality.js      puts the three together: assess(), complexity01 (points on a curve), tenths() for showing one decimal
+      can-score.js    the shark's score on the can (a point per meal, one off per harpoon) and how many pokes call a visitor
       hand.js         the wobble of a hand drawn line (a smooth noise of WHERE a point is) and the tile of chalk grain; see "Hand drawn papers"
       svg-export.js   the drawing as SVG: a picture, or hairlines for a cutter
       stitch-plan.js  a drawing as stitches for an embroidery machine (running stitch, one thread a color)
@@ -438,6 +439,19 @@ is about to clean anyway).
   plus Z, Y or S all close it (keeping the change first), since Undo and Redo swap the whole project and the picker would be writing into a block that is gone.
   It opens under the box, else above, else as far as it will go on screen (a short window covers its own block). Pure helpers with tests in `core/color.js` (`toHexUpper`, `channelHex`, `channelBinary`, `colorBits`,
   `parseHex`, `parseChannelHex`, `parseBinary`, `colorOfArgs`): `test/color.test.js`; real typing and clicking in `dev/editor-checks.mjs` ("The color picker"). Nothing is stored or sent, Logo/Python/PNG are unchanged.
+- **The can's score, and poking the can (2026-11-05, the user: "put a score on the garbage can once the shark eats something and subtract a point if he gets harpooned. If it gets to zero or less, just remove the
+  score. And if the click on the garbage can the number of times of the score (or once if the score is <= 0), make either the fish come up or the boat with the harpoon come. Is that nice whimsy?").**
+  `core/can-score.js` (pure, `test/can-score.test.js`): `CanScore` (`ate()` +1; `harpooned()` -1 where reaching zero takes the score away, so it stays 0, never negative, and the next meal starts at 1; `set(n)`),
+  `pokesNeeded(points)` (the score, or 1 if there is none) and `Pokes` (a run of pokes; a pause over `POKE_GAP_MS` 1500 starts the count again). `ui/trash.js` shows it: **a yellow sticker drawn inside the can's own
+  SVG** (`g.can-score`, on the can's body, so it moves with the can; hidden by CSS unless `.has-score`; the number shrinks for 2 and 3 digits; it bumps on a point and flashes red on a harpoon that leaves a score).
+  **Where the points come from** (all inside `Trash`, so nothing else has to know): `feed()` (a stack of blocks thrown in) is +1; `hunt()`'s bite (`BITE_AT_MS`, when a clicked fish or boat is eaten) is +1, once;
+  `clang()` (the boat's harpoon hit) is -1. `snap()` (the shark snapping back at the boat) and `spit()` (Undo) change nothing. **Poking:** `.trash-hit`, a div over the can's body (below the shark, inside the can)
+  with `pointer-events: auto` (the can itself stays `pointer-events: none` so a carried stack gets the mouse, and the stage's pan handler only reacts to the stage and the paper, so presses on the can do not pan).
+  `Trash.poke()` jiggles the can (`.poked`), shows a bubble ("2 more", for 1.4 s), and on the last poke calls `onSummon`, which `main.js` sets: a fish or the boat, in a random order, the second tried if the first
+  `swim()`/`sail()` returns false ("not now" shows if neither can come). **On a computer that asked for reduced motion poking does nothing** (like the burp and the idle antics); the sticker still shows. Nothing is
+  stored; the score starts again at nothing on each page load. `?canscore=5` starts the can with a score, for trying it out. Big scores need many pokes (the user's rule: no cap; add one if it proves tedious).
+  Tests: `test/hunt.test.js` (the stand-in page now has `addEventListener` and a writable `querySelector` stub; score and poke tests), and `dev/can-checks.mjs` (real clicks: sticker, feeding, poking, a clicked fish
+  scoring, the harpoon taking a point and the sticker coming off, reduced motion, nothing stored; run it with the dev server like the others).
 - **The badge: blocks, complexity, elegance, efficiency (2026-11-05).** First "a program complexity score... reward loops, conditionals, and especially variables", one number (points); then the user asked "should we
   give complexity, elegance and efficiency (0.0 to 1.0?)", then "we need to count blocks too. i love the reasons. whole decimals is fine I think? Let's try it. go". A card in the **bottom right corner** (`ui/score-badge.js`,
   created in `main.js`; it was first bottom left, where it covered the last blocks of the open Flow palette, which the editor suite caught): four columns, **Blocks** (the count, hats and notes not counted) and three numbers shown to
@@ -1061,6 +1075,7 @@ The editor checks assert that making a PDF sends zero requests.
     node turtlelab/dev/sample-checks.mjs                       # real Chrome: every sample, saved work stays safe
     node turtlelab/dev/view-checks.mjs                         # real Chrome: Fit, the grid, the PDF button's fit
     node turtlelab/dev/logo-checks.mjs                         # real Chrome: the Logo box (short, about half a minute)
+    node turtlelab/dev/can-checks.mjs                          # real Chrome: the score on the can and poking it (about a minute)
     node turtlelab/dev/jslogo-checks.mjs                       # real Chrome: the JSLogo copy and the trip to it (needs the whole site: python3 -m http.server 4012 in the top folder)
     EMBROIDERY_PYTHON=DIR/bin/python3 node turtlelab/dev/export-checks.mjs   # real Chrome: right-click Save, every file
     node turtlelab/dev/make-sample-thumbs.mjs                  # rewrite images/samples/*.png

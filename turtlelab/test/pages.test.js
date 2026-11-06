@@ -252,3 +252,14 @@ test('the Guide tells about the color picker: hex, binary, that the numbers stay
   assert.match(privacy, /<td>Does the color picker send anything\?<\/td>/);
   assert.match(privacy, /No\. It changes the three numbers/);
 });
+
+test('the Guide tells about the shark\'s score and poking the can, and the privacy page says it is not saved', () => {
+  const guide = read('guide.html');
+  assert.match(guide, /<td>The shark's score<\/td>/);
+  for (const word of ['sticker', 'each stack of blocks you throw in', 'each fish or boat it eats', 'harpoon', 'When it gets to zero the sticker comes off', 'Poke the can', 'as many times as its score', 'once if it has no score', 'is not saved', 'show less motion']) assert.ok(guide.includes(word), word);
+  assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf("The shark's score"), guide.indexOf('Turtle moods'))), 'no dashes in the new row');
+  const privacy = read('privacy.html');
+  assert.match(privacy, /<td>Is the shark's score saved\?<\/td>/);
+  assert.match(privacy, /Nothing about it is stored or sent/);
+});
+

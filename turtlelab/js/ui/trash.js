@@ -15,6 +15,7 @@
 // Nothing here changes a project. The workspace deletes the blocks; this only plays.
 
 import { turtleSvg } from './artwork.js';
+import { CanScore, Pokes } from '../core/can-score.js';
 import { sky, FLOAT_SPEED, riseDistance, riseTime } from './sky.js';
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -56,6 +57,10 @@ const PICTURE = `
   <g class="lid">
     <rect x="24" y="60" width="92" height="13" rx="6" fill="#8e99a2" stroke="#68727a" stroke-width="2.5"/>
     <rect x="60" y="51" width="20" height="10" rx="4" fill="#68727a"/>
+  </g>
+  <g class="can-score">
+    <circle cx="70" cy="118" r="21" fill="#fff3b0" stroke="#b58900" stroke-width="2.5"/>
+    <text class="can-score-text" x="70" y="127" text-anchor="middle" font-size="26" font-weight="800" fill="#4a3a00">0</text>
   </g>
 </svg>`;
 
@@ -152,6 +157,116 @@ export class Trash {
     this.clangWord = null;
     this.trip = null; // while the shark is out of the can eating something: { swimmer, timers, onDone }
     stage.insertBefore(this.el, before);
+
+    // The score: a point for each thing the shark eats, one off for each harpoon that hits the can (core/can-score.js). It is on a sticker on the can.
+    this.score = new CanScore();
+    this.pokes = new Pokes();
+    this.sticker = this.el.querySelector('.can-score');
+    this.scoreText = this.el.querySelector('.can-score-text');
+    this.stickerTimer = null;
+    this.now = () => performance.now();
+    /** Called when enough pokes have come: it should send a visitor (a fish or the boat) and say whether one came. Set by whoever has the visitors. */
+    this.onSummon = null;
+    this.leftLabel = null;
+    this.leftTimer = null;
+    this.jiggleTimer = null;
+    // Poking the can: its body (not the shark above it) can be clicked. The can itself ignores the mouse, so that a stack carried over it is the one that gets it.
+    this.hit = document.createElement('div');
+    this.hit.className = 'trash-hit';
+    this.el.append(this.hit);
+    this.hit.addEventListener('click', () => this.poke());
+    this.showScore();
+  }
+
+  // ---- The score, and poking the can ----------------------------------------------------------------------
+
+  /** Put the score on the sticker, or take the sticker off when there is none. */
+  showScore() {
+    this.el.classList.toggle('has-score', this.score.visible);
+    const text = String(this.score.points);
+    this.scoreText.textContent = text;
+    this.scoreText.setAttribute('font-size', text.length >= 3 ? '17' : text.length === 2 ? '22' : '26');
+  }
+
+  /** The sticker bounces (a point won) or flashes (a point lost). */
+  flashSticker(kind) {
+    clearTimeout(this.stickerTimer);
+    this.sticker.classList.remove('bump', 'ouch');
+    void this.sticker.getBoundingClientRect(); // so that it starts again even if it was going
+    this.sticker.classList.add(kind);
+    this.stickerTimer = setTimeout(() => this.sticker.classList.remove('bump', 'ouch'), 600);
+  }
+
+  /** The shark ate something: one point. */
+  ate() {
+    this.score.ate();
+    this.pokes.reset();
+    this.showScore();
+    this.flashSticker('bump');
+  }
+
+  /** A harpoon hit the can: one point off, and with none left the sticker comes off. */
+  harpooned() {
+    const had = this.score.visible;
+    this.score.harpooned();
+    this.pokes.reset();
+    this.showScore();
+    if (had && this.score.visible) this.flashSticker('ouch');
+  }
+
+  /** Start with this score (?canscore=5, for trying it out). */
+  setScore(points) {
+    this.score.set(points);
+    this.pokes.reset();
+    this.showScore();
+  }
+
+  /** The score now (0 when there is no sticker). */
+  get points() {
+    return this.score.points;
+  }
+
+  /**
+   * The can was poked (clicked). The can jiggles, and says how many pokes are left; the last poke calls a visitor (as many pokes as the score, or one if
+   * there is none: see core/can-score.js). On a computer that asked for calm nothing happens, like the other things the shark and the turtle do.
+   */
+  poke() {
+    if (calm()) return;
+    const result = this.pokes.poke(this.now(), this.score.points);
+    this.jiggle();
+    this.showLeft(null);
+    if (!result.summon) {
+      this.showLeft(`${result.left} more`);
+      return;
+    }
+    const came = this.onSummon ? this.onSummon() : false;
+    if (!came) this.showLeft('not now');
+  }
+
+  /** The can squashes a little, as if it was poked. */
+  jiggle() {
+    clearTimeout(this.jiggleTimer);
+    this.el.classList.remove('poked');
+    void this.el.offsetWidth;
+    this.el.classList.add('poked');
+    this.jiggleTimer = setTimeout(() => this.el.classList.remove('poked'), 320);
+  }
+
+  /** A little bubble by the can ("3 more"), for a moment. `null` takes it away. */
+  showLeft(text) {
+    clearTimeout(this.leftTimer);
+    this.leftLabel?.remove();
+    this.leftLabel = null;
+    if (text === null) return;
+    this.leftLabel = document.createElement('div');
+    this.leftLabel.className = 'poke-left';
+    this.leftLabel.setAttribute('aria-hidden', 'true');
+    this.leftLabel.textContent = text;
+    this.el.append(this.leftLabel);
+    this.leftTimer = setTimeout(() => {
+      this.leftLabel?.remove();
+      this.leftLabel = null;
+    }, 1400);
   }
 
   /** The shark comes up with its mouth open (a block is held over the left side), or goes back down. */
@@ -239,6 +354,7 @@ export class Trash {
    * chomps, and then sinks back down. Feeding it again while it chews starts over.
    */
   feed() {
+    this.ate(); // a stack of blocks was thrown in: the shark ate something
     this.endHunt();
     for (const id of this.timers) clearTimeout(id);
     this.el.classList.remove('chomp');
@@ -268,6 +384,7 @@ export class Trash {
    * A harpoon hits the can (the boat in boat.js): it rings and shakes for a moment, and a "clang!" pops up where it hit.
    */
   clang() {
+    this.harpooned(); // it hit the can: a point off
     clearTimeout(this.clangTimer);
     this.el.classList.remove('clang');
     this.clangWord?.remove();
@@ -359,7 +476,10 @@ export class Trash {
       swimmer.classList.remove('swimming');
       swimmer.classList.add('chomp');
     });
-    at(HUNT.RISE_MS + ms + HUNT.BITE_AT_MS, () => onBite());
+    at(HUNT.RISE_MS + ms + HUNT.BITE_AT_MS, () => {
+      onBite();
+      this.ate(); // a fish or a boat that was clicked: the shark ate it
+    });
     at(HUNT.RISE_MS + ms + HUNT.CHOMP_MS, () => {
       face(home.x - target.x);
       swimmer.classList.remove('chomp');

@@ -2088,7 +2088,7 @@ try {
   }
   check('click the fish: it stops where it was, and the shark comes up and swims out to it in a copy of its head in the layer above everything', eatenSeen.hunting && eatenSeen.swimmerInLayer && eatenSeen.stoodStill && eatenSeen.reachedFish, JSON.stringify({ eatenSeen, fishSpot }));
   check('the fish goes under the shark\'s jaws, and the shark burps when it is home', eatenSeen.eaten && eatenSeen.burp, JSON.stringify(eatenSeen));
-  check('and then the fish and the swimming shark are gone, the shark is back to resting, and no second fish swims right away', await chrome.eval(`!document.querySelector('.fish') && !document.querySelector('.shark-swimmer') && document.querySelector('.trash-can').className === 'trash-can'`));
+  check('and then the fish and the swimming shark are gone, the shark is back to resting, and no second fish swims right away', await chrome.eval(`!document.querySelector('.fish') && !document.querySelector('.shark-swimmer') && document.querySelector('.trash-can').className.split(' ').filter((c) => c !== 'has-score').join(' ') === 'trash-can'`));
   // Asked for calm, there is no fish at all.
   await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
   await chrome.goto(BASE + '?fish=now');
@@ -2138,7 +2138,7 @@ try {
     const from = await chrome.eval(`(() => { const r = document.querySelectorAll('.workspace .stack')[1].querySelector('.node').getBoundingClientRect(); return { x: r.x + 14, y: r.y + r.height / 2 }; })()`);
     await chrome.drag(from, { x: 40, y: 540 });
   };
-  const sharkNow = () => chrome.eval(`(() => ({ stacks: document.querySelectorAll('.workspace .stack').length, ghosts: document.querySelectorAll('.workspace .ghost').length, hidden: [...document.querySelectorAll('.workspace .stack')].filter((s) => s.style.opacity === '0').length, shark: document.querySelector('.trash-can').className, burp: !!document.querySelector('.burp') }))()`);
+  const sharkNow = () => chrome.eval(`(() => ({ stacks: document.querySelectorAll('.workspace .stack').length, ghosts: document.querySelectorAll('.workspace .ghost').length, hidden: [...document.querySelectorAll('.workspace .stack')].filter((s) => s.style.opacity === '0').length, shark: document.querySelector('.trash-can').className.split(' ').filter((c) => c !== 'has-score').join(' '), burp: !!document.querySelector('.burp') }))()`);
   await seedMeal('?speed=instant&burp=always');
   await feedShark();
   await chrome.sleep(1050);
@@ -2290,7 +2290,7 @@ try {
   check('the shark peeks up as it comes near, and the harpoon flies out and lands on the can', sawBoat.peek && sawBoat.spearShown && sawBoat.spearAtCan, JSON.stringify(sawBoat));
   check('the can rings with a "clang!" where it was hit', sawBoat.clang && sawBoat.word, JSON.stringify(sawBoat));
   check('then the shark pops up and snaps, and the boat sails off the way it came', sawBoat.snap && sawBoat.leftAgain, JSON.stringify(sawBoat));
-  check('when the visit is over the boat, its harpoon and the clang are gone, and the shark is back to resting', await chrome.eval(`!document.querySelector('.boat') && !document.querySelector('.boat-lines') && !document.querySelector('.clang-word') && document.querySelector('.trash-can').className === 'trash-can'`));
+  check('when the visit is over the boat, its harpoon and the clang are gone, and the shark is back to resting', await chrome.eval(`!document.querySelector('.boat') && !document.querySelector('.boat-lines') && !document.querySelector('.clang-word') && document.querySelector('.trash-can').className.split(' ').filter((c) => c !== 'has-score').join(' ') === 'trash-can'`));
   check('the boat never touches the project or stores anything', (await chrome.eval(`Object.keys(localStorage).filter((k) => k !== 'turtlelab-project').length`)) === 0);
   // Click the boat: it stops where it is, its harpoon goes, and the shark swims out of the can to it, chomps, and swims home.
   await chrome.goto(BASE + '?boat=now&speed=instant');
@@ -2320,7 +2320,7 @@ try {
   }
   check('click the boat: it stops where it was, and the shark comes up and swims out to it in a copy of its head in the layer above everything', boatEaten.hunting && boatEaten.swimmerInLayer && boatEaten.stoodStill && boatEaten.reachedBoat, JSON.stringify({ boatEaten, boatSpot }));
   check('its harpoon is gone at once, it goes under the jaws, and the shark burps when it is home', boatEaten.linesGone && boatEaten.eaten && boatEaten.burp, JSON.stringify(boatEaten));
-  check('and then the boat and the swimming shark are gone, with no clang and the shark back to resting', await chrome.eval(`!document.querySelector('.boat') && !document.querySelector('.boat-lines') && !document.querySelector('.shark-swimmer') && !document.querySelector('.clang-word') && document.querySelector('.trash-can').className === 'trash-can'`));
+  check('and then the boat and the swimming shark are gone, with no clang and the shark back to resting', await chrome.eval(`!document.querySelector('.boat') && !document.querySelector('.boat-lines') && !document.querySelector('.shark-swimmer') && !document.querySelector('.clang-word') && document.querySelector('.trash-can').className.split(' ').filter((c) => c !== 'has-score').join(' ') === 'trash-can'`));
   // No fish at the same time as a boat, and no boat when asked for calm.
   await chrome.goto(BASE + '?boat=now&fish=now&speed=instant');
   await chrome.sleep(1500);
@@ -2596,7 +2596,7 @@ try {
   await chrome.click(pillAt.x, pillAt.y);
   await chrome.sleep(250);
   const panel = await chrome.eval(`(() => { const p = document.querySelector('.score-panel'); const r = p.getBoundingClientRect(); return { open: !p.hidden, expanded: document.querySelector('.score-pill').getAttribute('aria-expanded'), head: p.querySelector('.score-head').textContent, sections: [...p.querySelectorAll('.score-section')].map((s) => s.dataset.metric + ':' + s.querySelector('.score-title-value').textContent), rows: [...p.querySelectorAll('tr')].map((tr) => tr.dataset.part + ':' + tr.querySelector('.score-points').textContent), reasons: [...p.querySelectorAll('.score-section-elegance .score-reason')].map((li) => li.className + '|' + li.textContent), effReasons: [...p.querySelectorAll('.score-section-efficiency .score-reason')].map((li) => li.textContent), inside: r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight }; })()`);
-  check('pressing the badge opens the details: the block count, then Complexity, Elegance and Efficiency, each with its number, and they fit in the window', panel.open && panel.expanded === 'true' && /^\d+ blocks?$/.test(panel.head) && panel.sections.length === 3 && panel.sections.map((x) => x.split(':')[0]).join() === 'complexity,elegance,efficiency' && panel.inside, JSON.stringify(panel));
+  check('pressing the badge opens the details: the block count, then Complexity, Elegance and Efficiency, each with its number, and they fit in the window', panel.open && panel.expanded === 'true' && /^\d+\s*blocks?$/.test(panel.head) && panel.sections.length === 3 && panel.sections.map((x) => x.split(':')[0]).join() === 'complexity,elegance,efficiency' && panel.inside, JSON.stringify(panel));
   check('complexity shows where its points came from, the variables first (the counter is worth the most)', panel.rows.length === 7 && panel.rows[0].startsWith('variables:+') && Number(panel.rows[0].split('+')[1]) > Number(panel.rows[1].split('+')[1]), panel.rows.join(' '));
   check('elegance says what is good about it, with a tick', panel.reasons.some((r) => /score-good/.test(r) && /A loop does the repeating/.test(r)), JSON.stringify(panel.reasons));
   check('efficiency says to run the program, since the blocks just changed', panel.effReasons.some((t) => /Run your program/.test(t)), JSON.stringify(panel.effReasons));
@@ -2606,7 +2606,9 @@ try {
   check('Escape closes the details and puts the focus back on the badge', await chrome.eval(`document.querySelector('.score-panel').hidden === true && document.activeElement === document.querySelector('.score-pill')`));
   await chrome.click(pillAt.x, pillAt.y);
   await chrome.sleep(200);
-  await chrome.click(700, 300);
+  // (somewhere on the paper beside the panel, which is wide: just to the left of it, near its top)
+  const scorePanelBox = await chrome.eval(`(() => { const r = document.querySelector('.score-panel').getBoundingClientRect(); return { left: r.left, top: r.top }; })()`);
+  await chrome.click(Math.max(260, scorePanelBox.left - 40), Math.max(120, scorePanelBox.top + 30));
   await chrome.sleep(200);
   check('pressing somewhere else closes them too', await chrome.eval(`document.querySelector('.score-panel').hidden === true`));
   await chrome.eval(`document.getElementById('hide-blocks').click()`);
