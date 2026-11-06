@@ -7,15 +7,16 @@ label: "TurtleLab Lessons"
 source: original
 ---
 
-These five steps take students from "the turtle does what I say" to a piece of art that uses a loop, random, and if and else. Each step starts from a TurtleLab sample the students change. The student pages never mention a teacher, a class, or grading, so a student can work through them alone. Everything about running them in a classroom is on this page.
+The first five steps take students from "the turtle does what I say" to a piece of art that uses a loop, random, and if and else. Steps 6 to 12 add variables (drawn as boxes), blocks of their own (functions), loops inside loops, color as numbers, debugging, and a second capstone. Each step starts from a TurtleLab demo the students change; in most steps the demo is built into the page in a frame, so they never leave the lesson. The student pages never mention a teacher, a class, or grading, so a student can work through them alone. Everything about running them in a classroom is on this page.
 
-Three of the steps end with a PDF made by TurtleLab's PDF button:
+Four of the steps end with a PDF made by TurtleLab's PDF button:
 
 - **Step 1** is a small first project, a PDF of the student's initials. It shows you they can plan a drawing and make the turtle do exactly what they say.
 - **Step 4** is a practice PDF. It shows you they can use a loop, random, and if and else together before the capstone.
 - **Step 5** is the capstone, a piece of random art.
+- **Step 12** is the second capstone, a picture that uses a box, a block of the student's own and a loop. The last page of the PDF lists what the program is made of, with a count for each kind of block (variables, loops, blocks they made), which makes it quick to see at a glance.
 
-Steps 2 and 3 are practice with no PDF to collect. Every step ends by telling the student to save a PDF to keep their own work.
+Steps 2, 3 and 6 to 11 are practice with no PDF to collect. Every step ends by telling the student to save a PDF to keep their own work.
 
 ## The sequence
 
@@ -26,6 +27,13 @@ Steps 2 and 3 are practice with no PDF to collect. Every step ends by telling th
 | [3: Let chance draw]({{ '/turtle-lessons/step-3-let-chance-draw/' | relative_url }}) | Use `random` in a loop. Build confetti. |
 | [4: Choose a path]({{ '/turtle-lessons/step-4-choose-a-path/' | relative_url }}) | Meet `if` and `else` through a coin flip. Trace a run on paper. Save a practice PDF. |
 | [5: Capstone: random art]({{ '/turtle-lessons/step-5-random-art/' | relative_url }}) | Plan and build a piece with all three. There is a one page [planning sheet]({{ '/turtle-lessons/planning-sheet/' | relative_url }}) to print. |
+| [6: Variables: boxes that keep a number]({{ '/turtle-lessons/step-6-boxes/' | relative_url }}) | What a variable is, and why TurtleLab draws one as a box. Predict, then watch a slow program change a variable block by block (the real blocks, in a frame), and a house whose size comes from one variable. |
+| [7: Boxes that count]({{ '/turtle-lessons/step-7-boxes-that-count/' | relative_url }}) | A variable that updates itself: the `+` block is worked out first, then stored. Watch a box count and print, trace a doubling box on paper, a countdown, a spiral of their own. |
+| [8: Teach the turtle a word]({{ '/turtle-lessons/step-8-teach-the-turtle-a-word/' | relative_url }}) | Blocks of their own (functions) with an input. A flower from one petal block; change the word once and every use changes. |
+| [9: A loop inside a loop]({{ '/turtle-lessons/step-9-a-loop-inside-a-loop/' | relative_url }}) | Nested `repeat`: the inside draws, the outside repeats and turns. Count the moves (12 × 4). The ring closes when laps × turn = 360. |
+| [10: Color is three numbers]({{ '/turtle-lessons/step-10-color-is-three-numbers/' | relative_url }}) | Red, green and blue from 0 to 255. Why 255: eight bits. Binary and hex with the color picker. 256 × 256 × 256 colors. A color made from a box. |
+| [11: Find the bug]({{ '/turtle-lessons/step-11-find-the-bug/' | relative_url }}) | Four broken programs to fix, each with a hint and an answer: a triangle that does not close, a box that is never used, an `if` that can never be yes, a pen left up. |
+| [12: Capstone 2: boxes and blocks]({{ '/turtle-lessons/step-12-capstone-2/' | relative_url }}) | Plan with three sentences, then build a picture with a box that changes, a block of their own with an input, and a loop. Ends with a PDF. |
 
 Students who have not seen loops meet the need for one first (a square that takes eight blocks) and only then get the block. `if` and `else` comes after `random` on purpose: a coin flip is the easiest decision to understand, and students who find conditionals confusing can see one path or the other run, never both.
 
@@ -78,6 +86,20 @@ Turn in whatever you have 10 minutes before the end of class, even if you are no
 
 Press the PDF button in TurtleLab and attach the PDF to this assignment.
 
+### Assignment: Capstone 2, boxes and blocks
+
+Make a picture in TurtleLab that uses a box, a block of your own and a loop, then save a PDF.
+
+- Do Step 12: [https://{{ site.print_host }}/turtle-lessons/step-12-capstone-2/](https://{{ site.print_host }}/turtle-lessons/step-12-capstone-2/)
+- Build in a fresh TurtleLab tab. The demos inside the lessons do not save your work.
+- Your picture needs: a block of your own with an input that your program uses more than once, a box that changes while the program runs, a loop, at least two colors, and a sticky note with your name and what your box, your block and your loop each do.
+
+(The student page lists these same five things for students to check. A rubric is yours to write. The last page of the PDF has a Count column for variables, loops and blocks they made, which you can use to check the first three quickly.)
+
+Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
+
+Press the PDF button in TurtleLab and attach the PDF to this assignment.
+
 ## Substitute day
 
 - **Skip Step 1.**
@@ -85,7 +107,7 @@ Press the PDF button in TurtleLab and attach the PDF to this assignment.
 - Students turn in a PDF of whatever they have 10 minutes before the end of class, finished or not. Students who are not finished can keep going next class if you let them. The capstone is due at the end of the next class.
 - The substitute does not need to know how to code, and does not need to check anything. Each step tells students how to check their own work.
 - Optionally, print the Step 5 [planning sheet]({{ '/turtle-lessons/planning-sheet/' | relative_url }}) for students who like to sketch on paper. It is one US Letter page.
-- **Sample tabs do not save.** Steps 2, 3 and 4 open samples in new tabs. If students build their own work in a sample tab, a refresh puts the sample back and loses it. Remind them to build the confetti and the capstone in a fresh tab at [https://{{ site.print_host }}/turtlelab/](https://{{ site.print_host }}/turtlelab/), or to press Ctrl+S now and then.
+- **Frames and sample tabs do not save.** Steps 2, 3 and 4 show their samples in frames inside the page, and a frame has no PDF button (students use **Open full size** under it, which opens the sample in a tab of its own, and press the PDF button there). If students build their own work in a frame or a sample tab, a refresh puts the sample back and loses it. Remind them to build the confetti and the capstone in a fresh tab at [https://{{ site.print_host }}/turtlelab/](https://{{ site.print_host }}/turtlelab/), or to press Ctrl+S now and then.
 
 ### If students get stuck
 

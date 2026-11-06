@@ -6,7 +6,7 @@
 // Then run:                    node turtlelab/dev/sample-checks.mjs
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { launch } from './cdp.mjs';
-import { SAMPLES } from '../js/ui/samples.js';
+import { SAMPLES, LISTED_SAMPLES } from '../js/ui/samples.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
 const results = [];
@@ -125,7 +125,7 @@ try {
   // ---- The Samples page ------------------------------------------------------------
   await chrome.goto(BASE + 'samples.html');
   check('the Samples page shows one card per sample, each with a loaded picture',
-    (await chrome.eval(`document.querySelectorAll('.sample-card').length`)) === SAMPLES.length &&
+    (await chrome.eval(`document.querySelectorAll('.sample-card').length`)) === LISTED_SAMPLES.length &&
       (await chrome.eval(`[...document.querySelectorAll('.sample-card img')].every((i) => i.complete && i.naturalWidth === 350)`)));
   check('the cards fit the page without sideways scrolling', await chrome.eval(`document.documentElement.scrollWidth <= innerWidth`));
   const card = await chrome.centerOf('.sample-card:nth-child(3) a');

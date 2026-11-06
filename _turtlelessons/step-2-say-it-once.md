@@ -12,13 +12,9 @@ Computers are very good at repeating things, so you only have to say it once. Th
 
 ## Try a sample
 
-Open the <a href="{{ '/turtlelab/?sample=square' | relative_url }}" target="_blank" rel="noopener">Square sample</a>. It opens in a new tab and draws by itself.
+The frame below is a real TurtleLab. Change a number, press **Run**, and look at the drawing. **Start over** puts the demo back the way it was. Nothing you do in a frame is saved, and **Open full size** opens it in a tab of its own. The square draws by itself.
 
-<aside class="callout note" markdown="1">
-**This tab will not remember changes**
-
-A sample tab never saves anything, so a refresh puts the sample back. Press Ctrl+S to keep a copy of something you want to keep.
-</aside>
+{% include turtlelab-embed.html sample="square" title="A square: one forward and one right, repeated 4 times" %}
 
 Look at the blocks. The ones **inside** the `repeat` are the ones that repeat. The number on the `repeat` says how many times. The whole square is just one `forward` and one `right`, said once and repeated 4 times.
 
@@ -33,7 +29,7 @@ Check it with the square: 360 ÷ 4 is 90.
 
 ## A ring of dashes
 
-Open the <a href="{{ '/turtlelab/?sample=dotted-circle' | relative_url }}" target="_blank" rel="noopener">Dotted circle sample</a>.
+{% include turtlelab-embed.html sample="dotted-circle" title="A dotted circle: a repeat of dashes, with the pen lifted between them" %}
 
 The loop draws a short dash, lifts the pen, moves a little, and turns. Before you change anything, work out: the loop runs 36 times and turns 10 each time. What is 36 × 10, and why does that number make sense?
 
@@ -41,8 +37,8 @@ Then change it: set the loop to 72 and the turn to a number that still makes a f
 
 ## See the Python
 
-Press the `>>>` button in TurtleLab. It shows your blocks as Python. Find your `repeat`. You will see a line that starts with `for _ in range(`. That is a Python loop, and it does the same thing as your block.
+Use **Open full size** under one of the frames, then press the `>>>` button on its toolbar. It shows the blocks as Python. Find your `repeat`. You will see a line that starts with `for _ in range(`. That is a Python loop, and it does the same thing as your block.
 
 ## Save your work
 
-Press the **PDF** button to keep a copy of your blocks and your drawing.
+To keep a copy of your blocks and your drawing, use the **PDF** button on the toolbar. A frame does not have one, so use **Open full size** under a frame, make your changes there, and press the **PDF** button.

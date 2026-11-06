@@ -98,6 +98,7 @@ the dashes out of them too for consistency.
       lettering.js    the write block's words as lines (seven fonts of lines, LETTER_FONTS); lettering-data.js is GENERATED
       png-chunks.js   hand-written CRC-32 and PNG iTXt text chunks (no library)
       project-file.js put a project inside a PNG, and read a PNG or .json back
+    js/embed-flag.js  one line, a classic script in index.html's head: ?embed=1 puts class `embedded` on the page before it is drawn (see "Embedding in lessons")
     js/ui/            the browser side
       blockfactory.js PORTED from Turtle Blocks JS (see NOTICE.md; rebuilt by
                       dev/port-blockfactory.mjs). Draws block shapes.
@@ -128,7 +129,7 @@ the dashes out of them too for consistency.
 
 ## Samples
 
-`js/ui/samples.js` holds the student samples (27 now, easiest first, then seven for an embroidery machine), each
+`js/ui/samples.js` holds the student samples (27 listed, easiest first, then seven for an embroidery machine, plus nine demos made only for lessons: `listed: false`, ids `lesson-...`), each
 with `id`, `title`, `summary`, `look` (the picture's alt text), `concepts`
 (little tags), `note` (a sticky note, at most 250 characters so it is not cut
 off), `program` and optionally `defines` (blocks the sample makes). They are different from `demos.js`, which is for the
@@ -201,6 +202,26 @@ right of it. Everything is placed for where it ends up AFTER the page zooms out 
 still and pulls the rest toward it), not where it starts. Measured from the real page, so `stageHeight` is the
 workspace height (534 on a 1366 by 700 window, with the message bar below it). `test/samples.test.js` and
 `dev/sample-checks.mjs` check it (everything fits at 1366 by 700, nothing overlaps, no column is too tall).
+
+## Embedding in lessons
+
+A lesson page (`_turtlelessons/`, the CC side) shows a TurtleLab demo in a frame: `{% include turtlelab-embed.html sample="ID" title="..." %}` (`_includes/turtlelab-embed.html`:
+`<iframe loading="lazy">` of `/turtlelab/?sample=ID&embed=1`, a caption with an "Open full size" link, and a line with the address that shows instead of the frame on paper;
+no `sandbox` attribute, because module scripts need the same origin). **Same app, same origin, nothing new stored or sent:** the lesson page only frames a URL, as its links always did.
+
+- **`?embed=1`** (2026-11-06, the user: "embed demos into the lessons and make them a bit interactive"): `js/embed-flag.js` (a one line classic script in the head, because the page may have no inline script)
+  puts `embedded` on `<html>` before the first paint, so a frame never flashes the whole toolbar. The stylesheet then shows only **Run, Stop, Undo, Redo, Start over** (`#embed-reset`, reloads the demo) and
+  **Open full size** (`#embed-open`, the same address without `embed=1`, a new tab); palettes, the can, the boxes readout (moved back to the right edge, since the badge it made room for is hidden) and the message
+  line stay. `main.js` (`const embed`): no saved project is read, autosave is paused (like a sample), `idle` is not started and `reward.stop()` is called (no antics, treats, surprises, fish or boat), and the load message is
+  short so it stays on one line (a two line message took room from the blocks).
+- **Lesson demos are unlisted samples** (`listed: false` in `samples.js`, ids start `lesson-`, `LISTED_SAMPLES` is what the Samples page and its thumbnails use). They are still held to every sample test (run, draw, no dashes, notes,
+  concepts honest, nothing off the paper), and `lessons.test.js` requires each to be used by a lesson. The four `lesson-bug-*` programs are broken on purpose; their notes say what the program is FOR, never what is wrong, and
+  `lessons.test.js` proves each is a real bug and that the fix in the lesson's answer fixes it.
+- **They must fit a frame about 700 by 520** (the workspace zooms out to fit, never below 0.6, so a demo is short: about 14 blocks). `dev/embed-checks.mjs` checks, in real Chrome at exactly 700 x 520 (`Emulation.setDeviceMetricsOverride`; a
+  launched window is shorter than its size because of the browser's own bars), that every demo any lesson frames fits, runs and draws; the slim toolbar; Start over and Open full size; saved work never read or written (a seeded
+  `localStorage` item is untouched, nothing else is stored); nothing amusing itself (control: the same page without `embed=1` does); no request to another address; and, with `SITE_URL=http://127.0.0.1:4010/`
+  (my own `bundle exec jekyll serve --port 4010 --no-watch`; it must be restarted to see new files), that each lesson page's frames load TurtleLab in embed mode and the demo inside drew something.
+- A frame has no PDF button, so a lesson that ends in a PDF (Steps 4 and 12, and every "Save your work") says to use **Open full size** first.
 
 ## Blocks you make yourself (functions)
 
@@ -1126,6 +1147,7 @@ The editor checks assert that making a PDF sends zero requests.
     node turtlelab/dev/view-checks.mjs                         # real Chrome: Fit, the grid, the PDF button's fit
     node turtlelab/dev/logo-checks.mjs                         # real Chrome: the Logo box (short, about half a minute)
     node turtlelab/dev/can-checks.mjs                          # real Chrome: the score on the can and poking it (about a minute)
+    node turtlelab/dev/embed-checks.mjs                        # real Chrome: ?embed=1 at 700 x 520 (add SITE_URL=http://127.0.0.1:4010/ to also load the lesson pages and their frames)
     node turtlelab/dev/jslogo-checks.mjs                       # real Chrome: the JSLogo copy and the trip to it (needs the whole site: python3 -m http.server 4012 in the top folder)
     EMBROIDERY_PYTHON=DIR/bin/python3 node turtlelab/dev/export-checks.mjs   # real Chrome: right-click Save, every file
     node turtlelab/dev/make-sample-thumbs.mjs                  # rewrite images/samples/*.png

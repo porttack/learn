@@ -2,7 +2,7 @@
 layout: lesson
 title: "Capstone planning sheet"
 pathway: turtlelessons
-order: 5.1
+order: 99 # after every step, so the steps' own next and previous links run 1 to 12 without a detour; Step 5 links here with `organizer:`
 label: "Step 5"
 source: original
 companion: true

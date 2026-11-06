@@ -47,6 +47,9 @@ const $ = (id) => document.getElementById(id);
 
 const TOO_LONG_TO_ZOOM = 'That picture has so many lines that only some are remembered, so it cannot be zoomed. Run it again to draw it fresh.';
 const params = new URLSearchParams(location.search);
+// ?embed=1: TurtleLab in a frame on a lesson page. A slim toolbar (the stylesheet; js/embed-flag.js sets the class early), no antics, treats or fish, and like a sample it
+// never reads or writes what a student saved. (Build the address with ?sample=lesson-box-size&embed=1; see "Embedding in lessons" in CLAUDE.md.)
+const embed = params.get('embed') === '1';
 
 document.title = APP_NAME;
 $('app-name').textContent = APP_NAME;
@@ -99,7 +102,7 @@ if (sample) {
 
 // Pick up where you left off: the blocks from last time, kept in this browser.
 let welcomeBack = false;
-if (!sample && !(demo && Object.hasOwn(DEMOS, demo))) {
+if (!sample && !embed && !(demo && Object.hasOwn(DEMOS, demo))) {
   const saved = loadAutosave();
   if (saved) {
     project.stacks = saved.stacks;
@@ -377,7 +380,7 @@ function openInRealLogo(text, edited) {
 
 const history = new History(project);
 const autosave = new Autosave(project);
-if (sample) autosave.pause();
+if (sample || embed) autosave.pause();
 
 function updateHistoryButtons() {
   undoButton.disabled = !history.canUndo;
@@ -469,7 +472,7 @@ idle = new Idle({
   ...(idleSeconds > 0 ? { idleMs: idleSeconds * 1000, gapMs: [idleSeconds * 750, idleSeconds * 2000] } : {}),
 });
 for (const name of ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart']) document.addEventListener(name, () => idle.poke(), { passive: true, capture: true });
-idle.start();
+if (!embed) idle.start(); // (in a lesson's frame nothing amuses itself: the demo is there to be looked at and changed)
 // Treats for work: after enough real building and running (reward.js) the turtle dances or blows happy bubbles, or a fish or a boat comes by for the shark.
 // They play on while somebody works (unlike the idle antics, any click does not stop them). (?goal=3 makes the goal 3 points, with only 5 s of rest between
 // treats, for trying them out; ?antic=dance, fish or boat plays one at once.)
@@ -480,6 +483,7 @@ reward = new Reward({
   busy: () => scheduler.running || workspace.busy,
   ...(goalPoints > 0 ? { goal: goalPoints, cooldownMs: 5000 } : { goal: GOAL }),
 });
+if (embed) reward.stop(); // no treats, and no surprises, in a lesson's frame
 lastMark = workMark(project.stacks); // (from here on, a change to the blocks can be work)
 scoreBadge.refresh(project, { quiet: true }); // the score of the program the page started with
 if (params.get('antic')) {
@@ -837,6 +841,14 @@ document.addEventListener('keydown', (event) => {
 });
 
 stopButton.addEventListener('click', () => scheduler.stop());
+
+// Inside a lesson page: Start over loads the demo again, and Open full size is the same address without ?embed=1 (in a tab of its own, where everything works).
+if (embed) {
+  $('embed-reset').addEventListener('click', () => location.reload());
+  const full = new URL(location.href);
+  full.searchParams.delete('embed');
+  $('embed-open').href = full.href;
+}
 stopButton.disabled = true;
 
 // The Python box and the Logo box sit in the same corner, so only one is open at a time.
@@ -869,7 +881,9 @@ if (sample) {
   // It runs by itself, so the drawing is the first thing you see. Starting a
   // run clears the message line, so the message goes up after it starts.
   if (params.get('autorun') !== '0') pressRun();
-  say(`Sample: ${sample.title}. Change anything you like. It is not saved unless you press Save, and the blocks you saved before are untouched.`);
+  say(embed
+    ? `${sample.title}. Change anything you like and press Run.` // (short: in a frame the message must stay on one line, or it takes room from the blocks)
+    : `Sample: ${sample.title}. Change anything you like. It is not saved unless you press Save, and the blocks you saved before are untouched.`);
 } else {
   if (sampleName !== null) say(`There is no sample called "${sampleName.slice(0, 40)}". The Samples page lists them all.`);
   if (params.get('autorun') === '1') pressRun();

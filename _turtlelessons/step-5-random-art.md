@@ -15,7 +15,7 @@ Nobody will make the same picture as you, because you choose what repeats, what 
 <aside class="callout note" markdown="1">
 **Build in a fresh tab**
 
-Open <a href="{{ '/turtlelab/' | relative_url }}" target="_blank" rel="noopener">TurtleLab</a> in a new tab and build there. Do not build in a sample tab. A sample tab does not save your work, so a refresh would put the sample back and lose your blocks.
+Open <a href="{{ '/turtlelab/' | relative_url }}" target="_blank" rel="noopener">TurtleLab</a> in a new tab and build there. Do not build in a sample tab, or in a frame inside a lesson. Neither saves your work, so a refresh would put the sample back and lose your blocks.
 </aside>
 
 ## What you will build

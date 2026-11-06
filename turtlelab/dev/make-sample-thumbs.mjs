@@ -8,7 +8,7 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { launch } from './cdp.mjs';
 import { mkdirSync } from 'node:fs';
-import { SAMPLES } from '../js/ui/samples.js';
+import { LISTED_SAMPLES } from '../js/ui/samples.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
 const OUT = new URL('../images/samples/', import.meta.url).pathname;
@@ -32,7 +32,7 @@ const touchesEdge = (chrome) =>
 const chrome = await launch({ width: 1200, height: 800 });
 try {
   const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
-  for (const sample of SAMPLES) {
+  for (const sample of LISTED_SAMPLES) {
     if (only && !only.includes(sample.id)) continue;
     // A sample that uses chance can wander off the paper. Run it again until the
     // picture fits, so the thumbnail shows all of it.

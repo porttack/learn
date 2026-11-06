@@ -11,15 +11,28 @@
       "step-2-say-it-once": "Step 2: Say it once",
       "step-3-let-chance-draw": "Step 3: Let chance draw",
       "step-4-choose-a-path": "Step 4: Choose a path",
-      "step-5-random-art": "Step 5: Capstone, random art"
+      "step-5-random-art": "Step 5: Capstone, random art",
+      "step-6-boxes": "Step 6: Variables, boxes that keep a number",
+      "step-7-boxes-that-count": "Step 7: Boxes that count",
+      "step-8-teach-the-turtle-a-word": "Step 8: Teach the turtle a word",
+      "step-9-a-loop-inside-a-loop": "Step 9: A loop inside a loop",
+      "step-10-color-is-three-numbers": "Step 10: Color is three numbers",
+      "step-11-find-the-bug": "Step 11: Find the bug",
+      "step-12-capstone-2": "Step 12: Capstone 2, boxes and blocks"
     },
-    "caveat": "Aligned by reading the five steps' own text; nothing a learner makes has been checked against these yet. Locators are the steps' URL slugs (/turtle-lessons/<slug>/). The sequence is short and starts from samples, so loops, if and else, and random are the real fits, and most other entries are partial or related. Variables and procedures show up only as optional or read-only material (Step 5's Done early, the letter blocks in Step 1's samples), so they are marked related. Only the four computer science and CTE frameworks were examined. CSTA 2017 is a legacy framework and was left out, as in the Pico carriers. Common Core math has a coordinate plane code (6.NS.6) that Step 1 fits, but it is not included because the lesson widget does not show math standards.",
+    "caveat": "Aligned by reading the twelve steps' own text; nothing a learner makes has been checked against these yet. Locators are the steps' URL slugs (/turtle-lessons/<slug>/). Steps 1 to 5 start from samples, so loops, if and else, and random are the real fits there. Steps 6 to 12 add variables (boxes), procedures (blocks of your own), nested loops, binary and color, debugging and a second capstone. Boxes hold numbers only and are named box1 to box4, so the variable codes are strong or partial rather than complete. Only the four computer science and CTE frameworks were examined. CSTA 2017 is a legacy framework and was left out, as in the Pico carriers. Common Core math has a coordinate plane code (6.NS.6) that Step 1 fits, but it is not included because the lesson widget does not show math standards.",
     "alignment_log": [
       {
         "date": "2026-11-04",
         "by": "Claude Sonnet 5.5",
         "scope": "First pass: all five steps against apcsp, castandards, csta2026 and ca-ict-anchor",
         "note": "Read each step's student text and matched it against this repo's catalog paraphrases. Kept strong to loops, if and else, random, and run to run variation; most others are partial. Two CTE codes only (C4.9 and 5.9), on purpose, because the CTE anchors are broad and little of this sequence needs them. Candidates left out as too thin: 5.12 (Boolean logic and decisions, Step 4 only), 5.7 (working through a problem repeatedly), C5.5 (evaluating a result against its requirements), apcsp 3.16 (simulations, since no step calls the random walk one)."
+      },
+      {
+        "date": "2026-11-06",
+        "by": "Claude Sonnet 5.5",
+        "scope": "Second pass: Steps 6 to 12 against apcsp, castandards, csta2026 and ca-ict-anchor",
+        "note": "Read each new step against this repo's catalog paraphrases. Raised AP CSP 3.1 (variables) from related to strong, CSTA MS-PRO-PD-12 (procedures) from related to strong, and 1.4 (debugging) to strong, since Steps 6, 7, 8 and 11 are now about them. New entries: AP CSP 2.1 (binary) and 3.12 (calling procedures), California 6-8.AP.11 and 6-8.AP.14. CTE kept to the same two codes on purpose."
       }
     ]
   },
@@ -42,37 +55,51 @@
       "1.3": {
         "locators": [
           "step-1-your-initials",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-12-capstone-2"
         ],
         "strength": "partial",
         "note": "Step 5 follows a small development process: sketch the picture, finish three plan sentences, build in three pieces and run after each, then check the result against a list. A sticky note in the program says what it does. Step 1 starts the same habit with a paper plan and one letter at a time. There is no gathering of requirements from other people, and no crediting of other people's code.",
         "locator_notes": {
           "step-1-your-initials": "Plan the initials on paper first, then build and test one letter at a time. The sticky note holds only a name.",
-          "step-5-random-art": "Sketch, three plan sentences, build in small pieces, check against a list, and a sticky note that says what the loop, the random and the if and else do."
+          "step-5-random-art": "Sketch, three plan sentences, build in small pieces, check against a list, and a sticky note that says what the loop, the random and the if and else do.",
+          "step-12-capstone-2": "The same process again for the second capstone: sketch, three plan sentences, build the block first, then the loop, then the box, then check against a list."
         }
       },
       "1.4": {
         "locators": [
           "step-1-your-initials",
           "step-4-choose-a-path",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-11-find-the-bug",
+          "step-12-capstone-2"
         ],
-        "strength": "partial",
-        "note": "Each of these steps gives a way to find and fix a mistake: predict and compare with what the turtle does (Step 1), trace by hand with chosen inputs and a known answer (Step 4), and the troubleshooting list in Step 5 (read the message, change one number at a time, undo). Kinds of errors such as syntax and logic errors are not named.",
+        "strength": "strong",
+        "note": "Step 11 is a whole step about bugs: four programs that each have one mistake, a method for finding it, and a rule to change one thing at a time. Steps 1, 4, 5 and 12 each give a way to find and fix a mistake too: predict and compare, trace by hand, read the red outline and the message, watch the box.",
         "locator_notes": {
           "step-1-your-initials": "Predict where the L ends and which way it faces, run it, and compare.",
           "step-4-choose-a-path": "Trace six chosen coin flips by hand and check the headings against the answers. A red outline on the if block marks the problem.",
-          "step-5-random-art": "A short list for when something is not working: read the message, change one number at a time, stop, undo."
+          "step-5-random-art": "A short list for when something is not working: read the message, change one number at a time, stop, undo.",
+          "step-11-find-the-bug": "Four programs broken on purpose, a four step way to find a bug (run it, say what you expected, find the difference, change one thing), a hint and an answer for each.",
+          "step-12-capstone-2": "A list of things to try when something is not working, and the same four steps."
         }
       },
       "3.1": {
         "locators": [
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-6-boxes",
+          "step-7-boxes-that-count",
+          "step-10-color-is-three-numbers",
+          "step-12-capstone-2"
         ],
-        "strength": "related",
-        "note": "Only in Done early at the end of Step 5, where the Square spiral sample keeps a number in a box that grows each time through the loop. It is optional, so the steps do not count on it.",
+        "strength": "strong",
+        "note": "Steps 6 and 7 are about variables, called boxes. A box is a named place for one number, storing a new number replaces the old one, and reading it changes nothing. Step 7 updates a box from its own value on every lap. Step 10 makes a color from a box and Step 12 needs a box that changes. Step 5 only touched the idea in its optional Done early.",
         "locator_notes": {
-          "step-5-random-art": "Optional: read how box1 grows in the Square spiral sample, then use a box in your own picture."
+          "step-5-random-art": "Optional: read how box1 grows in the Square spiral sample, then use a box in your own picture.",
+          "step-6-boxes": "A box keeps one number: storing replaces it, looking does not change it, and one number sizes a whole house.",
+          "step-7-boxes-that-count": "A box that updates itself, box1 + 1, worked out before it is stored. Watch it count, trace it by hand, count down.",
+          "step-10-color-is-three-numbers": "A color made from a box: red is box1 and blue is 255 minus box1.",
+          "step-12-capstone-2": "The capstone needs a box that changes while the program runs."
         }
       },
       "3.3": {
@@ -116,15 +143,19 @@
           "step-2-say-it-once",
           "step-3-let-chance-draw",
           "step-4-choose-a-path",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-7-boxes-that-count",
+          "step-9-a-loop-inside-a-loop"
         ],
         "strength": "strong",
-        "note": "Step 2 is built around the repeat block: the blocks inside run again and again and the number says how many times (a square, then shapes with 3 to 12 sides, then a ring of 36 dashes). Steps 3, 4 and 5 use repeat in the samples and in what you build: 50 rays, 60 pieces of confetti, 120 steps of a walk. Only counted loops are taught; a loop that runs until a condition is met is not.",
+        "note": "Step 2 is built around the repeat block: the blocks inside run again and again and the number says how many times (a square, then shapes with 3 to 12 sides, then a ring of 36 dashes). Steps 3, 4 and 5 use repeat in the samples and in what you build: 50 rays, 60 pieces of confetti, 120 steps of a walk. Only counted loops are taught; a loop that runs until a condition is met is not. Step 7 adds a loop that changes a box each time round, and Step 9 puts a loop inside a loop and counts what it does.",
         "locator_notes": {
           "step-2-say-it-once": "The repeat block, how its number and its turn fit together, and a ring of dashes.",
           "step-3-let-chance-draw": "A loop of 50 rays, and a loop that scatters 60 dots.",
           "step-4-choose-a-path": "A loop of 120 steps with the if and else inside it.",
-          "step-5-random-art": "The capstone is drawn by a repeat."
+          "step-5-random-art": "The capstone is drawn by a repeat.",
+          "step-7-boxes-that-count": "A box is updated on every lap of a loop, so a loop and a variable work together to make a spiral and a countdown.",
+          "step-9-a-loop-inside-a-loop": "A repeat inside a repeat: the inside runs all its laps for each lap of the outside, so 12 squares of 4 sides is 48 moves, and laps times turn must make 360 for a ring to close."
         }
       },
       "3.9": {
@@ -141,12 +172,16 @@
       },
       "3.13": {
         "locators": [
-          "step-1-your-initials"
+          "step-1-your-initials",
+          "step-8-teach-the-turtle-a-word",
+          "step-12-capstone-2"
         ],
-        "strength": "related",
-        "note": "The samples in Step 1 draw each letter with a block of its own, so each letter is easy to find and read and the same block can be used anywhere. Learners read and use them, but the step says they do not need to make their own yet, so writing procedures is not covered.",
+        "strength": "partial",
+        "note": "Step 8 has learners write a block of their own with a name and an input general enough to reuse at any size, and shows that changing the block once changes every use. Step 12 builds on it. A written explanation of a block is only the sticky note. The sample letters in Step 1 were the first example read, not written.",
         "locator_notes": {
-          "step-1-your-initials": "The sample letters are blocks of their own that start where the turtle is. Reading them is enough for now."
+          "step-1-your-initials": "The sample letters are blocks of their own that start where the turtle is. Reading them is enough for now.",
+          "step-8-teach-the-turtle-a-word": "Teach the turtle a word: name it, give it a size input so it works for big and small, and change it once to change every use.",
+          "step-12-capstone-2": "Build the block first and test it on its own, then use it in a loop."
         }
       },
       "3.15": {
@@ -162,55 +197,91 @@
           "step-4-choose-a-path": "A coin flip, random 1 2, chooses which road the turtle takes.",
           "step-5-random-art": "The capstone needs something random that you can see by running it twice."
         }
+      },
+      "2.1": {
+        "locators": [
+          "step-10-color-is-three-numbers"
+        ],
+        "strength": "strong",
+        "note": "Step 10 teaches binary place value on a real case: why a color number stops at 255, what 1111 1111, 1000 0000 and 0000 1010 are, and how many colors 24 bits make. Hex is introduced as a shorter way to write the same bits.",
+        "locator_notes": {
+          "step-10-color-is-three-numbers": "Each of the three color numbers is kept in 8 bits worth 128, 64, 32, 16, 8, 4, 2 and 1, so the biggest is 255. The color picker shows each number in decimal, hex and binary, and the lesson counts 256 times 256 times 256 colors."
+        }
+      },
+      "3.12": {
+        "locators": [
+          "step-8-teach-the-turtle-a-word",
+          "step-12-capstone-2"
+        ],
+        "strength": "strong",
+        "note": "Step 8 is about using a procedure: a block of your own is called by name, the number given to it becomes its input, and the blocks inside run each time it is called. The Python view shows the same thing as def petal(size): and petal(60). Return values are not covered.",
+        "locator_notes": {
+          "step-8-teach-the-turtle-a-word": "Using a block of your own, like petal 60, runs the blocks under its to block once for each use, with the number you give it as the input.",
+          "step-12-capstone-2": "The capstone uses a block of the learner's own more than once."
+        }
       }
     },
     "castandards": {
       "6-8.AP.10": {
         "locators": [
           "step-1-your-initials",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-12-capstone-2"
         ],
         "strength": "partial",
         "note": "Before building, Step 1 has you write each letter's start, direction and moves as a list, and Step 5 has you sketch and finish three plan sentences, plus an outline of the program with gaps to fill. These are plans in plain words, not flowcharts or pseudocode.",
         "locator_notes": {
           "step-1-your-initials": "Write down where the turtle starts, which way it faces, and the moves, before building.",
-          "step-5-random-art": "A sketch, three plan sentences, and an outline of the program with gaps to fill."
+          "step-5-random-art": "A sketch, three plan sentences, and an outline of the program with gaps to fill.",
+          "step-12-capstone-2": "Three plan sentences and the shape of the program, written before building."
         }
       },
       "6-8.AP.12": {
         "locators": [
           "step-4-choose-a-path",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-9-a-loop-inside-a-loop",
+          "step-12-capstone-2"
         ],
         "strength": "partial",
         "note": "A conditional goes inside a loop with random in it, built up in small steps: first a loop that draws one thing, then random, then the if and else. Compound conditions such as and, or are not used, and nested loops are not taught.",
         "locator_notes": {
           "step-4-choose-a-path": "The stack puts an if and else inside a repeat.",
-          "step-5-random-art": "Build the capstone in three pieces: a loop, then random, then the if and else."
+          "step-5-random-art": "Build the capstone in three pieces: a loop, then random, then the if and else.",
+          "step-9-a-loop-inside-a-loop": "A loop inside a loop, built up one shape first and then the ring.",
+          "step-12-capstone-2": "A loop, a block of your own and a box combined in one program, built up in three pieces."
         }
       },
       "6-8.AP.13": {
         "locators": [
           "step-1-your-initials",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-8-teach-the-turtle-a-word",
+          "step-12-capstone-2"
         ],
         "strength": "partial",
         "note": "Step 1 breaks the initials into one letter at a time, each planned and tested before the next, and the samples give each letter its own block. Step 5 builds the capstone in three pieces. Learners do not define procedures of their own.",
         "locator_notes": {
           "step-1-your-initials": "One letter at a time, planned and tested before the next.",
-          "step-5-random-art": "A loop first, then random, then the if and else, running after each."
+          "step-5-random-art": "A loop first, then random, then the if and else, running after each.",
+          "step-8-teach-the-turtle-a-word": "One petal is the small problem, and the flower is eight of them.",
+          "step-12-capstone-2": "The capstone is built block first, then the loop, then the box, running after each."
         }
       },
       "6-8.AP.17": {
         "locators": [
           "step-4-choose-a-path",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-9-a-loop-inside-a-loop",
+          "step-11-find-the-bug"
         ],
-        "strength": "related",
+        "strength": "partial",
         "note": "Step 4 gives a chosen list of six coin flips and asks for the heading after each, which is a deliberate test input with a known answer. Step 5 asks you to run the program twice to see random at work. There is no wider test plan.",
         "locator_notes": {
           "step-4-choose-a-path": "Six chosen flips, and a heading to work out after each one.",
-          "step-5-random-art": "Run it twice and see whether the random part changes the picture."
+          "step-5-random-art": "Run it twice and see whether the random part changes the picture.",
+          "step-9-a-loop-inside-a-loop": "Rings tried with a chosen range of counts and turns (6 and 60, 36 and 10), and one that is meant not to close (12 and 20).",
+          "step-11-find-the-bug": "Four broken programs run and compared with what each was meant to do."
         }
       },
       "6-8.AP.19": {
@@ -224,6 +295,32 @@
           "step-4-choose-a-path": "A sticky note with a name and one sentence on what the if and else decides.",
           "step-5-random-art": "A sticky note that says what the loop, the random and the if and else each do."
         }
+      },
+      "6-8.AP.11": {
+        "locators": [
+          "step-6-boxes",
+          "step-7-boxes-that-count",
+          "step-8-teach-the-turtle-a-word"
+        ],
+        "strength": "partial",
+        "note": "Boxes are named box1 to box4, so a box's name does not say what it holds. The fit is in the operations: Steps 6 and 7 store, read and update boxes and follow what they hold. Naming for meaning shows up in Step 8, where learners name their own blocks and inputs.",
+        "locator_notes": {
+          "step-6-boxes": "Variables are boxes that hold a number, and the operations on them are the point.",
+          "step-7-boxes-that-count": "A box is updated and printed on every lap, so what it holds can be followed.",
+          "step-8-teach-the-turtle-a-word": "The learner names the inputs and blocks of their own, like size and petal."
+        }
+      },
+      "6-8.AP.14": {
+        "locators": [
+          "step-8-teach-the-turtle-a-word",
+          "step-12-capstone-2"
+        ],
+        "strength": "strong",
+        "note": "Step 8 is about a procedure with a parameter: write it once, give it a different number each time it is used, and change it in one place to change every use.",
+        "locator_notes": {
+          "step-8-teach-the-turtle-a-word": "A block with an input, like petal size, is reused at three or eight sizes without being written again.",
+          "step-12-capstone-2": "The capstone needs a block of the learner's own with an input, used more than once."
+        }
       }
     },
     "csta2026": {
@@ -231,84 +328,116 @@
         "locators": [
           "step-1-your-initials",
           "step-2-say-it-once",
-          "step-4-choose-a-path"
+          "step-4-choose-a-path",
+          "step-7-boxes-that-count",
+          "step-9-a-loop-inside-a-loop"
         ],
         "strength": "strong",
         "note": "Step 4 traces a loop's coin flips by hand and records the turtle's heading after each one (90, 180, 90, 180, 90, 0). Step 1 asks where the L ends and which way it faces, and Step 2 asks what 36 turns of 10 add up to. Each follows code step by step and says what it leaves behind. Procedures that take inputs are not traced.",
         "locator_notes": {
           "step-1-your-initials": "Where does the turtle end, and which way does it face, after the L?",
           "step-2-say-it-once": "Follow a loop of 36 turns of 10 and say what it adds up to.",
-          "step-4-choose-a-path": "Pretend six coin flips and write the heading after each."
+          "step-4-choose-a-path": "Pretend six coin flips and write the heading after each.",
+          "step-7-boxes-that-count": "A box traced by hand through a loop: 4, 8, 16 for a doubling box, and the numbers a counting box prints.",
+          "step-9-a-loop-inside-a-loop": "Count what a nested loop does: 12 squares of 4 sides is 48 moves."
         }
       },
       "HS-PRO-RD-17": {
         "locators": [
           "step-3-let-chance-draw",
           "step-4-choose-a-path",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-7-boxes-that-count",
+          "step-8-teach-the-turtle-a-word",
+          "step-9-a-loop-inside-a-loop"
         ],
         "strength": "partial",
         "note": "Learners read a sample they did not write and explain its parts: what the random color slots do (Step 3), what each mouth of the if and else does (Step 4), and, in the capstone's sticky note, what their own loop, random and if and else do. The samples are short, so this is the lighter end of the standard.",
         "locator_notes": {
           "step-3-let-chance-draw": "Explain what random 0 255 in each color slot does.",
           "step-4-choose-a-path": "Explain what each mouth of the if and else does.",
-          "step-5-random-art": "The sticky note says what the loop, the random and the if and else each do."
+          "step-5-random-art": "The sticky note says what the loop, the random and the if and else each do.",
+          "step-7-boxes-that-count": "Say what a variable holds on each lap.",
+          "step-8-teach-the-turtle-a-word": "Say what the blocks under a to block do, and what its input holds each time it is used.",
+          "step-9-a-loop-inside-a-loop": "Say what the inside loop makes and what the outside loop does with it."
         }
       },
       "MS-ALG-PS-03": {
         "locators": [
           "step-1-your-initials",
           "step-2-say-it-once",
-          "step-4-choose-a-path"
+          "step-4-choose-a-path",
+          "step-7-boxes-that-count",
+          "step-9-a-loop-inside-a-loop",
+          "step-11-find-the-bug"
         ],
         "strength": "partial",
         "note": "Predict, run, compare is the habit in these steps: where the L ends (Step 1), the turn that closes a shape (Step 2), the headings after six flips (Step 4, with answers to check against). Checking is against numbers the learner works out, not a formal set of test cases.",
         "locator_notes": {
           "step-1-your-initials": "Write a prediction, run it, and compare.",
           "step-2-say-it-once": "Predict the turn that closes each shape, then run it to see whether it does.",
-          "step-4-choose-a-path": "Check the six headings against the answers."
+          "step-4-choose-a-path": "Check the six headings against the answers.",
+          "step-7-boxes-that-count": "Predict what a box holds after each lap, then run it and check.",
+          "step-9-a-loop-inside-a-loop": "Work out how many moves and what turn before running.",
+          "step-11-find-the-bug": "Run a program, say what it was meant to do, and find the difference."
         }
       },
       "MS-PRO-PD-12": {
         "locators": [
-          "step-1-your-initials"
+          "step-1-your-initials",
+          "step-8-teach-the-turtle-a-word",
+          "step-12-capstone-2"
         ],
-        "strength": "related",
-        "note": "The sample letters in Step 1 are blocks of their own, which is the idea of naming steps so code is easier to read and reuse. Learners read and use them but do not make their own in these steps.",
+        "strength": "strong",
+        "note": "Step 8 is about naming a repeated group of steps and turning it into a procedure: the petal word, a block with a size input, used eight times and fixed in one place. Step 12 asks for one in the capstone. The letter blocks in Step 1's samples were the first example.",
         "locator_notes": {
-          "step-1-your-initials": "Each sample letter is a named block that draws from wherever the turtle is."
+          "step-1-your-initials": "Each sample letter is a named block that draws from wherever the turtle is.",
+          "step-8-teach-the-turtle-a-word": "Naming a repeated group of blocks as a word of your own is the whole step.",
+          "step-12-capstone-2": "The capstone needs a block of the learner's own, used more than once."
         }
       },
       "MS-PRO-VD-16": {
         "locators": [
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-6-boxes",
+          "step-7-boxes-that-count",
+          "step-12-capstone-2"
         ],
-        "strength": "related",
-        "note": "Only the optional Done early in Step 5: a box holds a number that grows each time through the loop. The main path does not use variables.",
+        "strength": "partial",
+        "note": "Boxes hold numbers only, so this is one kind of data, not several. Within that, Steps 6 and 7 store a number, use it, and update it on every lap, and Step 12 asks for a box that changes. Making decisions from a variable is not taught together with it.",
         "locator_notes": {
-          "step-5-random-art": "Optional: a box that grows each time through the loop."
+          "step-5-random-art": "Optional: a box that grows each time through the loop.",
+          "step-6-boxes": "Store a number, use it in many places, change it in one.",
+          "step-7-boxes-that-count": "Update a box from its own value on every lap.",
+          "step-12-capstone-2": "A box that changes while the program runs."
         }
       },
       "MS-PRO-TR-19": {
         "locators": [
           "step-1-your-initials",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-11-find-the-bug",
+          "step-12-capstone-2"
         ],
         "strength": "partial",
         "note": "Step 1 and Step 5 each end with a Check yourself list to test the finished program against what it was meant to do, and the sticky note records what it does. No feedback from other people is built in.",
         "locator_notes": {
           "step-1-your-initials": "A Check yourself list: readable letters, no stray lines, a prediction checked, every letter built by hand.",
-          "step-5-random-art": "A Check yourself list for the loop, the random, the if and else, two colors and a note."
+          "step-5-random-art": "A Check yourself list for the loop, the random, the if and else, two colors and a note.",
+          "step-11-find-the-bug": "Four programs to test and fix, one change at a time.",
+          "step-12-capstone-2": "A check yourself list for the second capstone."
         }
       },
       "HS-PRO-TR-19": {
         "locators": [
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-12-capstone-2"
         ],
         "strength": "partial",
         "note": "The capstone's Check yourself list tests the finished picture against its plan (a loop, random, an if and else, two colors, a note). A sketch and three plan sentences come first. It is a self check, with no usability or accessibility review.",
         "locator_notes": {
-          "step-5-random-art": "Check the finished picture against the plan before saving the PDF."
+          "step-5-random-art": "Check the finished picture against the plan before saving the PDF.",
+          "step-12-capstone-2": "The check list tests the finished picture against its plan: a block of your own, a box that changes, a loop, two colors, a note."
         }
       },
       "HS-ALG-PS-04": {
@@ -327,12 +456,16 @@
       },
       "HS-ALG-PS-02": {
         "locators": [
-          "step-2-say-it-once"
+          "step-2-say-it-once",
+          "step-8-teach-the-turtle-a-word",
+          "step-9-a-loop-inside-a-loop"
         ],
         "strength": "partial",
         "note": "Step 2 opens with a square written out in eight blocks, then shows that one forward and one right said once inside repeat 4 does the same job. It is a shown rewrite, and Step 1's eight block frame is pointed at but not assigned as one. Functions are not part of it.",
         "locator_notes": {
-          "step-2-say-it-once": "Eight blocks written out become one forward and one right inside a repeat."
+          "step-2-say-it-once": "Eight blocks written out become one forward and one right inside a repeat.",
+          "step-8-teach-the-turtle-a-word": "Eight petals drawn by one block used in a loop instead of 32 blocks written out.",
+          "step-9-a-loop-inside-a-loop": "A loop inside a loop draws a ring of squares in a few blocks."
         }
       }
     },
@@ -341,26 +474,36 @@
         "locators": [
           "step-2-say-it-once",
           "step-4-choose-a-path",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-6-boxes",
+          "step-7-boxes-that-count",
+          "step-8-teach-the-turtle-a-word",
+          "step-9-a-loop-inside-a-loop"
         ],
         "strength": "partial",
-        "note": "Loops are Step 2 and branches are Step 4, and the capstone uses both. Variables appear only as an optional extension in Step 5. Procedures are read in the Step 1 samples but not written, and error recovery and recursion are not covered.",
+        "note": "Loops are Step 2 and branches are Step 4, and the capstones use them. Steps 6 and 7 teach variables (boxes), Step 8 teaches procedures (blocks of your own with an input), and Step 9 puts a loop inside a loop. Together they cover loops, branches, variables and procedures in simple programs.",
         "locator_notes": {
           "step-2-say-it-once": "The repeat block.",
           "step-4-choose-a-path": "The if and else block.",
-          "step-5-random-art": "A loop and an if and else together in one program."
+          "step-5-random-art": "A loop and an if and else together in one program.",
+          "step-6-boxes": "Variables: a box holds a number that many blocks use.",
+          "step-7-boxes-that-count": "A variable updated inside a loop.",
+          "step-8-teach-the-turtle-a-word": "Procedures: a block of your own with an input.",
+          "step-9-a-loop-inside-a-loop": "Loops inside loops."
         }
       },
       "5.9": {
         "locators": [
           "step-1-your-initials",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-12-capstone-2"
         ],
         "strength": "partial",
         "note": "Step 1 breaks the initials into one letter at a time, and Step 5 breaks the capstone into a loop first, then random, then the if and else, running after each piece.",
         "locator_notes": {
           "step-1-your-initials": "One letter at a time, planned and tested before the next.",
-          "step-5-random-art": "Three small pieces, run after each."
+          "step-5-random-art": "Three small pieces, run after each.",
+          "step-12-capstone-2": "The second capstone is built in small pieces: the block first, then the loop, then the box, running after each."
         }
       }
     }

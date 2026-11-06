@@ -78,10 +78,12 @@
   standards_carrier: turtlelessons
   standards_locator: slug
   blurb: >-
-    Five steps with TurtleLab, each starting from a sample you change and
+    Twelve steps with TurtleLab, each starting from a demo you change and
     take further: draw your initials, repeat yourself with loops, let chance
-    draw with random, choose a path with if and else, then put all three
-    into a piece of art of your own.
+    draw with random, choose a path with if and else, then a first capstone.
+    Then keep numbers in variables, count with them, teach the turtle new words,
+    put loops inside loops, see color as three numbers, find bugs, and finish
+    with a second capstone.
 
 - id: cs50psets
   title: "CS50 Problems"

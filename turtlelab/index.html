@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="css/fonts.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/site-menu.css">
+  <script src="js/embed-flag.js"></script>
 </head>
 <body>
   <header class="toolbar">
@@ -95,11 +96,14 @@
     <button id="logo-toggle" class="icon-button" type="button" title="Show your blocks as Logo code, which you can change and run" aria-label="Show or hide the Logo code" aria-pressed="false" aria-controls="logo-box">
       <img src="images/logo-button.svg" alt="" draggable="false">
     </button>
+    <!-- Only inside a lesson page (?embed=1): put the demo back as it was, or open it in a tab of its own at full size. -->
+    <button id="embed-reset" class="embed-only embed-button" type="button" title="Put the blocks back as they were at the start">Start over</button>
     <!-- These open in a new tab, so a click never takes you away from your blocks. -->
     <a class="toolbar-link" href="samples.html" target="_blank" rel="noopener">Samples</a>
     <a class="toolbar-link" href="../turtle-lessons/" target="_blank" rel="noopener">Lessons</a>
     <a class="toolbar-link" href="guide.html" target="_blank" rel="noopener">Guide</a>
     <a class="toolbar-link" href="about.html" target="_blank" rel="noopener">About</a>
+    <a id="embed-open" class="embed-link embed-only" href="./" target="_blank" rel="noopener" title="Open this in a tab of its own, at full size">Open full size</a>
     <!-- The same list as the rest of the site's menu (a test keeps them in step). New tab, so you keep your drawing. -->
     <div class="site-menu">
       <input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">

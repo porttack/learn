@@ -19,13 +19,9 @@ The block for that is `if` with an `else` (Flow palette). The Flow palette has t
 
 ## Try a sample
 
-Open the <a href="{{ '/turtlelab/?sample=wandering-turtle' | relative_url }}" target="_blank" rel="noopener">Wandering turtle sample</a>.
+The frame below is a real TurtleLab. Press **Run** and look at the drawing. **Start over** puts the demo back the way it was. Nothing you do in a frame is saved.
 
-<aside class="callout note" markdown="1">
-**This tab will not remember changes**
-
-A sample tab never saves anything, so a refresh puts the sample back. Press Ctrl+S to keep a copy of something you want to keep.
-</aside>
+{% include turtlelab-embed.html sample="wandering-turtle" title="Wandering turtle: a coin flip decides which way each turn goes" %}
 
 Find the question in the pointed slot. It reads `random 1 2 = 1`. Think of it as a coin flip: the random block gives 1 or 2. If it gives 1 (the answer is yes), the turtle takes the top mouth. If it gives 2 (the answer is no), it takes the `else` mouth.
 
@@ -48,6 +44,14 @@ The headings after each flip are 90, 180, 90, 180, 90 and 0.
 </details>
 
 ## Change it
+
+For these changes, and to save your PDF at the end, work in a full-size tab: use **Open full size** under the frame.
+
+<aside class="callout note" markdown="1">
+**A full-size sample tab will not remember changes**
+
+A sample tab never saves anything, so a refresh puts the sample back. Press Ctrl+S to keep a copy of something you want to keep.
+</aside>
 
 Do these one at a time and run after each:
 

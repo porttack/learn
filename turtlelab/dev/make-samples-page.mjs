@@ -7,7 +7,7 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { SAMPLES } from '../js/ui/samples.js';
+import { LISTED_SAMPLES } from '../js/ui/samples.js';
 
 const root = new URL('../', import.meta.url);
 const escape = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -16,7 +16,7 @@ export function renderSamplesPage() {
   const guide = readFileSync(new URL('guide.html', root), 'utf8');
   const head = guide.match(/^[\s\S]*?<title>/)[0].replace(/<title>$/, '<title>TurtleLab samples');
   const afterTitle = guide.match(/<\/title>([\s\S]*?)<main>/)[1];
-  const cards = SAMPLES.map(
+  const cards = LISTED_SAMPLES.map(
     (sample) => `      <li class="sample-card">
         <a href="./?sample=${sample.id}">
           <img src="images/samples/${sample.id}.png" alt="${escape(sample.look)}" width="350" height="280">
@@ -47,5 +47,5 @@ ${cards}
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   writeFileSync(new URL('samples.html', root), renderSamplesPage());
-  console.log(`wrote samples.html with ${SAMPLES.length} samples`);
+  console.log(`wrote samples.html with ${LISTED_SAMPLES.length} samples`);
 }

@@ -62,17 +62,26 @@ create its collection, and add the collection to `_config.yml`.
 
 ### TurtleLab Lessons (`_turtlelessons/`)
 
-Five steps that use TurtleLab (initials, loops, random, if/else, then a capstone), at
-`/turtle-lessons/`. It is a normal collection (original content, `source: original`), **not**
+Twelve steps that use TurtleLab, at `/turtle-lessons/`: 1 initials, 2 loops, 3 random, 4 if/else, 5 a capstone (random art), then
+(added 2026-11-06, after the capstone, so nothing already published was renumbered) 6 Boxes (variables), 7 Boxes that count,
+8 Teach the turtle a word (your own blocks), 9 A loop inside a loop, 10 Color is three numbers (RGB, hex, binary), 11 Find the bug,
+12 Capstone 2 (a box, a block of your own and a loop). Files are `_turtlelessons/step-N-slug.md`, `order: N`; the label "Step N" comes from `order`
+(so a fractional order would show as "Step 4.5"), and `turtlelab/test/lessons.test.js` requires the steps to be 1 to N with none missing. It is a normal collection (original content, `source: original`), **not**
 inside `turtlelab/` (that folder is the AGPL app; CC lesson content stays out) and **not** named
 `turtlelab` (that would collide with the app's own `/turtlelab/` folder). Each step starts from a
-TurtleLab sample (`/turtlelab/?sample=ID`) the student changes. No app screenshots in these pages
-(its artwork is AGPL). "TurtleLab Lessons" is in the site menu and in TurtleLab's own toolbar.
+TurtleLab demo the student changes. **Steps 2 to 4 and 6 to 11 show the demo inside the page** with `{% include turtlelab-embed.html sample="ID" title="..." %}`
+(a frame of the real app in its slim `?embed=1` mode: see `turtlelab/CLAUDE.md`, "Embedding in lessons"; at most four per page, each is a whole copy of the app;
+on paper the frame is replaced by its address). A frame has no PDF button and never saves, so steps that end in a PDF say "Open full size" first. Step 6 teaches the word **variable** and calls TurtleLab's boxes variables throughout; its main demo (`lesson-box-steps`) is one slow program (it uses a `speed 1` block) so each REAL block lights up while the
+yellow box strip and the Output box change (2026-11-06, the user: the first version, a custom "Box lab" with buttons like "store box1 + 1 in box1" and "look at box1", was confusing because those are not blocks:
+"use the actual blocks from our implementation"; it was deleted). Never describe a block in a way the app does not show it: `store in box1` has a number slot, `box1` is a round block, a `+` block goes in the slot.
+(A tapped stack runs with fresh boxes at 0, so separate stacks cannot show a variable keeping its value: use one program.)
+No app screenshots in these pages (its artwork is AGPL). "TurtleLab Lessons" is in the site menu and in TurtleLab's own toolbar.
 
-**Standards:** `_standards/carriers/turtlelessons.json` aligns the five steps to apcsp, castandards, csta2026 and the CTE
+**Standards:** `_standards/carriers/turtlelessons.json` aligns all twelve steps to apcsp, castandards, csta2026 and the CTE
 ICT anchor (locators are the step slugs; `standards_locator: slug` on the pathway). Loops, if/else, random and run to run
-variation are the strong fits; variables and procedures are only `related` because they appear as optional or read-only
-material. The per-lesson widget shows each step's own codes. After editing it, run `tools/publish_standards.sh`.
+variation were the strong fits for Steps 1 to 5; Steps 6 to 12 made variables (AP CSP 3.1), procedures (3.12, 3.13, CSTA MS-PRO-PD-12), binary (2.1) and debugging
+(1.4) strong or partial (second pass 2026-11-06; boxes hold numbers only and are named box1 to box4, so the variable codes say so). CTE stays at two codes on purpose.
+`lessons.test.js` checks every step is named in the file, every locator is a real step, and the wording has no dashes or banned words. The per-lesson widget shows each step's own codes. After editing it, run `tools/publish_standards.sh`.
 
 TurtleLab has a `write` block (Notes palette) that draws words in one of five fonts. Student Steps 1 and 5 say to skip it, and
 `teacher-notes.md` has the line for an assignment that should not allow it.

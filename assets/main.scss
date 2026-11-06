@@ -1155,6 +1155,37 @@ figure.figure-small img {
   }
 }
 
+// A TurtleLab demo in a lesson page (_includes/turtlelab-embed.html): the real app in a frame. It prints blank, so on paper the address shows instead.
+.tl-embed {
+  margin: 1.5em 0;
+
+  .tl-embed-frame {
+    display: block;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    border: 2px solid #4da6ff;
+    border-radius: 10px;
+    background: #fff;
+  }
+
+  figcaption {
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tl-embed-print {
+    display: none;
+  }
+}
+
+@media print {
+  .tl-embed .tl-embed-frame { display: none; }
+  .tl-embed .tl-embed-print { display: block; margin: 0.4em 0 0; font-size: 0.9em; text-align: center; word-break: break-all; }
+  .tl-embed figcaption a { display: none; } // (a link to click means nothing on paper: the address is shown instead)
+}
+
 .callout {
   margin: 1.5em 0;
   padding: 1em 1.2em;

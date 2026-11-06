@@ -12,13 +12,9 @@ A program can also use **chance**. The `random` block (Math palette) picks a num
 
 ## Try a sample
 
-Open the <a href="{{ '/turtlelab/?sample=color-burst' | relative_url }}" target="_blank" rel="noopener">Color burst sample</a>.
+The frame below is a real TurtleLab. Change a number, press **Run**, and look at the drawing. **Start over** puts the demo back the way it was. Nothing you do in a frame is saved, and **Open full size** opens it in a tab of its own.
 
-<aside class="callout note" markdown="1">
-**This tab will not remember changes**
-
-A sample tab never saves anything, so a refresh puts the sample back. Press Ctrl+S to keep a copy of something you want to keep.
-</aside>
+{% include turtlelab-embed.html sample="color-burst" title="Color burst: 50 rays, each in a random color" %}
 
 Before you run it a second time, make a guess: will the second picture match the first?
 
@@ -49,7 +45,7 @@ A round block like `random` plugs into a round number slot. When you drop it on 
 
 This is the last practice before the capstone. Scatter 60 dots on the paper, each in a random place and a random color.
 
-Start from a fresh TurtleLab tab, because a sample tab does not save your work. The blocks you need are `repeat`, `pen up`, `set xy` with a `random` block in each slot, `pen down`, `set color`, `set pen size`, and `forward`.
+Start from a fresh TurtleLab tab, because a frame or a sample tab does not save your work. The blocks you need are `repeat`, `pen up`, `set xy` with a `random` block in each slot, `pen down`, `set color`, `set pen size`, and `forward`.
 
 Two hints about the paper. It runs from -350 to 350 across and from -280 to 280 up and down. And a very short line drawn with a fat pen looks like a dot.
 
@@ -57,4 +53,4 @@ When your confetti works, run it twice. Do the two runs match? Why or why not?
 
 ## Save your work
 
-Press the **PDF** button to keep a copy of your blocks and your drawing.
+Press the **PDF** button in your confetti tab to keep a copy of your blocks and your drawing.

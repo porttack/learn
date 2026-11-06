@@ -60,7 +60,8 @@ body {
   height: 100%;
 }
 
-.toolbar-link {
+.toolbar-link,
+.embed-link {
   color: #fff;
   font-weight: 700;
   text-decoration: underline;
@@ -91,6 +92,29 @@ body {
   opacity: 0.4;
   cursor: default;
 }
+
+/* ---- Inside a lesson page (?embed=1, set on the page by js/embed-flag.js) ----
+   A slim toolbar: Run, Stop, Undo, Redo, Start over and Open full size. The palettes, the can, the boxes readout and the message line stay. */
+.embed-only { display: none; }
+.embedded .embed-only { display: inline-flex; }
+.embedded .toolbar > :not(#run):not(#stop):not(#undo):not(#redo):not(.embed-only) { display: none; }
+.embedded .toolbar { padding: 0.2rem 0.5rem; }
+.embedded #embed-open { margin-left: auto; }
+.embed-button {
+  align-items: center;
+  height: 2rem;
+  padding: 0 0.8rem;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.embed-button:hover { background: rgba(255, 255, 255, 0.25); }
+.embedded .score-badge { display: none; }
+.embedded .boxes-readout { right: 0.75rem; } /* the badge that it made room for is not there */
 
 .icon-button[aria-pressed='true'] {
   background: rgba(255, 255, 255, 0.45);

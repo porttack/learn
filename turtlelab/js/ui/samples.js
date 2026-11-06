@@ -123,6 +123,8 @@ const initialsProgram = () => [
  *   note      the sticky note (300 characters at most)
  *   program   the blocks, starting with a Start block
  *   defines   optional: blocks the sample makes, each { name, params, body }
+ *   listed    optional, `false` for a demo that only a lesson page frames (see "Embedding in lessons" in CLAUDE.md): it opens with ?sample=... like any
+ *             other, but it is not on the Samples page and has no thumbnail. Everything else about it is held to the same tests.
 
  *   clearWidth  optional: how wide the drawing is, in turtle steps (the paper is 700). Blocks you make may use the
  *             empty sides of the paper. Without it, the whole paper is kept clear.
@@ -583,9 +585,182 @@ export const SAMPLES = [
       b('setxy', 0, -161), b('setcurve', -93), { op: 'write', args: [36], text: 'GO TEAM' },
     ],
   },
+
+  // ---- Demos for the lessons (listed: false) ----------------------------------------------------------------------------------------------------------
+  // A lesson page shows each of these in a frame (_includes/turtlelab-embed.html, ?sample=...&embed=1), so they are short: they have to fit a frame about 700
+  // by 520. They are not on the Samples page and have no thumbnail. The four "bug" ones are broken on purpose: the note says what the program is FOR, never
+  // what is wrong with it (the lesson, Step 11, has the hints and the answers).
+  {
+    id: 'lesson-box-steps',
+    listed: false,
+    title: 'Watch a variable change',
+    summary: 'A slow program stores in box1 and prints it, so you can watch the yellow strip.',
+    look: 'A short red line pointing up',
+    concepts: ['boxes', 'print', 'speed', 'add'],
+    note: 'Watch each block light up as it runs. The yellow strip at the bottom right shows what is in box1, and the Output box at the top right shows what print says. Store puts a number in and replaces the old one. Print only looks.',
+    program: [
+      b('start'),
+      b('clean'),
+      b('speed', 1),
+      b('store1', 40),
+      b('store1', sum(box1, 10)),
+      b('store1', sum(box1, 10)),
+      b('print', box1),
+      b('print', box1),
+      b('store1', 100),
+      b('print', box1),
+      b('forward', box1),
+    ],
+  },
+  {
+    id: 'lesson-box-house',
+    listed: false,
+    title: 'A house from one number',
+    summary: 'One box holds the size, and every wall and every roof side uses it.',
+    look: 'A red house: a square with a triangle roof',
+    concepts: ['boxes', 'repeat'],
+    note: 'Box1 keeps one number: the size of the house. Every wall and every roof side uses box1. Change the 80 in store in box1 to 50 or 110 and press Run. One number changed, and the whole house changed.',
+    program: [
+      b('start'),
+      b('clean'),
+      b('store1', 80),
+      b('setpensize', 5),
+      rep(4, b('forward', box1), b('right', 90)),
+      b('forward', box1),
+      b('right', 30),
+      rep(3, b('forward', box1), b('right', 120)),
+    ],
+  },
+  {
+    id: 'lesson-box-trace',
+    listed: false,
+    title: 'Watch a box count',
+    summary: 'Box1 grows by 10 each lap, and print shows it.',
+    look: 'A square spiral winding outward, eight sides growing longer',
+    concepts: ['boxes', 'print', 'add'],
+    note: 'Each lap, box1 gets 10 bigger, print shows it in the Output box at the top right, and the turtle draws a side that long. Watch the numbers go up, then check them against the spiral. Try 5 instead of 10.',
+    program: [
+      b('start'),
+      b('clean'),
+      b('setpensize', 4),
+      b('store1', 0),
+      rep(8, b('store1', sum(box1, 10)), b('print', box1), b('forward', box1), b('right', 90)),
+    ],
+  },
+  {
+    id: 'lesson-own-flower',
+    listed: false,
+    title: 'A flower from one petal',
+    summary: 'Your own block draws a petal. The main program uses it eight times.',
+    look: 'A pink flower with eight pointed petals',
+    concepts: ['my own block', 'input', 'repeat'],
+    note: 'Petal is a block of your own. It draws one petal as big as its size input. The main program uses it 8 times and turns 45 between petals. Change the 60 to make a bigger or smaller flower.',
+    defines: [{ name: 'petal', params: ['size'], body: [rep(2, b('arc', 60, input('size')), b('right', 120))] }],
+    program: [
+      b('start'),
+      b('clean'),
+      b('setcolor', 220, 60, 120),
+      b('setpensize', 3),
+      rep(8, call('petal', ['size'], 60), b('right', 45)),
+    ],
+  },
+  {
+    id: 'lesson-nested-count',
+    listed: false,
+    title: 'Twelve squares',
+    summary: 'The inside repeat draws a square, and the outside repeat turns and does it again.',
+    look: 'Twelve blue squares turned around one shared corner',
+    concepts: ['repeat inside repeat'],
+    note: 'The inside repeat draws one square: 4 sides and 4 turns. The outside repeat turns 30 and draws another, 12 times in all. Count the forward blocks that run. Then try 6 squares with a turn of 60.',
+    program: [
+      b('start'),
+      b('clean'),
+      b('setpensize', 3),
+      b('setcolor', 0, 110, 200),
+      rep(12, rep(4, b('forward', 70), b('right', 90)), b('right', 30)),
+    ],
+  },
+  {
+    id: 'lesson-color-mix',
+    listed: false,
+    title: 'A bar of color',
+    summary: 'A color is three numbers: red, green and blue.',
+    look: 'A thick red bar across a black screen',
+    concepts: ['color'],
+    note: 'The bar is the color of set color: red, green and blue, each 0 to 255. Change the three numbers and press Run, or press the colored box under set color to pick a color. Try 255 255 0 and 128 128 128.',
+    program: [
+      b('start'),
+      b('clean'),
+      b('fillscreen', 0, 0, 0),
+      b('setpensize', 90),
+      b('penup'),
+      b('setxy', -200, 0),
+      b('setheading', 90),
+      b('pendown'),
+      b('setcolor', 255, 0, 0),
+      b('forward', 400),
+    ],
+  },
+  {
+    id: 'lesson-bug-triangle',
+    listed: false,
+    title: 'Bug: the triangle',
+    summary: 'This should draw a triangle.',
+    look: 'Three long sides that do not close into a triangle',
+    concepts: ['repeat'],
+    note: 'This program is meant to draw a triangle. Run it. Does the shape close up? Find the mistake, fix it, and press Run again. Start over puts it back the way it was.',
+    program: [b('start'), b('clean'), b('setpensize', 5), rep(3, b('forward', 100), b('right', 100))],
+  },
+  {
+    id: 'lesson-bug-box',
+    listed: false,
+    title: 'Bug: the box',
+    summary: 'This should draw a square 100 long, with the size kept in a box.',
+    look: 'A small red square',
+    concepts: ['boxes', 'repeat'],
+    note: 'This program is meant to draw a square 100 long, with the size kept in box1. Run it. Is the square 100 long? Find the mistake, fix it, and press Run again. Start over puts it back the way it was.',
+    program: [b('start'), b('clean'), b('store1', 100), b('setpensize', 5), rep(4, b('forward', 50), b('right', 90))],
+  },
+  {
+    id: 'lesson-bug-if',
+    listed: false,
+    title: 'Bug: the coin flip',
+    summary: 'This should wander left and right by chance.',
+    look: 'A small square drawn over and over',
+    concepts: ['if else'],
+    note: 'This program is meant to wander: a coin flip picks a turn to the right or to the left, 60 times. Run it. Does it wander? Find the mistake, fix it, and press Run again. Start over puts it back the way it was.',
+    program: [
+      b('start'),
+      b('clean'),
+      b('setpensize', 3),
+      rep(60, ifElse(b('equal', b('random', 1, 2), 3), [b('right', 90)], [b('left', 90)]), b('forward', 15)),
+    ],
+  },
+  {
+    id: 'lesson-bug-pen',
+    listed: false,
+    title: 'Bug: the house',
+    summary: 'This should draw a house: a square with a triangle roof.',
+    look: 'A red square with no roof',
+    concepts: ['pen up and down', 'repeat'],
+    note: 'This program is meant to draw a house: a square with a triangle roof. Run it. What is missing? Find the mistake, fix it, and press Run again. Start over puts it back the way it was.',
+    program: [
+      b('start'),
+      b('clean'),
+      b('setpensize', 5),
+      rep(4, b('forward', 80), b('right', 90)),
+      b('penup'),
+      b('forward', 80),
+      b('right', 30),
+      rep(3, b('forward', 80), b('right', 120)),
+    ],
+  },
 ];
 
 export const SAMPLE_IDS = SAMPLES.map((sample) => sample.id);
+
+/** The samples the Samples page shows (all of them, except the demos only a lesson page uses). */
+export const LISTED_SAMPLES = SAMPLES.filter((sample) => sample.listed !== false);
 
 /** The sample with this id, or null. Only a plain id matches, never anything inherited. */
 export function sampleById(id) {

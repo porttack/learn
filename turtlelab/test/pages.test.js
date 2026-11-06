@@ -262,6 +262,8 @@ test('the Guide tells about the shark\'s score and poking the can, and the priva
   const privacy = read('privacy.html');
   assert.match(privacy, /<td>Is the shark's score saved\?<\/td>/);
   assert.match(privacy, /<td>Does the shark remember what it eats\?<\/td>/);
+  assert.match(privacy, /<td>What about TurtleLab inside a lesson page\?<\/td>/);
+  assert.match(privacy, /does not read or save anything in a frame/);
   assert.match(privacy, /never saved, put in a file or sent anywhere, and they are gone when the page is closed/);
   assert.match(privacy, /Nothing about it is stored or sent/);
 });

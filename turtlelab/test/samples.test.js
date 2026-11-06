@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 
-import { SAMPLES, SAMPLE_IDS, sampleById, sampleStacks, noteHeight } from '../js/ui/samples.js';
+import { SAMPLES, LISTED_SAMPLES, SAMPLE_IDS, sampleById, sampleStacks, noteHeight } from '../js/ui/samples.js';
 import { validateProject, findRunStack, walkBlocks, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { definitionsOf } from '../js/core/definitions.js';
 import { runBlocks, createContext, Wait } from '../js/core/interpreter.js';
@@ -237,15 +237,15 @@ test('the countdown prints 3, 2, 1 and waits between them', () => {
 test('opening a sample does not need the saved project: the app never asks storage for one', () => {
   // main.js reads the saved project only when there is no sample. This keeps that true.
   const main = readFileSync(new URL('../js/ui/main.js', import.meta.url), 'utf8');
-  assert.match(main, /if \(!sample && !\(demo/, 'the saved project is only read when there is no sample');
-  assert.match(main, /if \(sample\) autosave\.pause\(\)/, 'a sample pauses autosave');
+  assert.match(main, /if \(!sample && !embed && !\(demo/, 'the saved project is only read when there is no sample, and not inside a lesson\'s frame');
+  assert.match(main, /if \(sample \|\| embed\) autosave\.pause\(\)/, 'a sample, or a lesson\'s frame, pauses autosave');
   const storage = readFileSync(new URL('../js/ui/storage.js', import.meta.url), 'utf8');
   assert.match(storage, /schedule\(\) \{\n\s+if \(this\.paused\) return;/);
   assert.match(storage, /flush\(\) \{\n\s+if \(this\.paused\) return;/);
 });
 
-test('every sample has a thumbnail picture for the Samples page, the same size as the others', () => {
-  for (const sample of SAMPLES) {
+test('every listed sample has a thumbnail picture for the Samples page, the same size as the others', () => {
+  for (const sample of LISTED_SAMPLES) {
     const file = new URL(`../images/samples/${sample.id}.png`, import.meta.url);
     assert.ok(existsSync(file), `${sample.id}: images/samples/${sample.id}.png (run dev/make-sample-thumbs.mjs)`);
     const png = readFileSync(file);
@@ -256,9 +256,9 @@ test('every sample has a thumbnail picture for the Samples page, the same size a
   }
 });
 
-test('the Samples page lists every sample once, with a link that opens it and a thumbnail', () => {
+test('the Samples page lists every listed sample once, with a link that opens it and a thumbnail', () => {
   const html = readFileSync(new URL('../samples.html', import.meta.url), 'utf8');
-  for (const sample of SAMPLES) {
+  for (const sample of LISTED_SAMPLES) {
     const links = html.match(new RegExp(`href="\\./\\?sample=${sample.id}"`, 'g')) ?? [];
     assert.ok(links.length >= 1, `${sample.id}: has a link`);
     assert.ok(html.includes(`src="images/samples/${sample.id}.png"`), `${sample.id}: has its picture`);
@@ -266,7 +266,7 @@ test('the Samples page lists every sample once, with a link that opens it and a 
     assert.ok(html.includes(sample.summary), `${sample.id}: has its summary`);
   }
   const listed = [...html.matchAll(/href="\.\/\?sample=([a-z-]+)"/g)].map((m) => m[1]);
-  assert.deepEqual([...new Set(listed)], SAMPLE_IDS, 'in the same order as samples.js, and none that is not a sample');
+  assert.deepEqual([...new Set(listed)], LISTED_SAMPLES.map((s) => s.id), 'in the same order as samples.js, and none that is not a listed sample');
 });
 
 test('samples.html is exactly what dev/make-samples-page.mjs makes from samples.js', () => {
@@ -300,4 +300,17 @@ test('the embroidery samples are good to stitch: lines only, one or two threads,
     });
     assert.ok(/PES or DST/.test(sample.note), `${sample.id}: the note says how to get the file`);
   }
+});
+
+test('a demo that only a lesson page uses is marked listed: false, is named lesson-..., and is not on the Samples page or given a thumbnail', () => {
+  const html = readFileSync(new URL('../samples.html', import.meta.url), 'utf8');
+  const unlisted = SAMPLES.filter((s) => s.listed === false);
+  for (const sample of SAMPLES.filter((s) => s.id.startsWith('lesson-'))) assert.equal(sample.listed, false, `${sample.id} starts with lesson- so it is for lessons only`);
+  for (const sample of unlisted) {
+    assert.match(sample.id, /^lesson-/, 'named so that nobody mistakes it for a sample to browse');
+    assert.ok(!html.includes(`?sample=${sample.id}"`), `${sample.id} is not on the Samples page`);
+    assert.ok(sampleById(sample.id), `${sample.id} still opens with ?sample=`);
+  }
+  assert.equal(LISTED_SAMPLES.length + unlisted.length, SAMPLES.length);
+  assert.ok(!SAMPLE_IDS.includes('nosuch'));
 });
