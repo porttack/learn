@@ -22,7 +22,9 @@ export function eatVisitor({ el, trash, onDone, setTimer = (fn, ms) => setTimeou
   const target = { x: box.left + box.width / 2, y: box.top + box.height / 2 };
   trash.setPeek(false);
   trash.look(null);
+  const svg = el.querySelector?.('svg');
   const went = trash.hunt(target, {
+    meal: svg ? { node: svg.cloneNode(true), width: box.width, height: box.height } : null, // (a picture of it, in case the shark is sick later)
     onBite: () => {
       el.classList.add('eaten');
       setTimer(() => el.remove(), OVER_MS);

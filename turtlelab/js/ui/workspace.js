@@ -33,7 +33,7 @@ import { INPUT_MAX, NAME_MAX } from '../core/names.js';
 import {
   LETTERING_MAX_CHARS, LETTER_FONTS, cleanFont, cleanLetteringText, letteringStrokes, letteringWidth,
 } from '../core/lettering.js';
-import { HOME_VIEW, zoomAbout, panBy, zoomToFit, fitBlocksView } from '../core/view.js';
+import { HOME_VIEW, FIT_MIN_ZOOM, zoomAbout, panBy, zoomToFit, fitBlocksView } from '../core/view.js';
 import {
   cloneBlock,
   detachCommands,
@@ -71,7 +71,7 @@ export class Workspace {
    * @param {(x: number, y: number, stackRect: object | null) => boolean} [options.isOverPalette] for deleting:
    *        the pointer's place, and the rectangle of the stack being carried
    * @param {(hovering: boolean) => void} [options.onPaletteHover]
-   * @param {{ mouthPoint: (options?: {raised?: boolean}) => ({x: number, y: number} | null), feed: () => void, spit?: (ms: number) => void }} [options.eater]
+   * @param {{ mouthPoint: (options?: {raised?: boolean}) => ({x: number, y: number} | null), feed: (meal?: { node: Element, width: number, height: number }) => void, spit?: (ms: number) => void }} [options.eater]
    *        what eats a deleted stack: where its mouth is on the screen, and a nudge to start chewing
    */
   constructor({
@@ -471,7 +471,7 @@ export class Workspace {
     el.style.transition = `transform ${EAT_MS}ms cubic-bezier(0.4, 0, 0.9, 0.6), opacity ${EAT_MS}ms`;
     el.style.transform = `translate(${goal.x - (size.w * EATEN_SIZE) / 2}px, ${goal.y - (size.h * EATEN_SIZE) / 2}px) scale(${EATEN_SIZE})`;
     el.style.opacity = '0.25';
-    this.eater.feed();
+    this.eater.feed({ node: el.cloneNode(true), width: size.w, height: size.h }); // (a picture of the stack, in case the shark is sick later)
     setTimeout(() => el.remove(), EAT_MS + 80);
   }
 
@@ -635,9 +635,11 @@ export class Workspace {
   /**
    * Zoom out (never in) and slide so that every stack is inside the window, so all the code
    * can be seen. `leftInset` is how many pixels along the left edge are taken by the palettes.
-   * With no blocks it just goes back to the starting view.
+   * With `normal` the code is not made smaller than normal size (1) however big it is: its top left
+   * corner is brought into the window and the rest can be slid into view. With no blocks it just
+   * goes back to the starting view.
    */
-  fitBlocks(leftInset = 0) {
+  fitBlocks(leftInset = 0, { normal = false } = {}) {
     const box = this.svg.getBoundingClientRect();
     const content = { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity };
     for (const el of this.stackLayer.children) {
@@ -655,6 +657,7 @@ export class Workspace {
     this.setView(fitBlocksView({
       content,
       room: { left: leftInset + margin, top: margin, right: box.width - margin, bottom: box.height - margin },
+      minZoom: normal ? 1 : FIT_MIN_ZOOM,
     }));
   }
 

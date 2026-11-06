@@ -7,7 +7,8 @@
 // goes back to that when the blocks change. Press the card for the reasons behind each number and what to try next. When building makes complexity or
 // elegance go up and then stay still for a moment, "+0.1 elegance" floats up. It only reads the blocks and the run: nothing here stores or sends anything.
 
-import { assess, tenths, levelLine, METRICS } from '../core/quality.js';
+import { assess, tenths, levelLine, scaleLine, METRICS } from '../core/quality.js';
+import { TABLE_LABELS } from '../core/score-report.js';
 
 /** How long the numbers must stay still before a "+0.1" shows, so building a stack block by block gives one, not one for each block. */
 const SETTLE_MS = 500;
@@ -198,18 +199,29 @@ export class ScoreBadge {
       return ul;
     };
 
-    // Complexity: where the points came from (the rows that are 0 are dimmed, with a hint), the level, and one thing to try.
+    // Complexity: where the points came from: each idea, how many of it there are, and the points it earned (the rows that are 0 are dimmed),
+    // then the level, how points become the 0.0 to 1.0 number, and one thing to try.
     const table = make('table', 'score-table');
+    const columnNames = make('tr');
+    columnNames.append(make('th', 'score-colhead', 'Idea'), make('th', 'score-colhead score-colnum', 'Count'), make('th', 'score-colhead score-colnum', 'Points'));
+    const tableHead = make('thead');
+    tableHead.append(columnNames);
+    const rows = make('tbody');
     for (const part of complexity.parts) {
       const row = make('tr', part.points === 0 ? 'score-zero' : '');
       row.dataset.part = part.id;
       const name = make('td', 'score-part');
-      name.append(make('span', 'score-part-name', part.label));
+      name.append(make('span', 'score-part-name', TABLE_LABELS[part.id] ?? part.label));
       if (part.detail) name.append(make('span', 'score-part-detail', part.detail));
-      row.append(name, make('td', 'score-points', part.points > 0 ? `+${part.points}` : '0'));
-      table.append(row);
+      row.append(name, make('td', 'score-count', String(part.count)), make('td', 'score-points', part.points > 0 ? `+${part.points}` : '0'));
+      rows.append(row);
     }
-    const complexityBody = [make('p', 'score-next', levelLine(complexity)), table, make('p', 'score-tip', complexity.tip)];
+    const total = make('tr', 'score-total');
+    total.append(make('td', 'score-part', 'Total'), make('td', 'score-count', ''), make('td', 'score-points', String(complexity.points)));
+    const foot = make('tfoot');
+    foot.append(total);
+    table.append(tableHead, rows, foot);
+    const complexityBody = [make('p', 'score-next', levelLine(complexity)), make('p', 'score-scale', scaleLine(complexity)), table, make('p', 'score-tip', complexity.tip)];
     const fine = make('p', 'score-fine', 'Worked out from the blocks on the page, here on this device. Nothing is saved or sent.');
 
     // On a wide window complexity (its points) is a column on the left, and elegance and efficiency, with their reasons, are one on the right.

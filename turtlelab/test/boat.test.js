@@ -121,7 +121,7 @@ function setup({ calm = false, visible = true, random = steady(0.3), hidden = fa
       classList: { add: (name) => el.classes.add(name) },
       append(...items) { this.children.push(...items); },
       remove() { this.removed = true; },
-      querySelector: (selector) => (el.parts[selector] ??= { attributes: {}, setAttribute(n, v) { this.attributes[n] = v; } }),
+      querySelector: (selector) => (el.parts[selector] ??= { attributes: {}, setAttribute(n, v) { this.attributes[n] = v; }, cloneNode() { return { picture: selector }; } }),
       parts: {},
     };
     return el;

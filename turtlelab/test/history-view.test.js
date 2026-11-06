@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import { History } from '../js/core/history.js';
-import { zoomAbout, panBy, clampZoom, zoomToFit, fitBlocksView, MIN_ZOOM, MAX_ZOOM, HOME_VIEW } from '../js/core/view.js';
+import { zoomAbout, panBy, clampZoom, zoomToFit, fitBlocksView, MIN_ZOOM, MAX_ZOOM, HOME_VIEW, FIT_MIN_ZOOM } from '../js/core/view.js';
 
 const project = (...ops) => ({ stacks: [{ x: 0, y: 0, blocks: ops.map((op) => ({ op })) }] });
 
@@ -138,4 +138,23 @@ test('fitBlocksView: wide blocks zoom out until the right side fits, and everyth
 test('fitBlocksView: never zooms in, never out past the smallest zoom', () => {
   assert.equal(fitBlocksView({ content: { left: 0, top: 0, right: 10, bottom: 10 }, room: { left: 0, top: 0, right: 900, bottom: 900 } }).zoom, 1);
   assert.equal(fitBlocksView({ content: { left: 0, top: 0, right: 90000, bottom: 90000 }, room: { left: 0, top: 0, right: 900, bottom: 900 } }).zoom, MIN_ZOOM);
+});
+
+test('fitBlocksView with the fit limit: a long program on a short window zooms out past the zoom buttons\' limit until all of it fits, but not past FIT_MIN_ZOOM', () => {
+  const room = { left: 80, top: 12, right: 900, bottom: 600 };
+  const long = fitBlocksView({ content: { left: 0, top: 0, right: 200, bottom: 1500 }, room, minZoom: FIT_MIN_ZOOM });
+  assert.ok(long.zoom < MIN_ZOOM && long.zoom > FIT_MIN_ZOOM, `zoom ${long.zoom}`);
+  assert.ok(Math.abs(1500 * long.zoom + long.y - room.bottom) < 1e-9, 'the bottom of the code is at the bottom of the room');
+  assert.equal(fitBlocksView({ content: { left: 0, top: 0, right: 200, bottom: 1500 }, room }).zoom, MIN_ZOOM, 'the zoom buttons\' limit still holds when it is the one asked for');
+  assert.equal(fitBlocksView({ content: { left: 0, top: 0, right: 90000, bottom: 90000 }, room, minZoom: FIT_MIN_ZOOM }).zoom, FIT_MIN_ZOOM, 'and there is a floor');
+});
+
+test('fitBlocksView at normal size (minZoom 1): the code is never shrunk, its top left corner is brought into the room, and the rest can be slid into view', () => {
+  const room = { left: 80, top: 12, right: 900, bottom: 600 };
+  const tall = fitBlocksView({ content: { left: 5000, top: -2000, right: 5200, bottom: -500 }, room, minZoom: 1 });
+  assert.equal(tall.zoom, 1);
+  assert.equal(5000 * tall.zoom + tall.x, room.left, 'the left edge of the code is at the left of the room');
+  assert.equal(-2000 * tall.zoom + tall.y, room.top, 'the top of the code is at the top of the room, however far away it was');
+  const small = fitBlocksView({ content: { left: 0, top: 0, right: 100, bottom: 100 }, room, minZoom: 1 });
+  assert.equal(small.zoom, 1, 'and code that already fits stays at 1');
 });

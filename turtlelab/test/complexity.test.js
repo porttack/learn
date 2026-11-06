@@ -197,3 +197,15 @@ test('the score is always a whole number and a bigger program with more ideas is
   for (const p of [square, counter, oneIf, ownBlock]) assert.ok(Number.isInteger(scoreProject(p).score));
   assert.ok(scoreProject(counter).score > scoreProject(oneVariable).score - 1);
 });
+
+test('a row with nothing in it says nothing: no "try repeat" style hint, in an empty program or one that uses none of the ideas (the tip underneath is the one nudge)', () => {
+  const plain = { app: 'turtlelab', version: 1, stacks: [{ x: 0, y: 0, blocks: [{ op: 'start' }, { op: 'clean' }, { op: 'forward', args: [100] }, { op: 'right', args: [90] }] }] };
+  for (const project of [{ app: 'turtlelab', version: 1, stacks: [] }, plain]) {
+    const r = scoreProject(project);
+    for (const x of r.parts) {
+      if (x.count === 0 && x.id !== 'bonus') assert.equal(x.detail, '', `${x.id} with a count of 0 has nothing to say`); // ("0 of 4" on the big ideas row is a fact, not a hint)
+      assert.ok(!/\btry\b/i.test(x.detail) && !/then use it/.test(x.detail), `${x.id}: ${x.detail}`);
+    }
+    assert.ok(r.tip.length > 0, 'the one thing to try is still said, once, as the tip');
+  }
+});

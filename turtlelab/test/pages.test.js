@@ -261,6 +261,8 @@ test('the Guide tells about the shark\'s score and poking the can, and the priva
   assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf("The shark's score"), guide.indexOf('Turtle moods'))), 'no dashes in the new row');
   const privacy = read('privacy.html');
   assert.match(privacy, /<td>Is the shark's score saved\?<\/td>/);
+  assert.match(privacy, /<td>Does the shark remember what it eats\?<\/td>/);
+  assert.match(privacy, /never saved, put in a file or sent anywhere, and they are gone when the page is closed/);
   assert.match(privacy, /Nothing about it is stored or sent/);
 });
 

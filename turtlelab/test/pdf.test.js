@@ -467,3 +467,43 @@ test('poppler reads the score: the numbers on page 1, the reasons on page 2', ne
   assert.match(page(2), /Efficiency: \d\.\d/);
   assert.match(page(2), /It took 12 steps to make the picture\./);
 });
+
+// ---- The complexity table: numbers beside the words, ruled rows, and room to write a mark ----------------------------
+
+/** Every piece of text on a page with where it starts: { x, y, words }. */
+const textOps = (contents) => [...contents.matchAll(/\/(F\d) ([\d.]+) Tf [\d.]+ g ([\d.-]+) ([\d.-]+) Td \((.*)\) Tj ET/g)].map((m) => ({ font: m[1], size: Number(m[2]), x: Number(m[3]), y: Number(m[4]), words: m[5].replace(/\\([()\\])/g, '$1') }));
+
+test('the complexity table has its numbers right beside the words, the rows ruled, and the right part of every row left empty for a mark', async () => {
+  const pdf = await makePdf({ report: REPORT() });
+  const page = contentsOf(pdf)[1];
+  const found = textOps(page);
+  const head = ['Idea', 'Count', 'Points', 'Mark'].map((name) => found.find((t) => t.words === name));
+  assert.ok(head.every(Boolean), 'the four column names');
+  assert.ok(head[0].x < head[1].x && head[1].x < head[2].x && head[2].x < head[3].x, 'in that order, left to right');
+  assert.ok(head.every((t) => t.y === head[0].y), 'on one line');
+  const markLeft = head[3].x - 6;
+  const rows = ['repeat / forever', 'if / if else', 'Blocks', 'Total'].map((name) => found.find((t) => t.words === name));
+  assert.ok(rows.every(Boolean), 'the rows are there, named for the blocks');
+  for (const row of rows) {
+    const same = found.filter((t) => Math.abs(t.y - row.y) < 0.01);
+    assert.ok(same.length >= 2, `${row.words} has numbers on its line`);
+    for (const t of same) assert.ok(t.x + textWidth(t.words, t.size) < markLeft, `${row.words}: "${t.words}" is left of the Mark column, which is empty`);
+    const farthest = Math.max(...same.map((t) => t.x + textWidth(t.words, t.size)));
+    assert.ok(farthest - row.x < 330, `${row.words}: the numbers are within 330 points of the word, not out at the margin (${farthest - row.x})`);
+  }
+  assert.ok(markLeft < 612 - 36 - 150, 'and the empty column is at least two inches wide');
+  const rule = page.match(/0\.7 G 0\.5 w ([^S]*)S/)[1];
+  assert.ok((rule.match(/ m /g) ?? []).length >= 9 + 5 - 1, 'a rule above, under the names, under every row, and down between the columns');
+  const lines = [...rule.matchAll(/([\d.]+) ([\d.]+) m ([\d.]+) ([\d.]+) l/g)].map((m) => m.slice(1).map(Number));
+  assert.ok(lines.some(([x1, , x2]) => x1 === 36 && x2 === 576), 'the horizontal rules run the whole width, over the mark column too');
+});
+
+test('poppler reads a row of the table straight across: the words, then the count, then the points', needsPoppler, async () => {
+  const { file } = await writeTemp(makePdf({ report: REPORT() }));
+  if (spawnSync('pdftotext', ['-v']).error) return;
+  const second = spawnSync('pdftotext', ['-layout', '-f', '2', '-l', '2', file, '-'], { encoding: 'utf8' }).stdout;
+  assert.match(second, /Idea\s+Count\s+Points\s+Mark/);
+  assert.match(second, /repeat \/ forever\s+1\s+\d+\n/, 'one repeat: the name, 1, its points, and nothing after');
+  assert.match(second, /Total\s+\d+\n/);
+  assert.doesNotMatch(second, /try repeat|try if|try to|\(0 boxes/);
+});

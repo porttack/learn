@@ -8,8 +8,8 @@ import { IDLE_MS, GAP_MS, RETRY_MS, BREATH_AFTER_MS, between, pickAntic, Idle } 
 const steady = (value) => () => value;
 
 test('an antic comes after a minute of quiet, and then every so often while it stays quiet', () => {
-  assert.equal(IDLE_MS, 45000, 'a little under a minute of quiet, a tad more often than a whole one');
-  assert.ok(GAP_MS[0] >= 30000 && GAP_MS[1] > GAP_MS[0], 'a pause between one and the next, not a constant stream');
+  assert.equal(IDLE_MS, 30000, 'half a minute of quiet (it was 45 seconds: the user asked for a bit more often)');
+  assert.ok(GAP_MS[0] >= 20000 && GAP_MS[1] > GAP_MS[0] && GAP_MS[1] <= 50000, 'a pause of 20 to 50 seconds between one and the next, not a constant stream');
   assert.ok(RETRY_MS >= 5000);
   assert.equal(between([10, 20], steady(0)), 10);
   assert.equal(between([10, 20], steady(0.5)), 15);

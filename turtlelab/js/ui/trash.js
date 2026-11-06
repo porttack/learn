@@ -17,6 +17,7 @@
 import { turtleSvg } from './artwork.js';
 import { CanScore, Pokes } from '../core/can-score.js';
 import { sky, FLOAT_SPEED, riseDistance, riseTime } from './sky.js';
+import { Meals, SPEW, arcPath, fitPicture, spewDuration, spewPlan } from './spew.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -91,7 +92,10 @@ const DREAM = `
 </svg>`;
 
 /** The pieces of the shark's resting look that other states take over from: while any of these is on, it is not a good time to doze. */
-const NOT_RESTING = ['hungry', 'eating', 'spitting', 'peek', 'dreaming', 'hunting'];
+const NOT_RESTING = ['hungry', 'eating', 'spitting', 'peek', 'dreaming', 'hunting', 'heaving'];
+
+/** The colors of the plain chips the shark brings up for things it ate that have no picture (a stack eaten by someone who asked for less motion). */
+const CHIP_COLORS = ['#4aa3d9', '#e0a030', '#6cc03a', '#d86060', '#9b6fd3'];
 
 /** How long a dropped block takes to reach the shark, and how long the chewing lasts after that. */
 const ARRIVE_MS = 340;
@@ -156,6 +160,8 @@ export class Trash {
     this.clangTimer = null;
     this.clangWord = null;
     this.trip = null; // while the shark is out of the can eating something: { swimmer, timers, onDone }
+    this.meals = new Meals(); // what it has eaten, for bringing it all up again (spew); nothing is kept once the page closes
+    this.spewWord = null;
     stage.insertBefore(this.el, before);
 
     // The score: a point for each thing the shark eats, one off for each harpoon that hits the can (core/can-score.js). It is on a sticker on the can.
@@ -353,7 +359,9 @@ export class Trash {
    * A block has been dropped on the left side. The shark stays up while it flies in,
    * chomps, and then sinks back down. Feeding it again while it chews starts over.
    */
-  feed() {
+  feed(meal = null) {
+    this.unheave();
+    this.meals.add(meal); // what it ate (a picture of the stack, if there is one), in case it is sick later
     this.ate(); // a stack of blocks was thrown in: the shark ate something
     this.endHunt();
     for (const id of this.timers) clearTimeout(id);
@@ -406,6 +414,7 @@ export class Trash {
    * The shark pops up and snaps its jaws (at a boat that tried to harpoon it), then sinks. Nothing was eaten, so there is no burp.
    */
   snap() {
+    this.unheave();
     this.endHunt();
     for (const id of this.timers) clearTimeout(id);
     this.el.classList.remove('peek', 'chomp');
@@ -419,6 +428,8 @@ export class Trash {
    * Eating it again, or settle(), puts it back right away.
    */
   spit(ms) {
+    this.unheave();
+    this.meals.giveBack(); // the stack that came back is not in the shark any more
     this.endHunt();
     for (const id of this.timers) clearTimeout(id);
     this.el.classList.remove('chomp', 'eating');
@@ -433,11 +444,13 @@ export class Trash {
    * `onDone` once the shark is home (or at once, if something else needs the shark, like a block dropped on the can). Gives back false, and
    * does nothing, if the can is not showing or the shark is already out.
    * @param {{ x: number, y: number }} target
-   * @param {{ onBite?: () => void, onDone?: () => void }} [calls]
+   * @param {{ meal?: { node: Element, width: number, height: number } | null, onBite?: () => void, onDone?: () => void }} [calls] `meal` is a picture of the
+   *   thing, which the shark keeps in case it is sick later (spew)
    * @returns {boolean}
    */
-  hunt(target, { onBite = () => {}, onDone = () => {} } = {}) {
+  hunt(target, { meal = null, onBite = () => {}, onDone = () => {} } = {}) {
     if (this.trip) return false;
+    this.unheave();
     const home = this.mouthPoint({ raised: true });
     if (!home) return false;
     const scale = this.el.getBoundingClientRect().width / PICTURE_WIDTH;
@@ -478,6 +491,7 @@ export class Trash {
     });
     at(HUNT.RISE_MS + ms + HUNT.BITE_AT_MS, () => {
       onBite();
+      this.meals.add(meal); // (what it ate: a picture of the fish or the boat, to bring up again later)
       this.ate(); // a fish or a boat that was clicked: the shark ate it
     });
     at(HUNT.RISE_MS + ms + HUNT.CHOMP_MS, () => {
@@ -510,7 +524,111 @@ export class Trash {
   settle() {
     for (const id of this.timers) clearTimeout(id);
     this.timers = [];
-    this.el.classList.remove('eating', 'chomp', 'hungry', 'spitting');
+    this.el.classList.remove('eating', 'chomp', 'hungry', 'spitting', 'heaving');
     this.setDreaming(false);
+  }
+
+  // ---- Being sick: everything it ate comes back up ----------------------------------------------------------
+
+  /** Has it eaten anything it could bring up? */
+  hasMeals() {
+    return this.meals.count > 0;
+  }
+
+  /** Could it be sick now: it has something to bring up, the can is showing, the shark is just resting, and nobody asked for calm? */
+  canSpew() {
+    return this.hasMeals() && this.canDream() && !calm();
+  }
+
+  /**
+   * The shark comes up, turns green and heaves, says "blech!", and brings up everything it has eaten (the stacks of blocks thrown in, the fish and
+   * the boat it ate): each thing flies out of its mouth in an arc, lands near the can, lies there, and fades to nothing, and the shark is empty
+   * (spew.js says where and when). Gives back how long the whole show takes and how to end the shark's part of it, or false (and does nothing) if it
+   * could not be sick just now. Things already in the air carry on and fade by themselves, whatever stops.
+   * @returns {false | { ms: number, stop: () => void }}
+   */
+  spew() {
+    if (!this.canSpew()) return false;
+    const mouth = this.mouthPoint({ raised: true });
+    if (!mouth) return false;
+    this.setPeek(false);
+    for (const id of this.timers) clearTimeout(id);
+    const meals = this.meals.takeAll();
+    this.meals = new Meals(); // (a belly that is emptied has nothing left, however many it kept)
+    this.el.classList.remove('chomp', 'eating', 'hungry');
+    this.el.classList.add('spitting', 'heaving');
+    this.spewWord?.remove();
+    this.spewWord = document.createElement('div');
+    this.spewWord.className = 'spew-word';
+    this.spewWord.setAttribute('aria-hidden', 'true');
+    this.spewWord.textContent = 'blech!';
+    this.el.append(this.spewWord);
+    const room = { width: globalThis.innerWidth || 1366, height: globalThis.innerHeight || 700 };
+    const plan = spewPlan(meals.length, mouth, room, this.random);
+    const jobs = plan.map((spec, index) => setTimeout(() => this.launch(meals[index], spec), spec.delay));
+    // The shark is done a moment after the last thing has come out; the things go on without it.
+    const done = (plan.at(-1)?.delay ?? SPEW.HEAVE_MS) + 380;
+    jobs.push(setTimeout(() => this.unheave(), done));
+    this.timers = jobs;
+    return { ms: spewDuration(plan), stop: () => {} };
+  }
+
+  /** The shark stops heaving and sinks (also asked for by anything else that needs the shark). */
+  unheave() {
+    this.el.classList.remove('heaving');
+    if (this.spewWord) this.el.classList.remove('spitting');
+    this.spewWord?.remove();
+    this.spewWord = null;
+  }
+
+  /** What a thing the shark ate looks like on the ground: the picture it was (a stack of blocks, a fish, a boat), or a plain chip. */
+  makePiece(meal, size) {
+    const piece = document.createElement('div');
+    piece.className = 'spew-piece';
+    piece.setAttribute('aria-hidden', 'true');
+    piece.style.width = `${size.width}px`;
+    piece.style.height = `${size.height}px`;
+    const node = meal?.node;
+    if (node && String(node.nodeName).toLowerCase() === 'svg') {
+      // a fish or a boat: its own picture, drawn small
+      node.setAttribute('width', String(size.width));
+      node.setAttribute('height', String(size.height));
+      piece.append(node);
+    } else if (node) {
+      // a stack of blocks: its picture is a group of shapes, which needs an svg of its own to be drawn in
+      const svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('viewBox', `0 0 ${meal.width} ${meal.height}`);
+      svg.setAttribute('width', String(size.width));
+      svg.setAttribute('height', String(size.height));
+      svg.setAttribute('overflow', 'visible');
+      node.removeAttribute?.('style');
+      node.removeAttribute?.('transform');
+      svg.append(node);
+      piece.append(svg);
+    } else {
+      piece.className = 'spew-piece spew-chip';
+      piece.style.background = CHIP_COLORS[Math.floor(this.random() * CHIP_COLORS.length) % CHIP_COLORS.length];
+    }
+    return piece;
+  }
+
+  /** One thing comes out of the mouth: it flies along its arc, lands, lies there, and fades (its opacity) to nothing, and is taken off the page. */
+  launch(meal, spec) {
+    const size = fitPicture(meal?.width, meal?.height);
+    const piece = this.makePiece(meal, size);
+    const place = ({ x, y, rotate, scale }) => `translate(${x - size.width / 2}px, ${y - size.height / 2}px) rotate(${rotate}deg) scale(${scale})`;
+    const path = arcPath(spec);
+    piece.style.transform = place(path[0]);
+    sky().append(piece);
+    if (typeof piece.animate === 'function') {
+      piece.animate(path.map((point) => ({ transform: place(point), offset: point.offset })), { duration: spec.fly, easing: 'linear', fill: 'forwards' });
+      piece.animate([{ opacity: 1 }, { opacity: 0 }], { duration: spec.fade, delay: spec.fly + spec.sit, easing: 'ease-in', fill: 'forwards' });
+    } else {
+      // (a browser that cannot animate this way just puts it where it lands, and fades it out in time)
+      piece.style.transform = place(path.at(-1));
+      piece.style.transition = `opacity ${spec.fade}ms ease-in ${spec.fly + spec.sit}ms`;
+      piece.style.opacity = '0';
+    }
+    setTimeout(() => piece.remove(), spec.fly + spec.sit + spec.fade + 150);
   }
 }

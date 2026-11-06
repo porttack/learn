@@ -1,14 +1,14 @@
-// TurtleLab: little things that happen when nobody is doing anything. After a minute with no clicking, typing or touching, the turtle
-// might dance, scratch its head, yawn or blow bubbles, and the shark might fall asleep and dream. Any click or key stops it at once.
+// TurtleLab: little things that happen when nobody is doing anything. After half a minute with no clicking, typing or touching, the turtle
+// might dance, scratch its head, yawn or blow bubbles, and the shark might fall asleep and dream, or be sick. Any click or key stops it at once.
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 // See COPYING in the folder above this one.
 //
 // This file only decides WHEN and WHICH (so it can be tested without a browser): the watching for activity, the minute of waiting,
 // the dice, and the "not now" rules. What each antic looks like is in antics.js. Nothing here stores anything or touches a project.
 
-/** 45 seconds with no activity, then, while it stays quiet, a pause of this many milliseconds [shortest, longest] between one antic and the next. */
-export const IDLE_MS = 45000;
-export const GAP_MS = [30000, 80000];
+/** 30 seconds with no activity (it was 45: the user asked for it a bit more often), then, while it stays quiet, a pause of this many milliseconds [shortest, longest] between one antic and the next (it was 30 to 80 seconds). */
+export const IDLE_MS = 30000;
+export const GAP_MS = [20000, 50000];
 /** If the minute is up at a bad moment (a program is running, the tab is hidden), look again after this long. */
 export const RETRY_MS = 10000;
 /** The quiet time before the turtle starts to breathe (its color slowly fades and comes back), well before the first antic. (It was 30 seconds; the user found it not distracting and asked for 5.) */

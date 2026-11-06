@@ -39,9 +39,9 @@ test('there is a section of reasons for each of complexity, elegance and efficie
   for (const section of sections) assert.equal(section.lines[0].kind, 'what', section.heading);
   const [complexity, elegance, efficiency] = sections;
   assert.ok(complexity.lines.some((l) => l.kind === 'note' && /points, level/.test(l.text)), 'the points and the level');
-  assert.ok(complexity.lines.filter((l) => l.kind === 'part').length >= 6, 'every row of the points table, the ones that are 0 too');
+  assert.ok(complexity.lines.filter((l) => l.kind === 'part').length >= 7, 'every row of the points table, the ones that are 0 too, and the total');
   assert.ok(complexity.lines.some((l) => l.kind === 'part' && l.points === '0'));
-  assert.ok(complexity.lines.some((l) => l.kind === 'part' && /^\+\d+$/.test(l.points)));
+  assert.ok(complexity.lines.some((l) => l.kind === 'part' && /^[1-9]\d*$/.test(l.points)), 'points are plain numbers, with no plus sign');
   assert.equal(complexity.lines.at(-1).kind, 'tip', 'and the one thing to try next');
   assert.ok(elegance.lines.slice(1).every((l) => l.kind === 'good' || l.kind === 'tip') && elegance.lines.length > 1);
   assert.ok(efficiency.lines.slice(1).every((l) => l.kind === 'good' || l.kind === 'tip') && efficiency.lines.length > 1);
@@ -61,5 +61,30 @@ test('every word in the report for every sample is plain ASCII with no dashes, s
     const report = scoreReport(result);
     const words = [...report.scores.flatMap((s) => [s.label, s.text]), ...report.sections.flatMap((s) => [s.heading, ...s.lines.flatMap((l) => [l.text, l.points ?? ''])])];
     for (const word of words) assert.ok(/^[\x20-\x7e]*$/.test(word) && !/\s-\s/.test(word), `${sample.id}: ${word}`);
+  }
+});
+
+test('the complexity table is named for the blocks it counts, with nothing in brackets, a count and points for every row, and a total that adds up', () => {
+  const result = assess({ project: projectOf(SQUARE), run: RUN });
+  const rows = scoreReport(result).sections[0].lines.filter((l) => l.kind === 'part');
+  assert.deepEqual(rows.map((r) => r.text), ['Variables', 'repeat / forever', 'if / if else', 'Blocks you made', 'Math and random', 'Blocks', 'Big ideas used', 'Total']);
+  for (const row of rows) assert.ok(!/[()]/.test(row.text) && !/try/i.test(row.text), row.text);
+  for (const row of rows.slice(0, -1)) assert.ok(/^\d+$/.test(row.count) && /^\d+$/.test(row.points), JSON.stringify(row));
+  const loops = rows.find((r) => r.text === 'repeat / forever');
+  assert.equal(loops.count, '1', 'the square has one repeat');
+  assert.equal(Number(loops.points) > 0, true);
+  const total = rows.at(-1);
+  assert.equal(total.total, true);
+  assert.equal(total.count, '');
+  assert.equal(Number(total.points), result.complexity.points);
+  assert.equal(rows.slice(0, -1).reduce((n, r) => n + Number(r.points), 0), Number(total.points), 'the rows above add up to the total');
+});
+
+test('the same holds for every sample: the rows add up to the total and none has brackets', () => {
+  for (const sample of SAMPLES) {
+    const stacks = [{ x: 0, y: 0, blocks: sample.program }, ...(sample.defines ?? []).map((blocks, i) => ({ x: 0, y: 400 * (i + 1), blocks }))];
+    const rows = scoreReport(assess({ project: { app: FORMAT_ID, version: FORMAT_VERSION, stacks } })).sections[0].lines.filter((l) => l.kind === 'part');
+    assert.equal(rows.slice(0, -1).reduce((n, r) => n + Number(r.points), 0), Number(rows.at(-1).points), sample.id);
+    for (const row of rows) assert.ok(!/[()]/.test(row.text), `${sample.id}: ${row.text}`);
   }
 });

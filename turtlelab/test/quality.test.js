@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { Turtle } from '../js/core/turtle.js';
 import { eleganceOf, COSTS, MIN_BLOCKS } from '../js/core/elegance.js';
 import { drawingStats, efficiencyOf, LIMITS } from '../js/core/efficiency.js';
-import { assess, complexity01, tenths, COMPLEXITY_SCALE } from '../js/core/quality.js';
+import { assess, complexity01, scaleLine, tenths, COMPLEXITY_SCALE } from '../js/core/quality.js';
 import { scoreProject } from '../js/core/complexity.js';
 
 const b = (op, ...args) => ({ op, args });
@@ -248,4 +248,15 @@ test('every sentence is plain: no dashes, and nothing about a teacher, class or 
       assert.ok(!/teacher|class|grade|student/i.test(words), words);
     }
   }
+});
+
+test('the sentence about the scale is worked out from the curve: it names this program\'s points and number, then what 80, 130 and 200 points come to, and that 1.0 is out of reach', () => {
+  const r = assess({ project: { app: 'turtlelab', version: 1, stacks: [{ x: 0, y: 0, blocks: [{ op: 'start' }, { op: 'clean' }, { op: 'repeat', args: [4], body: [{ op: 'forward', args: [100] }, { op: 'right', args: [90] }] }] }] } });
+  const line = scaleLine(r.complexity);
+  assert.equal(line, `${r.complexity.points} points is ${tenths(r.complexity.value)}. On this scale 80 points is 0.6, 130 is 0.8 and 200 is 0.9. It never quite gets to 1.0.`);
+  assert.ok(!/[\u2013\u2014]/.test(line));
+  // The example numbers are the curve's own, not typed in by hand.
+  assert.equal(tenths(complexity01(80)), '0.6');
+  assert.equal(tenths(complexity01(130)), '0.8');
+  assert.equal(tenths(complexity01(200)), '0.9');
 });

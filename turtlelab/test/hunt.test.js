@@ -28,7 +28,7 @@ function setup({ canShowing = true } = {}) {
     return el;
   };
   const before = { document: globalThis.document, setTimeout: globalThis.setTimeout, clearTimeout: globalThis.clearTimeout, matchMedia: globalThis.matchMedia };
-  globalThis.document = { body: element(), createElement: () => element() };
+  globalThis.document = { body: element(), createElement: () => element(), createElementNS: () => element() };
   let clock = 0;
   const jobs = [];
   globalThis.setTimeout = (fn, ms) => { jobs.push({ fn, at: clock + ms, live: true }); return jobs.length - 1; };
@@ -40,6 +40,7 @@ function setup({ canShowing = true } = {}) {
   const trash = new Trash(stage, null, { random: () => 0 });
   return {
     trash,
+    layer: () => layer.children.slice(already),
     swimmers: () => layer.children.slice(already),
     advance: (ms) => {
       const end = clock + ms;
@@ -223,3 +224,149 @@ test('if no visitor can come just now (one is already out), the can says so, and
   } finally { page.restore(); }
 });
 
+
+// ---- Being sick: everything the shark ate comes back up ---------------------------------------------------------------
+
+import { SPEW } from '../js/ui/spew.js';
+
+const stackMeal = () => ({ node: { nodeName: 'g', removeAttribute() {} }, width: 120, height: 200 });
+const fishMeal = () => ({ node: { nodeName: 'svg', attrs: {}, setAttribute(n, v) { this.attrs[n] = v; } }, width: 60, height: 30 });
+
+test('the shark remembers what it ate: stacks thrown in, and fish and boats it was sent after', () => {
+  const page = setup();
+  try {
+    assert.equal(page.trash.hasMeals(), false);
+    assert.equal(page.trash.canSpew(), false, 'nothing eaten, nothing to bring up');
+    page.trash.feed(stackMeal());
+    page.trash.feed();
+    assert.equal(page.trash.meals.count, 2, 'a stack with no picture (nobody to see it) is remembered too');
+    page.advance(2000);
+    page.trash.hunt({ x: 400, y: 440 }, { meal: fishMeal() });
+    page.advance(HUNT.RISE_MS);
+    assert.equal(page.trash.meals.count, 2, 'the fish is not eaten until the jaws close on it');
+    page.advance(3000);
+    assert.equal(page.trash.meals.count, 3, 'a fish that was eaten');
+    assert.equal(page.trash.canSpew(), true);
+  } finally {
+    page.restore();
+  }
+});
+
+test('an Undo that brings a stack back takes it out of the shark', () => {
+  const page = setup();
+  try {
+    page.trash.feed(stackMeal());
+    page.trash.feed(fishMeal());
+    page.trash.spit(500);
+    assert.equal(page.trash.meals.count, 1);
+    assert.equal(page.trash.meals.takeAll()[0].width, 120, 'the one that went back is the latest');
+  } finally {
+    page.restore();
+  }
+});
+
+test('the shark is sick: it comes up green and heaving, says blech, and each thing it ate comes out in turn, lands in the layer above everything, and fades away', () => {
+  const page = setup();
+  try {
+    page.trash.feed(stackMeal());
+    page.trash.feed(fishMeal());
+    page.trash.feed(null);
+    page.advance(2000);
+    const started = page.trash.spew();
+    assert.ok(started, 'it could be sick');
+    assert.equal(page.trash.meals.count, 0, 'and it is empty now');
+    assert.equal(page.trash.canSpew(), false, 'so it cannot be sick again until it has eaten something');
+    for (const name of ['spitting', 'heaving']) assert.ok(page.trash.el.classList.contains(name), name);
+    assert.ok(page.trash.el.children.some((child) => child.className === 'spew-word' && child.textContent === 'blech!'), 'it says blech');
+    assert.equal(page.layer().length, 0, 'nothing has come out yet: it heaves first');
+    page.advance(SPEW.HEAVE_MS);
+    assert.equal(page.layer().length, 1, 'the first thing');
+    page.advance(SPEW.STAGGER_MS);
+    assert.equal(page.layer().length, 2);
+    page.advance(SPEW.STAGGER_MS);
+    assert.equal(page.layer().length, 3, 'all three, one after another');
+    assert.ok(page.layer().every((piece) => /spew-piece/.test(piece.className)));
+    assert.ok(page.layer().some((piece) => /spew-chip/.test(piece.className)), 'a thing with no picture is a plain chip');
+    assert.ok(page.layer().every((piece) => piece.style.transform.includes('translate(') && piece.style.width && piece.style.height));
+    page.advance(600);
+    assert.ok(!page.trash.el.classList.contains('heaving'), 'the shark is done a moment after the last thing is out');
+    assert.ok(!page.trash.el.classList.contains('spitting'));
+    assert.ok(page.trash.el.children.find((child) => child.className === 'spew-word').removed, 'and the word is gone');
+    assert.ok(page.layer().every((piece) => !piece.removed), 'while the things are still lying there');
+    page.advance(6000);
+    assert.ok(page.layer().every((piece) => piece.removed), 'and then they have faded and are gone');
+    assert.ok(started.ms >= SPEW.HEAVE_MS + 2 * SPEW.STAGGER_MS + SPEW.FADE_MS, `it says how long it takes: ${started.ms}`);
+  } finally {
+    page.restore();
+  }
+});
+
+test('a fish or a boat it ate comes up as its own picture, a stack as its blocks in a small picture of their own', () => {
+  const page = setup();
+  try {
+    const fish = fishMeal();
+    page.trash.feed(stackMeal());
+    page.trash.feed(fish);
+    page.advance(2000);
+    page.trash.spew();
+    page.advance(SPEW.HEAVE_MS + SPEW.STAGGER_MS + 10);
+    const [block, fishPiece] = page.layer();
+    assert.equal(block.children.length, 1, 'the stack is wrapped in an svg to be drawn in');
+    assert.equal(fishPiece.children[0], fish.node, 'the fish is its own picture');
+    assert.equal(fish.node.attrs.width, String(fishPiece.style.width.replace('px', '')), 'drawn small');
+    assert.ok(parseFloat(fishPiece.style.width) <= 46 + 1e-9 && parseFloat(block.style.height) <= 46 + 1e-9, 'no bigger than the others');
+  } finally {
+    page.restore();
+  }
+});
+
+test('the shark is not sick when it has eaten nothing, when it is busy, when the can is not showing, or when the computer asked for calm', () => {
+  const empty = setup();
+  try {
+    assert.equal(empty.trash.spew(), false);
+    assert.equal(empty.layer().length, 0);
+  } finally {
+    empty.restore();
+  }
+  const hidden = setup({ canShowing: false });
+  try {
+    hidden.trash.feed(null);
+    assert.equal(hidden.trash.spew(), false, 'the can is not showing');
+    assert.equal(hidden.trash.meals.count, 1, 'and it keeps what it ate');
+  } finally {
+    hidden.restore();
+  }
+  const busy = setup();
+  try {
+    busy.trash.feed(null);
+    busy.trash.setHungry(true);
+    assert.equal(busy.trash.spew(), false, 'a block is being held over it');
+    busy.trash.setHungry(false);
+    busy.advance(2000);
+    globalThis.matchMedia = () => ({ matches: true });
+    assert.equal(busy.trash.spew(), false, 'calm was asked for');
+    assert.equal(busy.trash.meals.count, 1, 'and nothing was lost');
+    globalThis.matchMedia = undefined;
+    assert.ok(busy.trash.spew(), 'later it can');
+  } finally {
+    busy.restore();
+  }
+});
+
+test('if the shark is fed or sent after a fish while it heaves, the heaving stops at once and the things already out carry on', () => {
+  const page = setup();
+  try {
+    page.trash.feed(null);
+    page.advance(2000);
+    page.trash.spew();
+    page.advance(SPEW.HEAVE_MS + 10);
+    assert.equal(page.layer().length, 1);
+    page.trash.feed(stackMeal());
+    assert.ok(!page.trash.el.classList.contains('heaving'));
+    assert.ok(page.trash.el.classList.contains('eating'), 'it eats again');
+    assert.ok(!page.layer()[0].removed, 'what was already out is still fading');
+    assert.equal(page.trash.meals.count, 1, 'and it has eaten something new');
+  } finally {
+    page.restore();
+  }
+});

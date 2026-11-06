@@ -142,6 +142,8 @@ export const DEMOS = {
     b('forward', { op: 'box1' }),
     b('store1', 50),
   ],
+  // A program 46 blocks tall, too tall to read when all of it is fitted in the window: Fit shrinks it, and Fit again puts it back at full size.
+  tall: [b('start'), b('clean'), ...Array.from({ length: 22 }, () => [b('forward', 30), b('right', 15)]).flat()],
   // Runs until you press Stop: a good test that the page never freezes.
   forever: [
     b('start'),

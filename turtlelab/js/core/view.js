@@ -51,6 +51,9 @@ export function panBy(view, dx, dy) {
   return { x: view.x + dx, y: view.y + dy, zoom: view.zoom };
 }
 
+/** Fit may zoom out further than the zoom buttons do (they stop at MIN_ZOOM), because its job is to get ALL of the code in the window: a long program on a short window needs less than 0.4. */
+export const FIT_MIN_ZOOM = 0.2;
+
 /**
  * The view that puts every block inside the window, so all your code can be seen at once.
  * `content` is the box that holds all the stacks, in workspace units. `room` is the part of

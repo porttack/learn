@@ -11,16 +11,28 @@
 //   sections  the reasons page: { heading, lines } where each line is { kind, text } and `kind` is
 //               'what'   the metric in a few words
 //               'note'   a plain line
-//               'part'   a row of the complexity table: `text` and the `points` at its right
+//               'part'   a row of the complexity table: `text` (the block names it counts), `count` (how many) and `points` (what it earned);
+//                        the last row is `total: true`. Nothing in brackets, and no hints: a label names the blocks it counts
 //               'good'   something the program does well
 //               'tip'    something to try
 
-import { METRICS, levelLine, tenths } from './quality.js';
+import { METRICS, levelLine, scaleLine, tenths } from './quality.js';
+
+/** What each row of the complexity table is called on paper: the blocks it counts, in plain words. (The badge's panel says Loops, Conditionals ...) */
+export const TABLE_LABELS = Object.freeze({
+  variables: 'Variables',
+  loops: 'repeat / forever',
+  conditionals: 'if / if else',
+  ownBlocks: 'Blocks you made',
+  math: 'Math and random',
+  blocks: 'Blocks',
+  bonus: 'Big ideas used',
+});
 
 /**
  * @param {ReturnType<import('./quality.js').assess>} result what the badge shows
  * @returns {{ scores: { label: string, text: string, fraction: number | null }[],
- *   sections: { heading: string, lines: { kind: string, text: string, points?: string }[] }[] }}
+ *   sections: { heading: string, lines: { kind: string, text: string, count?: string, points?: string, total?: boolean }[] }[] }}
  */
 export function scoreReport(result) {
   const { blocks, complexity, elegance, efficiency } = result;
@@ -32,13 +44,12 @@ export function scoreReport(result) {
     ...METRICS.map(({ id, label }) => ({ label, text: said[id], fraction: values[id] })),
   ];
 
-  const parts = complexity.parts.map((part) => ({
-    kind: 'part',
-    text: part.detail ? `${part.label} (${part.detail})` : part.label,
-    points: part.points > 0 ? `+${part.points}` : '0',
-  }));
+  const parts = [
+    ...complexity.parts.map((part) => ({ kind: 'part', text: TABLE_LABELS[part.id] ?? part.label, count: String(part.count), points: String(part.points) })),
+    { kind: 'part', text: 'Total', count: '', points: String(complexity.points), total: true },
+  ];
   const body = {
-    complexity: [{ kind: 'note', text: levelLine(complexity) }, ...parts, { kind: 'tip', text: complexity.tip }],
+    complexity: [{ kind: 'note', text: levelLine(complexity) }, { kind: 'note', text: scaleLine(complexity) }, ...parts, { kind: 'tip', text: complexity.tip }],
     elegance: elegance.reasons.map(({ kind, text }) => ({ kind, text })),
     efficiency: efficiency.reasons.map(({ kind, text }) => ({ kind, text })),
   };

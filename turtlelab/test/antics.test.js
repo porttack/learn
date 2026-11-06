@@ -3,9 +3,9 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { ANTIC_MS, SECOND_POOP_CHANCE, IDLE_ANTICS, TREAT_ANTICS, makeAntics, idleAntics, makeRewards } from '../js/ui/antics.js';
+import { ANTIC_MS, SECOND_POOP_CHANCE, IDLE_ANTICS, TREAT_ANTICS, makeAntics, idleAntics, makeRewards, makeSurprises } from '../js/ui/antics.js';
 
-function stands({ canDream = true, fish = { el: null }, random = () => 0.99, seconds = { yawn: 1, breathe: 2, poop: 1.5, dream: 3 } } = {}) {
+function stands({ canDream = true, canSpew = true, spewed = true, fish = { el: null }, random = () => 0.99, seconds = { yawn: 1, breathe: 2, poop: 1.5, dream: 3, spew: 3 } } = {}) {
   const log = [];
   const timers = [];
   const view = {
@@ -14,7 +14,10 @@ function stands({ canDream = true, fish = { el: null }, random = () => 0.99, sec
     setBreathing: (on) => { log.push(`breathe ${on}`); return on ? seconds.breathe : 0; },
     dropPoop: () => { log.push('poop'); return seconds.poop; }, clearPoop: () => log.push('clear poop'),
   };
-  const trash = { canDream: () => canDream, setDreaming: (on) => { log.push(`dream ${on}`); return on ? seconds.dream : 0; } };
+  const trash = {
+    canDream: () => canDream, setDreaming: (on) => { log.push(`dream ${on}`); return on ? seconds.dream : 0; },
+    canSpew: () => canSpew, spew: () => { log.push('spew'); return spewed ? { ms: seconds.spew * 1000, stop: () => log.push('spew stop') } : false; },
+  };
   const antics = makeAntics({
     view, trash, fish, random,
     setTimer: (fn, ms) => { timers.push({ fn, ms, live: true }); return timers.length - 1; }, clearTimer: (id) => { timers[id].live = false; },
@@ -22,9 +25,9 @@ function stands({ canDream = true, fish = { el: null }, random = () => 0.99, sec
   return { log, antics, timers };
 }
 
-test('there are six antics: four common, a rarer dream, and the rarest of all', () => {
+test('there are seven antics: four common, a rarer dream and spew, and the rarest of all', () => {
   const { antics } = stands();
-  assert.deepEqual(antics.map((a) => a.name), ['dance', 'scratch', 'yawn', 'breathe', 'poop', 'dream']);
+  assert.deepEqual(antics.map((a) => a.name), ['dance', 'scratch', 'yawn', 'breathe', 'poop', 'dream', 'spew']);
   const weight = Object.fromEntries(antics.map((a) => [a.name, a.weight]));
   assert.ok(weight.poop < weight.dream && weight.dream < weight.dance, JSON.stringify(weight));
   assert.ok(Object.values(weight).every((w) => w > 0));
@@ -40,6 +43,7 @@ test('each antic starts what it should, says how long it lasts, and its stop put
     breathe: [['breathe true'], ['breathe false']],
     poop: [['poop'], ['clear poop']],
     dream: [['dream true'], ['dream false']],
+    spew: [['spew'], ['spew stop']],
   };
   for (const [name, [started, stopped]] of Object.entries(expected)) {
     const { log, antics } = stands();
@@ -53,7 +57,7 @@ test('each antic starts what it should, says how long it lasts, and its stop put
 });
 
 test('an antic lasts long enough for what floats up or falls to be gone: a long way to the top means a longer antic', () => {
-  const far = { yawn: 9, breathe: 8, poop: 5, dream: 12 };
+  const far = { yawn: 9, breathe: 8, poop: 5, dream: 12, spew: 9 };
   for (const [name, takes] of Object.entries(far)) {
     const { antics } = stands({ seconds: far });
     const { ms } = antics.find((a) => a.name === name).play();
@@ -90,17 +94,28 @@ test('the shark only dozes off when it is resting and no fish is swimming past; 
   assert.equal(resting.find((a) => a.name === 'dream').can(), true);
   assert.equal(stands({ canDream: false }).antics.find((a) => a.name === 'dream').can(), false);
   assert.equal(stands({ fish: { el: {} } }).antics.find((a) => a.name === 'dream').can(), false, 'not while a fish swims');
-  for (const antic of resting.filter((a) => a.name !== 'dream')) assert.equal(antic.can, undefined, antic.name);
+  for (const antic of resting.filter((a) => a.name !== 'dream' && a.name !== 'spew')) assert.equal(antic.can, undefined, antic.name);
+});
+
+test('the shark is only sick when it has something to bring up and is resting, with no fish or boat about; if it is asked and cannot, nothing is left running', () => {
+  const spew = (options) => stands(options).antics.find((a) => a.name === 'spew');
+  assert.equal(spew().can(), true);
+  assert.equal(spew({ canSpew: false }).can(), false, 'nothing eaten, or not resting');
+  assert.equal(spew({ fish: { el: {} } }).can(), false, 'not while a fish or the boat is about');
+  const failed = spew({ spewed: false }).play();
+  assert.equal(failed.ms, 0);
+  assert.doesNotThrow(() => failed.stop(), 'an antic that did not start still has something safe to stop');
+  assert.ok(spew().weight > 0);
 });
 
 test('some antics are for when nobody is around, some are treats for working, and the bubbles are both; every name in the lists is a real antic', () => {
   const { antics } = stands();
   const names = antics.map((a) => a.name);
   for (const name of [...IDLE_ANTICS, ...TREAT_ANTICS]) assert.ok(names.includes(name), name);
-  assert.deepEqual(idleAntics(antics).map((a) => a.name), ['scratch', 'yawn', 'breathe', 'poop', 'dream']);
+  assert.deepEqual(idleAntics(antics).map((a) => a.name), ['scratch', 'yawn', 'breathe', 'poop', 'dream', 'spew']);
   assert.ok(!idleAntics(antics).some((a) => a.name === 'dance'), 'dancing is a celebration, so it is not for when nobody is there');
   assert.ok(IDLE_ANTICS.includes('breathe') && TREAT_ANTICS.includes('breathe'));
-  assert.ok(!TREAT_ANTICS.includes('poop') && !TREAT_ANTICS.includes('yawn') && !TREAT_ANTICS.includes('dream'), 'the sleepy and silly ones are not rewards');
+  assert.ok(!TREAT_ANTICS.includes('poop') && !TREAT_ANTICS.includes('yawn') && !TREAT_ANTICS.includes('dream') && !TREAT_ANTICS.includes('spew'), 'the sleepy and silly ones, and being sick, are not rewards');
 });
 
 test('the treats are the dance, the happy bubbles, a fish and a boat, and the fish and the boat say no when it is not a good moment for them', () => {
@@ -114,4 +129,18 @@ test('the treats are the dance, the happy bubbles, a fish and a boat, and the fi
   assert.deepEqual(calls, ['swim', 'sail']);
   treats.find((t) => t.name === 'dance').play();
   assert.deepEqual(log, ['pose dance'], 'the dance is the very same one');
+});
+
+test('on a whim anything can happen: every antic, a fish and a boat, each saying no when it is not a good moment', () => {
+  const { antics, log } = stands();
+  const calls = [];
+  const surprises = makeSurprises({ antics, fish: { swim: () => { calls.push('swim'); return false; } }, boat: { sail: () => { calls.push('sail'); return true; } } });
+  assert.deepEqual(surprises.map((s) => s.name), ['dance', 'scratch', 'yawn', 'breathe', 'poop', 'dream', 'spew', 'fish', 'boat']);
+  assert.ok(surprises.every((s) => s.weight > 0));
+  assert.equal(surprises.find((s) => s.name === 'fish').play(), false);
+  assert.equal(surprises.find((s) => s.name === 'boat').play(), true);
+  assert.deepEqual(calls, ['swim', 'sail']);
+  surprises.find((s) => s.name === 'spew').play();
+  assert.deepEqual(log, ['spew'], 'the very same antic, not a copy');
+  for (const name of [...IDLE_ANTICS, ...TREAT_ANTICS]) assert.ok(surprises.some((s) => s.name === name), `${name} can happen on a whim`);
 });

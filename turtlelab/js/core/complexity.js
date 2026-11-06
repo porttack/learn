@@ -191,10 +191,10 @@ export function scoreProject(project) {
     + (ideas.variables ? POINTS.variableIdea : 0) + (ideaCount === 4 ? POINTS.allIdeas : 0);
 
   const parts = [
-    { id: 'variables', label: 'Variables', count: variableCount, points: variablePoints, detail: variableCount === 0 ? 'store a number in a box, then use it' : `${boxesUsed} ${boxesUsed === 1 ? 'box' : 'boxes'}, ${found.inputs} ${found.inputs === 1 ? 'input' : 'inputs'}${found.counters > 0 ? `, ${found.counters} ${found.counters === 1 ? 'counter' : 'counters'}` : ''}` },
-    { id: 'loops', label: 'Loops', count: found.loops, points: loopPoints, detail: found.loops === 0 ? 'try repeat' : found.nestedLoops > 0 ? `${found.nestedLoops} inside another` : '' },
-    { id: 'conditionals', label: 'Conditionals', count: found.conditionals, points: conditionalPoints, detail: found.conditionals === 0 ? 'try if' : found.elseWays > 0 ? `${found.elseWays} with an else` : '' },
-    { id: 'ownBlocks', label: 'Blocks you made', count: found.definitions.size, points: ownPoints, detail: found.definitions.size === 0 ? 'try to' : `${ownCalled} used${found.recursive.size > 0 ? ', one uses itself' : ''}` },
+    { id: 'variables', label: 'Variables', count: variableCount, points: variablePoints, detail: variableCount === 0 ? '' : `${boxesUsed} ${boxesUsed === 1 ? 'box' : 'boxes'}, ${found.inputs} ${found.inputs === 1 ? 'input' : 'inputs'}${found.counters > 0 ? `, ${found.counters} ${found.counters === 1 ? 'counter' : 'counters'}` : ''}` },
+    { id: 'loops', label: 'Loops', count: found.loops, points: loopPoints, detail: found.loops === 0 ? '' : found.nestedLoops > 0 ? `${found.nestedLoops} inside another` : '' },
+    { id: 'conditionals', label: 'Conditionals', count: found.conditionals, points: conditionalPoints, detail: found.conditionals === 0 ? '' : found.elseWays > 0 ? `${found.elseWays} with an else` : '' },
+    { id: 'ownBlocks', label: 'Blocks you made', count: found.definitions.size, points: ownPoints, detail: found.definitions.size === 0 ? '' : `${ownCalled} used${found.recursive.size > 0 ? ', one uses itself' : ''}` },
     { id: 'math', label: 'Math and chance', count: found.operators + found.chance, points: mathPoints, detail: '' },
     { id: 'blocks', label: 'Blocks', count: found.blocks, points: blockPoints, detail: found.blocks * POINTS.block > POINTS.blockCap ? 'the first 20 count' : '' },
     { id: 'bonus', label: 'Using the big ideas', count: ideaCount, points: bonusPoints, detail: ideaCount === 4 ? 'all four' : `${ideaCount} of 4` },

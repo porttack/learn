@@ -198,3 +198,99 @@ test('playNow plays a named treat whatever the points (for trying them out), and
   assert.equal(page.reward.playNow('nothing'), false);
   assert.equal(setup({ calm: true }).reward.playNow('dance'), false);
 });
+
+// ---- Surprises: something happens on a whim (every change of the grid or paper) -------------------------------------------
+
+function whim({ calm = false, visible = true, busy = false, random = () => 0, options = {} } = {}) {
+  const state = { calm, visible, busy };
+  const log = [];
+  const timers = [];
+  const make = (name, weight = 1, config = {}) => ({
+    name, weight, can: config.can,
+    play: () => {
+      if (config.refuse) return false;
+      log.push(`play ${name}`);
+      return config.looksAfterItself ? true : { ms: 3000, stop: () => log.push(`stop ${name}`) };
+    },
+  });
+  const surprises = [make('dance', 3, options.dance), make('yawn', 3, options.yawn), make('spew', 3, options.spew), make('fish', 3, { looksAfterItself: true, ...options.fish })];
+  const reward = new Reward({
+    rewards: [], surprises, busy: () => state.busy, calm: () => state.calm, visible: () => state.visible, random: () => random(), now: () => 0,
+    setTimer: (fn, ms) => { timers.push({ fn, ms, live: true }); return timers.length - 1; }, clearTimer: (id) => { timers[id].live = false; },
+  });
+  return { reward, log, state, timers };
+}
+
+test('a surprise plays one thing, chosen by weight, and says which', () => {
+  const first = whim({ random: () => 0 });
+  assert.equal(first.reward.surprise(), 'dance');
+  assert.deepEqual(first.log, ['play dance']);
+  const last = whim({ random: () => 0.99 });
+  assert.equal(last.reward.surprise(), 'fish');
+});
+
+test('it needs nothing: not points, not a quiet moment, and it does not use up the rest before the next treat or the points', () => {
+  const page = whim({ busy: true });
+  assert.equal(page.reward.surprise(), 'dance', 'a program running does not stop it: it is the user asking for whimsy');
+  assert.equal(page.reward.lastAt, null, 'it does not start the rest between treats');
+  page.reward.edited();
+  page.reward.edited();
+  const points = page.reward.score();
+  page.reward.surprise();
+  assert.equal(page.reward.score(), points, 'and it does not take the points');
+});
+
+test('on a computer that asked for calm, or with the tab hidden, nothing happens', () => {
+  const calm = whim({ calm: true });
+  assert.equal(calm.reward.surprise(), false);
+  assert.deepEqual(calm.log, []);
+  const hidden = whim({ visible: false });
+  assert.equal(hidden.reward.surprise(), false);
+  assert.deepEqual(hidden.log, []);
+});
+
+test('what is not possible now is left out, and one that says no is skipped for the next', () => {
+  const noSpew = whim({ random: () => 0.7, options: { spew: { can: () => false } } });
+  for (let i = 0; i < 5; i += 1) assert.notEqual(noSpew.reward.surprise(), 'spew', 'it has nothing to bring up');
+  const refuses = whim({ random: () => 0.99, options: { fish: { refuse: true, looksAfterItself: false } } });
+  assert.equal(refuses.reward.surprise(), 'spew', 'the fish said no, so something else is tried');
+  const none = whim({ options: { dance: { refuse: true }, yawn: { refuse: true }, spew: { refuse: true }, fish: { refuse: true } } });
+  assert.equal(none.reward.surprise(), false);
+});
+
+test('it is not the same thing twice in a row if something else will do', () => {
+  const page = whim({ random: () => 0 });
+  const names = [];
+  for (let i = 0; i < 4; i += 1) names.push(page.reward.surprise());
+  assert.deepEqual(names, ['dance', 'yawn', 'dance', 'yawn'], 'the dice always say the first, so each time it is the first that is not the last');
+  const only = whim({ random: () => 0, options: { yawn: { can: () => false }, spew: { can: () => false }, fish: { can: () => false } } });
+  assert.equal(only.reward.surprise(), 'dance');
+  assert.equal(only.reward.surprise(), 'dance', 'unless it is all there is');
+});
+
+test('a new surprise ends the one before, and one that lasts ends by itself, whatever anyone does meanwhile', () => {
+  const page = whim({ random: () => 0 });
+  page.reward.surprise();
+  page.reward.surprise();
+  assert.deepEqual(page.log, ['play dance', 'stop dance', 'play yawn'], 'the first is ended before the second begins');
+  assert.equal(page.timers.filter((t) => t.live).length, 1, 'one timer waiting to end the one that is playing');
+  const [, second] = page.timers;
+  assert.equal(second.ms, 3000);
+  second.fn();
+  assert.equal(page.log.at(-1), 'stop yawn');
+});
+
+test('a surprise can be asked for by name, if it is possible, for trying them out', () => {
+  const page = whim({ random: () => 0 });
+  assert.equal(page.reward.surprise('spew'), 'spew');
+  assert.equal(page.reward.surprise('spew'), 'spew', 'by name it can be the same again');
+  assert.equal(page.reward.surprise('nosuch'), false);
+  const impossible = whim({ options: { spew: { can: () => false } } });
+  assert.equal(impossible.reward.surprise('spew'), false, 'and not if it is not possible');
+});
+
+test('after stop there are no more surprises', () => {
+  const page = whim();
+  page.reward.stop();
+  assert.equal(page.reward.surprise(), false);
+});

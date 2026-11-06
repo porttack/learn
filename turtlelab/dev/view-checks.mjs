@@ -147,6 +147,79 @@ try {
   check('the PDF button fits the drawing first, so the whole of it is in the PDF',
     saved !== null && afterPdf.minX >= MARGIN_PIXELS - 4 && afterPdf.maxX <= afterPdf.w - 1 - (MARGIN_PIXELS - 4) && afterPdf.minY >= MARGIN_PIXELS - 4 && afterPdf.maxY <= afterPdf.h - 1 - (MARGIN_PIXELS - 4), `${saved} ${JSON.stringify(afterPdf)}`);
 
+  // ---- Fit and the code (the blocks): a long program is shrunk to fit, and Fit again gives it back at normal size ----------
+  const blocksView = () => chrome.eval(`(() => {
+    const g = [...document.querySelectorAll('.workspace g')].find((e) => (e.getAttribute('transform') || '').startsWith('translate('));
+    const m = /translate\\(([-\\d.e]+)[ ,]+([-\\d.e]+)\\) scale\\(([-\\d.e]+)\\)/.exec(g.getAttribute('transform'));
+    return { x: Number(m[1]), y: Number(m[2]), zoom: Number(m[3]) };
+  })()`);
+  /** Where the code is on the screen now: the box round all of its stacks, and the window and palettes it has to be inside. */
+  const codeBox = () => chrome.eval(`(() => {
+    const boxes = [...document.querySelectorAll('.workspace .stack')].map((e) => e.getBoundingClientRect());
+    const palettes = document.querySelector('.palettes').getBoundingClientRect();
+    return { left: Math.min(...boxes.map((r) => r.left)), top: Math.min(...boxes.map((r) => r.top)), right: Math.max(...boxes.map((r) => r.right)), bottom: Math.max(...boxes.map((r) => r.bottom)), width: innerWidth, height: innerHeight, palettes: palettes.right };
+  })()`);
+  const wholeCodeVisible = (box) => box.left >= box.palettes && box.top >= 0 && box.right <= box.width && box.bottom <= box.height + 1;
+  const topLeftVisible = (box) => box.left >= box.palettes && box.top >= 0 && box.left < box.width - 50 && box.top < box.height - 50;
+
+  await chrome.goto(`${BASE}?demo=tall&speed=instant`);
+  await chrome.sleep(600);
+  const tallStart = await blocksView();
+  check('a program 46 blocks tall starts at full size and does not fit in the window', tallStart.zoom === 1 && (await codeBox()).bottom > 700, JSON.stringify(await codeBox()));
+  await click('#fit');
+  await chrome.sleep(300);
+  const tallFitted = await blocksView();
+  check('Fit shrinks it until all of it is in the window', tallFitted.zoom < 0.6 && wholeCodeVisible(await codeBox()), `${JSON.stringify(tallFitted)} ${JSON.stringify(await codeBox())}`);
+  await click('#fit');
+  await chrome.sleep(300);
+  const tallBack = await blocksView();
+  const tallBackBox = await codeBox();
+  check('Fit again puts the code back at normal size, with its top left in the window, so it can be read', tallBack.zoom === 1 && topLeftVisible(tallBackBox), `${JSON.stringify(tallBack)} ${JSON.stringify(tallBackBox)}`);
+  check('and says so, and that a long program can be slid to see the rest', /Back to the normal paper and your blocks at normal size\. Slide the blocks/.test(await message()), await message());
+  await click('#fit');
+  await chrome.sleep(300);
+  const tallAgain = await blocksView();
+  check('a third press fits everything again, the same as the first (to within a few percent: the longer message above changes how much room there is)', Math.abs(tallAgain.zoom - tallFitted.zoom) / tallFitted.zoom < 0.05 && wholeCodeVisible(await codeBox()), `${JSON.stringify(tallFitted)} then ${JSON.stringify(tallAgain)}`);
+
+  // If the code is moved after a Fit, the next Fit fits it afresh instead of going back.
+  await chrome.mouse('mouseMoved', 900, 300, { buttons: 0 });
+  await chrome.mouse('mousePressed', 900, 300);
+  for (let step = 1; step <= 6; step += 1) await chrome.mouse('mouseMoved', 900 + 40 * step, 300 + 20 * step);
+  await chrome.mouse('mouseReleased', 1140, 420);
+  await chrome.sleep(200);
+  check('(moving the code on the page changes its view)', JSON.stringify(await blocksView()) !== JSON.stringify(tallAgain));
+  await click('#fit');
+  await chrome.sleep(300);
+  check('after moving the code, Fit fits it afresh, in the window again, and does not go back', (await blocksView()).zoom < 0.6 && wholeCodeVisible(await codeBox()) && /Zoomed to fit/.test(await message()), `${JSON.stringify(await blocksView())} ${await message()}`);
+
+  // Code slid far out of the window is brought back in, and goes to normal size on the next press.
+  await chrome.goto(`${BASE}?demo=square&speed=instant`);
+  await chrome.sleep(500);
+  for (let i = 0; i < 3; i += 1) {
+    await chrome.mouse('mouseMoved', 900, 300, { buttons: 0 });
+    await chrome.mouse('mousePressed', 900, 300);
+    for (let step = 1; step <= 8; step += 1) await chrome.mouse('mouseMoved', 900 + 60 * step, 300 + 40 * step);
+    await chrome.mouse('mouseReleased', 1380, 620);
+  }
+  await chrome.sleep(200);
+  check('code that has been slid right out of the window is off the screen', (await codeBox()).left > 1366, JSON.stringify(await codeBox()));
+  await click('#fit');
+  await chrome.sleep(300);
+  check('Fit brings it back into the window', wholeCodeVisible(await codeBox()), JSON.stringify(await codeBox()));
+  await click('#fit');
+  await chrome.sleep(300);
+  check('and Fit again leaves it in the window at normal size', (await blocksView()).zoom === 1 && topLeftVisible(await codeBox()), `${JSON.stringify(await blocksView())} ${JSON.stringify(await codeBox())}`);
+
+  // The PDF button zooms the drawing (the PDF needs all of it) but leaves the blocks on the screen as they are.
+  await chrome.goto(`${BASE}?demo=tall&speed=instant`);
+  await chrome.sleep(600);
+  const beforePdfBlocks = await blocksView();
+  const blocksPdfsBefore = readdirSync(downloads).filter((f) => f.endsWith('.pdf')).length;
+  await click('#save-pdf');
+  for (let i = 0; i < 60 && readdirSync(downloads).filter((f) => f.endsWith('.pdf')).length === blocksPdfsBefore; i += 1) await chrome.sleep(150);
+  await chrome.sleep(500);
+  check('pressing PDF on a long program does not shrink the blocks on the screen', JSON.stringify(await blocksView()) === JSON.stringify(beforePdfBlocks), `${JSON.stringify(beforePdfBlocks)} then ${JSON.stringify(await blocksView())}`);
+
   // ---- Fit draws every kind of mark again exactly (arcs, fills, a whole-paper color) ---------------
   for (const demo of ['flower', 'star', 'arcs', 'squarefn', 'boxes']) {
     await chrome.goto(`${BASE}?demo=${demo}&speed=instant&autorun=1`);

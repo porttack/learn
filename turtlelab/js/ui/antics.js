@@ -4,7 +4,8 @@
 // See COPYING in the folder above this one.
 //
 // The turtle dances, scratches its head, yawns, blows bubbles as if breathing under water (they float off the top of the window), or (rarely)
-// does what turtles do, which falls off the bottom of the window, and now and then twice. The shark dozes off and dreams of turtle soup.
+// does what turtles do, which falls off the bottom of the window, and now and then twice. The shark dozes off and dreams of turtle soup, or is sick
+// and brings up everything it has eaten, which lands all round the can and fades away.
 // They are only for looking at: nothing here touches a project, stores anything or fetches anything. The motion itself is in the
 // stylesheet (and in canvas-view.js and trash.js, which hold the pictures); this file says which ones there are, how likely each is, and
 // how long it lasts.
@@ -13,13 +14,13 @@
  * The least time each antic lasts, in milliseconds. Bubbles, Zzz and the like are given as long as they need to float right out of the
  * window, which can be longer when the turtle is low down on the page.
  */
-export const ANTIC_MS = { dance: 3400, scratch: 2600, yawn: 3200, breathe: 4200, poop: 2300, dream: 8500 };
+export const ANTIC_MS = { dance: 3400, scratch: 2600, yawn: 3200, breathe: 4200, poop: 2300, dream: 8500, spew: 4500 };
 
 /**
  * Which of the antics happen when nobody is doing anything (the sleepy and the silly ones), and which are treats for doing work: dancing is a celebration, and
  * the bubbles can be either. The fish and the boat (fish.js, boat.js) are treats too (see makeRewards). To change which is which, move a name between the lists.
  */
-export const IDLE_ANTICS = ['scratch', 'yawn', 'breathe', 'poop', 'dream'];
+export const IDLE_ANTICS = ['scratch', 'yawn', 'breathe', 'poop', 'dream', 'spew'];
 export const TREAT_ANTICS = ['dance', 'breathe'];
 
 /** How often the turtle does it twice, with a short pause between. */
@@ -40,6 +41,19 @@ export function idleAntics(antics) {
 export function makeRewards({ antics, fish, boat }) {
   return [
     ...antics.filter((antic) => TREAT_ANTICS.includes(antic.name)),
+    { name: 'fish', weight: 3, play: () => fish.swim() },
+    { name: 'boat', weight: 2, play: () => boat.sail() },
+  ];
+}
+
+/**
+ * What can happen on a whim, when somebody changes the grid or the paper: any antic at all (the turtle dances, yawns, scratches or blows bubbles, the shark
+ * dozes off or is sick) or a fish or a fishing boat coming by. Each gives back false if it is not a good moment for it, and the next is tried (see Reward.surprise).
+ * @param {object} things the same as makeRewards
+ */
+export function makeSurprises({ antics, fish, boat }) {
+  return [
+    ...antics,
     { name: 'fish', weight: 3, play: () => fish.swim() },
     { name: 'boat', weight: 2, play: () => boat.sail() },
   ];
@@ -81,6 +95,16 @@ export function makeAntics({ view, trash, fish = { el: null }, random = Math.ran
       weight: 2,
       can: () => trash.canDream() && !fish.el,
       play: () => ({ ms: lasts('dream', trash.setDreaming(true)), stop: () => trash.setDreaming(false) }),
+    },
+    {
+      // The shark is sick and brings up everything it has eaten. Only possible if it has eaten something and is just resting, with no fish or boat about.
+      name: 'spew',
+      weight: 3,
+      can: () => trash.canSpew() && !fish.el,
+      play: () => {
+        const started = trash.spew();
+        return started ? { ms: lasts('spew', started.ms / 1000), stop: started.stop } : { ms: 0, stop: () => {} };
+      },
     },
   ];
 }

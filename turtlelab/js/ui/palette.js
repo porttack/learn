@@ -196,6 +196,6 @@ export class PaletteUI {
 
   /** What a deleted stack is fed to: where its mouth is on the screen, and a nudge to start chewing. */
   get eater() {
-    return { mouthPoint: (options) => this.trash.mouthPoint(options), feed: () => this.trash.feed(), spit: (ms) => this.trash.spit(ms) };
+    return { mouthPoint: (options) => this.trash.mouthPoint(options), feed: (meal) => this.trash.feed(meal), spit: (ms) => this.trash.spit(ms) };
   }
 }

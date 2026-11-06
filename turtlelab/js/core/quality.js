@@ -38,6 +38,12 @@ export function levelLine(complexity) {
   return `${complexity.points} points, level ${complexity.level.label}. ${next}`;
 }
 
+/** How complexity points become the 0.0 to 1.0 number, in a sentence (worked out from the curve itself, so it stays true if the scale changes). */
+export function scaleLine(complexity) {
+  const at = (points) => `${points} points is ${tenths(complexity01(points))}`;
+  return `${complexity.points} points is ${tenths(complexity.value)}. On this scale ${at(80)}, 130 is ${tenths(complexity01(130))} and 200 is ${tenths(complexity01(200))}. It never quite gets to 1.0.`;
+}
+
 /** A value from 0.0 to 1.0 as it is shown, to one decimal place: "0.7". (Nothing, null, is "?".) */
 export function tenths(value) {
   return value === null || value === undefined ? '?' : (Math.round(value * 10) / 10).toFixed(1);

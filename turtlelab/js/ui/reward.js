@@ -53,18 +53,21 @@ export class Reward {
    * @param {{ name: string, weight: number, can?: () => boolean, play: () => (false | { ms?: number, stop?: () => void } | true) }[]} options.rewards
    *        the treats. `play` starts one and gives back false if it is not possible just now (a fish cannot swim while a boat is here), or true (it
    *        looks after itself: a fish), or how long it lasts and how to stop it (the turtle dancing).
+   * @param {{ name: string, weight: number, can?: () => boolean, play: () => (false | { ms?: number, stop?: () => void } | true) }[]} [options.surprises]
+   *        what can happen on a whim (`surprise`): the same kind of thing as a treat, but any of the antics, not only the treats
    * @param {() => boolean} options.busy true when it is not a good moment (a program is running, the blocks are hidden...)
    * @param {() => boolean} [options.calm] true when the computer asked for less motion: then nothing ever happens
    * The rest are for tests: `random`, `now`, `setTimer`, `clearTimer`, `visible`, `goal`, `windowMs`, `cooldownMs`, `afterRunMs`.
    */
-  constructor({ rewards, busy, calm = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches, random = Math.random,
+  constructor({ rewards, surprises = [], busy, calm = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches, random = Math.random,
     now = () => performance.now(), setTimer = (fn, ms) => setTimeout(fn, ms), clearTimer = (id) => clearTimeout(id),
     visible = () => document.visibilityState !== 'hidden', goal = GOAL, windowMs = WINDOW_MS, cooldownMs = COOLDOWN_MS, afterRunMs = AFTER_RUN_MS }) {
-    Object.assign(this, { rewards, busy, calm, random, now, setTimer, clearTimer, visible, goal, windowMs, cooldownMs, afterRunMs });
+    Object.assign(this, { rewards, surprises, busy, calm, random, now, setTimer, clearTimer, visible, goal, windowMs, cooldownMs, afterRunMs });
     this.events = []; // the points earned lately: { at, points }
     this.changedSinceRun = false;
     this.lastAt = null; // when the last treat began
     this.lastName = null;
+    this.lastSurprise = null; // (its own, so a surprise never uses up the rest before the next treat, or takes the points)
     this.playing = null; // the treat going now that needs stopping: { stop, timer }
     this.checkTimer = null;
     this.stopped = false;
@@ -146,6 +149,33 @@ export class Reward {
     if (started === false) return false;
     this.began(reward, started);
     return true;
+  }
+
+  /**
+   * Something happens on a whim, whatever the points and whatever is going on (the grid button: every change of grid or paper plays one). It is chosen by
+   * weight from the surprises that are possible now, not the one that was last if another will do; one that says no is skipped for the next. It does not
+   * earn or use up points, and does not start the rest before the next treat. Whatever treat or surprise was playing ends first, and this one is not ended by activity.
+   * Gives back the name of the one that began, or false (nothing happens when the computer asked for calm, or the tab is hidden).
+   * @param {string} [name] play this one (if it is possible) instead of choosing, for trying them out (the address ?surprise=spew)
+   */
+  surprise(name) {
+    if (this.stopped || this.calm() || !this.visible()) return false;
+    this.end();
+    let options = this.surprises.filter((candidate) => candidate.can?.() ?? true);
+    if (name) options = options.filter((candidate) => candidate.name === name);
+    const fresh = options.filter((candidate) => candidate.name !== this.lastSurprise);
+    if (fresh.length > 0 && !name) options = fresh;
+    while (options.length > 0) {
+      const pick = pickAntic(options, this.random);
+      const started = pick.play();
+      if (started !== false) {
+        this.lastSurprise = pick.name;
+        if (started && typeof started.stop === 'function') this.playing = { stop: started.stop, timer: this.setTimer(() => this.end(), started.ms ?? 0) };
+        return pick.name;
+      }
+      options = options.filter((candidate) => candidate !== pick);
+    }
+    return false;
   }
 
   /** The treat that is playing (if it needs stopping) stops, now. */

@@ -40,7 +40,7 @@ import { Fish } from './fish.js';
 import { Boat } from './boat.js';
 import { Idle, BREATH_AFTER_MS } from './idle.js';
 import { ScoreBadge } from './score-badge.js';
-import { makeAntics, idleAntics, makeRewards } from './antics.js';
+import { makeAntics, idleAntics, makeRewards, makeSurprises } from './antics.js';
 import { Reward, workMark, earnedWork, GOAL } from './reward.js';
 
 const $ = (id) => document.getElementById(id);
@@ -410,6 +410,7 @@ const scoreBadge = new ScoreBadge({ stage }); // the program score (see core/com
  * score; opening a program, starting a new one and Undo just show the new score.
  */
 function projectChanged({ edit = false } = {}) {
+  blocksFitted = null; // new or changed blocks: the next Fit fits them afresh
   lastMark = workMark(project.stacks);
   palettes.refresh();
   pythonBox.refresh();
@@ -433,7 +434,7 @@ workspace = new Workspace({
   onRunStack: runStack,
   onRunPaletteBlock: (block) => runStack({ x: 0, y: 0, blocks: [block] }),
   onMessage: say,
-  eater: { mouthPoint: (options) => palettes.eater.mouthPoint(options), feed: () => palettes.eater.feed(), spit: (ms) => palettes.eater.spit(ms) },
+  eater: { mouthPoint: (options) => palettes.eater.mouthPoint(options), feed: (meal) => palettes.eater.feed(meal), spit: (ms) => palettes.eater.spit(ms) },
   isOverPalette: (x, y, rect) => palettes.isOver(x, y, rect),
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
 });
@@ -454,9 +455,9 @@ palettes.trash.onSummon = () => {
 };
 if (Number(params.get('canscore')) > 0) palettes.trash.setScore(params.get('canscore'));
 
-// After 45 seconds with nobody doing anything the turtle might scratch its head, yawn or blow bubbles, or the shark might doze off and
-// dream of turtle stew. Any click, key, touch or scroll stops it and starts the wait over. (?antic=scratch and so on plays one at once (?antic=breath is the color breathing), and
-// ?idle=5 makes the quiet time 5 seconds instead of 45, and ?poop=two always drops two, for trying them out.)
+// After 30 seconds with nobody doing anything the turtle might scratch its head, yawn or blow bubbles, or the shark might doze off and
+// dream of turtle stew, or be sick and bring up everything it has eaten. Any click, key, touch or scroll stops it and starts the wait over. (?antic=scratch and so on plays one at once (?antic=breath is the color breathing;
+// ?antic=spew gives the shark three things to bring up if it has eaten nothing), and ?idle=5 makes the quiet time 5 seconds instead of 30, and ?poop=two always drops two, for trying them out.)
 const idleSeconds = Number(params.get('idle'));
 const allAntics = makeAntics({ view, trash: palettes.trash, fish: { get el() { return fish.el || boat.el; } }, ...(params.get('poop') === 'two' ? { secondPoopChance: 1 } : {}) });
 idle = new Idle({
@@ -475,12 +476,19 @@ idle.start();
 const goalPoints = Number(params.get('goal'));
 reward = new Reward({
   rewards: makeRewards({ antics: allAntics, fish, boat }),
+  surprises: makeSurprises({ antics: allAntics, fish, boat }), // (what a change of grid or paper plays: see `surprise` below)
   busy: () => scheduler.running || workspace.busy,
   ...(goalPoints > 0 ? { goal: goalPoints, cooldownMs: 5000 } : { goal: GOAL }),
 });
 lastMark = workMark(project.stacks); // (from here on, a change to the blocks can be work)
 scoreBadge.refresh(project, { quiet: true }); // the score of the program the page started with
-if (params.get('antic')) setTimeout(() => idle.playNow(params.get('antic')) || reward.playNow(params.get('antic')), 500);
+if (params.get('antic')) {
+  setTimeout(() => {
+    // (the shark can only be sick if it has eaten something: for trying it out it is given three things, shown as plain chips)
+    if (params.get('antic') === 'spew' && !palettes.trash.hasMeals()) for (let i = 0; i < 3; i += 1) palettes.trash.meals.add(null);
+    idle.playNow(params.get('antic')) || reward.playNow(params.get('antic'));
+  }, 500);
+}
 pythonBox = new PythonBox({ stage, project, onMessage: say });
 logoBox = new LogoBox({
   stage,
@@ -533,15 +541,24 @@ async function savePictureNow() {
   }
 }
 
+let blocksFitted = null; // where the last Fit left the blocks (their view). Still there, and Fit again means "go back"; moved, and it fits afresh
+const sameBlocksView = (a, b) => !!a && !!b && Math.abs(a.x - b.x) < 0.5 && Math.abs(a.y - b.y) < 0.5 && Math.abs(a.zoom - b.zoom) < 0.002;
+
 /**
  * Zoom the drawing so everything drawn (even off the edge of the paper) and the turtle are on it,
- * and slide and zoom the blocks so all of them are inside the window.
+ * and slide and zoom the blocks so all of them are inside the window (a long program can be shrunk
+ * a lot to do that, which is why pressing Fit again goes back: the paper to normal, and the code
+ * to normal size with its top left in the window, ready to slide). `toggle` is only for the Fit
+ * button. Returns what the paper did, with `back` true if this press went back.
  */
 function fitEverything({ toggle = false } = {}) {
   const palettesEdge = document.querySelector('.palettes')?.getBoundingClientRect().right ?? 0;
+  const inset = Math.max(0, palettesEdge - workspace.svg.getBoundingClientRect().left);
   const result = view.fit({ toggle });
-  workspace.fitBlocks(Math.max(0, palettesEdge - workspace.svg.getBoundingClientRect().left));
-  return result;
+  const back = toggle && (result.back === true || sameBlocksView(workspace.view, blocksFitted));
+  workspace.fitBlocks(inset, { normal: back });
+  blocksFitted = back ? null : { ...workspace.view };
+  return { ...result, back };
 }
 
 /**
@@ -591,7 +608,7 @@ async function savePdfNow() {
   try {
     const ranNote = await runBeforePdf();
     say('Making the PDF...');
-    fitEverything(); // so the whole drawing is on the paper that goes in the PDF
+    view.fit({ toggle: false }); // so the whole drawing is on the paper that goes in the PDF (the blocks in the PDF are drawn apart from the screen: the ones on the screen stay as they are)
     const { name, kind } = await savePdf(view.canvas, project, await view.paperWithTurtle(), scoreBadge.result);
     // Where things went depends on how big the program is (see chooseLayout in core/pdf.js).
     const where = { stacked: 'The blocks are on top and the drawing is below.', side: 'The blocks are down the left and the drawing is on the right.', pages: 'The blocks are on page 1 and the drawing is on page 2.' }[kind];
@@ -744,6 +761,11 @@ function gridChanged() {
   gridButton.title = `${what}. Right-click, or press and hold, to choose other grids and papers`;
   gridMenu.setChecked([`grid:${on ? view.gridType : 'off'}`, `paper:${view.paperId}`]);
 }
+/**
+ * A little whimsy: every change of the grid or the paper makes something happen at random (Reward.surprise): the turtle dances, yawns, scratches or blows
+ * bubbles, the shark dozes off or is sick, or a fish or the boat comes by. (?surprise=spew makes it that one every time, for trying them out.)
+ */
+const surprise = () => reward?.surprise(params.get('surprise') || undefined);
 // A press: the grid on (squares with x and y), then on to each paper in turn, then the blank screen again.
 gridButton.addEventListener('click', () => {
   const next = afterGridPress({ gridVisible: view.gridVisible, paperId: view.paperId });
@@ -755,6 +777,7 @@ gridButton.addEventListener('click', () => {
   if (!next.gridVisible) say('');
   else if (paperChanged && next.paperId !== 'white') say(paperSay(next.paperId, afterGridPress({ gridVisible: true, paperId: next.paperId }).gridVisible === false));
   else say(GRID_SAY[next.gridType]);
+  surprise();
 });
 // Right-click (or press and hold) the grid button for the other kinds of grid, and the paper. The paper is only how the page looks on the screen.
 const gridMenu = new ExportMenu({
@@ -781,6 +804,7 @@ const gridMenu = new ExportMenu({
       say(name === 'white' ? '' : `${paperById(name).label} is only how the paper looks on your screen. Saved pictures and PDFs still have white paper. Press the grid button to go on to the next paper.`);
     }
     gridChanged();
+    surprise();
   },
 });
 // (?grid=polar shows that kind of grid, and ?paper=blueprint that paper, for trying them out)
@@ -792,11 +816,11 @@ if (paperById(params.get('paper'))) view.setPaper(params.get('paper'));
 gridChanged();
 setupFullscreen({ button: $('fullscreen'), say });
 $('fit').addEventListener('click', () => {
-  // Pressed again with the paper already fitted, it goes back to the normal paper.
+  // Pressed again, it goes back: the normal paper, and the blocks at normal size.
   const result = fitEverything({ toggle: true });
-  if (!result.ok) say(`${TOO_LONG_TO_ZOOM} Your blocks are in the window.`);
-  else if (result.back) say('Back to the normal paper. Press Fit again to zoom in on your drawing.');
-  else say('Zoomed to fit: everything you drew is on the paper and all your blocks are in the window. Press Fit again to go back to the normal paper.');
+  if (!result.ok) say(`${TOO_LONG_TO_ZOOM} ${result.back ? 'Your blocks are at normal size.' : 'Your blocks are in the window.'}`);
+  else if (result.back) say('Back to the normal paper and your blocks at normal size. Slide the blocks to see the rest of a long program. Press Fit again to see everything at once.');
+  else say('Zoomed to fit: everything you drew is on the paper and all your blocks are in the window. Press Fit again to go back to the normal paper and your blocks at normal size.');
 });
 
 // Ctrl or Cmd with S saves; with Z it undoes; with Shift (or Ctrl+Y) it redoes.

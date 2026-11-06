@@ -210,7 +210,39 @@ function scoreStrip(ops, scores) {
 const BODY = 9.5;
 const LEADING = 13;
 const LABEL_WIDTH = 32; // the "Good" or "Tip" that starts a reason
-const POINTS_WIDTH = 40; // room at the right edge for a complexity row's points
+// The complexity table: the idea, how many of it, the points it earned, then an empty column to write a mark in. The numbers sit
+// right beside the words (not out at the margin) and every row is ruled, so a row reads straight across.
+const TABLE_IDEA = 200;
+const TABLE_COUNT = 56;
+const TABLE_POINTS = 56;
+const TABLE_HEAD = 16; // height of the row of column names
+const TABLE_ROW = 20; // tall enough to write a mark in
+
+/** Draw the complexity table with its top edge at `top`: column names, one ruled row for each of `rows` ({ text, count, points, total }), a blank Mark column. */
+function drawTable(ops, rows, top) {
+  const edges = [MARGIN, MARGIN + TABLE_IDEA, MARGIN + TABLE_IDEA + TABLE_COUNT, MARGIN + TABLE_IDEA + TABLE_COUNT + TABLE_POINTS, PAGE_W - MARGIN];
+  const bottom = top - TABLE_HEAD - rows.length * TABLE_ROW;
+  const centered = (words, from, to, baseline, gray, size = BODY, font = 'F1') => text(ops, from + (to - from - textWidth(words, size)) / 2, baseline, size, gray, words, font);
+  ops.push(`0.93 g ${num(MARGIN)} ${num(top - TABLE_HEAD)} ${num(FULL_WIDTH)} ${num(TABLE_HEAD)} re f`);
+  text(ops, edges[0] + 6, top - 11, 8, 0.35, 'Idea', 'F2');
+  centered('Count', edges[1], edges[2], top - 11, 0.35, 8, 'F2');
+  centered('Points', edges[2], edges[3], top - 11, 0.35, 8, 'F2');
+  text(ops, edges[3] + 6, top - 11, 8, 0.35, 'Mark', 'F2');
+  rows.forEach((row, index) => {
+    const baseline = top - TABLE_HEAD - index * TABLE_ROW - 14;
+    const gray = row.points === '0' ? 0.55 : 0.1;
+    text(ops, edges[0] + 6, baseline, BODY, gray, row.text, row.total ? 'F2' : 'F1');
+    if (row.count !== '') centered(row.count, edges[1], edges[2], baseline, gray);
+    centered(row.points, edges[2], edges[3], baseline, gray, BODY, row.total ? 'F2' : 'F1');
+  });
+  // The rules: across at the top, under the names and under every row; down between the columns and at both sides.
+  let rules = '';
+  const across = (at) => { rules += `${num(MARGIN)} ${num(at)} m ${num(PAGE_W - MARGIN)} ${num(at)} l `; };
+  across(top);
+  for (let line = 0; line <= rows.length; line += 1) across(top - TABLE_HEAD - line * TABLE_ROW);
+  for (const edge of edges) rules += `${num(edge)} ${num(top)} m ${num(edge)} ${num(bottom)} l `;
+  ops.push(`0.7 G 0.5 w ${rules}S`);
+}
 
 /**
  * The reasons, laid out in lines of writing, down as many pages as it takes. Returns the drawing commands of each page
@@ -236,15 +268,25 @@ function reasonPages(report) {
     text(ops(), MARGIN, y - 11, 11.5, 0.1, section.heading, 'F2');
     ops().push(`0.82 G 0.5 w ${num(MARGIN)} ${num(y - 16)} m ${num(PAGE_W - MARGIN)} ${num(y - 16)} l S`);
     y -= 26;
-    for (const line of section.lines) {
-      const indent = { good: LABEL_WIDTH, tip: LABEL_WIDTH, part: 8 }[line.kind] ?? 0;
-      const width = FULL_WIDTH - indent - (line.kind === 'part' ? POINTS_WIDTH : 0);
-      const words = wrapText(line.text, BODY, width);
+    for (let at = 0; at < section.lines.length;) {
+      const line = section.lines[at];
+      if (line.kind === 'part') {
+        // The rows of the complexity table go together, ruled, on one page.
+        const rows = [];
+        while (at < section.lines.length && section.lines[at].kind === 'part') rows.push(section.lines[at++]);
+        const height = TABLE_HEAD + rows.length * TABLE_ROW;
+        room(height + 8);
+        drawTable(ops(), rows, y - 2);
+        y -= height + 10;
+        continue;
+      }
+      at += 1;
+      const indent = line.kind === 'good' || line.kind === 'tip' ? LABEL_WIDTH : 0;
+      const words = wrapText(line.text, BODY, FULL_WIDTH - indent);
       room(words.length * LEADING + 3);
-      const gray = line.kind === 'what' ? 0.45 : line.kind === 'part' && line.points === '0' ? 0.55 : 0.1;
+      const gray = line.kind === 'what' ? 0.45 : 0.1;
       if (line.kind === 'good' || line.kind === 'tip') text(ops(), MARGIN, y - 9, 8, 0.4, line.kind === 'good' ? 'Good' : 'Tip', 'F2');
       words.forEach((row, i) => text(ops(), MARGIN + indent, y - 9 - i * LEADING, BODY, gray, row));
-      if (line.kind === 'part') text(ops(), PAGE_W - MARGIN - textWidth(line.points, BODY), y - 9, BODY, gray, line.points);
       y -= words.length * LEADING + 3;
     }
     y -= 8;
