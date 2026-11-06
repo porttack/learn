@@ -7,8 +7,9 @@
 // asked to download it. The download is made right here from data already in
 // the page, so nothing is sent anywhere.
 //
-// Save a PDF: the same picture is attached to a one page PDF that has the blocks in
-// the top half and the drawing in the bottom half (see core/pdf.js).
+// Save a PDF: the same picture is attached to a PDF that has the blocks in the top half and the
+// drawing in the bottom half, the score in a strip at the top of page 1 and the reasons for it on a
+// page after the drawing (see core/pdf.js).
 //
 // Other ways to save (right-click Save): a JPEG, an SVG, files for an embroidery machine, the Python,
 // the project as text. See EXPORTS and exportAs below.
@@ -18,7 +19,8 @@
 // main.js decides what to do with the result.
 
 import { embedProject, readProjectFile } from '../core/project-file.js';
-import { buildPdf, chooseLayout, sizeInPoints } from '../core/pdf.js';
+import { buildPdf, chooseLayout, sizeInPoints, SCORE_STRIP } from '../core/pdf.js';
+import { scoreReport } from '../core/score-report.js';
 import { opsToSvg } from '../core/svg-export.js';
 import { planStitches } from '../core/stitch-plan.js';
 import { encodeDst, encodePes, brotherColorsFor, PEC_PALETTE } from '../core/embroidery.js';
@@ -66,21 +68,24 @@ export async function savePicture(canvas, project) {
 }
 
 /**
- * Save a one page PDF: the blocks on top, the drawing below, and the PNG (with the blocks
+ * Save a PDF: the blocks on top, the drawing below, and the PNG (with the blocks
  * inside it) attached. `canvas` is the bare paper, which the attached PNG is made from.
  * `shown` is what the page shows of the drawing, which can be the paper with the turtle
  * on it (the PNG never has the turtle, the page for a teacher grading does).
+ * `score` is what the badge shows (assess in core/quality.js): its numbers go in a strip
+ * along the top of page 1 and the reasons on a page after the drawing, for marking.
  * Resolves to the file name the browser was asked to use.
  */
-export async function savePdf(canvas, project, shown = canvas) {
+export async function savePdf(canvas, project, shown = canvas, score = null) {
   const stamp = `turtlelab-${fileStamp()}`;
   const [picture, code] = await Promise.all([makePicture(canvas, project), renderCodeImage(project)]);
-  const { kind } = chooseLayout(code ? sizeInPoints(code) : null, { width: shown.width, height: shown.height });
+  const { kind } = chooseLayout(code ? sizeInPoints(code) : null, { width: shown.width, height: shown.height }, score ? SCORE_STRIP : 0);
   const pdf = await buildPdf({
     title: stamp,
     code,
     drawing: { width: shown.width, height: shown.height, rgb: canvasToRgb(shown) },
     attachment: { name: `${stamp}.png`, bytes: picture },
+    report: score ? scoreReport(score) : null,
   });
   download(new Blob([pdf], { type: 'application/pdf' }), `${stamp}.pdf`);
   return { name: `${stamp}.pdf`, kind }; // kind: where the blocks and drawing went (see chooseLayout)

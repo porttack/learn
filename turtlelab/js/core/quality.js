@@ -25,6 +25,19 @@ export function complexity01(points) {
   return 1 - Math.exp(-Math.max(0, points) / COMPLEXITY_SCALE);
 }
 
+/** The three numbers, in the order they are shown, with what each is in a few words (the badge's panel and the PDF both say it). */
+export const METRICS = [
+  { id: 'complexity', label: 'Complexity', what: 'How many of the big ideas the program uses. Variables count the most, then loops, ifs and blocks you made.' },
+  { id: 'elegance', label: 'Elegance', what: 'Said with as little as it needs: nothing copied and pasted, no number typed over and over, nothing left over.' },
+  { id: 'efficiency', label: 'Efficiency', what: 'How little work the last run took to make its picture: no lines drawn twice, little walking with the pen up, few steps.' },
+];
+
+/** What the complexity points come to, in words: "82 points, level Building. 18 more points to reach Clever". */
+export function levelLine(complexity) {
+  const next = complexity.level.next ? `${complexity.level.next.min - complexity.points} more points to reach ${complexity.level.next.label}` : 'The top level';
+  return `${complexity.points} points, level ${complexity.level.label}. ${next}`;
+}
+
 /** A value from 0.0 to 1.0 as it is shown, to one decimal place: "0.7". (Nothing, null, is "?".) */
 export function tenths(value) {
   return value === null || value === undefined ? '?' : (Math.round(value * 10) / 10).toFixed(1);

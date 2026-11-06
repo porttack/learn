@@ -333,7 +333,7 @@ penup) and Follow my blocks. The user asked for it: "allow the user to modify th
 
 ## The PDF
 
-The PDF button makes a US Letter PDF of your work with **the blocks and the drawing (with the turtle and a grid on it)**, the file name above and a line of
+The PDF button makes a US Letter PDF of your work with **the blocks and the drawing (with the turtle and a grid on it)**, the score along the top of page 1 and its reasons on a last page (see "The score is on the PDF" below), the file name above and a line of
 help below. **Where they go depends on the blocks** (`chooseLayout` in `core/pdf.js`, tested in `test/pdf.test.js`): the blocks are 15 points
 high when not shrunk and may not go below 8 (`READABLE_SCALE`). *Stacked* (blocks in the top half, drawing in the bottom half) if they stay readable; else *side*
 (blocks down the left at up to full height, drawing at the top right at least 300 wide, preferably 380); else *pages* (blocks fill page 1, drawing fills
@@ -343,6 +343,28 @@ each starts), with no library, just as `png-chunks.js` writes PNG chunks. The tw
 pictures are raw RGB squashed with `CompressionStream('deflate')` (which is exactly
 FlateDecode); text is the built-in Helvetica, so no font is embedded.
 
+- **The score is on the PDF (2026-11-05, the user: "put the Blocks, Complexity, etc score on the first page of the PDF. And after the drawing, include the reasons that we already generate. Makes it easier to grade").**
+  `savePdf(canvas, project, shown, score)` takes what the badge shows (`scoreBadge.result`, the `assess()` result, so the PDF always says exactly what the badge said) and `core/score-report.js`
+  (`scoreReport`, pure, `test/score-report.test.js`) turns it into plain data for `buildPdf({ report })`, so `core/pdf.js` knows nothing about scores. **Page 1** gets a strip along the top
+  (`SCORE_STRIP` 40 points, taken from the pictures by `chooseLayout(code, drawing, reserve)`, so every layout and every picture still fits under it; page 2 of the `pages` layout is not given less):
+  Blocks, Complexity, Elegance and Efficiency, each with its number in bold and a small bar (none for Blocks; elegance with fewer than 3 blocks says `not yet` and efficiency before a run says
+  `not run`, with no bar). **A last page** (more if it runs long) after the drawing has "Score and reasons": for each of the three, what it means, then complexity's level line and every row of its
+  points table (rows at 0 dimmed, points at the right edge) and its tip, and elegance's and efficiency's reasons, each beside a bold `Good` or `Tip` (words, not the badge's tick and arrow, so it prints
+  the same in black and white). These are the badge panel's own sentences (`METRICS` and `levelLine` moved into `core/quality.js` so the badge and the PDF share one copy). **Text needs its
+  width:** the PDF uses the built-in Helvetica, which has no widths in the file, so `core/pdf.js` carries the 95 Helvetica letter widths (`HELVETICA`; `textWidth`, `wrapText`) to wrap lines at the margin;
+  the headings and numbers use Helvetica-Bold (`/F2`, one more object, only when there is a report). A letter that is not plain ASCII is written as `?` (and measured as one); a test checks every
+  sample's report is plain ASCII. **A PDF with no `report` is exactly the old one** (the first page's object numbers do not change, no bold font, one page for a small program), and `buildPdf`
+  without a report is what most of `test/pdf.test.js` still tests. Efficiency needs a run, and the badge has none until the program has run since its blocks last changed, so
+  **the PDF button runs the program first when the badge has no run** (2026-11-05, the user: "My first experiment shows Efficiency: not run. I think maybe we need to run it if it hasn't been run yet when
+  the PDF button is pressed"): `runBeforePdf` in `main.js`, which checks `scoreBadge.run === null`, takes the run stack from `findRunStack`, and runs it at **instant speed whatever the program's speed blocks say**
+  (`hurry`, which `setSpeed` and `runStack` read; a run started by the Run button is not affected). A `wait` block still takes its real time, and a program that never ends (`forever`) is
+  stopped after `PDF_RUN_MS` (5 s, which was 15 s at first: the user found 15 too long to wait, and at instant speed a loop has drawn all it will show in a second or two; `?pdfrun=3` makes it 3 s for trying it out), after which the PDF is made from what had been drawn (a stopped run can be measured). A run that is already going is
+  waited for (not started again, same cap). The message in the bar says what happened, in front of "Saved ...": "Your program was run first, so the numbers and the drawing are from that run.", "... was still going
+  after 5 seconds, so it was stopped there ...", or "... stopped with a mistake (the block is outlined), so the PDF has what it drew before that." (a run with a mistake has no efficiency, so the page says `not run`).
+  Nothing is run when there is no Start block or command stack (an empty page, only blocks you made), or when the badge already has a run (the PDF does not run it again). The run redraws the paper, so a picture
+  opened from a file is redrawn from its blocks, which is the same drawing unless the program uses `random`. `finishWaiters` is how `savePdfNow` hears the run end (it is called from `onFinish`). The score is worked out on the device and written into the file, so **the privacy page and the Guide say the PDF is the one
+  place the score goes** (not into a saved picture, JPEG, SVG, embroidery file or the autosave). Poppler's `pdftotext` is used by the unit test and the editor checks to read the numbers back;
+  poppler on a Mac may draw the bold as regular (a font substitution on its side; the file names Helvetica-Bold correctly).
 - **The picture inside is the real PNG, with the blocks in it, attached as a file**
   (`/EmbeddedFile`) and stored plain, not squashed. A PDF image cannot carry PNG
   metadata, so this is how "the picture in the PDF has the code in it" is true. And

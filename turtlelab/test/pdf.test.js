@@ -338,3 +338,132 @@ test('a PDF with the blocks on page 1 and the drawing on page 2 is a two page PD
   for (let id = 1; id < size; id += 1) assert.ok(text.startsWith(`${id} 0 obj\n`, Number(rows[id].slice(0, 10))), `object ${id}`);
   assert.ok(isPdf(pdf));
 });
+
+// ---- The score: a strip on page 1, the reasons on a page after the drawing ------------------------------------------
+
+import { textWidth, wrapText, SCORE_STRIP } from '../js/core/pdf.js';
+import { scoreReport } from '../js/core/score-report.js';
+import { assess } from '../js/core/quality.js';
+
+const REPORT = () => scoreReport(assess({ project: project(), run: { segments: 4, drawn: 400, filled: false, tiny: 0, walkedUp: 0, walkedDown: 400, steps: 12, hasWrite: false, truncated: false, overdrawn: 0, looked: 100 } }));
+
+/** What is drawn on each page: the text of each content stream, in page order. */
+const contentsOf = (pdf) => [...latin1(pdf).matchAll(/<< \/Length \d+ >>\nstream\n([\s\S]*?)\nendstream/g)].map((m) => m[1]);
+/** The words shown on a page, in the order they are drawn. */
+const wordsOn = (contents) => [...contents.matchAll(/\((.*)\) Tj ET/g)].map((m) => m[1].replace(/\\([()\\])/g, '$1'));
+
+test('text is measured with Helvetica\'s own letter widths, so a line can be broken before the page edge', () => {
+  assert.equal(textWidth('', 10), 0);
+  assert.equal(textWidth('i', 1000), 222);
+  assert.equal(textWidth('W', 1000), 944);
+  assert.equal(textWidth('0123456789', 10), 55.6, 'every digit is 556');
+  assert.equal(textWidth('é', 1000), textWidth('?', 1000), 'what is not plain ASCII is written as a question mark, so it is measured as one');
+});
+
+test('wrapping breaks between words, never makes a line too wide, and keeps every word in order', () => {
+  const words = 'the turtle walked 300 steps with the pen up and drew nothing on the way home'.split(' ');
+  const lines = wrapText(words.join(' '), 9.5, 150);
+  assert.ok(lines.length > 2);
+  for (const line of lines) assert.ok(textWidth(line, 9.5) <= 150 + 1e-9, line);
+  assert.deepEqual(lines.join(' ').split(' '), words);
+  assert.deepEqual(wrapText('', 9.5, 150), []);
+  assert.deepEqual(wrapText('   two   words  ', 9.5, 500), ['two words'], 'spaces are tidied');
+});
+
+test('a word wider than the whole line is cut rather than run off the page', () => {
+  const lines = wrapText('x'.repeat(200), 10, 100);
+  assert.ok(lines.length > 1);
+  for (const line of lines) assert.ok(textWidth(line, 10) <= 100 + 1e-9);
+  assert.equal(lines.join(''), 'x'.repeat(200));
+});
+
+test('room is left at the top of page 1 for the strip of scores, in every layout, and the second page is not given less', () => {
+  for (const code of [{ width: 200, height: 250 }, { width: 228, height: 760 }, { width: 661, height: 883 }, null]) {
+    const reserved = chooseLayout(code, DRAWING, SCORE_STRIP);
+    const [first] = reserved.pages;
+    for (const rect of [first.code, first.drawing].filter(Boolean)) {
+      assert.ok(inside(rect), JSON.stringify(code));
+      if (reserved.kind !== 'pages' || rect === first.code) assert.ok(rect.y + rect.height <= 792 - 36 - 18 - SCORE_STRIP + 1e-9, `${reserved.kind}: the pictures start under the strip`);
+    }
+    if (first.code && first.drawing) assert.ok(!overlap(first.code, first.drawing));
+  }
+  const plain = chooseLayout({ width: 661, height: 883 }, DRAWING);
+  const reserved = chooseLayout({ width: 661, height: 883 }, DRAWING, SCORE_STRIP);
+  assert.equal(reserved.kind, 'pages');
+  assert.deepEqual(reserved.pages[1], plain.pages[1], 'the drawing on page 2 has the whole page, as before');
+  assert.deepEqual(chooseLayout({ width: 200, height: 250 }, DRAWING, 0), chooseLayout({ width: 200, height: 250 }, DRAWING), 'no reserve is the old layout');
+});
+
+test('with a score, a small program is two pages: the pictures and the strip, then the reasons', async () => {
+  const pdf = await makePdf({ report: REPORT() });
+  const text = latin1(pdf);
+  assert.match(text, /\/Type \/Pages \/Kids \[3 0 R 7 0 R\] \/Count 2/);
+  assert.match(text, /\/BaseFont \/Helvetica-Bold/, 'the numbers and headings are bold');
+  const [first, second] = contentsOf(pdf);
+  const one = wordsOn(first);
+  assert.deepEqual(one.slice(0, 1), ['turtlelab-2026-11-03-1409  (page 1 of 2)']);
+  for (const label of ['BLOCKS', 'COMPLEXITY', 'ELEGANCE', 'EFFICIENCY']) assert.ok(one.includes(label), label);
+  assert.ok(/\/Code Do/.test(first) && /\/Drawing Do/.test(first), 'both pictures are still on page 1');
+  const two = wordsOn(second);
+  assert.equal(two[0], 'turtlelab-2026-11-03-1409  (page 2 of 2)');
+  assert.ok(two.includes('Score and reasons'));
+  assert.ok(!/ Do Q/.test(second), 'the reasons page has no pictures');
+  const tableAt = Number(text.match(/startxref\n(\d+)\n%%EOF/)[1]);
+  const size = Number(text.match(/trailer\n<< \/Size (\d+)/)[1]);
+  const rows = text.slice(tableAt).split('\n').slice(2, 2 + size).map((row) => row.trim());
+  for (let id = 1; id < size; id += 1) assert.ok(text.startsWith(`${id} 0 obj\n`, Number(rows[id].slice(0, 10))), `object ${id} is where the table says`);
+  assert.deepEqual(readProjectFile(pdf).project, project(), 'it still opens in TurtleLab');
+});
+
+test('the reasons page says every reason the badge gives, each one once, with Good or Tip beside it', async () => {
+  const report = REPORT();
+  const pdf = await makePdf({ report });
+  const two = wordsOn(contentsOf(pdf)[1]).join(' ');
+  for (const section of report.sections) {
+    assert.ok(two.includes(section.heading), section.heading);
+    for (const line of section.lines.filter((l) => l.kind === 'good' || l.kind === 'tip')) {
+      // A long reason is wrapped onto several lines, so look for its first and last words.
+      const words = line.text.split(' ');
+      assert.ok(two.includes(words.slice(0, 3).join(' ')) && two.includes(words.slice(-3).join(' ')), line.text);
+    }
+  }
+  assert.ok(wordsOn(contentsOf(pdf)[1]).includes('Good') || wordsOn(contentsOf(pdf)[1]).includes('Tip'));
+});
+
+test('with no blocks the first page still has the strip and says there are no blocks, below it', async () => {
+  const empty = scoreReport(assess({ project: { app: FORMAT_ID, version: FORMAT_VERSION, stacks: [] } }));
+  const pdf = await makePdf({ code: null, report: empty });
+  const [first] = contentsOf(pdf);
+  assert.ok(wordsOn(first).includes('There are no blocks on the page.'));
+  const noBlocksY = Number(first.match(/ ([\d.]+) Td \(There are no blocks/)[1]);
+  const labelY = Number(first.match(/ ([\d.]+) Td \(COMPLEXITY\)/)[1]);
+  assert.ok(noBlocksY < labelY - 20, 'the sentence is under the strip, not on it');
+});
+
+test('a very long report runs on to more pages, none of its lines goes below the bottom margin, and every page has a title', async () => {
+  const lines = Array.from({ length: 60 }, (_, i) => ({ kind: i % 2 ? 'tip' : 'good', text: `Reason number ${i}: ${'a few more words to make the line wrap onto a second row '.repeat(3)}` }));
+  const report = { scores: REPORT().scores, sections: [{ heading: 'Elegance: 0.5', lines }] };
+  const pdf = await makePdf({ report });
+  const streams = contentsOf(pdf);
+  assert.ok(streams.length >= 4, `${streams.length} pages`);
+  streams.forEach((stream, i) => {
+    assert.ok(wordsOn(stream)[0].includes(`(page ${i + 1} of ${streams.length})`));
+    for (const y of [...stream.matchAll(/ ([\d.]+) Td /g)].map((m) => Number(m[1]))) assert.ok(y >= 36 - 5, `y ${y} on page ${i + 1}`);
+  });
+  assert.match(latin1(pdf), new RegExp(`/Count ${streams.length}`));
+});
+
+test('poppler reads the score: the numbers on page 1, the reasons on page 2', needsPoppler, async () => {
+  const { file } = await writeTemp(makePdf({ report: REPORT() }));
+  const info = spawnSync('pdfinfo', [file], { encoding: 'utf8' });
+  assert.match(info.stdout, /Pages:\s+2/);
+  assert.doesNotMatch(info.stderr, /Syntax|Error/i);
+  if (spawnSync('pdftotext', ['-v']).error) return;
+  const page = (n) => spawnSync('pdftotext', ['-layout', '-f', String(n), '-l', String(n), file, '-'], { encoding: 'utf8' }).stdout;
+  assert.match(page(1), /BLOCKS\s+COMPLEXITY\s+ELEGANCE\s+EFFICIENCY/);
+  assert.match(page(2), /Score and reasons/);
+  assert.match(page(2), /Complexity: \d\.\d/);
+  assert.match(page(2), /Elegance: /);
+  assert.match(page(2), /Efficiency: \d\.\d/);
+  assert.match(page(2), /It took 12 steps to make the picture\./);
+});

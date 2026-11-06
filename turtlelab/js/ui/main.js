@@ -130,9 +130,17 @@ const newContext = (definitions = new Map()) =>
     print,
     definitions,
     setSpeed: (name) => {
-      scheduler.speed = name;
+      if (!hurry) scheduler.speed = name; // (a run for the PDF stays at instant, whatever the program's speed blocks say)
     },
   });
+// The PDF has the program's efficiency on it, which needs a run, so the PDF button runs a program that has not run yet (see runBeforePdf).
+// While `hurry` is true that run goes at instant speed. A wait block still takes its real time, and a program that never ends is stopped after
+// PDF_RUN_MS (the address can say ?pdfrun=3 for 3 seconds, to try it out).
+let hurry = false;
+const PDF_RUN_MS = Number(params.get('pdfrun')) > 0 ? Number(params.get('pdfrun')) * 1000 : 5000;
+let finishWaiters = []; // called, with the result, when the run that is going ends
+let finishes = 0; // how many runs have ended, and how the last one did (a short program at instant speed is over before `start` returns)
+let lastResult = null;
 let context = createContext({ turtle });
 let boxesInUse = usesBoxes(project);
 const readout = document.createElement('p');
@@ -258,6 +266,11 @@ const scheduler = new Scheduler({
         console.error(result.error);
       }
     }
+    finishes += 1;
+    lastResult = result;
+    const waiting = finishWaiters;
+    finishWaiters = [];
+    for (const done of waiting) done(result);
   },
 });
 
@@ -296,7 +309,7 @@ function runStack(stack) {
   view.resetDrawView({ force: true }); // every run starts with the paper as it was, not zoomed from the last Fit
   clearOutput();
   context = newContext(definitions);
-  scheduler.speed = startSpeed; // the last run's speed block does not carry over
+  scheduler.speed = hurry ? 'instant' : startSpeed; // the last run's speed block does not carry over
   runningLogo = false;
   runHasWrite = writesWords(project.stacks);
   scheduler.start(runBlocks(stack.blocks, context));
@@ -531,23 +544,64 @@ function fitEverything({ toggle = false } = {}) {
   return result;
 }
 
-/** Save a one page PDF: the blocks on top, the drawing below, and the picture with the blocks inside attached. */
+/**
+ * The PDF's score includes efficiency, which is about a run, and the badge has none until the program has run since its blocks last changed.
+ * So if there is none, run the program now (at instant speed, and stopped after PDF_RUN_MS if it never ends) and wait for it, so the PDF
+ * has the efficiency and a drawing that comes from these blocks. A run that is going already is waited for instead of started again.
+ * Resolves to what to tell the student about it, or '' when nothing was run.
+ */
+async function runBeforePdf() {
+  if (scoreBadge.run !== null) return ''; // it has run since the blocks last changed: the badge has the numbers
+  const startedHere = !scheduler.running;
+  const finishesBefore = finishes;
+  if (startedHere) {
+    const { stack } = findRunStack(project);
+    if (!stack) return ''; // nothing to run (no Start block or blocks): the PDF says "not run"
+    hurry = true;
+    runStack(stack);
+    if (!scheduler.running && finishes === finishesBefore) {
+      hurry = false; // it did not start, and the app has said why (a block with two names, say)
+      return '';
+    }
+  }
+  const seconds = Math.round(PDF_RUN_MS / 1000);
+  let cut = false;
+  let result = lastResult; // a short program was over before `start` returned
+  if (scheduler.running) {
+    say('Running your program first, so the PDF can say how it did...');
+    const timer = setTimeout(() => {
+      cut = true;
+      scheduler.stop();
+    }, PDF_RUN_MS);
+    result = await new Promise((resolve) => finishWaiters.push(resolve));
+    clearTimeout(timer);
+  }
+  hurry = false;
+  if (result.status === 'error') return 'Your program stopped with a mistake (the block is outlined), so the PDF has what it drew before that. ';
+  if (cut) return `Your program was still going after ${seconds} seconds, so it was stopped there and the PDF has what it had drawn. `;
+  return startedHere ? 'Your program was run first, so the numbers and the drawing are from that run. ' : '';
+}
+
+/** Save a PDF: the blocks on top, the drawing below, the score along the top of page 1 and its reasons on a page after, and the picture with the blocks inside attached. */
 let makingPdf = false;
 async function savePdfNow() {
   if (makingPdf) return;
   makingPdf = true;
   say('Making the PDF...');
   try {
+    const ranNote = await runBeforePdf();
+    say('Making the PDF...');
     fitEverything(); // so the whole drawing is on the paper that goes in the PDF
-    const { name, kind } = await savePdf(view.canvas, project, await view.paperWithTurtle());
+    const { name, kind } = await savePdf(view.canvas, project, await view.paperWithTurtle(), scoreBadge.result);
     // Where things went depends on how big the program is (see chooseLayout in core/pdf.js).
     const where = { stacked: 'The blocks are on top and the drawing is below.', side: 'The blocks are down the left and the drawing is on the right.', pages: 'The blocks are on page 1 and the drawing is on page 2.' }[kind];
-    say(`Saved ${name}. ${where} Drag the PDF onto this page to open the blocks again.`);
+    say(`${ranNote}Saved ${name}. ${where} The score is at the top of page 1, and the reasons for it are on the last page. Drag the PDF onto this page to open the blocks again.`);
   } catch (error) {
     console.error(error);
     say('Sorry, the PDF could not be made. Try again.');
   } finally {
     makingPdf = false;
+    hurry = false;
   }
 }
 

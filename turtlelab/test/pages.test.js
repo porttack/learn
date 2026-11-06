@@ -240,7 +240,8 @@ test('the Guide and the privacy page tell about blocks, complexity, elegance and
   assert.ok(!/[\u2013\u2014]/.test(guide.slice(guide.indexOf('Blocks, complexity, elegance'), guide.indexOf('Turtle moods'))), 'no dashes in the new row');
   const privacy = read('privacy.html');
   assert.match(privacy, /<td>What are the numbers in the corner\?<\/td>/);
-  assert.match(privacy, /None of it is saved, sent anywhere, or put in a saved picture or a PDF/);
+  assert.match(privacy, /None of it is saved, sent anywhere, or put in a saved picture\. The one place it goes is a PDF the student saves/);
+  assert.match(guide, /The one place they go is the PDF you save yourself/);
 });
 
 test('the Guide tells about the color picker: hex, binary, that the numbers stay, and that Undo undoes a whole picking; the privacy page says nothing is sent', () => {

@@ -6,7 +6,7 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { launch } from './cdp.mjs';
 import { tmpdir } from 'node:os';
-import { mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
 import { readProjectFile, isPdf } from '../js/core/project-file.js';
@@ -1483,11 +1483,12 @@ try {
   // The blocks on the page are the demo's, as the app cleans them when it loads them.
   const onPage = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: structuredClone(DEMOS.squarefn.stacks) }).project;
   const requestsBefore = chrome.requestLog.length;
+  const badgeNow = await chrome.eval(`[...document.querySelectorAll('.score-pill .score-value')].map((e) => e.textContent)`); // what the PDF's strip must say
   await clickButton('save-pdf');
   const pdfName = await waitForPdf();
   check('Save as PDF downloads a PDF named with the date and time', /^turtlelab-\d{4}-\d{2}-\d{2}-\d{4}\.pdf$/.test(pdfName ?? ''), pdfName);
   await chrome.sleep(300);
-  check('and says what is in it, and how to open it again', /Saved turtlelab-.*\.pdf\. The blocks are on top and the drawing is below\. Drag the PDF onto this page/.test(await messageText()), await messageText());
+  check('and says what is in it, where the score and its reasons are, and how to open it again', /Saved turtlelab-.*\.pdf\. The blocks are on top and the drawing is below\. The score is at the top of page 1, and the reasons for it are on the last page\. Drag the PDF onto this page/.test(await messageText()), await messageText());
   const pdfBytes = new Uint8Array(readFileSync(join(downloads, pdfName)));
   check('it is a real PDF of a sensible size', isPdf(pdfBytes) && pdfBytes.length > 20000 && pdfBytes.length < 3000000, `${pdfBytes.length} bytes`);
   const fromPdf = readProjectFile(pdfBytes);
@@ -1501,11 +1502,23 @@ try {
   if (poppler) {
     const pdfPath = join(downloads, pdfName);
     const info = spawnSync('pdfinfo', [pdfPath], { encoding: 'utf8' });
-    check('a real PDF reader (poppler) says it is one page of US Letter, with no complaints', info.status === 0 && /Pages:\s+1/.test(info.stdout) && /612 x 792 pts \(letter\)/.test(info.stdout) && !/Error|Syntax/i.test(info.stderr), info.stderr.slice(0, 120));
+    check('a real PDF reader (poppler) says it is two pages of US Letter (the blocks and drawing, then the reasons), with no complaints', info.status === 0 && /Pages:\s+2/.test(info.stdout) && /612 x 792 pts \(letter\)/.test(info.stdout) && !/Error|Syntax/i.test(info.stderr), info.stderr.slice(0, 120));
     check('and lists the attached picture', /\.png/.test(spawnSync('pdfdetach', ['-list', pdfPath], { encoding: 'utf8' }).stdout));
     const pages = join(downloads, 'pdfpage');
     const drawn = spawnSync('pdftoppm', ['-png', '-r', '30', pdfPath, pages], { encoding: 'utf8' });
     check('and can draw the page', drawn.status === 0 && !/Error|Syntax/i.test(drawn.stderr));
+    if (!spawnSync('pdftotext', ['-v']).error) {
+      // The score: the strip on page 1 says what the badge on the screen said, and the reasons are on the page after the drawing.
+      const pageText = (n) => spawnSync('pdftotext', ['-layout', '-f', String(n), '-l', String(n), pdfPath, '-'], { encoding: 'utf8' }).stdout;
+      const first = pageText(1);
+      const second = pageText(2);
+      const tokens = first.split(/\s+/);
+      const [blocksNow, complexityNow, eleganceNow, efficiencyNow] = badgeNow;
+      check('the strip along the top of page 1 names the four scores', /BLOCKS\s+COMPLEXITY\s+ELEGANCE\s+EFFICIENCY/.test(first), first.slice(0, 200));
+      check('and gives the numbers the badge on the screen showed', badgeNow.length === 4 && tokens.includes(blocksNow) && tokens.includes(complexityNow) && (/^\d/.test(eleganceNow) ? tokens.includes(eleganceNow) : tokens.includes('not')) && (/^\d/.test(efficiencyNow) ? tokens.includes(efficiencyNow) : tokens.includes('run')), `${JSON.stringify(badgeNow)} in ${first.slice(0, 160)}`);
+      check('the reasons are on page 2, after the drawing, not on page 1', /Score and reasons/.test(second) && !/Score and reasons/.test(first) && /Complexity: \d\.\d/.test(second) && /Elegance: /.test(second) && /Efficiency: /.test(second), second.slice(0, 200));
+      check('page 2 gives the complexity points row by row, and a Tip or a Good for the other two', /Variables/.test(second) && /Loops/.test(second) && /(Tip|Good)\s+\S/.test(second), second.slice(0, 300));
+    }
 
     // The turtle is on the PDF's drawing (the grader wants to see which way it faces), but the PNG attached
     // to the same PDF is the bare paper. Count the turtle's green, in the page poppler draws and in the PNG.
@@ -1613,6 +1626,77 @@ try {
   await clickButton('save-pdf');
   await chrome.sleep(1500);
   check('with nothing on the page, a PDF is still made (and says so)', /^Saved turtlelab-.*\.pdf/.test(await messageText()), await messageText());
+
+  // ---- The PDF button runs a program that has not run yet, so the PDF has an efficiency -------------------------------
+  check('with nothing on the page there is nothing to run: no word about a run in the message', !/Your program/.test(await messageText()), await messageText());
+  /** Press PDF on this page and wait for the new file: the message, how long it took, and the numbers along the top of page 1 (null without poppler). */
+  const pdfAfterPress = async (waitMs = 20000) => {
+    const stamp = (f) => statSync(join(downloads, f)).mtimeMs;
+    const before = new Map(savedPdfs().map((f) => [f, stamp(f)])); // (two PDFs saved in the same minute have the same name, so a rewritten file counts too)
+    const began = Date.now();
+    await clickButton('save-pdf');
+    let fresh = null;
+    while (Date.now() - began < waitMs && !fresh) {
+      fresh = savedPdfs().find((f) => !before.has(f) || stamp(f) > before.get(f)) ?? null;
+      if (!fresh) await chrome.sleep(100);
+    }
+    const took = Date.now() - began;
+    await chrome.sleep(400);
+    let strip = null;
+    if (fresh && poppler && !spawnSync('pdftotext', ['-v']).error) {
+      strip = spawnSync('pdftotext', ['-layout', '-f', '1', '-l', '1', join(downloads, fresh), '-'], { encoding: 'utf8' }).stdout;
+    }
+    return { fresh, took, message: await messageText(), strip };
+  };
+  const efficiencyOnStrip = (strip) => (strip.match(/EFFICIENCY\s*\n+\s*\S+\s+\S+\s+\S+\s+(\S+(?: \S+)?)/) ?? [])[1];
+
+  await chrome.goto(BASE + '?demo=square&speed=instant');
+  await chrome.sleep(500);
+  const pdfUnrun = await chrome.eval(`[...document.querySelectorAll('.score-pill .score-value')].map((e) => e.textContent)`);
+  check('a program that has not been run says "run it" for efficiency on the badge', pdfUnrun[3] === 'run it', JSON.stringify(pdfUnrun));
+  const pdfFirst = await pdfAfterPress();
+  check('pressing PDF on it runs it first and saves the PDF', pdfFirst.fresh !== null && /^Your program was run first, so the numbers and the drawing are from that run\. Saved turtlelab-/.test(pdfFirst.message), pdfFirst.message);
+  check('the PDF has a real efficiency number on it, not "not run"', pdfFirst.strip === null || /^\d\.\d$/.test(efficiencyOnStrip(pdfFirst.strip) ?? ''), `${efficiencyOnStrip(pdfFirst.strip ?? '')} in ${(pdfFirst.strip ?? '').slice(0, 200)}`);
+  check('and the drawing on the page is what the run made', (await redPixels()) > 100);
+  check('and the badge on the screen shows the efficiency too, and the Run button works again', (await chrome.eval(`document.querySelector('.score-pill .score-efficiency .score-value').textContent`)) !== 'run it' && (await chrome.eval(`document.getElementById('run').disabled`)) === false);
+  const pdfAgain = await pdfAfterPress();
+  check('pressing PDF again, with no change to the blocks, does not run it again', pdfAgain.fresh !== null && !/Your program/.test(pdfAgain.message) && /^Saved turtlelab-/.test(pdfAgain.message), pdfAgain.message);
+
+  // A program that changes its own speed to slow (4 steps, half a second each) is still run quickly for the PDF.
+  await chrome.goto(BASE + '?demo=slowdown');
+  await chrome.sleep(500);
+  const pdfHurried = await pdfAfterPress();
+  check('a program that sets its own speed to slow is still run at instant for the PDF (the whole thing takes under a second and a half)', pdfHurried.fresh !== null && pdfHurried.took < 1500 && /^Your program was run first/.test(pdfHurried.message), `${pdfHurried.took} ms: ${pdfHurried.message}`);
+  await chrome.goto(BASE + '?demo=slowdown');
+  await chrome.sleep(500);
+  await chrome.eval(`document.getElementById('run').click()`);
+  await chrome.sleep(200);
+  const pdfSlowed = await chrome.eval(`document.getElementById('run').disabled`);
+  check('(and the same program run by the Run button really is slow, so the check above means something)', pdfSlowed === true);
+  await chrome.eval(`document.getElementById('stop').click()`);
+  await chrome.sleep(200);
+
+  // A program that never ends is stopped, and the PDF still comes.
+  await chrome.goto(BASE + '?demo=forever&speed=instant&pdfrun=2');
+  await chrome.sleep(500);
+  const pdfNever = await pdfAfterPress(20000);
+  check('a program that never ends is stopped after the time allowed and the PDF is saved with what it had drawn', pdfNever.fresh !== null && pdfNever.took >= 1900 && pdfNever.took < 9000 && /^Your program was still going after 2 seconds, so it was stopped there and the PDF has what it had drawn\. Saved turtlelab-/.test(pdfNever.message), `${pdfNever.took} ms: ${pdfNever.message}`);
+  check('the stopped program has an efficiency (a stopped run can be measured) and the page is not left frozen', (pdfNever.strip === null || /^\d\.\d$/.test(efficiencyOnStrip(pdfNever.strip) ?? '')) && (await chrome.eval(`document.getElementById('run').disabled`)) === false && (await chrome.eval(`document.getElementById('stop').disabled`)) === true, efficiencyOnStrip(pdfNever.strip ?? ''));
+
+  // A program with a mistake in it: the PDF is still made, says so, and has no efficiency.
+  await chrome.goto(BASE + '?demo=ghostcall&speed=instant');
+  await chrome.sleep(500);
+  const pdfBroken = await pdfAfterPress();
+  check('a program with a mistake in it is run, the mistake is said, and the PDF is still saved', pdfBroken.fresh !== null && /^Your program stopped with a mistake \(the block is outlined\), so the PDF has what it drew before that\. Saved turtlelab-/.test(pdfBroken.message), pdfBroken.message);
+  check('and its efficiency says "not run", since a run with a mistake in it cannot be measured', pdfBroken.strip === null || /not run/.test(pdfBroken.strip), (pdfBroken.strip ?? '').slice(0, 200));
+
+  // Pressing PDF while a program is already running waits for it instead of starting it again.
+  await chrome.goto(BASE + '?demo=waiting&speed=instant');
+  await chrome.sleep(500);
+  await chrome.eval(`document.getElementById('run').click()`);
+  await chrome.sleep(150);
+  const pdfMidRun = await pdfAfterPress();
+  check('pressing PDF while the program is already running waits for that run to end, and has its efficiency (it did not start another)', pdfMidRun.fresh !== null && !/Your program/.test(pdfMidRun.message) && /^Saved turtlelab-/.test(pdfMidRun.message) && (pdfMidRun.strip === null || /^\d\.\d$/.test(efficiencyOnStrip(pdfMidRun.strip) ?? '')), `${pdfMidRun.took} ms: ${pdfMidRun.message} ${efficiencyOnStrip(pdfMidRun.strip ?? '')}`);
 
   // The picture of the blocks in the PDF looks like the screen: same arrangement, with only the wide empty bands closed up.
   await chrome.goto(BASE + '?speed=instant');

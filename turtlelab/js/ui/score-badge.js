@@ -7,19 +7,12 @@
 // goes back to that when the blocks change. Press the card for the reasons behind each number and what to try next. When building makes complexity or
 // elegance go up and then stay still for a moment, "+0.1 elegance" floats up. It only reads the blocks and the run: nothing here stores or sends anything.
 
-import { assess, tenths } from '../core/quality.js';
+import { assess, tenths, levelLine, METRICS } from '../core/quality.js';
 
 /** How long the numbers must stay still before a "+0.1" shows, so building a stack block by block gives one, not one for each block. */
 const SETTLE_MS = 500;
 /** How long the "+0.1" floats (the stylesheet's animation says the same). */
 const GAIN_MS = 1800;
-
-/** The three numbers, in the order they are shown, with what each is in a few words (the panel says more). */
-const METRICS = [
-  { id: 'complexity', label: 'Complexity', what: 'How many of the big ideas the program uses. Variables count the most, then loops, ifs and blocks you made.' },
-  { id: 'elegance', label: 'Elegance', what: 'Said with as little as it needs: nothing copied and pasted, no number typed over and over, nothing left over.' },
-  { id: 'efficiency', label: 'Efficiency', what: 'How little work the last run took to make its picture: no lines drawn twice, little walking with the pen up, few steps.' },
-];
 
 export class ScoreBadge {
   /**
@@ -216,8 +209,7 @@ export class ScoreBadge {
       row.append(name, make('td', 'score-points', part.points > 0 ? `+${part.points}` : '0'));
       table.append(row);
     }
-    const next = complexity.level.next ? `${complexity.level.next.min - complexity.points} more points to reach ${complexity.level.next.label}` : 'The top level';
-    const complexityBody = [make('p', 'score-next', `${complexity.points} points, level ${complexity.level.label}. ${next}`), table, make('p', 'score-tip', complexity.tip)];
+    const complexityBody = [make('p', 'score-next', levelLine(complexity)), table, make('p', 'score-tip', complexity.tip)];
     const fine = make('p', 'score-fine', 'Worked out from the blocks on the page, here on this device. Nothing is saved or sent.');
 
     // On a wide window complexity (its points) is a column on the left, and elegance and efficiency, with their reasons, are one on the right.
