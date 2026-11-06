@@ -7,7 +7,7 @@ sitemap: false
 
 # TurtleLab Lessons answer key
 
-**Step 1.** The L starts at (-150, 60) facing down (heading 180). It ends at (-90, -60), facing right (heading 90). A square frame takes 8 blocks: four `forward` and four `right`.
+**Step 1.** The L starts at (-150, 60) facing down (heading 180). It ends at (-90, -60), facing right (heading 90). A square frame takes 8 blocks: four `forward` and four `right`. In the B frame, the straight B has 15 blocks and the curved B has 9. The four blocks that walk the turtle are `pen up`, `set xy`, `set heading` and `pen down`. With the 0 changed to 90 above the curved B, the whole B turns a quarter turn to the right and its spine runs sideways, because the turtle ends the straight B facing left (heading 270) and a letter block draws in whatever direction the turtle faces. In the E and B frame, the walk from the E to the B is `pen up`, `forward 20`, `left 90` and `pen down`: the E ends facing right, so `forward 20` walks the turtle to the right of the E and `left 90` turns it to face up, where the B starts.
 
 **Step 2.** Turns that close each shape (repeat, turn): triangle 3, 120. Pentagon 5, 72. Hexagon 6, 60. Octagon 8, 45. 12 sides: 12, 30. The turns of a closed shape add up to 360 because the turtle has to make one full turn to face the way it started. A square takes 8 blocks the long way and 3 with `repeat` (the `repeat`, one `forward`, one `right`). Dotted circle: 36 × 10 = 360. With 72 repeats the turn is 5.
 

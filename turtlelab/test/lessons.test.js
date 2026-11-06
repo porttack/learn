@@ -9,6 +9,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { SAMPLES, sampleById, sampleStacks } from '../js/ui/samples.js';
 import { walkBlocks, findRunStack, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { definitionsOf } from '../js/core/definitions.js';
+import { compileLogo } from '../js/core/logo-compile.js';
 import { runBlocks, createContext } from '../js/core/interpreter.js';
 import { Turtle } from '../js/core/turtle.js';
 import { channelBinary, channelHex, toHexUpper } from '../js/core/color.js';
@@ -238,6 +239,52 @@ test('Step 11: every bug is a bug, and the change in the answer fixes it', () =>
   assert.equal(run(house).lines.length, 4, 'a square and no roof');
   mainOf(house).splice(6, 0, b('pendown'));
   assert.equal(run(house).lines.length, 7, 'a pen down before the roof draws its three sides');
+});
+
+test('Step 1: the L ends where the page says, and the two Bs are counted and turned the way the page says', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-1-your-initials.md', import.meta.url), 'utf8');
+  // the L: the frame holds the blocks the page lists (and a speed block, which the page says to leave out), and ends at (-90, -60) facing right
+  const l = copyOf('lesson-l');
+  assert.deepEqual(mainOf(l).map((block) => block.op).filter((op) => op !== 'speed'), ['start', 'clean', 'penup', 'setxy', 'setheading', 'pendown', 'forward', 'left', 'forward']);
+  const ended = run(l).turtle;
+  assert.deepEqual([Math.round(ended.x), Math.round(ended.y), Math.round(ended.heading)], [-90, -60, 90]);
+  assert.match(page, /ends at \(-90, -60\), facing right/);
+  // the Bs: 15 blocks and 9, and the same four blocks to travel to each
+  const stacks = copyOf('lesson-b-two-ways');
+  const { map } = definitionsOf({ stacks });
+  assert.deepEqual([map.get('straight b').body.length, map.get('curved b').body.length], [15, 9]);
+  assert.match(page, /straight B has 15 blocks and the curved B has 9/);
+  const main = mainOf(stacks);
+  const travel = (from) => main.slice(from, from + 4).map((block) => block.op);
+  assert.deepEqual([travel(3), travel(8)], [['penup', 'setxy', 'setheading', 'pendown'], ['penup', 'setxy', 'setheading', 'pendown']]);
+  // the turtle ends the straight B facing left, so a second B with no set heading would come out turned
+  assert.equal(Math.round(run(structuredClone(stacks).map((stack, i) => (i === 1 ? { ...stack, blocks: stack.blocks.slice(0, 8) } : stack))).turtle.heading) % 360, 270);
+  assert.match(page, /ends the first B facing left/);
+  // the page's third question: heading 90 above the curved B lays its spine along the paper
+  assert.equal(main[10].op, 'setheading');
+  main[10].args[0] = 90;
+  const turned = run(stacks).lines.find((line) => Math.abs(line.x1 - 16) < 1e-6 && Math.abs(line.y1 + 60) < 1e-6);
+  assert.deepEqual([Math.round(turned.x2), Math.round(turned.y2)], [136, -60], 'the spine runs to the right instead of up');
+
+  // the third way is the teacher's own E and B: their Logo, read by TurtleLab's own Logo reader, draws exactly what the frame draws
+  const theirLogo = 'clearscreen\nsetspeed 1\nforward 80\nright 90\nforward 30\nback 25\nleft 90\nback 40\nright 90\nforward 25\nback 25\nleft 90\nback 40\nright 90\nforward 30\npenup\nforward 20\nleft 90\npendown\nforward 80\nright 135\nforward 30\nright 90\nforward 30\nleft 90\nforward 30\nright 90\nforward 30\npenup\nforward 100\n';
+  const theirs = compileLogo(theirLogo);
+  assert.ok(theirs.ok, 'their Logo reads');
+  const shape = (result) => ({
+    lines: result.lines.map((line) => [line.x1, line.y1, line.x2, line.y2, line.size, ...line.color].map((v) => Math.round(v * 1000) / 1000)),
+    end: [result.turtle.x, result.turtle.y, result.turtle.heading].map((v) => Math.round(v * 1000) / 1000),
+  });
+  const frame = copyOf('lesson-b-diagonal');
+  // (the frame first moves the turtle 40 left and 40 down, so the letters sit in the middle of the paper; theirs is drawn from the middle itself)
+  const centered = project(b('clean'), b('penup'), b('setxy', -40, -40), b('pendown'), ...theirs.main.slice(1));
+  assert.equal(theirs.main[0].op, 'clean');
+  assert.deepEqual(shape(run(frame)), shape(run(centered)), 'the frame draws the same E and B, line for line, and parks the turtle in the same place');
+  // the page: the E ends facing right, and the four blocks after it leave the turtle 20 further on, facing up, where the B starts
+  const walk = (count) => run(structuredClone(frame).map((stack, i) => (i === 1 ? { ...stack, blocks: stack.blocks.slice(0, count) } : stack))).turtle;
+  assert.deepEqual([walk(7).x, walk(7).y, walk(7).heading].map(Math.round), [-5, -40, 90], 'the E ends facing right, at its foot');
+  assert.deepEqual([walk(11).x, walk(11).y, walk(11).heading].map(Math.round), [15, -40, 0], 'the walk leaves the turtle 20 on, facing up, where the B starts');
+  assert.deepEqual(mainOf(frame).slice(7, 11).map((block) => [block.op, block.args[0]]), [['penup', undefined], ['forward', 20], ['left', 90], ['pendown', undefined]]);
+  assert.match(page, /`pen up`, `forward 20`, `left 90` and `pen down`/);
 });
 
 test('everything that lists the steps knows every step: the contents page, the teacher notes, the answer key and the standards file', () => {

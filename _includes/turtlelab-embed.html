@@ -4,10 +4,11 @@
     sample   the id of a sample in turtlelab/js/ui/samples.js (a lesson-only demo, listed: false, or an ordinary one)
     title    what the frame is called, for a screen reader, and the caption
     height   in pixels, default 520 (the demos are made to fit about 700 by 520)
+    grid     optional: a kind of grid to show on the paper, as in TurtleLab's ?grid=... (numbers is the squares with x and y written on them)
   Use at most two or three on a page: each is a whole copy of the app. A frame prints blank, so on paper the address is shown instead.
 {% endcomment %}
 {% assign embed_height = include.height | default: 520 %}
-{% capture embed_url %}{{ '/turtlelab/' | relative_url }}?sample={{ include.sample }}{% endcapture %}
+{% capture embed_url %}{{ '/turtlelab/' | relative_url }}?sample={{ include.sample }}{% if include.grid %}&amp;grid={{ include.grid }}{% endif %}{% endcapture %}
 <figure class="tl-embed">
   <iframe class="tl-embed-frame" src="{{ embed_url }}&amp;embed=1" title="{{ include.title }}" loading="lazy" height="{{ embed_height }}"><a href="{{ embed_url }}">{{ include.title }}</a></iframe>
   <figcaption>{{ include.title }}. <a href="{{ embed_url }}" target="_blank" rel="noopener">Open full size</a></figcaption>

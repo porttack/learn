@@ -6,21 +6,15 @@ order: 1
 source: original
 ---
 
-A computer does exactly what you tell it, in the order you tell it, and nothing else. It will not guess what you meant. In this step you give a turtle exact steps to draw your initials. It is a small first project, and it ends with a PDF of your work.
+A computer does exactly what you tell it, in the order you tell it, and nothing else. In this step you give a turtle exact steps to draw your initials, and you end with a PDF of your work.
 
-The plan on paper is what makes this fast. People who plan first finish early. People who skip it spend the whole time fixing.
-
-<aside class="callout note" markdown="1">
-**Keep your work in a fresh tab**
-
-Open TurtleLab with this link: <a href="{{ '/turtlelab/' | relative_url }}" target="_blank" rel="noopener">TurtleLab</a>. It opens in a new tab, so you can keep this page next to it. This tab remembers your blocks if you refresh. (The sample tabs you open later do not, so press Ctrl+S now and then in those.)
-</aside>
+Planning on paper first makes it fast. People who plan finish early. People who skip it spend the whole time fixing.
 
 ## How the turtle thinks
 
-The turtle's paper has an x and a y, like a graph. The middle of the paper is (0, 0). **One thing to watch: y goes up.** A bigger y is higher on the page, like on a graph.
+The turtle's paper is like a graph. The middle is (0, 0), and **y goes up**: a bigger y is higher on the page.
 
-The turtle also faces a direction, called its **heading**.
+The turtle also faces a direction, its **heading**:
 
 | Heading | The turtle faces |
 |---|---|
@@ -29,64 +23,91 @@ The turtle also faces a direction, called its **heading**.
 | 180 | down |
 | 270 | left |
 
-`right 90` adds 90 to the heading. `left 90` subtracts 90. (360 is the same as 0, because it is a full turn.)
-
-When the **pen is down**, moving draws a line. When the **pen is up**, the turtle moves without drawing.
+`right` and `left` turn the turtle. With the **pen down** it draws as it moves. With the **pen up** it moves without drawing.
 
 ## Build an L
 
-The round buttons on the left open the palettes of blocks. Point at a button to see its name: Turtle, Pen, Math, Flow, Boxes, My Blocks and Notes.
+First watch one. Read the blocks in the frame from the top down. The grid shows where the turtle is: the numbers are x and y.
 
-Open a palette, drag a block out, and snap the next one under it. Build this stack, top to bottom. Tap a number on a block to change it.
+**Before you press Run:** the turtle starts at (-150, 60) facing down. Where will it end up, and which way will it face? Write your prediction down. Then press Run (it is slow on purpose) and check. Look at the turtle's nose.
 
-| Block | Palette | Numbers |
-|---|---|---|
-| `start` | Flow | |
-| `clean` | Turtle | |
-| `pen up` | Pen | |
-| `set xy` | Turtle | x: -150, y: 60 |
-| `set heading` | Turtle | 180 |
-| `pen down` | Pen | |
-| `forward` | Turtle | 120 |
-| `left` | Turtle | 90 |
-| `forward` | Turtle | 60 |
+{% include turtlelab-embed.html sample="lesson-l" grid="numbers" title="An L drawn slowly on a grid" %}
 
-**Before you press Run:** the turtle starts at (-150, 60) facing down. Where will it end up, and which way will it face? Write your prediction down, then press Run and check. Look at the turtle's nose.
+<details markdown="1">
+<summary>Check your answer</summary>
+
+It ends at (-90, -60), facing right. `left 90` turns the turtle from facing down to facing right.
+</details>
+
+Now build the same L yourself.
 
 <aside class="callout note" markdown="1">
-**Why `clean` and `pen up` come first**
+**Build in a fresh tab**
 
-`clean` wipes the paper and puts the turtle back in the middle, so every run starts the same way. `pen up` lets the turtle walk to the start of the letter without drawing a line there.
+Open <a href="{{ '/turtlelab/' | relative_url }}" target="_blank" rel="noopener">TurtleLab</a> in a new tab and keep this page next to it. That tab remembers your blocks if you refresh.
 </aside>
+
+The round buttons on the left open the palettes of blocks (point at one to see its name). Drag a block out, and snap the next one under it. Tap a number on a block to change it.
+
+| Palette | Blocks |
+|---|---|
+| Flow | `start` |
+| Turtle | `clean`, `set xy`, `set heading`, `forward`, `left` |
+| Pen | `pen up`, `pen down` |
+
+Use the same blocks, in the same order, with the same numbers. Leave out the `speed` block: it only slowed the frame down. `clean` wipes the paper so every run starts the same way.
 
 ## Plan your initials
 
-Sketch your initials on this grid with straight lines first. It is the same size as the turtle's paper, and the numbers are the x and y you type into `set xy`. A letter about 120 tall works well. Print this page, or copy the grid onto your own paper. TurtleLab can show the same grid over its own paper too: press the grid button on the toolbar (a square with lines in it). Your PDF always has it.
+Sketch your initials on this grid with straight lines. It is the same size as the turtle's paper, and the numbers are the x and y you type into `set xy`. A letter about 120 tall works well. Print this page or copy the grid onto your own paper. (TurtleLab can show the same grid: press the grid button on the toolbar, the square with lines in it.)
 
 {% include turtle-grid.html %}
 
-For each letter, write down where the turtle starts, which way it faces, and the moves, like `forward 120, left 90, forward 60`. Then you are ready to build.
+For each letter, write down where the turtle starts, which way it faces, and the moves, like `forward 120, left 90, forward 60`.
 
 ## See how it is done
 
-Here are the letters A, B and C drawn two ways. Open them in new tabs and read one letter at a time.
+Here is the letter B drawn two ways, with the blocks that walk the turtle from one letter to the next. Press Run and watch.
 
-- <a href="{{ '/turtlelab/?sample=initials-lines' | relative_url }}" target="_blank" rel="noopener">A, B and C with straight lines</a>
-- <a href="{{ '/turtlelab/?sample=initials-curves' | relative_url }}" target="_blank" rel="noopener">A, B and C with curves</a>, using the `arc` block
+{% include turtlelab-embed.html sample="lesson-b-two-ways" grid="numbers" title="A B drawn with straight lines and a B drawn with arcs" %}
 
-Each letter has its own stack of blocks that starts with a block called `to`. A letter block draws from wherever the turtle is, so the same block could go anywhere on the page. You do not need to make blocks like that yet. They are there so each letter is easy to find and read.
+Each B is a block of its own, made with a `to` block, so it is easy to find. You do not need to make blocks like that yet. Look at the blocks and the turtle, and work out:
 
-Look closely at the B. Its top part is a little smaller than its bottom part, so you can tell which is which. That is a choice the person who built it made. You will make choices like that for your own letters too.
+1. How many blocks are inside each B? Which one took fewer?
+2. Which four blocks walk the turtle to the next letter?
+3. Change the 0 in the `set heading` just above the curved B to 90, and press Run. What happens to the B, and why? (**Start over** puts it back.)
+
+<details markdown="1">
+<summary>Check your answers</summary>
+
+1. The straight B has 15 blocks and the curved B has 9. An `arc` draws a whole round bowl in one block.
+2. `pen up`, `set xy`, `set heading` and `pen down`. The pen goes up so nothing is drawn on the way. `set xy` picks the place. `set heading` makes the turtle face up. The pen goes down to draw.
+3. The whole B turns a quarter turn to the right, and its spine runs sideways. A letter block draws in whatever direction the turtle is facing. The turtle ends the first B facing left, so without a `set heading` the second one would come out turned too. Every letter starts facing up, which is heading 0.
+</details>
+
+A B can have angled lines too. This E and B get from one letter to the next without `set xy`. Press Run and watch the turtle between them.
+
+{% include turtlelab-embed.html sample="lesson-b-diagonal" title="An E and a B made of angled lines, with the turtle walking between them" %}
+
+Which blocks take the turtle from the E to the B? How is that different from the four blocks above?
+
+<details markdown="1">
+<summary>Check your answer</summary>
+
+`pen up`, `forward 20`, `left 90` and `pen down`. The E ends facing right, so the turtle walks 20 along the paper, turns left to face up, and the B can start. `set xy` always lands in the same place. Walking only works when you know where the last letter ended and which way the turtle faces. Use whichever you like for your initials.
+</details>
+
+Want a whole A, B and C to read? Open <a href="{{ '/turtlelab/?sample=initials-lines' | relative_url }}" target="_blank" rel="noopener">A, B and C with straight lines</a> or <a href="{{ '/turtlelab/?sample=initials-curves' | relative_url }}" target="_blank" rel="noopener">A, B and C with curves</a>. Look at the A if your initials have slanted lines.
 
 ## Build your initials
 
 Build one letter at a time, and tap its stack to test it before you start the next one.
 
-**Draw every letter piece by piece.** Build each letter yourself, one line or one curve at a time, with blocks like `forward`, `left`, `right`, `set xy` and `arc`. **Do not use the `write` block** from the Notes palette in this step. It writes the letters for you, and building them yourself is the whole point of this step.
+**Draw every letter piece by piece**, one line or one curve at a time, with blocks like `forward`, `left`, `right`, `set xy` and `arc`. **Do not use the `write` block** from the Notes palette. It writes the letters for you, and building them yourself is the whole point of this step.
 
-Between letters, the turtle has to travel without drawing. You already know the four blocks for that from the L: `pen up`, `set xy`, `set heading`, `pen down`.
+To travel between letters, use the four blocks from the B frame: `pen up`, `set xy`, `set heading` (0 is up) and `pen down`.
 
-When your initials are done, draw a square frame around them. Then count: how many blocks did the frame take? Remember that number. You will see it again in Step 2.
+When your initials are done, draw a square frame around them and count how many blocks the frame took. Remember that number. You will see it again in Step 2.
 
 ## Check yourself
 
@@ -99,12 +120,12 @@ When your initials are done, draw a square frame around them. Then count: how ma
 
 Add a sticky note first: open the Notes palette, drag out a note, tap it and type your name.
 
-Then press the **PDF** button on the toolbar. It saves a PDF with your blocks and note and your drawing. The turtle is drawn where it stopped, and the drawing has a grid of x and y numbers on it, so anyone can check where each line is. If your blocks are too many to read on half a page, they get a page to themselves and the drawing is on page 2.
+Then press the **PDF** button on the toolbar. It saves your blocks, your note and your drawing, with a grid of x and y numbers on the drawing so anyone can check where each line is.
 
 Keep your PDF. To get your blocks back later, press Open in TurtleLab and choose the PDF, or drag the PDF onto the page.
 
 ## Done early?
 
-**Curves.** Letters like C, O, S, D, B and U have curves. Use the `arc` block (Turtle palette). It takes an angle and a radius. A positive angle curves right and a negative angle curves left. Find out what an `arc` of 180 with a radius of 50 looks like, then use arcs in your letters. The curved B and C in the second sample above show one way.
+**Curves.** Letters like C, O, S, D, B and U have curves. Use the `arc` block (Turtle palette). It takes an angle and a radius. A positive angle curves right and a negative angle curves left. Find out what an `arc` of 180 with a radius of 50 looks like, then use arcs in your letters. The curved B above shows one way.
 
 **Color.** Give each letter its own color. The `set color` block (Pen palette) takes red, green and blue, each from 0 to 255. Red is 255, 0, 0. Black is 0, 0, 0. White is 255, 255, 255. Mix your own.

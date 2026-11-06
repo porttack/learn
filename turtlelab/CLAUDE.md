@@ -129,7 +129,7 @@ the dashes out of them too for consistency.
 
 ## Samples
 
-`js/ui/samples.js` holds the student samples (27 listed, easiest first, then seven for an embroidery machine, plus nine demos made only for lessons: `listed: false`, ids `lesson-...`), each
+`js/ui/samples.js` holds the student samples (27 listed, easiest first, then seven for an embroidery machine, plus twelve demos made only for lessons: `listed: false`, ids `lesson-...`), each
 with `id`, `title`, `summary`, `look` (the picture's alt text), `concepts`
 (little tags), `note` (a sticky note, at most 250 characters so it is not cut
 off), `program` and optionally `defines` (blocks the sample makes). They are different from `demos.js`, which is for the
@@ -171,7 +171,9 @@ checks. All wording is student-facing, so no dashes and no grade level.
 ### The initials samples (for Lesson 1)
 
 `initials-lines` and `initials-curves` draw A, B and C in blue, one without `arc` and one with, and **Step 1 of the
-lessons links both** (so keep their ids). The letters are 120 tall and drawn piece by piece, never with `write`, and each is a
+lessons links both** (so keep their ids). Step 1 also FRAMES two lesson demos: `lesson-l` (the L, one slow program, no `to` blocks, on the grid) and `lesson-b-two-ways` (`straight B` and `curved B`, which reuse the very same
+bodies as the initials samples, with the four travel blocks written out in the main program, not hidden in a `place` block, so a student sees `pen up`, `set xy`, `set heading`, `pen down`). The page states 15 and 9 blocks, that the L ends at (-90, -60) facing right,
+and that the turtle ends the straight B facing left (so the second B comes out turned without a `set heading`); `test/lessons.test.js` ("Step 1") pins all of it, so changing a letter or a place means changing the page. The second B is at x = 16 so its bowl stays clear of the `to curved B` blocks in a 700 wide frame. `lesson-b-diagonal` is the teacher's own E and B (2026-11-06, the user pasted the Logo they draw it with: "you could even draw B a 3rd way"): a third B shape (a spine, then angled lines with turns of 135 and 90) and a second way to travel between letters (walk `forward 20` and `left 90` with the pen up, no `set xy`). The frame's first three blocks (`pen up`, `set xy -40 -40`, `pen down`) only put the letters in the middle of the paper: their program draws from the middle and goes up and to the right, which put a `to` column on top of the drawing in a 700 wide frame (`sampleStacks` keeps only `clearWidth` clear, and `clearWidth: 120` is what lets both columns sit left of the paper). Each letter is a block of its own so the program fits a frame; the numbers are theirs and the test (`Step 1`) runs their Logo through `compileLogo` and requires the same lines, so do not tidy them (the last angled line ends about 5 steps below the spine's foot). The letters are 120 tall and drawn piece by piece, never with `write`, and each is a
 block of its own (`to letter A`) so the program stays short enough to fit the window; the same A is in both. **A letter block never
 uses `set xy`: it draws from wherever the turtle is** (starting at its bottom left corner, facing up, pen down), so it can be reused anywhere;
 the sample's `place x y` block (pen up, set xy, set heading 0, pen down) is what puts the turtle there. The C hops (pen up) to its
