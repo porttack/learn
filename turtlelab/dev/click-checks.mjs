@@ -103,8 +103,20 @@ try {
   check('the paper has nothing on it yet, and the block outline has gone', (await ink()) === 0 && (await chrome.eval(`!document.querySelector('.running')`)));
 
   // ---- A click ----------------------------------------------------------------------------------------------------------
+  check('before any click there is no ring on the paper', await chrome.eval(`!document.querySelector('.click-ring')`));
   at = await screenOf(120, -80);
   await chrome.click(at.x, at.y);
+  const ring = await (async () => {
+    for (let i = 0; i < 8; i += 1) {
+      const found = await chrome.eval(`(() => { const e = document.querySelector('.paper-box .click-ring'); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, name: getComputedStyle(e).animationName, events: getComputedStyle(e).pointerEvents }; })()`);
+      if (found) return found;
+      await chrome.sleep(30);
+    }
+    return null;
+  })();
+  check('a click opens a ring on the paper, centered where it was clicked', !!ring && Math.abs(ring.x - at.x) <= 2 && Math.abs(ring.y - at.y) <= 2, JSON.stringify(ring));
+  check('the ring grows and fades (an animation), and never takes a click itself', ring?.name === 'click-ring' && ring?.events === 'none', JSON.stringify(ring));
+  check('and the ring goes away by itself, so the paper is clean again', await waitFor(`!document.querySelector('.click-ring')`, 30));
   check('a click runs the handler: it printed where the paper was clicked (120 and -80)', await waitFor(`/120 -80/.test(document.querySelector('.output').textContent.replace(/\\s+/g, ' '))`), await printed());
   const afterOne = await ink();
   check('and it drew its square there', afterOne > 0);
@@ -118,6 +130,12 @@ try {
   await chrome.click(third.x, third.y);
   check('two quick clicks both run, in the order they were made', await waitFor(`/120 -80 220 150 -50 -200/.test(document.querySelector('.output').textContent.replace(/\\s+/g, ' '))`), await printed());
   check('and each drew a square (more ink every time)', (await ink()) > afterOne);
+  // the turtle is where the last square was stamped, and a click on the turtle itself is a click on the paper under it
+  const tokens = async () => (await printed()).split(/\s+/).filter(Boolean).length;
+  const beforeTurtle = await tokens();
+  const onTurtle = await chrome.eval(`(() => { const r = document.querySelector('.turtle-sprite').getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+  await chrome.click(onTurtle.x, onTurtle.y);
+  check('a click right on the turtle, while the program listens, is a click on the paper (so a game can have the turtle sit on its target)', await waitFor(`document.querySelector('.output').textContent.split(/\\s+/).filter(Boolean).length === ${beforeTurtle + 2}`), `${beforeTurtle} numbers before, ${await tokens()} after`);
 
   // ---- What is not a click -------------------------------------------------------------------------------------------
   const lines = await printed();
@@ -150,13 +168,32 @@ try {
   check('and nor is a click on a palette button', (await printed()) === lines);
   await click('.palette-button.selected');
 
+  // ---- The ring is calm for a computer that asked for less motion, and a click that is not a click makes none ------------------------------
+  check('a slide and a click on the gray made no ring', await chrome.eval(`!document.querySelector('.click-ring')`));
+  await chrome.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  const calmSpot = await screenOf(-200, 200);
+  await chrome.click(calmSpot.x, calmSpot.y);
+  const calm = await (async () => {
+    for (let i = 0; i < 8; i += 1) {
+      const found = await chrome.eval(`(() => { const e = document.querySelector('.paper-box .click-ring'); return e ? getComputedStyle(e).animationName : null; })()`);
+      if (found) return found;
+      await chrome.sleep(30);
+    }
+    return null;
+  })();
+  check('with reduced motion the ring only fades (no growing)', calm === 'click-ring-calm', String(calm));
+  await chrome.send('Emulation.setEmulatedMedia', { features: [] });
+  await waitFor(`!document.querySelector('.click-ring')`, 30);
+  await waitFor(`/-200 200/.test(document.querySelector('.output').textContent.replace(/\\s+/g, ' '))`); // (that click ran its handler too)
+  const linesBeforeStop = await printed();
+
   // ---- Stop ---------------------------------------------------------------------------------------------------------------
   await click('#stop');
   check('Stop ends the listening: Run is back', await waitFor(`!document.getElementById('run').disabled`));
   const afterStop = await screenOf(60, 60);
   await chrome.click(afterStop.x, afterStop.y);
   await chrome.sleep(300);
-  check('and a click after Stop does nothing', (await printed()) === lines);
+  check('and a click after Stop does nothing', (await printed()) === linesBeforeStop);
 
   // ---- Run again: a new run starts clean, and the old clicks are gone ---------------------------------------------------------------
   await click('#run');

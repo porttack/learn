@@ -336,6 +336,12 @@ const REPORTERS = {
   less: (ctx, [a, b]) => round10(a) < round10(b),
   greater: (ctx, [a, b]) => round10(a) > round10(b),
   equal: (ctx, [a, b]) => round10(a) === round10(b),
+
+  // Yes-or-no blocks put together. and and or are worked out by evalJoined (below), which stops as soon as the answer is known;
+  // these are the same sums for a caller that already has both answers.
+  and: (ctx, [a, b]) => a && b,
+  or: (ctx, [a, b]) => a || b,
+  not: (ctx, [a]) => !a,
 };
 for (let n = 1; n <= BOX_COUNT; n += 1) {
   REPORTERS[`box${n}`] = (ctx) => ctx.boxes[n - 1];
@@ -365,11 +371,26 @@ export function evalArg(arg, ctx, block) {
     if (!reporter) {
       throw new RunError(`"${arg.op}" is not a block that reports a value.`, arg);
     }
+    if (arg.op === 'and' || arg.op === 'or') return evalJoined(arg, ctx);
     const sockets = specOf(arg)?.args ?? [];
     const values = sockets.map((socket, i) => evalSocket(arg.args?.[i], ctx, arg, socket));
     return reporter(ctx, values, arg);
   }
   throw new RunError('Something unexpected is in this box.', block);
+}
+
+/**
+ * and, or: both sockets have to hold a yes-or-no block (an empty one is a mistake even when it would not be needed, so a
+ * program does not work "sometimes"), then the second is only worked out if the first has not already settled it, like
+ * Python's `and` and `or`. That is what lets `box1 > 0 and 10 / box1 > 2` run with box1 at 0 without dividing by zero.
+ */
+function evalJoined(arg, ctx) {
+  const sockets = arg.args ?? [];
+  for (let i = 0; i < 2; i += 1) if (sockets[i] === null || sockets[i] === undefined) evalBoolean(sockets[i], ctx, arg);
+  const isAnd = arg.op === 'and';
+  const first = evalBoolean(sockets[0], ctx, arg);
+  if (first !== isAnd) return first; // an and with a no, or an or with a yes, is already settled
+  return evalBoolean(sockets[1], ctx, arg);
 }
 
 /** Like evalArg, but the answer has to be a real, finite number. */

@@ -49,7 +49,7 @@ export const LEVELS = Object.freeze([
   { min: 140, label: 'Expert' },
 ]);
 
-const OPERATORS = new Set(['add', 'subtract', 'multiply', 'divide', 'mod', 'paren', 'less', 'greater', 'equal']);
+const OPERATORS = new Set(['add', 'subtract', 'multiply', 'divide', 'mod', 'paren', 'less', 'greater', 'equal', 'and', 'or', 'not']);
 const CHANCE = new Set(['random', 'oneof']);
 const LOOPS = new Set(['repeat', 'forever']);
 const CONDITIONALS = new Set(['if', 'ifelse']);

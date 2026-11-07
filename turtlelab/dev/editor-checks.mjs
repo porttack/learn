@@ -722,7 +722,7 @@ try {
   // ---- Math, if, forever, stop, wait, print --------------------------------------------------------
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Math');
-  check('the Math palette lists its twelve blocks', (await count('.flyout .stack')) === 12, `${await count('.flyout .stack')}`);
+  check('the Math palette lists its fifteen blocks (the sums, random, the three comparisons, and, or, not, and print)', (await count('.flyout .stack')) === 15, `${await count('.flyout .stack')}`);
   // Math and comparison blocks read left to right: both sockets on one row.
   const rowSockets = (op) =>
     chrome.eval(`(() => {

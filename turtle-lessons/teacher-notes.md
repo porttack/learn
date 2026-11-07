@@ -17,6 +17,8 @@ Four of the steps end with a PDF made by TurtleLab's PDF button:
 - **Step 12** is the second capstone, a picture that uses a box, a block of the student's own and a loop. The last page of the PDF lists what the program is made of, with a count for each kind of block (variables, loops, blocks they made), which makes it quick to see at a glance.
 - **Step 15** is the third capstone, an interactive picture: the program asks a question and uses the answer, and every click on the paper draws something where it was clicked, using a block of the student's own and a loop. The last page of the PDF has a row for `ask / when paper clicked`, which makes the new part quick to check.
 
+- **Step 16** is a guided build, a click game ("Catch the square") that teaches the Math blocks `and`, `or` and `not` and asks if a click hit a target. It is not a capstone: the page gives the block that draws the square and an outline of the click handler, and the student builds the rest. It ends with a PDF too.
+
 Steps 2, 3, 6 to 11, 13 and 14 are practice with no PDF to collect. Every step ends by telling the student to save a PDF to keep their own work.
 
 ## The sequence
@@ -38,6 +40,7 @@ Steps 2, 3, 6 to 11, 13 and 14 are practice with no PDF to collect. Every step e
 | [13: Ask for a number]({{ '/turtle-lessons/step-13-ask-for-a-number/' | relative_url }}) | The `ask` block: a question, a wait, and the answer in box1. Predict what a shape will do for 5, 3, 12 and 0. Why a second answer replaces the first, and how to keep one (store it in another box). Build a square from an answer. |
 | [14: Click to draw]({{ '/turtle-lessons/step-14-click-to-draw/' | relative_url }}) | `when paper clicked` with the built in variables `mouseX` and `mouseY`. A program keeps listening after its last block until Stop. Predict where clicks land (the paper is -350 to 350 by -280 to 280), then build a dot painter. |
 | [15: Capstone 3: ask and click]({{ '/turtle-lessons/step-15-capstone-3/' | relative_url }}) | Plan with three sentences, then build a picture that asks a question, draws where it is clicked with a block of their own, and uses a loop. Ends with a PDF. |
+| [16: Catch the square]({{ '/turtle-lessons/step-16-catch-the-square/' | relative_url }}) | `and`, `or` and `not`: predict what a click inside or outside a stripe gives, then ask "is the click inside this square?" with two stripes that cross. Build a game where a red square jumps to a random place each time it is clicked, with the score in box1. Ends with a PDF. |
 
 Students who have not seen loops meet the need for one first (a square that takes eight blocks) and only then get the block. `if` and `else` comes after `random` on purpose: a coin flip is the easiest decision to understand, and students who find conditionals confusing can see one path or the other run, never both.
 
@@ -114,6 +117,21 @@ Make a picture in TurtleLab that asks a question and draws where you click, then
 - Before you press the PDF button: press Run, answer the question, and click the paper a few times, so the picture is on the paper.
 
 (The student page lists these same six things for students to check. A rubric is yours to write; ask and I will draft one. The last page of the PDF has a row called ask / when paper clicked whose Count should be at least 2, one for the ask block and one for the click handler.)
+
+Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
+
+Press the PDF button in TurtleLab and attach the PDF to this assignment.
+
+### Assignment: Catch the square
+
+Build a click game in TurtleLab, then save a PDF.
+
+- Do Step 16: [https://{{ site.print_host }}/turtle-lessons/step-16-catch-the-square/](https://{{ site.print_host }}/turtle-lessons/step-16-catch-the-square/)
+- Build in a fresh TurtleLab tab. The demos inside the lessons do not save your work.
+- Your game needs: a red square that jumps to a new random place after every hit and not after a miss, a score in box1 that goes up by 1 for each hit, an `if` that uses `and` to ask two questions at once, a block of your own that your program uses twice, a loop, and a sticky note with your name that says in your own words what `and` does in your game.
+- Before you press the PDF button: press Run, catch the square a few times, so the picture is on the paper.
+
+(The student page lists these same things for students to check. A rubric is yours to write; ask and I will draft one. The last page of the PDF has a row for Blocks you made and one for repeat / forever, which you can check quickly.)
 
 Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
 

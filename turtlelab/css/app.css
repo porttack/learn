@@ -211,7 +211,8 @@ body {
 }
 
 .turtle-sprite.dragging { cursor: grabbing; }
-.turtle-sprite.locked { cursor: default; }
+/* While a program runs the turtle cannot be dragged, so it lets a press go through to the paper: a program that listens for clicks (the turtle often sits right on what is to be clicked) hears them. */
+.turtle-sprite.locked { cursor: default; pointer-events: none; }
 
 /* The shell is the color of the pen (the page sets --shell and --scute from it), and its markings a shade of it. */
 .turtle-sprite .shell { fill: var(--shell, #6cc600); transition: fill-opacity 0.18s ease-out; }
@@ -407,7 +408,30 @@ body {
   100% { opacity: 1; transform: translateY(var(--fall, 4rem)) scale(1) rotate(200deg); }
 }
 
+/* The ring that opens where a click landed (CanvasView.ring). It has a white edge inside and out so it shows on every paper. */
+.click-ring {
+  position: absolute;
+  width: 2.6rem;
+  height: 2.6rem;
+  margin: -1.3rem 0 0 -1.3rem;
+  box-sizing: border-box;
+  border: 3px solid #ff2c76;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #ffffff, inset 0 0 0 2px #ffffff;
+  pointer-events: none;
+  animation: click-ring 0.5s ease-out forwards;
+}
+@keyframes click-ring {
+  from { transform: scale(0.2); opacity: 1; }
+  to { transform: scale(1.1); opacity: 0; }
+}
+@keyframes click-ring-calm {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .click-ring { animation-name: click-ring-calm; }
   .turtle-sprite svg { transition: none; }
   .turtle-sprite.dragging svg,
   .turtle-sprite.yawning svg,

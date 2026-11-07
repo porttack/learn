@@ -297,6 +297,54 @@ test('less than, greater than and equals', () => {
   assert.equal(answer(op('equal', 4, 5)), false);
 });
 
+test('and, or and not put yes-or-no blocks together', () => {
+  const yes = () => op('less', 1, 2);
+  const no = () => op('less', 2, 1);
+  const answer = (condition) => runWith([ifBlock(condition, forwardBy(1))]).turtle.y === 1;
+  assert.equal(answer(op('and', yes(), yes())), true);
+  assert.equal(answer(op('and', yes(), no())), false);
+  assert.equal(answer(op('and', no(), yes())), false);
+  assert.equal(answer(op('and', no(), no())), false);
+  assert.equal(answer(op('or', yes(), yes())), true);
+  assert.equal(answer(op('or', yes(), no())), true);
+  assert.equal(answer(op('or', no(), yes())), true);
+  assert.equal(answer(op('or', no(), no())), false);
+  assert.equal(answer(op('not', yes())), false);
+  assert.equal(answer(op('not', no())), true);
+  // They nest: a click inside a box is more than the left edge and less than the right edge, and not off the top.
+  const inside = (x) => op('and', op('and', op('greater', x, -50), op('less', x, 50)), op('not', op('greater', x, 500)));
+  assert.equal(answer(inside(0)), true);
+  assert.equal(answer(inside(70)), false);
+  assert.equal(answer(op('not', op('or', no(), no()))), true);
+});
+
+test('and and or stop as soon as the answer is known, like Python, so a guard keeps a divide from running', () => {
+  // box1 is 0 here, and 10 / box1 would be a mistake, so the second half must not run.
+  const divide = op('greater', op('divide', 10, { op: 'box1' }), 2);
+  const guarded = op('and', op('greater', { op: 'box1' }, 0), divide);
+  assert.equal(runWith([ifBlock(guarded, forwardBy(1))]).turtle.y, 0, 'no mistake, and the answer is no');
+  const orGuard = op('or', op('equal', { op: 'box1' }, 0), divide);
+  assert.equal(runWith([ifBlock(orGuard, forwardBy(1))]).turtle.y, 1, 'an or with a yes needs nothing more');
+  // When the first half does not settle it, the second half does run, and its mistake is a mistake.
+  const needed = op('and', op('equal', { op: 'box1' }, 0), divide);
+  assert.throws(() => runWith([ifBlock(needed, forwardBy(1))]), (e) => e instanceof RunError && /divide by zero/.test(e.message));
+});
+
+test('and, or and not complain about an empty or a wrong socket, even when the other half would settle it', () => {
+  const yes = () => op('less', 1, 2);
+  const no = () => op('less', 2, 1);
+  const outlined = (blockOf) => {
+    const bad = blockOf();
+    assert.throws(() => runWith([ifBlock(bad, forwardBy(1))]), (e) => e instanceof RunError && /yes or no/.test(e.message) && e.block === bad);
+  };
+  outlined(() => op('and', no(), null)); // the first half already says no, but the empty socket is still a mistake
+  outlined(() => op('or', yes(), null));
+  outlined(() => op('and', null, yes()));
+  outlined(() => op('not', null));
+  outlined(() => op('and', 5, yes())); // a number is not a yes or no
+  assert.throws(() => runWith([forwardBy(op('and', yes(), yes()))]), (e) => e instanceof RunError && /number/.test(e.message), 'a yes or no cannot go where a number is wanted');
+});
+
 test('equals ignores tiny rounding errors: 0.1 + 0.2 equals 0.3', () => {
   const same = runWith([ifBlock(op('equal', op('add', 0.1, 0.2), 0.3), forwardBy(1))]).turtle.y;
   assert.equal(same, 1);

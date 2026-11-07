@@ -21,10 +21,12 @@
 //   your own    to name :input1 :input2 ... end, then name 10 20
 //   numbers     + - * / % (the remainder), < > =, parentheses, xcor ycor heading pensize,
 //               (random low high), random n, oneof a b
+//   yes or no   and a b, or a b, not a (like real Logo: and :x > 0 :x < 10, or written (and a b c) for more than two),
+//               which put < > = tests together
 // Colors run from 0 to 255 (not 0 to 99 as in some Logos) and arc moves the turtle along the curve (a positive
 // angle curves right), like the blocks. Anything else that real Logo has gets a polite "not yet".
 
-import { ASK_MAX_CHARS, BOX_COUNT } from './blocks-spec.js';
+import { ASK_MAX_CHARS, BLOCKS, BOX_COUNT } from './blocks-spec.js';
 import { cleanLetteringText, DEFAULT_LETTER_SIZE, LETTERING_MAX_CHARS, LETTER_FONTS, isFont } from './lettering.js';
 
 /** A problem in the Logo, with the line it is on (counting from 1). */
@@ -71,13 +73,15 @@ const IGNORED = new Set(['hideturtle', 'ht', 'showturtle', 'st']);
 /** Reporters with no inputs, and reporters with two, and what block each one is. */
 const NO_INPUTS = { xcor: 'x', ycor: 'y', heading: 'heading', pensize: 'pensize', penred: 'penred', pengreen: 'pengreen', penblue: 'penblue', mousex: 'mousex', mousey: 'mousey' };
 const TWO_INPUTS = { sum: 'add', difference: 'subtract', product: 'multiply', quotient: 'divide', modulo: 'mod', mod: 'mod', oneof: 'oneof' };
+/** The words that put yes-or-no tests together: and and or take two (more, in brackets), not takes one. */
+const JOINERS = { and: 'and', or: 'or' };
 
 const SPECIAL_COMMANDS = ['repeat', 'forever', 'if', 'ifelse', 'make', 'write', 'ask', 'onclick', 'setfont', 'setpencolor', 'setpc', 'setscreencolor', 'setsc', 'home', 'setx', 'sety', 'wait', 'to', 'end'];
-const REAL_LOGO_NOT_HERE = ['sqrt', 'abs', 'int', 'round', 'sin', 'cos', 'tan', 'arctan', 'and', 'or', 'not', 'word', 'list', 'first', 'last', 'butfirst', 'butlast', 'count', 'item', 'output', 'op', 'local', 'localmake', 'run', 'label', 'pick', 'power', 'exp', 'ln', 'log10', 'thing', 'foreach', 'for', 'while', 'until', 'do', 'test', 'iftrue', 'iffalse', 'cleartext', 'ct', 'pos', 'towards', 'distance', 'fill', 'bye', 'rerandom', 'remainder'];
+const REAL_LOGO_NOT_HERE = ['sqrt', 'abs', 'int', 'round', 'sin', 'cos', 'tan', 'arctan', 'word', 'list', 'first', 'last', 'butfirst', 'butlast', 'count', 'item', 'output', 'op', 'local', 'localmake', 'run', 'label', 'pick', 'power', 'exp', 'ln', 'log10', 'thing', 'foreach', 'for', 'while', 'until', 'do', 'test', 'iftrue', 'iffalse', 'cleartext', 'ct', 'pos', 'towards', 'distance', 'fill', 'bye', 'rerandom', 'remainder'];
 
 /** Every word the generator must not use as the name of one of your own blocks. */
 export const BUILTIN_WORDS = new Set([
-  ...COMMAND_BY_NAME.keys(), ...IGNORED, ...SPECIAL_COMMANDS, ...Object.keys(NO_INPUTS), ...Object.keys(TWO_INPUTS), 'random', ...REAL_LOGO_NOT_HERE,
+  ...COMMAND_BY_NAME.keys(), ...IGNORED, ...SPECIAL_COMMANDS, ...Object.keys(NO_INPUTS), ...Object.keys(TWO_INPUTS), 'random', 'and', 'or', 'not', ...REAL_LOGO_NOT_HERE,
 ]);
 
 /** A few color names, for setpc "red. (Colors are 0 to 255.) */
@@ -211,7 +215,7 @@ class Compiler {
     this.procedures = new Map(); // name -> { name, params: [as typed], line }
     this.globals = new Map(); // variable name -> box number (0 to BOX_COUNT - 1)
     this.params = null; // while inside a definition: lowercase name -> name as typed
-    this.names = [...COMMAND_BY_NAME.keys(), ...SPECIAL_COMMANDS, ...Object.keys(NO_INPUTS), ...Object.keys(TWO_INPUTS), 'random'];
+    this.names = [...COMMAND_BY_NAME.keys(), ...SPECIAL_COMMANDS, ...Object.keys(NO_INPUTS), ...Object.keys(TWO_INPUTS), 'random', 'and', 'or', 'not'];
     this.scan();
   }
 
@@ -508,21 +512,22 @@ class Compiler {
   }
 
   isReporter(word) {
-    return word in NO_INPUTS || word in TWO_INPUTS || word === 'random';
+    return word in NO_INPUTS || word in TWO_INPUTS || word in JOINERS || word === 'random' || word === 'not';
   }
 
   /**
    * One input for the command `token`, which has `of` of them (this is number `k`, counting from 0). `what`
    * says what is wanted, for the message when it is missing.
    */
-  input(token, of, k, what = 'a number') {
+  input(token, of, k, what = 'a number', noun = 'number', listEndsIt = false) {
     const here = this.peek();
-    const missing = !here || here.type === ']' || here.type === ')' || (here.type === 'word' && !this.isReporter(here.value) && this.commandWord(here.value));
+    // (A [ right after and, or or not is the list of the if, so the test is missing.)
+    const missing = !here || here.type === ']' || here.type === ')' || (listEndsIt && here.type === '[') || (here.type === 'word' && !this.isReporter(here.value) && this.commandWord(here.value));
     if (here?.type === 'word' && this.procedures.has(here.value) && !this.isReporter(here.value)) {
       throw new LogoError(`${here.text} is a block of yours that draws. It does not give back a number, so it cannot go here.`, here.line);
     }
     if (missing) {
-      const needs = of === 1 ? what : plural(of, 'number');
+      const needs = of === 1 ? what : plural(of, noun);
       throw new LogoError(`${token.text} needs ${needs} after it${of > 1 && k > 0 ? `, and I only found ${k}` : ''}.`, token.line);
     }
     return this.expression();
@@ -613,7 +618,8 @@ class Compiler {
   /** ( 1 + 2 ), or a reporter with its inputs inside the brackets, like (random 1 10). */
   parenthesized(open) {
     const first = this.peek();
-    if (first?.type === 'word' && this.isReporter(first.value)) {
+    // (random 1 10) and (and a b) are a word with its inputs inside the brackets. (xcor + 5) and (mousex > 0) only start with a word: that is a sum or a test.
+    if (first?.type === 'word' && this.isReporter(first.value) && !(first.value in NO_INPUTS)) {
       this.next();
       const found = this.reporter(first, true);
       const close = this.next();
@@ -623,6 +629,8 @@ class Compiler {
     const inside = this.expression();
     const close = this.next();
     if (!close || close.type !== ')') throw new LogoError(`I could not find the ) that closes the ( on line ${open.line}.`, open.line);
+    // A test in brackets, like (:x < 5) or (:a > 1) in and (:a > 1) (:b < 2), is just the test: the ( ) block only holds numbers.
+    if (typeof inside === 'object' && inside !== null && BLOCKS[inside.op]?.returns === 'boolean') return inside;
     return this.block('paren', [inside], open);
   }
 
@@ -634,6 +642,8 @@ class Compiler {
       const a = this.input(token, 2, 0);
       return this.block(TWO_INPUTS[word], [a, this.input(token, 2, 1)], token);
     }
+    if (word in JOINERS) return this.joined(token, inBrackets);
+    if (word === 'not') return this.block('not', [this.input(token, 1, 0, 'a test, like :size > 10,', 'test', true)], token);
     if (word === 'random') {
       const low = this.input(token, inBrackets ? 2 : 1, 0);
       if (inBrackets && this.argumentStarts()) return this.block('random', [low, this.expression()], token);
@@ -643,6 +653,17 @@ class Compiler {
     if (this.procedures.has(word)) throw new LogoError(`${token.text} is a block of yours that draws. It does not give back a number, so it cannot go here.`, token.line);
     if (this.commandWord(word)) throw new LogoError(`${token.text} is a command. It does not give back a number, so it cannot go here.`, token.line);
     return this.unknownWord(token);
+  }
+
+  /**
+   * and a b, or a b: two tests. In brackets, (and a b c), there can be more, and they are joined left to right
+   * (the blocks have two sockets, so three tests are an and inside an and).
+   */
+  joined(token, inBrackets) {
+    const test = (k) => this.input(token, 2, k, 'a test', 'test', true);
+    let made = this.block(JOINERS[token.value], [test(0), test(1)], token);
+    while (inBrackets && this.argumentStarts()) made = this.block(JOINERS[token.value], [made, this.expression()], token);
+    return made;
   }
 
   // -- Complaints --

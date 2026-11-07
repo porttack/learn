@@ -104,6 +104,10 @@ function expr(arg, ctx) {
     case 'less': return infix('<', COMPARE, a(0), a(1));
     case 'greater': return infix('>', COMPARE, a(0), a(1));
     case 'equal': return infix('=', COMPARE, a(0), a(1));
+    // and, or and not are written in brackets (and, or as real Logo's (and a b)), so every test inside is wrapped and nothing depends on which binds tighter.
+    case 'and': return atom(`(and ${wrapped(a(0))} ${wrapped(a(1))})`);
+    case 'or': return atom(`(or ${wrapped(a(0))} ${wrapped(a(1))})`);
+    case 'not': return atom(`(not ${wrapped(a(0))})`);
     case 'random': return atom(`(random ${wrapped(a(0))} ${wrapped(a(1))})`);
     case 'oneof': return atom(`(oneof ${wrapped(a(0))} ${wrapped(a(1))})`);
     case 'input': return atom(`:${ctx.params?.get(nameKey(arg.name ?? '')) ?? logoName(arg.name ?? 'input', new Set(), { builtin: false })}`);

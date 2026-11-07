@@ -21,9 +21,10 @@
       "step-12-capstone-2": "Step 12: Capstone 2, boxes and blocks",
       "step-13-ask-for-a-number": "Step 13: Ask for a number",
       "step-14-click-to-draw": "Step 14: Click to draw",
-      "step-15-capstone-3": "Step 15: Capstone 3, ask and click"
+      "step-15-capstone-3": "Step 15: Capstone 3, ask and click",
+      "step-16-catch-the-square": "Step 16: Catch the square"
     },
-    "caveat": "Aligned by reading the fifteen steps' own text; nothing a learner makes has been checked against these yet. Locators are the steps' URL slugs (/turtle-lessons/<slug>/). Steps 1 to 5 start from samples, so loops, if and else, and random are the real fits there. Steps 6 to 12 add variables (boxes), procedures (blocks of your own), nested loops, binary and color, debugging and a second capstone. Steps 13 to 15 add input (the ask block), events (when paper clicked) and a third capstone. Boxes hold numbers only and are named box1 to box4, so the variable codes are strong or partial rather than complete. Only the four computer science and CTE frameworks were examined. CSTA 2017 is a legacy framework and was left out, as in the Pico carriers. Common Core math has a coordinate plane code (6.NS.6) that Step 1 fits, but it is not included because the lesson widget does not show math standards.",
+    "caveat": "Aligned by reading the sixteen steps' own text; nothing a learner makes has been checked against these yet. Locators are the steps' URL slugs (/turtle-lessons/<slug>/). Steps 1 to 5 start from samples, so loops, if and else, and random are the real fits there. Steps 6 to 12 add variables (boxes), procedures (blocks of your own), nested loops, binary and color, debugging and a second capstone. Steps 13 to 15 add input (the ask block), events (when paper clicked) and a third capstone. Step 16 adds Boolean logic (and, or, not) and a click game. Boxes hold numbers only and are named box1 to box4, so the variable codes are strong or partial rather than complete. Only the four computer science and CTE frameworks were examined. CSTA 2017 is a legacy framework and was left out, as in the Pico carriers. Common Core math has a coordinate plane code (6.NS.6) that Step 1 fits, but it is not included because the lesson widget does not show math standards.",
     "alignment_log": [
       {
         "date": "2026-11-04",
@@ -42,6 +43,12 @@
         "by": "Claude Sonnet 5.5",
         "scope": "Third pass: Steps 13 to 15 against apcsp, castandards, csta2026 and ca-ict-anchor",
         "note": "Read the three new steps against this repo's catalog paraphrases. Raised AP CSP 1.2 (program function and purpose) from partial to strong, since Steps 13 and 14 now teach input and events (CRD-2.C). Added Step 13 to AP CSP 3.1 (the answer is a variable) and 3.12 (ask is the block version of INPUT), and Step 15 to AP CSP 1.3 (the third capstone). The California and CSTA 2026 middle school codes have no code about events or typed input, so nothing was added there. CTE kept to the same two codes on purpose."
+      },
+      {
+        "date": "2026-11-06",
+        "by": "Claude Sonnet 5.5",
+        "scope": "Fourth pass: Step 16 against apcsp, castandards, csta2026 and ca-ict-anchor",
+        "note": "Read the new step against this repo's catalog paraphrases. New entries: AP CSP 3.5 (Boolean expressions, strong: and, or and not, with a truth table and by hand predictions) and 3.7 (nested conditionals, partial: the nesting is given as an outline, not discovered). Added Step 16 to AP CSP 3.6 (plain if blocks with no else, now used), California 6-8.AP.12 (compound conditions, raised from partial to strong with Step 9's nested loops) and CSTA 2026 MS-PRO-RD-17 (tracing a condition by hand). CTE kept to the same two codes on purpose."
       }
     ]
   },
@@ -146,13 +153,15 @@
       "3.6": {
         "locators": [
           "step-4-choose-a-path",
-          "step-5-random-art"
+          "step-5-random-art",
+          "step-16-catch-the-square"
         ],
         "strength": "strong",
-        "note": "Step 4 teaches the if and else block: a yes or no question, exactly one of two mouths runs, never both and never neither. It is traced by hand and then used to set a color in each mouth. Step 5 requires one in the capstone. A plain if with no else, and nested conditions, are not taught.",
+        "note": "Step 4 teaches the if and else block: a yes or no question, exactly one of two mouths runs, never both and never neither. It is traced by hand and then used to set a color in each mouth. Step 5 requires one in the capstone. Step 16 uses plain if blocks with no else, one inside another, to decide whether a click hit a target; its Done early adds an else for a miss.",
         "locator_notes": {
           "step-4-choose-a-path": "Exactly one of the two mouths runs. Trace it on paper, then set a different color in each mouth.",
-          "step-5-random-art": "The capstone needs an if and else that changes something you can see."
+          "step-5-random-art": "The capstone needs an if and else that changes something you can see.",
+          "step-16-catch-the-square": "A plain if, with no else, decides whether a click hit the square; a hit adds to the score and moves the square, and a miss does nothing."
         }
       },
       "3.8": {
@@ -238,6 +247,26 @@
           "step-12-capstone-2": "The capstone uses a block of the learner's own more than once.",
           "step-13-ask-for-a-number": "The ask block is the block version of the reference sheet's INPUT: it shows a question, waits, and hands the typed value back. The Python view shows it as a function, ask, that uses Python's input."
         }
+      },
+      "3.5": {
+        "locators": [
+          "step-16-catch-the-square"
+        ],
+        "strength": "strong",
+        "note": "Step 16 teaches and, or and not, the same three operators as the AP reference sheet: and is yes only when both questions are yes, or when at least one is, not flips one answer. A truth table is shown, and students predict what and and or say for clicks inside and outside a stripe, and what a not around an and says. Blocks go inside blocks, so an and can hold another and. Truth values are called yes and no, not true and false.",
+        "locator_notes": {
+          "step-16-catch-the-square": "Predict what and says for three clicks, what or says for three more, and what not says, before running each frame. Then use and to ask two questions at once in the game."
+        }
+      },
+      "3.7": {
+        "locators": [
+          "step-16-catch-the-square"
+        ],
+        "strength": "partial",
+        "note": "The game's click handler has one if inside another: the first asks if the click is in the square's columns, the second, only if so, asks if it is in the rows. The outline of the nesting is given, and the page asks students to say what each question means, but they do not have to find the nesting out for themselves. Done early replaces it with one if that holds the four questions joined by and.",
+        "locator_notes": {
+          "step-16-catch-the-square": "One if inside another, built in small pieces: the outer if first, with a print inside, then the inner if."
+        }
       }
     },
     "castandards": {
@@ -260,15 +289,17 @@
           "step-4-choose-a-path",
           "step-5-random-art",
           "step-9-a-loop-inside-a-loop",
-          "step-12-capstone-2"
+          "step-12-capstone-2",
+          "step-16-catch-the-square"
         ],
-        "strength": "partial",
-        "note": "A conditional goes inside a loop with random in it, built up in small steps: first a loop that draws one thing, then random, then the if and else. Compound conditions such as and, or are not used, and nested loops are not taught.",
+        "strength": "strong",
+        "note": "A conditional goes inside a loop with random in it, built up in small steps: first a loop that draws one thing, then random, then the if and else. Step 9 puts a loop inside a loop. Step 16 uses compound conditions (and, or, not) in the click handler of a game, and builds it in small steps: first the block that draws the square, then the first question, then the second.",
         "locator_notes": {
           "step-4-choose-a-path": "The stack puts an if and else inside a repeat.",
           "step-5-random-art": "Build the capstone in three pieces: a loop, then random, then the if and else.",
           "step-9-a-loop-inside-a-loop": "A loop inside a loop, built up one shape first and then the ring.",
-          "step-12-capstone-2": "A loop, a block of your own and a box combined in one program, built up in three pieces."
+          "step-12-capstone-2": "A loop, a block of your own and a box combined in one program, built up in three pieces.",
+          "step-16-catch-the-square": "A game built from a loop, boxes, a block of your own and compound conditions, one piece at a time, running after each."
         }
       },
       "6-8.AP.13": {
@@ -349,16 +380,18 @@
           "step-2-say-it-once",
           "step-4-choose-a-path",
           "step-7-boxes-that-count",
-          "step-9-a-loop-inside-a-loop"
+          "step-9-a-loop-inside-a-loop",
+          "step-16-catch-the-square"
         ],
         "strength": "strong",
-        "note": "Step 4 traces a loop's coin flips by hand and records the turtle's heading after each one (90, 180, 90, 180, 90, 0). Step 1 asks where the L ends and which way it faces, and Step 2 asks what 36 turns of 10 add up to. Each follows code step by step and says what it leaves behind. Procedures that take inputs are not traced.",
+        "note": "Step 4 traces a loop's coin flips by hand and records the turtle's heading after each one (90, 180, 90, 180, 90, 0). Step 1 asks where the L ends and which way it faces, and Step 2 asks what 36 turns of 10 add up to. Each follows code step by step and says what it leaves behind. Procedures that take inputs are not traced. Step 16 traces a condition by hand: for a corner at (50, -30), is a click at (80, 10) inside the square, and which question says no for a click at (80, 50)?",
         "locator_notes": {
           "step-1-your-initials": "Where does the turtle end, and which way does it face, after the L?",
           "step-2-say-it-once": "Follow a loop of 36 turns of 10 and say what it adds up to.",
           "step-4-choose-a-path": "Pretend six coin flips and write the heading after each.",
           "step-7-boxes-that-count": "A box traced by hand through a loop: 4, 8, 16 for a doubling box, and the numbers a counting box prints.",
-          "step-9-a-loop-inside-a-loop": "Count what a nested loop does: 12 squares of 4 sides is 48 moves."
+          "step-9-a-loop-inside-a-loop": "Count what a nested loop does: 12 squares of 4 sides is 48 moves.",
+          "step-16-catch-the-square": "Work out by hand which of the two questions says no for a click that misses the square."
         }
       },
       "HS-PRO-RD-17": {

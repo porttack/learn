@@ -324,3 +324,24 @@ test('click handlers: JSLogo has no mouse, so the handler is left out with a not
   assert.equal(there.error, null, `JSLogo said "${there.error}" for\n${code}`);
   assert.equal(Math.round(there.turtle.segments.reduce((sum, s) => sum + Math.hypot(s.x2 - s.x1, s.y2 - s.y1), 0)), 40, 'the program ran with mouseX as 0, and the handler did not');
 });
+
+test('and, or and not: written as (and a b), they join tests the way the blocks do, and the second half is skipped when the first settles it', needsJsLogo, async () => {
+  const guard = b('greater', b('divide', 10, { op: 'box2' }), 2); // would be a divide by zero when box2 is 0
+  const blocks = [
+    b('start'), b('store1', 7),
+    { op: 'if', args: [b('and', b('greater', { op: 'box1' }, 0), b('less', { op: 'box1' }, 10))], body: [b('print', 1)] },
+    { op: 'if', args: [b('and', b('greater', { op: 'box1' }, 9), b('less', { op: 'box1' }, 10))], body: [b('print', 2)] },
+    { op: 'if', args: [b('or', b('less', { op: 'box1' }, 0), b('equal', { op: 'box1' }, 7))], body: [b('print', 3)] },
+    { op: 'if', args: [b('not', b('equal', { op: 'box1' }, 7))], body: [b('print', 4)] },
+    { op: 'if', args: [b('not', b('or', b('less', { op: 'box1' }, 0), b('greater', { op: 'box1' }, 9)))], body: [b('print', 5)] },
+    { op: 'if', args: [b('and', b('greater', { op: 'box2' }, 0), guard)], body: [b('print', 6)] },
+    { op: 'if', args: [b('or', b('equal', { op: 'box2' }, 0), guard)], body: [b('print', 7)] },
+  ];
+  const project = { stacks: [{ x: 0, y: 0, blocks }] };
+  const code = toLogo(project, { jslogo: true });
+  assert.match(code, /\(and \(:box1 > 0\) \(:box1 < 10\)\)/);
+  const there = await runJsLogo(code);
+  assert.equal(there.error, null, `JSLogo said "${there.error}" for\n${code}`);
+  assert.deepEqual(there.printed, ['1', '3', '5', '7'], 'what JSLogo prints');
+  assert.deepEqual(there.printed, runHere(project).printed.map(String), 'and the blocks print the same');
+});

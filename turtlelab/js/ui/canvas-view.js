@@ -218,6 +218,9 @@ export function paintHandOp(ctx, op, view = DEFAULT_DRAW_VIEW, { chalk = false, 
 
 // ---- The view -----------------------------------------------------------
 
+/** How long the ring of a click takes to fade (the stylesheet's animation is the same length). */
+const RING_MS = 500;
+
 export class CanvasView {
   /**
    * @param {object} options
@@ -881,6 +884,24 @@ export class CanvasView {
     if (px < 0 || py < 0 || px > rect.width || py > rect.height) return null;
     const world = paperToWorld(this.drawView, px / this.scale, py / this.scale);
     return { x: Math.round(world.x), y: Math.round(world.y) };
+  }
+
+  /**
+   * A ring that opens where a click landed and fades (a click that draws nothing would look as if nothing happened). It lives on the paper's
+   * box, above the turtle, and is only ever a picture on the page: it is not in a saved picture, the PDF or any export. The stylesheet makes it
+   * a plain fade, with no growing, for a computer that asked for less motion.
+   */
+  ring(clientX, clientY) {
+    const rect = this.box.getBoundingClientRect();
+    const el = document.createElement('div');
+    el.className = 'click-ring';
+    el.setAttribute('aria-hidden', 'true');
+    el.style.left = `${clientX - rect.left}px`;
+    el.style.top = `${clientY - rect.top}px`;
+    this.box.append(el);
+    const remove = () => el.remove();
+    el.addEventListener('animationend', remove, { once: true });
+    setTimeout(remove, RING_MS * 2); // in case the animation never runs (a hidden tab)
   }
 
   /** Where the middle of the turtle is on the screen. */

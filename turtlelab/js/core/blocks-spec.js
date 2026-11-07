@@ -309,7 +309,7 @@ export const BLOCKS = {
     kind: 'clamp',
     label: 'if',
     args: [{ type: 'boolean' }],
-    help: 'Runs the blocks inside only if the yes-or-no block plugged into it is true. Plug a less than, greater than or equals block into it.',
+    help: 'Runs the blocks inside only if the yes-or-no block plugged into it is true. Plug a less than, greater than or equals block into it, or join them with and, or, not.',
   },
   ifelse: {
     palette: 'flow',
@@ -443,6 +443,35 @@ export const BLOCKS = {
     label: '=',
     args: [{ default: 0 }, { default: 0 }],
     help: 'True if the two numbers are the same. Plug it into an if block.',
+  },
+  // The three that put yes-or-no blocks together. Their sockets are pointed (yes-or-no) like the one on `if`, so only a
+  // < > = block or another one of these fits in them.
+  and: {
+    palette: 'math',
+    kind: 'reporter',
+    returns: 'boolean',
+    layout: 'infix',
+    label: 'and',
+    args: [{ type: 'boolean' }, { type: 'boolean' }],
+    help: 'True only if BOTH yes-or-no blocks in it are true. For example, a click is inside a box when it is more than the left edge and less than the right edge.',
+  },
+  or: {
+    palette: 'math',
+    kind: 'reporter',
+    returns: 'boolean',
+    layout: 'infix',
+    label: 'or',
+    args: [{ type: 'boolean' }, { type: 'boolean' }],
+    help: 'True if EITHER yes-or-no block in it is true, or both are.',
+  },
+  not: {
+    palette: 'math',
+    kind: 'reporter',
+    returns: 'boolean',
+    layout: 'prefix',
+    label: 'not',
+    args: [{ type: 'boolean' }],
+    help: 'Turns a yes into a no, and a no into a yes. Plug a yes-or-no block into it.',
   },
   print: {
     palette: 'math',

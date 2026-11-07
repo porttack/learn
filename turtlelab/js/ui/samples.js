@@ -26,6 +26,9 @@ const ifElse = (condition, body, elseBody) => ({ op: 'ifelse', args: [condition]
 const sum = (a, c) => b('add', a, c);
 const minus = (a, c) => b('subtract', a, c);
 const box1 = { op: 'box1' };
+const box2 = { op: 'box2' };
+const box3 = { op: 'box3' };
+const box4 = { op: 'box4' };
 const mouseX = { op: 'mousex' };
 const mouseY = { op: 'mousey' };
 const input = (name) => ({ op: 'input', name });
@@ -132,6 +135,8 @@ const initialsProgram = () => [
  *   answers   optional, for the tests and the browser checks only: what to type when an ask block asks, in order (a sample that asks waits for a person, so the checks need to be one)
  *   clicks    optional, the same: where to click the paper, as [x, y] in the turtle's steps, once the program is listening. They must be on clear paper, where no block of the sample sits,
  *             even in a lesson frame that is only 700 wide
+ *   hideBlocks optional, `true` for a demo whose program is too big to sit beside the paper in a lesson's frame (about 700 wide): inside the frame, and only there, it starts with the blocks hidden
+ *             (the frame has no button to bring them back, so the lesson page shows the program as an outline). Open full size is the whole app, with the blocks.
  *   listed    optional, `false` for a demo that only a lesson page frames (see "Embedding in lessons" in CLAUDE.md): it opens with ?sample=... like any
  *             other, but it is not on the Samples page and has no thumbnail. Everything else about it is held to the same tests.
 
@@ -896,6 +901,70 @@ export const SAMPLES = [
       ],
     ],
     program: [b('start'), b('clean')], // (just these two: a wider block here would sit under the Output box at the right edge)
+  },
+  {
+    id: 'lesson-click-and',
+    listed: false,
+    title: 'Is the click inside the stripe?',
+    summary: 'A red stripe, and a program that asks if each click is more than 100 and less than 220. It prints the click\'s x, then 1 for yes and 0 for no.',
+    look: 'A tall red stripe on the right half of the paper',
+    concepts: ['when paper clicked', 'and', 'if else', 'print'],
+    note: 'Click in the stripe, then outside it. The Output box prints your x, then 1 for inside and 0 for outside. Inside is more than 100 AND less than 220.',
+    clicks: [[160, 20], [300, -100]],
+    allLeft: true,
+    handlers: [[b('print', mouseX), ifElse(b('and', b('greater', mouseX, 100), b('less', mouseX, 220)), [b('print', 1)], [b('print', 0)])]],
+    program: [b('start'), b('clean'), b('penup'), b('setxy', 160, -250), b('pendown'), b('setpensize', 120), b('forward', 500)],
+  },
+  {
+    id: 'lesson-click-or',
+    listed: false,
+    title: 'Is the click outside the stripe?',
+    summary: 'The same stripe, asked the other way round with or: a click is outside if it is less than 100 or more than 220. It prints the click\'s x, then 1 for yes.',
+    look: 'A tall red stripe on the right half of the paper',
+    concepts: ['when paper clicked', 'or', 'if else', 'print'],
+    note: 'Click in the stripe, then outside it. The Output box prints your x, then 1 for outside and 0 for inside. Outside is less than 100 OR more than 220.',
+    clicks: [[160, 20], [300, -100]],
+    allLeft: true,
+    handlers: [[b('print', mouseX), ifElse(b('or', b('less', mouseX, 100), b('greater', mouseX, 220)), [b('print', 1)], [b('print', 0)])]],
+    program: [b('start'), b('clean'), b('penup'), b('setxy', 160, -250), b('pendown'), b('setpensize', 120), b('forward', 500)],
+  },
+  {
+    id: 'lesson-click-game',
+    listed: false,
+    hideBlocks: true, // (in a lesson's frame: the program is too big to sit beside the paper, and the page shows it as an outline)
+    title: 'Catch the square',
+    summary: 'A red square sits at a random place. Click inside it to score a point, and it jumps somewhere else.',
+    look: 'A small red square on an empty paper',
+    concepts: ['when paper clicked', 'and', 'if', 'boxes', 'random', 'my own block', 'start fill'],
+    note: 'Click inside the red square. Each hit adds 1 to box1, your score, and the square jumps to a new place. box2 and box3 are where the square is, and box4 works out how far the click is from its corner.',
+    clicks: [[330, -260]], // (a click that always misses, so a check can tell the handler ran without knowing where the square is)
+    defines: [
+      {
+        name: 'target',
+        params: [],
+        body: [
+          b('clean'),
+          b('store2', b('random', -300, 240)),
+          b('store3', b('random', -220, 130)),
+          b('penup'),
+          b('setxy', box2, box3),
+          b('pendown'),
+          b('startfill'),
+          rep(4, b('forward', 60), b('right', 90)),
+          b('endfill'),
+        ],
+      },
+    ],
+    handlers: [
+      [
+        b('store4', minus(mouseX, box2)),
+        { op: 'if', args: [b('and', b('greater', box4, 0), b('less', box4, 60))], body: [
+          b('store4', minus(mouseY, box3)),
+          { op: 'if', args: [b('and', b('greater', box4, 0), b('less', box4, 60))], body: [b('store1', sum(box1, 1)), call('target', [])] },
+        ] },
+      ],
+    ],
+    program: [b('start'), b('clean'), b('store1', 0), call('target', [])],
   },
 ];
 

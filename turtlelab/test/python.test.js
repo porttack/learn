@@ -305,8 +305,8 @@ test('it is valid Python for every sample', needsPython, () => {
 
 test('every sample ends in the same place, having drawn as far, in Python and in the blocks', needsPython, () => {
   for (const sample of SAMPLES) {
-    // The wandering turtle turns by chance, and Python's chance is not ours. It is only checked to be valid.
-    if (sample.id === 'wandering-turtle') continue;
+    // The wandering turtle turns by chance, and the game's square is put down by chance, and Python's chance is not ours. They are only checked to be valid.
+    if (sample.id === 'wandering-turtle' || sample.id === 'lesson-click-game') continue;
     // A write block draws letters that Python's turtle has no way to draw (see the test for it), so only where it ends is compared.
     // (a sample that waits for a person is given its answers and clicks, the same ones for Python and for the blocks)
     assertSame(projectOf(...sampleStacks(sample)), sample.id, { length: !sample.concepts.includes('write'), answers: sample.answers ?? [], clicks: sample.clicks });
@@ -330,6 +330,30 @@ test('loops, ifs, boxes and stop agree', needsPython, () => {
   assertSame(projectOf(program(b('clean'), b('forward', 5), { op: 'stop', args: [] }, b('forward', 500))), 'stop at the top');
   assertSame(projectOf(program(b('clean'), b('store1', 1), ifBlock(op('greater', { op: 'box1' }, 0), b('forward', 30)), ifBlock(op('less', { op: 'box1' }, 0), b('forward', 900)))), 'if');
   assertSame(projectOf(program(b('clean'), b('forward', op('random', 5, 5)), b('forward', op('oneof', 7, 7)), b('wait', 10), b('speed', 3), b('print', 42), b('print', op('add', 0.5, 0.25)))), 'random, wait, speed, print');
+});
+
+test('and, or and not agree, including the guard that keeps a divide from running, and read as Python', needsPython, () => {
+  const guard = op('greater', op('divide', 10, { op: 'box2' }), 2); // a mistake when box2 is 0, which and and or must never reach
+  const inside = op('and', op('greater', { op: 'box1' }, -50), op('less', { op: 'box1' }, 50));
+  const project = projectOf(program(
+    b('clean'), b('store1', 7),
+    ifBlock(inside, b('forward', 10)),
+    ifBlock(op('and', op('greater', { op: 'box1' }, 9), op('less', { op: 'box1' }, 10)), b('forward', 900)),
+    ifBlock(op('or', op('less', { op: 'box1' }, 0), op('equal', { op: 'box1' }, 7)), b('right', 90), b('forward', 20)),
+    ifBlock(op('not', op('equal', { op: 'box1' }, 7)), b('forward', 900)),
+    ifBlock(op('not', op('or', op('less', { op: 'box1' }, 0), op('greater', { op: 'box1' }, 9))), b('forward', 5)),
+    ifBlock(op('and', op('greater', { op: 'box2' }, 0), guard), b('forward', 900)),
+    ifBlock(op('or', op('equal', { op: 'box2' }, 0), guard), b('forward', 3)),
+  ));
+  assertSame(project, 'and, or, not');
+  const code = toPython(project);
+  assert.match(code, /if box1 > -50 and box1 < 50:/);
+  assert.match(code, /if box1 < 0 or box1 == 7:/);
+  assert.match(code, /if not \(box1 == 7\):/);
+  assert.match(code, /if not \(box1 < 0 or box1 > 9\):/);
+  // an and inside an or (or the other way round) is written with brackets, so nobody has to remember which comes first
+  const mixed = toPython(projectOf(program(b('clean'), ifBlock(op('or', op('and', op('less', 1, 2), op('less', 2, 3)), op('greater', 1, 5)), b('forward', 1)))));
+  assert.match(mixed, /if \(1 < 2 and 2 < 3\) or 1 > 5:/);
 });
 
 test('blocks of your own agree: inputs, boxes, stop, calls inside calls, and recursion', needsPython, () => {
@@ -376,6 +400,8 @@ function everything() {
       b('store1', 3), b('store2', 4), b('store3', 5), b('store4', 6), b('print', { op: 'box4' }), { op: 'ask', args: [], text: 'How many?' },
       rep(3, b('forward', 1)), rep({ op: 'box1' }, b('forward', 1)),
       ifBlock(cond, b('forward', 1)), ifElse(op('equal', 1, 1), [b('forward', 1)], [ifBlock(op('greater', 2, 1), b('back', 1))]),
+      ifBlock(op('or', op('and', op('less', 1, 2), op('not', op('equal', { op: 'box1' }, 99))), op('greater', 1, 5)), b('forward', 2)),
+      ifBlock(op('and', op('greater', { op: 'box2' }, 0), op('greater', op('divide', 10, { op: 'box2' }), 2)), b('forward', 3)),
       b('wait', 5), b('speed', 2), b('speed', 4), { op: 'setfont', args: [], font: 'bold' }, b('setcurve', 90), b('setcurve', { op: 'box1' }), call('spin', ['n', 'm'], 10, 20),
       { op: 'forever', args: [], body: [{ op: 'stop', args: [] }] },
     ),

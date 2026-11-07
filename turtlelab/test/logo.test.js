@@ -370,6 +370,9 @@ function everything() {
         call('petal', ['size', 'turn'], 90, { op: 'add', args: [{ op: 'box1' }, 10] }), call('stopper', []),
         { op: 'ifelse', args: [{ op: 'greater', args: [{ op: 'box4' }, 4] }], body: [b('forward', { op: 'oneof', args: [10, 20] })], elseBody: [b('back', { op: 'random', args: [1, 3.5] })] },
         { op: 'if', args: [{ op: 'equal', args: [{ op: 'heading' }, 45] }], body: [b('print', { op: 'pensize' }), b('print', { op: 'penred' }), b('print', { op: 'pengreen' }), b('print', { op: 'penblue' }), b('print', { op: 'y' })] },
+        // and, or and not: nested, with a guard so the second half of the and (a divide by box2, which is 0) must never run.
+        { op: 'if', args: [{ op: 'or', args: [{ op: 'and', args: [{ op: 'less', args: [1, 2] }, { op: 'not', args: [{ op: 'equal', args: [{ op: 'box1' }, 99] }] }] }, { op: 'greater', args: [1, 5] }] }], body: [b('print', 777)] },
+        { op: 'if', args: [{ op: 'and', args: [{ op: 'greater', args: [{ op: 'box2' }, 0] }, { op: 'greater', args: [{ op: 'divide', args: [10, { op: 'box2' }] }, 2] }] }], body: [b('print', 888)] },
         b('print', { op: 'mod', args: [-7, 3] }), b('print', { op: 'divide', args: [1, 3] }), b('print', { op: 'paren', args: [{ op: 'add', args: [0.1, 0.2] }] }),
         b('wait', 0.5), b('wait', { op: 'box1' }), { op: 'write', args: [40], text: 'Go' }, { op: 'setfont', args: [], font: 'fancy' }, b('setcurve', 90), { op: 'write', args: [30], text: 'Cougars' }, b('setcurve', { op: 'box1' }), { op: 'setfont', args: [], font: 'serif' }, { op: 'write', args: [{ op: 'box1' }], text: 'Hi' }, b('right', 90), b('setcurve', -45), { op: 'forever', args: [], body: [b('forward', 1), { op: 'if', args: [{ op: 'less', args: [-50, { op: 'x' }] }], body: [b('stop')] }] },
         b('forward', { op: 'box3' }), b('forward', { op: 'penred' }), b('forward', 12345), b('print', { op: 'mousex' }), b('print', { op: 'add', args: [{ op: 'mousey' }, 1] }),
@@ -565,4 +568,39 @@ test('onclick: several handlers, a page with only a handler, and the places it m
   assert.match(errorOf('onclick forward 1').error, /needs a list of commands in \[ square brackets \]/);
   assert.equal(compileLogo('forward mousex').ok, true, 'mousex and mousey work anywhere');
   assert.equal(toLogo({ stacks: [{ x: 0, y: 0, blocks: [{ op: 'onclick', args: [] }, b('forward', 3)] }] }).trim(), 'onclick [\n  forward 3\n]', 'a page with only a handler is written too');
+});
+
+// ---- and, or and not ------------------------------------------------------------------------------------------
+
+test('and, or and not: typed the way real Logo has them, with the tests as they are, in brackets or not', () => {
+  const inside = (x) => `make "box1 ${x}\nif and :box1 > -50 :box1 < 50 [ print 1 ]\nifelse and (:box1 > -50) (:box1 < 50) [ print 2 ] [ print 3 ]`;
+  assert.deepEqual(printedBy(inside(0)), ['1', '2']);
+  assert.deepEqual(printedBy(inside(70)), ['3']);
+  assert.deepEqual(printedBy('make "a 5\nif or :a < 0 :a > 3 [ print 1 ]\nif not :a > 3 [ print 2 ]\nif not (or :a < 0 :a > 9) [ print 3 ]'), ['1', '3']);
+  // more than two, in brackets, are an and inside an and
+  assert.deepEqual(printedBy('make "a 5\nif (and :a > 1 :a < 9 :a = 5) [ print 1 ]\nif (and :a > 1 :a < 9 :a = 6) [ print 2 ]\nif (or :a = 1 :a = 2 :a = 5) [ print 3 ]'), ['1', '3']);
+  // a test in brackets is the test itself, not a ( ) block (which only holds numbers)
+  const found = compileLogo('make "a 1\nif (:a < 2) [ print 1 ]');
+  assert.equal(found.main[1].args[0].op, 'less');
+  // a block named and is no longer an and: the generator gives your block another word
+  assert.ok(BUILTIN_WORDS.has('and') && BUILTIN_WORDS.has('or') && BUILTIN_WORDS.has('not'));
+});
+
+test('and, or and not: written out as brackets round every test, and read back as the same blocks', () => {
+  const inside = b('and', b('greater', b('mousex'), -50), b('less', b('mousex'), 50));
+  const blocks = [b('start'), { op: 'if', args: [b('or', b('not', inside), b('equal', 1, 2))], body: [b('print', 1)] }];
+  const text = toLogo({ stacks: [{ x: 0, y: 0, blocks }] });
+  assert.match(text, /^if \(or \(not \(and \(mousex > -50\) \(mousex < 50\)\)\) \(1 = 2\)\) \[$/m);
+  const back = compileLogo(text);
+  assert.equal(back.ok, true, back.error);
+  assert.deepEqual(JSON.parse(JSON.stringify(back.main[0].args)), JSON.parse(JSON.stringify(blocks[1].args)), 'the very same tests');
+});
+
+test('and, or and not: a missing test is a plain complaint, and so is the wrong kind', () => {
+  assert.match(errorOf('if and :box1 > 0 [ print 1 ]').error, /and needs 2 tests after it, and I only found 1/);
+  assert.match(errorOf('if not [ print 1 ]').error, /not needs a test, like :size > 10, after it/);
+  // a number is not a test: the blocks say so when they run, on the line
+  const result = compileLogo('if and 1 2 [ print 1 ]');
+  assert.equal(result.ok, true);
+  assert.throws(() => run(result.main, result.stacks), (e) => e instanceof RunError && /yes or no/.test(e.message));
 });

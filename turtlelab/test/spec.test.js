@@ -39,7 +39,10 @@ test('a reporter with sockets says how it is laid out, and the layout fits its s
     if (spec.layout) {
       assert.equal(spec.kind, 'reporter', `${op}: only reporters have a layout`);
       assert.ok(['infix', 'prefix', 'wrap'].includes(spec.layout), `${op}: unknown layout ${spec.layout}`);
-      assert.equal(spec.args.length, spec.layout === 'wrap' ? 1 : 2, `${op}: wrong number of sockets for ${spec.layout}`);
+      // A wrap has one socket, an infix two; a prefix has as many as the word needs (random 2, not 1).
+      if (spec.layout === 'wrap') assert.equal(spec.args.length, 1, `${op}: wrong number of sockets for wrap`);
+      else if (spec.layout === 'infix') assert.equal(spec.args.length, 2, `${op}: wrong number of sockets for infix`);
+      else assert.ok(spec.args.length >= 1, `${op}: a prefix block needs a socket`);
       assert.equal(typeof spec.endLabel === 'string', spec.layout === 'wrap', `${op}: endLabel is for wrap blocks only`);
     } else if (spec.kind === 'reporter') {
       assert.equal(spec.args.length, 0, `${op}: a reporter with sockets needs a layout`);
@@ -47,13 +50,20 @@ test('a reporter with sockets says how it is laid out, and the layout fits its s
   }
 });
 
-test('yes-or-no sockets are only on clamps, and only yes-or-no blocks are pills', () => {
+test('yes-or-no sockets are on clamps and on and, or, not, and only yes-or-no blocks are pills', () => {
   for (const [op, spec] of entries) {
     for (const socket of spec.args) {
-      if (socket.type === 'boolean') assert.equal(spec.kind, 'clamp', `${op}: a pointed socket needs the clamp's header shape`);
+      if (socket.type === 'boolean') {
+        // A clamp draws its own pointed socket; a reporter that holds yes-or-no blocks is a row, so it is a pill itself.
+        if (spec.kind === 'reporter') assert.equal(spec.returns, 'boolean', `${op}: a block with pointed sockets gives back a yes or no`);
+        else assert.equal(spec.kind, 'clamp', `${op}: a pointed socket needs the clamp's header shape`);
+      }
     }
-    if (spec.returns === 'boolean') assert.equal(spec.layout, 'infix', `${op}: yes-or-no blocks are infix pills`);
+    if (spec.returns === 'boolean') assert.ok(['infix', 'prefix'].includes(spec.layout), `${op}: yes-or-no blocks are pills laid out as a row`);
   }
+  // The three that join yes-or-no blocks, and nothing else, have pointed sockets on a reporter.
+  const joiners = entries.filter(([, spec]) => spec.kind === 'reporter' && spec.args.some((socket) => socket.type === 'boolean')).map(([op]) => op);
+  assert.deepEqual(joiners.sort(), ['and', 'not', 'or']);
 });
 
 test('a socket that is not yes-or-no starts with a number', () => {

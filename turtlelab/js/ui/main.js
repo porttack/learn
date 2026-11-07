@@ -361,6 +361,7 @@ function paperClicked(clientX, clientY) {
   if (!listeningHandlers || !scheduler.running) return;
   const at = view.worldAt(clientX, clientY);
   if (!at) return; // the gray round the paper is not the paper
+  view.ring(clientX, clientY);
   const handlers = listeningHandlers;
   scheduler.queueEvent(() => {
     context.mouse = at; // mouseX and mouseY say where this click was, from the moment its handler starts
@@ -933,13 +934,20 @@ hideButton.addEventListener('click', () => {
 if (welcomeBack) say('Welcome back. Your blocks from last time are here. Press Run to draw them again.');
 
 if (sample) {
+  // A demo too big to sit beside the paper (sample.hideBlocks) starts with its blocks hidden inside a lesson's frame, where there is no button to bring them back
+  // (the lesson page shows the program as an outline, and Open full size has the whole app, with the blocks).
+  if (embed && sample.hideBlocks) {
+    stage.classList.add('blocks-hidden');
+    hideButton.setAttribute('aria-pressed', 'true');
+    hideButton.title = 'Show blocks';
+  }
   // It runs by itself, so the drawing is the first thing you see. Starting a
   // run clears the message line, so the message goes up after it starts.
   if (params.get('autorun') !== '0') pressRun();
   // (a sample that is already listening for clicks keeps saying so: that is what to do next, and the load message would hide it)
   if (!scheduler.listening) {
     say(embed
-      ? `${sample.title}. Change anything you like and press Run.` // (short: in a frame the message must stay on one line, or it takes room from the blocks)
+      ? (sample.hideBlocks ? `${sample.title}. Press Run to start again.` : `${sample.title}. Change anything you like and press Run.`) // (short: in a frame the message must stay on one line, or it takes room from the blocks)
       : `Sample: ${sample.title}. Change anything you like. It is not saved unless you press Save, and the blocks you saved before are untouched.`);
   }
 } else {

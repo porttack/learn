@@ -130,7 +130,7 @@ the dashes out of them too for consistency.
 
 ## Samples
 
-`js/ui/samples.js` holds the student samples (27 listed, easiest first, then seven for an embroidery machine, plus fourteen demos made only for lessons: `listed: false`, ids `lesson-...`), each
+`js/ui/samples.js` holds the student samples (27 listed, easiest first, then seven for an embroidery machine, plus eighteen demos made only for lessons: `listed: false`, ids `lesson-...`), each
 with `id`, `title`, `summary`, `look` (the picture's alt text), `concepts`
 (little tags), `note` (a sticky note, at most 250 characters so it is not cut
 off), `program` and optionally `defines` (blocks the sample makes). They are different from `demos.js`, which is for the
@@ -228,6 +228,9 @@ no `sandbox` attribute, because module scripts need the same origin). **Same app
   launched window is shorter than its size because of the browser's own bars), that every demo any lesson frames fits, runs and draws; the slim toolbar; Start over and Open full size; saved work never read or written (a seeded
   `localStorage` item is untouched, nothing else is stored); nothing amusing itself (control: the same page without `embed=1` does); no request to another address; and, with `SITE_URL=http://127.0.0.1:4010/`
   (my own `bundle exec jekyll serve --port 4010 --no-watch`; it must be restarted to see new files), that each lesson page's frames load TurtleLab in embed mode and the demo inside drew something.
+- **`hideBlocks: true`** on a sample (Step 16's game, `lesson-click-game`): inside a frame, and only there, `main.js` starts it with the blocks hidden (`blocks-hidden` on the stage), because its click handler is wider than the room beside the paper in 700 pixels. The frame has no
+  button to bring them back, so the lesson page shows the program as an outline, and Open full size (no `embed=1`) is the whole app with every block. The message line says "Press Run to start again" and not "Change anything you like". `embed-checks.mjs` checks such a demo
+  is hidden and the paper clear instead of that its blocks fit, plays the game in its frame (reads the square's place from the yellow strip, misses, then hits three times) and opens it full size to count its four stacks.
 - A frame has no PDF button, so a lesson that ends in a PDF (Steps 4 and 12, and every "Save your work") says to use **Open full size** first.
 
 ## The ask block (input)
@@ -278,10 +281,38 @@ click, and they hold the last click until the next. They live in `ctx.mouse`, wh
   `onscreenclick(on_click)` is registered before `done()`, **inside `try: ... except NameError: pass`, because EduBlocks' turtle has no `onscreenclick`** (so there the handler does nothing, and the name check does not count it). The Python only
   clicks after the main program has run (in the blocks a click can come between blocks). A page with only a handler still starts facing up with a red pen. `test/python-runner.py` takes a `clicks` list: only then does it have `onscreenclick`,
   and it calls the handler for each click; `test/python.test.js` runs the same clicks through both and requires the same drawing.
-- **Not built yet:** a little ring where a click lands (a click that draws nothing looks like nothing happened); a click that arrives during a long `wait` runs after it; mouse move and release events; clicks outside the paper. A lesson step for it
-  is next (Step 14, after Step 13 for ask).
+- **A ring opens where a click lands (2026-11-06, the user asked for it from the list of next things).** `CanvasView.ring(clientX, clientY)` puts a `.click-ring` on the paper's box (above the turtle, `pointer-events: none`,
+  removed on `animationend` and by a timer in case the animation never runs), called by `paperClicked` in `main.js` for every click that is on the paper and heard (not before Run, not a slide, not on a block or the gray). It grows from a small
+  circle and fades in 0.5 s (`click-ring` in `app.css`); under `prefers-reduced-motion` it only fades (`click-ring-calm`). It is a picture on the page, never in a PNG, JPEG, SVG, the PDF or the autosave. White inside and outside its pink
+  edge so it shows on every paper.
+- **A click on the turtle is a click on the paper while a program runs** (2026-11-06, found building Step 16's game, where the turtle sits on the square's corner): `.turtle-sprite.locked` (the class a run puts on it, so it cannot be dragged) has
+  `pointer-events: none`, so the press goes to the paper under it. Before a run, and after, the turtle is still draggable. `dev/click-checks.mjs` clicks right on the turtle.
+- **Not built yet:** a click that arrives during a long `wait` runs after it; mouse move and release events; clicks outside the paper.
 - Tests: `test/scheduler.test.js`, `spec.test.js`, `logo.test.js`, `jslogo.test.js`, `python.test.js`, `quality.test.js`, and `dev/click-checks.mjs` (real Chrome: the palettes, listening, a click's place, quick clicks in order, a slide
-  and a click on gray, a block or a palette button that are not clicks, Stop, running again, mouseX read by the main program, a page with only a handler, the PDF not waiting, a 700 x 520 frame, nothing stored or requested).
+  and a click on gray, a block or a palette button that are not clicks, a click on the turtle itself, the ring (where it opens, that it goes away, that it only fades under reduced motion, that there is none before Run or for a slide), Stop, running again, mouseX read by the main program, a page with only a handler, the PDF not waiting, a 700 x 520 frame, nothing stored or requested).
+
+## and, or and not
+
+(2026-11-06. The user asked whether to add multiple turtles or something else "to make it more fun or be able to teach more"; the recommendation was these three blocks, a ring where a click lands, and a click game lesson, and the user said "okay, implement these 3 things". Without `and` a click could only be tested one stripe at a time, so a click game was not possible. They are in the Math palette after the three comparisons, before `print`.)
+`and` and `or` are infix yes-or-no blocks with two pointed holes (`[ ] and [ ]`), `not` is a prefix one with one (`not [ ]`). They are pills like `<`, laid out as a row, so they nest inside each other and inside the `if` hole.
+
+- **Spec.** `BLOCKS.and`, `or`, `not`: `kind: 'reporter'`, `returns: 'boolean'`, sockets `{ type: 'boolean' }`. The old rule "only a clamp has a pointed socket" and "a prefix has two sockets" are now "a reporter that holds yes-or-no blocks is a yes-or-no pill itself"
+  and "a prefix has at least one" (`spec.test.js` pins the three that join them, and nothing else, as the reporters with pointed sockets). `canPlug` already matched socket types, so a number block never fits a hole and a yes-or-no block never fits a number box.
+- **Drawing** (`layoutRow` in `block-view.js`). It had never drawn a pointed socket inside a row, and an empty one crashed it (`sizeOf` of nothing). An empty hole is a see-through pill (`EMPTY_YES_NO`, 46 wide) drawn into the row's own markup, a hole's dock is
+  at its pointed left end (`[x + 1, y + height / 2]`, like a yes-or-no block's own plug) and not the round plug a number block uses, and a prefix row takes any number of sockets. `pillPath` is the pill outline shared by the block and the hole.
+  `dev/logic-checks.mjs` drags them together in real Chrome.
+- **Running** (`evalJoined` in `interpreter.js`). `and` and `or` stop as soon as the answer is known, like Python and like JSLogo (whose `and` and `or` are lazy too): `box1 > 0 and 10 / box1 > 2` is fine with box1 at 0. **An empty or wrong hole is still a
+  mistake when the first half would have settled it**, checked before anything is worked out, so a program never works "sometimes" and the `and` is outlined with the usual "needs a yes or no block plugged into it" message. `not` has no such thing to skip.
+- **Logo.** TurtleLab Logo has real Logo's `and a b`, `or a b` and `not a`, written by `toLogo` in brackets round every test: `(and (:x > 0) (:x < 10))`, `(not (:x = 5))`. Typed, brackets are optional (`if and :x > 0 :x < 10 [ ... ]` reads the way real Logo does, because a
+  comparison takes its two sides before `and` takes its two inputs), and `(and a b c)` may have more than two (they nest left to right). **A test in brackets, `(:x < 5)`, compiles to the test itself**, not a `( )` block, which only holds numbers.
+  **A bug this found in the compiler (fixed): a bracket that starts with a word that takes no input, `(xcor + 5)` or `(mousex > 0)`, was read as a call like `(random 1 10)` and failed with "could not find the )".** Only words with inputs start a bracketed call now.
+  A missing test (`if and :a > 0 [ ... ]`) says "and needs 2 tests after it, and I only found 1". The words `and`, `or` and `not` came off the "real Logo, but not here yet" list, and a block of yours called `and` gets `and_`.
+  JSLogo is the same `(and ...)`; `test/jslogo.test.js` runs it in JSLogo's own interpreter, guard and all.
+- **Python.** `a and b`, `a or b`, `not (a)`: an `and` inside an `or` (or the other way) is put in brackets so nobody has to remember which comes first, and whatever `not` turns over always has brackets (`not (x == 7)`). `OR`, `AND` and `NOT` are precedences below
+  `COMPARE` (0.2, 0.4 and 0.6). Python's `and` also stops early, so `test/python.test.js` compares drawings for a program with a guard.
+- **Score.** They count as operators in complexity (`OPERATORS`), like the comparisons; nothing new in the panel or the PDF.
+- Tests: `test/spec.test.js`, `interpreter.test.js` (truth tables, nesting, the guard, empty and wrong holes), `logo.test.js`, `jslogo.test.js`, `python.test.js`, and `dev/logic-checks.mjs` (the palette, plugging, a number block refused, a hole coming back, running with a guard, the outline,
+  the Python and Logo boxes).
 
 ## Blocks you make yourself (functions)
 
@@ -1045,7 +1076,7 @@ programs may keep a stale preview for a while. Other pages (guide, samples, abou
   rectangle outline come from Sugar's `basicBox`. The teacher liked how
   another app lays out math and comparisons horizontally; nothing of that
   app's artwork was used. All other blocks keep Sugar's right-edge sockets.
-- **Math.** `+ - x ÷ %`, `( )`, `random`, `one of`, `< > =`, `print`. The
+- **Math.** `+ - x ÷ %`, `( )`, `random`, `one of`, `< > =`, `and`, `or`, `not` (see "and, or and not" below), `print`. The
   modulo block's op name is `mod` but it is labelled `%` (matches the Python
   course) and follows Python (never negative for a positive divisor). The
   `( )` block (`paren`, layout `wrap`) gives back what is inside it. It
@@ -1209,6 +1240,7 @@ The editor checks assert that making a PDF sends zero requests.
     node turtlelab/dev/can-checks.mjs                          # real Chrome: the score on the can and poking it (about a minute)
     node turtlelab/dev/ask-checks.mjs                          # real Chrome: the ask block and its question box (a minute)
     node turtlelab/dev/click-checks.mjs                        # real Chrome: the click handler, mouseX and mouseY (a minute)
+    node turtlelab/dev/logic-checks.mjs                        # real Chrome: and, or and not in the palette, dragged together, run, and written as Python and Logo (under a minute)
     node turtlelab/dev/embed-checks.mjs                        # real Chrome: ?embed=1 at 700 x 520 (add SITE_URL=http://127.0.0.1:4010/ to also load the lesson pages and their frames)
     node turtlelab/dev/jslogo-checks.mjs                       # real Chrome: the JSLogo copy and the trip to it (needs the whole site: python3 -m http.server 4012 in the top folder)
     EMBROIDERY_PYTHON=DIR/bin/python3 node turtlelab/dev/export-checks.mjs   # real Chrome: right-click Save, every file

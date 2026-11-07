@@ -89,10 +89,66 @@ try {
       const palettes = document.querySelector('.palettes').getBoundingClientRect();
       return { bottom: Math.round(Math.max(...stacks.map((r) => r.bottom))), top: Math.round(Math.min(...stacks.map((r) => r.top))), right: Math.round(Math.max(...stacks.map((r) => r.right))), left: Math.round(Math.min(...stacks.map((r) => r.left))), room: Math.round(msg.top), width: innerWidth, palettes: Math.round(palettes.right) };
     })()`);
-    check(`${demo.id} fits the frame: all its blocks are above the message line and inside the window`, fit.bottom <= fit.room && fit.top >= 38 && fit.right <= fit.width && fit.left >= fit.palettes - 2, JSON.stringify(fit));
+    if (demo.hideBlocks) {
+      // (too big to sit beside the paper: the frame hides the blocks and has no button to show them; the page shows an outline, and Open full size has the blocks)
+      const hidden = await chrome.eval(`(() => { const w = document.querySelector('.workspace'); const stage = document.querySelector('.stage'); const paper = document.querySelector('.paper-box').getBoundingClientRect(); return { stage: stage.classList.contains('blocks-hidden'), workspace: getComputedStyle(w).display, paperLeft: Math.round(paper.left), paperRight: Math.round(paper.right), width: innerWidth }; })()`);
+      check(`${demo.id} starts with its blocks hidden, so the whole paper is clear for playing`, hidden.stage && hidden.workspace === 'none' && hidden.paperLeft >= 0 && hidden.paperRight <= hidden.width, JSON.stringify(hidden));
+    } else {
+      check(`${demo.id} fits the frame: all its blocks are above the message line and inside the window`, fit.bottom <= fit.room && fit.top >= 38 && fit.right <= fit.width && fit.left >= fit.palettes - 2, JSON.stringify(fit));
+    }
     await finishRun();
     if (waits(demo)) await actAsPerson(demo); // (a demo that asks, or listens for clicks, draws once someone answers or clicks)
+    if ((demo.clicks ?? []).length > 0) {
+      // (a click that lands on a block says what the block is for and does nothing to the program: the clicks the checks make must be on clear paper, as a student's would be)
+      check(`${demo.id}: every click the checks make lands on the paper, not on one of its blocks`, !/^This runs when/.test(await chrome.eval(`document.getElementById('message').textContent`)));
+    }
     check(`${demo.id} has run by itself and drawn something${waits(demo) ? ' (when answered and clicked)' : ''}`, (await ink()) > 300, `${await ink()} marked pixels`);
+  }
+
+  // ---- The game: play it in its frame -------------------------------------------------------------------------------------
+  {
+    await chrome.goto(embedUrl('lesson-click-game'));
+    await chrome.sleep(1100);
+    await finishRun();
+    const boxes = async () => {
+      const text = await chrome.eval(`document.querySelector('.boxes-readout').textContent`);
+      return [...text.matchAll(/box(\d)\s+(-?[\d.]+)/g)].map((m) => Number(m[2]));
+    };
+    const paperAt = (x, y) => chrome.eval(`(() => { const r = document.querySelector('.paper-box').getBoundingClientRect(); const s = r.width / 700; return { x: r.left + (350 + ${x}) * s, y: r.top + (280 - ${y}) * s }; })()`);
+    const outputText = () => chrome.eval(`document.querySelector('.output')?.textContent ?? ''`);
+    const shown = await boxes();
+    check('the game shows its four boxes in the yellow strip, with the score at 0 and the square placed', shown.length === 4 && shown[0] === 0 && shown[1] >= -300 && shown[1] <= 240 && shown[2] >= -220 && shown[2] <= 130, JSON.stringify(shown));
+    check('the Output box (top right) is not in use, so nothing covers the paper', (await outputText()) === '');
+    // a click that misses: nothing changes
+    const miss = await paperAt(shown[1] + 90, shown[2] + 30);
+    await chrome.click(miss.x, miss.y);
+    await chrome.sleep(600);
+    const afterMiss = await boxes();
+    check('a click beside the square does nothing: the score and the square stay as they were', afterMiss[0] === 0 && afterMiss[1] === shown[1] && afterMiss[2] === shown[2], JSON.stringify(afterMiss));
+    // a click in the columns but above the square: still nothing
+    const above = await paperAt(shown[1] + 30, shown[2] + 100);
+    await chrome.click(above.x, above.y);
+    await chrome.sleep(600);
+    const afterAbove = await boxes();
+    check('a click above the square (right column, wrong row) does nothing either', afterAbove[0] === 0 && afterAbove[1] === shown[1] && afterAbove[2] === shown[2], JSON.stringify(afterAbove));
+    // a click inside: one point, and the square jumps
+    let place = shown;
+    let scored = 0;
+    for (let round = 1; round <= 3; round += 1) {
+      const hit = await paperAt(place[1] + 30, place[2] + 30);
+      await chrome.click(hit.x, hit.y);
+      await chrome.sleep(900);
+      const now = await boxes();
+      if (now[0] === round) scored += 1;
+      place = now;
+    }
+    check('three clicks inside the square score three points, in the box1 of the yellow strip', scored === 3, `scored ${scored}, boxes ${JSON.stringify(place)}`);
+    check('and after a hit the paper shows a square at a place that was drawn (it has ink)', (await ink()) > 300);
+    // the same page, full size: all the blocks are there
+    await chrome.goto(`${BASE}?sample=lesson-click-game`);
+    await chrome.sleep(1100);
+    const full = await chrome.eval(`(() => ({ hidden: document.querySelector('.stage').classList.contains('blocks-hidden'), stacks: document.querySelectorAll('.workspace .stack').length, button: document.getElementById('hide-blocks').getAttribute('aria-pressed') }))()`);
+    check('opened full size, the game has all its blocks showing (a note, the program, the block it makes and the click handler)', !full.hidden && full.stacks === 4 && full.button === 'false', JSON.stringify(full));
   }
 
   // ---- Start over, and a frame that can be run again ------------------------------------------------------------------

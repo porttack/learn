@@ -227,27 +227,35 @@ function layoutSlotLiteral(value, colors) {
   return { id: nextId++, value, text, markup, w: width + 2, h: SLOT_HEIGHT + 2, plug: [0, 0] };
 }
 
+/** The path of a pill (a yes-or-no shape) with its top-left corner at (x, y), kept a little inside its box so the outline is not cut off. */
+function pillPath(x, y, width, height) {
+  const r = height / 2;
+  const inset = 0.75;
+  const right = x + width - inset;
+  const bottom = y + height - inset;
+  const top = y + inset;
+  const left = x + r;
+  return `M ${left} ${top} H ${right - r + inset} A ${r - inset} ${r - inset} 0 0 1 ${right - r + inset} ${bottom} ` +
+    `H ${left} A ${r - inset} ${r - inset} 0 0 1 ${left} ${top} Z`;
+}
+
 /** The outline of a yes-or-no block: a pill. */
 function pillMarkup(width, height, colors) {
-  const r = height / 2;
-  const inset = 0.75; // so the outline is not cut off at the edge
-  const right = width - inset;
-  const bottom = height - inset;
-  const path =
-    `M ${r} ${inset} H ${right - r + inset} A ${r - inset} ${r - inset} 0 0 1 ${right - r + inset} ${bottom} ` +
-    `H ${r} A ${r - inset} ${r - inset} 0 0 1 ${r} ${inset} Z`;
   return (
     `<svg xmlns="${SVG_NS}" width="${width}" height="${height}">` +
-    `<path d="${path}" fill="${colors.fill}" stroke="${colors.stroke}" stroke-width="1.5"/>` +
+    `<path d="${pillPath(0, 0, width, height)}" fill="${colors.fill}" stroke="${colors.stroke}" stroke-width="1.5"/>` +
     `</svg>`
   );
 }
+
+/** An empty yes-or-no socket inside a row block (and, or, not): a see-through pill, the size a yes-or-no block would need to fit. */
+const EMPTY_YES_NO = { w: 46, h: SLOT_HEIGHT + 2 };
 
 /** Finish the layout of a math or comparison block (its sockets are already laid out in node.args). */
 function layoutRow(node, spec, colors) {
   const boolean = spec.returns === 'boolean';
   const fontSize = FONT_SIZE * SCALE;
-  const sizeOf = (arg) => arg.child ?? arg.literal;
+  const sizeOf = (arg) => arg.child ?? arg.literal ?? EMPTY_YES_NO;
 
   // The row is as tall as its tallest socket, with a little room above and below.
   const contentHeight = Math.max(SLOT_HEIGHT + 2, ...node.args.map((arg) => sizeOf(arg).h));
@@ -261,7 +269,7 @@ function layoutRow(node, spec, colors) {
   let items;
   if (spec.layout === 'infix') items = [{ socket: 0 }, text(spec.label), { socket: 1 }];
   else if (spec.layout === 'wrap') items = [text(spec.label), { socket: 0 }, text(spec.endLabel)];
-  else items = [text(spec.label), { socket: 0 }, { socket: 1 }];
+  else items = [text(spec.label), ...spec.args.map((_, i) => ({ socket: i }))]; // prefix: random [ a ] [ b ], not [ a ]
   const gap = spec.layout === 'wrap' ? 3 : ROW_GAP;
 
   let x = boolean ? height / 2 + ROW_PAD_H - 2 : plug[0] + ROW_PAD_H;
@@ -275,7 +283,12 @@ function layoutRow(node, spec, colors) {
       x += textWidth(item.text) * SCALE;
     } else {
       const box = sizeOf(node.args[item.socket]);
-      socketAt[item.socket] = { x, y: ROW_PAD_V + (contentHeight - box.h) / 2 };
+      const at = { x, y: ROW_PAD_V + (contentHeight - box.h) / 2, h: box.h };
+      socketAt[item.socket] = at;
+      // Nothing plugged into a yes-or-no socket: draw the hole, so there is somewhere to see where a block goes.
+      if (spec.args[item.socket].type === 'boolean' && !node.args[item.socket].child) {
+        labelMarkup += `<path d="${pillPath(at.x, at.y, box.w, box.h)}" fill="#ffffff" fill-opacity="0.55" stroke="${colors.stroke}" stroke-width="1.5"/>`;
+      }
       x += box.w;
     }
   });
@@ -302,7 +315,8 @@ function layoutRow(node, spec, colors) {
   // Plug on the left; each socket's dock is where a block's plug must land
   // for that block to sit exactly over the slot.
   const ownPlug = boolean ? [1, height / 2] : plug;
-  node.docks = [ownPlug, ...socketAt.map((at) => [at.x + plug[0], at.y + plug[1]])];
+  // A yes-or-no block's plug is its pointed left end, a little in from its edge and halfway down; a number block's is the round plug.
+  node.docks = [ownPlug, ...socketAt.map((at, i) => (spec.args[i].type === 'boolean' ? [at.x + 1, at.y + at.h / 2] : [at.x + plug[0], at.y + plug[1]]))];
   node.slot = node.docks[0];
   node.tab = node.docks[node.docks.length - 1];
   node.mouths = [];

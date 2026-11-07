@@ -385,8 +385,120 @@ test('Step 15: a program of the shape the page gives has the parts its list asks
   assert.match(page, /ask and click/);
 });
 
+/** Play the click game: run its program with this seed for the chance, then click where you like. Says where the square is and what the score is. */
+function playGame(seed) {
+  const stacks = copyOf('lesson-click-game');
+  const project = { app: FORMAT_ID, version: FORMAT_VERSION, stacks };
+  const turtle = new Turtle();
+  const context = createContext({ turtle, random: seeded(seed), definitions: definitionsOf(project).map });
+  const drive = (blocks) => { for (const step of runBlocks(blocks, context)) void step; };
+  drive(findRunStack(project).stack.blocks);
+  return {
+    turtle,
+    context,
+    where: () => ({ x: context.boxes[1], y: context.boxes[2] }),
+    score: () => context.boxes[0],
+    click(x, y) {
+      context.mouse = { x, y };
+      for (const handler of handlersOf(project)) drive(handler.blocks);
+    },
+  };
+}
+
+test('Step 16: the stripe frames print what the page says, and the game scores for a click inside the square and for nothing else', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-16-catch-the-square.md', import.meta.url), 'utf8');
+  // the stripe: a line 120 wide, drawn from x = 100 to x = 220
+  const stripe = runInteractive(copyOf('lesson-click-and'), { clicks: [] }).lines[0];
+  assert.equal(stripe.x1, 160, 'the stripe is centered on 160');
+  assert.equal(stripe.size, 120, 'and 120 wide, so it runs from 100 to 220');
+  // the clicks the page works through, for both frames
+  // (each click prints where it was, then the answer, so the Output box also says which x was clicked)
+  const printedFor = (id, xs) => {
+    const all = runInteractive(copyOf(id), { clicks: xs.map((x) => [x, 0]) }).printed;
+    assert.deepEqual(all.filter((_, i) => i % 2 === 0), xs.map(String), 'the x of each click is printed first');
+    return all.filter((_, i) => i % 2 === 1);
+  };
+  assert.deepEqual(printedFor('lesson-click-and', [160, 300, 50]), ['1', '0', '0'], 'and: inside, right of it, left of it');
+  assert.deepEqual(printedFor('lesson-click-or', [160, 300, 50]), ['0', '1', '1'], 'or: the opposite on every click');
+  for (const x of [100, 101, 219, 220, 160, -300, 340]) {
+    const [inside] = printedFor('lesson-click-and', [x]);
+    const [outside] = printedFor('lesson-click-or', [x]);
+    // (the edges themselves, exactly 100 and 220, are in neither: more than and less than leave them out, and the pages keep clear of them)
+    if (x > 100 && x < 220) assert.deepEqual([inside, outside], ['1', '0'], `x = ${x}`);
+    if (x < 100 || x > 220) assert.deepEqual([inside, outside], ['0', '1'], `x = ${x}`);
+  }
+  for (const [x] of sampleById('lesson-click-and').clicks) assert.ok(x > 100 && x < 220 || x > 220, 'the checks click away from the edges');
+  assert.match(page, /It prints 1\.|the program prints 1\./);
+  assert.match(page, /one no is enough to make `and` say no/i);
+  // the game: a square at a random place, always on the paper
+  for (let seed = 1; seed <= 200; seed += 1) {
+    const game = playGame(seed);
+    const { x, y } = game.where();
+    assert.ok(x >= -300 && x <= 240 && y >= -220 && y <= 130, `seed ${seed}: the square's corner (${x}, ${y})`);
+    assert.ok(x + 60 <= PAPER_W / 2 && y + 60 <= PAPER_H / 2 && x >= -PAPER_W / 2 && y >= -PAPER_H / 2, `seed ${seed}: the whole square is on the paper`);
+    assert.equal(game.score(), 0);
+    assert.ok(game.turtle.ops.some((op) => op.type === 'fill'), 'the square is filled');
+  }
+  // a hit scores and moves the square; a miss changes nothing
+  const game = playGame(7);
+  const { x, y } = game.where();
+  const inkBefore = game.turtle.ops.length;
+  for (const [dx, dy, label] of [[-5, 30, 'left of it'], [65, 30, 'right of it'], [30, -5, 'below it'], [30, 65, 'above it'], [0, 30, 'on its left edge'], [60, 30, 'on its right edge'], [30, 0, 'on its bottom edge'], [30, 60, 'on its top edge'], [-30, -30, 'far away']]) {
+    game.click(x + dx, y + dy);
+    assert.equal(game.score(), 0, `a click ${label} is a miss`);
+    assert.deepEqual(game.where(), { x, y }, `and the square stays where it was after a click ${label}`);
+  }
+  game.click(x + 1, y + 1);
+  assert.equal(game.score(), 1, 'a click just inside the bottom left corner is a hit');
+  assert.notDeepEqual(game.where(), { x, y }, 'and the square jumps');
+  const next = game.where();
+  game.click(next.x + 59, next.y + 59);
+  assert.equal(game.score(), 2, 'a click just inside the top right corner is a hit too');
+  for (let i = 0; i < 20; i += 1) { const at = game.where(); game.click(at.x + 30, at.y + 30); }
+  assert.equal(game.score(), 22, 'every hit adds exactly 1');
+  void inkBefore;
+  // what the page asks about the corner (50, -30): the click at (80, 10) is in, at (80, 50) is out because of the rows, and at (40, 10) because of the columns
+  const answer = (cx, cy) => {
+    const probe = playGame(3);
+    probe.context.boxes[1] = 50;
+    probe.context.boxes[2] = -30;
+    probe.click(cx, cy);
+    return { score: probe.score(), box4: probe.context.boxes[3] };
+  };
+  assert.equal(answer(80, 10).score, 1, 'in the square');
+  assert.equal(answer(80, 50).score, 0, 'out: 80 above the corner');
+  assert.equal(answer(80, 50).box4, 80, 'and the question that says no is the one about mouseY, which is 80 above the corner');
+  assert.equal(answer(40, 10).score, 0, 'out: left of the corner');
+  assert.equal(answer(40, 10).box4, -10, 'and mouseX minus box2 is -10, as the page says');
+  assert.match(page, /It is 30 right of the corner, which is fine, but 80 above it, which is not less than 60/);
+  assert.match(page, /so `mouseX - box2` is -10, which is not more than 0/);
+  assert.match(page, /The corner is at x = 50 and y = -30/);
+  // the page gives the block that draws the square: the same numbers as the demo
+  assert.match(page, /store in box2: random -300 240/);
+  assert.match(page, /store in box3: random -220 130/);
+  assert.match(page, /forward 60/);
+  assert.match(page, /less than 60/);
+});
+
+test('Step 16: a program of the shape the page gives has the parts its list asks for, in the score and on the PDF', () => {
+  const stacks = copyOf('lesson-click-game');
+  const score = scoreProject({ stacks });
+  const row = (id) => score.parts.find((part) => part.id === id);
+  assert.ok(row('loops').count >= 1 && row('ownBlocks').count >= 1 && row('conditionals').count >= 2, 'a repeat, a block of its own and two ifs');
+  assert.ok(row('variables').count >= 1 && row('userInput').count >= 1, 'a variable that is used, and a click handler');
+  assert.equal(score.ideas.userInput, true);
+  // every thing on the page's list is in the answer key and the notes
+  for (const phrase of ['jumps', 'score', 'uses `and`', 'block of their own', '`repeat`', 'sticky note']) assert.ok(key.includes(phrase), `answer key: ${phrase}`);
+  for (const phrase of ['jump', 'score', '`and`', 'block of your own', 'loop', 'sticky note']) assert.ok(notes.includes(phrase), `teacher notes: ${phrase}`);
+  // the game's handler is the shape the page outlines: a store, an if, a store, an if
+  const [, , , handler] = stacks;
+  assert.deepEqual(handler.blocks.map((block) => block.op), ['onclick', 'store4', 'if']);
+  assert.deepEqual(handler.blocks[2].body.map((block) => block.op), ['store4', 'if']);
+  assert.equal(handler.blocks[2].args[0].op, 'and');
+});
+
 test('everything that lists the steps knows every step: the contents page, the teacher notes, the answer key and the standards file', () => {
-  const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
+  const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen'];
   assert.match(index, new RegExp(`${words[steps.length]} steps with`), `the contents page says how many steps there are (${steps.length})`);
   assert.match(index, new RegExp(`Print all ${words[steps.length].toLowerCase()} steps`), 'and the print link');
   const slugs = steps.map((page) => page.file.replace(/\.md$/, ''));

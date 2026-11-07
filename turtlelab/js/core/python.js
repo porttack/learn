@@ -52,6 +52,11 @@ const size5 = (track) => (track.size ? 'set_pensize(5)' : 'pensize(5)');
 const PYTHON_SPEEDS = { slow: 1, medium: 3, fast: 6, instant: 0 };
 
 // How tightly an expression holds together, so parentheses only go where they are needed.
+// or holds together least, then and, then not, then a comparison (so `not a < b` would mean not (a < b), though it is written with
+// brackets here). These sit below COMPARE, and above the 0 that means "no brackets needed".
+const OR = 0.2;
+const AND = 0.4;
+const NOT = 0.6;
 const COMPARE = 1;
 const SUM = 2;
 const PRODUCT = 3;
@@ -542,6 +547,13 @@ function build(arg, context) {
       return compare('>', first, second, context);
     case 'equal':
       return compare('==', first, second, context);
+    case 'and':
+      return joined('and', AND, first, second, context);
+    case 'or':
+      return joined('or', OR, first, second, context);
+    case 'not':
+      // Brackets round whatever is being turned over, so it reads: not (x > 10).
+      return { text: `not ${expr(first, context, ATOM).text}`, prec: NOT, symbol: 'not' };
     case 'random': {
       const whole = Number.isInteger(first) && Number.isInteger(second);
       return atom(`random.${whole ? 'randint' : 'uniform'}(${expr(first, context).text}, ${expr(second, context).text})`);
@@ -558,6 +570,16 @@ function build(arg, context) {
       return atom('None');
     }
   }
+}
+
+/** and, or: a yes-or-no on each side. An and inside an or (or the other way round) gets brackets, so nobody has to remember which comes first. */
+function joined(symbol, level, left, right, context) {
+  const side = (arg) => {
+    const made = expr(arg, context, level);
+    const mixed = (made.symbol === 'and' || made.symbol === 'or') && made.symbol !== symbol;
+    return mixed ? { text: `(${made.text})`, prec: ATOM } : made;
+  };
+  return { text: `${side(left).text} ${symbol} ${side(right).text}`, prec: level, symbol };
 }
 
 function compare(symbol, left, right, context) {
