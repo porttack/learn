@@ -27,7 +27,7 @@ export function complexity01(points) {
 
 /** The three numbers, in the order they are shown, with what each is in a few words (the badge's panel and the PDF both say it). */
 export const METRICS = [
-  { id: 'complexity', label: 'Complexity', what: 'How many of the big ideas the program uses. Variables count the most, then loops, ifs and blocks you made.' },
+  { id: 'complexity', label: 'Complexity', what: 'How many of the big ideas the program uses. Variables count the most, then loops, ifs, blocks you made, and input (ask and clicking).' },
   { id: 'elegance', label: 'Elegance', what: 'Said with as little as it needs: nothing copied and pasted, no number typed over and over, nothing left over.' },
   { id: 'efficiency', label: 'Efficiency', what: 'How little work the last run took to make its picture: no lines drawn twice, little walking with the pen up, few steps.' },
 ];

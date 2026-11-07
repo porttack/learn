@@ -22,13 +22,39 @@ const chrome = await launch({ width: 1366, height: 700 });
 const messageText = () => chrome.eval(`document.getElementById('message').textContent`);
 const stored = () => chrome.eval(`localStorage.getItem('turtlelab-project')`);
 
-/** Wait until the run is over (the Run button comes back). */
+/**
+ * Wait until the run is over (the Run button comes back). A program that waits for a person is as over as it will get when its question is open
+ * or it says it is listening for clicks: it is then up to someone to answer or click (see actAsPerson).
+ */
 async function finishRun() {
   for (let i = 0; i < 100; i += 1) {
-    if (await chrome.eval(`!document.getElementById('run').disabled`)) return true;
+    if (await chrome.eval(`!document.getElementById('run').disabled || !!document.querySelector('.ask-box') || /^Listening for clicks/.test(document.getElementById('message').textContent)`)) return true;
     await chrome.sleep(200);
   }
   return false;
+}
+
+/** Be the person a sample waits for: type each of its `answers` into its question, and click the paper at each of its `clicks` once it is listening. */
+async function actAsPerson(sample) {
+  for (const answer of sample.answers ?? []) {
+    for (let i = 0; i < 50 && !(await chrome.eval(`!!document.querySelector('.ask-box')`)); i += 1) await chrome.sleep(100);
+    await chrome.eval(`(() => { const i = document.querySelector('.ask-input'); i.focus(); i.select(); })()`);
+    await chrome.send('Input.insertText', { text: String(answer) });
+    await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r' });
+    await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+    await chrome.sleep(300);
+  }
+  await finishRun();
+  for (const [x, y] of sample.clicks ?? []) {
+    const at = await chrome.eval(`(() => { const r = document.querySelector('.paper-box').getBoundingClientRect(); const s = r.width / 700; return { x: r.left + (350 + ${x}) * s, y: r.top + (280 - ${y}) * s }; })()`);
+    await chrome.click(at.x, at.y);
+    await chrome.sleep(400);
+  }
+  if (await chrome.eval(`/^Listening for clicks/.test(document.getElementById('message').textContent)`)) {
+    const stop = await chrome.centerOf('#stop');
+    await chrome.click(stop.x, stop.y); // (end the listening, so the next sample starts clean)
+    await chrome.sleep(200);
+  }
 }
 
 /** How many pixels on the paper are not the color of its corner. */
@@ -54,12 +80,15 @@ try {
   for (const sample of SAMPLES) {
     await chrome.goto(`${BASE}?sample=${sample.id}&speed=instant`);
     const finished = await finishRun();
+    const messageAtStart = await messageText();
     const { stacks, viewport } = await layout();
     const note = stacks.find((s) => s.note);
     const program = stacks.find((s) => !s.note && !s.definition);
     const made = stacks.filter((s) => s.definition);
-    check(`${sample.id}: opens with its note, its program and the blocks it makes, and runs by itself`,
-      finished && stacks.length === 2 + (sample.defines?.length ?? 0) && made.length === (sample.defines?.length ?? 0) && !!note && !!program && (await inkOnPaper()) > 100,
+    const waitsForPerson = (sample.answers ?? []).length > 0 || (sample.handlers ?? []).length > 0;
+    if (waitsForPerson) await actAsPerson(sample); // (a sample that asks, or listens for clicks, needs someone to answer or click before it draws)
+    check(`${sample.id}: opens with its note, its program and the blocks it makes, and runs by itself${waitsForPerson ? ' (when answered and clicked)' : ''}`,
+      finished && stacks.length === 2 + (sample.defines?.length ?? 0) + (sample.handlers?.length ?? 0) && made.length === (sample.defines?.length ?? 0) && !!note && !!program && (await inkOnPaper()) > 100,
       `${stacks.length} stacks, ${await inkOnPaper()} pixels of ink`);
     // The note is above the program, or (when the program is too tall for both) in a column of its own beside it.
     check(`${sample.id}: the note is above the program, or beside it, and everything fits on a 1366 by 700 screen`,
@@ -70,7 +99,7 @@ try {
     check(`${sample.id}: the note is shown whole, not cut off with ...`,
       await chrome.eval(`![...document.querySelectorAll('.workspace .node.note tspan')].some((t) => t.textContent.endsWith('...'))`));
     check(`${sample.id}: the message names the sample and says it is not saved`,
-      (await messageText()).startsWith(`Sample: ${sample.title}.`) && /not saved/.test(await messageText()), await messageText());
+      (messageAtStart.startsWith(`Sample: ${sample.title}.`) && /not saved/.test(messageAtStart)) || ((sample.handlers ?? []).length > 0 && /^Listening for clicks/.test(messageAtStart)), messageAtStart); // (a program that listens says so as soon as its blocks have run)
     check(`${sample.id}: no storage was touched`, (await chrome.eval(`localStorage.length`)) === 0);
   }
   check('no sample caused a console error, a warning or a security policy violation', chrome.problems.length === 0, chrome.problems.join(' | '));

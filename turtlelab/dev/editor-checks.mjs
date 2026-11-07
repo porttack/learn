@@ -553,7 +553,7 @@ try {
 
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Flow');
-  check('the Flow palette lists its eight blocks', (await count('.flyout .stack')) === 8);
+  check('the Flow palette lists its eleven blocks (start, when paper clicked, mouseX, mouseY, repeat, forever, if, if else, wait, speed, stop)', (await count('.flyout .stack')) === 11);
   await dragFromPalette('start', 450, 300);
   const startBlock = await nodeRect('start');
   await openPalette('Turtle');
@@ -670,7 +670,7 @@ try {
   const readoutText = () => chrome.eval(`document.querySelector('.boxes-readout').textContent.replace(/\\s+/g, ' ').trim()`);
   check('the boxes readout stays hidden until a box is used', await readoutHidden());
   await openPalette('Boxes');
-  check('the Boxes palette lists four store blocks and four box blocks, and nothing of your own', (await count('.flyout .stack')) === 8 && (await count('.flyout .stack[data-op=to]')) === 0);
+  check('the Boxes palette lists ask, four store blocks and four box blocks, and nothing of your own', (await count('.flyout .stack')) === 9 && (await count('.flyout .stack[data-op=to]')) === 0);
   await dragFromPalette('store1', 450, 150);
   check('the readout appears once a box block is on the page', !(await readoutHidden()) && (await readoutText()) === 'box1 0 box2 0 box3 0 box4 0', await readoutText());
 
@@ -2681,9 +2681,9 @@ try {
   await chrome.sleep(250);
   const panel = await chrome.eval(`(() => { const p = document.querySelector('.score-panel'); const r = p.getBoundingClientRect(); return { open: !p.hidden, expanded: document.querySelector('.score-pill').getAttribute('aria-expanded'), head: p.querySelector('.score-head').textContent, sections: [...p.querySelectorAll('.score-section')].map((s) => s.dataset.metric + ':' + s.querySelector('.score-title-value').textContent), rows: [...p.querySelectorAll('tbody tr')].map((tr) => tr.dataset.part + ':' + tr.querySelector('.score-points').textContent), heads: [...p.querySelectorAll('.score-table thead th')].map((th) => th.textContent), counts: [...p.querySelectorAll('tbody tr')].map((tr) => tr.querySelector('.score-count').textContent), names: [...p.querySelectorAll('tbody .score-part-name')].map((n) => n.textContent), total: p.querySelector('tfoot .score-points')?.textContent, scale: p.querySelector('.score-scale')?.textContent, hasTry: /\\btry\\b/i.test(p.querySelector('.score-table').textContent), reasons: [...p.querySelectorAll('.score-section-elegance .score-reason')].map((li) => li.className + '|' + li.textContent), effReasons: [...p.querySelectorAll('.score-section-efficiency .score-reason')].map((li) => li.textContent), inside: r.left >= 0 && r.top >= 0 && r.right <= innerWidth && r.bottom <= innerHeight }; })()`);
   check('pressing the badge opens the details: the block count, then Complexity, Elegance and Efficiency, each with its number, and they fit in the window', panel.open && panel.expanded === 'true' && /^\d+\s*blocks?$/.test(panel.head) && panel.sections.length === 3 && panel.sections.map((x) => x.split(':')[0]).join() === 'complexity,elegance,efficiency' && panel.inside, JSON.stringify(panel));
-  check('complexity shows where its points came from, the variables first (the counter is worth the most)', panel.rows.length === 7 && panel.rows[0].startsWith('variables:+') && Number(panel.rows[0].split('+')[1]) > Number(panel.rows[1].split('+')[1]), panel.rows.join(' '));
-  check('the points table has two columns, a count of each kind of block and the points they earned, under the names Idea, Count and Points', panel.heads.join() === 'Idea,Count,Points' && panel.counts.length === 7 && panel.counts.every((c) => /^\d+$/.test(c)), JSON.stringify([panel.heads, panel.counts]));
-  check('the rows are named for the blocks they count, with no "try" hints', panel.names.join() === 'Variables,repeat / forever,if / if else,Blocks you made,Math and random,Blocks,Big ideas used' && !panel.hasTry, panel.names.join());
+  check('complexity shows where its points came from, the variables first (the counter is worth the most)', panel.rows.length === 8 && panel.rows[0].startsWith('variables:+') && Number(panel.rows[0].split('+')[1]) > Number(panel.rows[1].split('+')[1]), panel.rows.join(' '));
+  check('the points table has two columns, a count of each kind of block and the points they earned, under the names Idea, Count and Points', panel.heads.join() === 'Idea,Count,Points' && panel.counts.length === 8 && panel.counts.every((c) => /^\d+$/.test(c)), JSON.stringify([panel.heads, panel.counts]));
+  check('the rows are named for the blocks they count, with no "try" hints', panel.names.join() === 'Variables,repeat / forever,if / if else,Blocks you made,ask / when paper clicked,Math and random,Blocks,Big ideas used' && !panel.hasTry, panel.names.join());
   check('the total is the sum of the points above it, and a sentence says how points become the 0.0 to 1.0 number', Number(panel.total) === panel.rows.reduce((n, r) => n + Number(r.split('+')[1] ?? 0), 0) && /On this scale 80 points is 0\.6, 130 is 0\.8 and 200 is 0\.9\. It never quite gets to 1\.0\./.test(panel.scale ?? ''), `${panel.total} | ${panel.scale}`);
   check('elegance says what is good about it, with a tick', panel.reasons.some((r) => /score-good/.test(r) && /A loop does the repeating/.test(r)), JSON.stringify(panel.reasons));
   check('efficiency says to run the program, since the blocks just changed', panel.effReasons.some((t) => /Run your program/.test(t)), JSON.stringify(panel.effReasons));

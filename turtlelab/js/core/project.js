@@ -88,7 +88,7 @@ export function findRunStack(project) {
   let startCount = 0;
   for (const stack of project.stacks) {
     const first = stack.blocks[0];
-    if (!first || BLOCKS[first.op].kind === 'note' || first.op === 'to') continue; // notes and definitions are not programs
+    if (!first || BLOCKS[first.op].kind === 'note' || first.op === 'to' || first.op === 'onclick') continue; // notes, definitions and click handlers are not programs
     if (first.op === 'start') {
       startCount += 1;
       if (higher(stack, topStart)) topStart = stack;
@@ -97,6 +97,22 @@ export function findRunStack(project) {
     }
   }
   return { stack: topStart ?? topCommands, startCount };
+}
+
+/** True for a stack that starts with a `when paper clicked` hat. */
+export function isHandler(stack) {
+  return stack.blocks[0]?.op === 'onclick';
+}
+
+/**
+ * The click handlers of a project, top to bottom (then left to right), each as { stack, blocks } with the blocks under the hat. Every one runs
+ * on each click.
+ */
+export function handlersOf(project) {
+  return project.stacks
+    .filter(isHandler)
+    .sort((a, b) => a.y - b.y || a.x - b.x)
+    .map((stack) => ({ stack, blocks: stack.blocks.slice(1) }));
 }
 
 /** Call `visit` for every block in a list, including blocks plugged into sockets and inside clamps. */
@@ -135,7 +151,7 @@ export function usesBoxes(project) {
   let found = false;
   for (const stack of project.stacks) {
     walkBlocks(stack.blocks, (block) => {
-      if (/^(store|box)\d+$/.test(block.op)) found = true;
+      if (/^(store|box)\d+$/.test(block.op) || block.op === 'ask') found = true; // (ask puts the answer in box1)
     });
   }
   return found;
@@ -172,7 +188,7 @@ function cleanBlock(block, depth) {
   }
   const clean = { op: block.op };
   if (BLOCKS[block.op].kind === 'note') clean.text = cleanNoteText(block.text);
-  if (BLOCKS[block.op].textSlot) clean.text = cleanLetteringText(block.text);
+  if (BLOCKS[block.op].textSlot) clean.text = cleanLetteringText(block.text, BLOCKS[block.op].textSlot.max);
   // A set font block keeps its font (any other value, or none, is the default font). No other block has one.
   if (BLOCKS[block.op].fontSlot) clean.font = cleanFont(block.font);
   if (block.args !== undefined) {

@@ -11,9 +11,9 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 import { toPython } from '../js/core/python.js';
-import { findRunStack } from '../js/core/project.js';
+import { findRunStack, handlersOf } from '../js/core/project.js';
 import { definitionsOf } from '../js/core/definitions.js';
-import { runBlocks, createContext } from '../js/core/interpreter.js';
+import { runBlocks, createContext, Ask } from '../js/core/interpreter.js';
 import { Turtle } from '../js/core/turtle.js';
 import { formatNumber } from '../js/core/format.js';
 import { SAMPLES, sampleStacks } from '../js/ui/samples.js';
@@ -43,20 +43,35 @@ function mainLines(project) {
 
 // ---- Running both and comparing ---------------------------------------------------------------------
 
-function runPython(source, mode = 'run') {
-  const result = spawnSync('python3', ['-I', RUNNER], { input: JSON.stringify({ source, mode }), encoding: 'utf8' });
+function runPython(source, mode = 'run', answers = [], clicks = undefined) {
+  const result = spawnSync('python3', ['-I', RUNNER], { input: JSON.stringify({ source, mode, answers, clicks }), encoding: 'utf8' });
   assert.equal(result.status, 0, `python3 failed:\n${result.stderr}\n--- program ---\n${source}`);
   return JSON.parse(result.stdout);
 }
 
 /** Run the blocks in TurtleLab's interpreter. Heading is given the way Python counts it. */
-function runBlocksHere(project) {
+function runBlocksHere(project, answers = [], clicks = []) {
   const turtle = new Turtle();
   const printed = [];
   const { map } = definitionsOf(project);
   const { stack } = findRunStack(project);
   const context = createContext({ turtle, definitions: map, print: (line) => printed.push(line), random: () => 0.5 });
-  [...runBlocks(stack.blocks, context)];
+  // Run some blocks, answering each ask block from `answers`, in order (as the page does when a person types).
+  const drive = (blocks) => {
+    const steps = runBlocks(blocks, context);
+    let reply; // what an ask block is told
+    for (;;) {
+      const { value, done } = steps.next(reply);
+      reply = value instanceof Ask ? Number(answers.shift()) : undefined;
+      if (done) break;
+    }
+  };
+  drive(stack ? stack.blocks : []);
+  // then the clicks, as the page runs them: where the click was is set, and every handler runs, top to bottom
+  for (const click of clicks) {
+    context.mouse = { x: click[0], y: click[1] };
+    for (const handler of handlersOf(project)) drive(handler.blocks);
+  }
   let length = 0;
   for (const op of turtle.ops) {
     if (op.type === 'line') length += Math.hypot(op.x2 - op.x1, op.y2 - op.y1);
@@ -68,10 +83,10 @@ function runBlocksHere(project) {
 const turnBetween = (a, b2) => Math.abs((((a - b2) % 360) + 540) % 360 - 180);
 
 /** Check that Python and the blocks agree about where the turtle ended up and how far it drew. */
-function assertSame(project, label, { length = true } = {}) {
+function assertSame(project, label, { length = true, answers = [], clicks = undefined } = {}) {
   const source = toPython(project);
-  const python = runPython(source);
-  const here = runBlocksHere(project);
+  const python = runPython(source, 'run', answers, clicks);
+  const here = runBlocksHere(project, [...answers], clicks ?? []);
   const near = (p, q, tolerance = 1e-6) => Math.abs(p - q) <= tolerance;
   assert.ok(near(python.x, here.x), `${label}: x is ${python.x} in Python and ${here.x} in the blocks\n${source}`);
   assert.ok(near(python.y, here.y), `${label}: y is ${python.y} in Python and ${here.y} in the blocks\n${source}`);
@@ -293,7 +308,8 @@ test('every sample ends in the same place, having drawn as far, in Python and in
     // The wandering turtle turns by chance, and Python's chance is not ours. It is only checked to be valid.
     if (sample.id === 'wandering-turtle') continue;
     // A write block draws letters that Python's turtle has no way to draw (see the test for it), so only where it ends is compared.
-    assertSame(projectOf(...sampleStacks(sample)), sample.id, { length: !sample.concepts.includes('write') });
+    // (a sample that waits for a person is given its answers and clicks, the same ones for Python and for the blocks)
+    assertSame(projectOf(...sampleStacks(sample)), sample.id, { length: !sample.concepts.includes('write'), answers: sample.answers ?? [], clicks: sample.clicks });
   }
 });
 
@@ -338,7 +354,7 @@ test('blocks of your own agree: inputs, boxes, stop, calls inside calls, and rec
 // lives. So the program is both RUN against it (every sample, and a program with every block in it) and
 // checked name by name.
 
-const BUILTINS_USED = new Set(['range', 'print', 'int', 'abs', 'round', 'max', 'min', 'SystemExit', 'NameError']);
+const BUILTINS_USED = new Set(['range', 'print', 'int', 'abs', 'round', 'max', 'min', 'SystemExit', 'NameError', 'input', 'float', 'ValueError', 'OverflowError']);
 // Functions of modules the program imports. (Pyodide, which PyScript uses, is ordinary Python.)
 const MODULE_FUNCTIONS = new Set(['random.randint', 'random.uniform', 'random.choice', 'time.sleep']);
 const edublocksNames = () => new Set(runPython('', 'edublocks-names').names);
@@ -348,6 +364,7 @@ function everything() {
   const cond = op('less', { op: 'box1' }, 5);
   return projectOf(
     hat('spin', ['n', 'm'], b('forward', input('n')), b('left', input('m')), { op: 'stop', args: [] }),
+    { x: 600, y: 0, blocks: [b('onclick'), b('penup'), b('setxy', { op: 'mousex' }, { op: 'mousey' }), b('pendown'), b('forward', { op: 'mousey' })] },
     program(
       b('clean'), b('forward', 1), b('back', 1), b('left', 1), b('right', 1), b('arc', 90, 10), b('arc', { op: 'box1' }, 10), b('arc', -5, 5),
       b('setxy', 1, 2), b('setheading', 30), b('setheading', { op: 'box1' }), b('penup'), b('pendown'), b('setpensize', 2), b('setcolor', 1, 2, 3),
@@ -356,7 +373,7 @@ function everything() {
       b('forward', { op: 'penred' }), b('forward', { op: 'pengreen' }), b('forward', { op: 'penblue' }),
       b('forward', op('paren', op('add', op('subtract', 5, 1), op('multiply', 2, op('divide', 8, op('mod', 7, 3)))))),
       b('forward', op('random', 1, 6)), b('forward', op('random', 1, 2.5)), b('forward', op('oneof', 1, 2)),
-      b('store1', 3), b('store2', 4), b('store3', 5), b('store4', 6), b('print', { op: 'box4' }),
+      b('store1', 3), b('store2', 4), b('store3', 5), b('store4', 6), b('print', { op: 'box4' }), { op: 'ask', args: [], text: 'How many?' },
       rep(3, b('forward', 1)), rep({ op: 'box1' }, b('forward', 1)),
       ifBlock(cond, b('forward', 1)), ifElse(op('equal', 1, 1), [b('forward', 1)], [ifBlock(op('greater', 2, 1), b('back', 1))]),
       b('wait', 5), b('speed', 2), b('speed', 4), { op: 'setfont', args: [], font: 'bold' }, b('setcurve', 90), b('setcurve', { op: 'box1' }), call('spin', ['n', 'm'], 10, 20),
@@ -403,7 +420,8 @@ test('the stand-in really is as strict as EduBlocks: the old mistakes fail when 
 
 test('the program that uses every block is valid, and RUNS against EduBlocks\' turtle without an error', needsPython, () => {
   assert.doesNotThrow(() => runPython(toPython(everything()), 'check'));
-  const result = runPython(toPython(everything()), 'run');
+  const result = runPython(toPython(everything()), 'run', ['3']);
+  assert.deepEqual(result.asked, ['How many? '], 'it asked its question once');
   assert.ok(Number.isFinite(result.x) && Number.isFinite(result.y));
   assert.ok(result.printed.length >= 1, 'it printed');
   assert.deepEqual(result.speeds, [3, 0], 'speed 2 is Python\'s 3, and speed 4 is 0');
@@ -450,4 +468,66 @@ test('a write block is left as a comment and a pass: Python\'s turtle cannot dra
   assertSame(projectOf(program(b('clean'), write, b('forward', 40), write, b('right', 30))), 'a write block', { length: false });
   // Nothing about it needs a name EduBlocks does not have.
   assert.ok(!toPython(alone).includes('write('), 'no call to a write function');
+});
+
+test('ask: Python asks with input(), keeps asking until it gets a number, and the answer goes in box1 like the block does', needsPython, () => {
+  const sides = projectOf(program(b('clean'), { op: 'ask', args: [], text: 'How many sides?' }, rep({ op: 'box1' }, b('forward', 40), b('right', op('divide', 360, { op: 'box1' }))), b('print', { op: 'box1' })));
+  for (const answer of ['3', '5', '6', '4.5', '-2', '0']) assertSame(sides, `ask ${answer}`, { answers: [answer] });
+  const source = toPython(sides);
+  assert.match(source, /^def ask\(question\):$/m);
+  assert.match(source, /^box1 = ask\("How many sides\?"\)$/m);
+  // words and rubbish are asked about again (the helper prints a note), then the number is taken
+  const again = runPython(source, 'run', ['five', '', 'nan', 'inf', '1e999', '4']);
+  assert.deepEqual(again.asked, Array(6).fill('How many sides? '));
+  assert.equal(again.printed.filter((word) => word === 'Please').length, 5, 'five answers that were not numbers');
+  assert.equal(again.length, 160, 'and then 4 sides of 40');
+  // the answer is whole when it was typed whole, and a decimal when it was typed as one
+  assert.deepEqual(runPython(toPython(projectOf(program({ op: 'ask', args: [], text: 'x' }, b('print', { op: 'box1' })))), 'run', ['7']).printed, ['7']);
+  assert.deepEqual(runPython(toPython(projectOf(program({ op: 'ask', args: [], text: 'x' }, b('print', { op: 'box1' })))), 'run', ['7.0']).printed, ['7']);
+  assert.deepEqual(runPython(toPython(projectOf(program({ op: 'ask', args: [], text: 'x' }, b('print', { op: 'box1' })))), 'run', ['7.25']).printed, ['7.25']);
+});
+
+test('ask inside a block of your own writes the global box1, and a question with quotes stays one string', needsPython, () => {
+  const project = projectOf(hat('size', [], { op: 'ask', args: [], text: 'Say "go": ' }), program(b('clean'), call('size', []), b('forward', { op: 'box1' })));
+  const source = toPython(project);
+  assert.match(source, /def size\(\):\n    global box1\n    box1 = ask\("Say \\"go\\": "\)/);
+  assertSame(project, 'ask in a block of my own', { answers: ['25'] });
+  assert.deepEqual(runPython(source, 'run', ['25']).asked, ['Say "go":  ']);
+});
+
+test('click handlers: a click calls on_click with where it was, and the Python draws what the blocks draw (one handler, several, and a stop in one)', needsPython, () => {
+  const square = [b('penup'), b('setxy', { op: 'mousex' }, { op: 'mousey' }), b('pendown'), rep(4, b('forward', 20), b('right', 90))];
+  const handler = (...blocks) => ({ x: 600, y: 0, blocks: [b('onclick'), ...blocks] });
+  const one = projectOf(program(b('clean')), handler(...square));
+  for (const clicks of [[], [[40, -30]], [[40, -30], [-100, 60], [0, 0]]]) assertSame(one, `${clicks.length} clicks`, { clicks });
+  const source = toPython(one);
+  assert.match(source, /^def on_click\(x, y\):\n    global mouseX, mouseY\n    mouseX = x\n    mouseY = y\n/m);
+  assert.match(source, /try:\n    onscreenclick\(on_click\).*\nexcept NameError:\n    pass/);
+  assert.match(source, /^mouseX = 0.*\nmouseY = 0$/m);
+  // the mouse variables work anywhere, and hold the last click: a block of your own reads them, and so does a second click
+  const reading = projectOf(hat('go', [], b('forward', { op: 'mousex' }), b('right', 90), b('forward', { op: 'mousey' })), program(b('clean')), handler(call('go', [])));
+  assertSame(reading, 'a block of my own reads mouseX and mouseY', { clicks: [[30, 40], [10, 20]] });
+  // several handlers all run, in order, and each is its own function; a stop only ends the handler it is in
+  const several = projectOf(program(b('clean')), { x: 600, y: 0, blocks: [b('onclick'), b('forward', 10), { op: 'stop', args: [] }, b('forward', 999)] }, { x: 600, y: 50, blocks: [b('onclick'), b('right', 90), b('forward', { op: 'mousex' })] });
+  assertSame(several, 'two handlers, a stop in the first', { clicks: [[7, 0], [5, 0]] });
+  assert.match(toPython(several), /def when_clicked_1\(\):[\s\S]*def when_clicked_2\(\):[\s\S]*def on_click\(x, y\):[\s\S]*when_clicked_1\(\)\n    when_clicked_2\(\)/);
+  // boxes stored in a handler are the global ones, and ask works there too
+  const boxes = projectOf(program(b('clean'), b('store1', 5)), handler(b('store2', op('add', { op: 'box1' }, { op: 'mousex' })), b('forward', { op: 'box2' })));
+  assertSame(boxes, 'a box set in a handler', { clicks: [[10, 0], [20, 0]] });
+  assert.match(toPython(boxes), /def on_click\(x, y\):\n    global mouseX, mouseY, box2\n/);
+  assertSame(projectOf(program(b('clean')), handler({ op: 'ask', args: [], text: 'How far?' }, b('forward', { op: 'box1' }))), 'ask in a handler', { clicks: [[1, 1]], answers: ['25'] });
+  // a page with only a click handler is a whole program too
+  const only = projectOf(handler(b('forward', { op: 'mousey' })));
+  assert.doesNotThrow(() => runPython(toPython(only), 'check'));
+  assert.match(toPython(only), /# Your program starts here\nsetheading\(90\)\n[^\n]*\n[^\n]*\ntry:\n    onscreenclick\(on_click\)/, 'it starts the way TurtleLab does (facing up), then listens');
+  assert.ok(!/Nothing runs yet/.test(toPython(only)));
+  assertSame(only, 'only a handler', { clicks: [[0, 30]] });
+});
+
+test('in EduBlocks, which has no onscreenclick, a program with a click handler still runs: the call is guarded and nothing happens', needsPython, () => {
+  const project = projectOf(program(b('clean'), b('forward', 10)), { x: 600, y: 0, blocks: [b('onclick'), b('forward', 99)] });
+  const result = runPython(toPython(project), 'run'); // (no clicks key: no onscreenclick here, as in EduBlocks)
+  assert.equal(result.y, 10, 'the program ran and the handler did not');
+  const { free } = namesUsedBy(project);
+  assert.ok(!free.includes('onscreenclick'), 'a name that is only used where its absence is caught is not a name EduBlocks must have');
 });

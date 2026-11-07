@@ -33,7 +33,7 @@ export const COSTS = Object.freeze({
   deep: 0.05, deepMost: 0.15, deepFrom: 4, // for each level of nesting past this many
 });
 
-const HATS = new Set(['start', 'to']);
+const HATS = new Set(['start', 'to', 'onclick']); // (a click handler is a stack of its own, not a stray one)
 const LOOPS = new Set(['repeat', 'forever']);
 const MAX_UNIT = 6; // the longest run of blocks looked for as a copy
 const SAME_NUMBER_AT = 4; // a number typed this many times is too many

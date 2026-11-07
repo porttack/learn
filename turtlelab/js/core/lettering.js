@@ -64,11 +64,11 @@ export function canWrite(ch) {
 
 /**
  * Words as a write block keeps them: only letters that can be drawn (anything else, like a
- * tab, a new line or an accented letter, is dropped), and at most LETTERING_MAX_CHARS of them.
+ * tab, a new line or an accented letter, is dropped), and at most LETTERING_MAX_CHARS of them (or `max`, for a block that asks for more: the ask block's question).
  */
-export function cleanLetteringText(text) {
+export function cleanLetteringText(text, max = LETTERING_MAX_CHARS) {
   if (typeof text !== 'string') return '';
-  return [...text].filter(canWrite).slice(0, LETTERING_MAX_CHARS).join('');
+  return [...text].filter(canWrite).slice(0, max).join('');
 }
 
 /** How far along the line the words reach, in steps, in this font (the default one if none is given). */

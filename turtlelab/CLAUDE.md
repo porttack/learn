@@ -117,6 +117,7 @@ the dashes out of them too for consistency.
       canvas-view.js  paper canvas (1400x1120) + sketch canvas for the hand drawn papers + draggable turtle overlay
       hand-drawn.js   makes the chalk grain tile into a picture for CSS mask-image (once, from numbers)
       color-picker.js the picker panel that opens from a color box on set color / fill screen (number, hex, binary)
+      ask-box.js      the question box an ask block shows (see "The ask block")
       score-badge.js  the card in the bottom right corner (blocks, complexity, elegance, efficiency), its details panel and the floating "+0.1 elegance"
       files.js        Save (download a PNG with the blocks inside), Open, drops
       fullscreen.js   the Full screen button (standard and webkit names; hides itself where the browser cannot)
@@ -129,7 +130,7 @@ the dashes out of them too for consistency.
 
 ## Samples
 
-`js/ui/samples.js` holds the student samples (27 listed, easiest first, then seven for an embroidery machine, plus twelve demos made only for lessons: `listed: false`, ids `lesson-...`), each
+`js/ui/samples.js` holds the student samples (27 listed, easiest first, then seven for an embroidery machine, plus fourteen demos made only for lessons: `listed: false`, ids `lesson-...`), each
 with `id`, `title`, `summary`, `look` (the picture's alt text), `concepts`
 (little tags), `note` (a sticky note, at most 250 characters so it is not cut
 off), `program` and optionally `defines` (blocks the sample makes). They are different from `demos.js`, which is for the
@@ -148,6 +149,10 @@ checks. All wording is student-facing, so no dashes and no grade level.
   first on `pagehide`). Save and Ctrl+S still work. Keep it this way: the
   privacy pages say nothing is stored except the one autosave item. `sample-checks.mjs`
   proves it with real saved work in place.
+- **A sample can wait for a person (2026-11-06).** `handlers` (a list of block lists, each under a `when paper clicked` hat; placed down the left with the blocks it makes by `sampleStacks`), and, for the tests and checks only,
+  `answers` (what to type into each ask, in order) and `clicks` (`[x, y]` in the turtle's steps, once it is listening; they must be on clear paper even in a 700 wide frame, where blocks sit over part of it). `lesson-ask-sides` and
+  `lesson-click-stamp` are the two. `samples.test.js` runs a sample as that person (`runSample`), the Python and JSLogo every-sample tests are given the same answers and clicks (JSLogo has no mouse, so a sample with handlers is only
+  checked to run there; `allLeft: true` puts the note, the program and the handlers all down the left, as `lesson-click-stamp` does, because the Output box sits at the top right edge and hid whatever was there), and `sample-checks.mjs` and `embed-checks.mjs` (standalone and inside the real lesson pages' frames) type the answers and click the paper, treating "the question is open" or "listening for clicks" as settled.
 - **Adding or changing a sample** is: edit `samples.js`, then run
   `node turtlelab/dev/make-sample-thumbs.mjs` (needs the dev server; the
   thumbnails are photographs of the real app, 350x280, and a sample that uses
@@ -224,6 +229,59 @@ no `sandbox` attribute, because module scripts need the same origin). **Same app
   `localStorage` item is untouched, nothing else is stored); nothing amusing itself (control: the same page without `embed=1` does); no request to another address; and, with `SITE_URL=http://127.0.0.1:4010/`
   (my own `bundle exec jekyll serve --port 4010 --no-watch`; it must be restarted to see new files), that each lesson page's frames load TurtleLab in embed mode and the demo inside drew something.
 - A frame has no PDF button, so a lesson that ends in a PDF (Steps 4 and 12, and every "Save your work") says to use **Open full size** first.
+
+## The ask block (input)
+
+`ask |question|` (Boxes palette, label `ask [question] into box1`) shows the question in a box at the top of the page, waits for a number, and puts it in **box1** (2026-11-06, the user: "just ask [prompt] which writes to box1",
+and "simple is good"; a lower and upper bound with an entry box and a slider was floated and left for later, and would be extra slots on this same block). It is a command, not a reporter, because reporters are plain synchronous
+functions and this has to wait for a person.
+
+- **The pieces.** `Ask` (interpreter.js) is what the block yields, like `Wait`; the scheduler (`onAsk(question, block)` returns `{ answered, cancel }`) lights the block, shows the question and waits, then hands the number back with
+  `generator.next(number)`, and the block stores it and takes one more step so the yellow strip shows box1 changing. Stop while asking calls `cancel` (the box goes away) and the run ends `stopped`; the person giving up (Cancel,
+  Escape) answers `null`, which stops the program the same way. **With no one to ask the answer is 0** (a run driven by hand in a test, or the PDF's run first). `ui/ask-box.js` is the box (a `<form>`, not `window.prompt`, which would
+  freeze the shark and Stop): the answer must be a plain number (`parseAnswer` in core/format.js: 12, -3.5, .5; not 1e3, 0x10 or a word), else it says "Type a number, like 12 or -3.5." and stays open. Enter is OK, Escape is Cancel,
+  and its keys never reach the workspace (Ctrl+Z does not undo blocks while it is open).
+- **The block.** A `textSlot` block like `write` (words kept in `block.text`), with `default` 'How many?', `max` 60 letters (`ASK_MAX_CHARS`; write holds 40) and `shows` 30 (letters of it shown on the block before the dots), plus the new spec
+  field `endLabel`, the little word after the box ('into box1'). It always writes box1, so a program that needs box1 for something else stores the answer in another box straight away. `usesBoxes` counts it (the readout shows).
+- **The PDF** runs a program that has not run, with nobody to ask: ask answers 0 at once, and the message says "Your program asks a question, so this run used 0 as the answer." (`askedForPdf` in main.js).
+- **Logo.** TurtleLab Logo has `ask |question|` (like `write |words|`); the compiler reserves box1 when a program asks, so a name of yours never takes it. For JSLogo it is `make "box1 sum 0 (readword [question])`: JSLogo's own question box
+  gives back a word, and `sum 0` makes it a number (the parentheses are what make readword take its prompt); `test/jslogo.test.js` runs it there with answers.
+- **Python.** `box1 = ask("question")`, with a small `ask` function (only when used) that calls `input()` until `float()` works and keeps a whole answer whole. `ask`, `input`, `float`, `ValueError` and `OverflowError` are names the
+  program uses (reserved for your blocks' names; the builtins are real Python's, which PyScript has). `test/python-runner.py` answers `input()` from the request's `answers` and reports what was asked; the Python test runs the same
+  answers through both and requires the same drawing, including bad answers (words, nan, inf, 1e999) that are asked about again.
+- **Not built yet:** bounds and a slider; a second answer box (ask always writes box1); an ask that waits inside a frame is fine (`?demo=ask` is the developer program for it). A lesson step for it is next (Step 13).
+- Tests: `test/scheduler.test.js`, `spec.test.js`, `logo.test.js`, `jslogo.test.js`, `python.test.js`, `format.test.js`, and `dev/ask-checks.mjs` (real Chrome: the block, editing the question, the box, bad answers, Cancel, Escape, Stop,
+  Ctrl+Z, the PDF's run, a 700 x 520 frame, nothing stored or requested).
+
+## Click handlers (`when paper clicked`, mouseX and mouseY)
+
+(2026-11-06, the user, who comes from CMU where `onMousePress(x, y)` is real: "I like the idea that we could just do onClick and have two new built in variables called mouseX and mouseY that are global", and the trigger should be "a click".)
+A hat `when paper clicked` (`onclick`, Flow palette, right after `start`) holds blocks that run each time the paper is clicked while a program is running. Two reporters, `mouseX` and `mouseY` (`mousex`, `mousey`, in the
+Flow palette right under the hat: the user first found them in Boxes, did not see them there and chose Flow, 2026-11-06), say where, in the turtle's own x and y (whole numbers, y up, the same as `set xy`). They are global: they work in the main program, in a block you made and in a handler, 0 and 0 until the first
+click, and they hold the last click until the next. They live in `ctx.mouse`, which the page sets when a handler starts.
+
+- **A program with a handler listens.** `Scheduler.start(generator, { listen: true })` (main.js `beginRun` passes it when the project has handlers and the run is not for the PDF): when the last block has run the program does not end, it
+  calls `onListen` (the message "Listening for clicks on the paper. Press Stop when you are done.", kept short so it stays on one line: a message that wraps takes room from the paper and the paper then resizes, which shifted a frame's
+  clicks by 5%) and waits for clicks until Stop. A `stop` block in the main program ends the whole program, listening too; in a handler it only ends that handler. `Scheduler.queueEvent(makeGenerator)` is how the page hands over a click
+  (`makeGenerator` is called when the handler starts, which is when `ctx.mouse` is set); it refuses clicks when nothing is listening and past `MAX_QUEUED_EVENTS` (10, so a slow handler and a fast hand never build a pile). **Clicks wait for the
+  block that is running to finish, then the handler runs from start to end, then the program carries on**; a `wait` or a question inside it takes its time, and a question that is already open comes first. A mistake in a handler ends the run with
+  that mistake, like one in the main program. A page with only a handler: Run listens at once.
+- **Run never starts from a handler:** `findRunStack` skips `onclick` stacks (and tapping one says what it is for). `handlersOf(project)` lists them top to bottom, and every one runs on each click. The hat counts as a hat (not a plain block) for
+  complexity and elegance, and a handler is not a stray stack.
+- **What is a click** (`Workspace.listenForView`, which already handled sliding): a press and release of one finger or the left mouse button on the paper or the gray round it that moved less than `CLICK_SLOP` (6 px). More is a slide (the
+  blocks move, nothing runs). Blocks, palettes, the turtle and the can are not "empty space", so a click on them is theirs. `CanvasView.worldAt(clientX, clientY)` turns the point into the paper's x and y through the drawing's view (so it is right after
+  Fit or a zoom) or null if it is off the paper (the gray round it is not the paper). The sprite is locked while a program runs, so the turtle cannot be dragged during one.
+- **The PDF** runs a program that has not run with `listen` off (a handler run for the PDF just ends: nobody will click).
+- **Logo.** TurtleLab Logo has `onclick [ ... ]` on a line of its own (an error inside a repeat, an if or a `to`) and `mousex`, `mousey` like `xcor`. They are our own words (real Logo has none for events), written after the program. JSLogo has no
+  mouse clicks, so for JSLogo the handlers are left out (one note in the comment at the top) and `mousex` and `mousey` are 0.
+- **Python.** One handler is `def on_click(x, y):` with `global mouseX, mouseY` (and any box it sets), then `mouseX = x`, `mouseY = y`, then the blocks; several are `when_clicked_1()`, `when_clicked_2()` called in order by `on_click`.
+  `onscreenclick(on_click)` is registered before `done()`, **inside `try: ... except NameError: pass`, because EduBlocks' turtle has no `onscreenclick`** (so there the handler does nothing, and the name check does not count it). The Python only
+  clicks after the main program has run (in the blocks a click can come between blocks). A page with only a handler still starts facing up with a red pen. `test/python-runner.py` takes a `clicks` list: only then does it have `onscreenclick`,
+  and it calls the handler for each click; `test/python.test.js` runs the same clicks through both and requires the same drawing.
+- **Not built yet:** a little ring where a click lands (a click that draws nothing looks like nothing happened); a click that arrives during a long `wait` runs after it; mouse move and release events; clicks outside the paper. A lesson step for it
+  is next (Step 14, after Step 13 for ask).
+- Tests: `test/scheduler.test.js`, `spec.test.js`, `logo.test.js`, `jslogo.test.js`, `python.test.js`, `quality.test.js`, and `dev/click-checks.mjs` (real Chrome: the palettes, listening, a click's place, quick clicks in order, a slide
+  and a click on gray, a block or a palette button that are not clicks, Stop, running again, mouseX read by the main program, a page with only a handler, the PDF not waiting, a 700 x 520 frame, nothing stored or requested).
 
 ## Blocks you make yourself (functions)
 
@@ -514,7 +572,7 @@ is about to clean anyway).
   Complexity, Elegance and Efficiency each with its number, a meter, what it means, and **its reasons** (two columns on a window 820 px wide or more, one scrolling column below). Hidden with the blocks.
   **Complexity** (`core/complexity.js` points, unchanged: plain blocks count 1 each up to 20; variables pay most: a box worth 12 once stored in, +3 per store, +4 per read, +8 for a counter like box1 + 1, +15 for the
   first variable really used, an input of your own block 6 and 3 per use; loops 6 (+4 nested); conditionals 7 (+2 else, +3 in a loop); own blocks 8 when used; math 2/chance 3 to 16; bonus 6 per big idea, 10 for the
-  variable one, 10 for all four) goes on a curve: `complexity01(points) = 1 - exp(-points / 80)` (`COMPLEXITY_SCALE`): never 1.0, a counter in a loop (82 points) is 0.6. It measures ambition, not quality; the
+  variable one, 10 for all of loops, conditionals, variables and own blocks; **plus user input, added 2026-11-06 at the user's request ("add input now as one of the things we count"): each `ask` block 6 and 6 more when box1 (its answer) is read anywhere, each `when paper clicked` that has blocks in it 8 and 3 per `mouseX` or `mouseY` read in such a program (at most 12), and 6 for the input idea like the others; an `ask` also counts as a store into box1, so using the answer earns the variable points; the panel and the PDF have a row for it (`User input`, written `ask / when paper clicked` on paper) and "Big ideas used" counts out of 5; the all four bonus is still for the first four only, so no earlier program lost points**) goes on a curve: `complexity01(points) = 1 - exp(-points / 80)` (`COMPLEXITY_SCALE`): never 1.0, a counter in a loop (82 points) is 0.6. It measures ambition, not quality; the
   panel still shows the points rows (dimmed when 0; no "try repeat" style hints: the user found them "unnecessarily awkward", in the panel as in the PDF), the level (Blank page, Just starting, Getting going, Building, Clever, Expert) and the tip.
   **Elegance** (`core/elegance.js`, from the blocks alone) starts at 1.0 and loses: *copy and paste* (one block 3+ times in a row, or 2 to 6 blocks twice or more in a row or in different places; the blocks that could be
   saved as a share of all blocks times 1.5, at most 0.6; `findCopies` counts a repeated block's inside once), *the same number typed 4+ times* (not 0, 1, -1, and not inside copies: 0.03 plus 0.01 per extra, at most 0.2),
@@ -1149,6 +1207,8 @@ The editor checks assert that making a PDF sends zero requests.
     node turtlelab/dev/view-checks.mjs                         # real Chrome: Fit, the grid, the PDF button's fit
     node turtlelab/dev/logo-checks.mjs                         # real Chrome: the Logo box (short, about half a minute)
     node turtlelab/dev/can-checks.mjs                          # real Chrome: the score on the can and poking it (about a minute)
+    node turtlelab/dev/ask-checks.mjs                          # real Chrome: the ask block and its question box (a minute)
+    node turtlelab/dev/click-checks.mjs                        # real Chrome: the click handler, mouseX and mouseY (a minute)
     node turtlelab/dev/embed-checks.mjs                        # real Chrome: ?embed=1 at 700 x 520 (add SITE_URL=http://127.0.0.1:4010/ to also load the lesson pages and their frames)
     node turtlelab/dev/jslogo-checks.mjs                       # real Chrome: the JSLogo copy and the trip to it (needs the whole site: python3 -m http.server 4012 in the top folder)
     EMBROIDERY_PYTHON=DIR/bin/python3 node turtlelab/dev/export-checks.mjs   # real Chrome: right-click Save, every file

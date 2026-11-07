@@ -5,7 +5,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { BLOCKS, PALETTES, NOTE_MAX_CHARS, BODY_KEYS, mouthCount, SPEED_NAMES, DEFAULT_SPEED, BOX_COUNT } from '../js/core/blocks-spec.js';
+import { BLOCKS, PALETTES, NOTE_MAX_CHARS, BODY_KEYS, mouthCount, SPEED_NAMES, DEFAULT_SPEED, BOX_COUNT, ASK_MAX_CHARS } from '../js/core/blocks-spec.js';
+import { newBlock } from '../js/core/edit.js';
+import { validateProject, usesBoxes, findRunStack, isHandler, handlersOf, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { PALETTE_COLORS } from '../js/ui/palette-colors.js';
 import { existsSync } from 'node:fs';
 import { SPEEDS } from '../js/core/scheduler.js';
@@ -139,7 +141,7 @@ test('boxes and the blocks you make have palettes of their own, in that order, e
   assert.deepEqual(PALETTES.map((p) => p.id), ['turtle', 'pen', 'math', 'flow', 'boxes', 'myblocks', 'notes']);
   assert.equal(BOX_COUNT, 4);
   const boxOps = Array.from({ length: BOX_COUNT }, (_, i) => [`store${i + 1}`, `box${i + 1}`]).flat();
-  assert.deepEqual(inPalette('boxes').sort(), boxOps.sort(), 'Boxes holds the four store blocks and the four box blocks, and only those');
+  assert.deepEqual(inPalette('boxes').sort(), [...boxOps, 'ask'].sort(), 'Boxes holds the four store blocks, the four box blocks and ask (which puts its answer in box1), and only those');
   assert.deepEqual(inPalette('myblocks').sort(), ['call', 'input', 'to'], 'My Blocks holds only what makes your own blocks');
   assert.equal(BLOCKS.store5, undefined);
   for (const palette of PALETTES) {
@@ -167,7 +169,51 @@ test('the write block is a command in the Notes palette, with words on it and on
   assert.deepEqual(BLOCKS.write.args.map((arg) => [arg.label, arg.default]), [['size', 60]]);
   assert.equal(typeof BLOCKS.write.textSlot.hint, 'string');
   assert.equal(BLOCKS.write.fontSlot, undefined, 'the font is chosen by a block of its own, not on the write block');
-  // It is the only block with words on it besides the sticky note.
-  assert.deepEqual(entries.filter(([, spec]) => spec.textSlot).map(([op]) => op), ['write']);
+  // It and ask (whose words are its question) are the only blocks with words on them besides the sticky note.
+  assert.deepEqual(entries.filter(([, spec]) => spec.textSlot).map(([op]) => op), ['ask', 'write']);
   assert.ok(!/[–—]/.test(BLOCKS.write.help), 'no dashes in the tip');
+});
+
+test('the ask block is a command in the Boxes palette with its question typed on it, no sockets, and the answer going in box1', () => {
+  assert.equal(BLOCKS.ask.palette, 'boxes');
+  assert.equal(BLOCKS.ask.kind, 'command');
+  assert.deepEqual(BLOCKS.ask.args, []);
+  assert.equal(BLOCKS.ask.textSlot.hint, 'question');
+  assert.equal(BLOCKS.ask.endLabel, 'into box1', 'the block says where the answer goes');
+  assert.ok(BLOCKS.ask.textSlot.default.length > 0 && BLOCKS.ask.textSlot.default.length <= BLOCKS.ask.textSlot.max, 'it starts with a question of a fitting length');
+  assert.equal(newBlock('ask').text, BLOCKS.ask.textSlot.default);
+  assert.equal(newBlock('write').text, 'Hello', 'write still starts with Hello');
+  assert.ok(/box1/.test(BLOCKS.ask.help) && !/[–—]/.test(BLOCKS.ask.help), 'the tip says box1 and has no dashes');
+  // a question holds more letters than the write block's words do, and a longer one is cut to fit, in a saved file too
+  assert.ok(ASK_MAX_CHARS > 40);
+  const long = 'x'.repeat(100);
+  const { project: cleaned } = validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 0, y: 0, blocks: [{ op: 'ask', args: [], text: long }, { op: 'write', args: [60], text: long }] }] });
+  assert.equal(cleaned.stacks[0].blocks[0].text.length, ASK_MAX_CHARS);
+  assert.equal(cleaned.stacks[0].blocks[1].text.length, 40);
+  assert.equal(usesBoxes({ stacks: [{ blocks: [{ op: 'ask', args: [], text: 'How many?' }] }] }), true, 'a program with ask shows the boxes readout, since it writes box1');
+});
+
+test('the click handler is a hat in the Flow palette, and mouseX and mouseY are built in variables right under it', () => {
+  assert.equal(BLOCKS.onclick.kind, 'hat');
+  assert.equal(BLOCKS.onclick.palette, 'flow');
+  assert.deepEqual(BLOCKS.onclick.args, []);
+  assert.equal(BLOCKS.onclick.label, 'when paper clicked');
+  for (const op of ['mousex', 'mousey']) {
+    assert.equal(BLOCKS[op].kind, 'reporter');
+    assert.equal(BLOCKS[op].palette, 'flow');
+    assert.deepEqual(BLOCKS[op].args, []);
+  }
+  const flowOrder = Object.keys(BLOCKS).filter((op) => BLOCKS[op].palette === 'flow');
+  assert.deepEqual(flowOrder.slice(0, 4), ['start', 'onclick', 'mousex', 'mousey'], 'in the palette the hat comes right after start, and its two variables right under it');
+  assert.deepEqual([BLOCKS.mousex.label, BLOCKS.mousey.label], ['mouseX', 'mouseY']);
+  for (const op of ['onclick', 'mousex', 'mousey']) assert.ok(!/[–—]/.test(BLOCKS[op].help), `no dashes in the tip of ${op}`);
+  // Run never starts from a handler, and an empty page with only a handler has nothing to run
+  const handler = { x: 0, y: 0, blocks: [{ op: 'onclick', args: [] }, { op: 'forward', args: [10] }] };
+  const start = { x: 5, y: 500, blocks: [{ op: 'start', args: [] }] };
+  assert.equal(findRunStack({ stacks: [handler] }).stack, null, 'a handler alone is not a program');
+  assert.equal(findRunStack({ stacks: [handler, start] }).stack, start, 'and the handler is not chosen over a program below it');
+  assert.equal(isHandler(handler), true);
+  assert.equal(isHandler(start), false);
+  const second = { x: 0, y: 40, blocks: [{ op: 'onclick', args: [] }, { op: 'back', args: [5] }] };
+  assert.deepEqual(handlersOf({ stacks: [second, start, handler] }).map((found) => found.blocks[0].op), ['forward', 'back'], 'the handlers come top to bottom, without their hats');
 });

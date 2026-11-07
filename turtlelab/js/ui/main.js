@@ -14,7 +14,7 @@ import { Scheduler, SPEEDS } from '../core/scheduler.js';
 import { History } from '../core/history.js';
 import { formatNumber, formatValue } from '../core/format.js';
 import { runBlocks, createContext, evalArg, RunError } from '../core/interpreter.js';
-import { emptyProject, findRunStack, restoredStack, usesBoxes, validateProject, walkBlocks, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
+import { emptyProject, findRunStack, handlersOf, isHandler, restoredStack, usesBoxes, validateProject, walkBlocks, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
 import { visibleOps } from '../core/fit.js';
 import { drawingStats } from '../core/efficiency.js';
 import { BLOCKS, DEFAULT_SPEED } from '../core/blocks-spec.js';
@@ -40,6 +40,7 @@ import { Fish } from './fish.js';
 import { Boat } from './boat.js';
 import { Idle, BREATH_AFTER_MS } from './idle.js';
 import { ScoreBadge } from './score-badge.js';
+import { AskBox } from './ask-box.js';
 import { makeAntics, idleAntics, makeRewards, makeSurprises } from './antics.js';
 import { Reward, workMark, earnedWork, GOAL } from './reward.js';
 
@@ -202,8 +203,30 @@ function writesWords(stacks) {
 /** A wait at least this long (milliseconds) makes the turtle yawn. A shorter one is just a pause. */
 const YAWN_AFTER_MS = 700;
 
+// An ask block shows its question in this box. A run that is only being made for the PDF (see runBeforePdf) has nobody to ask, so it answers 0
+// at once and remembers that it did, which the PDF's message says.
+const askBox = new AskBox({ stage });
+let askedForPdf = false;
+// The click handlers of the program that is running, if it listens for clicks (see beginRun); null otherwise.
+let listeningHandlers = null;
+
 const scheduler = new Scheduler({
   speed: startSpeed,
+  onAsk: (question) => {
+    if (hurry) {
+      askedForPdf = true;
+      return { answered: Promise.resolve(0), cancel: () => {} };
+    }
+    return askBox.ask(question);
+  },
+  onListen: () => {
+    // The last block has run, and the program has click handlers: it waits for clicks until Stop.
+    workspace.setRunning(null);
+    outlined = false;
+    view.setYawning(false);
+    showBoxes();
+    say('Listening for clicks on the paper. Press Stop when you are done.'); // (short: a message that wraps takes room from the paper, and the paper moves)
+  },
   onWait: (ms) => {
     // A long wait: the turtle yawns and sways with a Zzz, until the next block runs (onStep) or the program ends.
     if (ms >= YAWN_AFTER_MS) view.setYawning(true);
@@ -238,6 +261,7 @@ const scheduler = new Scheduler({
     }
   },
   onFinish: (result) => {
+    listeningHandlers = null;
     idle?.poke(); // a run is activity: the quiet minute starts from when it ends
     runButton.disabled = false;
     stopButton.disabled = true;
@@ -281,13 +305,18 @@ view = new CanvasView({ stage, turtle, isLocked: () => scheduler.running });
 
 /** Run a stack of blocks. A lone reporter (like x) just shows its value. */
 function runStack(stack) {
-  if (BLOCKS[stack.blocks[0].op].kind === 'note') return; // a sticky note is not a program
-  if (isDefinition(stack)) {
+  if (stack.blocks[0] && BLOCKS[stack.blocks[0].op].kind === 'note') return; // a sticky note is not a program
+  if (isHandler(stack)) {
+    // A handler does nothing until a click arrives while a program is running.
+    say('This runs when you click the paper while your program is running. Press Run, then click the paper.');
+    return;
+  }
+  if (stack.blocks[0] && isDefinition(stack)) {
     // A block you made does nothing until something calls it.
     say('This is a block you made. Put a call to it under a Start block and press Run.');
     return;
   }
-  if (isReporterStack(stack)) {
+  if (stack.blocks[0] && isReporterStack(stack)) {
     // Tapping a reporter reads from the boxes the last run left behind.
     // Looking at a value never changes it.
     const reading = createContext({ turtle, boxes: context.boxes.slice() });
@@ -309,13 +338,36 @@ function runStack(stack) {
     say(`Two of your blocks are both called ${duplicate.name}. Give one of them a different name.`);
     return;
   }
+  beginRun(stack.blocks, handlersOf(project), definitions, project.stacks, false);
+}
+
+/**
+ * Start a program: the blocks to run, the click handlers there are (a program with any keeps listening for clicks after its last block, until Stop;
+ * a run made for the PDF just ends, since nobody will click), the blocks the student made, and all the stacks (to know if it writes words).
+ */
+function beginRun(blocks, handlers, definitions, stacks, logo) {
   view.resetDrawView({ force: true }); // every run starts with the paper as it was, not zoomed from the last Fit
   clearOutput();
   context = newContext(definitions);
   scheduler.speed = hurry ? 'instant' : startSpeed; // the last run's speed block does not carry over
-  runningLogo = false;
-  runHasWrite = writesWords(project.stacks);
-  scheduler.start(runBlocks(stack.blocks, context));
+  runningLogo = logo;
+  runHasWrite = writesWords(stacks);
+  listeningHandlers = handlers.length > 0 && !hurry ? handlers : null;
+  scheduler.start(runBlocks(blocks, context), { listen: listeningHandlers !== null });
+}
+
+/** A click on the paper (a press and release that did not slide it): run the click handlers of the program that is listening, one after another. */
+function paperClicked(clientX, clientY) {
+  if (!listeningHandlers || !scheduler.running) return;
+  const at = view.worldAt(clientX, clientY);
+  if (!at) return; // the gray round the paper is not the paper
+  const handlers = listeningHandlers;
+  scheduler.queueEvent(() => {
+    context.mouse = at; // mouseX and mouseY say where this click was, from the moment its handler starts
+    return (function* () {
+      for (const handler of handlers) yield* runBlocks(handler.blocks, context);
+    })();
+  });
 }
 
 /** Run the Logo in the Logo box. It is read into blocks and run by the same interpreter, so it behaves just like the blocks. */
@@ -326,19 +378,13 @@ function runLogo(text) {
     say(`Line ${compiled.line}: ${compiled.error}`);
     return;
   }
-  if (compiled.main.length === 0) {
+  if (compiled.main.length === 0 && handlersOf({ stacks: compiled.stacks }).length === 0) {
     logoBox.say('There is nothing to run yet. Try: forward 100', true);
     say('There is nothing in the Logo box to run yet.');
     return;
   }
   logoBox.clearProblem();
-  view.resetDrawView({ force: true });
-  clearOutput();
-  context = newContext(definitionsOf({ stacks: compiled.stacks }).map);
-  scheduler.speed = startSpeed;
-  runningLogo = true;
-  runHasWrite = writesWords(compiled.stacks);
-  scheduler.start(runBlocks(compiled.main, context));
+  beginRun(compiled.main, handlersOf({ stacks: compiled.stacks }), definitionsOf({ stacks: compiled.stacks }).map, compiled.stacks, true);
 }
 
 /**
@@ -440,6 +486,7 @@ workspace = new Workspace({
   eater: { mouthPoint: (options) => palettes.eater.mouthPoint(options), feed: (meal) => palettes.eater.feed(meal), spit: (ms) => palettes.eater.spit(ms) },
   isOverPalette: (x, y, rect) => palettes.isOver(x, y, rect),
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
+  onPaperClick: paperClicked,
 });
 palettes = new PaletteUI({ stage, workspace, burpChance: params.get('burp') === 'always' ? 1 : undefined }); // (?burp=always makes the shark burp after every meal, for trying it out)
 // A fish swims across the window, and the shark watches it (and eats it if it is clicked). A fishing boat sails in and tries to harpoon the shark (and the can).
@@ -514,6 +561,10 @@ if (sample) workspace.fitHeight(SAMPLE_LEFT, SAMPLE_TOP);
 /** Press Run: start at the Start block (see findRunStack for the exact rule). */
 function pressRun() {
   const { stack, startCount } = findRunStack(project);
+  if (!stack && handlersOf(project).length > 0) {
+    runStack({ x: 0, y: 0, blocks: [] }); // only a click handler: nothing to run first, so it just listens
+    return;
+  }
   if (!stack) {
     say(
       project.stacks.some(isDefinition)
@@ -573,6 +624,7 @@ function fitEverything({ toggle = false } = {}) {
  */
 async function runBeforePdf() {
   if (scoreBadge.run !== null) return ''; // it has run since the blocks last changed: the badge has the numbers
+  askedForPdf = false;
   const startedHere = !scheduler.running;
   const finishesBefore = finishes;
   if (startedHere) {
@@ -598,9 +650,12 @@ async function runBeforePdf() {
     clearTimeout(timer);
   }
   hurry = false;
-  if (result.status === 'error') return 'Your program stopped with a mistake (the block is outlined), so the PDF has what it drew before that. ';
-  if (cut) return `Your program was still going after ${seconds} seconds, so it was stopped there and the PDF has what it had drawn. `;
-  return startedHere ? 'Your program was run first, so the numbers and the drawing are from that run. ' : '';
+  // (An ask block in a run made only for the PDF has nobody to ask: it answered 0, and the student is told.)
+  const asked = askedForPdf ? 'Your program asks a question, so this run used 0 as the answer. ' : '';
+  askedForPdf = false;
+  if (result.status === 'error') return `${asked}Your program stopped with a mistake (the block is outlined), so the PDF has what it drew before that. `;
+  if (cut) return `${asked}Your program was still going after ${seconds} seconds, so it was stopped there and the PDF has what it had drawn. `;
+  return startedHere ? `${asked}Your program was run first, so the numbers and the drawing are from that run. ` : '';
 }
 
 /** Save a PDF: the blocks on top, the drawing below, the score along the top of page 1 and its reasons on a page after, and the picture with the blocks inside attached. */
@@ -881,9 +936,12 @@ if (sample) {
   // It runs by itself, so the drawing is the first thing you see. Starting a
   // run clears the message line, so the message goes up after it starts.
   if (params.get('autorun') !== '0') pressRun();
-  say(embed
-    ? `${sample.title}. Change anything you like and press Run.` // (short: in a frame the message must stay on one line, or it takes room from the blocks)
-    : `Sample: ${sample.title}. Change anything you like. It is not saved unless you press Save, and the blocks you saved before are untouched.`);
+  // (a sample that is already listening for clicks keeps saying so: that is what to do next, and the load message would hide it)
+  if (!scheduler.listening) {
+    say(embed
+      ? `${sample.title}. Change anything you like and press Run.` // (short: in a frame the message must stay on one line, or it takes room from the blocks)
+      : `Sample: ${sample.title}. Change anything you like. It is not saved unless you press Save, and the blocks you saved before are untouched.`);
+  }
 } else {
   if (sampleName !== null) say(`There is no sample called "${sampleName.slice(0, 40)}". The Samples page lists them all.`);
   if (params.get('autorun') === '1') pressRun();

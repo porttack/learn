@@ -15,8 +15,9 @@ Four of the steps end with a PDF made by TurtleLab's PDF button:
 - **Step 4** is a practice PDF. It shows you they can use a loop, random, and if and else together before the capstone.
 - **Step 5** is the capstone, a piece of random art.
 - **Step 12** is the second capstone, a picture that uses a box, a block of the student's own and a loop. The last page of the PDF lists what the program is made of, with a count for each kind of block (variables, loops, blocks they made), which makes it quick to see at a glance.
+- **Step 15** is the third capstone, an interactive picture: the program asks a question and uses the answer, and every click on the paper draws something where it was clicked, using a block of the student's own and a loop. The last page of the PDF has a row for `ask / when paper clicked`, which makes the new part quick to check.
 
-Steps 2, 3 and 6 to 11 are practice with no PDF to collect. Every step ends by telling the student to save a PDF to keep their own work.
+Steps 2, 3, 6 to 11, 13 and 14 are practice with no PDF to collect. Every step ends by telling the student to save a PDF to keep their own work.
 
 ## The sequence
 
@@ -34,6 +35,9 @@ Steps 2, 3 and 6 to 11 are practice with no PDF to collect. Every step ends by t
 | [10: Color is three numbers]({{ '/turtle-lessons/step-10-color-is-three-numbers/' | relative_url }}) | Red, green and blue from 0 to 255. Why 255: eight bits. Binary and hex with the color picker. 256 × 256 × 256 colors. A color made from a box. |
 | [11: Find the bug]({{ '/turtle-lessons/step-11-find-the-bug/' | relative_url }}) | Four broken programs to fix, each with a hint and an answer: a triangle that does not close, a box that is never used, an `if` that can never be yes, a pen left up. |
 | [12: Capstone 2: boxes and blocks]({{ '/turtle-lessons/step-12-capstone-2/' | relative_url }}) | Plan with three sentences, then build a picture with a box that changes, a block of their own with an input, and a loop. Ends with a PDF. |
+| [13: Ask for a number]({{ '/turtle-lessons/step-13-ask-for-a-number/' | relative_url }}) | The `ask` block: a question, a wait, and the answer in box1. Predict what a shape will do for 5, 3, 12 and 0. Why a second answer replaces the first, and how to keep one (store it in another box). Build a square from an answer. |
+| [14: Click to draw]({{ '/turtle-lessons/step-14-click-to-draw/' | relative_url }}) | `when paper clicked` with the built in variables `mouseX` and `mouseY`. A program keeps listening after its last block until Stop. Predict where clicks land (the paper is -350 to 350 by -280 to 280), then build a dot painter. |
+| [15: Capstone 3: ask and click]({{ '/turtle-lessons/step-15-capstone-3/' | relative_url }}) | Plan with three sentences, then build a picture that asks a question, draws where it is clicked with a block of their own, and uses a loop. Ends with a PDF. |
 
 Students who have not seen loops meet the need for one first (a square that takes eight blocks) and only then get the block. `if` and `else` comes after `random` on purpose: a coin flip is the easiest decision to understand, and students who find conditionals confusing can see one path or the other run, never both.
 
@@ -95,6 +99,21 @@ Make a picture in TurtleLab that uses a box, a block of your own and a loop, the
 - Your picture needs: a block of your own with an input that your program uses more than once, a box that changes while the program runs, a loop, at least two colors, and a sticky note with your name and what your box, your block and your loop each do.
 
 (The student page lists these same five things for students to check. A rubric is yours to write. The last page of the PDF has a Count column for variables, loops and blocks they made, which you can use to check the first three quickly.)
+
+Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
+
+Press the PDF button in TurtleLab and attach the PDF to this assignment.
+
+### Assignment: Capstone 3, ask and click
+
+Make a picture in TurtleLab that asks a question and draws where you click, then save a PDF.
+
+- Do Step 15: [https://{{ site.print_host }}/turtle-lessons/step-15-capstone-3/](https://{{ site.print_host }}/turtle-lessons/step-15-capstone-3/)
+- Build in a fresh TurtleLab tab. The demos inside the lessons do not save your work.
+- Your picture needs: an ask block whose answer your program uses, a when paper clicked that draws where you click using mouseX and mouseY, a block of your own with an input that your program uses more than once, a loop, at least two colors, and a sticky note with your name and what your question, your click and your block each do.
+- Before you press the PDF button: press Run, answer the question, and click the paper a few times, so the picture is on the paper.
+
+(The student page lists these same six things for students to check. A rubric is yours to write; ask and I will draft one. The last page of the PDF has a row called ask / when paper clicked whose Count should be at least 2, one for the ask block and one for the click handler.)
 
 Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
 

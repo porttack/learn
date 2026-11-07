@@ -331,9 +331,9 @@ const SLOT_SHOWS = 16; // letters of a write block's words shown in its box (it 
  * (dashed, faint) when `text` is empty. The faint box still has a fill: a box with none can only be pressed
  * on its outline. Words too long to show are shortened with dots, but the block keeps all of them.
  */
-function layoutNameSlot(text, hint, colors, editor = 'name') {
+function layoutNameSlot(text, hint, colors, editor = 'name', shows = SLOT_SHOWS) {
   const empty = text === '';
-  const shown = empty ? hint : text.length > SLOT_SHOWS ? `${text.slice(0, SLOT_SHOWS - 1)}...` : text;
+  const shown = empty ? hint : text.length > shows ? `${text.slice(0, shows - 1)}...` : text;
   const fontSize = FONT_SIZE * SCALE;
   const width = Math.max(44, textWidth(shown) * SCALE + 14);
   const markup =
@@ -553,7 +553,7 @@ export function layoutBlock(block) {
   let fontSlot = null;
   let colorSlot = null;
   if (spec.textSlot || spec.fontSlot || spec.colorSlot) {
-    if (spec.textSlot) textSlot = layoutNameSlot(block.text ?? '', spec.textSlot.hint, colors, 'text');
+    if (spec.textSlot) textSlot = layoutNameSlot(block.text ?? '', spec.textSlot.hint, colors, 'text', spec.textSlot.shows);
     if (spec.fontSlot) fontSlot = layoutFontSlot(block.font, colors);
     if (spec.colorSlot) colorSlot = layoutColorSlot(block, spec, colors);
     shapeSpec = { ...spec, label: '' };
@@ -563,7 +563,7 @@ export function layoutBlock(block) {
     // (A color box goes under the word, not beside it, so the block only has to be as wide as the wider of the two.)
     const wanted = colorSlot
       ? HAT_PAD + Math.max(textWidth(spec.label) * SCALE, colorSlot.w) + afterBoxes
-      : HAT_PAD + textWidth(spec.label) * SCALE + (textSlot ? HAT_GAP + textSlot.w : 0) + (fontSlot ? HAT_GAP + fontSlot.w : 0) + afterBoxes;
+      : HAT_PAD + textWidth(spec.label) * SCALE + (textSlot ? HAT_GAP + textSlot.w : 0) + (fontSlot ? HAT_GAP + fontSlot.w : 0) + (spec.endLabel ? HAT_GAP + textWidth(spec.endLabel) * SCALE : 0) + afterBoxes;
     extra.x = Math.max(0, (wanted - makeShape(shapeSpec, colors, extra).shape.getWidth()) / SCALE);
   } else {
     const smallest = makeShape(spec, colors, extra).shape;
@@ -617,7 +617,12 @@ export function layoutBlock(block) {
         x += slot.w;
       }
     }
-    const word = `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${HAT_PAD}" y="${wordBaseline}">${escapeXml(spec.label)}</text>`;
+    let word = `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${HAT_PAD}" y="${wordBaseline}">${escapeXml(spec.label)}</text>`;
+    // A little word after the boxes ('into box1' on ask), written where the boxes end.
+    if (spec.endLabel && !colorSlot) {
+      const endX = node.nameSlots.reduce((far, placed) => Math.max(far, placed.dx + placed.slot.w), HAT_PAD + wordWidth) + HAT_GAP;
+      word += `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="${endX}" y="${wordBaseline}">${escapeXml(spec.endLabel)}</text>`;
+    }
     node.markup = markup.replace(/<\/svg>\s*$/, `${word}</svg>`);
   }
   node.w = shape.getWidth();

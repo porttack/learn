@@ -6,7 +6,7 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { readdirSync, readFileSync } from 'node:fs';
 import { launch } from './cdp.mjs';
-import { SAMPLES } from '../js/ui/samples.js';
+import { SAMPLES, sampleById } from '../js/ui/samples.js';
 import { FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
@@ -28,13 +28,32 @@ const framedBy = (file) => [...readFileSync(new URL(`../../_turtlelessons/${file
 const framedIds = new Set(lessonFiles.flatMap(framedBy));
 const lessonDemos = SAMPLES.filter((s) => s.id.startsWith('lesson-') || framedIds.has(s.id));
 const shownIn = (selector) => chrome.eval(`[...document.querySelectorAll(${JSON.stringify(selector)})].filter((e) => getComputedStyle(e).display !== 'none').map((e) => e.id || e.className || e.tagName)`);
+// (a demo that waits for a person is as finished as it will get once its question is open or it says it is listening for clicks: see actAsPerson)
 const finishRun = async () => {
   for (let i = 0; i < 100; i += 1) {
-    if (await chrome.eval(`!document.getElementById('run').disabled`)) return true;
+    if (await chrome.eval(`!document.getElementById('run').disabled || !!document.querySelector('.ask-box') || /^Listening for clicks/.test(document.getElementById('message').textContent)`)) return true;
     await chrome.sleep(100);
   }
   return false;
 };
+const waits = (sample) => (sample.answers ?? []).length > 0 || (sample.handlers ?? []).length > 0;
+/** Be the person a demo waits for, on a page that is itself the frame: type each of its `answers`, click the paper at each of its `clicks`. */
+async function actAsPerson(sample) {
+  for (const answer of sample.answers ?? []) {
+    for (let i = 0; i < 50 && !(await chrome.eval(`!!document.querySelector('.ask-box')`)); i += 1) await chrome.sleep(100);
+    await chrome.eval(`(() => { const i = document.querySelector('.ask-input'); i.focus(); i.select(); })()`);
+    await chrome.send('Input.insertText', { text: String(answer) });
+    await chrome.send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r' });
+    await chrome.send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+    await chrome.sleep(300);
+  }
+  await finishRun();
+  for (const [x, y] of sample.clicks ?? []) {
+    const at = await chrome.eval(`(() => { const r = document.querySelector('.paper-box').getBoundingClientRect(); const s = r.width / 700; return { x: r.left + (350 + ${x}) * s, y: r.top + (280 - ${y}) * s }; })()`);
+    await chrome.click(at.x, at.y);
+    await chrome.sleep(400);
+  }
+}
 const ink = () => chrome.eval(`(() => {
   const c = document.querySelector('canvas.paper');
   const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
@@ -72,7 +91,8 @@ try {
     })()`);
     check(`${demo.id} fits the frame: all its blocks are above the message line and inside the window`, fit.bottom <= fit.room && fit.top >= 38 && fit.right <= fit.width && fit.left >= fit.palettes - 2, JSON.stringify(fit));
     await finishRun();
-    check(`${demo.id} has run by itself and drawn something`, (await ink()) > 300, `${await ink()} marked pixels`);
+    if (waits(demo)) await actAsPerson(demo); // (a demo that asks, or listens for clicks, draws once someone answers or clicks)
+    check(`${demo.id} has run by itself and drawn something${waits(demo) ? ' (when answered and clicked)' : ''}`, (await ink()) > 300, `${await ink()} marked pixels`);
   }
 
   // ---- Start over, and a frame that can be run again ------------------------------------------------------------------
@@ -135,6 +155,29 @@ try {
       // scroll to each frame so that it loads, then check that the demo inside ran
       for (let i = 0; i < frames.length; i += 1) {
         await chrome.eval(`document.querySelectorAll('iframe.tl-embed-frame')[${i}].scrollIntoView({ block: 'center' })`);
+        // A demo that asks a question or listens for clicks is waiting for a person: be one, inside the frame. A question is answered through its form; a click is a real click on the paper.
+        const framed = sampleById(frames[i].src.match(/[?&]sample=([a-z0-9-]+)/)[1]);
+        if (framed && waits(framed)) {
+          for (const answer of framed.answers ?? []) {
+            let asked = false;
+            for (let waited = 0; waited < 10000 && !asked; waited += 250) {
+              await chrome.sleep(250);
+              asked = await chrome.eval(`!!document.querySelectorAll('iframe.tl-embed-frame')[${i}].contentDocument?.querySelector('.ask-box')`);
+            }
+            await chrome.eval(`(() => { const doc = document.querySelectorAll('iframe.tl-embed-frame')[${i}].contentDocument; const box = doc.querySelector('.ask-input'); box.value = ${JSON.stringify(String(answer))}; box.form.requestSubmit(); })()`);
+          }
+          for (const [x, y] of framed.clicks ?? []) {
+            let ready = false;
+            for (let waited = 0; waited < 10000 && !ready; waited += 250) {
+              await chrome.sleep(250);
+              ready = await chrome.eval(`/^Listening for clicks/.test(document.querySelectorAll('iframe.tl-embed-frame')[${i}].contentDocument?.getElementById('message')?.textContent ?? '')`);
+            }
+            await chrome.sleep(300); // (the message is short so the paper has stopped moving, but let it settle)
+            const at = await chrome.eval(`(() => { const f = document.querySelectorAll('iframe.tl-embed-frame')[${i}]; const fr = f.getBoundingClientRect(); const r = f.contentDocument.querySelector('.paper-box').getBoundingClientRect(); const s = r.width / 700; return { x: fr.left + r.left + (350 + ${x}) * s, y: fr.top + r.top + (280 - ${y}) * s }; })()`);
+            await chrome.click(at.x, at.y);
+            await chrome.sleep(400);
+          }
+        }
         // (a demo can be slow on purpose, like the one that shows a variable changing, so wait for its run to end: up to 20 seconds)
         let inside = null;
         for (let waited = 0; waited < 20000; waited += 500) {
@@ -146,9 +189,9 @@ try {
             const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
             let n = 0;
             for (let k = 0; k < d.length; k += 4) if (d[k] !== 255 || d[k + 1] !== 255 || d[k + 2] !== 255) n += 1;
-            return { ink: n, embedded: doc.documentElement.classList.contains('embedded'), running: doc.getElementById('run').disabled };
+            return { ink: n, embedded: doc.documentElement.classList.contains('embedded'), running: doc.getElementById('run').disabled, listening: /^Listening for clicks/.test(doc.getElementById('message').textContent) };
           })()`);
-          if (inside && !inside.running && inside.ink > 300) break;
+          if (inside && (!inside.running || (framed && waits(framed) && inside.listening)) && inside.ink > 300) break;
         }
         check(`${path}: frame ${i + 1} loaded TurtleLab in embed mode and the demo drew something`, inside !== null && inside.embedded && inside.ink > 300, JSON.stringify(inside));
       }

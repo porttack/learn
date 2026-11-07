@@ -13,6 +13,9 @@
 //               clearscreen cs (the same as the clean block), startfill, endfill
 //   other       print n (pr), wait n (in 60ths of a second, like real Logo), setspeed 1 to 4, stop,
 //               write |some words| size (the write block)
+//               ask |a question| (the ask block: it shows the question, waits for a number, and puts it in box1)
+//   clicks      onclick [ ... ] on a line of its own: runs those commands each time the paper is clicked, and mousex and mousey say where
+//               (a program with an onclick keeps listening after its last command, until Stop)
 //   repeating   repeat n [ ... ], forever [ ... ], if test [ ... ], ifelse test [ ... ] [ ... ]
 //   variables   make "name value, then :name. There are four (they are the four boxes), box1 to box4 or any names
 //   your own    to name :input1 :input2 ... end, then name 10 20
@@ -21,7 +24,7 @@
 // Colors run from 0 to 255 (not 0 to 99 as in some Logos) and arc moves the turtle along the curve (a positive
 // angle curves right), like the blocks. Anything else that real Logo has gets a polite "not yet".
 
-import { BOX_COUNT } from './blocks-spec.js';
+import { ASK_MAX_CHARS, BOX_COUNT } from './blocks-spec.js';
 import { cleanLetteringText, DEFAULT_LETTER_SIZE, LETTERING_MAX_CHARS, LETTER_FONTS, isFont } from './lettering.js';
 
 /** A problem in the Logo, with the line it is on (counting from 1). */
@@ -66,10 +69,10 @@ for (const command of SIMPLE) for (const name of command.names) COMMAND_BY_NAME.
 const IGNORED = new Set(['hideturtle', 'ht', 'showturtle', 'st']);
 
 /** Reporters with no inputs, and reporters with two, and what block each one is. */
-const NO_INPUTS = { xcor: 'x', ycor: 'y', heading: 'heading', pensize: 'pensize', penred: 'penred', pengreen: 'pengreen', penblue: 'penblue' };
+const NO_INPUTS = { xcor: 'x', ycor: 'y', heading: 'heading', pensize: 'pensize', penred: 'penred', pengreen: 'pengreen', penblue: 'penblue', mousex: 'mousex', mousey: 'mousey' };
 const TWO_INPUTS = { sum: 'add', difference: 'subtract', product: 'multiply', quotient: 'divide', modulo: 'mod', mod: 'mod', oneof: 'oneof' };
 
-const SPECIAL_COMMANDS = ['repeat', 'forever', 'if', 'ifelse', 'make', 'write', 'setfont', 'setpencolor', 'setpc', 'setscreencolor', 'setsc', 'home', 'setx', 'sety', 'wait', 'to', 'end'];
+const SPECIAL_COMMANDS = ['repeat', 'forever', 'if', 'ifelse', 'make', 'write', 'ask', 'onclick', 'setfont', 'setpencolor', 'setpc', 'setscreencolor', 'setsc', 'home', 'setx', 'sety', 'wait', 'to', 'end'];
 const REAL_LOGO_NOT_HERE = ['sqrt', 'abs', 'int', 'round', 'sin', 'cos', 'tan', 'arctan', 'and', 'or', 'not', 'word', 'list', 'first', 'last', 'butfirst', 'butlast', 'count', 'item', 'output', 'op', 'local', 'localmake', 'run', 'label', 'pick', 'power', 'exp', 'ln', 'log10', 'thing', 'foreach', 'for', 'while', 'until', 'do', 'test', 'iftrue', 'iffalse', 'cleartext', 'ct', 'pos', 'towards', 'distance', 'fill', 'bye', 'rerandom', 'remainder'];
 
 /** Every word the generator must not use as the name of one of your own blocks. */
@@ -232,6 +235,7 @@ class Compiler {
         if (!this.procedures.has(name.value)) this.procedures.set(name.value, { name: name.text, params, line: token.line });
       }
       if (token.type === 'word' && token.value === 'make' && tokens[k + 1]?.type === 'quoted') made.push(tokens[k + 1]);
+      if (token.type === 'word' && token.value === 'ask') reserved.add(0); // ask puts its answer in box1, so no name of yours is given box1
     }
     for (const token of made) {
       const key = token.value.toLowerCase();
@@ -274,10 +278,14 @@ class Compiler {
   program() {
     const main = [];
     const definitions = [];
+    const handlers = []; // the blocks of each onclick [ ... ]
     while (this.i < this.tokens.length) {
       const token = this.peek();
       if (token.type === 'word' && token.value === 'to') {
         definitions.push(this.definition());
+      } else if (token.type === 'word' && token.value === 'onclick') {
+        this.next();
+        handlers.push(this.list(token));
       } else if (token.type === ']') {
         throw new LogoError('There is a ] with no [ before it.', token.line);
       } else {
@@ -286,6 +294,7 @@ class Compiler {
     }
     const stacks = definitions.map((found, k) => ({ x: 0, y: k, blocks: [{ op: 'to', name: found.name, params: found.params }, ...found.body] }));
     stacks.push({ x: 0, y: definitions.length, blocks: [{ op: 'start' }, ...main] });
+    handlers.forEach((blocks, k) => stacks.push({ x: 0, y: definitions.length + 1 + k, blocks: [{ op: 'onclick', args: [] }, ...blocks] }));
     // The names the variables had, by box: box 1 is boxNames[0]. (Blocks only know box1 to box4, so these are kept to write the program
     // out again with the same words. A box that no make named has no entry.)
     const boxNames = [];
@@ -380,6 +389,10 @@ class Compiler {
         return [this.make(token)];
       case 'write':
         return [this.write(token)];
+      case 'ask':
+        return [this.ask(token)];
+      case 'onclick':
+        throw new LogoError('onclick goes on a line of its own, not inside a repeat, an if or a block you made. Like this: onclick [ setxy mousex mousey ]', token.line);
       case 'setfont':
         return [this.setFont(token)];
       case 'setpencolor':
@@ -430,6 +443,16 @@ class Compiler {
     if ([...words.value].length > LETTERING_MAX_CHARS) throw new LogoError(`write holds at most ${LETTERING_MAX_CHARS} letters.`, words.line);
     const size = this.argumentStarts() ? this.expression() : DEFAULT_LETTER_SIZE;
     return this.block('write', [size], token, { text });
+  }
+
+  /** ask |How many sides?|: the question, in bars or quotes. The number typed goes in box1. */
+  ask(token) {
+    const words = this.next();
+    if (!words || (words.type !== 'bar' && words.type !== 'quoted')) {
+      throw new LogoError('ask needs the question, like: ask |How many sides?|. The number you type goes in box1.', token.line);
+    }
+    if ([...words.value].length > ASK_MAX_CHARS) throw new LogoError(`The question can have at most ${ASK_MAX_CHARS} letters.`, words.line);
+    return this.block('ask', [], token, { text: cleanLetteringText(words.value, ASK_MAX_CHARS) });
   }
 
   /** setfont "fancy: the font the write commands after it use, one of the names in lettering.js. */

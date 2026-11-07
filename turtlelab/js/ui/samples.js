@@ -26,6 +26,8 @@ const ifElse = (condition, body, elseBody) => ({ op: 'ifelse', args: [condition]
 const sum = (a, c) => b('add', a, c);
 const minus = (a, c) => b('subtract', a, c);
 const box1 = { op: 'box1' };
+const mouseX = { op: 'mousex' };
+const mouseY = { op: 'mousey' };
 const input = (name) => ({ op: 'input', name });
 const call = (name, params, ...args) => ({ op: 'call', name, params, args });
 
@@ -123,6 +125,13 @@ const initialsProgram = () => [
  *   note      the sticky note (300 characters at most)
  *   program   the blocks, starting with a Start block
  *   defines   optional: blocks the sample makes, each { name, params, body }
+ *   handlers  optional: click handlers, each a list of the blocks under a `when paper clicked` hat. They go with the blocks it makes (down the left), and a sample with one
+ *             waits for clicks after its last block, until Stop.
+ *   allLeft   optional, true to put the note, the program and the blocks it makes all down the left (note first, then the program, then the rest) and leave the right edge empty. For a
+ *             sample that prints, since the Output box sits at the top right edge and would cover blocks there, and for one the student clicks on, so the whole paper is clear
+ *   answers   optional, for the tests and the browser checks only: what to type when an ask block asks, in order (a sample that asks waits for a person, so the checks need to be one)
+ *   clicks    optional, the same: where to click the paper, as [x, y] in the turtle's steps, once the program is listening. They must be on clear paper, where no block of the sample sits,
+ *             even in a lesson frame that is only 700 wide
  *   listed    optional, `false` for a demo that only a lesson page frames (see "Embedding in lessons" in CLAUDE.md): it opens with ?sample=... like any
  *             other, but it is not on the Samples page and has no thumbnail. Everything else about it is held to the same tests.
 
@@ -848,6 +857,46 @@ export const SAMPLES = [
       rep(3, b('forward', 80), b('right', 120)),
     ],
   },
+  // Two demos that wait for a person. The sample checks need to be that person, so each says what to type (answers) or where to click (clicks).
+  {
+    id: 'lesson-ask-sides',
+    listed: false,
+    title: 'Ask how many sides',
+    summary: 'The program asks for a number, puts it in box1, and draws a shape with that many sides.',
+    look: 'A red shape with as many sides as the number that was typed',
+    concepts: ['ask', 'boxes', 'repeat'],
+    note: 'Type a number and press Enter. It goes into box1, which the repeat and the turn both use. Try 3, 5 and 12, then 0. Press Run to be asked again.',
+    answers: [5],
+    program: [
+      b('start'),
+      b('clean'),
+      b('setpensize', 4),
+      { op: 'ask', args: [], text: 'How many sides?' },
+      rep(box1, b('forward', 70), b('right', b('divide', 360, box1))),
+    ],
+  },
+  {
+    id: 'lesson-click-stamp',
+    listed: false,
+    title: 'Click to stamp a square',
+    summary: 'The program waits for clicks. Each click stamps a square where you clicked.',
+    look: 'The paper starts empty, and each click draws a small red square where it was',
+    concepts: ['when paper clicked', 'mouseX and mouseY', 'repeat'],
+    note: 'Click the paper. The blocks under when paper clicked run every time, and mouseX and mouseY say where you clicked (look at the Output box). Press Stop when you are done.',
+    clicks: [[-60, -60], [90, 80]],
+    allLeft: true, // (it prints, and the Output box at the top right would cover blocks there; and every click needs clear paper)
+    handlers: [
+      [
+        b('print', mouseX),
+        b('print', mouseY),
+        b('penup'),
+        b('setxy', mouseX, mouseY),
+        b('pendown'),
+        rep(4, b('forward', 30), b('right', 90)),
+      ],
+    ],
+    program: [b('start'), b('clean')], // (just these two: a wider block here would sit under the Output box at the right edge)
+  },
 ];
 
 export const SAMPLE_IDS = SAMPLES.map((sample) => sample.id);
@@ -907,7 +956,7 @@ export function sampleStacks(sample, measure = {}) {
   const note = { x: LEFT, y: TOP, blocks: [{ op: 'note', text: sample.note }] };
   const programSize = sizeOf(program);
 
-  if (!sample.defines?.length) {
+  if (!sample.defines?.length && !sample.handlers?.length) {
     program.y = TOP + noteHigh + GAP;
     return [note, program];
   }
@@ -916,13 +965,24 @@ export function sampleStacks(sample, measure = {}) {
   const tallest = (stageHeight - 4 - TOP) / MIN_SAMPLE_ZOOM;
 
   // The note sits above the program if both fit in one column. If not, it is packed in with the blocks you make.
-  const noteBeside = noteHigh + GAP + programSize.height > tallest;
+  const allLeft = sample.allLeft === true;
+  const noteBeside = allLeft || noteHigh + GAP + programSize.height > tallest;
   program.y = noteBeside ? TOP : TOP + noteHigh + GAP;
-  const items = sample.defines.map((definition) => {
-    const stack = { x: LEFT, y: TOP, blocks: [{ op: 'to', name: definition.name, params: [...definition.params] }, ...structuredClone(definition.body)] };
+  // The blocks it makes and its click handlers are packed the same way: each is a stack with a hat on it (to, or when paper clicked).
+  const hatted = [
+    ...(sample.defines ?? []).map((definition) => [{ op: 'to', name: definition.name, params: [...definition.params] }, ...structuredClone(definition.body)]),
+    ...(sample.handlers ?? []).map((body) => [{ op: 'onclick', args: [] }, ...structuredClone(body)]),
+  ];
+  const items = hatted.map((blocks) => {
+    const stack = { x: LEFT, y: TOP, blocks };
     return { stack, ...sizeOf(stack) };
   });
   if (noteBeside) items.push({ stack: note, width: NOTE_WIDTH, height: noteHigh });
+  // allLeft: the note comes first and the program second, above the blocks it makes, and the right edge is left empty
+  if (allLeft) {
+    items.unshift({ stack: program, width: programSize.width, height: programSize.height });
+    items.unshift(items.splice(items.findIndex((item) => item.stack === note), 1)[0]);
+  }
   items.forEach((item, index) => { item.index = index; });
 
   // Pack them into as few columns as possible: tallest first, each into the first column with room.
@@ -958,14 +1018,17 @@ export function sampleStacks(sample, measure = {}) {
   const scale = Math.min(stageWidth / PAPER_WIDTH, stageHeight / PAPER_HEIGHT);
   const clearLeft = stageWidth / 2 - ((sample.clearWidth ?? PAPER_WIDTH) / 2) * scale;
 
-  // The right edge: the program (with the note above it, if it fits there).
-  let edge = stageWidth - SIDE - (noteBeside ? programSize.width : Math.max(NOTE_WIDTH, programSize.width)) * zoom;
-  program.x = toWork(edge);
-  if (!noteBeside) {
-    note.x = program.x;
-    note.y = TOP;
+  // The right edge: the program (with the note above it, if it fits there). Nothing, if everything is down the left.
+  let edge = stageWidth - SIDE;
+  if (!allLeft) {
+    edge -= (noteBeside ? programSize.width : Math.max(NOTE_WIDTH, programSize.width)) * zoom;
+    program.x = toWork(edge);
+    if (!noteBeside) {
+      note.x = program.x;
+      note.y = TOP;
+    }
+    edge -= COLUMN_GAP * zoom;
   }
-  edge -= COLUMN_GAP * zoom;
 
   // The left of the paper gets columns while they fit, the rest go right of the paper, nearest the program last.
   let cursor = LEFT;
@@ -982,5 +1045,5 @@ export function sampleStacks(sample, measure = {}) {
     edge -= COLUMN_GAP * zoom;
   }
   // If even that is not enough room, the columns still never overlap each other (they just cover some of the paper).
-  return [note, program, ...items.filter((item) => item.stack !== note).map((item) => item.stack)];
+  return [note, program, ...items.filter((item) => item.stack !== note && item.stack !== program).map((item) => item.stack)];
 }

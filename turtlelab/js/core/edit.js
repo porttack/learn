@@ -33,7 +33,7 @@ export function newBlock(op) {
     block[key] = [];
   });
   if (spec.kind === 'note') block.text = '';
-  if (spec.textSlot) block.text = 'Hello';
+  if (spec.textSlot) block.text = spec.textSlot.default ?? 'Hello';
   if (spec.fontSlot) block.font = DEFAULT_FONT;
   return block;
 }

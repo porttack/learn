@@ -42,7 +42,9 @@
 //   mouthLabels  for a clamp with a yes-or-no socket: the little word beside
 //            each mouth ('' for none), like the 'else' of if else.
 //   textSlot for a command that has words typed on it, like write: { hint } is what its empty
-//            box says. The words are kept in the block's `text` (see project.js), apart from its sockets.
+//            box says, `default` the words a new block starts with (Hello if none), `max` how many letters it may hold
+//            (40 if none) and `shows` how many of them the box on the block shows before it ends in dots (16 if none). The words are kept in the block's `text` (see project.js), apart from its sockets.
+//   endLabel for a block with a textSlot: a little word written after the box, like the 'into box1' of ask.
 //   fontSlot true for a block that is a dropdown of fonts (set font). The choice is kept in the
 //            block's `font` (see project.js), apart from its sockets.
 //   colorSlot true for a block that has a color box on it (set color, fill screen): it shows the color of the three numbers and its hex, and pressing it
@@ -261,6 +263,32 @@ export const BLOCKS = {
     label: 'start',
     args: [],
     help: 'The Run button starts here. Snap the blocks you want to run under this one.',
+  },
+  // An event handler: a hat that Run never starts from. While a program is running (or has finished and is listening, see Scheduler), each
+  // click on the paper runs the blocks under it, with mouseX and mouseY (just under it) saying where the click was.
+  onclick: {
+    palette: 'flow',
+    kind: 'hat',
+    label: 'when paper clicked',
+    args: [],
+    help: 'Runs the blocks under it every time you click the paper while your program is running. mouseX and mouseY (just under this block) tell you where you clicked. If your program has one of these, it keeps listening for clicks after the last block, until you press Stop.',
+  },
+  // mouseX and mouseY are built in variables, like the boxes but set by the program's surroundings: where the paper was last clicked (0 and 0 until it is).
+  // They are global, so they work anywhere (in the main program, in a block you made, in a click handler), and they hold their place until the next click.
+  // They sit in the Flow palette right under the hat, so the event and the numbers it gives you are together.
+  mousex: {
+    palette: 'flow',
+    kind: 'reporter',
+    label: 'mouseX',
+    args: [],
+    help: 'Reports how far right of the middle the paper was last clicked (negative on the left). It is 0 until you click, and it stays the same until the next click.',
+  },
+  mousey: {
+    palette: 'flow',
+    kind: 'reporter',
+    label: 'mouseY',
+    args: [],
+    help: 'Reports how far above the middle the paper was last clicked (negative below). It is 0 until you click, and it stays the same until the next click.',
   },
   repeat: {
     palette: 'flow',
@@ -487,6 +515,21 @@ export function specOf(block) {
 // each time a program runs. (More boxes only means changing this number: every
 // list, test and readout is made from it. A project that used fewer boxes still opens.)
 export const BOX_COUNT = 4;
+
+// The ask block is how a person gives a program a number while it runs. It lives with the boxes because the answer goes in a box:
+// always box1 (simple first: a program that needs box1 for something else stores the answer in another box straight away).
+// The question is typed on the block like the words of a write block. `ask` is a command, not a reporter, because a reporter is
+// worked out at once and this has to wait for a person (see Ask in interpreter.js).
+export const ASK_MAX_CHARS = 60;
+BLOCKS.ask = {
+  palette: 'boxes',
+  kind: 'command',
+  label: 'ask',
+  endLabel: 'into box1',
+  args: [],
+  textSlot: { hint: 'question', default: 'How many?', max: ASK_MAX_CHARS, shows: 30 },
+  help: 'Asks a question and waits. Type a number, press Enter, and the number goes into box1, ready to use. Tap the words to change the question. Press Stop if you do not want to answer.',
+};
 
 for (let n = 1; n <= BOX_COUNT; n += 1) {
   BLOCKS[`store${n}`] = {

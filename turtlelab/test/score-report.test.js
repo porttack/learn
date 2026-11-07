@@ -67,7 +67,7 @@ test('every word in the report for every sample is plain ASCII with no dashes, s
 test('the complexity table is named for the blocks it counts, with nothing in brackets, a count and points for every row, and a total that adds up', () => {
   const result = assess({ project: projectOf(SQUARE), run: RUN });
   const rows = scoreReport(result).sections[0].lines.filter((l) => l.kind === 'part');
-  assert.deepEqual(rows.map((r) => r.text), ['Variables', 'repeat / forever', 'if / if else', 'Blocks you made', 'Math and random', 'Blocks', 'Big ideas used', 'Total']);
+  assert.deepEqual(rows.map((r) => r.text), ['Variables', 'repeat / forever', 'if / if else', 'Blocks you made', 'ask / when paper clicked', 'Math and random', 'Blocks', 'Big ideas used', 'Total']);
   for (const row of rows) assert.ok(!/[()]/.test(row.text) && !/try/i.test(row.text), row.text);
   for (const row of rows.slice(0, -1)) assert.ok(/^\d+$/.test(row.count) && /^\d+$/.test(row.points), JSON.stringify(row));
   const loops = rows.find((r) => r.text === 'repeat / forever');

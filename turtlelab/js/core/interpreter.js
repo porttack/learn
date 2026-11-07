@@ -47,6 +47,18 @@ export class Wait {
 }
 
 /**
+ * Yielded by the ask block: "show this question and wait for a number". The scheduler hands the question to the page, waits for the
+ * person, and sends the number back into the generator (`generator.next(number)`), which the ask block puts in box1. A run with nobody to
+ * ask (a test, or the PDF's run before it is saved) sends nothing back, and the answer is 0.
+ */
+export class Ask {
+  constructor(block, text) {
+    this.block = block;
+    this.text = text;
+  }
+}
+
+/**
  * Yielded by a block that takes only part of a step, like each short line of a letter the write block draws:
  * `share` (0 to 1) of the wait a whole step would have at the speed the program has. The shares of one letter add up to
  * 1, so a letter takes the time of one step however it is drawn, and the scheduler can show it a line at a time.
@@ -79,7 +91,8 @@ export function createContext({
   setSpeed = () => {},
   definitions = new Map(),
 }) {
-  return { turtle, boxes: boxes ?? new Array(BOX_COUNT).fill(0), random, print, setSpeed, definitions, frames: [] };
+  // `mouse` is where the paper was last clicked (the mouseX and mouseY blocks); the page sets it when a click runs a handler.
+  return { turtle, boxes: boxes ?? new Array(BOX_COUNT).fill(0), random, print, setSpeed, definitions, frames: [], mouse: { x: 0, y: 0 } };
 }
 
 /**
@@ -125,6 +138,8 @@ export function* runBlocks(blocks, ctx) {
 const COMMANDS = {
   // start only marks where a stack begins. When it runs it does nothing.
   start: () => {},
+  // a click handler's hat is only a name for the stack: the scheduler runs the blocks under it when the paper is clicked
+  onclick: () => {},
   // a note is words for people, so running one does nothing
   note: () => {},
   // The `to` block only names a definition. It is never run: calling the block
@@ -220,6 +235,14 @@ const FLOW = {
     return undefined;
   },
 
+  // The answer arrives as the value the scheduler gives back for the yield. With no one to ask it is 0 (a number box never holds anything else).
+  *ask(block, ctx) {
+    const answer = yield new Ask(block, block.text ?? '');
+    ctx.boxes[0] = typeof answer === 'number' && Number.isFinite(answer) ? answer : 0;
+    yield block; // a step of its own, so the yellow strip shows the new box1 before the next block
+    return undefined;
+  },
+
   *wait(block, ctx) {
     const tenths = evalNumber(block.args?.[0], ctx, block);
     yield new Wait(block, Math.min(LONGEST_WAIT_MS, Math.max(0, tenths) * 100));
@@ -278,6 +301,9 @@ const REPORTERS = {
   penred: (ctx) => ctx.turtle.color[0],
   pengreen: (ctx) => ctx.turtle.color[1],
   penblue: (ctx) => ctx.turtle.color[2],
+  // Where the paper was last clicked (0 and 0 until it is). The page sets ctx.mouse when a click runs a handler.
+  mousex: (ctx) => ctx.mouse.x,
+  mousey: (ctx) => ctx.mouse.y,
 
   // Parentheses give back what is inside. (Which part of a sum is worked out
   // first is already decided by which block is inside which.)

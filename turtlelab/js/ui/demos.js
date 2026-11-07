@@ -18,6 +18,32 @@ const call = (name, params, ...args) => ({ op: 'call', name, params, args });
 const input = (name) => ({ op: 'input', name });
 
 export const DEMOS = {
+  // draws a little square wherever the paper is clicked, and prints where it was (for the click checks: dev/click-checks.mjs)
+  click: {
+    stacks: [
+      { x: 90, y: 70, blocks: [b('start'), b('clean')] },
+      {
+        x: 380,
+        y: 70,
+        blocks: [
+          b('onclick'),
+          b('print', { op: 'mousex', args: [] }),
+          b('print', { op: 'mousey', args: [] }),
+          b('penup'),
+          b('setxy', { op: 'mousex', args: [] }, { op: 'mousey', args: [] }),
+          b('pendown'),
+          repeat(4, b('forward', 30), b('right', 90)),
+        ],
+      },
+    ],
+  },
+  // asks how many sides, then draws that polygon (for the ask checks: dev/ask-checks.mjs)
+  ask: [
+    b('start'),
+    b('clean'),
+    { op: 'ask', args: [], text: 'How many sides?' },
+    repeat({ op: 'box1' }, b('forward', 60), b('right', { op: 'divide', args: [360, { op: 'box1' }] })),
+  ],
   square: [b('start'), b('clean'), repeat(4, b('forward', 150), b('right', 90))],
   flower: [
     b('start'),

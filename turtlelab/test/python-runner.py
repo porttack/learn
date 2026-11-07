@@ -1,6 +1,7 @@
 """Runs the Python that TurtleLab writes, for the tests. Not part of the app.
 
-It reads {"source": "...", "mode": "..."} from standard input. The modes:
+It reads {"source": "...", "mode": "...", "answers": [...], "clicks": [[x, y], ...]} from standard input (answers are what input() is given, in order; clicks, when given, make
+onscreenclick exist and call the function it was given for each click after the program has run, as real Python's turtle would from done()). The modes:
   check           only compiles the source, to prove it is valid Python.
   names           lists the names the program uses without defining them (the turtle
                   functions, the builtins) and the module functions it calls
@@ -9,7 +10,7 @@ It reads {"source": "...", "mode": "..."} from standard input. The modes:
                   count: that is how the program says "if this exists".
   edublocks-names lists every name EduBlocks' turtle module has (see below).
   run             runs the program against a stand-in for the turtle module and prints
-                  where the turtle ended up, how far it drew, its pen, and what was printed.
+                  where the turtle ended up, how far it drew, its pen, what was printed and what input() was asked.
 
 The stand-in is EduBlocks, not Python. edublocks.org runs Python with PyScript, and its
 turtle module is a small file of its own, https://app.edublocks.org/pyscript/turtle/turtle.py
@@ -186,14 +187,37 @@ for name in EDUBLOCKS_NAMES:
             "width": pensize, "pu": penup, "pd": pendown, "seth": setheading}.get(name) or globals().get(name)
     setattr(fake, name, impl if callable(impl) and name not in ("Turtle", "Screen") else (lambda *a, **k: None))
 fake.__all__ = list(EDUBLOCKS_NAMES)
+# EduBlocks' turtle has no onscreenclick, so a program only finds one here when the test is about clicks and says so.
+click_handlers = []
+clicks = request.get("clicks")
+if clicks is not None:
+    def onscreenclick(fun, btn=1, add=None):
+        click_handlers.append(fun)
+    fake.onscreenclick = onscreenclick
+    fake.__all__ = list(EDUBLOCKS_NAMES) + ["onscreenclick"]
 sys.modules["turtle"] = fake
 time.sleep = lambda s: None  # the tests do not wait
+
+# input() is answered from the request, and the questions are kept apart from what was printed (a real input() writes its question to
+# the screen, but a program's prints are what the tests compare with the blocks').
+import builtins
+answers = [str(a) for a in request.get("answers", [])]
+asked = []
+def fake_input(prompt=""):
+    asked.append(prompt)
+    if not answers:
+        raise EOFError("input() was asked for more answers than the test gave")
+    return answers.pop(0)
+builtins.input = fake_input
 
 out = io.StringIO()
 real_stdout = sys.stdout
 sys.stdout = out
 try:
     exec(compile(source, "program.py", "exec"), {"__name__": "__main__"})
+    for click_x, click_y in clicks or []:
+        if click_handlers:
+            click_handlers[-1](click_x, click_y)
 except SystemExit:
     pass
 finally:
@@ -202,5 +226,5 @@ finally:
 print(json.dumps({
     "x": state["x"], "y": state["y"], "heading": state["heading"], "length": state["length"],
     "color": state["color"], "size": state["size"],
-    "speeds": state["speeds"], "printed": out.getvalue().split(),
+    "speeds": state["speeds"], "printed": out.getvalue().split(), "asked": asked,
 }))

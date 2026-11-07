@@ -6,9 +6,9 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 
 import { SAMPLES, LISTED_SAMPLES, SAMPLE_IDS, sampleById, sampleStacks, noteHeight } from '../js/ui/samples.js';
-import { validateProject, findRunStack, walkBlocks, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
+import { validateProject, findRunStack, handlersOf, walkBlocks, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { definitionsOf } from '../js/core/definitions.js';
-import { runBlocks, createContext, Wait } from '../js/core/interpreter.js';
+import { runBlocks, createContext, Wait, Ask } from '../js/core/interpreter.js';
 import { Turtle, PAPER_W, PAPER_H } from '../js/core/turtle.js';
 import { NOTE_MAX_CHARS } from '../js/core/blocks-spec.js';
 import { zoomToFit } from '../js/core/view.js';
@@ -36,8 +36,24 @@ function runSample(sample, seed = 1) {
   const context = createContext({ turtle, random: seeded(seed), print: (line) => printed.push(line), definitions: definitionsOf(project).map });
   const { stack } = findRunStack(project);
   let waits = 0;
-  for (const step of runBlocks(stack.blocks, context)) if (step instanceof Wait) waits += 1;
-  return { turtle, printed, waits };
+  // A sample that waits for a person is run with one: its `answers` are typed into each question in turn, and, once its program has run, its `clicks` are made on the paper.
+  const answers = [...(sample.answers ?? [])];
+  const drive = (blocks) => {
+    const steps = runBlocks(blocks, context);
+    let reply;
+    for (;;) {
+      const { value, done } = steps.next(reply);
+      reply = value instanceof Ask ? answers.shift() : undefined;
+      if (value instanceof Wait) waits += 1;
+      if (done) break;
+    }
+  };
+  drive(stack.blocks);
+  for (const [x, y] of sample.clicks ?? []) {
+    context.mouse = { x, y };
+    for (const handler of handlersOf(project)) drive(handler.blocks);
+  }
+  return { turtle, printed, waits, context };
 }
 
 const words = (sample) => [sample.title, sample.summary, sample.look, sample.note, ...sample.concepts];
@@ -64,8 +80,8 @@ test('every sample is a project the app accepts, so Open and autosave would acce
 test('every sample has a sticky note on top and one program, which begins at a Start block, then the blocks it makes', () => {
   for (const sample of SAMPLES) {
     const [note, program, ...made] = sampleStacks(sample);
-    assert.equal(made.length, (sample.defines ?? []).length, `${sample.id}: one stack for each block it makes`);
-    for (const stack of made) assert.equal(stack.blocks[0].op, 'to', `${sample.id}: a block it makes starts with to`);
+    assert.equal(made.length, (sample.defines ?? []).length + (sample.handlers ?? []).length, `${sample.id}: one stack for each block it makes and each click handler`);
+    made.forEach((stack, i) => assert.equal(stack.blocks[0].op, i < (sample.defines ?? []).length ? 'to' : 'onclick', `${sample.id}: a block it makes starts with to, a click handler with when paper clicked`));
     assert.deepEqual(note.blocks.map((b) => b.op), ['note'], `${sample.id}: first stack is the note`);
     assert.equal(program.blocks[0].op, 'start', `${sample.id}: the program starts with Start`);
     assert.equal(program.blocks[1].op, 'clean', `${sample.id}: and cleans, so it draws the same each time`);
@@ -77,9 +93,9 @@ test('every sample has a sticky note on top and one program, which begins at a S
 
 test('the note sits above the program with room to spare, both inside the left edge of the page', () => {
   for (const sample of SAMPLES) {
-    const [note, program] = sampleStacks(sample);
-    assert.equal(note.x, program.x, sample.id);
+    const [note, program] = sampleStacks(sample, { stageWidth: 1366 });
     assert.ok(note.x >= 80, `${sample.id}: clear of the palette buttons`);
+    assert.equal(note.x, program.x, sample.id); // (a sample that says allLeft has them in one column down the left, the note on top)
     assert.ok(program.y >= note.y + noteHeight(sample.note), `${sample.id}: program starts below the note`);
   }
 });
@@ -169,7 +185,9 @@ test('samples that name print, wait or fill really use them', () => {
     if (sample.concepts.includes('start fill')) assert.ok(turtle.ops.some((op) => op.type === 'fill'), `${sample.id}: fills`);
     if (sample.concepts.includes('if else')) assert.ok(uses(sample, 'ifelse'), `${sample.id}: has an if else`);
     if (sample.concepts.includes('random')) assert.ok(uses(sample, 'random'), `${sample.id}: has a random`);
-    if (sample.concepts.includes('boxes')) assert.ok(uses(sample, 'store1'), `${sample.id}: stores in a box`);
+    if (sample.concepts.includes('boxes')) assert.ok(uses(sample, 'store1') || uses(sample, 'ask'), `${sample.id}: stores in a box (an ask block does)`);
+    if (sample.concepts.includes('ask')) assert.ok(uses(sample, 'ask') && (sample.answers ?? []).length > 0, `${sample.id}: asks, and says what the checks should type`);
+    if (sample.concepts.includes('when paper clicked')) assert.ok(uses(sample, 'onclick') && (sample.clicks ?? []).length > 0, `${sample.id}: has a click handler, and says where the checks should click`);
     if (sample.concepts.includes('speed')) assert.ok(uses(sample, 'speed'), `${sample.id}: has a speed block`);
     if (sample.concepts.includes('my own block')) assert.ok(uses(sample, 'to') && uses(sample, 'call'), `${sample.id}: makes a block and calls it`);
     if (sample.concepts.includes('input')) assert.ok(uses(sample, 'input'), `${sample.id}: uses an input block`);

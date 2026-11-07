@@ -27,7 +27,7 @@
 // This only writes text. A test runs the Python it makes (against a stand-in for the
 // turtle module) and checks it ends up where TurtleLab's own interpreter does.
 
-import { findRunStack, walkBlocks } from './project.js';
+import { findRunStack, handlersOf, walkBlocks } from './project.js';
 import { definitionsOf, isDefinition } from './definitions.js';
 import { nameKey, tidyName } from './names.js';
 import { formatNumber } from './format.js';
@@ -41,7 +41,7 @@ const PYTHON_WORDS = new Set(
   'False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield match case type'.split(' '),
 );
 const USED_BY_PROGRAM = new Set(
-  'forward backward left right goto setheading circle penup pendown pensize pencolor color begin_fill end_fill clear home xcor ycor heading speed bgcolor colormode done clean random time print range int abs round max min exit Screen SystemExit NameError rgb channel set_color set_pensize pen_color pen_size'.split(' '),
+  'forward backward left right goto setheading circle penup pendown pensize pencolor color begin_fill end_fill clear home xcor ycor heading speed bgcolor colormode done clean random time print range int abs round max min exit Screen SystemExit NameError rgb channel set_color set_pensize pen_color pen_size ask input float ValueError OverflowError mouseX mouseY on_click onscreenclick'.split(' '),
 );
 
 /** The line that makes the pen red, and the one that makes it size 5, going through the trackers if the program reads them. */
@@ -74,7 +74,7 @@ function identifier(name, taken) {
 
 /** Which boxes, turtle features and modules a list of blocks uses. */
 function survey(stacks) {
-  const found = { boxes: new Set(), colors: false, trackColor: false, trackSize: false, random: false, time: false, clean: false };
+  const found = { boxes: new Set(), colors: false, trackColor: false, trackSize: false, random: false, time: false, clean: false, ask: false, mouse: false };
   for (const blocks of stacks) {
     walkBlocks(blocks, (block) => {
       const box = /^(?:store|box)(\d+)$/.exec(block.op);
@@ -86,6 +86,11 @@ function survey(stacks) {
       if (block.op === 'pensize') found.trackSize = true;
       if (block.op === 'random' || block.op === 'oneof') found.random = true;
       if (block.op === 'wait') found.time = true;
+      if (block.op === 'mousex' || block.op === 'mousey') found.mouse = true;
+      if (block.op === 'ask') {
+        found.ask = true;
+        found.boxes.add(1); // the answer goes in box1
+      }
       if (block.op === 'clean') found.clean = found.colors = true;
     });
   }
@@ -99,9 +104,10 @@ function survey(stacks) {
 export function toPython(project) {
   const { map: definitions } = definitionsOf(project);
   const { stack: main } = findRunStack(project);
+  const handlers = handlersOf(project);
   const notes = project.stacks.filter((stack) => stack.blocks[0]?.op === 'note').sort((a, b) => a.y - b.y || a.x - b.x);
   const defined = [...definitions.values()];
-  if (!main && defined.length === 0) {
+  if (!main && defined.length === 0 && handlers.length === 0) {
     return '# Drag some blocks onto the page and the Python for them shows up here.\n';
   }
 
@@ -117,10 +123,11 @@ export function toPython(project) {
   }
 
   const mainBlocks = main ? main.blocks : [];
-  const uses = survey([mainBlocks, ...defined.map((found) => found.body)]);
+  const uses = survey([mainBlocks, ...defined.map((found) => found.body), ...handlers.map((handler) => handler.blocks)]);
+  if (handlers.length > 0) uses.mouse = true; // a click handler sets mouseX and mouseY
   // TurtleLab's turtle starts facing up with a red pen and Python's faces east with a
   // black one, so a program that does not begin with `clean` is given that start.
-  const needsStart = Boolean(main) && mainBlocks.find((block) => block.op !== 'start')?.op !== 'clean';
+  const needsStart = (Boolean(main) || handlers.length > 0) && mainBlocks.find((block) => block.op !== 'start')?.op !== 'clean';
   if (needsStart) uses.colors = true;
   const lines = [];
   const add = (text = '') => lines.push(text);
@@ -191,11 +198,29 @@ export function toPython(project) {
     add(`${INDENT}${redPen(track)}`);
     add(`${INDENT}${size5(track)}`);
   }
+  if (uses.ask) {
+    // The ask block: Python's input() gives back words, so this asks again until it gets a number (a whole one stays whole).
+    add();
+    add();
+    add('# Ask a question and keep asking until the answer is a number');
+    add('def ask(question):');
+    add(`${INDENT}while True:`);
+    add(`${INDENT}${INDENT}answer = input(question + " ")`);
+    add(`${INDENT}${INDENT}try:`);
+    add(`${INDENT}${INDENT}${INDENT}number = float(answer)`);
+    add(`${INDENT}${INDENT}${INDENT}return int(number) if number == int(number) else number`);
+    add(`${INDENT}${INDENT}except (ValueError, OverflowError):`);
+    add(`${INDENT}${INDENT}${INDENT}print("Please type a number.")`);
+  }
   const boxes = [...uses.boxes].sort((a, b) => a - b);
-  if (boxes.length > 0) {
+  if (boxes.length > 0 || uses.mouse) {
     add();
     add();
     for (const n of boxes) add(`box${n} = 0`);
+    if (uses.mouse) {
+      add('mouseX = 0  # where the paper was last clicked');
+      add('mouseY = 0');
+    }
   }
 
   for (const found of defined) {
@@ -209,9 +234,52 @@ export function toPython(project) {
     walkBlocks(found.body, (block) => {
       const box = /^store(\d+)$/.exec(block.op);
       if (box) assigned.add(Number(box[1]));
+      if (block.op === 'ask') assigned.add(1);
     });
     if (assigned.size > 0) add(`${INDENT}global ${[...assigned].sort((a, b) => a - b).map((n) => `box${n}`).join(', ')}`);
     body(found.body, 1, context).forEach((line) => add(line));
+  }
+
+  // Each `when paper clicked` becomes a function that Python's turtle calls with where the click was (onscreenclick). With several, each is its own
+  // function and on_click runs them in order, the way every one runs on each click in the blocks.
+  if (handlers.length > 0) {
+    const context = { functionNames, parameters: new Map(), inFunction: true, taken, track };
+    const globalsFor = (blocks, extra = []) => {
+      const assigned = new Set();
+      walkBlocks(blocks, (block) => {
+        const box = /^store(\d+)$/.exec(block.op);
+        if (box) assigned.add(Number(box[1]));
+        if (block.op === 'ask') assigned.add(1);
+      });
+      const names = [...extra, ...[...assigned].sort((a, b) => a - b).map((n) => `box${n}`)];
+      return names.length > 0 ? [`${INDENT}global ${names.join(', ')}`] : [];
+    };
+    if (handlers.length === 1) {
+      add();
+      add();
+      add('# Runs each time the paper is clicked, with where it was clicked');
+      add('def on_click(x, y):');
+      globalsFor(handlers[0].blocks, ['mouseX', 'mouseY']).forEach((line) => add(line));
+      add(`${INDENT}mouseX = x`);
+      add(`${INDENT}mouseY = y`);
+      body(handlers[0].blocks, 1, context).forEach((line) => add(line));
+    } else {
+      handlers.forEach((handler, i) => {
+        add();
+        add();
+        add(`def when_clicked_${i + 1}():`);
+        globalsFor(handler.blocks).forEach((line) => add(line));
+        body(handler.blocks, 1, context).forEach((line) => add(line));
+      });
+      add();
+      add();
+      add('# Runs each time the paper is clicked, with where it was clicked');
+      add('def on_click(x, y):');
+      add(`${INDENT}global mouseX, mouseY`);
+      add(`${INDENT}mouseX = x`);
+      add(`${INDENT}mouseY = y`);
+      handlers.forEach((handler, i) => add(`${INDENT}when_clicked_${i + 1}()`));
+    }
   }
 
   if (main) {
@@ -225,20 +293,41 @@ export function toPython(project) {
       add(size5(track));
     }
     body(mainBlocks, 0, context).forEach((line) => add(line));
-    // done() keeps the turtle window open when the program is run as a file. EduBlocks has no
+  } else if (handlers.length === 0) {
+    add();
+    add('# Nothing runs yet: add a Start block, and under it a call to your block.');
+  }
+  if (handlers.length > 0) {
+    if (!main) {
+      // only a click handler: nothing runs first, but the turtle still starts the way TurtleLab's does
+      add();
+      add();
+      add('# Your program starts here');
+      if (needsStart) {
+        add('setheading(90)');
+        add(redPen(track));
+        add(size5(track));
+      }
+    }
+    // Python's turtle calls on_click when the paper is clicked, once done() below is waiting for clicks. EduBlocks has no onscreenclick, so there the
+    // clicks do nothing (it is allowed not to exist, like done()).
+    add('try:');
+    add(`${INDENT}onscreenclick(on_click)  # clicks on the paper call on_click`);
+    add('except NameError:');
+    add(`${INDENT}pass  # EduBlocks has no onscreenclick, so clicks do nothing there`);
+  }
+  if (main || handlers.length > 0) {
+    // done() keeps the turtle window open when the program is run as a file (and waiting for clicks). EduBlocks has no
     // done(), and does not need one, so it is not allowed to be an error there.
     add('try:');
     add(`${INDENT}done()  # keeps the turtle window open when this is run as a file`);
     add('except NameError:');
     add(`${INDENT}pass  # EduBlocks has no done(), and does not need one`);
-  } else {
-    add();
-    add('# Nothing runs yet: add a Start block, and under it a call to your block.');
   }
 
   const loose = project.stacks.filter((stack) => {
     const op = stack.blocks[0]?.op;
-    return stack !== main && op !== 'note' && op !== 'to' && stack.blocks.length > 0;
+    return stack !== main && op !== 'note' && op !== 'to' && op !== 'onclick' && stack.blocks.length > 0;
   }).length;
   if (loose > 0) {
     add();
@@ -340,6 +429,8 @@ function statement(block, depth, context) {
       return line('end_fill()');
     case 'print':
       return line(`print(${a(0)})`);
+    case 'ask':
+      return line(`box1 = ask(${JSON.stringify(block.text ?? '')})`);
     case 'wait': {
       const tenths = block.args?.[0];
       return line(`time.sleep(${typeof tenths === 'number' ? fmt(tenths / 10) : `${expr(tenths, context, PRODUCT).text} / 10`})`);
@@ -415,6 +506,10 @@ function build(arg, context) {
   if (typeof arg === 'number') return { text: fmt(arg), prec: arg < 0 ? NEGATIVE : ATOM };
   const [first, second] = arg.args ?? [];
   switch (arg.op) {
+    case 'mousex':
+      return atom('mouseX');
+    case 'mousey':
+      return atom('mouseY');
     case 'x':
       return atom('xcor()');
     case 'y':

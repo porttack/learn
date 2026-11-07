@@ -7,11 +7,12 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 
 import { SAMPLES, sampleById, sampleStacks } from '../js/ui/samples.js';
-import { walkBlocks, findRunStack, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
+import { walkBlocks, findRunStack, handlersOf, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
+import { scoreProject } from '../js/core/complexity.js';
 import { definitionsOf } from '../js/core/definitions.js';
 import { compileLogo } from '../js/core/logo-compile.js';
-import { runBlocks, createContext } from '../js/core/interpreter.js';
-import { Turtle } from '../js/core/turtle.js';
+import { runBlocks, createContext, Ask } from '../js/core/interpreter.js';
+import { Turtle, PAPER_W, PAPER_H } from '../js/core/turtle.js';
 import { channelBinary, channelHex, toHexUpper } from '../js/core/color.js';
 
 const dir = new URL('../../_turtlelessons/', import.meta.url);
@@ -285,6 +286,103 @@ test('Step 1: the L ends where the page says, and the two Bs are counted and tur
   assert.deepEqual([walk(11).x, walk(11).y, walk(11).heading].map(Math.round), [15, -40, 0], 'the walk leaves the turtle 20 on, facing up, where the B starts');
   assert.deepEqual(mainOf(frame).slice(7, 11).map((block) => [block.op, block.args[0]]), [['penup', undefined], ['forward', 20], ['left', 90], ['pendown', undefined]]);
   assert.match(page, /`pen up`, `forward 20`, `left 90` and `pen down`/);
+});
+
+/**
+ * Run a project the way the page does: its program from Start, each ask block answered from `answers` in turn, and then each of `clicks` made on the paper,
+ * which runs every click handler with mouseX and mouseY set.
+ */
+function runInteractive(stacks, { answers = [], clicks = [] } = {}) {
+  const project = { app: FORMAT_ID, version: FORMAT_VERSION, stacks };
+  const turtle = new Turtle();
+  const printed = [];
+  const context = createContext({ turtle, print: (line) => printed.push(line), definitions: definitionsOf(project).map });
+  const pending = [...answers];
+  const drive = (blocks) => {
+    const steps = runBlocks(blocks, context);
+    let reply;
+    for (;;) {
+      const { value, done } = steps.next(reply);
+      reply = value instanceof Ask ? pending.shift() : undefined;
+      if (done) break;
+    }
+  };
+  const found = findRunStack(project);
+  drive(found.stack ? found.stack.blocks : []);
+  for (const [x, y] of clicks) {
+    context.mouse = { x, y };
+    for (const handler of handlersOf(project)) drive(handler.blocks);
+  }
+  const lines = turtle.ops.filter((op) => op.type === 'line' && op.size > 0 && Math.hypot(op.x2 - op.x1, op.y2 - op.y1) > 1e-9);
+  return { turtle, printed, boxes: context.boxes, lines };
+}
+const lengthOf = (line) => Math.hypot(line.x2 - line.x1, line.y2 - line.y1);
+const directionOf = (line) => (Math.atan2(line.x2 - line.x1, line.y2 - line.y1) * 180) / Math.PI; // degrees clockwise from up, like a heading
+
+test('Step 13: the shapes, boxes and traces the page states, for the answers it names', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-13-ask-for-a-number.md', import.meta.url), 'utf8');
+  const sides = (n) => runInteractive(copyOf('lesson-ask-sides'), { answers: [n] });
+  const five = sides(5);
+  assert.equal(five.lines.length, 5, 'five sides');
+  assert.equal(five.boxes[0], 5, 'box1 holds the answer');
+  const turn = (((directionOf(five.lines[1]) - directionOf(five.lines[0])) + 540) % 360) - 180;
+  assert.ok(Math.abs(turn - 72) < 1e-6, `each turn is 360 / 5 = 72, not ${turn}`);
+  assert.deepEqual([3, 12].map((n) => sides(n).lines.length), [3, 12]);
+  assert.equal(sides(0).lines.length, 0, 'typing 0 draws nothing');
+  assert.match(page, /Each turn is 360 ÷ 5, which is 72/);
+  assert.match(page, /Nothing\. The `repeat` runs 0 times/);
+  // the trace: ask, keep the answer in box2, ask again, then use both
+  const trace = (keep) => [{ x: 0, y: 0, blocks: [b('start'), b('clean'), { op: 'ask', args: [], text: 'How long is a side?' }, ...(keep ? [b('store2', box1)] : []), { op: 'ask', args: [], text: 'How many sides?' }, rep(box1, b('forward', { op: 'box2' }), b('right', b('divide', 360, box1)))] }];
+  const kept = runInteractive(trace(true), { answers: [50, 5] });
+  assert.deepEqual(kept.boxes.slice(0, 2), [5, 50], 'when the repeat starts box1 is 5 and box2 is 50');
+  assert.equal(kept.lines.length, 5);
+  assert.ok(kept.lines.every((line) => Math.abs(lengthOf(line) - 50) < 1e-6), 'a pentagon with sides of 50');
+  assert.equal(runInteractive(trace(false), { answers: [50, 5] }).lines.length, 0, 'without the store, box2 is 0 and forward 0 draws nothing');
+  assert.match(page, /box1 is 5 \(the second answer replaced the first\) and box2 is 50/);
+  assert.match(page, /A pentagon, with sides of 50/);
+  assert.match(page, /box2 is still 0, so `forward box2` goes forward 0/);
+  // the program on the page is the one the checks type into
+  assert.equal(sampleById('lesson-ask-sides').answers.length, 1);
+});
+
+test('Step 14: the click demo says the middle is 0 and 0, the paper runs -350 to 350 and -280 to 280, and the square starts at the click and goes up and to the right', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-14-click-to-draw.md', import.meta.url), 'utf8');
+  const stamp = (x, y) => runInteractive(copyOf('lesson-click-stamp'), { clicks: [[x, y]] });
+  assert.equal(runInteractive(copyOf('lesson-click-stamp')).lines.length, 0, 'before any click the paper is empty');
+  assert.deepEqual(stamp(0, 0).printed, ['0', '0'], 'the middle is 0 and 0');
+  assert.deepEqual([PAPER_W / 2, PAPER_H / 2], [350, 280], 'the paper goes from -350 to 350 across and -280 to 280 up and down');
+  assert.deepEqual(stamp(350, 280).printed, ['350', '280'], 'the top right corner is positive in both');
+  const at = stamp(-60, 40);
+  assert.equal(at.lines.length, 4, 'a square');
+  assert.deepEqual([at.lines[0].x1, at.lines[0].y1, at.lines[0].x2, at.lines[0].y2].map(Math.round), [-60, 40, -60, 70], 'it starts at the click and the first side goes up');
+  assert.ok(at.lines.every((line) => [line.x1, line.x2].every((x) => x >= -60 - 1e-6) && [line.y1, line.y2].every((y) => y >= 40 - 1e-6)), 'the whole square is up and to the right of the click: the click is its bottom left corner');
+  assert.equal(stamp(200, -100).lines.length, 4, 'every click stamps another square, wherever it is');
+  const twice = runInteractive(copyOf('lesson-click-stamp'), { clicks: [[-60, 40], [90, -80]] });
+  assert.equal(twice.lines.length, 8, 'two clicks, two squares');
+  assert.deepEqual(twice.printed, ['-60', '40', '90', '-80']);
+  assert.match(page, /The paper goes from -350 to 350 across, and from -280 to 280 up and down/);
+  assert.match(page, /The bottom left corner/);
+  for (const [x, y] of sampleById('lesson-click-stamp').clicks) assert.ok(Math.abs(x) <= 350 && Math.abs(y) <= 280, 'the checks click on the paper');
+});
+
+test('Step 15: a program of the shape the page gives has the parts its list asks for, and the PDF row that the answer key mentions counts them', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-15-capstone-3.md', import.meta.url), 'utf8');
+  // a stamp shop: ask how big, and every click stamps a square that size where it was clicked, in a block of its own
+  const stamp = { x: 0, y: 0, blocks: [{ op: 'to', name: 'stamp', params: ['size'] }, rep(4, b('forward', { op: 'input', name: 'size' }), b('right', 90))] };
+  const click = { x: 300, y: 0, blocks: [{ op: 'onclick', args: [] }, b('setcolor', 0, 120, 220), b('penup'), b('setxy', { op: 'mousex' }, { op: 'mousey' }), b('pendown'), { op: 'call', name: 'stamp', params: ['size'], args: [box1] }] };
+  const program = { x: 150, y: 0, blocks: [b('start'), b('clean'), b('setcolor', 220, 40, 40), { op: 'ask', args: [], text: 'How big is a stamp?' }, { op: 'call', name: 'stamp', params: ['size'], args: [box1] }] };
+  const done = runInteractive([stamp, program, click], { answers: [40], clicks: [[-100, 50], [80, -60]] });
+  assert.equal(done.lines.length, 12, 'one square from the program and one for each click');
+  assert.ok(done.lines.every((line) => Math.abs(lengthOf(line) - 40) < 1e-6), 'every side is the size that was typed');
+  const score = scoreProject({ stacks: [stamp, program, click] });
+  const row = (id) => score.parts.find((part) => part.id === id);
+  assert.equal(row('userInput').count, 2, 'one ask and one click handler: the Count of at least 2 the answer key says');
+  assert.ok(row('ownBlocks').count >= 1 && row('loops').count >= 1, 'and at least 1 for blocks you made and for repeat / forever');
+  assert.deepEqual(score.ideas, { loops: true, conditionals: false, variables: true, ownBlocks: true, userInput: true });
+  // every item on the page's list is in the answer key and the notes
+  for (const phrase of ['ask block', 'when paper clicked', 'block of their own', 'loop', 'two colors', 'sticky note']) assert.ok(key.includes(phrase) && notes.includes(phrase), phrase);
+  assert.match(key, /ask \/ when paper clicked/);
+  assert.match(page, /ask and click/);
 });
 
 test('everything that lists the steps knows every step: the contents page, the teacher notes, the answer key and the standards file', () => {

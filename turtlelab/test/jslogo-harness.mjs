@@ -104,13 +104,13 @@ function loadInterpreter() {
  * Run Logo text in JSLogo. Resolves to { turtle, printed, error, logo }: what the turtle was told to do, what was
  * printed (a line each), and the error message if JSLogo complained (or null).
  */
-export async function runJsLogo(code) {
+export async function runJsLogo(code, { answers = [] } = {}) {
   const LogoInterpreter = loadInterpreter();
   const turtle = new RecordingTurtle();
   let text = '';
   const stream = {
     write: (...args) => { text += args.join(''); },
-    read: async () => '',
+    read: async () => String(answers.shift() ?? ''), // JSLogo's readword: what the person typed, as a word
     clear: () => { text = ''; },
     readback: () => text,
     textsize: 12,

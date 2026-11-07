@@ -35,7 +35,7 @@ test('a square with a loop: its blocks, the loop, and the bonus for using a big 
   assert.equal(part(r, 'loops').points, POINTS.loop);
   assert.equal(part(r, 'bonus').points, POINTS.idea, 'one of the four big ideas');
   assert.equal(r.score, 4 + POINTS.loop + POINTS.idea);
-  assert.deepEqual(r.ideas, { loops: true, conditionals: false, variables: false, ownBlocks: false });
+  assert.deepEqual(r.ideas, { loops: true, conditionals: false, variables: false, ownBlocks: false, userInput: false });
 });
 
 test('piling on plain blocks stops paying: forty forwards are worth no more than twenty, and far less than a program with ideas in it', () => {
@@ -133,9 +133,9 @@ test('each big idea used earns a bonus, the variable most of all, and using all 
     [b('start'), b('store1', 0), withBody('repeat', [3], [withBody('if', [b('less', b('box1'), 5)], [b('store1', b('add', b('box1'), 1)), { op: 'call', name: 'go', params: [], args: [] }])])],
   );
   const r = scoreProject(all);
-  assert.deepEqual(r.ideas, { loops: true, conditionals: true, variables: true, ownBlocks: true });
-  assert.equal(part(r, 'bonus').points, POINTS.idea * 3 + POINTS.variableIdea + POINTS.allIdeas);
-  assert.equal(part(r, 'bonus').detail, 'all four');
+  assert.deepEqual(r.ideas, { loops: true, conditionals: true, variables: true, ownBlocks: true, userInput: false });
+  assert.equal(part(r, 'bonus').points, POINTS.idea * 3 + POINTS.variableIdea + POINTS.allIdeas, 'the bonus for loops, ifs, variables and blocks of your own is what it was before input was counted');
+  assert.equal(part(r, 'bonus').detail, '4 of 5');
   assert.ok(POINTS.variableIdea > POINTS.idea);
   assert.ok(r.score > 100, `${r.score}`);
   assert.match(r.tip, /nested|all the big ideas|loop inside/i);
@@ -208,4 +208,86 @@ test('a row with nothing in it says nothing: no "try repeat" style hint, in an e
     }
     assert.ok(r.tip.length > 0, 'the one thing to try is still said, once, as the tip');
   }
+});
+
+// ---- User input: ask and click handlers ------------------------------------------------------------------------------------------------------
+
+const ask = { op: 'ask', args: [], text: 'How many?' };
+const handler = (...blocks) => [{ op: 'onclick', args: [] }, ...blocks];
+
+test('an ask block is worth something on its own, counts as storing a number in box1, and is worth more when its answer is used', () => {
+  const none = scoreProject(project([b('start'), b('clean'), b('forward', 10)]));
+  assert.equal(part(none, 'userInput').count, 0);
+  assert.equal(part(none, 'userInput').points, 0);
+  assert.equal(part(none, 'userInput').detail, '', 'a row with nothing in it says nothing');
+  const alone = scoreProject(project([b('start'), ask]));
+  assert.equal(part(alone, 'userInput').points, POINTS.ask);
+  assert.equal(part(alone, 'userInput').count, 1);
+  assert.equal(part(alone, 'userInput').detail, '1 ask');
+  assert.equal(alone.ideas.userInput, false, 'asking and doing nothing with the answer is not using input');
+  assert.equal(part(alone, 'variables').points, POINTS.box + POINTS.boxStore, 'the answer went in a box: that is a store, like store in box1');
+  assert.equal(alone.ideas.variables, false, 'stored but never read');
+  const used = scoreProject(project([b('start'), ask, withBody('repeat', [b('box1')], [b('forward', 10)])]));
+  assert.equal(part(used, 'userInput').points, POINTS.ask + POINTS.askUsed);
+  assert.equal(used.ideas.userInput, true);
+  assert.equal(used.ideas.variables, true, 'ask then use box1 is using a variable');
+  assert.equal(part(used, 'variables').points, POINTS.box + POINTS.boxStore + POINTS.boxRead + POINTS.firstVariable);
+  assert.equal(part(used, 'bonus').points, POINTS.idea * 2 + POINTS.variableIdea, 'a loop, a variable and input, and not the bonus for the first four');
+  assert.equal(part(used, 'bonus').detail, '3 of 5');
+  // two asks are two blocks, and a second one does not earn the "answer used" extra again
+  const two = scoreProject(project([b('start'), ask, ask, b('forward', b('box1'))]));
+  assert.equal(part(two, 'userInput').points, POINTS.ask * 2 + POINTS.askUsed);
+  assert.equal(part(two, 'userInput').detail, '2 asks');
+  // the answer is box1: reading another box does not use it
+  assert.equal(scoreProject(project([b('start'), ask, b('store2', 4), b('forward', b('box2'))])).ideas.userInput, false);
+});
+
+test('a click handler earns points only when it has blocks in it, and reading mouseX and mouseY there earns a little more, up to a limit', () => {
+  const empty = scoreProject(project([b('start'), b('forward', 10)], handler()));
+  assert.equal(part(empty, 'userInput').count, 1, 'it is counted');
+  assert.equal(part(empty, 'userInput').points, 0, 'but an empty one earns nothing');
+  assert.equal(part(empty, 'userInput').detail, '1 click handler');
+  assert.equal(empty.ideas.userInput, false);
+  const stamp = scoreProject(project([b('start'), b('clean')], handler(b('setxy', b('mousex'), b('mousey')), b('forward', 5))));
+  assert.equal(part(stamp, 'userInput').points, POINTS.handler + 2 * POINTS.mouseRead);
+  assert.equal(stamp.ideas.userInput, true);
+  assert.equal(part(stamp, 'userInput').detail, '1 click handler');
+  const plain = scoreProject(project([b('start')], handler(b('forward', 5))));
+  assert.equal(part(plain, 'userInput').points, POINTS.handler, 'a handler that does not read where the click was is still input');
+  const many = scoreProject(project([b('start')], handler(...Array.from({ length: 10 }, () => b('forward', b('mousex'))))));
+  assert.equal(part(many, 'userInput').points, POINTS.handler + POINTS.mouseCap, 'the mouse reads stop paying at a limit');
+  // mouseX and mouseY on their own (no handler) are always 0, so they earn nothing
+  assert.equal(part(scoreProject(project([b('start'), b('forward', b('mousex'))])), 'userInput').points, 0);
+  // two handlers are two, and each one that has blocks pays
+  const twin = scoreProject(project([b('start')], handler(b('forward', 5)), handler(b('back', 5))));
+  assert.equal(part(twin, 'userInput').points, POINTS.handler * 2);
+  assert.equal(part(twin, 'userInput').detail, '2 click handlers');
+  // the hat is not a plain block
+  assert.equal(part(plain, 'blocks').count, 1, 'the one forward inside the handler');
+});
+
+test('using input on top of the four older ideas makes five of five, and a program that does not use input scores exactly what it did before', () => {
+  const all = project(
+    [{ op: 'to', args: [], name: 'go', params: [] }, b('forward', 10)],
+    [b('start'), b('store1', 0), withBody('repeat', [3], [withBody('repeat', [2], [withBody('if', [b('less', b('box1'), 5)], [b('store1', b('add', b('box1'), 1)), { op: 'call', name: 'go', params: [], args: [] }])])])],
+  );
+  const without = scoreProject(all);
+  assert.equal(part(without, 'bonus').detail, '4 of 5');
+  assert.match(without.tip, /Try input/, 'the last tip, once every other idea is used, is to try input');
+  const withInput = scoreProject(project(...all.stacks.map((s) => s.blocks).map((blocks, i) => (i === 1 ? [...blocks, ask, b('forward', b('box1'))] : blocks))));
+  assert.equal(part(withInput, 'bonus').detail, 'all five');
+  assert.equal(part(withInput, 'bonus').points, part(without, 'bonus').points + POINTS.idea);
+  assert.equal(withInput.ideas.userInput, true);
+  assert.match(withInput.tip, /all the big ideas/);
+  // an ask whose answer is never used gets its own tip, and an empty handler too
+  const allInBox2 = project(
+    [{ op: 'to', args: [], name: 'go', params: [] }, b('forward', 10)],
+    [b('start'), b('store2', 0), withBody('repeat', [3], [withBody('repeat', [2], [withBody('if', [b('less', b('box2'), 5)], [b('store2', b('add', b('box2'), 1)), { op: 'call', name: 'go', params: [], args: [] }])])]), ask],
+  );
+  assert.match(scoreProject(allInBox2).tip, /plug box1 into a block/, 'the answer goes in box1 and nothing reads box1');
+  assert.equal(scoreProject(allInBox2).ideas.userInput, false);
+  const emptyHandler = project(...all.stacks.map((s) => s.blocks), handler());
+  assert.match(scoreProject(emptyHandler).tip, /Put blocks under when paper clicked/);
+  // input did not change what the older ideas pay: the same program without input scores the same points in every other row
+  for (const id of ['variables', 'loops', 'conditionals', 'ownBlocks', 'math', 'blocks']) assert.equal(part(without, id).points, part(scoreProject(project(...all.stacks.map((s) => s.blocks))), id).points);
 });

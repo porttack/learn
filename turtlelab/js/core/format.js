@@ -12,3 +12,14 @@ export function formatNumber(value) {
 export function formatValue(value) {
   return typeof value === 'boolean' ? String(value) : formatNumber(value);
 }
+
+/**
+ * What a person typed into an ask box, as a number, or null if it is not one. Plain numbers only: 12, -3.5, .5, 7. (Not 1e3, 0x10, a word,
+ * an empty box or Infinity, which a student typing quickly never means.) Spaces round it are fine.
+ */
+export function parseAnswer(text) {
+  const typed = String(text ?? '').trim();
+  if (!/^[+-]?(\d+\.?\d*|\.\d+)$/.test(typed)) return null;
+  const value = Number(typed);
+  return Number.isFinite(value) ? value : null;
+}

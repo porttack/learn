@@ -6,11 +6,13 @@ permalink: /turtle-lessons/
 
 # TurtleLab Lessons
 
-Twelve steps with [TurtleLab]({{ '/turtlelab/' | relative_url }}), the block drawing tool where a turtle draws what you tell it. Each step starts from a sample you change.
+Fifteen steps with [TurtleLab]({{ '/turtlelab/' | relative_url }}), the block drawing tool where a turtle draws what you tell it. Each step starts from a sample you change.
 
 The first five steps: you draw your initials, learn loops, use chance, and make the program decide. Then you put it all together in a capstone: a piece of art that uses a loop, random, and if and else.
 
-The next seven: you keep numbers in variables (boxes), make variables that count, teach the turtle new words, put a loop inside a loop, see that color is three numbers, hunt down bugs, and finish with a second capstone that uses boxes, a block of your own and a loop. Many of these steps have a real TurtleLab built into the page, so you can change a demo and run it without leaving the lesson.
+The next seven (6 to 12): you keep numbers in variables (boxes), make variables that count, teach the turtle new words, put a loop inside a loop, see that color is three numbers, hunt down bugs, and finish with a second capstone that uses boxes, a block of your own and a loop. Many of these steps have a real TurtleLab built into the page, so you can change a demo and run it without leaving the lesson.
+
+The last three: you ask the person using your program for a number, make your program listen for clicks on the paper, and finish with a third capstone that does both.
 
 You need a computer with Chrome and a pencil. There is nothing to install. Every step ends with a way to keep a PDF of your work.
 
@@ -25,7 +27,7 @@ You need a computer with Chrome and a pencil. There is nothing to install. Every
 {% endunless %}{% endfor %}
 </ol>
 
-[Print all twelve steps]({{ '/turtle-lessons/print/' | relative_url }}) ·
+[Print all fifteen steps]({{ '/turtle-lessons/print/' | relative_url }}) ·
 [Print the planning sheet for the first capstone]({{ '/turtle-lessons/planning-sheet/' | relative_url }}) ·
 [More samples to try]({{ '/turtlelab/samples.html' | relative_url }})
 

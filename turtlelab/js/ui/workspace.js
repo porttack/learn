@@ -50,6 +50,7 @@ import {
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const SNAP_DISTANCE = 28; // how close (in screen pixels) a drop must be to snap
 const DRAG_THRESHOLD = 6; // how far a press must move before it is a drag
+const CLICK_SLOP = 6; // how far a press on the paper may move and still be a click (more is a slide)
 const TOUCH_DRAG_THRESHOLD = 10; // fingers wobble more than mice
 const LONG_PRESS_MS = 500; // how long to hold a block for its help bubble
 const COPY_OFFSET = 30; // how far a copied stack lands from the original
@@ -83,6 +84,7 @@ export class Workspace {
     onMessage = () => {},
     isOverPalette = () => false,
     onPaletteHover = () => {},
+    onPaperClick = () => {},
     eater = null,
   }) {
     this.stage = stage;
@@ -93,6 +95,7 @@ export class Workspace {
     this.onMessage = onMessage;
     this.isOverPalette = isOverPalette;
     this.onPaletteHover = onPaletteHover;
+    this.onPaperClick = onPaperClick; // (clientX, clientY): a click, not a slide, on the paper or the gray round it
     this.eater = eater;
 
     this.layouts = [];
@@ -672,6 +675,7 @@ export class Workspace {
     const isEmpty = (target) =>
       target === this.stage || target.classList?.contains('paper') || target.classList?.contains('paper-box');
     const fingers = new Map(); // pointer id -> where it is now
+    let press = null; // the one press that might turn out to be a click: where it began, and whether it has moved or been joined by another finger
 
     const spread = () => {
       const [a, b] = [...fingers.values()];
@@ -682,12 +686,14 @@ export class Workspace {
       if (!isEmpty(event.target) || (event.pointerType === 'mouse' && event.button !== 0)) return;
       this.bubble.hide();
       fingers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      press = fingers.size === 1 ? { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false } : { ...press, moved: true };
       this.stage.setPointerCapture(event.pointerId);
     });
 
     this.stage.addEventListener('pointermove', (event) => {
       const before = fingers.get(event.pointerId);
       if (!before) return;
+      if (press && Math.hypot(event.clientX - press.x, event.clientY - press.y) > CLICK_SLOP) press.moved = true;
       if (fingers.size === 1) {
         this.setView(panBy(this.view, event.clientX - before.x, event.clientY - before.y));
         fingers.set(event.pointerId, { x: event.clientX, y: event.clientY });
@@ -703,8 +709,17 @@ export class Workspace {
     });
 
     const lift = (event) => fingers.delete(event.pointerId);
-    this.stage.addEventListener('pointerup', lift);
-    this.stage.addEventListener('pointercancel', lift);
+    this.stage.addEventListener('pointerup', (event) => {
+      // Pressed and let go in the same place, on the paper or the gray round it, with one finger: a click (a drag was a slide, and was not).
+      const clicked = press && press.id === event.pointerId && !press.moved && fingers.size === 1;
+      if (press && press.id === event.pointerId) press = null;
+      lift(event);
+      if (clicked) this.onPaperClick(event.clientX, event.clientY);
+    });
+    this.stage.addEventListener('pointercancel', (event) => {
+      if (press && press.id === event.pointerId) press = null;
+      lift(event);
+    });
 
     this.stage.addEventListener(
       'wheel',
@@ -825,9 +840,11 @@ export class Workspace {
     const input = document.createElement('input');
     input.className = 'number-input';
     input.type = 'text';
-    input.maxLength = LETTERING_MAX_CHARS;
+    const textSlot = specOf(block).textSlot;
+    const max = textSlot.max ?? LETTERING_MAX_CHARS;
+    input.maxLength = max;
     input.value = block.text ?? '';
-    input.setAttribute('aria-label', 'The words to write');
+    input.setAttribute('aria-label', block.op === 'ask' ? 'The question to ask' : 'The words to write');
     input.style.left = `${box.left - stageBox.left}px`;
     input.style.top = `${box.top - stageBox.top}px`;
     input.style.width = `${Math.max(box.width, 220)}px`;
@@ -843,8 +860,8 @@ export class Workspace {
       const typed = input.value;
       input.remove();
       if (!keep) return;
-      const text = cleanLetteringText(typed);
-      if (text !== typed) this.onMessage('Some of those letters cannot be written. The script has the letters, numbers and symbols on an English keyboard.');
+      const text = cleanLetteringText(typed, max);
+      if (text !== typed) this.onMessage(block.op === 'ask' ? 'Some of those letters cannot be shown. Use the letters, numbers and symbols on an English keyboard.' : 'Some of those letters cannot be written. The script has the letters, numbers and symbols on an English keyboard.');
       if (text === (block.text ?? '')) return;
       block.text = text;
       this.render();

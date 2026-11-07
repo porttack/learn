@@ -13,8 +13,11 @@
 //   conditionals  if and if else. An if else (two ways to go) and an if inside a loop are worth more.
 //   own blocks  a block you made with `to` and then used. A block that uses itself earns more.
 //   math        sums, comparisons and chance (random).
+//   user input  an ask block (and more when the answer it puts in box1 is used), and a `when paper clicked` handler that has blocks in it (and each place it
+//               reads mouseX or mouseY). An ask block also counts as storing a number in box1, so using the answer earns the variable points too.
 //
-// There is a bonus for each of the four big ideas used (loops, conditionals, variables, own blocks), a bigger one for the variable, and one more for all four.
+// There is a bonus for each of the big ideas used (loops, conditionals, variables, own blocks, and user input), a bigger one for the variable, and one more for
+// all of the first four (that bonus was there before input was, so a program's score does not drop because input was added).
 // Everything is worked out from the project's blocks (see project.js), as the editor shows them; nothing is stored or sent. It only
 // reads the project. The words in `parts` and `tip` are for the person writing the program.
 
@@ -31,7 +34,9 @@ export const POINTS = Object.freeze({
   input: 6, inputUse: 3, // an input of a block you made, and each place it is used
   ownBlock: 8, ownBlockUnused: 2, call: 2, callCap: 10, recursion: 10, // a block you made and use (or only made), each use of it, and one that uses itself
   firstVariable: 15, // the first variable that is stored and then used
-  idea: 6, variableIdea: 10, allIdeas: 10, // for using each big idea, the variable one is worth more, and for using all four
+  idea: 6, variableIdea: 10, allIdeas: 10, // for using each big idea, the variable one is worth more, and for using all of loops, conditionals, variables and own blocks
+  ask: 6, askUsed: 6, // an ask block, and extra when the answer it puts in box1 is used somewhere
+  handler: 8, mouseRead: 3, mouseCap: 12, // a click handler that has blocks in it, each place mouseX or mouseY is read (in a program with such a handler), and the most those are worth
 });
 
 /** The levels, by the least score that reaches them. */
@@ -49,7 +54,7 @@ const CHANCE = new Set(['random', 'oneof']);
 const LOOPS = new Set(['repeat', 'forever']);
 const CONDITIONALS = new Set(['if', 'ifelse']);
 /** Blocks that are not "plain blocks" to count: the hats that start a stack, and notes. */
-const NOT_COUNTED = new Set(['start', 'to', 'note']);
+const NOT_COUNTED = new Set(['start', 'to', 'onclick', 'note']);
 
 const boxNumber = (op, prefix) => {
   const m = new RegExp(`^${prefix}([1-9][0-9]*)$`).exec(op);
@@ -81,6 +86,7 @@ export function inspect(project) {
     blocks: 0, loops: 0, nestedLoops: 0, conditionals: 0, elseWays: 0, conditionalsInLoops: 0, operators: 0, chance: 0,
     stores: new Array(BOX_COUNT + 1).fill(0), reads: new Array(BOX_COUNT + 1).fill(0), counters: 0,
     inputs: 0, inputUses: 0, definitions: new Map(), calls: new Map(), recursive: new Set(),
+    asks: 0, handlers: 0, handlersWithBlocks: 0, mouseReads: 0, // user input: ask blocks, click handlers (and those with blocks in them), and reads of mouseX and mouseY
   };
 
   /** `loops` is how many loops this block is inside; `own` is the key of the block being defined (or null). */
@@ -107,6 +113,11 @@ export function inspect(project) {
       }
       const read = boxNumber(op, 'box');
       if (read) found.reads[read] += 1;
+      if (op === 'ask') {
+        found.asks += 1;
+        found.stores[1] += 1; // the answer goes in box1, which is storing a number in it
+      }
+      if (op === 'mousex' || op === 'mousey') found.mouseReads += 1;
       if (op === 'input' && params.has(nameKey(block.name ?? ''))) found.inputUses += 1;
       if (op === 'call' && typeof block.name === 'string') {
         const key = nameKey(block.name);
@@ -130,6 +141,10 @@ export function inspect(project) {
       found.inputs += params.size;
       walk(blocks.slice(1), 0, key, params);
     } else {
+      if (blocks[0]?.op === 'onclick') {
+        found.handlers += 1;
+        if (blocks.length > 1) found.handlersWithBlocks += 1; // an empty one earns nothing
+      }
       walk(blocks, 0, null, new Set());
     }
   }
@@ -140,7 +155,7 @@ export function inspect(project) {
  * The score of a project, and how it was worked out.
  * @returns {{ score: number, level: { label: string, min: number, next: object | null },
  *   parts: { id: string, label: string, count: number, points: number, detail: string }[],
- *   ideas: { loops: boolean, conditionals: boolean, variables: boolean, ownBlocks: boolean }, tip: string }}
+ *   ideas: { loops: boolean, conditionals: boolean, variables: boolean, ownBlocks: boolean, userInput: boolean }, tip: string }}
  */
 export function scoreProject(project) {
   const found = inspect(project);
@@ -185,19 +200,30 @@ export function scoreProject(project) {
     + [...found.recursive].filter((key) => found.definitions.has(key)).length * POINTS.recursion;
   const ownBlocksUsed = ownCalled > 0;
 
-  const ideas = { loops: found.loops > 0, conditionals: found.conditionals > 0, variables: variablesUsed, ownBlocks: ownBlocksUsed };
+  // User input: an ask block is worth something, and more when its answer (box1) is read somewhere; a click handler is worth something when it has blocks in
+  // it, and reading where the click was (mouseX, mouseY) is worth a little more, up to a limit. The idea counts as used when an answer is really used or a handler really does something.
+  const askUsed = found.asks > 0 && found.reads[1] > 0;
+  const userInputPoints = found.asks * POINTS.ask + (askUsed ? POINTS.askUsed : 0) + found.handlersWithBlocks * POINTS.handler
+    + (found.handlersWithBlocks > 0 ? Math.min(found.mouseReads * POINTS.mouseRead, POINTS.mouseCap) : 0);
+  const userInputUsed = askUsed || found.handlersWithBlocks > 0;
+
+  const ideas = { loops: found.loops > 0, conditionals: found.conditionals > 0, variables: variablesUsed, ownBlocks: ownBlocksUsed, userInput: userInputUsed };
   const ideaCount = Object.values(ideas).filter(Boolean).length;
-  const bonusPoints = (ideas.loops ? POINTS.idea : 0) + (ideas.conditionals ? POINTS.idea : 0) + (ideas.ownBlocks ? POINTS.idea : 0)
-    + (ideas.variables ? POINTS.variableIdea : 0) + (ideaCount === 4 ? POINTS.allIdeas : 0);
+  const firstFour = ideas.loops && ideas.conditionals && ideas.variables && ideas.ownBlocks;
+  const bonusPoints = (ideas.loops ? POINTS.idea : 0) + (ideas.conditionals ? POINTS.idea : 0) + (ideas.ownBlocks ? POINTS.idea : 0) + (ideas.userInput ? POINTS.idea : 0)
+    + (ideas.variables ? POINTS.variableIdea : 0) + (firstFour ? POINTS.allIdeas : 0);
+  const askWords = found.asks === 0 ? '' : `${found.asks} ${found.asks === 1 ? 'ask' : 'asks'}`;
+  const handlerWords = found.handlers === 0 ? '' : `${found.handlers} click ${found.handlers === 1 ? 'handler' : 'handlers'}`;
 
   const parts = [
     { id: 'variables', label: 'Variables', count: variableCount, points: variablePoints, detail: variableCount === 0 ? '' : `${boxesUsed} ${boxesUsed === 1 ? 'box' : 'boxes'}, ${found.inputs} ${found.inputs === 1 ? 'input' : 'inputs'}${found.counters > 0 ? `, ${found.counters} ${found.counters === 1 ? 'counter' : 'counters'}` : ''}` },
     { id: 'loops', label: 'Loops', count: found.loops, points: loopPoints, detail: found.loops === 0 ? '' : found.nestedLoops > 0 ? `${found.nestedLoops} inside another` : '' },
     { id: 'conditionals', label: 'Conditionals', count: found.conditionals, points: conditionalPoints, detail: found.conditionals === 0 ? '' : found.elseWays > 0 ? `${found.elseWays} with an else` : '' },
     { id: 'ownBlocks', label: 'Blocks you made', count: found.definitions.size, points: ownPoints, detail: found.definitions.size === 0 ? '' : `${ownCalled} used${found.recursive.size > 0 ? ', one uses itself' : ''}` },
+    { id: 'userInput', label: 'User input', count: found.asks + found.handlers, points: userInputPoints, detail: [askWords, handlerWords].filter(Boolean).join(', ') },
     { id: 'math', label: 'Math and chance', count: found.operators + found.chance, points: mathPoints, detail: '' },
     { id: 'blocks', label: 'Blocks', count: found.blocks, points: blockPoints, detail: found.blocks * POINTS.block > POINTS.blockCap ? 'the first 20 count' : '' },
-    { id: 'bonus', label: 'Using the big ideas', count: ideaCount, points: bonusPoints, detail: ideaCount === 4 ? 'all four' : `${ideaCount} of 4` },
+    { id: 'bonus', label: 'Using the big ideas', count: ideaCount, points: bonusPoints, detail: ideaCount === 5 ? 'all five' : `${ideaCount} of 5` },
   ];
   const score = sum(parts.map((part) => part.points));
   return { score, level: levelOf(score), parts, ideas, tip: tipFor(ideas, found) };
@@ -216,5 +242,11 @@ function tipFor(ideas, found) {
   if (!ideas.ownBlocks) return 'Try making a block of your own with to, then use it.';
   if (found.counters === 0) return 'A counter is worth a lot: store in a box the same box plus 1, inside a loop.';
   if (found.nestedLoops === 0) return 'A loop inside a loop is worth more.';
+  if (found.handlers > 0 && found.handlersWithBlocks === 0) return 'Put blocks under when paper clicked, and they run every time you click the paper.';
+  if (!ideas.userInput) {
+    return found.asks > 0
+      ? 'The ask block puts its answer in box1. Use it: plug box1 into a block, like the number of a repeat.'
+      : 'Try input: the ask block asks for a number, and when paper clicked runs blocks every time you click.';
+  }
   return 'You are using all the big ideas. Keep going: a block that uses itself earns more.';
 }

@@ -870,6 +870,19 @@ export class CanvasView {
     this.sprite.addEventListener('pointercancel', finish);
   }
 
+  /**
+   * The spot of the paper (in turtle steps, whole numbers, y up) under a point of the screen, or null if the point is not on the paper.
+   * It goes through the drawing's view, so it is right after a Fit or a zoom, and it is the same x and y the turtle's own blocks use.
+   */
+  worldAt(clientX, clientY) {
+    const rect = this.box.getBoundingClientRect();
+    const px = clientX - rect.left;
+    const py = clientY - rect.top;
+    if (px < 0 || py < 0 || px > rect.width || py > rect.height) return null;
+    const world = paperToWorld(this.drawView, px / this.scale, py / this.scale);
+    return { x: Math.round(world.x), y: Math.round(world.y) };
+  }
+
   /** Where the middle of the turtle is on the screen. */
   spriteCenter() {
     const rect = this.box.getBoundingClientRect();

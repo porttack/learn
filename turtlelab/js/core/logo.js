@@ -16,7 +16,7 @@
 // Never touches the screen.
 
 import { definitionsOf } from './definitions.js';
-import { findRunStack, walkBlocks } from './project.js';
+import { findRunStack, handlersOf, walkBlocks } from './project.js';
 import { DEFAULTS } from './turtle.js';
 import { clampChannel } from './color.js';
 import { JSLOGO_WORDS } from './logo-jslogo-words.js';
@@ -93,6 +93,8 @@ function expr(arg, ctx) {
     case 'penred': return atom('penred');
     case 'pengreen': return atom('pengreen');
     case 'penblue': return atom('penblue');
+    case 'mousex': return atom('mousex');
+    case 'mousey': return atom('mousey');
     case 'paren': return atom(`(${a(0).text})`);
     case 'add': return infix('+', SUM, a(0), a(1));
     case 'subtract': return infix('-', SUM, a(0), a(1));
@@ -119,6 +121,9 @@ function jslogoExpr(arg, ctx, a, wrapped) {
     case 'pensize': return atom('(first pensize)'); // JSLogo's pensize is a list of two numbers
     case 'penred': case 'pengreen': case 'penblue':
       ctx.state.dropped.add(arg.op);
+      return atom('0');
+    case 'mousex': case 'mousey':
+      ctx.state.dropped.add('mousex and mousey (shown as 0)'); // JSLogo has no mouse clicks
       return atom('0');
     case 'mod':
       // JSLogo's own modulo gives 1 for -7 mod 3 (the blocks, and Python, give 2), so tlmod does it properly.
@@ -202,6 +207,9 @@ function jslogoStatement(block, depth, ctx) {
     case 'speed':
       ctx.state.dropped.add('setspeed');
       return [];
+    case 'ask':
+      // JSLogo's readword asks with a box of its own and gives back what was typed as a word, so `sum 0` makes it a number.
+      return one(`make "${boxName(ctx, 1)} sum 0 (readword [${labelWords(block.text).trim() || 'Type a number'}])`);
     case 'setfont':
     case 'setcurve':
       ctx.state.dropped.add(block.op); // JSLogo's label has one font and always runs straight
@@ -260,6 +268,8 @@ function statement(block, depth, ctx) {
     }
     case 'write':
       return one(`write |${(block.text ?? '').replace(/\|/g, '')}| ${args(0)}`);
+    case 'ask':
+      return one(`ask |${(block.text ?? '').replace(/\|/g, '')}|`);
     case 'setfont':
       return one(`setfont "${block.font ?? 'script'}`);
     case 'repeat':
@@ -324,8 +334,9 @@ end`;
 export function toLogo(project, { short = false, jslogo = false, boxNames = [] } = {}) {
   const { map: definitions } = definitionsOf(project);
   const { stack: main } = findRunStack(project);
+  const handlers = handlersOf(project);
   const defined = [...definitions.values()];
-  if (!main && defined.length === 0) return '; Drag some blocks onto the page and the Logo for them shows up here.\n';
+  if (!main && defined.length === 0 && handlers.length === 0) return '; Drag some blocks onto the page and the Logo for them shows up here.\n';
 
   // Logo names for the blocks you made, and (inside each) for their inputs. JSLogo has more words of its own.
   const taken = new Set(jslogo ? ['tlarc', 'tlmod'] : []);
@@ -347,7 +358,16 @@ export function toLogo(project, { short = false, jslogo = false, boxNames = [] }
     definitionLines.push('end', '');
   }
 
-  const mainLines = main ? text(main.blocks) : ['; Nothing runs yet: add a Start block, and under it a call to your block.'];
+  const mainLines = main ? text(main.blocks) : handlers.length > 0 ? [] : ['; Nothing runs yet: add a Start block, and under it a call to your block.'];
+  // Each click handler is an onclick [ ... ] after the program. JSLogo has no mouse clicks, so there they are left out, and the program does not wait for them.
+  const handlerLines = [];
+  for (const handler of handlers) {
+    if (jslogo) {
+      state.dropped.add('onclick (JSLogo has no mouse clicks)');
+      continue;
+    }
+    handlerLines.push('onclick [', ...lines(handler.blocks, 1, { short, procedures, params: null, jslogo, state, inDefinition: false, boxNames }), ']');
+  }
 
   const out = [];
   const add = (line = '') => out.push(line);
@@ -377,15 +397,20 @@ export function toLogo(project, { short = false, jslogo = false, boxNames = [] }
       walkBlocks(blocks, (block) => {
         const box = /^(?:store|box)(\d+)$/.exec(block.op);
         if (box) boxes.add(Number(box[1]));
+        if (block.op === 'ask') boxes.add(1); // (the answer goes in box1)
       });
     }
     for (const number of [...boxes].sort((a, b) => a - b)) add(`make "${boxName({ boxNames }, number)} 0`);
   }
   for (const line of mainLines) add(line);
+  if (handlerLines.length > 0) {
+    if (mainLines.length > 0) add();
+    for (const line of handlerLines) add(line);
+  }
 
   const loose = project.stacks.filter((stack) => {
     const op = stack.blocks[0]?.op;
-    return stack !== main && op !== 'note' && op !== 'to' && stack.blocks.length > 0;
+    return stack !== main && op !== 'note' && op !== 'to' && op !== 'onclick' && stack.blocks.length > 0;
   }).length;
   if (loose > 0) {
     add();

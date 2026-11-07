@@ -226,7 +226,7 @@ test('assess gives the block count, all three values and their reasons, and effi
   assert.ok(before.blocks >= 8);
   assert.ok(before.complexity.value > 0.5, `${before.complexity.value}`);
   assert.equal(before.complexity.points, scoreProject(p).score);
-  assert.equal(before.complexity.parts.length, 7);
+  assert.equal(before.complexity.parts.length, 8);
   assert.ok(before.elegance.value !== null && before.elegance.value > 0.9);
   assert.equal(before.efficiency.value, null);
   const after = assess({ project: p, run: runOf((t) => { for (let i = 0; i < 10; i += 1) { t.forward(6 * (i + 1)); t.right(60); } }, 60) });
@@ -259,4 +259,21 @@ test('the sentence about the scale is worked out from the curve: it names this p
   assert.equal(tenths(complexity01(80)), '0.6');
   assert.equal(tenths(complexity01(130)), '0.8');
   assert.equal(tenths(complexity01(200)), '0.9');
+});
+
+// ---- Click handlers ---------------------------------------------------------------------------------------------
+
+test('a click handler is a stack of its own, not a stray one, and its hat is not a plain block', () => {
+  const body = [b('penup'), b('setxy', { op: 'mousex', args: [] }, { op: 'mousey', args: [] }), b('pendown'), rep(4, [b('forward', 20), b('right', 90)])];
+  const without = project([b('start'), b('clean')]);
+  const withHandler = project([b('start'), b('clean')], [b('onclick'), ...body]);
+  // not left over: a command stack with no Start above it is a tip, but a click handler is meant to be there
+  const stray = eleganceOf(project([b('start'), b('clean'), b('forward', 5)], [b('forward', 9), b('right', 90)]));
+  const handled = eleganceOf(project([b('start'), b('clean'), b('forward', 5)], [b('onclick'), b('forward', 9), b('right', 90)]));
+  assert.ok(stray.value < 1 && texts(stray).some((t) => /not under a Start|Start block/i.test(t)), `a loose stack is a tip: ${texts(stray)}`);
+  assert.equal(handled.value, 1, `a handler is not: ${texts(handled)}`);
+  // the hat is not counted: the handler is worth exactly the blocks inside it, as if they had no hat
+  const blocksIn = (page) => scoreProject(page).parts.find((part) => part.id === 'blocks').count;
+  assert.equal(blocksIn(withHandler), blocksIn(project([b('start'), b('clean')], body)), 'the hat adds nothing to the count of blocks');
+  assert.ok(blocksIn(withHandler) > blocksIn(without), 'but what is inside it does');
 });

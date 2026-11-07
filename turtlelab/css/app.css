@@ -509,6 +509,52 @@ body {
   background: #fff;
 }
 
+/* The question box that an ask block shows (js/ui/ask-box.js): at the top of the page, clear of the drawing. */
+.ask-box {
+  position: absolute;
+  z-index: 30;
+  top: 0.6rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22rem;
+  max-width: calc(100% - 8px);
+  box-sizing: border-box;
+  padding: 0.7rem 0.8rem 0.6rem;
+  color: #1b1f23;
+  background: #fff;
+  border: 2px solid #f3a600;
+  border-radius: 0.6rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  touch-action: manipulation;
+}
+.ask-question { margin: 0 0 0.5rem; font-size: 1.05rem; font-weight: 600; overflow-wrap: anywhere; }
+.ask-row { display: flex; gap: 0.4rem; }
+.ask-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+  min-height: 2.3rem;
+  padding: 0 0.5rem;
+  font: 16px Roboto, system-ui, sans-serif; /* 16px so phones don't zoom in */
+  border: 2px solid #8a8a8a;
+  border-radius: 0.35rem;
+}
+.ask-ok,
+.ask-cancel {
+  min-height: 2.3rem;
+  padding: 0 0.8rem;
+  font: 600 0.95rem Roboto, system-ui, sans-serif;
+  border: 2px solid #8a8a8a;
+  border-radius: 0.35rem;
+  background: #fff;
+  cursor: pointer;
+}
+.ask-ok { color: #fff; background: #1f6fd0; border-color: #1f6fd0; }
+.ask-input:focus-visible,
+.ask-ok:focus-visible,
+.ask-cancel:focus-visible { outline: 3px solid #3a7bd5; outline-offset: 1px; }
+.ask-problem { min-height: 1.2rem; margin: 0.3rem 0 0; font-size: 0.9rem; color: #b00020; }
+
 /* ---- Palettes ---- */
 
 .palettes {

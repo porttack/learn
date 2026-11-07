@@ -13,7 +13,7 @@ import { compileLogo } from '../js/core/logo-compile.js';
 import { JSLOGO_WORDS } from '../js/core/logo-jslogo-words.js';
 import { definitionsOf } from '../js/core/definitions.js';
 import { findRunStack, walkBlocks } from '../js/core/project.js';
-import { runBlocks, createContext } from '../js/core/interpreter.js';
+import { runBlocks, createContext, Ask } from '../js/core/interpreter.js';
 import { Turtle } from '../js/core/turtle.js';
 import { boundsOfOps, visibleOps } from '../js/core/fit.js';
 import { runJsLogo, jsLogoPrimitives, hasJsLogo } from './jslogo-harness.mjs';
@@ -36,11 +36,17 @@ function seeded(seed) {
 }
 
 /** Run a project's blocks in TurtleLab. */
-function runHere(project) {
+function runHere(project, answers = []) {
   const turtle = new Turtle();
   const printed = [];
   const { stack } = findRunStack(project);
-  [...runBlocks(stack.blocks, createContext({ turtle, random: seeded(3), print: (line) => printed.push(line), definitions: definitionsOf(project).map }))];
+  const steps = runBlocks(stack.blocks, createContext({ turtle, random: seeded(3), print: (line) => printed.push(line), definitions: definitionsOf(project).map }));
+  let reply; // what an ask block is told (a question is answered from `answers`, in order)
+  for (;;) {
+    const { value, done } = steps.next(reply);
+    reply = value instanceof Ask ? answers.shift() : undefined;
+    if (done) break;
+  }
   return { turtle, printed };
 }
 
@@ -98,14 +104,14 @@ test('the list of words JSLogo already has is the list its interpreter really ha
 test('every sample, written for JSLogo and run there, draws what TurtleLab draws (long and short words)', needsJsLogo, async () => {
   for (const sample of SAMPLES) {
     const project = { stacks: sampleStacks(sample) };
-    const here = runHere(project);
+    const here = runHere(project, [...(sample.answers ?? [])]); // (a sample that asks is given its answer, here and in JSLogo's own question box)
     for (const short of [false, true]) {
       const code = toLogo(project, { jslogo: true, short });
       const label = `${sample.id} ${short ? 'short' : 'long'}`;
-      const there = await runJsLogo(code);
+      const there = await runJsLogo(code, { answers: (sample.answers ?? []).map(String) });
       assert.equal(there.error, null, `${label}: JSLogo said "${there.error}" for\n${code}`);
       assert.equal(there.turtle.arcs.length, 0, `${label}: the arc command is never sent, since JSLogo's draws something else`);
-      if (usesChance(sample) || usesWrite(sample)) continue; // chance is different in the two, and script letters are text in JSLogo: only "it ran" can be asked
+      if (usesChance(sample) || usesWrite(sample) || (sample.handlers ?? []).length > 0) continue; // chance is different in the two, script letters are text in JSLogo, and JSLogo has no mouse clicks (the handlers are left out): only "it ran" can be asked
       // Where the turtle ended.
       near(there.turtle.x, here.turtle.x, 1e-6, `${label}: x`);
       near(there.turtle.y, here.turtle.y, 1e-6, `${label}: y`);
@@ -287,4 +293,34 @@ test('every file the JSLogo pages load from this site is there, and git does not
       assert.equal(ignored.status, 1, `${page} loads ${file}, but git ignores it, so it would never be published`);
     }
   }
+});
+
+test('ask: written for JSLogo it is readword, and the number typed there draws what the blocks draw', needsJsLogo, async () => {
+  const blocks = [b('start'), b('clean'), { op: 'ask', args: [], text: 'How many sides?' }, { op: 'repeat', args: [{ op: 'box1' }], body: [b('forward', 40), b('right', { op: 'divide', args: [360, { op: 'box1' }] })] }];
+  const project = { stacks: [{ x: 0, y: 0, blocks }] };
+  const code = toLogo(project, { jslogo: true });
+  assert.match(code, /^make "box1 0$/m, 'box1 is made first');
+  assert.match(code, /^make "box1 sum 0 \(readword \[How many sides\?\]\)$/m);
+  for (const answer of [3, 5, 6]) {
+    const there = await runJsLogo(code, { answers: [String(answer)] });
+    assert.equal(there.error, null, `JSLogo said "${there.error}" for\n${code}`);
+    assert.equal(there.turtle.segments.filter((s) => Math.hypot(s.x2 - s.x1, s.y2 - s.y1) > 1e-9).length, answer, `an answer of ${answer} draws ${answer} sides there too`);
+    const here = runHere(project, [answer]);
+    near(there.turtle.x, here.turtle.x, 1e-6, `${answer}: x`);
+    near(there.turtle.y, here.turtle.y, 1e-6, `${answer}: y`);
+  }
+});
+
+test('click handlers: JSLogo has no mouse, so the handler is left out with a note, mouseX and mouseY are 0, and the rest runs', needsJsLogo, async () => {
+  const project = { stacks: [
+    { x: 0, y: 0, blocks: [b('start'), b('clean'), b('forward', { op: 'add', args: [40, { op: 'mousex' }] })] },
+    { x: 300, y: 0, blocks: [{ op: 'onclick', args: [] }, b('forward', 99)] },
+  ] };
+  const code = toLogo(project, { jslogo: true });
+  assert.ok(!/onclick/.test(code.split('\n').filter((line) => !line.startsWith(';')).join('\n')), 'no onclick in what is run');
+  assert.match(code, /^; Left out here, or shown another way: .*onclick \(JSLogo has no mouse clicks\)/m);
+  assert.match(code, /mousex and mousey \(shown as 0\)/);
+  const there = await runJsLogo(code);
+  assert.equal(there.error, null, `JSLogo said "${there.error}" for\n${code}`);
+  assert.equal(Math.round(there.turtle.segments.reduce((sum, s) => sum + Math.hypot(s.x2 - s.x1, s.y2 - s.y1), 0)), 40, 'the program ran with mouseX as 0, and the handler did not');
 });

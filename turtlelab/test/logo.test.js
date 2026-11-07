@@ -8,8 +8,8 @@ import { SAMPLES, sampleStacks } from '../js/ui/samples.js';
 import { toLogo } from '../js/core/logo.js';
 import { compileLogo, tokenize, LOGO_NAMES, BUILTIN_WORDS } from '../js/core/logo-compile.js';
 import { definitionsOf } from '../js/core/definitions.js';
-import { findRunStack } from '../js/core/project.js';
-import { runBlocks, createContext, RunError, Wait } from '../js/core/interpreter.js';
+import { findRunStack, handlersOf } from '../js/core/project.js';
+import { runBlocks, createContext, RunError, Wait, Ask } from '../js/core/interpreter.js';
 import { Turtle } from '../js/core/turtle.js';
 import { BLOCKS, BOX_COUNT } from '../js/core/blocks-spec.js';
 
@@ -364,7 +364,7 @@ function everything() {
       { x: 0, y: 0, blocks: [{ op: 'to', name: 'petal', params: ['size', 'turn'] }, b('arc', { op: 'input', name: 'size' }, 50), b('right', { op: 'input', name: 'turn' })] },
       { x: 0, y: 1, blocks: [{ op: 'to', name: 'stopper', params: [] }, b('forward', 1), b('stop'), b('forward', 999)] },
       { x: 0, y: 2, blocks: [
-        b('start'), b('clean'), b('speed', 4), b('setpensize', { op: 'add', args: [2, 1] }), b('setcolor', 10, { op: 'multiply', args: [{ op: 'box1' }, 5] }, 250), b('fillscreen', 250, 250, 240),
+        b('start'), b('clean'), b('speed', 4), { op: 'ask', args: [], text: 'How many sides?' }, b('setpensize', { op: 'add', args: [2, 1] }), b('setcolor', 10, { op: 'multiply', args: [{ op: 'box1' }, 5] }, 250), b('fillscreen', 250, 250, 240),
         b('penup'), b('setxy', -100, { op: 'subtract', args: [0, 50] }), b('setheading', 45), b('pendown'), b('store1', 3), b('store3', { op: 'x' }), b('store4', { op: 'random', args: [1, 9] }),
         b('startfill'), rep({ op: 'box1' }, b('forward', 30), b('left', 120)), b('endfill'),
         call('petal', ['size', 'turn'], 90, { op: 'add', args: [{ op: 'box1' }, 10] }), call('stopper', []),
@@ -372,8 +372,9 @@ function everything() {
         { op: 'if', args: [{ op: 'equal', args: [{ op: 'heading' }, 45] }], body: [b('print', { op: 'pensize' }), b('print', { op: 'penred' }), b('print', { op: 'pengreen' }), b('print', { op: 'penblue' }), b('print', { op: 'y' })] },
         b('print', { op: 'mod', args: [-7, 3] }), b('print', { op: 'divide', args: [1, 3] }), b('print', { op: 'paren', args: [{ op: 'add', args: [0.1, 0.2] }] }),
         b('wait', 0.5), b('wait', { op: 'box1' }), { op: 'write', args: [40], text: 'Go' }, { op: 'setfont', args: [], font: 'fancy' }, b('setcurve', 90), { op: 'write', args: [30], text: 'Cougars' }, b('setcurve', { op: 'box1' }), { op: 'setfont', args: [], font: 'serif' }, { op: 'write', args: [{ op: 'box1' }], text: 'Hi' }, b('right', 90), b('setcurve', -45), { op: 'forever', args: [], body: [b('forward', 1), { op: 'if', args: [{ op: 'less', args: [-50, { op: 'x' }] }], body: [b('stop')] }] },
-        b('forward', { op: 'box3' }), b('forward', { op: 'penred' }), b('forward', 12345),
+        b('forward', { op: 'box3' }), b('forward', { op: 'penred' }), b('forward', 12345), b('print', { op: 'mousex' }), b('print', { op: 'add', args: [{ op: 'mousey' }, 1] }),
       ] },
+      { x: 400, y: 0, blocks: [{ op: 'onclick', args: [] }, b('penup'), b('setxy', { op: 'mousex' }, { op: 'mousey' }), b('pendown'), rep(4, b('forward', 20), b('right', 90))] },
     ],
   };
 }
@@ -464,4 +465,104 @@ test('compileLogo remembers what each variable was called, and toLogo can write 
   assert.match(text, /^ {2}right :angle$/m);
   // Without the names (the blocks on the page), a variable is just its box.
   assert.match(toLogo({ stacks: compiled.stacks }), /^make "box1 40$/m);
+});
+
+// ---- The ask block ---------------------------------------------------------------------------------------------------------------------------------
+
+/** Run blocks the way the page does, answering each question from `answers` in turn. */
+function runAnswering(blocks, answers, stacks = []) {
+  const turtle = new Turtle();
+  const asked = [];
+  const context = createContext({ turtle, random: seeded(7), definitions: definitionsOf({ stacks }).map });
+  const steps = runBlocks(blocks, context);
+  let reply;
+  for (;;) {
+    const { value, done } = steps.next(reply);
+    reply = undefined;
+    if (done) break;
+    if (value instanceof Ask) {
+      asked.push(value.text);
+      reply = answers.shift();
+    }
+  }
+  return { turtle, asked, boxes: context.boxes, ops: JSON.parse(JSON.stringify(turtle.ops)) };
+}
+
+test('ask: written as `ask |question|`, read back as the same block, and the answer goes in box1', () => {
+  const blocks = [b('start'), { op: 'ask', args: [], text: 'How many sides?' }, rep({ op: 'box1' }, b('forward', 40), b('right', { op: 'divide', args: [360, { op: 'box1' }] }))];
+  const text = toLogo({ stacks: [{ x: 0, y: 0, blocks: blocks }] });
+  assert.match(text, /^ask \|How many sides\?\|$/m);
+  assert.ok(!/make "box1/.test(text), 'TurtleLab Logo keeps its boxes by itself (only the JSLogo version makes them first)');
+  const back = compileLogo(text);
+  assert.equal(back.ok, true, back.error);
+  assert.deepEqual(back.main.filter((block) => block.op === 'ask').map((block) => block.text), ['How many sides?']);
+  // the same question and the same drawing, for three answers (a whole one, a decimal one and a bad one)
+  for (const answer of [5, 3, 4.5, 0]) {
+    const here = runAnswering(blocks.slice(1), [answer]);
+    const there = runAnswering(back.main, [answer], back.stacks);
+    assert.deepEqual(there.asked, ['How many sides?']);
+    assert.deepEqual(there.ops, here.ops, `answer ${answer}`);
+    assert.equal(there.boxes[0], answer);
+  }
+  assert.equal(runAnswering(blocks.slice(1), [5]).ops.filter((op) => op.type === 'line').length, 5, 'ask 5 draws five sides');
+});
+
+test('ask: a name of your own never takes box1, since the answer is in box1', () => {
+  const result = compileLogo('ask |Sides?|\nmake "size :box1\nrepeat :size [ forward 10 right 360 / :size ]');
+  assert.equal(result.ok, true, result.error);
+  assert.deepEqual(result.main.map((block) => block.op), ['ask', 'store2', 'repeat'], 'size is box2, so asking does not overwrite it');
+  assert.equal(result.boxNames[1], 'size');
+  // without ask, the first name still gets box1
+  assert.equal(compileLogo('make "size 5\nforward :size').main[0].op, 'store1');
+});
+
+test('ask: the Logo says what is wrong when the question is missing or too long', () => {
+  assert.match(errorOf('ask').error, /needs the question/);
+  assert.match(errorOf('ask 5').error, /needs the question/);
+  assert.match(errorOf(`ask |${'x'.repeat(61)}|`).error, /at most 60 letters/);
+  assert.equal(compileLogo(`ask |${'x'.repeat(60)}|`).ok, true);
+  assert.match(toLogo({ stacks: [{ x: 0, y: 0, blocks: [b('start'), { op: 'ask', args: [], text: 'a|b' }] }] }), /^ask \|ab\|$/m, 'a bar in the question cannot break the Logo');
+});
+
+// ---- Click handlers: onclick [ ... ], mousex and mousey ---------------------------------------------------------------------------------------
+
+/** Run a click handler's blocks as the page does: the click's place is set first. */
+function runClick(blocks, at, stacks = []) {
+  const turtle = new Turtle();
+  const context = createContext({ turtle, definitions: definitionsOf({ stacks }).map });
+  context.mouse = at;
+  for (const step of runBlocks(blocks, context)) void step;
+  return { ops: JSON.parse(JSON.stringify(turtle.ops)), state: { x: turtle.x, y: turtle.y, heading: turtle.heading } };
+}
+
+test('onclick: written as onclick [ ... ] after the program, read back as a handler, and a click draws the same either way', () => {
+  const handler = [b('penup'), b('setxy', { op: 'mousex', args: [] }, { op: 'mousey', args: [] }), b('pendown'), rep(4, b('forward', 20), b('right', 90))];
+  const project = { stacks: [{ x: 0, y: 0, blocks: [b('start'), b('clean')] }, { x: 300, y: 0, blocks: [{ op: 'onclick', args: [] }, ...handler] }] };
+  const text = toLogo(project);
+  assert.match(text, /^onclick \[\n  penup\n  setxy mousex mousey\n  pendown\n  repeat 4 \[\n    forward 20\n    right 90\n  \]\n\]$/m);
+  assert.ok(text.indexOf('clearscreen') < text.indexOf('onclick'), 'the handler comes after the program');
+  assert.ok(!/not connected to Start/.test(text), 'a handler is not a stray stack');
+  const back = compileLogo(text);
+  assert.equal(back.ok, true, back.error);
+  const handlers = handlersOf({ stacks: back.stacks });
+  assert.equal(handlers.length, 1);
+  assert.deepEqual(JSON.parse(JSON.stringify(handlers[0].blocks)), handler, 'the same blocks come back');
+  for (const at of [{ x: 40, y: -30 }, { x: -200, y: 150 }, { x: 0, y: 0 }]) assert.deepEqual(runClick(handlers[0].blocks, at), runClick(handler, at), `a click at ${at.x}, ${at.y}`);
+  assert.equal(runClick(handler, { x: 40, y: -30 }).ops.filter((op) => op.type === 'line').length, 4, 'a click draws a square');
+});
+
+test('onclick: several handlers, a page with only a handler, and the places it may not go', () => {
+  const two = compileLogo('forward 5\nonclick [ forward 1 ]\nonclick [ back 2 ]\nright 90');
+  assert.equal(two.ok, true, two.error);
+  assert.deepEqual(two.main.map((block) => block.op), ['forward', 'right'], 'handlers are not part of the program');
+  assert.deepEqual(handlersOf({ stacks: two.stacks }).map((handler) => handler.blocks[0].op), ['forward', 'back'], 'in the order written');
+  const only = compileLogo('onclick [ setxy mousex mousey ]');
+  assert.equal(only.ok, true, only.error);
+  assert.deepEqual(only.main, []);
+  assert.equal(handlersOf({ stacks: only.stacks }).length, 1);
+  assert.match(errorOf('repeat 3 [ onclick [ forward 1 ] ]').error, /onclick goes on a line of its own/);
+  assert.match(errorOf('to dot\n onclick [ forward 1 ]\nend').error, /onclick goes on a line of its own/);
+  assert.match(errorOf('onclick forward 1').error, /needs a list of commands in \[ square brackets \]/);
+  assert.equal(compileLogo('forward mousex').ok, true, 'mousex and mousey work anywhere');
+  assert.equal(toLogo({ stacks: [{ x: 0, y: 0, blocks: [{ op: 'onclick', args: [] }, b('forward', 3)] }] }).trim(), 'onclick [\n  forward 3\n]', 'a page with only a handler is written too');
 });
