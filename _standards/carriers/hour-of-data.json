@@ -15,10 +15,25 @@
    "7": "Patterns in the Code — More Subsets & Pie Charts via Filtering",
    "8": "Analyzing Scatter Plots Using Rate of Change",
    "9": "Data-Informed Decision Making",
-   "10": "Beyond the Dataset — Making Connections"
+   "10": "Beyond the Dataset — Making Connections",
+   "coding-challenge": "Coding Challenges (optional star track in Parts 7 and 8)"
   },
-  "caveat": "Audited against Bootstrap's own 23-screen Teacher Guide PDF (screen-by-screen script, real Pyret code snippets, and answer keys for every screen), not against the live interactive Desmos app itself -- the guide is a real primary source, not inference from the public lesson-description page. Confirmed real code includes: `collisions-table.filter(is-deer)` with `fun is-deer(r): r[\"animals\"] == \"Deer\" end` (Part 7), and `fun year-dot(r): if r[\"year\"] == 2004: star(2, \"solid\", \"turquoise\") else if r[\"year\"] == 2005: star(6, \"solid\", \"orange\") end end` (Part 8's Coding Challenge). Entries below marked 'Coding Challenge only' are reached only by students who do the optional star-challenge track -- Bootstrap's own guide tells teachers 'you may only encourage some students to try them,' so don't assume universal coverage for those. Bootstrap's own tags for this lesson (from their site's internal dictionaries.js, not a published standards page) are almost entirely CCSS-Math (6.RP.A.3, 7.RP.A.3, 7.SP.A.1, 7.SP.B, HSS.ID.B.6, HSS.IC.B) and NGSS science practices, plus one CSTA 2017 code (1B-DA-07, tagged at the 3-5 band) and one K12CS code (6-8 Computing Systems.Devices) -- Bootstrap positions this as a math/data-literacy lesson that happens to teach through code, not as a CS-standards lesson. The entries below are this project's own read against apcsp/castandards. CSTA 2017/2026 and CA-ICT crosswalks were not attempted this pass.",
-  "abbrev": "HoData"
+  "caveat": "Audited against Bootstrap's own 23-screen Teacher Guide PDF (screen-by-screen script, real Pyret code snippets, and answer keys for every screen), not against the live interactive Desmos app itself -- the guide is a real primary source, not inference from the public lesson-description page. Confirmed real code includes: `collisions-table.filter(is-deer)` with `fun is-deer(r): r[\"animals\"] == \"Deer\" end` (Part 7), and `fun year-dot(r): if r[\"year\"] == 2004: star(2, \"solid\", \"turquoise\") else if r[\"year\"] == 2005: star(6, \"solid\", \"orange\") end end` (Part 8's Coding Challenge). Entries below marked 'Coding Challenge only' are reached only by students who do the optional star-challenge track -- Bootstrap's own guide tells teachers 'you may only encourage some students to try them,' so don't assume universal coverage for those. Bootstrap's own tags for this lesson (from their site's internal dictionaries.js, not a published standards page) are almost entirely CCSS-Math (6.RP.A.3, 7.RP.A.3, 7.SP.A.1, 7.SP.B, HSS.ID.B.6, HSS.IC.B) and NGSS science practices, plus one CSTA 2017 code (1B-DA-07, tagged at the 3-5 band) and one K12CS code (6-8 Computing Systems.Devices) -- Bootstrap positions this as a math/data-literacy lesson that happens to teach through code, not as a CS-standards lesson. The entries below are this project's own read against apcsp/castandards. CSTA 2017, CSTA 2026, CA-ICT and CCSS-Math were added in a 2026-11-07 pass (see alignment_log), starting from Bootstrap's own CCSS tags and keeping only what a screen backs: 7.SP.B and HSS.IC.B are left out, and 7.SP.A.1 is rated 'related'. SEL, digital-citizenship and ELA frameworks were considered and not claimed: no screen teaches them.",
+  "abbrev": "HoData",
+  "alignment_log": [
+   {
+    "date": "2026-11-07",
+    "by": "Claude Sonnet 5.5",
+    "scope": "Re-read the 23-screen Teacher Guide PDF (attic/Hour of Data_ Reducing Vehicle Wildlife Collisions Teacher Guide.pdf) against every catalog in _standards/ and added the frameworks the first pass skipped: csta2017, csta2026, ca-ict-anchor and ccss-math, plus apcsp 1.2 and 3.5 and castandards 6-8.AP.14.",
+    "note": "Existing apcsp and castandards entries kept as written; only 6-8.DA.7 got a strength. Three CCSS codes Bootstrap tags for this lesson (6.RP.A.3, 7.RP.A.3, S-ID.6) were missing from ccss-math.json and were added to the catalog. Grade 7 7.SP.B and HSS.IC.B were not added: no screen teaches comparing populations or drawing inferences from samples. Every new entry has a strength."
+   },
+   {
+    "date": "2026-11-07",
+    "by": "Claude Sonnet 5.5",
+    "scope": "Second pass. Checked the High School Specialty tiers the first two passes skipped (CSTA 2026 Data Science, Game Development, X+CS and AI specialty codes; California 9-12 Specialty), and audited existing entries for trust.",
+    "note": "Added S1-DSC-CC-01/03, AM-04/05/06, MI-07, VZ-10, S1-XCS-XC-04, 9-12S.DA.7/8. Not claimed: S1-DSC-CC-02 (no data dictionary), PP-12/13/14 (no ethics or audience work), S2-DSC codes (no modeling, merging, feeding APIs; VZ-12 needs students to critique a chart, which the guide leaves to the teacher), 9-12S.DA.9 (Part 10's prediction is not judged against the system). Removed as too thin to count as coverage: apcsp 3.2, csta2017 3B-DA-07, ca-ict C8.5, ccss-math 7.SP.A.1. Challenge-only entries (apcsp 3.6, 3.9, 3.12, 3.13; 6-8.AP.14) now use the locator 'coding-challenge' so the optional status shows wherever locators do. HS-DAT-DI-26 and the 9-12.DA.10 note changed because the guide leaves the misleading-pie-chart point to the teacher."
+   }
+  ]
  },
  "coverage": {
   "apcsp": {
@@ -30,47 +45,61 @@
      6,
      9
     ],
-    "note": "Part 2's Notice-and-Wonder on the raw Vermont spreadsheet, Part 4's outlier/human-error reasoning, Part 5's real breakdown (Deer 436, Bird 82, Fox 71, Coyote 67, Beaver 59, Moose 32, Bear 14, Turtle 10, Bobcat 6, Squirrel 4), Part 6's cross-highway comparison, and Part 9's final recommendation all turn a messy real dataset into actual information."
+    "note": "Part 2's Notice-and-Wonder on the raw Vermont spreadsheet, Part 4's outlier/human-error reasoning, Part 5's real breakdown (Deer 436, Bird 82, Fox 71, Coyote 67, Beaver 59, Moose 32, Bear 14, Turtle 10, Bobcat 6, Squirrel 4), Part 6's cross-highway comparison, and Part 9's final recommendation all turn a messy real dataset into actual information.",
+    "strength": "strong"
    },
    "2.4": {
     "locators": [
      6,
      7
     ],
-    "note": "Part 6 and Part 7 both build new tables from the base dataset via `.filter()` (by route/highway, then by animal type) -- using a program to do with the data what would be impractical by hand."
-   },
-   "3.2": {
-    "locators": [
-     3,
-     6,
-     7
-    ],
-    "note": "The whole activity runs on one `collisions-table` (a Pyret table), queried throughout by row access (`r[\"animals\"]`, `r[\"year\"]`, `r[\"route\"]`) and `.filter()` -- grouping each collision record's related values under one name and treating the collection as a single thing."
+    "note": "Part 6 and Part 7 both build new tables from the base dataset via `.filter()` (by route/highway, then by animal type) -- using a program to do with the data what would be impractical by hand.",
+    "strength": "strong"
    },
    "3.6": {
     "locators": [
-     8
+     "coding-challenge"
     ],
-    "note": "Coding Challenge only. Part 8's optional challenge has students write `year-dot`, an if/else-if function choosing a point's shape/color by year (`if r[\"year\"] == 2004: ... else if r[\"year\"] == 2005: ... end`). Only reached by students who attempt the star-challenge track."
+    "note": "OPTIONAL TRACK, not every student reaches it. Part 8's optional challenge has students write `year-dot`, an if/else-if function choosing a point's shape/color by year (`if r[\"year\"] == 2004: ... else if r[\"year\"] == 2005: ... end`). Only reached by students who attempt the star-challenge track.",
+    "strength": "partial"
    },
    "3.9": {
     "locators": [
-     7
+     "coding-challenge"
     ],
-    "note": "Coding Challenge only. Part 7 has students write a predicate function (`is-deer`) from scratch, following the pattern of ones already shown, then plug it into `.filter()` -- incremental algorithm development, not just running provided code."
+    "note": "OPTIONAL TRACK, not every student reaches it. Part 7 has students write a predicate function (`is-deer`) from scratch, following the pattern of ones already shown, then plug it into `.filter()` -- incremental algorithm development, not just running provided code.",
+    "strength": "partial"
    },
    "3.12": {
     "locators": [
-     7
+     "coding-challenge"
     ],
-    "note": "Coding Challenge only. Students pass their own `is-deer` function into `collisions-table.filter(is-deer)` -- calling a procedure they just wrote and getting a table back."
+    "note": "OPTIONAL TRACK, not every student reaches it. Students pass their own `is-deer` function into `collisions-table.filter(is-deer)` -- calling a procedure they just wrote and getting a table back.",
+    "strength": "partial"
    },
    "3.13": {
     "locators": [
-     7,
+     "coding-challenge"
+    ],
+    "note": "OPTIONAL TRACK, not every student reaches it. `is-deer` and `year-dot` are both student-written functions with a parameter (`r`) general enough to be reused across rows, matching the pattern of the pre-written functions around them.",
+    "strength": "partial"
+   },
+   "1.2": {
+    "locators": [
+     3,
+     4,
      8
     ],
-    "note": "Coding Challenge only. `is-deer` and `year-dot` are both student-written functions with a parameter (`r`) general enough to be reused across rows, matching the pattern of the pre-written functions around them."
+    "strength": "partial",
+    "note": "Parts 3, 4 and 8 keep asking students to read a program and say what it will produce before they run it: Part 4 'what kind of data display do you expect this program to load?' (answer: scatterplot) and Part 8 'from looking at the code on lines 23-27, what color dot will 2004 have?'. That is explaining what code does and naming its output (a chart), not writing programs of their own."
+   },
+   "3.5": {
+    "locators": [
+     5,
+     7
+    ],
+    "strength": "partial",
+    "note": "Part 5's first pie chart splits collisions into mammals (TRUE) and non-mammals (FALSE), and Part 7's `is-deer` / `is-bird` / `is-turtle` predicates are Boolean-valued tests (`r[\"animals\"] == \"Deer\"`) that `.filter()` uses to keep or drop rows. Students read and, in the Coding Challenge, write a comparison that is true or false; there are no and/or/not combinations."
    }
   },
   "castandards": {
@@ -82,13 +111,15 @@
      7,
      8
     ],
-    "note": "Parts 3/5/7 move through bar, pie, and filtered-subset charts of the same dataset. Part 6's Teacher Moves note is the standard almost verbatim as a real gotcha, not just theory: 'a blue wedge does not necessarily represent the same animal in both charts' -- students are explicitly warned that the same visualization choice can mislead across two pie charts built from different subsets."
+    "note": "Parts 3/5/7 move through bar, pie, and filtered-subset charts of the same dataset. Part 6's Teacher Moves note raises the pitfall ('a blue wedge does not necessarily represent the same animal in both charts'), but the guide says only some students will notice it and the teacher may point it out, so the misleading-chart half of the standard depends on the teacher.",
+    "strength": "strong"
    },
    "9-12.DA.11": {
     "locators": [
      4
     ],
-    "note": "Part 4's exact reasoning (screen 11 of the Teacher Guide) checks a model against real observations and catches the mismatch: 'both days and collisions are recorded in order from the start of the data collection period. If the deer hit on day 371 is collision number 657, it doesn't make sense that a deer hit 4 days earlier would be collision number 901' -- validating an assumption about the dataset's structure against what the data actually shows, and using the contradiction to identify a human-error outlier."
+    "note": "Part 4's exact reasoning (screen 11 of the Teacher Guide) checks a model against real observations and catches the mismatch: 'both days and collisions are recorded in order from the start of the data collection period. If the deer hit on day 371 is collision number 657, it doesn't make sense that a deer hit 4 days earlier would be collision number 901' -- validating an assumption about the dataset's structure against what the data actually shows, and using the contradiction to identify a human-error outlier.",
+    "strength": "strong"
    },
    "6-8.DA.7": {
     "locators": [
@@ -98,7 +129,8 @@
      7,
      8
     ],
-    "note": "Same representation-choice argument as 9-12.DA.10 above, at the MS band -- same parts of the activity, since it's one lesson used at both levels with different scaffolding (Bootstrap's own note: MS needs guidance, HS can work independently)."
+    "note": "Same representation-choice argument as 9-12.DA.10 above, at the MS band -- same parts of the activity, since it's one lesson used at both levels with different scaffolding (Bootstrap's own note: MS needs guidance, HS can work independently).",
+    "strength": "strong"
    },
    "6-8.DA.8": {
     "locators": [
@@ -106,14 +138,298 @@
      4,
      7
     ],
-    "note": "Notice-and-Wonder (Part 2), the outlier/human-error catch (Part 4), and filtering by route or animal (Part 7) are all raw data being transformed before it's useful -- this standard's own scope."
+    "note": "Notice-and-Wonder (Part 2), the outlier/human-error catch (Part 4), and filtering by route or animal (Part 7) are all raw data being transformed before it's useful -- this standard's own scope.",
+    "strength": "strong"
    },
    "6-8.DA.9": {
     "locators": [
      6,
      8
     ],
-    "note": "Part 6 compares raccoon-collision rates between I-89 and I-91 (changing which subset, observing the effect), and Part 8 compares 2004 vs 2005 collision rates by slope -- both change one variable and observe the effect on the same dataset."
+    "note": "Part 6 compares raccoon-collision rates between I-89 and I-91 (changing which subset, observing the effect), and Part 8 compares 2004 vs 2005 collision rates by slope -- both change one variable and observe the effect on the same dataset.",
+    "strength": "partial"
+   },
+   "6-8.AP.14": {
+    "locators": [
+     "coding-challenge"
+    ],
+    "strength": "partial",
+    "note": "OPTIONAL TRACK, not every student reaches it. `is-deer(r)` takes a row parameter so the same function can be tested against every row of the table, following the pattern of the provided `is-bird` and `is-turtle`; students write one new procedure with a parameter, which is a narrow slice of the standard."
+   },
+   "9-12S.DA.7": {
+    "locators": [
+     4,
+     7
+    ],
+    "strength": "partial",
+    "note": "Part 4's human-error outliers and Part 7's turtles coded 'unknown' show how the way the data was recorded limits what conclusions it supports. Students do not choose or use a collection tool."
+   },
+   "9-12S.DA.8": {
+    "locators": [
+     3,
+     4,
+     5,
+     8
+    ],
+    "strength": "partial",
+    "note": "Students use software to summarize and visualize the data (bar, pie, scatter) and see patterns the table hides. The dataset is under a thousand rows, not large."
+   }
+  },
+  "csta2017": {
+   "2-DA-08": {
+    "locators": [
+     2,
+     4,
+     7
+    ],
+    "strength": "strong",
+    "note": "Same ground as 6-8.DA.8 in the California file: raw collisions rows are explored (Part 2), a human-error block is spotted and set aside (Part 4), and filtering by route or animal (Part 7) turns the table into something a chart can answer questions with."
+   },
+   "2-DA-09": {
+    "locators": [
+     6,
+     8
+    ],
+    "strength": "partial",
+    "note": "Parts 6 and 8 change one thing about the same data (which highway, which year) and watch what the picture does. There is no model that is predicted and then corrected against reality, so this is the change-and-observe half of the standard."
+   },
+   "3A-DA-11": {
+    "locators": [
+     3,
+     4,
+     5,
+     8
+    ],
+    "strength": "partial",
+    "note": "Students use interactive bar, pie and scatter displays (hover for exact values, zoom with xmin/xmax) that make the Vermont pattern clear. They run and edit provided Pyret charts; the Coding Challenge in Part 7 asks for one new `pie-chart(...)` line, so they do not build visualizations from scratch."
+   },
+   "3B-DA-05": {
+    "locators": [
+     4,
+     8
+    ],
+    "strength": "strong",
+    "note": "The scatter plot of collision number against day (Part 4) exposes outliers invisible in the table, and Part 8's year-by-year plot shows 2004's steeper slope than 2005's, a trend surfaced by the right analysis tool."
+   }
+  },
+  "csta2026": {
+   "MS-DAT-DC-23": {
+    "locators": [
+     2,
+     6,
+     7
+    ],
+    "strength": "partial",
+    "note": "Part 2 explores the raw spreadsheet; Parts 6 and 7 filter the table by route and then by animal in code. Sorting and grouping are not taught, and the filtering is done in Pyret rather than in the spreadsheet tool the standard names."
+   },
+   "MS-DAT-DC-24": {
+    "locators": [
+     4,
+     7
+    ],
+    "strength": "partial",
+    "note": "Part 4 finds a block of impossible rows (collisions 651 to 901 out of order with their days) and argues they are data-entry errors; Part 7 notes half the turtles are coded 'unknown'. Students notice and reason about the problem, they do not clean or repair the table."
+   },
+   "MS-DAT-DI-25": {
+    "locators": [
+     4,
+     8
+    ],
+    "strength": "strong",
+    "note": "The scatter plots of collisions over time (Part 4) and by year (Part 8) show a relationship between two variables, with outliers and slope read from the picture."
+   },
+   "MS-DAT-DI-26": {
+    "locators": [
+     3,
+     5,
+     8
+    ],
+    "strength": "strong",
+    "note": "The same collisions data is shown as bar chart, pie chart and scatter plot (Parts 3 and 5), and Part 8 has bar chart and scatter plot of the years side by side, with students asked which makes the 2004 versus 2005 difference clearer."
+   },
+   "MS-DAT-DI-27": {
+    "locators": [
+     9,
+     10
+    ],
+    "strength": "partial",
+    "note": "Part 9 asks for the most dangerous road and mile marker with evidence, and Part 10 asks what else would be worth knowing. These are the question-and-conclusion halves of a summary; students do not write up the whole investigation."
+   },
+   "MS-PRO-RD-17": {
+    "locators": [
+     7,
+     8
+    ],
+    "strength": "partial",
+    "note": "Part 7 has students mark exactly what differs between the paired lines of code (`is-bird`, `is-turtle`, \"Bird\", \"Turtle\"), and Part 8 has them read lines of `year-dot` to say what color each year gets. That is reading code to say what it does, with no tracing of loops or variable values."
+   },
+   "HS-DAT-DI-25": {
+    "locators": [
+     4,
+     8
+    ],
+    "strength": "partial",
+    "note": "Same scatter plots as MS-DAT-DI-25, with the high school version's request to read several features of one chart (clusters, outliers, steepness) met, but only two variables ever appear at once."
+   },
+   "HS-DAT-DI-26": {
+    "locators": [
+     6,
+     7
+    ],
+    "strength": "partial",
+    "note": "Part 7's turtle chart (50% coded 'unknown') shows how a chart can look decisive while hiding what is missing, and Part 6's Teacher Moves note flags that pie-chart colors do not match across subsets. The guide says only some students will notice the second and the teacher may point it out, so this depends on the teacher."
+   },
+   "S1-DSC-CC-01": {
+    "locators": [
+     2,
+     4,
+     8
+    ],
+    "strength": "strong",
+    "note": "Notice and Wonder on the raw spreadsheet, a scatter plot of the whole table (Part 4) and a year-by-year plot (Part 8) turn the table into a first understanding, and what the plot shows (outliers) points to what to check next. Summary statistics and histograms are not used."
+   },
+   "S1-DSC-CC-03": {
+    "locators": [
+     6,
+     7
+    ],
+    "strength": "partial",
+    "note": "Filtering the table by route and by animal and counting results are the data moves, done in Pyret. Students run and lightly edit provided code; grouping, reshaping and joining are not covered."
+   },
+   "S1-DSC-AM-04": {
+    "locators": [
+     3,
+     4,
+     5
+    ],
+    "strength": "strong",
+    "note": "Bar and pie charts for categories (animals, season, mammal or not) and a scatter plot for two numbers over time (Parts 3 to 5), with students asked which display they find easier to read."
+   },
+   "S1-DSC-AM-05": {
+    "locators": [
+     7
+    ],
+    "strength": "strong",
+    "note": "Part 7's turtle chart has 50% of the records coded 'unknown', and the answer key has students conclude that it is possible either species is the more common, so the data cannot say. Whether the gaps cluster in particular rows is not examined."
+   },
+   "S1-DSC-AM-06": {
+    "locators": [
+     5,
+     6,
+     8
+    ],
+    "strength": "partial",
+    "note": "Aggregating (counts by animal, by route, by year) and charting are done in code, but students do not clean the data; the cleaning in Part 4 is a decision to set aside suspect rows."
+   },
+   "S1-DSC-MI-07": {
+    "locators": [
+     6,
+     7,
+     8,
+     9
+    ],
+    "strength": "strong",
+    "note": "Every part from 6 on has students read a chart and say what it means for a question (raccoons on I-89 versus I-91, birds, turtles, 2004 versus 2005, the most dangerous road), with the 'not enough information' limitation made explicit in Part 7."
+   },
+   "S1-DSC-VZ-10": {
+    "locators": [
+     3,
+     8
+    ],
+    "strength": "partial",
+    "note": "The same data is shown as a bar chart and as a pie chart (Part 3), and as a scatter plot and as a bar chart (Part 8), and students compare them. The choice is not tied to different audiences."
+   },
+   "S1-XCS-XC-04": {
+    "locators": [
+     5,
+     6,
+     7
+    ],
+    "strength": "strong",
+    "note": "Ordinary data moves, filtering the Vermont collisions table by animal and by route and counting, turn a real ecology dataset into a pattern about which animals and which roads. Bootstrap presents the lesson as a math and science lesson that happens to use code."
+   }
+  },
+  "ca-ict-anchor": {
+   "5.4": {
+    "locators": [
+     9
+    ],
+    "strength": "partial",
+    "note": "Part 9 asks students to name the most dangerous road and mile marker from the charts, a conclusion drawn from analysis that would inform where to build a wildlife crossing."
+   },
+   "10.13": {
+    "locators": [
+     4,
+     7
+    ],
+    "strength": "partial",
+    "note": "Part 4's human-error argument and Part 7's 50% 'unknown' turtles are both checking retrieved information for accuracy and completeness before trusting it."
+   },
+   "C8.8": {
+    "locators": [
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    "strength": "strong",
+    "note": "Turning one table of collisions into bar charts, pie charts and scatter plots to answer a question is this standard's own point."
+   }
+  },
+  "ccss-math": {
+   "6.RP.A.3": {
+    "locators": [
+     6
+    ],
+    "strength": "strong",
+    "note": "Part 6's answer key reasons in percent and quantity: 23 raccoons is about 10% of the collisions on I-89, and 10% of 300 is 30, then compares that with 7 raccoons (2%) on I-91."
+   },
+   "7.RP.A.3": {
+    "locators": [
+     6,
+     10
+    ],
+    "strength": "strong",
+    "note": "Part 6 predicts a count from a percent of a total, and Part 10 scales a rate up using the populations of the towns along I-89 to make a prediction."
+   },
+   "6.SP.B.5": {
+    "locators": [
+     5
+    ],
+    "strength": "partial",
+    "note": "Part 5's answer key counts collisions for each animal (Deer 436, Bird 82, and so on), summarizing a data set by category counts; no mean, median or spread appears."
+   },
+   "8.SP.A.1": {
+    "locators": [
+     4,
+     8
+    ],
+    "strength": "strong",
+    "note": "Scatter plots of collisions against day and against year, with clusters, a curve, and outliers read off the picture."
+   },
+   "8.SP.A.2": {
+    "locators": [
+     8
+    ],
+    "strength": "partial",
+    "note": "Part 8 compares collision rates as steeper and flatter slopes between 2004 and 2005; no straight line is fitted by students."
+   },
+   "8.SP.A.3": {
+    "locators": [
+     8
+    ],
+    "strength": "partial",
+    "note": "Reads 'the 2004 slope is steeper' as a higher collision rate, which is interpreting a slope in context, but only comparatively and without equations."
+   },
+   "S-ID.6": {
+    "locators": [
+     4,
+     8
+    ],
+    "strength": "partial",
+    "note": "Scatter plots and a rate-of-change reading of the points; no fitted function or residuals, so only the representing and describing parts of the standard."
    }
   }
  }

@@ -5,7 +5,7 @@
   "year": 2010,
   "extracted": "2026-10-24",
   "license_note": "(c) 2010 National Governors Association Center for Best Practices and Council of Chief State School Officers, all rights reserved; NGA/CCSSO license the standards for free noncommercial educational use, but every paraphrase here is written for this project, never the standards' own text, matching this repo's policy for every other catalog regardless of a source's own licence.",
-  "scope_note": "Middle school (6-8) and a grounded slice of high school Algebra/Functions -- only the strands and specific codes a real read of Bootstrap:Algebra's own 28-lesson sequence (bootstrapworld.org, Fall 2026 course page) actually supports, not every code its domain could theoretically cover. Skipped entirely, for lack of any matching lesson: A-SSE (quadratics/exponential series), A-REI.1/2/4 (quadratics), F-IF.3-6/8-9 (sequences, complex curve analysis, quadratic/exponential forms), F-BF.2-4 (sequences, transformations, inverses), F-LE.3-4 (exponential-specific), and all of grades 6-8 Statistics & Probability (no lesson in the sequence collects or analyzes real-world data). Not a general-purpose math catalog -- no Ratios & Proportions, no Geometry outside the two codes grounded here, no untouched high school content. Add strands as a real need shows up, the same way this project's ccss-ela.json stayed scoped to what was actually cited.",
+  "scope_note": "Middle school (6-8) and a grounded slice of high school Algebra/Functions -- only the strands and specific codes a real read of Bootstrap:Algebra's own 28-lesson sequence (bootstrapworld.org, Fall 2026 course page) actually supports, not every code its domain could theoretically cover. Skipped entirely, for lack of any matching lesson: A-SSE other than A-SSE.1 (quadratics/exponential series), A-REI.1/2/4 (quadratics), F-IF.3, F-IF.5-6, F-IF.8-9 (sequences, complex curve analysis, quadratic/exponential forms), F-BF.2-4 (sequences, transformations, inverses), F-LE.3-4 (exponential-specific), Grades 6-8 Statistics & Probability codes in this catalog (6.SP, 7.SP.A.1, 8.SP) are NOT claimed by Bootstrap:Algebra, whose lessons never analyze real-world data; they exist for the Hour of Data lesson (hour-of-data.json), added 2026-11-07 together with 6.RP.A.3, 7.RP.A.3 and S-ID.6, the three codes Bootstrap's own Hour of Data tags name that the catalog lacked. Not a general-purpose math catalog -- no other Ratios & Proportions, no Geometry outside the two codes grounded here, no untouched high school content. Add strands as a real need shows up, the same way this project's ccss-ela.json stayed scoped to what was actually cited. Added 2026-11-07 from the full Bootstrap:Algebra student workbook (attic/bootstrap_algebra_workbook.pdf): 6.EE.2, 6.EE.9, 8.F.4, 8.F.5, F-IF.4 and A-SSE.1.",
   "codes_note": "Codes are CCSS's own (e.g. 6.NS.5, 8.F.2), not a project-specific scheme. Lettered sub-parts (e.g. 6.NS.6.a-c, 7.EE.4.a-b) are folded into one paraphrase per numbered standard, matching this project's existing topic-level citation granularity (see apcsp.json's topic/LO split, or ccss-ela.json's own codes_note).",
   "abbrev": "CCSS-Math"
  },
@@ -262,6 +262,86 @@
      "code": "F-LE.5",
      "name": null,
      "paraphrase": "Interpret the parameters of a linear or exponential function (e.g. slope, intercept) in terms of the context it models."
+    }
+   ]
+  },
+  {
+   "name": "Grade 6: Ratios & Proportional Relationships",
+   "items": [
+    {
+     "code": "6.RP.A.3",
+     "name": null,
+     "paraphrase": "Use ratio and rate reasoning to solve real-world problems, including finding a percent of a quantity as a rate per 100 and solving unit-rate and measurement problems with tables, tape diagrams, or double number lines."
+    }
+   ]
+  },
+  {
+   "name": "Grade 7: Ratios & Proportional Relationships",
+   "items": [
+    {
+     "code": "7.RP.A.3",
+     "name": null,
+     "paraphrase": "Use proportional relationships to solve multi-step ratio and percent problems, such as scaling a known rate up to predict an unknown amount, percent increase and decrease, and percent error."
+    }
+   ]
+  },
+  {
+   "name": "High School: Interpreting Categorical & Quantitative Data",
+   "items": [
+    {
+     "code": "S-ID.6",
+     "name": null,
+     "paraphrase": "Represent two-variable data on a scatter plot, look for the overall pattern and for points that break it, and describe how well a function fits the data."
+    }
+   ]
+  },
+  {
+   "name": "Grade 6: Expressions & Equations",
+   "items": [
+    {
+     "code": "6.EE.2",
+     "name": null,
+     "paraphrase": "Write, read and evaluate expressions in which letters stand for numbers, naming the parts of an expression and evaluating it by following the order of operations."
+    },
+    {
+     "code": "6.EE.9",
+     "name": null,
+     "paraphrase": "Use variables to represent two quantities that change in relationship to one another, writing an equation for the dependent variable in terms of the independent one and relating it to a table and a graph."
+    }
+   ]
+  },
+  {
+   "name": "Grade 8: Functions (modeling and interpreting)",
+   "items": [
+    {
+     "code": "8.F.4",
+     "name": null,
+     "paraphrase": "Build a function that models a linear relationship, find its rate of change and starting value from a table, graph or description, and say what they mean in the situation."
+    },
+    {
+     "code": "8.F.5",
+     "name": null,
+     "paraphrase": "Describe in words how two quantities are related by reading a graph (where it rises, falls, or levels off), and sketch a graph that matches a described story."
+    }
+   ]
+  },
+  {
+   "name": "High School: Seeing Structure in Expressions",
+   "items": [
+    {
+     "code": "A-SSE.1",
+     "name": null,
+     "paraphrase": "Interpret an expression by naming its parts (terms, factors, coefficients) and, for a longer one, by viewing a piece of it as a single quantity."
+    }
+   ]
+  },
+  {
+   "name": "High School: Interpreting Functions (key features)",
+   "items": [
+    {
+     "code": "F-IF.4",
+     "name": null,
+     "paraphrase": "For a function that models a relationship, interpret key features of its graph or table (intercepts, where it increases or decreases) in terms of the quantities involved."
     }
    ]
   }

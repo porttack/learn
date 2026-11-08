@@ -36,13 +36,31 @@
    "28": "Collision Detection — Distance and Inequality"
   },
   "abbrev": "BS-Alg",
-  "caveat": "Upgraded from a course-level stub to real per-lesson locators (2026-10-24), using the live 28-lesson sequence at the course page above (titles and one-paragraph descriptions per lesson -- not a full teacher guide with exercises, so still a notch below hour_of_data's rigor, which was built from a real 23-screen Teacher Guide PDF). locator_url_template is null: the course page lists lessons but doesn't expose a stable per-lesson URL I could confirm, so locators render as plain text, not links, until one is verified -- don't guess a scheme (see this project's own README on that point). Lesson 1 (\"Computing Needs All Voices\") has no entry below; it's about representation in computing, not math or programming content, and nothing in this carrier's catalogs fits it.",
+  "caveat": "Upgraded from a course-level stub to real per-lesson locators (2026-10-24), using the live 28-lesson sequence at the course page above (titles and one-paragraph descriptions per lesson -- not a full teacher guide with exercises, so still a notch below hour_of_data's rigor, which was built from a real 23-screen Teacher Guide PDF). locator_url_template is null: the course page lists lessons but doesn't expose a stable per-lesson URL I could confirm, so locators render as plain text, not links, until one is verified -- don't guess a scheme (see this project's own README on that point). \"Computing Needs All Voices\" is about who builds computing, so it appears under 1.1, 5.3, CA ICT 9.6 and a few SEL codes rather than math. Rechecked 2026-11-07 against the full student workbook (attic/bootstrap_algebra_workbook.pdf, v3.1, Fall 2026, Pyret edition): locators here are the course page's lesson numbers (see locator_titles); the workbook leaves out the game project lesson, so its own numbering runs one lower after Game Design. Notes name lessons by title and never cite workbook pages.",
   "alignment_log": [
    {
     "date": "2026-10-24",
     "by": "Claude Sonnet 5",
     "scope": "Second pass. First pass (course-level, locator \"course\") was built from a 2-page overview PDF alone. This pass reads the real 28-lesson sequence from bootstrapworld.org's live Fall 2026 course page and re-grounds every code against a specific lesson or lessons, adding a High School Algebra/Functions slice (F-IF, F-BF, A-CED, A-REI, F-LE) the teacher asked for after noticing piecewise functions -- named in the original overview -- had no middle-school code to land on.",
-    "note": "Dropped entirely, now that the real lesson list is in hand: all of grades 6-8 Statistics & Probability (6.SP, 7.SP, 8.SP). The first pass marked these \"partial, unverified\" from Bootstrap's own alignment-page claim alone; none of the 28 lessons collects, samples, or analyzes real-world data, so this pass removes the claim rather than keep guessing in its favor. Two new middle-school Geometry codes added, both strongly grounded in named lessons that weren't visible from the overview alone: 6.G.4 (nets and surface area -- Lesson 10) and 8.G.3 (coordinate transformations -- Lesson 11). High School additions are deliberately narrow: of the ~40 codes Bootstrap's own 2019 alignment page claims across A-SSE/A-CED/A-REI/F-IF/F-BF/F-LE, only 13 have a specific lesson to point to (F-IF.1/2/7, F-BF.1, A-CED.1-3, A-REI.3/10/12, F-LE.1/2/5) -- A-SSE (entirely quadratic/exponential-series), A-REI.1/2/4 (quadratics), F-IF.3-6/8-9 (sequences, quadratic/exponential analysis), F-BF.2-4 (sequences, inverses), and F-LE.3-4 (exponential-specific) have no lesson in the sequence that touches them, so they're left out rather than padded in because the domain name sounds adjacent. CSTA 2017 coverage (12 codes) carries over from the first pass, now attached to specific lessons instead of the whole course; the two DA-cluster codes already excluded in pass one (2-DA-07/08/09, 3A-DA-11, read then as a stale carryover from Bootstrap:Data Science) are confirmed excluded now that \"Simple Data Types\" (Lesson 5) turns out to mean Pyret's primitive types, not external data analysis."
+    "note": "Dropped entirely, now that the real lesson list is in hand: all of grades 6-8 Statistics & Probability (6.SP, 7.SP, 8.SP). The first pass marked these \"partial, unverified\" from Bootstrap's own alignment-page claim alone; none of the 28 lessons collects, samples, or analyzes real-world data, so this pass removes the claim rather than keep guessing in its favor. Two new middle-school Geometry codes added, both strongly grounded in named lessons that weren't visible from the overview alone: 6.G.4 (nets and surface area -- 'Surface Area of a Rectangular Prism') and 8.G.3 (coordinate transformations -- 'Transforming and Composing Images'). High School additions are deliberately narrow: of the ~40 codes Bootstrap's own 2019 alignment page claims across A-SSE/A-CED/A-REI/F-IF/F-BF/F-LE, only 13 have a specific lesson to point to (F-IF.1/2/7, F-BF.1, A-CED.1-3, A-REI.3/10/12, F-LE.1/2/5) -- A-SSE (entirely quadratic/exponential-series), A-REI.1/2/4 (quadratics), F-IF.3-6/8-9 (sequences, quadratic/exponential analysis), F-BF.2-4 (sequences, inverses), and F-LE.3-4 (exponential-specific) have no lesson in the sequence that touches them, so they're left out rather than padded in because the domain name sounds adjacent. CSTA 2017 coverage (12 codes) carries over from the first pass, now attached to specific lessons instead of the whole course; the two DA-cluster codes already excluded in pass one (2-DA-07/08/09, 3A-DA-11, read then as a stale carryover from Bootstrap:Data Science) are confirmed excluded now that \"Simple Data Types\" ('Simple Data Types') turns out to mean Pyret's primitive types, not external data analysis."
+   },
+   {
+    "date": "2026-11-07",
+    "by": "Claude Sonnet 5.5",
+    "scope": "Third pass, against attic/Bootstrap-Algebra.pdf (the 2-page overview, which adds no lesson detail beyond what pass two used) and the 28 lesson titles already in locator_titles. Added apcsp, castandards, csta2026 and ca-ict-anchor, which the carrier had never been checked against, plus csta2017's 2-AP-12.",
+    "note": "Each new entry rests on lesson titles and the overview alone, so most rate partial and none claim a topic the titles do not name (no lists, loops, libraries, networks, data analysis). ccss-math unchanged: its 29 entries already cover the overview's order of operations, composition, definitions, inequalities, piecewise functions and distance formula. If the course is taught again, pull the real teacher guide and tighten these."
+   },
+   {
+    "date": "2026-11-07",
+    "by": "Claude Sonnet 5.5",
+    "scope": "Fourth pass, against the full 136-page student workbook (attic/bootstrap_algebra_workbook.pdf). Read every page's title and instructions, and the longer pages in full (Design Recipe, Fixing Purpose Statements, Sam the Butterfly, Piecewise, Surface Area, Top Down/Bottom Up, Line Length). Corrected existing entries, added the workbook's own pages as evidence, and added frameworks 'Computing Needs All Voices' and the algebra pages reach.",
+    "note": "Corrections: A-REI.3 and A-CED.1 downgraded to partial (the workbook never solves equations; it writes functions and tests inequality solutions); 6.NS.5 and 6.NS.7 re-grounded (Simple Data Types is a data-types lesson, not 'real-world inequalities'; absolute value appears in line-length); 7.EE.2 upgraded (equivalent expressions are the whole point of the 'more than one way' pages); 8.G.6 upgraded (Proof Without Words). Added: ccss-math 6.EE.2, 6.EE.9, 8.F.4, 8.F.5, F-IF.4, A-SSE.1 (catalog extended, A-SSE.1 only); apcsp 3.2 (related), 3.4 upgraded to strong, 3.9 to strong, 5.3; castandards 6-8.AP.10; csta2017 2-AP-10, 2-IC-21; csta2026 MS-ALG-PS-03/05, HS-ALG-PS-05, MS-PRO-RD-17/PD-13/PD-15, MS-SOC-HI-38/HU-43; ca-ict-anchor 9.6, 5.1, C4.5, C4.6, C4.11; casel SOC.1/SA.1/SOC.2; ccss-ela SL.8.1, W.8.9; unesco-ai-cfs 4.2.3. Not claimed: nested conditionals (3.7), loops, networks, security, data analysis: no workbook page teaches them."
+   },
+   {
+    "date": "2026-11-07",
+    "by": "Claude Sonnet 5.5",
+    "scope": "Fifth pass: High School Specialty tiers (CSTA 2026 Game Development, Data Science, X+CS; California 9-12 Specialty) and a trust audit.",
+    "note": "Added S1-GMD-DD-01/03/04 and 9-12S.AP.16. Removed as too thin to count as coverage: apcsp 3.2 and 5.3, csta2017 2-IC-21, castandards 6-8.IC.21, csta2026 MS-PRO-PD-15, MS-SOC-HI-38, MS-SOC-HU-43, casel SOC.2, ccss-ela SL.8.1, unesco-ai-cfs 4.2.3 (all rested on one reflection page, a poster or a single partner-work phrase). Data Science specialty codes not claimed: nothing in the workbook collects or analyzes data. X+CS not claimed: the course teaches math through code, not CS ideas used to explain another subject's content."
    }
   ]
  },
@@ -50,26 +68,31 @@
   "ccss-math": {
    "6.NS.5": {
     "locators": [
-     "5"
+     "2",
+     "5",
+     "24"
     ],
     "strength": "partial",
-    "note": "\"Simple Data Types\" covers real-world inequalities with Pyret's Number type, which plausibly includes signed values (negative scores, position deltas), but the lesson description doesn't name this specifically."
+    "note": "The Math Inside Video Games page says negative coordinates can hide a character off screen, Simple Data Types has students type negative integers, fractions and decimals into the editor, and Sam the Butterfly asks how far left of 0 Sam may go. Signed numbers are used, but the lessons do not ask for meaning of 0 or opposite quantities in context."
    },
    "6.NS.6": {
     "locators": [
      "2",
-     "4"
+     "4",
+     "11",
+     "27"
     ],
     "strength": "strong",
-    "note": "\"Coordinates\" has students play a video game to identify how coordinates describe position; \"Game Design\" has them use coordinates for their own game's positions -- both are this standard directly."
+    "note": "Estimating Coordinates ('Coordinates'), the Brainstorm Your Own Game screen with its corners labeled (0,0) to (640,480) ('Game Design'), 'Making Sense of Coordinates' with translate on graph paper ('Transforming and Composing Images') and distances between points with negative coordinates such as (9, -3) ('Distance in Video Games'). Most of the work is in the first quadrant, so negative axes appear mainly in 'Distance in Video Games'."
    },
    "6.NS.7": {
     "locators": [
      "5",
-     "22"
+     "22",
+     "27"
     ],
     "strength": "strong",
-    "note": "\"Simple Data Types\" introduces real-world inequalities with ordered/signed values; \"Simple Inequalities\" has students identify solutions and non-solutions, which depends on ordering and absolute value."
+    "note": "Simple Data Types has predicted comparisons of numbers with <, <=, >=, <> (Booleans page); Simple Inequalities finds solutions and non-solutions; Line Length ('Distance in Video Games') asks 'why is the distance between two points always positive?' and builds distance with conditionals, which is absolute value as distance from 0."
    },
    "6.NS.8": {
     "locators": [
@@ -83,21 +106,25 @@
      "10"
     ],
     "strength": "strong",
-    "note": "\"Surface Area of a Rectangular Prism\" has students build a paper prism from a printed net and calculate its surface area -- this standard almost verbatim."
+    "note": "The Surface Area starter file shows a prism, has students define each face and print the faces from a list to build a paper model, then calculate surface area on five practice prisms and compare four students' strategies ('Surface Area of a Rectangular Prism'). Nets and surface area, almost verbatim."
    },
    "7.EE.1": {
     "locators": [
-     "6"
+     "6",
+     "10",
+     "21"
     ],
     "strength": "strong",
-    "note": "\"Order of Operations,\" using Bootstrap's own \"Circles of Evaluation\" model, is generating and reading equivalent arithmetic expressions."
+    "note": "Circles of Evaluation ('Order of Operations') turn expressions into code and back; 'Surface Area: More than One Way' ('Surface Area of a Rectangular Prism') and 'Profit: More than one Way' ('Problem Decomposition') have students write several equivalent expressions for one quantity and check that they agree."
    },
    "7.EE.2": {
     "locators": [
-     "8"
+     "8",
+     "10",
+     "21"
     ],
-    "strength": "partial",
-    "note": "Rewriting an expression to see how quantities relate is the same move \"Function Composition\" makes with image-transformation functions, though the lesson's own framing is programming, not algebraic rewriting."
+    "strength": "strong",
+    "note": "Rewriting an expression in another form to see how its quantities relate is the point of 'Surface Area: More than One Way' (2AB+2BC+2AC against 2(AB+BC+AC), double the sum of three faces) and the four equivalent profit definitions ('Problem Decomposition'). Function Composition ('Function Composition') shows the same idea with images."
    },
    "7.EE.3": {
     "locators": [
@@ -155,8 +182,8 @@
     "locators": [
      "27"
     ],
-    "strength": "partial",
-    "note": "\"Distance in Video Games\" says students \"explore the Pythagorean Theorem,\" which could include why it holds, not just applying it -- not specific enough in the course page's own description to call this strong."
+    "strength": "strong",
+    "note": "A 'Proof Without Words' page has students describe the relationship among the three squares built on a right triangle's sides before the distance formula is built on it."
    },
    "8.G.7": {
     "locators": [
@@ -175,10 +202,12 @@
    },
    "F-IF.1": {
     "locators": [
-     "15"
+     "14",
+     "15",
+     "16"
     ],
     "strength": "strong",
-    "note": "\"Function Notation\" has students read f(x) notation and evaluate it via definitions, tables, and graphs -- this standard directly, at a level middle school's 8.F.1 explicitly excludes (\"function notation isn't required in Grade 8\")."
+    "note": "'The Vertical Line Test' ('The Vertical Line Test', graphs and tables), 'Function Notation' ('Function Notation', f(x) with definitions, tables and graphs) and the contracts-examples-definitions cycle ('Functions: Contracts, Examples & Definitions'): exactly one output per input, notation, domain and range."
    },
    "F-IF.2": {
     "locators": [
@@ -199,17 +228,20 @@
     "locators": [
      "8",
      "15",
+     "19",
+     "21",
      "28"
     ],
     "strength": "strong",
-    "note": "\"Function Composition,\" the nested compositions in \"Function Notation\" (f(g(h(x)))), and \"Collision Detection\" (combining function composition with distance and inequality) are this standard's own compose-functions clause."
+    "note": "Function Composition ('Function Composition'), nested f(g(h(x))) diagrams ('Function Notation'), word problems turned into functions (rocket-height, 'Solving Word Problems with the Design Recipe'), revenue and cost composed into profit ('Problem Decomposition') and collision detection built from distance ('Collision Detection — Distance and Inequality')."
    },
    "A-CED.1": {
     "locators": [
-     "19"
+     "19",
+     "22"
     ],
-    "strength": "strong",
-    "note": "\"Solving Word Problems with the Design Recipe\" writes one-variable equations from word problems -- this standard directly."
+    "strength": "partial",
+    "note": "The Design Recipe turns word problems (ferry fare, ebike rental, rocket height) into one-variable function definitions, and 'Simple Inequalities' writes one-variable inequalities. The workbook has students write expressions and functions rather than equations they then solve, so only the 'write' half is met."
    },
    "A-CED.2": {
     "locators": [
@@ -230,11 +262,10 @@
    },
    "A-REI.3": {
     "locators": [
-     "19",
      "22"
     ],
-    "strength": "strong",
-    "note": "Solving one-variable linear equations (19) and identifying solutions/non-solutions of one-variable inequalities (22) are this standard directly."
+    "strength": "partial",
+    "note": "Students find solutions and non-solutions of one-variable inequalities by testing values and describing solution sets (Simple Inequalities, Compound Inequality warmup). The workbook never has them solve an equation or inequality algebraically."
    },
    "A-REI.10": {
     "locators": [
@@ -259,7 +290,7 @@
      "18"
     ],
     "strength": "partial",
-    "note": "The linear-function lessons teach recognizing a constant-rate (linear) relationship, this standard's part (b); nothing in the course distinguishes linear from exponential growth, part (a)/(c), so this is a partial match to one part of a three-part standard."
+    "note": "'Linear, Non-linear, or Bust?' and 'Are All Tables/Graphs Linear?' have students tell constant-rate from non-constant (a squared table is one of the cases) in tables, graphs and definitions ('Functions Can Be Linear'). Linear versus exponential is never drawn."
    },
    "F-LE.2": {
     "locators": [
@@ -278,6 +309,54 @@
     ],
     "strength": "strong",
     "note": "Interpreting slope and intercept in context (a per-unit rate, a starting value) runs through the linear-function lessons, the Design Recipe word problems, and the revenue/cost/profit problem decomposition."
+   },
+   "6.EE.2": {
+    "locators": [
+     "6",
+     "9",
+     "13",
+     "15"
+    ],
+    "strength": "strong",
+    "note": "Circles of Evaluation put order of operations into code ('Order of Operations'), 'Defining Values' separates values from expressions and definitions ('Defining Values'), functions give a variable a name ('Functions Make Life Easier!'), and 'Function Notation: Substitution' has students substitute a value into an expression and evaluate it ('Function Notation')."
+   },
+   "6.EE.9": {
+    "locators": [
+     "17",
+     "18"
+    ],
+    "strength": "strong",
+    "note": "Tables in 'Notice and Wonder (Linearity)' label an independent and a dependent column; the lessons go on to write y as a function of x and move between tables, graphs and definitions."
+   },
+   "8.F.4": {
+    "locators": [
+     "17",
+     "18"
+    ],
+    "strength": "strong",
+    "note": "Slope and y-intercept from tables, graphs and definitions ('Functions Can Be Linear'), then 'Summarizing Tables/Graphs with Function Definitions' writes the function ('Defining Linear Functions'); the story pages ask what the rate and starting value mean ('the temperature started at -20 and rose 8 degrees per hour')."
+   },
+   "8.F.5": {
+    "locators": [
+     "17"
+    ],
+    "strength": "strong",
+    "note": "'What Story does the Graph tell?' and 'What Story does the Table tell?' have students write the story of a graph or table, and the early 'Notice and Wonder' pages ask them to describe how y changes as x does."
+   },
+   "F-IF.4": {
+    "locators": [
+     "17"
+    ],
+    "strength": "partial",
+    "note": "The story pages interpret intercepts and increasing or decreasing in terms of the quantities (maple syrup, water temperature, tickets and profit), for linear functions only."
+   },
+   "A-SSE.1": {
+    "locators": [
+     "10",
+     "21"
+    ],
+    "strength": "partial",
+    "note": "Surface Area 'More than One Way' has students match algebraic expressions to each strategy, and Problem Decomposition treats revenue and cost as single pieces inside profit. Terms and factors are not named as such, so only the single-entity half is met."
    }
   },
   "csta2017": {
@@ -377,6 +456,437 @@
     ],
     "strength": "partial",
     "note": "Adding collision detection to an already-working game (28) risks breaking existing behavior, a real but not explicitly named risk in the course page's own description."
+   },
+   "2-AP-12": {
+    "locators": [
+     "23",
+     "24",
+     "25"
+    ],
+    "strength": "partial",
+    "note": "Compound inequalities with and/or ('Compound Inequalities: Solutions & Non-Solutions') and piecewise functions with several branches ('Piecewise Functions and Conditionals') combine conditions; loops are not taught."
+   },
+   "2-AP-10": {
+    "locators": [
+     "19"
+    ],
+    "strength": "partial",
+    "note": "The Design Recipe organizes a hard word problem into contract, purpose, examples and definition before any code is written. It is not a flowchart or pseudocode."
+   }
+  },
+  "apcsp": {
+   "1.1": {
+    "locators": [
+     "1"
+    ],
+    "strength": "strong",
+    "note": "'Computing Needs All Voices' has students watch 'What Most Schools Don't Teach', complete Windows and Mirrors, read an LA Times piece on why diverse tech teams have an advantage ('Try Thinking About Ketchup') and answer why and how to diversify. The workbook also has partners investigate functions together."
+   },
+   "1.2": {
+    "locators": [
+     "2",
+     "24",
+     "26"
+    ],
+    "strength": "partial",
+    "note": "Reverse Engineer a Video Game ('Coordinates') asks what changes in a game and which variables are tracked; Sam the Butterfly and update-player ('Sam the Butterfly — Applying Inequalities' and 'Player Animation') take arrow keys as input and produce a new position as output. Input and output are shown rather than named as such."
+   },
+   "1.3": {
+    "locators": [
+     "3",
+     "4",
+     "12"
+    ],
+    "strength": "strong",
+    "note": "The Brainstorm Your Own Game page ('Game Design': background, player, target, danger, a labeled 640 by 480 sketch) is a design stage before any code; the Design Recipe ('Solving Word Problems with the Design Recipe') is a development process; contracts, purpose statements and # comments are documentation (CRD-2.G). 'Project: Build a Video Game' (the project itself) is not in the workbook."
+   },
+   "1.4": {
+    "locators": [
+     "5",
+     "9",
+     "16",
+     "19"
+    ],
+    "strength": "partial",
+    "note": "Students read Pyret error messages on purpose (unclosed quote, missing quote, no spaces around an operator), fix code so it matches a target flag, check each definition against written examples, and improve ChatGPT-written purpose statements. Finding bugs in someone else's code is not a stand-alone exercise."
+   },
+   "3.1": {
+    "locators": [
+     "9"
+    ],
+    "strength": "partial",
+    "note": "'Defining Values' ('Defining Values') separates values and expressions from definitions, which give a name to a value; function definitions name their inputs ('Functions Make Life Easier!'). The workbook has no reassignment, deliberately, so the 'what does x hold after an assignment' half is absent."
+   },
+   "3.3": {
+    "locators": [
+     "5",
+     "6"
+    ],
+    "strength": "strong",
+    "note": "Circles of Evaluation ('Order of Operations', a dozen worksheets) make order of operations explicit in both diagram and code; Pyret requires parentheses around mixed operators, so students must settle the order themselves. Operators with strings and numbers are tried in Simple Data Types ('Simple Data Types')."
+   },
+   "3.4": {
+    "locators": [
+     "5",
+     "7"
+    ],
+    "strength": "strong",
+    "note": "Simple Data Types has students experiment with strings (quotes, `string-contains`, `string-length`, comparing with < and ==, trying `4 + \"cat\"`); 'Contracts for Strings and Images' uses string-valued arguments such as `string-repeat` and `text`."
+   },
+   "3.5": {
+    "locators": [
+     "5",
+     "22",
+     "23",
+     "24",
+     "28"
+    ],
+    "strength": "strong",
+    "note": "The Booleans page has twenty predicted results (< <= == <> on numbers and strings); Compound Inequalities ('Compound Inequalities: Solutions & Non-Solutions') is and/or on Circles of Evaluation, including writing inequality functions; is-onscreen ('Sam the Butterfly — Applying Inequalities') and is-collision ('Collision Detection — Distance and Inequality') are and-combinations."
+   },
+   "3.6": {
+    "locators": [
+     "25",
+     "26",
+     "27"
+    ],
+    "strength": "strong",
+    "note": "Piecewise Functions ('Piecewise Functions and Conditionals': cost of pizzas, red-shape with an if / else-if), update-player ('Player Animation', behavior chosen by the key pressed, with warp, boundary and wrap challenges) and line-length ('Distance in Video Games', why does it use conditionals?)."
+   },
+   "3.9": {
+    "locators": [
+     "19",
+     "21"
+    ],
+    "strength": "strong",
+    "note": "The five-step Design Recipe is a method for building an algorithm, and 'Profit: More than one Way' has four students' definitions compared to see whether they all compute the same thing, plus Top-Down versus Bottom-Up strategies ('Problem Decomposition')."
+   },
+   "3.12": {
+    "locators": [
+     "8",
+     "13",
+     "16"
+    ],
+    "strength": "strong",
+    "note": "Calling functions, composing them ('Function Composition') and the contract-examples-definition cycle ('Functions: Contracts, Examples & Definitions') are calling procedures with arguments and using their results."
+   },
+   "3.13": {
+    "locators": [
+     "13",
+     "16",
+     "18",
+     "19",
+     "21"
+    ],
+    "strength": "strong",
+    "note": "Students write their own functions in every lesson from 13 on (rs, sun, gt, stickers, rocket-height, update-danger, revenue, profit), using the Design Recipe's contract, purpose statement, examples with the changing part circled, then definition."
+   }
+  },
+  "castandards": {
+   "6-8.AP.11": {
+    "locators": [
+     "5",
+     "9"
+    ],
+    "strength": "strong",
+    "note": "Naming values and choosing names for them in 'Simple Data Types' and 'Defining Values'; the overview names datatypes as a core CS concept."
+   },
+   "6-8.AP.12": {
+    "locators": [
+     "23",
+     "24",
+     "25"
+    ],
+    "strength": "partial",
+    "note": "Compound inequalities and piecewise functions combine conditions; loops are not taught, so only the compound-conditions half is met."
+   },
+   "6-8.AP.13": {
+    "locators": [
+     "4",
+     "21"
+    ],
+    "strength": "strong",
+    "note": "Same lessons as 2-AP-13: Game Design breaks a game into parts and 'Problem Decomposition' is the standard by name."
+   },
+   "6-8.AP.14": {
+    "locators": [
+     "8",
+     "13",
+     "16"
+    ],
+    "strength": "strong",
+    "note": "Functions with parameters reused on many inputs, from 'Function Composition' to the contract-and-definition cycle."
+   },
+   "6-8.AP.17": {
+    "locators": [
+     "3",
+     "16",
+     "28"
+    ],
+    "strength": "strong",
+    "note": "Examples written before the function body ('Functions: Contracts, Examples & Definitions') and checking a collision with chosen test cases ('Collision Detection — Distance and Inequality')."
+   },
+   "6-8.AP.19": {
+    "locators": [
+     "7",
+     "16"
+    ],
+    "strength": "strong",
+    "note": "Contracts, purpose statements, examples and # comments are documentation for another reader; 'Solving Word Problems with the Design Recipe' says programmers write good purpose statements so teammates can understand code, and has students repair weak ones."
+   },
+   "9-12.AP.15": {
+    "locators": [
+     "20",
+     "26"
+    ],
+    "strength": "partial",
+    "note": "update-player takes the name of the key pressed and returns a new position, and Sam the Butterfly moves with the arrow keys. The event loop itself is provided by the starter file, so students write the handler logic, not the event wiring."
+   },
+   "9-12.AP.16": {
+    "locators": [
+     "21"
+    ],
+    "strength": "partial",
+    "note": "'Problem Decomposition' with a game as the project; modules and classes are not part of the course."
+   },
+   "9-12.AP.22": {
+    "locators": [
+     "7",
+     "16"
+    ],
+    "strength": "partial",
+    "note": "Contracts and examples are written design decisions about a function; there is no project-level design document."
+   },
+   "6-8.AP.10": {
+    "locators": [
+     "19"
+    ],
+    "strength": "partial",
+    "note": "Contract, purpose statement and examples are written before the definition, which is design-before-code, but in a form specific to the Design Recipe rather than flowcharts or pseudocode."
+   },
+   "9-12S.AP.16": {
+    "locators": [
+     21
+    ],
+    "strength": "partial",
+    "note": "'Problem Decomposition' (top-down and bottom-up, revenue, cost and profit) is breaking a problem into pieces that already have a procedure; real-world scale and reuse of existing code are not part of it."
+   }
+  },
+  "csta2026": {
+   "MS-ALG-PS-01": {
+    "locators": [
+     "5"
+    ],
+    "strength": "strong",
+    "note": "'Simple Data Types' puts numbers, strings, booleans and images in one program, which is this standard's own point."
+   },
+   "MS-PRO-PD-12": {
+    "locators": [
+     "8",
+     "13",
+     "16"
+    ],
+    "strength": "strong",
+    "note": "Naming a repeated block of steps as a function is what 'Functions Make Life Easier!' and 'Functions: Contracts, Examples & Definitions' teach."
+   },
+   "MS-PRO-VD-16": {
+    "locators": [
+     "5",
+     "9"
+    ],
+    "strength": "partial",
+    "note": "Values of several types are named and used in expressions and decisions; the standard's 'update them' half is deliberately absent because definitions do not change (see apcsp 3.1)."
+   },
+   "MS-PRO-TR-19": {
+    "locators": [
+     "16",
+     "19",
+     "21",
+     "28"
+    ],
+    "strength": "partial",
+    "note": "Examples before the function body and checking collision detection are testing inputs and outputs; code review is named in the overview but not in a lesson title."
+   },
+   "HS-PRO-PD-12": {
+    "locators": [
+     "21"
+    ],
+    "strength": "partial",
+    "note": "Splitting the game into well-organized functions ('Problem Decomposition'); no libraries or objects."
+   },
+   "MS-ALG-PS-03": {
+    "locators": [
+     "5",
+     "16",
+     "19"
+    ],
+    "strength": "strong",
+    "note": "Students predict what an expression will evaluate to and then check it in the editor (Booleans page, Defining Values predictions) and write examples with expected outputs before every function ('Functions: Contracts, Examples & Definitions' and 'Solving Word Problems with the Design Recipe')."
+   },
+   "MS-ALG-PS-05": {
+    "locators": [
+     "19"
+    ],
+    "strength": "partial",
+    "note": "'Fixing Purpose Statements' hands students ChatGPT-written purpose statements that miss information or add extras, and asks them to rewrite each and explain what was wrong."
+   },
+   "HS-ALG-PS-05": {
+    "locators": [
+     "19"
+    ],
+    "strength": "partial",
+    "note": "Same 'Fixing Purpose Statements' page: AI-written text about a function is read critically against the word problem. It is a single page and the output is a sentence, not code."
+   },
+   "MS-PRO-RD-17": {
+    "locators": [
+     "6",
+     "9",
+     "27"
+    ],
+    "strength": "strong",
+    "note": "Circles of Evaluation walk an expression from the outside in; Defining Values asks for predictions before running; 'Reading Code: Distance between the Pyret and the boot' has students explain where each number in a sqrt/sqr/line-length expression comes from."
+   },
+   "MS-PRO-PD-13": {
+    "locators": [
+     "5",
+     "7"
+    ],
+    "strength": "partial",
+    "note": "Students read error messages on purpose, learn to read a contract to see how to use a function, and the workbook ends with contracts reference pages for the functions used."
+   },
+   "S1-GMD-DD-01": {
+    "locators": [
+     2,
+     4
+    ],
+    "strength": "strong",
+    "note": "'Reverse Engineer a Video Game' has students list what changes in a game and which variables track it, and 'Brainstorm Your Own Game' has them specify player, target and danger, how each moves, what gains and loses points, and a labeled sketch."
+   },
+   "S1-GMD-DD-03": {
+    "locators": [
+     24,
+     26,
+     28
+    ],
+    "strength": "partial",
+    "note": "Students write the functions that make the game respond (update-player from the key pressed, is-onscreen, distance, is-collision); the starter files assemble them into the running game, so the 'wiring together' is largely provided."
+   },
+   "S1-GMD-DD-04": {
+    "locators": [
+     24,
+     26
+    ],
+    "strength": "strong",
+    "note": "The update-player challenges (warp, boundaries, wrapping, hiding) and is-onscreen have students extend existing movement logic by adding and combining conditions and writing examples for the new behavior."
+   }
+  },
+  "ca-ict-anchor": {
+   "5.9": {
+    "locators": [
+     "21"
+    ],
+    "strength": "strong",
+    "note": "'Problem Decomposition' is this standard by name."
+   },
+   "5.12": {
+    "locators": [
+     "22",
+     "23"
+    ],
+    "strength": "partial",
+    "note": "Inequalities and compound inequalities are Boolean logic used to make decisions; searching is not part of the course."
+   },
+   "C4.4": {
+    "locators": [
+     "5",
+     "7"
+    ],
+    "strength": "strong",
+    "note": "Data types and the contracts that name them are the middle of 'Simple Data Types' and 'Contracts for Strings and Images'."
+   },
+   "C4.9": {
+    "locators": [
+     "13",
+     "25"
+    ],
+    "strength": "partial",
+    "note": "Functions with parameters, branches and named values are in; loops and error recovery are not."
+   },
+   "C5.4": {
+    "locators": [
+     "16",
+     "19",
+     "28"
+    ],
+    "strength": "partial",
+    "note": "Testing is a step in the Design Recipe, with examples written before the code."
+   },
+   "9.6": {
+    "locators": [
+     "1"
+    ],
+    "strength": "strong",
+    "note": "'Computing Needs All Voices' is about valuing diverse perspectives in computing: a film and posters of pioneers, a Windows and Mirrors reflection and the article on why diverse teams have an advantage."
+   },
+   "5.1": {
+    "locators": [
+     "2",
+     "5",
+     "13",
+     "14"
+    ],
+    "strength": "partial",
+    "note": "A Notice and Wonder page opens most lessons (Ninja Cat game, blank game starter, Functions, Linearity), a routine for asking questions about an unfamiliar system before using it."
+   },
+   "C4.5": {
+    "locators": [
+     "24",
+     "26"
+    ],
+    "strength": "partial",
+    "note": "Sam moves with the arrow keys and update-player is chosen by which key was pressed, which is event-driven code, but the event loop is supplied by the starter file."
+   },
+   "C4.6": {
+    "locators": [
+     "5",
+     "6"
+    ],
+    "strength": "strong",
+    "note": "Pyret's own strict syntax is the subject of Simple Data Types: quotes on strings, a leading zero on decimals, spaces around operators, parentheses required for mixed operators, with error messages read on purpose."
+   },
+   "C4.11": {
+    "locators": [
+     "7",
+     "16",
+     "19"
+    ],
+    "strength": "strong",
+    "note": "Contracts, purpose statements and examples are documentation for another reader, # comments are introduced with the flag lessons, and the workbook asks students to improve a purpose statement for a teammate."
+   }
+  },
+  "casel": {
+   "SOC.1": {
+    "locators": [
+     "1"
+    ],
+    "strength": "strong",
+    "note": "Windows and Mirrors asks students to find what gave them insight into someone else's experience, and the ketchup reflection asks about a strategy they would never have thought of."
+   },
+   "SA.1": {
+    "locators": [
+     "1"
+    ],
+    "strength": "partial",
+    "note": "The 'mirror' half of Windows and Mirrors has students connect the film and posters to their own identity and experience."
+   }
+  },
+  "ccss-ela": {
+   "W.8.9": {
+    "locators": [
+     "1"
+    ],
+    "strength": "partial",
+    "note": "The ketchup reflection asks for answers drawn from a specific article (why diverse teams have an advantage, what the article suggests), a short written reflection on an informational text."
    }
   }
  }
