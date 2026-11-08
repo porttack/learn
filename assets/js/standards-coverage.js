@@ -1113,6 +1113,47 @@
     }
   }
 
+  // Keeps the address bar in step with the picker, so a hand-made selection
+  // can be copied as a link: ?sources=slug,slug&view=id, the same params
+  // applyParamsFromLocation() reads on load. Without this only the sidebar's
+  // own recommendation links ever wrote the URL, and ticking boxes by hand
+  // left it unchanged. All sources ticked means no sources param (that is the
+  // default), and a focus (?only=) or report (?report=) page is left alone
+  // since its URL already names its own state.
+  function wireUrlSync() {
+    var params0 = new URLSearchParams(window.location.search);
+    if (params0.get('only') || params0.get('report')) return;
+    function sync() {
+      var params = new URLSearchParams(window.location.search);
+      var all = document.querySelectorAll('#source-list input[type=checkbox]');
+      var checked = document.querySelectorAll('#source-list input[type=checkbox]:checked');
+      if (checked.length === all.length || checked.length === 0) {
+        params.delete('sources');
+      } else {
+        params.set('sources', Array.prototype.map.call(checked, function (cb) {
+          return cb.getAttribute('data-source');
+        }).join(','));
+      }
+      var active = document.querySelector('.view-toggle-btn.is-active');
+      if (active) params.set('view', active.getAttribute('data-view'));
+      else params.delete('view');
+      var qs = params.toString().replace(/%2C/g, ',');
+      history.replaceState(null, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
+    }
+    document.querySelectorAll('#source-list input[type=checkbox]').forEach(function (cb) {
+      cb.addEventListener('change', sync);
+    });
+    ['source-select-all', 'source-select-none'].forEach(function (id) {
+      var b = document.getElementById(id);
+      if (b) b.addEventListener('click', sync);
+    });
+    // The view buttons set is-active in their own click handler, which is
+    // registered earlier than this one, so the class is already current here.
+    document.querySelectorAll('.view-toggle-btn').forEach(function (b) {
+      b.addEventListener('click', sync);
+    });
+  }
+
   function wireRecommendations(handleToggle, panelActions) {
     document.querySelectorAll('.reco-link').forEach(function (link) {
       link.addEventListener('click', function (e) {
@@ -1619,6 +1660,7 @@
       wireBadgeInteractions(coverageByFramework, checkedSourceSet);
       wireCrossRefToggles();
       wireRecommendations(handleToggle, panelActions);
+      wireUrlSync();
       applyParamsFromLocation(handleToggle, panelActions);
       applyOnlyParam(manifest, manifestBySlug, carrierFiles, handleToggle, panelActions);
     });
