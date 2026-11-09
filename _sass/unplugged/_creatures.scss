@@ -159,3 +159,7 @@
   font-size: 1.25em;
   padding-left: 0.4em;
 }
+
+// Print: the four traits start the reference sheet's second page, with the creatures.
+.creature-page-break { height: 0; }
+@media print { .creature-page-break { break-before: page; } }

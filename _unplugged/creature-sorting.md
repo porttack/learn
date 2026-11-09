@@ -40,6 +40,8 @@ won't have to guess what a condition means. You'll know.
   expression, just the piece right next to it, unless parentheses say
   otherwise.
 
+<div class="creature-page-break"></div>
+
 {% include unplugged/creature-trait-legend.html %}
 
 ## The creatures
