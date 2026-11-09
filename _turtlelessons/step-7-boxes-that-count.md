@@ -3,6 +3,7 @@ layout: lesson
 title: "Boxes that count"
 pathway: turtlelessons
 order: 7
+unit: 2
 source: original
 ---
 
@@ -79,10 +80,6 @@ A box can count down too. This sample counts with `box1 - 1`.
 2. The `repeat` has to finish all of its laps before the blocks below it run.
 3. With only 3 laps it prints 5, 4 and 3, then stops early. With a `repeat` of 5 it prints 5, 4, 3, 2 and 1. The number in the box and the number of laps are two separate numbers, so you have to change both.
 </details>
-
-## See the Python
-
-Use **Open full size** under the first frame, then press the `>>>` button there. Find the line `box1 = box1 + 10`. It looks odd, because in Python an equals sign does not mean "is equal to". It means "store". Python does the right-hand side first and stores the answer, exactly like your block.
 
 ## Make a spiral of your own
 

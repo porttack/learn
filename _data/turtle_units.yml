@@ -1,0 +1,16 @@
+# The four units of TurtleLab Lessons (/turtle-lessons/). Each step says which one it is in with `unit:` in its front
+# matter, and a unit is a run of steps that ends in a capstone. The contents page and the print page read this file.
+# (A test in turtlelab/test/lessons.test.js keeps the two in step: every step is in a unit, the units run in order
+# with no gaps, and each ends in the step called Capstone.)
+- id: 1
+  title: "Tell the turtle what to do"
+  blurb: "Give the turtle exact steps, repeat yourself with loops, let chance draw, and make the program choose a path. You finish with a picture that uses a loop, random and an if."
+- id: 2
+  title: "Remember and reuse"
+  blurb: "Keep numbers in boxes, count with them, teach the turtle words of your own, put a loop inside a loop, see that color is three numbers, and hunt down bugs. You finish with a picture made from a box, a block of your own and a loop."
+- id: 3
+  title: "Listen to the person"
+  blurb: "Ask the person using your program for a number, and make your program react to clicks on the paper. You finish with a program that does both."
+- id: 4
+  title: "Make a game"
+  blurb: "Use and, or and not to decide whether a click hit its target, steer a snake with the keyboard and a timer, and finish with a game of your own."

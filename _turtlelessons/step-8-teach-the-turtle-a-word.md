@@ -3,6 +3,7 @@ layout: lesson
 title: "Teach the turtle a word"
 pathway: turtlelessons
 order: 8
+unit: 2
 source: original
 ---
 
@@ -75,13 +76,46 @@ Here is the flower. The petal is a block of your own.
 
 ## Make a word of your own
 
-Open <a href="{{ '/turtlelab/' | relative_url }}" target="_blank" rel="noopener">TurtleLab</a> in a new tab and build there. The frames above do not keep your work.
+Warm up first. Open <a href="{{ '/turtlelab/' | relative_url }}" target="_blank" rel="noopener">TurtleLab</a> in a new tab and build there. The frames above do not keep your work.
 
 Teach the turtle a word that draws a shape, and give it a `size` input. Triangle, square, star, hexagon: you choose. Then use your word three times with three different sizes. You will need to turn or move the turtle between the uses, or the shapes will sit on top of each other.
 
-## See the Python
+## Your name, again
 
-Use **Open full size** under the flower, then press the `>>>` button there. Your block became a Python function: a line that starts with `def petal(size):`. The blocks under it are indented. The main program calls it with `petal(60)`.
+In Step 1 you built letters one line at a time. Now every letter can be a word the turtle knows, and your name is just those words in order.
+
+Here is a B drawn two ways, each a block of its own. The main program only says which letter, and where. Press Run and watch.
+
+{% include turtlelab-embed.html sample="lesson-b-two-ways" grid="numbers" title="A B drawn with straight lines and a B drawn with arcs, each a block of its own" %}
+
+1. How many blocks are inside each B? Which one took fewer?
+2. Four blocks come before each B in the main program. Which four, and what do they do?
+3. Change the 0 in the `set heading` just above the curved B to 90, and press Run. What happens to the B, and why? (**Start over** puts it back.)
+
+<details markdown="1">
+<summary>Check your answers</summary>
+
+1. The straight B has 15 blocks and the curved B has 9. An `arc` draws a whole round bowl in one block.
+2. `pen up`, `set xy`, `set heading` and `pen down`, the same four you used between letters in Step 1. The pen goes up so nothing is drawn on the way. `set xy` picks the place. `set heading` makes the turtle face up. The pen goes down to draw.
+3. The whole B turns a quarter turn to the right, and its spine runs sideways. A letter block draws in whatever direction the turtle is facing. The turtle ends the first B facing left, so without a `set heading` the second one would come out turned too. Every letter starts facing up, which is heading 0.
+</details>
+
+Now spell your name. Use your first name, or the letters you like from it if it is long.
+
+1. Make one block of your own for each **different** letter. A letter that comes twice, like the A in ANNA, only needs one block: ANNA is two blocks, A and N, used four times.
+2. A letter block draws from **where the turtle is**. It starts at the same corner of the letter and faces the same way every time (the B above starts at its bottom left, facing up). Do not put `set xy` inside a letter block. A letter that always jumped to the same place would land on top of the last one.
+3. In the main program, write the name: for each letter, the four blocks that travel, then the letter.
+4. Give every letter a color of its own. Put a `set color` block (Pen palette) before a letter block to color that one use, or inside the letter block to make that letter always the same color. What changes if you move it?
+
+You can start from your Step 1 PDF: press Open in TurtleLab, choose it, and move each letter's blocks under a `to` block. A letter 120 tall and 60 wide, with 20 between letters, takes 80 across, and the paper is 700 wide, so it holds eight letters if the first starts at x = -320.
+
+## Check yourself
+
+- Every different letter in your name is a block of your own, and a letter that comes twice uses the same block.
+- No letter block has a `set xy` inside it.
+- Every letter has a color of its own.
+- You built every letter yourself, with no `write` block.
+- Someone who has not seen your blocks can read your name.
 
 ## Save your work
 
@@ -89,4 +123,20 @@ Press the **PDF** button to keep a copy of your blocks and your drawing.
 
 ## Done early?
 
-Give a block **two** inputs, for example `petal size` and one more number that decides how wide the petal is. Add the second input by tapping the dashed `input` box again. A block can have two.
+**Two inputs.** Give a block **two** inputs, for example `petal size` and one more number that decides how wide the petal is. Add the second input by tapping the dashed `input` box again. A block can have two.
+
+**A size for every letter.** Give each letter block an input called `size` and use it in the numbers, with the Math blocks: `size` for the height, `size ÷ 2` for half of it. Then write your name at two sizes.
+
+**Angled letters.** A B can have angled lines too. This E and B get from one letter to the next without `set xy`: the turtle walks. Press Run and watch it between them.
+
+{% include turtlelab-embed.html sample="lesson-b-diagonal" title="An E and a B made of angled lines, with the turtle walking between them" %}
+
+Which blocks take the turtle from the E to the B? How is that different from the four you used before?
+
+<details markdown="1">
+<summary>Check your answer</summary>
+
+`pen up`, `forward 20`, `left 90` and `pen down`. The E ends facing right, so the turtle walks 20 along the paper, turns left to face up, and the B can start. `set xy` always lands in the same place. Walking only works when you know where the last letter ended and which way the turtle faces. Use whichever you like for your name.
+</details>
+
+**A whole alphabet to read.** Open <a href="{{ '/turtlelab/?sample=initials-lines' | relative_url }}" target="_blank" rel="noopener">A, B and C with straight lines</a> or <a href="{{ '/turtlelab/?sample=initials-curves' | relative_url }}" target="_blank" rel="noopener">A, B and C with curves</a>. Each letter is a block, and a block called `place` with two inputs, x and y, does the travelling. Look at the A if your name has slanted lines.

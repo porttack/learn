@@ -3,6 +3,7 @@ layout: lesson
 title: "Say it once"
 pathway: turtlelessons
 order: 2
+unit: 1
 source: original
 ---
 
@@ -18,27 +19,82 @@ The frame below is a real TurtleLab. Change a number, press **Run**, and look at
 
 Look at the blocks. The ones **inside** the `repeat` are the ones that repeat. The number on the `repeat` says how many times. The whole square is just one `forward` and one `right`, said once and repeated 4 times.
 
-1. Change the 4 on the `repeat` to a 3 and press Run. What shape did you get? Is it a triangle? Why not?
-2. The square's turn is 90. Find the turn that makes a triangle, a pentagon, a hexagon, an octagon and a shape with 12 sides. Change the `repeat` and the turn, then run it. If your numbers are right, the shape closes up.
+## A triangle
 
-The pattern you are looking for: to come back to where it started, facing the same way, the turtle must turn one full circle, **360 degrees**, all together. So:
+A triangle has 3 sides, so change the 4 on the `repeat` to a 3 and press Run. Is it a triangle? Why not?
+
+The turn is still 90, and that is too big. To come back to where it started, facing the same way, the turtle must turn one full circle, **360 degrees**, all together. A triangle has 3 turns. Before you try, work out: what number, three times, makes 360?
+
+Type your number into the `right` block and press Run. Then check it against this triangle.
+
+{% include turtlelab-embed.html sample="lesson-triangle" title="A triangle: a forward and a right of 120, repeated 3 times" %}
+
+Now change the 120 in the frame to 100 and press Run. What happens, and why?
+
+<details markdown="1">
+<summary>Check your answers</summary>
+
+The turn is 120, because 3 × 120 is 360. With 100 the triangle stays open: three turns of 100 make 300, not 360, so the turtle does not come back facing the way it started.
+</details>
+
+## A pentagon
+
+A pentagon has 5 sides. Predict the turn first: what number, five times, makes 360? Write your prediction down, then change the `repeat` to 5 in the square frame, type your turn into the `right` block and press Run. Then check it here.
+
+{% include turtlelab-embed.html sample="lesson-pentagon" title="A pentagon: a forward and a right of 72, repeated 5 times" %}
+
+Change the 5 on the frame's `repeat` to 6, keeping the turn, and press Run. What does the sixth side do?
+
+<details markdown="1">
+<summary>Check your answers</summary>
+
+The turn is 72, because 5 × 72 is 360. The sixth side draws over the first side again. Five sides with a turn of 72 already closed the shape, so a sixth side starts it over.
+</details>
+
+## The pattern
+
+Look at the three shapes you have made:
+
+| Shape | Sides | Turn |
+|---|---|---|
+| Triangle | 3 | 120 |
+| Square | 4 | 90 |
+| Pentagon | 5 | 72 |
+
+The turn times the number of sides is always 360. So:
 
 **turn = 360 ÷ number of sides**
 
-Check it with the square: 360 ÷ 4 is 90.
+Now use the pattern. Find the turn for a hexagon, an octagon and a shape with 12 sides. Change the `repeat` and the turn in the square frame, then run it. If your numbers are right, the shape closes up.
 
-## A ring of dashes
+## You choose the sides
 
-{% include turtlelab-embed.html sample="dotted-circle" title="A dotted circle: a repeat of dashes, with the pen lifted between them" %}
+The turtle can do that sum for you. In this frame the program asks how many sides you want, and it works out the turn itself, 360 ÷ your number. Two of the blocks in it are new: `ask` waits for you to type a number, and the box called `box1` keeps it. You will learn both later. For now, just use it.
 
-The loop draws a short dash, lifts the pen, moves a little, and turns. Before you change anything, work out: the loop runs 36 times and turns 10 each time. What is 36 × 10, and why does that number make sense?
+Press Run, type a number, and press Enter. Press Run again to be asked again.
 
-Then change it: set the loop to 72 and the turn to a number that still makes a full ring. Predict the turn first, then try it.
+{% include turtlelab-embed.html sample="lesson-sides-any" title="A program that asks how many sides, then draws a shape with that many" %}
 
-## See the Python
+1. Type 3, then 5, then 8. What shapes do you get?
+2. Type 40, then 100. What does the shape look like, and why?
 
-Use **Open full size** under one of the frames, then press the `>>>` button on its toolbar. It shows the blocks as Python. Find your `repeat`. You will see a line that starts with `for _ in range(`. That is a Python loop, and it does the same thing as your block.
+<details markdown="1">
+<summary>Check your answers</summary>
+
+1. A triangle, a pentagon and an octagon.
+2. Nearly a circle. With 40 sides each turn is only 9 degrees, and with 100 sides it is 3.6, so the corners are too small to see. A circle is what you get when the number of sides keeps growing.
+</details>
 
 ## Save your work
 
 To keep a copy of your blocks and your drawing, use the **PDF** button on the toolbar. A frame does not have one, so use **Open full size** under a frame, make your changes there, and press the **PDF** button.
+
+## Done early?
+
+**Two sides.** Type 2 in the last frame. What does the turtle draw, and why?
+
+<details markdown="1">
+<summary>Check your answer</summary>
+
+A single line, out and back. The turn is 180, so the turtle turns around and walks back the way it came.
+</details>

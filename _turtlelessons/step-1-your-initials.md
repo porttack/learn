@@ -3,6 +3,7 @@ layout: lesson
 title: "Your initials"
 pathway: turtlelessons
 order: 1
+unit: 1
 source: original
 ---
 
@@ -65,39 +66,27 @@ Sketch your initials on this grid with straight lines. It is the same size as th
 
 For each letter, write down where the turtle starts, which way it faces, and the moves, like `forward 120, left 90, forward 60`.
 
-## See how it is done
+## Between letters
 
-Here is the letter B drawn two ways, with the blocks that walk the turtle from one letter to the next. Press Run and watch.
+Look at the first four blocks of the L: `pen up`, `set xy`, `set heading` and `pen down`. They take the turtle to where the letter starts without drawing anything on the way. You use the same four blocks again between every two letters.
 
-{% include turtlelab-embed.html sample="lesson-b-two-ways" grid="numbers" title="A B drawn with straight lines and a B drawn with arcs" %}
+Here is an L and an I. Press Run and watch the turtle between the letters.
 
-Each B is a block of its own, made with a `to` block, so it is easy to find. You do not need to make blocks like that yet. Look at the blocks and the turtle, and work out:
+{% include turtlelab-embed.html sample="lesson-travel" grid="numbers" title="An L and an I, with the four blocks that walk the turtle from one letter to the next" %}
 
-1. How many blocks are inside each B? Which one took fewer?
-2. Which four blocks walk the turtle to the next letter?
-3. Change the 0 in the `set heading` just above the curved B to 90, and press Run. What happens to the B, and why? (**Start over** puts it back.)
+Work out:
+
+1. Which four blocks walk the turtle from the L to the I?
+2. The turtle ends the L facing right. Why does the I still draw downward?
+3. Change the 180 in the `set heading` just above the I to 90, and press Run. What happens to the I, and why? (**Start over** puts it back.)
 
 <details markdown="1">
 <summary>Check your answers</summary>
 
-1. The straight B has 15 blocks and the curved B has 9. An `arc` draws a whole round bowl in one block.
-2. `pen up`, `set xy`, `set heading` and `pen down`. The pen goes up so nothing is drawn on the way. `set xy` picks the place. `set heading` makes the turtle face up. The pen goes down to draw.
-3. The whole B turns a quarter turn to the right, and its spine runs sideways. A letter block draws in whatever direction the turtle is facing. The turtle ends the first B facing left, so without a `set heading` the second one would come out turned too. Every letter starts facing up, which is heading 0.
+1. `pen up`, `set xy`, `set heading` and `pen down`. The pen goes up so nothing is drawn on the way. `set xy` picks the place. `set heading` makes the turtle face the way the letter starts. The pen goes down to draw.
+2. `set heading 180` turns the turtle to face down before the pen goes down. Which way it faced at the end of the L does not matter any more.
+3. The I lies on its side and runs to the right, because the turtle now faces right when it draws. A letter is drawn in whatever direction the turtle faces, so set the heading before every letter.
 </details>
-
-A B can have angled lines too. This E and B get from one letter to the next without `set xy`. Press Run and watch the turtle between them.
-
-{% include turtlelab-embed.html sample="lesson-b-diagonal" title="An E and a B made of angled lines, with the turtle walking between them" %}
-
-Which blocks take the turtle from the E to the B? How is that different from the four blocks above?
-
-<details markdown="1">
-<summary>Check your answer</summary>
-
-`pen up`, `forward 20`, `left 90` and `pen down`. The E ends facing right, so the turtle walks 20 along the paper, turns left to face up, and the B can start. `set xy` always lands in the same place. Walking only works when you know where the last letter ended and which way the turtle faces. Use whichever you like for your initials.
-</details>
-
-Want a whole A, B and C to read? Open <a href="{{ '/turtlelab/?sample=initials-lines' | relative_url }}" target="_blank" rel="noopener">A, B and C with straight lines</a> or <a href="{{ '/turtlelab/?sample=initials-curves' | relative_url }}" target="_blank" rel="noopener">A, B and C with curves</a>. Look at the A if your initials have slanted lines.
 
 ## Build your initials
 
@@ -105,7 +94,7 @@ Build one letter at a time, and tap its stack to test it before you start the ne
 
 **Draw every letter piece by piece**, one line or one curve at a time, with blocks like `forward`, `left`, `right`, `set xy` and `arc`. **Do not use the `write` block** from the Notes palette. It writes the letters for you, and building them yourself is the whole point of this step.
 
-To travel between letters, use the four blocks from the B frame: `pen up`, `set xy`, `set heading` (0 is up) and `pen down`.
+To travel between letters, use the four blocks from the L and I frame: `pen up`, `set xy`, `set heading` (180 is down, 0 is up) and `pen down`.
 
 When your initials are done, draw a square frame around them and count how many blocks the frame took. Remember that number. You will see it again in Step 2.
 
@@ -126,6 +115,6 @@ Keep your PDF. To get your blocks back later, press Open in TurtleLab and choose
 
 ## Done early?
 
-**Curves.** Letters like C, O, S, D, B and U have curves. Use the `arc` block (Turtle palette). It takes an angle and a radius. A positive angle curves right and a negative angle curves left. Find out what an `arc` of 180 with a radius of 50 looks like, then use arcs in your letters. The curved B above shows one way.
+**Curves.** Letters like C, O, S, D, B and U have curves. Use the `arc` block (Turtle palette). It takes an angle and a radius. A positive angle curves right and a negative angle curves left. Find out what an `arc` of 180 with a radius of 50 looks like, then use arcs in your letters.
 
 **Color.** Give each letter its own color. The `set color` block (Pen palette) takes red, green and blue, each from 0 to 255. Red is 255, 0, 0. Black is 0, 0, 0. White is 255, 255, 255. Mix your own.

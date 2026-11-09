@@ -3,6 +3,7 @@ layout: lesson
 title: "Ask for a number"
 pathway: turtlelessons
 order: 13
+unit: 3
 source: original
 ---
 
@@ -60,10 +61,6 @@ Trace it on paper. You type 50, then 5.
 2. A pentagon, with sides of 50.
 3. Nothing. Without the store, box2 is still 0, so `forward box2` goes forward 0.
 </details>
-
-## See the Python
-
-Use **Open full size** under the frame, then press the `>>>` button on the toolbar. Find the line that says `box1 = ask("How many sides?")`. The `ask` above it is a small function that keeps calling Python's `input` until it gets a number.
 
 ## Build one of your own
 

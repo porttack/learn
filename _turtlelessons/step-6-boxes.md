@@ -3,6 +3,7 @@ layout: lesson
 title: "Variables: boxes that keep a number"
 pathway: turtlelessons
 order: 6
+unit: 2
 source: original
 ---
 
@@ -94,10 +95,6 @@ In Step 2 you found that **turn = 360 ÷ number of sides**. Here the program wor
 2. The `repeat` uses it as the number of sides. The turn uses it inside the `÷` block, as `360 ÷ box1`.
 3. Both blocks use the same variable, so they can never disagree. If you typed the sides and the turn in separately, you could give them numbers that do not go together, and the shape would not close.
 </details>
-
-## See the Python
-
-Use **Open full size** under the house demo, then press the `>>>` button on the toolbar there. It shows your blocks as Python. Find the line that says `box1 = 80`, and the lines that say `forward(box1)`. Python uses the same word, **variable**, and storing a value in one is written with an equals sign.
 
 ## Build one of your own
 

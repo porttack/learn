@@ -19,20 +19,24 @@ Four of the steps end with a PDF made by TurtleLab's PDF button:
 
 - **Step 16** is a guided build, a click game ("Catch the square") that teaches the Math blocks `and`, `or` and `not` and asks if a click hit a target. It is not a capstone: the page gives the block that draws the square and an outline of the click handler, and the student builds the rest. It ends with a PDF too.
 
+- **Step 17** is a guided build, a snake game ("Steer the snake") that teaches the `when [key] pressed` and `every` blocks: the program listens to the keyboard and moves by a timer. It is not a capstone: the page gives the two blocks of their own (one draws the red square and comes back, one starts the game again) and an outline of the rest. It ends with a PDF too. The snake gets fatter, not longer, because a growing tail needs more memory than TurtleLab's four boxes.
+
+- **Step 18** is the fourth capstone, a game or toy of the student's own. It needs at least two of the three ways of listening (a click, a key, a timer), a box that changes while it runs, an `if` with `and` or `or`, a block of their own used more than once, a loop and two colors. The page points at five samples on the Samples page (Keyboard painter, The bouncing turtle, Click flowers, Catch the square, The fat snake) to open first, and offers four themes. The last page of the PDF has a row for `ask / when paper clicked / when key pressed / every`, which makes the listening quick to check.
+
 Steps 2, 3, 6 to 11, 13 and 14 are practice with no PDF to collect. Every step ends by telling the student to save a PDF to keep their own work.
 
 ## The sequence
 
 | Step | What students do |
 |---|---|
-| [1: Your initials]({{ '/turtle-lessons/step-1-your-initials/' | relative_url }}) | Plan on a grid, then draw their initials with exact moves. Predict where the turtle ends and which way it faces. Draw a frame and count its blocks. |
+| [1: Your initials]({{ '/turtle-lessons/step-1-your-initials/' | relative_url }}) | Plan on a grid, then draw their initials with exact moves, with no blocks of their own yet. Predict where the turtle ends and which way it faces. Walk between letters with `pen up`, `set xy`, `set heading` and `pen down`. Draw a frame and count its blocks. |
 | [2: Say it once]({{ '/turtle-lessons/step-2-say-it-once/' | relative_url }}) | Meet `repeat` with a square. Find turn = 360 ÷ sides. |
 | [3: Let chance draw]({{ '/turtle-lessons/step-3-let-chance-draw/' | relative_url }}) | Use `random` in a loop. Build confetti. |
 | [4: Choose a path]({{ '/turtle-lessons/step-4-choose-a-path/' | relative_url }}) | Meet `if` and `else` through a coin flip. Trace a run on paper. Save a practice PDF. |
 | [5: Capstone: random art]({{ '/turtle-lessons/step-5-random-art/' | relative_url }}) | Plan and build a piece with all three. There is a one page [planning sheet]({{ '/turtle-lessons/planning-sheet/' | relative_url }}) to print. |
 | [6: Variables: boxes that keep a number]({{ '/turtle-lessons/step-6-boxes/' | relative_url }}) | What a variable is, and why TurtleLab draws one as a box. Predict, then watch a slow program change a variable block by block (the real blocks, in a frame), and a house whose size comes from one variable. |
 | [7: Boxes that count]({{ '/turtle-lessons/step-7-boxes-that-count/' | relative_url }}) | A variable that updates itself: the `+` block is worked out first, then stored. Watch a box count and print, trace a doubling box on paper, a countdown, a spiral of their own. |
-| [8: Teach the turtle a word]({{ '/turtle-lessons/step-8-teach-the-turtle-a-word/' | relative_url }}) | Blocks of their own (functions) with an input. A flower from one petal block; change the word once and every use changes. |
+| [8: Teach the turtle a word]({{ '/turtle-lessons/step-8-teach-the-turtle-a-word/' | relative_url }}) | Blocks of their own (functions) with an input. A flower from one petal block; change the word once and every use changes. Then their name again: the initials idea of Step 1, now one block per letter (a letter that comes twice uses the same block), each letter its own color. Compare a B drawn two ways, 15 blocks and 9. |
 | [9: A loop inside a loop]({{ '/turtle-lessons/step-9-a-loop-inside-a-loop/' | relative_url }}) | Nested `repeat`: the inside draws, the outside repeats and turns. Count the moves (12 × 4). The ring closes when laps × turn = 360. |
 | [10: Color is three numbers]({{ '/turtle-lessons/step-10-color-is-three-numbers/' | relative_url }}) | Red, green and blue from 0 to 255. Why 255: eight bits. Binary and hex with the color picker. 256 × 256 × 256 colors. A color made from a box. |
 | [11: Find the bug]({{ '/turtle-lessons/step-11-find-the-bug/' | relative_url }}) | Four broken programs to fix, each with a hint and an answer: a triangle that does not close, a box that is never used, an `if` that can never be yes, a pen left up. |
@@ -41,8 +45,10 @@ Steps 2, 3, 6 to 11, 13 and 14 are practice with no PDF to collect. Every step e
 | [14: Click to draw]({{ '/turtle-lessons/step-14-click-to-draw/' | relative_url }}) | `when paper clicked` with the built in variables `mouseX` and `mouseY`. A program keeps listening after its last block until Stop. Predict where clicks land (the paper is -350 to 350 by -280 to 280), then build a dot painter. |
 | [15: Capstone 3: ask and click]({{ '/turtle-lessons/step-15-capstone-3/' | relative_url }}) | Plan with three sentences, then build a picture that asks a question, draws where it is clicked with a block of their own, and uses a loop. Ends with a PDF. |
 | [16: Catch the square]({{ '/turtle-lessons/step-16-catch-the-square/' | relative_url }}) | `and`, `or` and `not`: predict what a click inside or outside a stripe gives, then ask "is the click inside this square?" with two stripes that cross. Build a game where a red square jumps to a random place each time it is clicked, with the score in box1. Ends with a PDF. |
+| [17: Steer the snake]({{ '/turtle-lessons/step-17-steer-the-snake/' | relative_url }}) | `when [key] pressed` and `every`: predict what presses of the arrow keys draw, then what a timer does by itself (the third tick of a growing spiral). Build a snake: it walks by itself, the arrows set its heading, eating the red square makes it fatter and the square jumps, going off the paper starts the game again. Uses `and`, `or`, `speed` and two blocks of their own. Ends with a PDF. |
+| [18: Capstone 4: make a game]({{ '/turtle-lessons/step-18-capstone-4/' | relative_url }}) | Open the sample toys and games first, then plan with three sentences (how the person plays, what the game does by itself, what a box holds and what the `if` decides). Build a game or toy that listens in at least two ways, keeps a box up to date, decides with `and` or `or`, and uses a block of their own and a loop. Ends with a PDF. |
 
-Students who have not seen loops meet the need for one first (a square that takes eight blocks) and only then get the block. `if` and `else` comes after `random` on purpose: a coin flip is the easiest decision to understand, and students who find conditionals confusing can see one path or the other run, never both.
+The steps come in four units, each ending in a capstone: Steps 1 to 5 (tell the turtle what to do), 6 to 12 (remember and reuse), 13 to 15 (listen to the person) and 16 to 18 (make a game). The contents page shows them as four colored bands (`_data/turtle_units.yml`, and a `unit:` line in each step). Students draw their initials without any blocks of their own in Step 1, on purpose, and meet blocks of their own in Step 8, where they draw their name again with one block per letter. Students who have not seen loops meet the need for one first (a square that takes eight blocks) and only then get the block. `if` and `else` comes after `random` on purpose: a coin flip is the easiest decision to understand, and students who find conditionals confusing can see one path or the other run, never both.
 
 ## Assignment text to paste
 
@@ -93,6 +99,19 @@ Turn in whatever you have 10 minutes before the end of class, even if you are no
 
 Press the PDF button in TurtleLab and attach the PDF to this assignment.
 
+### Assignment: Your name, with blocks
+
+Draw your name with TurtleLab, one block for each letter, then save a PDF.
+
+- Work through Step 8: [https://{{ site.print_host }}/turtle-lessons/step-8-teach-the-turtle-a-word/](https://{{ site.print_host }}/turtle-lessons/step-8-teach-the-turtle-a-word/)
+- Make one block of your own for each different letter in your name, and use the same block when a letter comes twice.
+- No letter block may have a set xy inside it. The main program travels from letter to letter.
+- Give every letter a color of its own.
+- Build every letter piece by piece. Do not use the write block.
+- Add a sticky note with your name.
+
+Press the PDF button in TurtleLab and attach the PDF to this assignment.
+
 ### Assignment: Capstone 2, boxes and blocks
 
 Make a picture in TurtleLab that uses a box, a block of your own and a loop, then save a PDF.
@@ -137,6 +156,36 @@ Turn in whatever you have 10 minutes before the end of class, even if you are no
 
 Press the PDF button in TurtleLab and attach the PDF to this assignment.
 
+### Assignment: Steer the snake
+
+Build a snake game in TurtleLab, then save a PDF.
+
+- Do Step 17: [https://{{ site.print_host }}/turtle-lessons/step-17-steer-the-snake/](https://{{ site.print_host }}/turtle-lessons/step-17-steer-the-snake/)
+- Build in a fresh TurtleLab tab. The demos inside the lessons do not save your work.
+- Your game needs: a snake that moves by itself (an `every` block), four `when key pressed` blocks that turn it, a new red square at a random place when the snake reaches the old one, which also makes the snake fatter, the game starting over when the snake goes off the paper (an `or`), an `and` in the test for reaching the square, two blocks of your own that your program uses, and a sticky note with your name that says in your own words what `every` does in your game.
+- Before you press the PDF button: press Run, click the paper once, steer the snake and eat a few squares, so the picture is on the paper.
+
+(The student page lists these same things for students to check. A rubric is yours to write; ask and I will draft one. The last page of the PDF has a row for `ask / when paper clicked / when key pressed / every`, a row for Blocks you made and one for `if / if else`, which you can check quickly.)
+
+Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
+
+Press the PDF button in TurtleLab and attach the PDF to this assignment.
+
+### Assignment: Capstone 4, make a game
+
+Make a game or a toy in TurtleLab, then save a PDF.
+
+- Do Step 18: [https://{{ site.print_host }}/turtle-lessons/step-18-capstone-4/](https://{{ site.print_host }}/turtle-lessons/step-18-capstone-4/)
+- Build in a fresh TurtleLab tab. The demos inside the lessons do not save your work.
+- Your game needs: at least two of the three ways of listening (`when paper clicked`, `when [key] pressed`, `every`), a box that changes while it runs, an `if` that uses `and` or `or`, a block of your own that your program uses more than once, a loop, at least two colors, and a sticky note with your name that says what your game is and how to play it, in your own words.
+- Before you press the PDF button: press Run, click the paper once, and play for a little while, so there is something on the paper.
+
+(The student page lists these same things for students to check, and four themes to choose from. A rubric is yours to write; ask and I will draft one. The last page of the PDF has a row for `ask / when paper clicked / when key pressed / every` with a count of at least 2, and rows for Blocks you made, repeat / forever and if / if else, which you can check quickly.)
+
+Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
+
+Press the PDF button in TurtleLab and attach the PDF to this assignment.
+
 ## Substitute day
 
 - **Skip Step 1.**
@@ -151,6 +200,8 @@ Press the PDF button in TurtleLab and attach the PDF to this assignment.
 - The Guide link at the top of TurtleLab explains every button. Pressing and holding a block shows a tip.
 - Blocks disappeared? Press Undo (the curved arrow, or Ctrl+Z).
 - Program will not stop? The Stop button always works.
+- A key does nothing? The page has to be listening to the keyboard: press Run and then click the paper once (in a frame on a lesson page too). Typing in the Logo box or a sticky note is typing, not a key press.
+- The snake crawls? Put `speed 4` (instant) under Start, so the blocks under `every` run all at once.
 - A red outline means that block has a problem. The message is under the drawing.
 - Cannot find the saved PDF? It is in the Downloads folder.
 - Students can ask a neighbor for a hint, then keep their own work on their own screen.

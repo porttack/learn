@@ -3,6 +3,7 @@ layout: lesson
 title: "Color is three numbers"
 pathway: turtlelessons
 order: 10
+unit: 2
 source: original
 ---
 

@@ -3,6 +3,7 @@ layout: lesson
 title: "Capstone: random art"
 pathway: turtlelessons
 order: 5
+unit: 1
 source: original
 organizer: /turtle-lessons/planning-sheet/
 organizer_label: "Print the planning sheet"

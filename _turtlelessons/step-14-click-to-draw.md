@@ -3,6 +3,7 @@ layout: lesson
 title: "Click to draw"
 pathway: turtlelessons
 order: 14
+unit: 3
 source: original
 ---
 
@@ -42,10 +43,6 @@ Now click in the middle, then near each corner, and check.
 - A program that has a `when paper clicked` then **keeps listening**, until you press Stop.
 - Each click runs the blocks under `when paper clicked`, from the top to the bottom, with mouseX and mouseY set to that click.
 - Sliding the paper with the mouse is **not** a click. Neither is clicking on a block.
-
-## See the Python
-
-Use **Open full size** under the frame, then press the `>>>` button on the toolbar. The blocks under `when paper clicked` become a function with two inputs, `on_click(x, y)`. In Python, that is how a click handler is written.
 
 ## Build one of your own
 

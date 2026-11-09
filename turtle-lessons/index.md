@@ -6,28 +6,31 @@ permalink: /turtle-lessons/
 
 # TurtleLab Lessons
 
-Sixteen steps with [TurtleLab]({{ '/turtlelab/' | relative_url }}), the block drawing tool where a turtle draws what you tell it. Each step starts from a sample you change.
+Eighteen steps with [TurtleLab]({{ '/turtlelab/' | relative_url }}), the block drawing tool where a turtle draws what you tell it. Each step starts from a sample you change, and most have a real TurtleLab built into the page, so you can change a demo and run it without leaving the lesson.
 
-The first five steps: you draw your initials, learn loops, use chance, and make the program decide. Then you put it all together in a capstone: a piece of art that uses a loop, random, and if and else.
-
-The next seven (6 to 12): you keep numbers in variables (boxes), make variables that count, teach the turtle new words, put a loop inside a loop, see that color is three numbers, hunt down bugs, and finish with a second capstone that uses boxes, a block of your own and a loop. Many of these steps have a real TurtleLab built into the page, so you can change a demo and run it without leaving the lesson.
-
-The next four (13 to 16): you ask the person using your program for a number, make your program listen for clicks on the paper, finish with a third capstone that does both, and then build a click game, where **and**, **or** and **not** decide whether a click hit the target.
+The steps come in four units. Each unit ends with a capstone: a project of your own that uses everything in the unit.
 
 You need a computer with Chrome and a pencil. There is nothing to install. Every step ends with a way to keep a PDF of your work.
 
 ## Steps
 
-<ol class="lesson-list">
 {% assign lessons = site.turtlelessons | sort: "order" %}
-{% for lesson in lessons %}{% unless lesson.companion %}
-  <li>
-    <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
-  </li>
-{% endunless %}{% endfor %}
-</ol>
+{% for unit in site.data.turtle_units %}
+<section class="tl-unit tl-unit-{{ unit.id }}">
+  <h3 class="tl-unit-title"><span class="tl-unit-label">Unit {{ unit.id }}</span> {{ unit.title }}</h3>
+  <p class="tl-unit-blurb">{{ unit.blurb }}</p>
+  <ol class="tl-unit-steps">
+{% for lesson in lessons %}{% unless lesson.companion %}{% if lesson.unit == unit.id %}
+    <li{% if lesson.title contains "Capstone" %} class="tl-capstone"{% endif %}>
+      <span class="tl-step-num" aria-hidden="true">{{ lesson.order }}</span>
+      <a href="{{ lesson.url | relative_url }}"><span class="visually-hidden">Step {{ lesson.order }}: </span>{{ lesson.title }}</a>
+    </li>
+{% endif %}{% endunless %}{% endfor %}
+  </ol>
+</section>
+{% endfor %}
 
-[Print all sixteen steps]({{ '/turtle-lessons/print/' | relative_url }}) ·
+[Print all eighteen steps]({{ '/turtle-lessons/print/' | relative_url }}) ·
 [Print the planning sheet for the first capstone]({{ '/turtle-lessons/planning-sheet/' | relative_url }}) ·
 [More samples to try]({{ '/turtlelab/samples.html' | relative_url }})
 

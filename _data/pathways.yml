@@ -78,14 +78,15 @@
   standards_carrier: turtlelessons
   standards_locator: slug
   blurb: >-
-    Sixteen steps with TurtleLab, each starting from a demo you change and
+    Eighteen steps with TurtleLab, each starting from a demo you change and
     take further: draw your initials, repeat yourself with loops, let chance
     draw with random, choose a path with if and else, then a first capstone.
     Then keep numbers in variables, count with them, teach the turtle new words,
     put loops inside loops, see color as three numbers, find bugs, and finish
     with a second capstone. Then ask the person using your program for a
     number, listen for clicks on the paper, and finish with a third capstone.
-    Last, build a click game that uses and, or and not.
+    Then build a click game that uses and, or and not. Then steer a snake with
+    the keyboard, moved by a timer. Last, make a game of your own.
 
 - id: cs50psets
   title: "CS50 Problems"

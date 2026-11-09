@@ -3,6 +3,7 @@ layout: lesson
 title: "Let chance draw"
 pathway: turtlelessons
 order: 3
+unit: 1
 source: original
 ---
 
@@ -45,12 +46,32 @@ A round block like `random` plugs into a round number slot. When you drop it on 
 
 This is the last practice before the capstone. Scatter 60 dots on the paper, each in a random place and a random color.
 
-Start from a fresh TurtleLab tab, because a frame or a sample tab does not save your work. The blocks you need are `repeat`, `pen up`, `set xy` with a `random` block in each slot, `pen down`, `set color`, `set pen size`, and `forward`.
+Here is a start. The pen is fat, so a very short line looks like a dot. The dots are already spread across the paper from left to right by a `random` block in the x slot of `set xy`. Press Run.
 
-Two hints about the paper. It runs from -350 to 350 across and from -280 to 280 up and down. And a very short line drawn with a fat pen looks like a dot.
+{% include turtlelab-embed.html sample="lesson-confetti-start" title="A start on confetti: sixty red dots in a thin band across the middle" %}
+
+Two things are wrong, and you can fix both.
+
+1. **The band.** The dots land in a thin band. Look at the numbers in the `random` block in the y slot. The paper runs from -280 to 280 up and down. Change the numbers so the dots cover the whole paper.
+2. **The color.** Every dot is red, because `set color` has three plain numbers. Plug a `random` block into each of the three slots, the same way as the color burst, and choose the numbers a color can be.
+
+<details markdown="1">
+<summary>Check your answers</summary>
+
+1. The y block needs `random -280 280`. The dots were picked between -20 and 20, which is a thin band.
+2. Each slot of `set color` gets `random 0 255`, so every dot has its own mix of red, green and blue.
+</details>
 
 When your confetti works, run it twice. Do the two runs match? Why or why not?
 
 ## Save your work
 
-Press the **PDF** button in your confetti tab to keep a copy of your blocks and your drawing.
+A frame does not have a **PDF** button. Use **Open full size** under the frame, make your changes there, and press the **PDF** button to keep a copy of your blocks and your drawing.
+
+## Done early?
+
+**Different sizes.** Plug a `random` block into `set pen size` so every dot is a different size.
+
+**Your own x.** Change the x numbers too, so the dots stay in the left half, or in a ring of your own.
+
+**From a blank page.** Start from a fresh TurtleLab tab and build the confetti without the start. The blocks you need are `repeat`, `pen up`, `set xy` with a `random` block in each slot, `pen down`, `set color`, `set pen size` and `forward`.

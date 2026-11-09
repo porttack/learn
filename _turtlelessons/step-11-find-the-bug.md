@@ -3,6 +3,7 @@ layout: lesson
 title: "Find the bug"
 pathway: turtlelessons
 order: 11
+unit: 2
 source: original
 ---
 
