@@ -45,6 +45,9 @@ const browserDefaults = {
   now: () => performance.now(),
   setTimer: (fn, ms) => setTimeout(fn, ms),
   clearTimer: (id) => clearTimeout(id),
+  // A timer that goes off again and again, for the every blocks.
+  setRepeat: (fn, ms) => setInterval(fn, ms),
+  clearRepeat: (id) => clearInterval(id),
   // Wait for the browser to draw a frame. requestAnimationFrame is paused in
   // background tabs, which is fine: a hidden program just waits.
   nextFrame: () =>
@@ -72,13 +75,15 @@ export class Scheduler {
    *        when it ends: status is 'done', 'stopped' or 'error'
    * @param {string} [options.speed] one of the keys of SPEEDS
    * @param {number} [options.sliceMs] how long instant mode runs before a frame
-   * plus now, setTimer, clearTimer and nextFrame, for tests.
+   * plus now, setTimer, clearTimer, setRepeat, clearRepeat and nextFrame, for tests.
    */
   constructor(options = {}) {
     const merged = { ...browserDefaults, ...options };
     this._now = merged.now;
     this._setTimer = merged.setTimer;
     this._clearTimer = merged.clearTimer;
+    this._setRepeat = merged.setRepeat;
+    this._clearRepeat = merged.clearRepeat;
     this._nextFrame = merged.nextFrame;
     this.onStep = options.onStep ?? null;
     this.onStart = options.onStart ?? null;
@@ -96,6 +101,8 @@ export class Scheduler {
     this._listening = false; // ... and has it got to that
     this._queue = []; // clicks waiting for their turn: each is a function that makes the generator for its handler
     this._eventWaiter = null; // wakes the program when it is listening and a click arrives
+    this._ticks = null; // makes the timers (see start) once the program is listening
+    this._tickTimers = []; // the timers that are going now
   }
 
   get running() {
@@ -110,13 +117,17 @@ export class Scheduler {
   /**
    * Run a generator from the interpreter. Only one program runs at a time:
    * starting a new one stops the old one first.
-   * With `listen: true` the program does not end after its last block: it waits for clicks (see queueEvent) until Stop.
+   * With `listen: true` the program does not end after its last block: it waits for clicks and keys (see queueEvent) until Stop.
+   * `ticks` is for the every blocks: a function called when the program has run its last block and starts listening. It gives the timers,
+   * [{ ms, make }]: each goes off every `ms` and runs the generator `make()` gives, unless the last one it started has not finished (a slow
+   * handler and a fast timer never build a pile). If it throws, the program ends with that mistake. They stop with the program.
    * Returns a promise for the final { status, error? }.
    */
-  start(generator, { listen = false } = {}) {
+  start(generator, { listen = false, ticks = null } = {}) {
     this.stop();
     this._running = true;
     this._listen = listen;
+    this._ticks = ticks;
     this._listening = false;
     this._queue = [];
     const token = ++this._token;
@@ -138,6 +149,7 @@ export class Scheduler {
 
   /** Stop the running program, if there is one, right now. */
   stop() {
+    this._stopTicks();
     if (!this._running) return;
     this._running = false;
     this._listening = false;
@@ -187,6 +199,11 @@ export class Scheduler {
         if (step.value === STOP || !this._listen) return this._finish(token, { status: 'done' });
         this._listening = true;
         if (this.onListen) this.onListen();
+        try {
+          this._startTicks();
+        } catch (error) {
+          return this._finish(token, { status: 'error', error });
+        }
         continue;
       }
 
@@ -247,6 +264,35 @@ export class Scheduler {
     }
   }
 
+  // Start the timers of the every blocks (see start). Each one queues its handler, unless the last one has not finished.
+  _startTicks() {
+    this._stopTicks();
+    if (!this._ticks) return;
+    for (const tick of this._ticks()) {
+      let waiting = false;
+      const run = () => {
+        const generator = tick.make();
+        return (function* () {
+          try {
+            yield* generator;
+          } finally {
+            waiting = false;
+          }
+        })();
+      };
+      this._tickTimers.push(
+        this._setRepeat(() => {
+          if (!waiting) waiting = this.queueEvent(run);
+        }, tick.ms),
+      );
+    }
+  }
+
+  _stopTicks() {
+    for (const id of this._tickTimers) this._clearRepeat(id);
+    this._tickTimers = [];
+  }
+
   // Sleep until a click arrives or the program is stopped.
   _waitForEvent() {
     return new Promise((resolve) => {
@@ -280,6 +326,7 @@ export class Scheduler {
 
   _finish(token, result) {
     if (token === this._token) {
+      this._stopTicks();
       this._running = false;
       this._listening = false;
       this._queue = [];

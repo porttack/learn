@@ -24,7 +24,7 @@ export const TABLE_LABELS = Object.freeze({
   loops: 'repeat / forever',
   conditionals: 'if / if else',
   ownBlocks: 'Blocks you made',
-  userInput: 'ask / when paper clicked',
+  userInput: 'ask / when paper clicked / when key pressed / every',
   math: 'Math and random',
   blocks: 'Blocks',
   bonus: 'Big ideas used',

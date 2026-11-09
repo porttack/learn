@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 
-import { SAMPLES, LISTED_SAMPLES, SAMPLE_IDS, sampleById, sampleStacks, noteHeight } from '../js/ui/samples.js';
+import { SAMPLES, LISTED_SAMPLES, SAMPLE_IDS, sampleById, sampleStacks, noteHeight, handlerCount } from '../js/ui/samples.js';
 import { validateProject, findRunStack, handlersOf, walkBlocks, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { definitionsOf } from '../js/core/definitions.js';
 import { runBlocks, createContext, Wait, Ask } from '../js/core/interpreter.js';
@@ -51,8 +51,11 @@ function runSample(sample, seed = 1) {
   drive(stack.blocks);
   for (const [x, y] of sample.clicks ?? []) {
     context.mouse = { x, y };
-    for (const handler of handlersOf(project)) drive(handler.blocks);
+    for (const handler of handlersOf(project)) if (handler.op === 'onclick') drive(handler.blocks);
   }
+  // ... then its `keys` are pressed (every handler for a key runs, in order), and each timer goes off `ticks` times
+  for (const id of sample.keys ?? []) for (const handler of handlersOf(project)) if (handler.op === 'onkey' && handler.hat.key === id) drive(handler.blocks);
+  for (let tick = 0; tick < (sample.ticks ?? 0); tick += 1) for (const handler of handlersOf(project)) if (handler.op === 'onstep') drive(handler.blocks);
   return { turtle, printed, waits, context };
 }
 
@@ -80,8 +83,14 @@ test('every sample is a project the app accepts, so Open and autosave would acce
 test('every sample has a sticky note on top and one program, which begins at a Start block, then the blocks it makes', () => {
   for (const sample of SAMPLES) {
     const [note, program, ...made] = sampleStacks(sample);
-    assert.equal(made.length, (sample.defines ?? []).length + (sample.handlers ?? []).length, `${sample.id}: one stack for each block it makes and each click handler`);
-    made.forEach((stack, i) => assert.equal(stack.blocks[0].op, i < (sample.defines ?? []).length ? 'to' : 'onclick', `${sample.id}: a block it makes starts with to, a click handler with when paper clicked`));
+    assert.equal(made.length, (sample.defines ?? []).length + handlerCount(sample), `${sample.id}: one stack for each block it makes and each event handler`);
+    made.forEach((stack, i) => {
+      const defined = (sample.defines ?? []).length;
+      const clicks = (sample.handlers ?? []).length;
+      const keys = (sample.keyHandlers ?? []).length;
+      const wanted = i < defined ? 'to' : i < defined + clicks ? 'onclick' : i < defined + clicks + keys ? 'onkey' : 'onstep';
+      assert.equal(stack.blocks[0].op, wanted, `${sample.id}: a block it makes starts with to, a click handler with when paper clicked, a key handler with when key pressed, a timer with every`);
+    });
     assert.deepEqual(note.blocks.map((b) => b.op), ['note'], `${sample.id}: first stack is the note`);
     assert.equal(program.blocks[0].op, 'start', `${sample.id}: the program starts with Start`);
     assert.equal(program.blocks[1].op, 'clean', `${sample.id}: and cleans, so it draws the same each time`);
@@ -95,6 +104,9 @@ test('the note sits above the program with room to spare, both inside the left e
   for (const sample of SAMPLES) {
     const [note, program] = sampleStacks(sample, { stageWidth: 1366 });
     assert.ok(note.x >= 80, `${sample.id}: clear of the palette buttons`);
+    // (with more than two event handlers the guessed sizes used here are too tall for one column and the packing spreads them out; the page measures the real
+    // blocks, and dev/sample-checks.mjs looks at the real layout in Chrome)
+    if (handlerCount(sample) > 2) continue;
     assert.equal(note.x, program.x, sample.id); // (a sample that says allLeft has them in one column down the left, the note on top)
     assert.ok(program.y >= note.y + noteHeight(sample.note), `${sample.id}: program starts below the note`);
   }
@@ -188,6 +200,8 @@ test('samples that name print, wait or fill really use them', () => {
     if (sample.concepts.includes('boxes')) assert.ok(uses(sample, 'store1') || uses(sample, 'ask'), `${sample.id}: stores in a box (an ask block does)`);
     if (sample.concepts.includes('ask')) assert.ok(uses(sample, 'ask') && (sample.answers ?? []).length > 0, `${sample.id}: asks, and says what the checks should type`);
     if (sample.concepts.includes('when paper clicked')) assert.ok(uses(sample, 'onclick') && (sample.clicks ?? []).length > 0, `${sample.id}: has a click handler, and says where the checks should click`);
+    if (sample.concepts.includes('when key pressed')) assert.ok(uses(sample, 'onkey') && (sample.keys ?? []).length > 0, `${sample.id}: has a key handler, and says which keys the checks should press`);
+    if (sample.concepts.includes('every')) assert.ok(uses(sample, 'onstep') && (sample.ticks ?? 0) > 0, `${sample.id}: has an every block, and says how many ticks the checks should wait`);
     if (sample.concepts.includes('speed')) assert.ok(uses(sample, 'speed'), `${sample.id}: has a speed block`);
     if (sample.concepts.includes('my own block')) assert.ok(uses(sample, 'to') && uses(sample, 'call'), `${sample.id}: makes a block and calls it`);
     if (sample.concepts.includes('input')) assert.ok(uses(sample, 'input'), `${sample.id}: uses an input block`);

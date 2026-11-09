@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 
 import { BLOCKS, PALETTES, NOTE_MAX_CHARS, BODY_KEYS, mouthCount, SPEED_NAMES, DEFAULT_SPEED, BOX_COUNT, ASK_MAX_CHARS } from '../js/core/blocks-spec.js';
 import { newBlock } from '../js/core/edit.js';
+import { KEYS, DEFAULT_KEY, cleanKey, isKey, keyIdFromEvent, keyOf } from '../js/core/keys.js';
 import { validateProject, usesBoxes, findRunStack, isHandler, handlersOf, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { PALETTE_COLORS } from '../js/ui/palette-colors.js';
 import { existsSync } from 'node:fs';
@@ -123,10 +124,10 @@ test('clamps have one or two mouths, and the labels beside mouths fit', () => {
   assert.equal(mouthCount(BLOCKS.forward), 0);
 });
 
-test('a label split over lines reads the same as the plain label, and only a command with a socket has one', () => {
+test('a label split over lines reads the same as the plain label, and only a command (or an every hat) with a socket has one', () => {
   for (const [op, spec] of entries) {
     if (!spec.lines) continue;
-    assert.equal(spec.kind, 'command', `${op}: only commands are drawn over several lines`);
+    assert.ok(spec.kind === 'command' || op === 'onstep', `${op}: only commands (and the every hat) are drawn over several lines`);
     assert.ok(spec.args.length > 0, `${op}: the extra height comes from its first socket`);
     assert.ok(spec.lines.length >= 2 && spec.lines.length <= 3, `${op}: two or three lines`);
     assert.equal(spec.lines.join(' '), spec.label, `${op}: the lines are the label`);
@@ -226,4 +227,67 @@ test('the click handler is a hat in the Flow palette, and mouseX and mouseY are 
   assert.equal(isHandler(start), false);
   const second = { x: 0, y: 40, blocks: [{ op: 'onclick', args: [] }, { op: 'back', args: [5] }] };
   assert.deepEqual(handlersOf({ stacks: [second, start, handler] }).map((found) => found.blocks[0].op), ['forward', 'back'], 'the handlers come top to bottom, without their hats');
+});
+
+test('the key handler and the timer are hats in the Flow palette, after the mouse variables, and a hat of either kind is a handler Run never starts from', () => {
+  assert.equal(BLOCKS.onkey.kind, 'hat');
+  assert.equal(BLOCKS.onkey.palette, 'flow');
+  assert.equal(BLOCKS.onkey.keySlot, true);
+  assert.equal(BLOCKS.onkey.label, 'when');
+  assert.equal(BLOCKS.onkey.endLabel, 'key pressed');
+  assert.deepEqual(BLOCKS.onkey.args, []);
+  assert.equal(BLOCKS.onstep.kind, 'hat');
+  assert.equal(BLOCKS.onstep.palette, 'flow');
+  assert.equal(BLOCKS.onstep.label, 'every tenths');
+  assert.equal(BLOCKS.onstep.args.length, 1);
+  assert.deepEqual(BLOCKS.onstep.lines, ['every', 'tenths'], 'the unit is on the block');
+  assert.equal(BLOCKS.onstep.args[0].default, 5, 'half a second to begin with');
+  const flowOrder = Object.keys(BLOCKS).filter((op) => BLOCKS[op].palette === 'flow');
+  assert.deepEqual(flowOrder.slice(0, 6), ['start', 'onclick', 'mousex', 'mousey', 'onkey', 'onstep']);
+  for (const op of ['onkey', 'onstep']) assert.ok(!/[–—]/.test(BLOCKS[op].help), `no dashes in the tip of ${op}`);
+  // a new key block starts on the default key, and Run never starts from either handler
+  assert.equal(newBlock('onkey').key, DEFAULT_KEY);
+  assert.equal(newBlock('onstep').args[0], 5);
+  const key = { x: 0, y: 0, blocks: [{ op: 'onkey', args: [], key: 'left' }, { op: 'forward', args: [10] }] };
+  const timer = { x: 0, y: 40, blocks: [{ op: 'onstep', args: [3] }, { op: 'back', args: [5] }] };
+  const start = { x: 5, y: 500, blocks: [{ op: 'start', args: [] }] };
+  assert.equal(findRunStack({ stacks: [key, timer] }).stack, null, 'a handler alone is not a program');
+  assert.equal(findRunStack({ stacks: [key, timer, start] }).stack, start);
+  assert.equal(isHandler(key) && isHandler(timer), true);
+  const found = handlersOf({ stacks: [timer, start, key] });
+  assert.deepEqual(found.map((handler) => handler.op), ['onkey', 'onstep'], 'top to bottom, each with its own kind');
+  assert.equal(found[0].hat.key, 'left');
+  assert.deepEqual(found[1].blocks.map((block) => block.op), ['back']);
+});
+
+test('keys: the arrows, space, enter, a to z and 0 to 9, each with a label, a browser name and a Python name; anything else is the default', () => {
+  assert.equal(KEYS.length, 6 + 26 + 10);
+  assert.equal(new Set(KEYS.map((key) => key.id)).size, KEYS.length, 'no key twice');
+  for (const key of KEYS) {
+    assert.match(key.id, /^[a-z0-9]+$/);
+    assert.ok(key.label && key.event && key.python && key.logo, key.id);
+    assert.equal(isKey(key.id), true);
+    assert.ok(!/[–—]/.test(key.label));
+  }
+  assert.deepEqual(['up', 'down', 'left', 'right'].map((id) => keyOf(id).python), ['Up', 'Down', 'Left', 'Right']);
+  assert.equal(keyOf('enter').python, 'Return');
+  assert.equal(cleanKey('left'), 'left');
+  for (const bad of ['', 'F5', 'UP', 'shift', null, undefined, 7, {}]) assert.equal(cleanKey(bad), DEFAULT_KEY, String(bad));
+  // a keyboard event is a key when it is one a block can listen for (capitals and caps lock do not matter)
+  assert.equal(keyIdFromEvent({ key: 'ArrowUp' }), 'up');
+  assert.equal(keyIdFromEvent({ key: ' ' }), 'space');
+  assert.equal(keyIdFromEvent({ key: 'Enter' }), 'enter');
+  assert.equal(keyIdFromEvent({ key: 'A' }), 'a');
+  assert.equal(keyIdFromEvent({ key: 'a' }), 'a');
+  assert.equal(keyIdFromEvent({ key: '7' }), '7');
+  for (const key of ['Shift', 'F5', 'Escape', 'Tab', '!', '-', 'Dead', undefined]) assert.equal(keyIdFromEvent({ key }), null, String(key));
+});
+
+test('a key block keeps its key in a saved file, and any other value (or none) is the default key; no other block has one', () => {
+  const file = (block) => validateProject({ app: FORMAT_ID, version: FORMAT_VERSION, stacks: [{ x: 0, y: 0, blocks: [block] }] }).project.stacks[0].blocks[0];
+  assert.equal(file({ op: 'onkey', args: [], key: 'space' }).key, 'space');
+  assert.equal(file({ op: 'onkey', args: [], key: 'bogus' }).key, DEFAULT_KEY);
+  assert.equal(file({ op: 'onkey', args: [] }).key, DEFAULT_KEY);
+  assert.equal('key' in file({ op: 'forward', args: [10], key: 'space' }), false);
+  assert.equal(file({ op: 'onstep', args: [4] }).args[0], 4);
 });

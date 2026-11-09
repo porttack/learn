@@ -126,6 +126,18 @@ export async function launch({ width = 1200, height = 800, port = 9333 } = {}) {
       await api.mouse('mouseReleased', to.x, to.y, extra);
     },
     touch: (type, points) => send('Input.dispatchTouchEvent', { type, touchPoints: points }),
+    /**
+     * Press and let go of a key, the way a keyboard does: `key` is the KeyboardEvent.key ('ArrowUp', ' ', 'a'), `modifiers` is a bit mask
+     * (Alt 1, Ctrl 2, Meta 4, Shift 8). Pass `repeat: true` for the key events a held key keeps sending.
+     */
+    async press(key, { modifiers = 0, repeat = false } = {}) {
+      const codes = { ArrowUp: 38, ArrowDown: 40, ArrowLeft: 37, ArrowRight: 39, ' ': 32, Enter: 13, Escape: 27 };
+      const code = codes[key] ?? key.toUpperCase().charCodeAt(0);
+      const text = key.length === 1 ? key : key === 'Enter' ? '\r' : undefined;
+      const down = { type: text ? 'keyDown' : 'rawKeyDown', key, windowsVirtualKeyCode: code, nativeVirtualKeyCode: code, modifiers, autoRepeat: repeat, ...(text ? { text } : {}) };
+      await send('Input.dispatchKeyEvent', down);
+      await send('Input.dispatchKeyEvent', { type: 'keyUp', key, windowsVirtualKeyCode: code, nativeVirtualKeyCode: code, modifiers });
+    },
     async click(x, y) {
       await api.mouse('mouseMoved', x, y, { buttons: 0 });
       await api.mouse('mousePressed', x, y);

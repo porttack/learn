@@ -6,7 +6,8 @@
 // Then run:                    node turtlelab/dev/sample-checks.mjs
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { launch } from './cdp.mjs';
-import { SAMPLES, LISTED_SAMPLES } from '../js/ui/samples.js';
+import { SAMPLES, LISTED_SAMPLES, handlerCount } from '../js/ui/samples.js';
+import { keyOf } from '../js/core/keys.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
 const results = [];
@@ -18,6 +19,9 @@ const check = (name, ok, detail = '') => {
 // A common Chromebook screen is 1366 by 768, and the browser's own bars take
 // about 70 of that, so check at 1366 by 700.
 const chrome = await launch({ width: 1366, height: 700 });
+// (a headless page that has never had focus turns "hidden" on its first key press, which stops animation frames and slows timers: keep it focused)
+await chrome.send('Emulation.setFocusEmulationEnabled', { enabled: true });
+await chrome.send('Page.bringToFront');
 
 const messageText = () => chrome.eval(`document.getElementById('message').textContent`);
 const stored = () => chrome.eval(`localStorage.getItem('turtlelab-project')`);
@@ -28,7 +32,7 @@ const stored = () => chrome.eval(`localStorage.getItem('turtlelab-project')`);
  */
 async function finishRun() {
   for (let i = 0; i < 100; i += 1) {
-    if (await chrome.eval(`!document.getElementById('run').disabled || !!document.querySelector('.ask-box') || /^Listening for clicks/.test(document.getElementById('message').textContent)`)) return true;
+    if (await chrome.eval(`!document.getElementById('run').disabled || !!document.querySelector('.ask-box') || /^(Listening for|Repeating on a timer)/.test(document.getElementById('message').textContent)`)) return true;
     await chrome.sleep(200);
   }
   return false;
@@ -50,7 +54,13 @@ async function actAsPerson(sample) {
     await chrome.click(at.x, at.y);
     await chrome.sleep(400);
   }
-  if (await chrome.eval(`/^Listening for clicks/.test(document.getElementById('message').textContent)`)) {
+  // then the keys it waits for, and (for a timer) long enough for it to have gone off `ticks` times
+  for (const id of sample.keys ?? []) {
+    await chrome.press(keyOf(id).event);
+    await chrome.sleep(250);
+  }
+  if ((sample.ticks ?? 0) > 0) await chrome.sleep(sample.ticks * Math.max(...(sample.timers ?? []).map((t) => t.tenths)) * 100 + 500);
+  if (await chrome.eval(`/^(Listening for|Repeating on a timer)/.test(document.getElementById('message').textContent)`)) {
     const stop = await chrome.centerOf('#stop');
     await chrome.click(stop.x, stop.y); // (end the listening, so the next sample starts clean)
     await chrome.sleep(200);
@@ -78,6 +88,7 @@ const layout = () =>
 try {
   // ---- Every sample ------------------------------------------------------
   for (const sample of SAMPLES) {
+    if (process.env.ONLY && !process.env.ONLY.split(',').includes(sample.id)) continue; // (ONLY=id,id runs just those samples)
     await chrome.goto(`${BASE}?sample=${sample.id}&speed=instant`);
     const finished = await finishRun();
     const messageAtStart = await messageText();
@@ -85,11 +96,11 @@ try {
     const note = stacks.find((s) => s.note);
     const program = stacks.find((s) => !s.note && !s.definition);
     const made = stacks.filter((s) => s.definition);
-    const waitsForPerson = (sample.answers ?? []).length > 0 || (sample.handlers ?? []).length > 0;
+    const waitsForPerson = (sample.answers ?? []).length > 0 || handlerCount(sample) > 0;
     if (waitsForPerson) await actAsPerson(sample); // (a sample that asks, or listens for clicks, needs someone to answer or click before it draws)
     check(`${sample.id}: opens with its note, its program and the blocks it makes, and runs by itself${waitsForPerson ? ' (when answered and clicked)' : ''}`,
-      finished && stacks.length === 2 + (sample.defines?.length ?? 0) + (sample.handlers?.length ?? 0) && made.length === (sample.defines?.length ?? 0) && !!note && !!program && (await inkOnPaper()) > 100,
-      `${stacks.length} stacks, ${await inkOnPaper()} pixels of ink`);
+      finished && stacks.length === 2 + (sample.defines?.length ?? 0) + handlerCount(sample) && made.length === (sample.defines?.length ?? 0) && !!note && !!program && (await inkOnPaper()) > 100,
+      `${stacks.length} stacks, ${made.length} made, finished ${finished}, note ${!!note}, program ${!!program}, ${await inkOnPaper()} pixels of ink`);
     // The note is above the program, or (when the program is too tall for both) in a column of its own beside it.
     check(`${sample.id}: the note is above the program, or beside it, and everything fits on a 1366 by 700 screen`,
       !!note && !!program && (note.bottom <= program.top || note.right <= program.left || program.right <= note.left) && note.left >= 60 && stacks.every((s) => s.bottom <= viewport.height - 4 && s.right <= viewport.width),
@@ -99,7 +110,7 @@ try {
     check(`${sample.id}: the note is shown whole, not cut off with ...`,
       await chrome.eval(`![...document.querySelectorAll('.workspace .node.note tspan')].some((t) => t.textContent.endsWith('...'))`));
     check(`${sample.id}: the message names the sample and says it is not saved`,
-      (messageAtStart.startsWith(`Sample: ${sample.title}.`) && /not saved/.test(messageAtStart)) || ((sample.handlers ?? []).length > 0 && /^Listening for clicks/.test(messageAtStart)), messageAtStart); // (a program that listens says so as soon as its blocks have run)
+      (messageAtStart.startsWith(`Sample: ${sample.title}.`) && /not saved/.test(messageAtStart)) || (handlerCount(sample) > 0 && /^(Listening for|Repeating on a timer)/.test(messageAtStart)), messageAtStart); // (a program that listens says so as soon as its blocks have run)
     check(`${sample.id}: no storage was touched`, (await chrome.eval(`localStorage.length`)) === 0);
   }
   check('no sample caused a console error, a warning or a security policy violation', chrome.problems.length === 0, chrome.problems.join(' | '));

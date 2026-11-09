@@ -6,7 +6,8 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { readdirSync, readFileSync } from 'node:fs';
 import { launch } from './cdp.mjs';
-import { SAMPLES, sampleById } from '../js/ui/samples.js';
+import { SAMPLES, sampleById, handlerCount } from '../js/ui/samples.js';
+import { keyOf } from '../js/core/keys.js';
 import { FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
@@ -18,6 +19,9 @@ const check = (name, ok, detail = '') => {
 };
 
 const chrome = await launch({ width: 700, height: 520 });
+// (a headless page that has never had focus turns "hidden" on its first key press, which stops animation frames and slows timers: keep it focused)
+await chrome.send('Emulation.setFocusEmulationEnabled', { enabled: true });
+await chrome.send('Page.bringToFront');
 // The window has browser bars of its own; a frame on a lesson page is exactly this size, so ask for exactly this size.
 await chrome.send('Emulation.setDeviceMetricsOverride', { width: 700, height: 520, deviceScaleFactor: 1, mobile: false });
 
@@ -31,12 +35,12 @@ const shownIn = (selector) => chrome.eval(`[...document.querySelectorAll(${JSON.
 // (a demo that waits for a person is as finished as it will get once its question is open or it says it is listening for clicks: see actAsPerson)
 const finishRun = async () => {
   for (let i = 0; i < 100; i += 1) {
-    if (await chrome.eval(`!document.getElementById('run').disabled || !!document.querySelector('.ask-box') || /^Listening for clicks/.test(document.getElementById('message').textContent)`)) return true;
+    if (await chrome.eval(`!document.getElementById('run').disabled || !!document.querySelector('.ask-box') || /^(Listening for|Repeating on a timer)/.test(document.getElementById('message').textContent)`)) return true;
     await chrome.sleep(100);
   }
   return false;
 };
-const waits = (sample) => (sample.answers ?? []).length > 0 || (sample.handlers ?? []).length > 0;
+const waits = (sample) => (sample.answers ?? []).length > 0 || handlerCount(sample) > 0;
 /** Be the person a demo waits for, on a page that is itself the frame: type each of its `answers`, click the paper at each of its `clicks`. */
 async function actAsPerson(sample) {
   for (const answer of sample.answers ?? []) {
@@ -53,6 +57,12 @@ async function actAsPerson(sample) {
     await chrome.click(at.x, at.y);
     await chrome.sleep(400);
   }
+  // then the keys it waits for, and (for a timer) long enough for it to have gone off `ticks` times
+  for (const id of sample.keys ?? []) {
+    await chrome.press(keyOf(id).event);
+    await chrome.sleep(250);
+  }
+  if ((sample.ticks ?? 0) > 0) await chrome.sleep(sample.ticks * Math.max(...(sample.timers ?? []).map((t) => t.tenths)) * 100 + 500);
 }
 const ink = () => chrome.eval(`(() => {
   const c = document.querySelector('canvas.paper');
@@ -233,6 +243,22 @@ try {
             await chrome.click(at.x, at.y);
             await chrome.sleep(400);
           }
+          // a demo that waits for keys or a timer: click its paper once (the frame then has the keyboard), press the keys, and give a timer time to go off
+          if ((framed.keys ?? []).length > 0 || (framed.ticks ?? 0) > 0) {
+            let ready = false;
+            for (let waited = 0; waited < 10000 && !ready; waited += 250) {
+              await chrome.sleep(250);
+              ready = await chrome.eval(`/^(Listening for|Repeating on a timer)/.test(document.querySelectorAll('iframe.tl-embed-frame')[${i}].contentDocument?.getElementById('message')?.textContent ?? '')`);
+            }
+            await chrome.sleep(300);
+            const inPaper = await chrome.eval(`(() => { const f = document.querySelectorAll('iframe.tl-embed-frame')[${i}]; const fr = f.getBoundingClientRect(); const r = f.contentDocument.querySelector('.paper-box').getBoundingClientRect(); return { x: fr.left + r.left + r.width / 2, y: fr.top + r.top + r.height / 2 }; })()`);
+            await chrome.click(inPaper.x, inPaper.y);
+            for (const id of framed.keys ?? []) {
+              await chrome.press(keyOf(id).event);
+              await chrome.sleep(250);
+            }
+            if ((framed.ticks ?? 0) > 0) await chrome.sleep(framed.ticks * Math.max(...(framed.timers ?? [{ tenths: 2 }]).map((t) => t.tenths)) * 100 + 500);
+          }
         }
         // (a demo can be slow on purpose, like the one that shows a variable changing, so wait for its run to end: up to 20 seconds)
         let inside = null;
@@ -245,7 +271,7 @@ try {
             const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
             let n = 0;
             for (let k = 0; k < d.length; k += 4) if (d[k] !== 255 || d[k + 1] !== 255 || d[k + 2] !== 255) n += 1;
-            return { ink: n, embedded: doc.documentElement.classList.contains('embedded'), running: doc.getElementById('run').disabled, listening: /^Listening for clicks/.test(doc.getElementById('message').textContent) };
+            return { ink: n, embedded: doc.documentElement.classList.contains('embedded'), running: doc.getElementById('run').disabled, listening: /^(Listening for|Repeating on a timer)/.test(doc.getElementById('message').textContent) };
           })()`);
           if (inside && (!inside.running || (framed && waits(framed) && inside.listening)) && inside.ink > 300) break;
         }

@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 
-import { SAMPLES, sampleStacks } from '../js/ui/samples.js';
+import { SAMPLES, sampleStacks, handlerCount } from '../js/ui/samples.js';
 import { toLogo, jsLogoAddress } from '../js/core/logo.js';
 import { compileLogo } from '../js/core/logo-compile.js';
 import { JSLOGO_WORDS } from '../js/core/logo-jslogo-words.js';
@@ -111,7 +111,7 @@ test('every sample, written for JSLogo and run there, draws what TurtleLab draws
       const there = await runJsLogo(code, { answers: (sample.answers ?? []).map(String) });
       assert.equal(there.error, null, `${label}: JSLogo said "${there.error}" for\n${code}`);
       assert.equal(there.turtle.arcs.length, 0, `${label}: the arc command is never sent, since JSLogo's draws something else`);
-      if (usesChance(sample) || usesWrite(sample) || (sample.handlers ?? []).length > 0) continue; // chance is different in the two, script letters are text in JSLogo, and JSLogo has no mouse clicks (the handlers are left out): only "it ran" can be asked
+      if (usesChance(sample) || usesWrite(sample) || handlerCount(sample) > 0) continue; // chance is different in the two, script letters are text in JSLogo, and JSLogo has no mouse clicks, keys or timers (the handlers are left out): only "it ran" can be asked
       // Where the turtle ended.
       near(there.turtle.x, here.turtle.x, 1e-6, `${label}: x`);
       near(there.turtle.y, here.turtle.y, 1e-6, `${label}: y`);

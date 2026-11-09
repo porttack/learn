@@ -378,6 +378,8 @@ function everything() {
         b('forward', { op: 'box3' }), b('forward', { op: 'penred' }), b('forward', 12345), b('print', { op: 'mousex' }), b('print', { op: 'add', args: [{ op: 'mousey' }, 1] }),
       ] },
       { x: 400, y: 0, blocks: [{ op: 'onclick', args: [] }, b('penup'), b('setxy', { op: 'mousex' }, { op: 'mousey' }), b('pendown'), rep(4, b('forward', 20), b('right', 90))] },
+      { x: 400, y: 100, blocks: [{ op: 'onkey', args: [], key: 'left' }, b('left', 90)] },
+      { x: 400, y: 200, blocks: [{ op: 'onstep', args: [2] }, b('forward', 5)] },
     ],
   };
 }
@@ -568,6 +570,41 @@ test('onclick: several handlers, a page with only a handler, and the places it m
   assert.match(errorOf('onclick forward 1').error, /needs a list of commands in \[ square brackets \]/);
   assert.equal(compileLogo('forward mousex').ok, true, 'mousex and mousey work anywhere');
   assert.equal(toLogo({ stacks: [{ x: 0, y: 0, blocks: [{ op: 'onclick', args: [] }, b('forward', 3)] }] }).trim(), 'onclick [\n  forward 3\n]', 'a page with only a handler is written too');
+});
+
+test('onkey and every: written as lines of their own after the program, read back as handlers with the same key and time, and the keys and the places they may not go', () => {
+  const project = { stacks: [
+    { x: 0, y: 0, blocks: [b('start'), b('clean')] },
+    { x: 300, y: 0, blocks: [{ op: 'onkey', args: [], key: 'right' }, b('right', 90)] },
+    { x: 300, y: 50, blocks: [{ op: 'onkey', args: [], key: '7' }, b('forward', 7)] },
+    { x: 300, y: 100, blocks: [{ op: 'onstep', args: [2] }, b('forward', 20)] },
+    { x: 300, y: 150, blocks: [{ op: 'onstep', args: [{ op: 'box1', args: [] }] }, b('back', 1)] },
+  ] };
+  for (const short of [false, true]) {
+    const text = toLogo(project, { short });
+    assert.match(text, /^onkey "right \[\n  (right|rt) 90\n\]$/m);
+    assert.match(text, /^onkey "7 \[\n  (forward|fd) 7\n\]$/m);
+    assert.match(text, /^every 12 \[\n  (forward|fd) 20\n\]$/m, 'the time is in 60ths of a second, like wait');
+    assert.match(text, /^every \(:box1\) \* 6 \[/m, 'a block plugged into the time is written out');
+    assert.ok(text.indexOf('onkey') > text.indexOf('clearscreen') || text.indexOf('onkey') > text.indexOf('cs'), 'the handlers come after the program');
+    assert.ok(!/not connected to Start/.test(text), 'a handler is not a stray stack');
+    const back = compileLogo(text);
+    assert.equal(back.ok, true, back.error);
+    const found = handlersOf({ stacks: back.stacks });
+    assert.deepEqual(found.map((handler) => handler.op), ['onkey', 'onkey', 'onstep', 'onstep']);
+    assert.deepEqual(found.slice(0, 2).map((handler) => handler.hat.key), ['right', '7']);
+    assert.equal(found[2].hat.args[0], 2, 'twelve 60ths is two tenths');
+  }
+  assert.deepEqual(compileLogo('onkey "UP [ forward 1 ]').ok, true, 'capitals are fine');
+  assert.match(errorOf('onkey "bogus [ forward 1 ]').error, /"bogus is not a key TurtleLab has/);
+  assert.match(errorOf('onkey [ forward 1 ]').error, /onkey needs the name of a key in quotes/);
+  assert.match(errorOf('onkey "up forward 1').error, /needs a list of commands in \[ square brackets \]/);
+  assert.match(errorOf('repeat 3 [ onkey "up [ forward 1 ] ]').error, /onkey goes on a line of its own/);
+  assert.match(errorOf('to dot\n every 6 [ forward 1 ]\nend').error, /every goes on a line of its own/);
+  assert.match(errorOf('every [ forward 1 ]').error, /I need a number here/);
+  assert.equal(compileLogo('onkey "up [ forward 1 ]').main.length, 0, 'handlers are not part of the program');
+  assert.equal(toLogo({ stacks: [{ x: 0, y: 0, blocks: [{ op: 'onkey', args: [], key: 'space' }, b('forward', 3)] }] }).trim(), 'onkey "space [\n  forward 3\n]', 'a page with only a key handler is written too');
+  assert.ok(BUILTIN_WORDS.has('onkey') && BUILTIN_WORDS.has('every'), 'a block of yours cannot take these words');
 });
 
 // ---- and, or and not ------------------------------------------------------------------------------------------

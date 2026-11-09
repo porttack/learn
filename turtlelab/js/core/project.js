@@ -26,6 +26,7 @@
 import { BLOCKS, BODY_KEYS, NOTE_MAX_CHARS, isKnownOp, mouthCount } from './blocks-spec.js';
 import { INPUT_MAX, MAX_INPUTS, NAME_MAX, cleanName, nameKey } from './names.js';
 import { cleanLetteringText, cleanFont } from './lettering.js';
+import { cleanKey } from './keys.js';
 
 export const FORMAT_ID = 'porttack-turtle';
 export const FORMAT_VERSION = 1;
@@ -88,7 +89,7 @@ export function findRunStack(project) {
   let startCount = 0;
   for (const stack of project.stacks) {
     const first = stack.blocks[0];
-    if (!first || BLOCKS[first.op].kind === 'note' || first.op === 'to' || first.op === 'onclick') continue; // notes, definitions and click handlers are not programs
+    if (!first || BLOCKS[first.op].kind === 'note' || first.op === 'to' || HANDLER_OPS.has(first.op)) continue; // notes, definitions and event handlers are not programs
     if (first.op === 'start') {
       startCount += 1;
       if (higher(stack, topStart)) topStart = stack;
@@ -99,20 +100,23 @@ export function findRunStack(project) {
   return { stack: topStart ?? topCommands, startCount };
 }
 
-/** True for a stack that starts with a `when paper clicked` hat. */
+/** The hats a program listens with: a click on the paper, a key, and a timer. */
+export const HANDLER_OPS = Object.freeze(new Set(['onclick', 'onkey', 'onstep']));
+
+/** True for a stack that starts with an event hat (`when paper clicked`, `when [key] pressed` or `every`). */
 export function isHandler(stack) {
-  return stack.blocks[0]?.op === 'onclick';
+  return HANDLER_OPS.has(stack.blocks[0]?.op);
 }
 
 /**
- * The click handlers of a project, top to bottom (then left to right), each as { stack, blocks } with the blocks under the hat. Every one runs
- * on each click.
+ * The event handlers of a project, top to bottom (then left to right), each as { stack, op, hat, blocks }: the hat's block (it holds the key, or the
+ * timer's number) and the blocks under it. Every click handler runs on each click, a key's on each press of that key, and a timer's on each tick.
  */
 export function handlersOf(project) {
   return project.stacks
     .filter(isHandler)
     .sort((a, b) => a.y - b.y || a.x - b.x)
-    .map((stack) => ({ stack, blocks: stack.blocks.slice(1) }));
+    .map((stack) => ({ stack, op: stack.blocks[0].op, hat: stack.blocks[0], blocks: stack.blocks.slice(1) }));
 }
 
 /** Call `visit` for every block in a list, including blocks plugged into sockets and inside clamps. */
@@ -191,6 +195,8 @@ function cleanBlock(block, depth) {
   if (BLOCKS[block.op].textSlot) clean.text = cleanLetteringText(block.text, BLOCKS[block.op].textSlot.max);
   // A set font block keeps its font (any other value, or none, is the default font). No other block has one.
   if (BLOCKS[block.op].fontSlot) clean.font = cleanFont(block.font);
+  // A when key pressed block keeps its key (any other value, or none, is the default key).
+  if (BLOCKS[block.op].keySlot) clean.key = cleanKey(block.key);
   if (block.args !== undefined) {
     if (!Array.isArray(block.args)) throw new ProjectError('A block in this file is damaged.');
     clean.args = block.args.map((arg) => cleanArg(arg, depth + 1));

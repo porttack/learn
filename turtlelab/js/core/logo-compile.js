@@ -16,6 +16,10 @@
 //               ask |a question| (the ask block: it shows the question, waits for a number, and puts it in box1)
 //   clicks      onclick [ ... ] on a line of its own: runs those commands each time the paper is clicked, and mousex and mousey say where
 //               (a program with an onclick keeps listening after its last command, until Stop)
+//   keys        onkey "up [ ... ] on a line of its own: runs those commands each time that key is pressed (up, down, left, right, space, enter,
+//               a to z, 0 to 9)
+//   timers      every 12 [ ... ] on a line of its own: runs those commands again and again, that many 60ths of a second apart (like wait),
+//               once the last command of the program has run, until Stop
 //   repeating   repeat n [ ... ], forever [ ... ], if test [ ... ], ifelse test [ ... ] [ ... ]
 //   variables   make "name value, then :name. There are four (they are the four boxes), box1 to box4 or any names
 //   your own    to name :input1 :input2 ... end, then name 10 20
@@ -27,6 +31,7 @@
 // angle curves right), like the blocks. Anything else that real Logo has gets a polite "not yet".
 
 import { ASK_MAX_CHARS, BLOCKS, BOX_COUNT } from './blocks-spec.js';
+import { isKey } from './keys.js';
 import { cleanLetteringText, DEFAULT_LETTER_SIZE, LETTERING_MAX_CHARS, LETTER_FONTS, isFont } from './lettering.js';
 
 /** A problem in the Logo, with the line it is on (counting from 1). */
@@ -76,7 +81,7 @@ const TWO_INPUTS = { sum: 'add', difference: 'subtract', product: 'multiply', qu
 /** The words that put yes-or-no tests together: and and or take two (more, in brackets), not takes one. */
 const JOINERS = { and: 'and', or: 'or' };
 
-const SPECIAL_COMMANDS = ['repeat', 'forever', 'if', 'ifelse', 'make', 'write', 'ask', 'onclick', 'setfont', 'setpencolor', 'setpc', 'setscreencolor', 'setsc', 'home', 'setx', 'sety', 'wait', 'to', 'end'];
+const SPECIAL_COMMANDS = ['repeat', 'forever', 'if', 'ifelse', 'make', 'write', 'ask', 'onclick', 'onkey', 'every', 'setfont', 'setpencolor', 'setpc', 'setscreencolor', 'setsc', 'home', 'setx', 'sety', 'wait', 'to', 'end'];
 const REAL_LOGO_NOT_HERE = ['sqrt', 'abs', 'int', 'round', 'sin', 'cos', 'tan', 'arctan', 'word', 'list', 'first', 'last', 'butfirst', 'butlast', 'count', 'item', 'output', 'op', 'local', 'localmake', 'run', 'label', 'pick', 'power', 'exp', 'ln', 'log10', 'thing', 'foreach', 'for', 'while', 'until', 'do', 'test', 'iftrue', 'iffalse', 'cleartext', 'ct', 'pos', 'towards', 'distance', 'fill', 'bye', 'rerandom', 'remainder'];
 
 /** Every word the generator must not use as the name of one of your own blocks. */
@@ -282,14 +287,24 @@ class Compiler {
   program() {
     const main = [];
     const definitions = [];
-    const handlers = []; // the blocks of each onclick [ ... ]
+    const handlers = []; // each onclick [ ... ], onkey "key [ ... ] and every n [ ... ]: { op, blocks, key? or every? }
     while (this.i < this.tokens.length) {
       const token = this.peek();
       if (token.type === 'word' && token.value === 'to') {
         definitions.push(this.definition());
       } else if (token.type === 'word' && token.value === 'onclick') {
         this.next();
-        handlers.push(this.list(token));
+        handlers.push({ op: 'onclick', blocks: this.list(token) });
+      } else if (token.type === 'word' && token.value === 'onkey') {
+        this.next();
+        const key = this.keyName(token);
+        handlers.push({ op: 'onkey', key, blocks: this.list(token) });
+      } else if (token.type === 'word' && token.value === 'every') {
+        this.next();
+        // Real Logo counts a wait in 60ths of a second, and every does the same. The block counts tenths of a second.
+        const sixtieths = this.input(token, 1, 0);
+        const tenths = typeof sixtieths === 'number' ? sixtieths / 6 : this.block('divide', [sixtieths, 6], token);
+        handlers.push({ op: 'onstep', args: [tenths], blocks: this.list(token) });
       } else if (token.type === ']') {
         throw new LogoError('There is a ] with no [ before it.', token.line);
       } else {
@@ -298,7 +313,10 @@ class Compiler {
     }
     const stacks = definitions.map((found, k) => ({ x: 0, y: k, blocks: [{ op: 'to', name: found.name, params: found.params }, ...found.body] }));
     stacks.push({ x: 0, y: definitions.length, blocks: [{ op: 'start' }, ...main] });
-    handlers.forEach((blocks, k) => stacks.push({ x: 0, y: definitions.length + 1 + k, blocks: [{ op: 'onclick', args: [] }, ...blocks] }));
+    handlers.forEach((found, k) => {
+      const hat = found.op === 'onkey' ? { op: 'onkey', args: [], key: found.key } : found.op === 'onstep' ? { op: 'onstep', args: found.args } : { op: 'onclick', args: [] };
+      stacks.push({ x: 0, y: definitions.length + 1 + k, blocks: [hat, ...found.blocks] });
+    });
     // The names the variables had, by box: box 1 is boxNames[0]. (Blocks only know box1 to box4, so these are kept to write the program
     // out again with the same words. A box that no make named has no entry.)
     const boxNames = [];
@@ -397,6 +415,10 @@ class Compiler {
         return [this.ask(token)];
       case 'onclick':
         throw new LogoError('onclick goes on a line of its own, not inside a repeat, an if or a block you made. Like this: onclick [ setxy mousex mousey ]', token.line);
+      case 'onkey':
+        throw new LogoError('onkey goes on a line of its own, not inside a repeat, an if or a block you made. Like this: onkey "up [ forward 10 ]', token.line);
+      case 'every':
+        throw new LogoError('every goes on a line of its own, not inside a repeat, an if or a block you made. Like this: every 12 [ forward 10 ]', token.line);
       case 'setfont':
         return [this.setFont(token)];
       case 'setpencolor':
@@ -457,6 +479,19 @@ class Compiler {
     }
     if ([...words.value].length > ASK_MAX_CHARS) throw new LogoError(`The question can have at most ${ASK_MAX_CHARS} letters.`, words.line);
     return this.block('ask', [], token, { text: cleanLetteringText(words.value, ASK_MAX_CHARS) });
+  }
+
+  /** onkey "up: the name of the key, in quotes, one of the keys a when key pressed block has. Returns its id. */
+  keyName(token) {
+    const names = 'up, down, left, right, space, enter, a to z and 0 to 9';
+    const name = this.peek();
+    if (!name || name.type !== 'quoted' || name.value === '') {
+      throw new LogoError(`onkey needs the name of a key in quotes, like: onkey "up [ forward 10 ]. The keys are ${names}.`, token.line);
+    }
+    this.next();
+    const key = name.value.toLowerCase();
+    if (!isKey(key)) throw new LogoError(`${name.text} is not a key TurtleLab has. The keys are ${names}, like: onkey "up [ forward 10 ]`, name.line);
+    return key;
   }
 
   /** setfont "fancy: the font the write commands after it use, one of the names in lettering.js. */

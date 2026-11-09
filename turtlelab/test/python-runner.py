@@ -1,7 +1,9 @@
 """Runs the Python that TurtleLab writes, for the tests. Not part of the app.
 
-It reads {"source": "...", "mode": "...", "answers": [...], "clicks": [[x, y], ...]} from standard input (answers are what input() is given, in order; clicks, when given, make
-onscreenclick exist and call the function it was given for each click after the program has run, as real Python's turtle would from done()). The modes:
+It reads {"source": "...", "mode": "...", "answers": [...], "clicks": [[x, y], ...], "keys": ["Up", ...], "ticks": 3} from standard input (answers are what input() is given, in order;
+clicks, when given, make onscreenclick exist and call the function it was given for each click after the program has run, as real Python's turtle would from done();
+keys, when given, make onkeypress, listen and ontimer exist: each key is pressed in order after the clicks, and then every timer set goes off `ticks` times, each
+setting up its own next time as it runs). The modes:
   check           only compiles the source, to prove it is valid Python.
   names           lists the names the program uses without defining them (the turtle
                   functions, the builtins) and the module functions it calls
@@ -195,6 +197,22 @@ if clicks is not None:
         click_handlers.append(fun)
     fake.onscreenclick = onscreenclick
     fake.__all__ = list(EDUBLOCKS_NAMES) + ["onscreenclick"]
+# ... and likewise onkeypress, listen and ontimer, only when the test gives keys or ticks.
+key_handlers = {}
+timers = []
+keys = request.get("keys")
+ticks = request.get("ticks", 0)
+if keys is not None or ticks:
+    def onkeypress(fun, key=None):
+        key_handlers[key] = fun
+    def listen(*args):
+        pass
+    def ontimer(fun, t=0):
+        timers.append(fun)
+    fake.onkeypress = onkeypress
+    fake.listen = listen
+    fake.ontimer = ontimer
+    fake.__all__ = list(fake.__all__) + ["onkeypress", "listen", "ontimer"]
 sys.modules["turtle"] = fake
 time.sleep = lambda s: None  # the tests do not wait
 
@@ -218,6 +236,14 @@ try:
     for click_x, click_y in clicks or []:
         if click_handlers:
             click_handlers[-1](click_x, click_y)
+    for pressed in keys or []:
+        if pressed in key_handlers:
+            key_handlers[pressed]()
+    for _ in range(ticks):
+        due = timers[:]
+        del timers[:]
+        for fun in due:
+            fun()
 except SystemExit:
     pass
 finally:

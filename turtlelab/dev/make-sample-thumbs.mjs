@@ -8,7 +8,8 @@
 // Copyright (C) 2026 Eric Brown. Licensed under the GNU AGPL-3.0 or later.
 import { launch } from './cdp.mjs';
 import { mkdirSync } from 'node:fs';
-import { LISTED_SAMPLES } from '../js/ui/samples.js';
+import { LISTED_SAMPLES, handlerCount } from '../js/ui/samples.js';
+import { keyOf } from '../js/core/keys.js';
 
 const BASE = process.env.TURTLE_URL ?? 'http://127.0.0.1:4011/';
 const OUT = new URL('../images/samples/', import.meta.url).pathname;
@@ -30,6 +31,28 @@ const touchesEdge = (chrome) =>
   })()`);
 
 const chrome = await launch({ width: 1200, height: 800 });
+// (a headless page that has never had focus turns "hidden" on its first key press, which stops animation frames and slows timers: keep it focused)
+await chrome.send('Emulation.setFocusEmulationEnabled', { enabled: true });
+await chrome.send('Page.bringToFront');
+
+/** A sample that waits for a person (clicks, keys, a timer) is photographed after someone has done what its `clicks`, `keys` and `ticks` say. */
+async function actAsPerson(sample) {
+  for (const [x, y] of sample.clicks ?? []) {
+    const at = await chrome.eval(`(() => { const r = document.querySelector('.paper-box').getBoundingClientRect(); const s = r.width / 700; return { x: r.left + (350 + ${x}) * s, y: r.top + (280 - ${y}) * s }; })()`);
+    await chrome.click(at.x, at.y);
+    await chrome.sleep(300);
+  }
+  if ((sample.keys ?? []).length > 0) {
+    const at = await chrome.eval(`(() => { const r = document.querySelector('.paper-box').getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+    await chrome.click(at.x, at.y); // (the page has the keyboard once the paper is clicked)
+    for (const id of sample.keys) {
+      await chrome.press(keyOf(id).event);
+      await chrome.sleep(60);
+    }
+    await chrome.sleep(300);
+  }
+  if ((sample.ticks ?? 0) > 0) await chrome.sleep(sample.ticks * Math.max(...(sample.timers ?? []).map((t) => t.tenths)) * 100 + 600);
+}
 try {
   const only = process.env.ONLY ? process.env.ONLY.split(',') : null;
   for (const sample of LISTED_SAMPLES) {
@@ -39,10 +62,15 @@ try {
     const tries = sample.concepts.includes('random') ? 12 : 1;
     for (let attempt = 1; attempt <= tries; attempt += 1) {
       await chrome.goto(`${BASE}?sample=${sample.id}&speed=instant`);
-      // Wait until the run is over (the Run button comes back), up to 20 seconds.
+      // Wait until the run is over (the Run button comes back), up to 20 seconds. A sample that listens for a person never ends by itself:
+      // it is over once it says it is listening, and then someone does what it waits for.
       for (let i = 0; i < 100; i += 1) {
-        if (await chrome.eval(`!document.getElementById('run').disabled`)) break;
+        if (await chrome.eval(`!document.getElementById('run').disabled || /^(Listening for|Repeating on a timer)/.test(document.getElementById('message').textContent)`)) break;
         await chrome.sleep(200);
+      }
+      if (handlerCount(sample) > 0) {
+        await chrome.sleep(300);
+        await actAsPerson(sample);
       }
       if (!(await touchesEdge(chrome))) break;
       if (attempt === tries) console.log(`(${sample.id}: still touches the edge after ${tries} tries)`);

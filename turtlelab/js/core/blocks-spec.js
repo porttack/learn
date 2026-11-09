@@ -47,6 +47,8 @@
 //   endLabel for a block with a textSlot: a little word written after the box, like the 'into box1' of ask.
 //   fontSlot true for a block that is a dropdown of fonts (set font). The choice is kept in the
 //            block's `font` (see project.js), apart from its sockets.
+//   keySlot  true for a block that is a dropdown of keys (when [key] pressed). The choice is kept in the
+//            block's `key` (see project.js and keys.js), apart from its sockets.
 //   colorSlot true for a block that has a color box on it (set color, fill screen): it shows the color of the three numbers and its hex, and pressing it
 //            opens the color picker, which changes the three numbers. It keeps nothing of its own: the color is the three sockets.
 //   help     the one-line tip shown when you press and hold the block
@@ -289,6 +291,26 @@ export const BLOCKS = {
     label: 'mouseY',
     args: [],
     help: 'Reports how far above the middle the paper was last clicked (negative below). It is 0 until you click, and it stays the same until the next click.',
+  },
+  // Two more event handlers, like when paper clicked: hats that Run never starts from. While a program is running (or has finished and is listening),
+  // each press of the key the first one names runs the blocks under it, and the second runs the blocks under it again and again, on a timer
+  // that starts when the program's last block has run. A timer is in tenths of a second, like wait.
+  onkey: {
+    palette: 'flow',
+    kind: 'hat',
+    label: 'when',
+    keySlot: true,
+    endLabel: 'key pressed',
+    args: [],
+    help: 'Runs the blocks under it every time you press the key it names (choose the key in the box) while your program is running. If your program has one of these, it keeps listening for keys after the last block, until you press Stop. Click the page first so it hears the keys.',
+  },
+  onstep: {
+    palette: 'flow',
+    kind: 'hat',
+    label: 'every tenths',
+    lines: ['every', 'tenths'], // (stacked, like store in over box1: the number is in tenths of a second, like wait, and the word says so)
+    args: [{ default: 5 }],
+    help: 'Runs the blocks under it again and again, this many tenths of a second apart (10 is one second, and the fastest is 0.5). It starts after the last block under start has run, and goes on until you press Stop. Put a speed block set to 4 (instant) near the top of your program so the blocks under this one run all at once.',
   },
   repeat: {
     palette: 'flow',

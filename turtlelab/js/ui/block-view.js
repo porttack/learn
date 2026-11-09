@@ -27,6 +27,7 @@ import { MAX_INPUTS } from '../core/names.js';
 import { PALETTE_COLORS, NUMBER_COLORS } from './palette-colors.js';
 import { formatNumber } from '../core/format.js';
 import { LETTER_FONTS, cleanFont } from '../core/lettering.js';
+import { KEYS, keyOf } from '../core/keys.js';
 import { colorOfArgs, toHexUpper } from '../core/color.js';
 
 export { formatNumber };
@@ -379,6 +380,26 @@ function layoutFontSlot(font, colors) {
 }
 
 /**
+ * The dropdown on a when [key] pressed block: the key's name and a small arrow. It is as wide as the longest key name ('right arrow'), so
+ * choosing another key never makes the block change size.
+ */
+function layoutKeySlot(key, colors) {
+  const chosen = keyOf(key);
+  const fontSize = FONT_SIZE * SCALE;
+  const arrowRoom = 22;
+  const width = Math.max(...KEYS.map((k) => textWidth(k.label) * SCALE)) + 14 + arrowRoom;
+  const arrowX = 1 + width - arrowRoom / 2 - 1;
+  const arrowY = 1 + NAME_SLOT_HEIGHT / 2;
+  const markup =
+    `<svg xmlns="${SVG_NS}" width="${width + 2}" height="${NAME_SLOT_HEIGHT + 2}">` +
+    `<rect x="1" y="1" width="${width}" height="${NAME_SLOT_HEIGHT}" rx="5" fill="#ffffff" stroke="${colors.stroke}" stroke-width="1.5"/>` +
+    `<text class="block-text" font-size="${fontSize}" fill="#282828" text-anchor="start" x="9" y="${1 + NAME_SLOT_HEIGHT / 2 + fontSize * 0.35}">${escapeXml(chosen.label)}</text>` +
+    `<path d="M${arrowX - 5} ${arrowY - 2.5} L${arrowX + 5} ${arrowY - 2.5} L${arrowX} ${arrowY + 3.5} Z" fill="#282828"/>` +
+    `</svg>`;
+  return { id: nextId++, text: chosen.label, empty: false, editor: 'key', markup, w: width + 2, h: NAME_SLOT_HEIGHT + 2 };
+}
+
+/**
  * The color box on a set color or fill screen block: filled with the color the three sockets make, with its hex written on it in black or white,
  * whichever shows. It is always the same width, so choosing another color never changes the size of the block. If another block is plugged into a
  * socket (a variable, an input, random...) there is no one color until the program runs, so the box is plain, dashed, and says N/A. Pressing it opens the color
@@ -560,15 +581,17 @@ export function layoutBlock(block) {
   if (spec.lines && spec.args.length > 0) extra.ys[0] = Math.max(extra.ys[0], (spec.lines.length - 1) * LINE_GAP);
 
   // Pick the width from the smallest version of this shape. A block with a box on it (write has one for its words, set font a
-  // dropdown of fonts) is drawn here as its label, then the box, then its sockets, so the label is left off the shape and the
+  // dropdown of fonts, when key pressed one of keys) is drawn here as its label, then the box, then its sockets, so the label is left off the shape and the
   // block is made wide enough for all of them.
   let shapeSpec = spec;
   let textSlot = null;
   let fontSlot = null;
   let colorSlot = null;
-  if (spec.textSlot || spec.fontSlot || spec.colorSlot) {
+  let keySlot = null;
+  if (spec.textSlot || spec.fontSlot || spec.colorSlot || spec.keySlot) {
     if (spec.textSlot) textSlot = layoutNameSlot(block.text ?? '', spec.textSlot.hint, colors, 'text', spec.textSlot.shows);
     if (spec.fontSlot) fontSlot = layoutFontSlot(block.font, colors);
+    if (spec.keySlot) keySlot = layoutKeySlot(block.key, colors);
     if (spec.colorSlot) colorSlot = layoutColorSlot(block, spec, colors);
     shapeSpec = { ...spec, label: '' };
     const captionWidth = Math.max(0, ...spec.args.map((arg) => textWidth(arg.label ?? '', SMALL_FONT_SIZE))) * SCALE;
@@ -577,7 +600,7 @@ export function layoutBlock(block) {
     // (A color box goes under the word, not beside it, so the block only has to be as wide as the wider of the two.)
     const wanted = colorSlot
       ? HAT_PAD + Math.max(textWidth(spec.label) * SCALE, colorSlot.w) + afterBoxes
-      : HAT_PAD + textWidth(spec.label) * SCALE + (textSlot ? HAT_GAP + textSlot.w : 0) + (fontSlot ? HAT_GAP + fontSlot.w : 0) + (spec.endLabel ? HAT_GAP + textWidth(spec.endLabel) * SCALE : 0) + afterBoxes;
+      : HAT_PAD + textWidth(spec.label) * SCALE + (textSlot ? HAT_GAP + textSlot.w : 0) + (fontSlot ? HAT_GAP + fontSlot.w : 0) + (keySlot ? HAT_GAP + keySlot.w : 0) + (spec.endLabel ? HAT_GAP + textWidth(spec.endLabel) * SCALE : 0) + afterBoxes;
     extra.x = Math.max(0, (wanted - makeShape(shapeSpec, colors, extra).shape.getWidth()) / SCALE);
   } else {
     const smallest = makeShape(spec, colors, extra).shape;
@@ -608,7 +631,7 @@ export function layoutBlock(block) {
 
   const { shape, markup } = made;
   node.markup = markup;
-  if (textSlot || fontSlot || colorSlot) {
+  if (textSlot || fontSlot || colorSlot || keySlot) {
     // The generator puts a label's baseline in the middle of the block's body: line the word and the boxes up with that.
     const fontSize = FONT_SIZE * SCALE;
     const baseline = Number(markup.match(/<tspan x="-?[\d.]+" y="(-?[\d.]+)"><\/tspan>/)?.[1] ?? 14) * SCALE;
@@ -624,7 +647,7 @@ export function layoutBlock(block) {
       node.nameSlots.push({ slot: colorSlot, dx: HAT_PAD, dy: stackTop + fontSize + gap });
     } else {
       let x = HAT_PAD + wordWidth;
-      for (const slot of [textSlot, fontSlot]) {
+      for (const slot of [textSlot, fontSlot, keySlot]) {
         if (!slot) continue;
         x += HAT_GAP;
         node.nameSlots.push({ slot, dx: x, dy: top });
@@ -752,7 +775,7 @@ export function renderStack(layout, register) {
     register(node.id, { type: 'block', node });
     (node.nameSlots ?? []).forEach((placed, index) => {
       const box = svgElement('g', {
-        class: placed.slot.editor === 'font' ? 'node nameslot textslot fontslot' : placed.slot.editor === 'text' ? 'node nameslot textslot' : placed.slot.editor === 'color' ? 'node colorslot' : 'node nameslot',
+        class: placed.slot.editor === 'font' ? 'node nameslot textslot fontslot' : placed.slot.editor === 'key' ? 'node nameslot textslot keyslot' : placed.slot.editor === 'text' ? 'node nameslot textslot' : placed.slot.editor === 'color' ? 'node colorslot' : 'node nameslot',
         transform: `translate(${placed.ax} ${placed.ay})`,
         'data-nid': placed.slot.id,
       });

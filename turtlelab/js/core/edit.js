@@ -12,6 +12,7 @@
 
 import { BLOCKS, BODY_KEYS, mouthCount, specOf } from './blocks-spec.js';
 import { DEFAULT_FONT } from './lettering.js';
+import { DEFAULT_KEY } from './keys.js';
 
 /** A copy of a block, and everything inside it, that shares nothing with it. */
 export function cloneBlock(block) {
@@ -35,6 +36,7 @@ export function newBlock(op) {
   if (spec.kind === 'note') block.text = '';
   if (spec.textSlot) block.text = spec.textSlot.default ?? 'Hello';
   if (spec.fontSlot) block.font = DEFAULT_FONT;
+  if (spec.keySlot) block.key = DEFAULT_KEY;
   return block;
 }
 

@@ -33,7 +33,7 @@ export const COSTS = Object.freeze({
   deep: 0.05, deepMost: 0.15, deepFrom: 4, // for each level of nesting past this many
 });
 
-const HATS = new Set(['start', 'to', 'onclick']); // (a click handler is a stack of its own, not a stray one)
+const HATS = new Set(['start', 'to', 'onclick', 'onkey', 'onstep']); // (an event handler is a stack of its own, not a stray one)
 const LOOPS = new Set(['repeat', 'forever']);
 const MAX_UNIT = 6; // the longest run of blocks looked for as a copy
 const SAME_NUMBER_AT = 4; // a number typed this many times is too many
@@ -49,6 +49,7 @@ function keyOf(block) {
   if (block.op === 'call' || block.op === 'input') extra = `:${nameKey(block.name ?? '')}`;
   else if (block.op === 'write') extra = `:${block.text ?? ''}`;
   else if (block.op === 'setfont') extra = `:${block.font ?? ''}`;
+  else if (block.op === 'onkey') extra = `:${block.key ?? ''}`;
   return `${block.op}${extra}(${args})${bodies}`;
 }
 

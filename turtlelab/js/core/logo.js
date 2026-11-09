@@ -16,7 +16,8 @@
 // Never touches the screen.
 
 import { definitionsOf } from './definitions.js';
-import { findRunStack, handlersOf, walkBlocks } from './project.js';
+import { HANDLER_OPS, findRunStack, handlersOf, walkBlocks } from './project.js';
+import { keyOf } from './keys.js';
 import { DEFAULTS } from './turtle.js';
 import { clampChannel } from './color.js';
 import { JSLOGO_WORDS } from './logo-jslogo-words.js';
@@ -363,14 +364,23 @@ export function toLogo(project, { short = false, jslogo = false, boxNames = [] }
   }
 
   const mainLines = main ? text(main.blocks) : handlers.length > 0 ? [] : ['; Nothing runs yet: add a Start block, and under it a call to your block.'];
-  // Each click handler is an onclick [ ... ] after the program. JSLogo has no mouse clicks, so there they are left out, and the program does not wait for them.
+  // Each event handler is a line of its own after the program: onclick [ ... ], onkey "up [ ... ] or every 12 [ ... ]. JSLogo has no mouse clicks, keys
+  // or timers, so there they are left out, and the program does not wait for them.
   const handlerLines = [];
   for (const handler of handlers) {
+    const ctx = { short, procedures, params: null, jslogo, state, inDefinition: false, boxNames };
     if (jslogo) {
-      state.dropped.add('onclick (JSLogo has no mouse clicks)');
+      state.dropped.add(handler.op === 'onkey' ? 'onkey (JSLogo has no key presses)' : handler.op === 'onstep' ? 'every (JSLogo has no timers)' : 'onclick (JSLogo has no mouse clicks)');
       continue;
     }
-    handlerLines.push('onclick [', ...lines(handler.blocks, 1, { short, procedures, params: null, jslogo, state, inDefinition: false, boxNames }), ']');
+    let start = 'onclick [';
+    if (handler.op === 'onkey') start = `onkey "${keyOf(handler.hat.key).logo} [`;
+    else if (handler.op === 'onstep') {
+      // Real Logo counts in 60ths of a second. The block counts tenths.
+      const tenths = handler.hat.args?.[0];
+      start = `every ${typeof tenths === 'number' ? num(tenths * 6) : `(${input(tenths, ctx)}) * 6`} [`;
+    }
+    handlerLines.push(start, ...lines(handler.blocks, 1, ctx), ']');
   }
 
   const out = [];
@@ -414,7 +424,7 @@ export function toLogo(project, { short = false, jslogo = false, boxNames = [] }
 
   const loose = project.stacks.filter((stack) => {
     const op = stack.blocks[0]?.op;
-    return stack !== main && op !== 'note' && op !== 'to' && op !== 'onclick' && stack.blocks.length > 0;
+    return stack !== main && op !== 'note' && op !== 'to' && !HANDLER_OPS.has(op) && stack.blocks.length > 0;
   }).length;
   if (loose > 0) {
     add();

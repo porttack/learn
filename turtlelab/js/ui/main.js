@@ -14,6 +14,7 @@ import { Scheduler, SPEEDS } from '../core/scheduler.js';
 import { History } from '../core/history.js';
 import { formatNumber, formatValue } from '../core/format.js';
 import { runBlocks, createContext, evalArg, RunError } from '../core/interpreter.js';
+import { cleanKey, keyIdFromEvent } from '../core/keys.js';
 import { emptyProject, findRunStack, handlersOf, isHandler, restoredStack, usesBoxes, validateProject, walkBlocks, FORMAT_ID, FORMAT_VERSION } from '../core/project.js';
 import { visibleOps } from '../core/fit.js';
 import { drawingStats } from '../core/efficiency.js';
@@ -207,8 +208,21 @@ const YAWN_AFTER_MS = 700;
 // at once and remembers that it did, which the PDF's message says.
 const askBox = new AskBox({ stage });
 let askedForPdf = false;
-// The click handlers of the program that is running, if it listens for clicks (see beginRun); null otherwise.
+// The event handlers (clicks, keys, timers) of the program that is running, if it listens for any (see beginRun); null otherwise.
 let listeningHandlers = null;
+// The fastest an every block may go, in tenths of a second (twenty times a second), and the slowest (a minute).
+const EVERY_MIN_TENTHS = 0.5;
+const EVERY_MAX_TENTHS = 600;
+
+/** What the message line says while a program waits for clicks, keys or its timers (short: a message that wraps takes room from the paper). */
+function listeningMessage(handlers) {
+  const clicks = handlers.some((handler) => handler.op === 'onclick');
+  const keys = handlers.some((handler) => handler.op === 'onkey');
+  if (clicks && keys) return 'Listening for clicks and keys. Press Stop when you are done.';
+  if (clicks) return 'Listening for clicks on the paper. Press Stop when you are done.';
+  if (keys) return 'Listening for keys. Press Stop when you are done.';
+  return 'Repeating on a timer. Press Stop when you are done.';
+}
 
 const scheduler = new Scheduler({
   speed: startSpeed,
@@ -225,7 +239,7 @@ const scheduler = new Scheduler({
     outlined = false;
     view.setYawning(false);
     showBoxes();
-    say('Listening for clicks on the paper. Press Stop when you are done.'); // (short: a message that wraps takes room from the paper, and the paper moves)
+    say(listeningMessage(listeningHandlers ?? [])); // (short: a message that wraps takes room from the paper, and the paper moves)
   },
   onWait: (ms) => {
     // A long wait: the turtle yawns and sways with a Zzz, until the next block runs (onStep) or the program ends.
@@ -307,8 +321,15 @@ view = new CanvasView({ stage, turtle, isLocked: () => scheduler.running });
 function runStack(stack) {
   if (stack.blocks[0] && BLOCKS[stack.blocks[0].op].kind === 'note') return; // a sticky note is not a program
   if (isHandler(stack)) {
-    // A handler does nothing until a click arrives while a program is running.
-    say('This runs when you click the paper while your program is running. Press Run, then click the paper.');
+    // A handler does nothing until its click, key or timer comes while a program is running.
+    const op = stack.blocks[0].op;
+    say(
+      op === 'onkey'
+        ? 'This runs when you press its key while your program is running. Press Run, then press the key.'
+        : op === 'onstep'
+          ? 'This runs again and again while your program is running. Press Run and watch.'
+          : 'This runs when you click the paper while your program is running. Press Run, then click the paper.',
+    );
     return;
   }
   if (stack.blocks[0] && isDefinition(stack)) {
@@ -342,8 +363,9 @@ function runStack(stack) {
 }
 
 /**
- * Start a program: the blocks to run, the click handlers there are (a program with any keeps listening for clicks after its last block, until Stop;
- * a run made for the PDF just ends, since nobody will click), the blocks the student made, and all the stacks (to know if it writes words).
+ * Start a program: the blocks to run, the event handlers there are (a program with any keeps listening for clicks, keys and its timers after its
+ * last block, until Stop; a run made for the PDF just ends, since nobody will click), the blocks the student made, and all the stacks (to know if
+ * it writes words).
  */
 function beginRun(blocks, handlers, definitions, stacks, logo) {
   view.resetDrawView({ force: true }); // every run starts with the paper as it was, not zoomed from the last Fit
@@ -353,23 +375,73 @@ function beginRun(blocks, handlers, definitions, stacks, logo) {
   runningLogo = logo;
   runHasWrite = writesWords(stacks);
   listeningHandlers = handlers.length > 0 && !hurry ? handlers : null;
-  scheduler.start(runBlocks(blocks, context), { listen: listeningHandlers !== null });
+  scheduler.start(runBlocks(blocks, context), { listen: listeningHandlers !== null, ticks: listeningHandlers ? () => ticksOf(listeningHandlers) : null });
+}
+
+/**
+ * Run the blocks of some event handlers, one after another, and then show the boxes: at the instant speed a block does not stop to show them,
+ * so a game that keeps its score in a box would show the old score until the next time the program waited.
+ */
+function* runHandlers(handlers) {
+  for (const handler of handlers) yield* runBlocks(handler.blocks, context);
+  showBoxes();
+}
+
+/**
+ * The timers of the every blocks: how often each goes off (the number is read now, when the program starts listening, so a box or a block
+ * plugged into it says what it is at that moment), and the blocks to run each time.
+ */
+function ticksOf(handlers) {
+  return handlers
+    .filter((handler) => handler.op === 'onstep')
+    .map((handler) => {
+      const tenths = evalArg(handler.hat.args?.[0] ?? null, context, handler.hat);
+      if (typeof tenths !== 'number' || !Number.isFinite(tenths)) throw new RunError('This every block needs a number of tenths of a second, like 5.', handler.hat);
+      if (tenths < EVERY_MIN_TENTHS) throw new RunError(`Every ${formatValue(tenths)} is too fast. The fastest is ${EVERY_MIN_TENTHS}, which is twenty times a second.`, handler.hat);
+      if (tenths > EVERY_MAX_TENTHS) throw new RunError(`Every ${formatValue(tenths)} is too slow. The slowest is ${EVERY_MAX_TENTHS}, which is once a minute.`, handler.hat);
+      return { ms: tenths * 100, make: () => runHandlers([handler]) };
+    });
 }
 
 /** A click on the paper (a press and release that did not slide it): run the click handlers of the program that is listening, one after another. */
 function paperClicked(clientX, clientY) {
   if (!listeningHandlers || !scheduler.running) return;
+  const handlers = listeningHandlers.filter((handler) => handler.op === 'onclick');
+  if (handlers.length === 0) return; // (a program that only listens for keys does not hear the paper)
   const at = view.worldAt(clientX, clientY);
   if (!at) return; // the gray round the paper is not the paper
   view.ring(clientX, clientY);
-  const handlers = listeningHandlers;
   scheduler.queueEvent(() => {
     context.mouse = at; // mouseX and mouseY say where this click was, from the moment its handler starts
-    return (function* () {
-      for (const handler of handlers) yield* runBlocks(handler.blocks, context);
-    })();
+    return runHandlers(handlers);
   });
 }
+
+/**
+ * The when [key] pressed handlers that a keyboard event is for, or [] if it is not for any of them: no program is listening, a modifier is
+ * held (Ctrl+Z is undo, not a key press), or the person is typing somewhere (the ask box, the Logo box, a sticky note).
+ */
+function handlersForKey(event) {
+  if (!listeningHandlers || !scheduler.running) return [];
+  if (event.ctrlKey || event.metaKey || event.altKey) return [];
+  if (event.target?.matches?.('input, textarea, select') || event.target?.isContentEditable) return [];
+  const id = keyIdFromEvent(event);
+  if (id === null) return [];
+  return listeningHandlers.filter((handler) => handler.op === 'onkey' && cleanKey(handler.hat.key) === id);
+}
+
+/** A key press: run the handlers for that key, one after another (a key held down repeats, like typing). */
+function keyPressed(event) {
+  const handlers = handlersForKey(event);
+  if (handlers.length === 0) return;
+  event.preventDefault(); // (an arrow key must not scroll the page, nor space press the button that has focus)
+  scheduler.queueEvent(() => runHandlers(handlers));
+}
+document.addEventListener('keydown', keyPressed);
+// A button that has focus presses itself when space is let go, so that is kept from it too.
+document.addEventListener('keyup', (event) => {
+  if (handlersForKey(event).length > 0) event.preventDefault();
+});
 
 /** Run the Logo in the Logo box. It is read into blocks and run by the same interpreter, so it behaves just like the blocks. */
 function runLogo(text) {

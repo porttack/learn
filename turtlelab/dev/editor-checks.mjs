@@ -553,7 +553,7 @@ try {
 
   await chrome.goto(BASE + '?speed=instant');
   await openPalette('Flow');
-  check('the Flow palette lists its eleven blocks (start, when paper clicked, mouseX, mouseY, repeat, forever, if, if else, wait, speed, stop)', (await count('.flyout .stack')) === 11);
+  check('the Flow palette lists its thirteen blocks (start, when paper clicked, mouseX, mouseY, when key pressed, every, repeat, forever, if, if else, wait, speed, stop)', (await count('.flyout .stack')) === 13);
   await dragFromPalette('start', 450, 300);
   const startBlock = await nodeRect('start');
   await openPalette('Turtle');
@@ -2683,7 +2683,7 @@ try {
   check('pressing the badge opens the details: the block count, then Complexity, Elegance and Efficiency, each with its number, and they fit in the window', panel.open && panel.expanded === 'true' && /^\d+\s*blocks?$/.test(panel.head) && panel.sections.length === 3 && panel.sections.map((x) => x.split(':')[0]).join() === 'complexity,elegance,efficiency' && panel.inside, JSON.stringify(panel));
   check('complexity shows where its points came from, the variables first (the counter is worth the most)', panel.rows.length === 8 && panel.rows[0].startsWith('variables:+') && Number(panel.rows[0].split('+')[1]) > Number(panel.rows[1].split('+')[1]), panel.rows.join(' '));
   check('the points table has two columns, a count of each kind of block and the points they earned, under the names Idea, Count and Points', panel.heads.join() === 'Idea,Count,Points' && panel.counts.length === 8 && panel.counts.every((c) => /^\d+$/.test(c)), JSON.stringify([panel.heads, panel.counts]));
-  check('the rows are named for the blocks they count, with no "try" hints', panel.names.join() === 'Variables,repeat / forever,if / if else,Blocks you made,ask / when paper clicked,Math and random,Blocks,Big ideas used' && !panel.hasTry, panel.names.join());
+  check('the rows are named for the blocks they count, with no "try" hints', panel.names.join() === 'Variables,repeat / forever,if / if else,Blocks you made,ask / when paper clicked / when key pressed / every,Math and random,Blocks,Big ideas used' && !panel.hasTry, panel.names.join());
   check('the total is the sum of the points above it, and a sentence says how points become the 0.0 to 1.0 number', Number(panel.total) === panel.rows.reduce((n, r) => n + Number(r.split('+')[1] ?? 0), 0) && /On this scale 80 points is 0\.6, 130 is 0\.8 and 200 is 0\.9\. It never quite gets to 1\.0\./.test(panel.scale ?? ''), `${panel.total} | ${panel.scale}`);
   check('elegance says what is good about it, with a tick', panel.reasons.some((r) => /score-good/.test(r) && /A loop does the repeating/.test(r)), JSON.stringify(panel.reasons));
   check('efficiency says to run the program, since the blocks just changed', panel.effReasons.some((t) => /Run your program/.test(t)), JSON.stringify(panel.effReasons));

@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 
-import { SAMPLES, sampleById, sampleStacks } from '../js/ui/samples.js';
+import { SAMPLES, sampleById, sampleStacks, LISTED_SAMPLES } from '../js/ui/samples.js';
 import { walkBlocks, findRunStack, handlersOf, FORMAT_ID, FORMAT_VERSION } from '../js/core/project.js';
 import { scoreProject } from '../js/core/complexity.js';
 import { definitionsOf } from '../js/core/definitions.js';
@@ -40,6 +40,33 @@ test('the steps are numbered 1, 2, 3 ... with none missing, each a lesson of thi
     assert.equal(page.meta.source, 'original', `${page.file}: written for this site, never adapted`);
     assert.ok(page.meta.title.length >= 4, page.file);
     assert.match(page.file, new RegExp(`^step-${page.meta.order}-[a-z0-9-]+\\.md$`), `${page.file}: named step-N-title, with the same N as its order`);
+  }
+});
+
+test('every step is in one of the units in _data/turtle_units.yml, the units run in order with no gaps, and each ends in the step called Capstone', () => {
+  const data = readFileSync(new URL('../../_data/turtle_units.yml', import.meta.url), 'utf8');
+  const units = [...data.matchAll(/^- id: (\d+)\n  title: "([^"]+)"\n  blurb: "([^"]+)"/gm)].map((m) => ({ id: Number(m[1]), title: m[2], blurb: m[3] }));
+  assert.ok(units.length >= 2, 'the units file is read');
+  assert.deepEqual(units.map((unit) => unit.id), units.map((_, i) => i + 1));
+  // the words on the contents page are student words like any other
+  const banned = /\b(teachers?|class(room)?|substitutes?|grad(e|es|ed|ing)|points|minutes?|hours?|homework|due|LMS|Schoology|Classroom)\b/i;
+  for (const unit of units) {
+    assert.ok(!/[–—]/.test(unit.title + unit.blurb), `unit ${unit.id}: a dash`);
+    assert.ok(!banned.test(unit.title + unit.blurb), `unit ${unit.id}: a word a student page may not say`);
+  }
+  // a step names its unit; units are runs of steps that never go backward or skip one
+  let current = 1;
+  for (const step of steps) {
+    const unit = Number(step.meta.unit);
+    assert.ok(unit === current || unit === current + 1, `${step.file}: unit ${step.meta.unit} after unit ${current}`);
+    current = unit;
+  }
+  assert.equal(current, units.length, 'the last step is in the last unit, and no unit is empty');
+  // a unit ends in its capstone, and only a unit's last step is one
+  for (const unit of units) {
+    const inside = steps.filter((step) => Number(step.meta.unit) === unit.id);
+    assert.ok(inside.length >= 3, `unit ${unit.id} has at least three steps`);
+    for (const step of inside) assert.equal(/Capstone/.test(step.meta.title), step === inside.at(-1), `${step.file}: a capstone ends a unit, and only a capstone does`);
   }
 });
 
@@ -149,6 +176,55 @@ test('Step 7: the countdown ends with 0 in the box, and the start number and the
   assert.deepEqual(run(five).printed, ['5', '4', '3', '2', '1'], 'with 5 laps as well it prints 5 down to 1');
 });
 
+test('Step 2: the triangle and pentagon close with 120 and 72, stay open or go over themselves as the page says, and the sides demo closes for every number the page names', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-2-say-it-once.md', import.meta.url), 'utf8');
+  const apart = (turtle) => Math.hypot(turtle.x, turtle.y);
+  assert.ok(apart(run(copyOf('lesson-triangle')).turtle) < 1e-6, 'the triangle closes');
+  assert.ok(apart(run(copyOf('lesson-pentagon')).turtle) < 1e-6, 'the pentagon closes');
+  const open = copyOf('lesson-triangle');
+  mainOf(open)[4].body[1].args[0] = 100;
+  assert.ok(apart(run(open).turtle) > 10, 'a turn of 100 leaves the triangle open');
+  // a sixth side with a turn of 72 draws over the first
+  const six = copyOf('lesson-pentagon');
+  mainOf(six)[4].args[0] = 6;
+  const sixLines = run(six).lines;
+  const first = sixLines[0], last = sixLines[5];
+  assert.deepEqual([first.x1, first.y1, first.x2, first.y2].map(Math.round), [last.x1, last.y1, last.x2, last.y2].map(Math.round), 'the sixth side is the first again');
+  assert.match(page, /sixth side draws over the first side again/);
+  // the sides demo: every number the page names closes, and it stays on the paper
+  for (const sides of [3, 5, 8, 40, 100]) {
+    const result = runInteractive(copyOf('lesson-sides-any'), { answers: [sides] });
+    assert.equal(result.lines.length, sides, `${sides} sides`);
+    assert.ok(apart(result.turtle) < 1e-6, `${sides} sides close`);
+    for (const line of result.lines) assert.ok(Math.abs(line.x2) < PAPER_W / 2 && Math.abs(line.y2) < PAPER_H / 2, `${sides} sides stay on the paper`);
+  }
+  const two = runInteractive(copyOf('lesson-sides-any'), { answers: [2] });
+  assert.equal(two.lines.length, 2, 'two sides is a line out and the same line back');
+  assert.ok(Math.abs(two.lines[1].x2 - two.lines[0].x1) < 1e-6 && Math.abs(two.lines[1].y2 - two.lines[0].y1) < 1e-6, 'the second line ends where the first began');
+  assert.ok(apart(two.turtle) < 1e-6);
+  assert.match(page, /turn is 180/);
+  assert.match(page, /9 degrees[\s\S]*3\.6/);
+});
+
+test('Step 3: the confetti start is a thin red band, and the page\'s fixes spread it over the paper in random colors', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-3-let-chance-draw.md', import.meta.url), 'utf8');
+  const start = copyOf('lesson-confetti-start');
+  const lines = run(start).lines;
+  assert.equal(lines.length, 60, 'sixty dots');
+  assert.ok(lines.every((line) => Math.abs(line.y1) <= 20), 'a thin band');
+  assert.ok(Math.max(...lines.map((line) => line.x1)) - Math.min(...lines.map((line) => line.x1)) > 400, 'already spread across');
+  assert.ok(lines.every((line) => line.color.join() === '255,0,0'), 'all red');
+  const fixed = copyOf('lesson-confetti-start');
+  const body = mainOf(fixed)[3].body;
+  body[1].args[1].args = [-280, 280];
+  body[3].args = [0, 1, 2].map(() => ({ op: 'random', args: [0, 255] }));
+  const after = run(fixed).lines;
+  assert.ok(after.every((line) => Math.abs(line.x1) <= PAPER_W / 2 && Math.abs(line.y1) <= PAPER_H / 2), 'on the paper');
+  assert.ok(Math.max(...after.map((line) => line.y1)) - Math.min(...after.map((line) => line.y1)) > 350, 'spread up and down');
+  assert.ok(new Set(after.map((line) => line.color.join())).size > 30, 'many colors');
+  assert.match(page, /`random -280 280`/);
+});
+
 test('Step 8: the three squares are 40, 80 and 120 and 12 lines; the flower is 8 petals that close only with the right turn; changing the word changes every petal', () => {
   const squares = copyOf('own-block');
   assert.deepEqual(mainOf(squares).filter((block) => block.op === 'call').map((block) => block.args[0]), [40, 80, 120]);
@@ -242,7 +318,7 @@ test('Step 11: every bug is a bug, and the change in the answer fixes it', () =>
   assert.equal(run(house).lines.length, 7, 'a pen down before the roof draws its three sides');
 });
 
-test('Step 1: the L ends where the page says, and the two Bs are counted and turned the way the page says', () => {
+test('Step 1: the L ends where the page says, and the I after it goes down, or along the paper when the heading above it is 90', () => {
   const page = readFileSync(new URL('../../_turtlelessons/step-1-your-initials.md', import.meta.url), 'utf8');
   // the L: the frame holds the blocks the page lists (and a speed block, which the page says to leave out), and ends at (-90, -60) facing right
   const l = copyOf('lesson-l');
@@ -250,6 +326,33 @@ test('Step 1: the L ends where the page says, and the two Bs are counted and tur
   const ended = run(l).turtle;
   assert.deepEqual([Math.round(ended.x), Math.round(ended.y), Math.round(ended.heading)], [-90, -60, 90]);
   assert.match(page, /ends at \(-90, -60\), facing right/);
+
+  // the second frame: an L and an I, every block in the one program (the page says nothing of blocks you make: that is Step 8), the same four blocks before each letter
+  const stacks = copyOf('lesson-travel');
+  assert.equal(definitionsOf({ stacks }).size ?? definitionsOf({ stacks }).map.size, 0, 'no block of its own: Step 8 teaches those');
+  const main = mainOf(stacks);
+  const travel = ['penup', 'setxy', 'setheading', 'pendown'];
+  assert.deepEqual(main.slice(3, 7).map((block) => block.op), travel);
+  assert.deepEqual(main.slice(10, 14).map((block) => block.op), travel);
+  assert.match(page, /`pen up`, `set xy`, `set heading` and `pen down`/);
+  // the turtle ends the L facing right, and the I still goes down, because the set heading turns it first
+  const afterL = run(structuredClone(stacks).map((stack) => ({ ...stack, blocks: stack.blocks.slice(0, 10) }))).turtle;
+  assert.deepEqual([Math.round(afterL.x), Math.round(afterL.y), Math.round(afterL.heading)], [-90, -60, 90]);
+  assert.match(page, /The turtle ends the L facing right/);
+  const down = run(stacks).lines.find((line) => Math.abs(line.x1 + 40) < 1e-6 && Math.abs(line.y1 - 60) < 1e-6);
+  assert.deepEqual([Math.round(down.x2), Math.round(down.y2)], [-40, -60], 'the I runs from the top down');
+  // the page's third question: heading 90 above the I lays it along the paper
+  assert.equal(main[12].op, 'setheading');
+  main[12].args[0] = 90;
+  const along = run(stacks).lines.find((line) => Math.abs(line.x1 + 40) < 1e-6 && Math.abs(line.y1 - 60) < 1e-6);
+  assert.deepEqual([Math.round(along.x2), Math.round(along.y2)], [80, 60], 'the I runs to the right instead of down');
+  assert.match(page, /The I lies on its side and runs to the right/);
+  // a student has not been taught a block of their own yet: nothing on the page asks for one
+  assert.ok(!/`to`|blocks? of (its|your|their) own|my blocks|function/i.test(page.replace(/\{%[\s\S]*?%\}/g, '')), 'Step 1 does not mention blocks of your own');
+});
+
+test('Step 8: the two Bs are counted and turned the way the page says, and the E and B are the teacher\'s own', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-8-teach-the-turtle-a-word.md', import.meta.url), 'utf8');
   // the Bs: 15 blocks and 9, and the same four blocks to travel to each
   const stacks = copyOf('lesson-b-two-ways');
   const { map } = definitionsOf({ stacks });
@@ -266,6 +369,15 @@ test('Step 1: the L ends where the page says, and the two Bs are counted and tur
   main[10].args[0] = 90;
   const turned = run(stacks).lines.find((line) => Math.abs(line.x1 - 16) < 1e-6 && Math.abs(line.y1 + 60) < 1e-6);
   assert.deepEqual([Math.round(turned.x2), Math.round(turned.y2)], [136, -60], 'the spine runs to the right instead of up');
+
+  // the name task: eight letters 60 wide with 20 between them take 80 each, which fit the paper from x = -320, and the samples the page points at travel by a `place` block with x and y
+  assert.equal(PAPER_W, 700);
+  assert.ok(-320 + 8 * 80 - 20 <= PAPER_W / 2, 'the eighth letter ends on the paper');
+  assert.match(page, /holds eight letters if the first starts at x = -320/);
+  for (const id of ['initials-lines', 'initials-curves']) {
+    assert.deepEqual(sampleById(id).defines.find((definition) => definition.name === 'place').params, ['x', 'y'], `${id} has a place block with x and y`);
+    assert.ok(page.includes(`?sample=${id}`), `Step 8 links ${id}`);
+  }
 
   // the third way is the teacher's own E and B: their Logo, read by TurtleLab's own Logo reader, draws exactly what the frame draws
   const theirLogo = 'clearscreen\nsetspeed 1\nforward 80\nright 90\nforward 30\nback 25\nleft 90\nback 40\nright 90\nforward 25\nback 25\nleft 90\nback 40\nright 90\nforward 30\npenup\nforward 20\nleft 90\npendown\nforward 80\nright 135\nforward 30\nright 90\nforward 30\nleft 90\nforward 30\nright 90\nforward 30\npenup\nforward 100\n';
@@ -288,11 +400,12 @@ test('Step 1: the L ends where the page says, and the two Bs are counted and tur
   assert.match(page, /`pen up`, `forward 20`, `left 90` and `pen down`/);
 });
 
+
 /**
  * Run a project the way the page does: its program from Start, each ask block answered from `answers` in turn, and then each of `clicks` made on the paper,
  * which runs every click handler with mouseX and mouseY set.
  */
-function runInteractive(stacks, { answers = [], clicks = [] } = {}) {
+function runInteractive(stacks, { answers = [], clicks = [], keys = [], ticks = 0 } = {}) {
   const project = { app: FORMAT_ID, version: FORMAT_VERSION, stacks };
   const turtle = new Turtle();
   const printed = [];
@@ -311,8 +424,10 @@ function runInteractive(stacks, { answers = [], clicks = [] } = {}) {
   drive(found.stack ? found.stack.blocks : []);
   for (const [x, y] of clicks) {
     context.mouse = { x, y };
-    for (const handler of handlersOf(project)) drive(handler.blocks);
+    for (const handler of handlersOf(project)) if (handler.op === 'onclick') drive(handler.blocks);
   }
+  for (const id of keys) for (const handler of handlersOf(project)) if (handler.op === 'onkey' && handler.hat.key === id) drive(handler.blocks);
+  for (let tick = 0; tick < ticks; tick += 1) for (const handler of handlersOf(project)) if (handler.op === 'onstep') drive(handler.blocks);
   const lines = turtle.ops.filter((op) => op.type === 'line' && op.size > 0 && Math.hypot(op.x2 - op.x1, op.y2 - op.y1) > 1e-9);
   return { turtle, printed, boxes: context.boxes, lines };
 }
@@ -498,7 +613,7 @@ test('Step 16: a program of the shape the page gives has the parts its list asks
 });
 
 test('everything that lists the steps knows every step: the contents page, the teacher notes, the answer key and the standards file', () => {
-  const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen'];
+  const words = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen'];
   assert.match(index, new RegExp(`${words[steps.length]} steps with`), `the contents page says how many steps there are (${steps.length})`);
   assert.match(index, new RegExp(`Print all ${words[steps.length].toLowerCase()} steps`), 'and the print link');
   const slugs = steps.map((page) => page.file.replace(/\.md$/, ''));
@@ -551,4 +666,170 @@ test('Step 6: the slow program shows what the page says, block by block: 40, the
   assert.match(page, /\*\*variable\*\*/, 'and says the word');
   assert.ok((page.match(/variable/gi) ?? []).length >= 12, 'and uses it throughout');
   assert.ok(!/store box1 \+ 1|look at box1|store 5 in box1/.test(page), 'and never names a block that the app does not have');
+});
+
+// ---- Step 17: keys and timers, and the snake ---------------------------------------------------------------------------------------------------
+
+/** The snake game, run the way the page runs it: its program first, then keys pressed and timers ticked by hand. */
+function playSnake(seed) {
+  const stacks = copyOf('lesson-snake');
+  const project = { app: FORMAT_ID, version: FORMAT_VERSION, stacks };
+  const turtle = new Turtle();
+  const context = createContext({ turtle, random: seeded(seed), definitions: definitionsOf(project).map });
+  const drive = (blocks) => { for (const step of runBlocks(blocks, context)) void step; };
+  drive(findRunStack(project).stack.blocks);
+  return {
+    turtle,
+    context,
+    food: () => ({ x: context.boxes[0], y: context.boxes[1] }),
+    press(id) { for (const handler of handlersOf(project)) if (handler.op === 'onkey' && handler.hat.key === id) drive(handler.blocks); },
+    tick() { for (const handler of handlersOf(project)) if (handler.op === 'onstep') drive(handler.blocks); },
+  };
+}
+
+test('Step 17: the steering frame walks 20 for each up arrow and turns a quarter for left and right, as the page says', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-17-steer-the-snake.md', import.meta.url), 'utf8');
+  const steer = (keys) => runInteractive(copyOf('lesson-key-steer'), { keys });
+  const three = steer(['up', 'up', 'up']);
+  assert.equal(three.lines.reduce((sum, line) => sum + lengthOf(line), 0), 60, 'three ups walk 60');
+  assert.match(page, /1\. 60\. Each press walks 20, and 3 × 20 is 60\./);
+  // left does not move the turtle, it turns it a quarter to the left
+  const turned = steer(['up', 'up', 'up', 'left']);
+  assert.equal(turned.lines.length, 3, 'a turn draws nothing');
+  assert.deepEqual([turned.turtle.x, turned.turtle.y], [0, 60]);
+  assert.match(page, /It does not move\. It turns a quarter turn to the left/);
+  // then two ups walk to the left, 40 far
+  const left = steer(['up', 'up', 'up', 'left', 'up', 'up']);
+  assert.ok(Math.abs(left.turtle.x - -40) < 1e-9 && Math.abs(left.turtle.y - 60) < 1e-9, `ends at ${left.turtle.x}, ${left.turtle.y}`);
+  assert.match(page, /Left, which is the way the turtle was turned, and 40 far: two presses of 20\./);
+  // the keys the checks press are the ones that have handlers, and the right arrow turns the other way
+  const sample = sampleById('lesson-key-steer');
+  const keys = sample.keyHandlers.map((handler) => handler.key);
+  assert.deepEqual(keys, ['up', 'left', 'right']);
+  for (const id of sample.keys) assert.ok(keys.includes(id), `${id} has a handler`);
+  assert.equal(steer(['right', 'up']).turtle.x, 20);
+});
+
+test('Step 17: the spiral ticks every 0.3 of a second, and its third tick walks 24 and leaves 32 in box1', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-17-steer-the-snake.md', import.meta.url), 'utf8');
+  const sample = sampleById('lesson-every-spiral');
+  assert.equal(sample.timers[0].tenths, 3, 'the page says 0.3 of a second');
+  assert.match(page, /1\. 0\.3 of a second, because the number is 3 and it is in tenths\./);
+  const spiral = (ticks) => runInteractive(copyOf('lesson-every-spiral'), { ticks });
+  assert.deepEqual(spiral(3).lines.map(lengthOf), [8, 16, 24], 'the first tick walks 8, then 16, then 24');
+  assert.deepEqual([1, 2, 3].map((n) => spiral(n).boxes[0]), [16, 24, 32]);
+  assert.match(page, /The first tick walks 8 and makes box1 16\. The second walks 16 and makes it 24\. The third walks 24 and makes box1 32\./);
+  assert.equal(spiral(0).lines.length, 0, 'nothing is drawn until the timer goes off');
+});
+
+test('Step 17: the snake starts in the middle facing right, walks 20 a tick, is turned by the arrows, and the square is always on the paper', () => {
+  for (let seed = 1; seed <= 100; seed += 1) {
+    const game = playSnake(seed);
+    const { x, y } = game.food();
+    assert.ok(x >= -300 && x <= 240 && y >= -220 && y <= 130, `seed ${seed}: the square's corner (${x}, ${y})`);
+    assert.ok(x + 40 <= PAPER_W / 2 && y + 40 <= PAPER_H / 2, `seed ${seed}: the whole square is on the paper`);
+    assert.deepEqual([game.turtle.x, game.turtle.y, game.turtle.heading], [0, 0, 90], `seed ${seed}: it comes back to the middle, facing right`);
+    assert.equal(game.turtle.penSize, 8);
+    assert.ok(game.turtle.penDown, 'the pen is down again after the square is drawn');
+    assert.deepEqual([...game.turtle.color], [0, 150, 0], 'and the pen is green again');
+  }
+  const game = playSnake(3);
+  game.tick();
+  game.tick();
+  assert.deepEqual([game.turtle.x, game.turtle.y], [40, 0], 'two ticks walk 40 to the right');
+  game.press('down');
+  game.tick();
+  assert.deepEqual([game.turtle.x, game.turtle.y], [40, -20], 'down turns it to face down');
+  game.press('left');
+  game.tick();
+  assert.deepEqual([game.turtle.x, game.turtle.y], [20, -20], 'left faces it left');
+  game.press('up');
+  game.tick();
+  assert.deepEqual([game.turtle.x, game.turtle.y], [20, 0], 'and up faces it up');
+  game.press('right');
+  assert.equal(game.turtle.heading, 90);
+});
+
+test('Step 17: eating the square makes the snake 4 fatter and the square jumps; a miss changes nothing; the edge starts the game again', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-17-steer-the-snake.md', import.meta.url), 'utf8');
+  // the snake is put right at the square (the page's own window, from -30 to 60 away from the corner), one step before it
+  const eat = (seed, offset) => {
+    const game = playSnake(seed);
+    const { x, y } = game.food();
+    game.turtle.setXY(x + offset.x - 20, y + offset.y);
+    game.turtle.setHeading(90);
+    const before = game.food();
+    game.tick();
+    return { game, before, after: game.food(), size: game.turtle.penSize };
+  };
+  for (const seed of [1, 2, 5, 9]) {
+    const hit = eat(seed, { x: 20, y: 20 });
+    assert.equal(hit.size, 12, `seed ${seed}: 8 and 4 more`);
+    assert.equal(hit.game.turtle.ops.filter((op) => op.type === 'fill').length, 2, `seed ${seed}: the eaten square stays on the paper, as the page says, beside the new one`);
+    assert.notDeepEqual(hit.after, hit.before, `seed ${seed}: the square jumped`);
+    const miss = eat(seed, { x: 20, y: 80 });
+    assert.equal(miss.size, 8, `seed ${seed}: a miss does not make it fatter`);
+    assert.deepEqual(miss.after, miss.before, `seed ${seed}: and the square stays where it was`);
+  }
+  // the numbers the page works through, with the corner at (50, -30)
+  const onSquare = (x, y) => x - 50 > -30 && x - 50 < 60 && y - -30 > -30 && y - -30 < 60;
+  assert.equal(onSquare(70, 10), true);
+  assert.equal(onSquare(70, 50), false);
+  assert.equal(onSquare(10, 10), false);
+  assert.match(page, /1\. Yes\. It is 20 right of the corner and 40 above it/);
+  assert.match(page, /2\. No\. It is 20 right of the corner, which is fine, but 80 above it, which is not less than 60\. The question about y says no\./);
+  assert.match(page, /It is 40 left of the corner, so x minus box1 is -40, which is not more than -30\./);
+  // the window on the page is the window in the program
+  const tick = sampleById('lesson-snake').timers[0].body;
+  const numbers = [];
+  for (const block of tick) walkBlocks([block], (inner) => { if (['greater', 'less'].includes(inner.op)) numbers.push(inner.args[1]); });
+  assert.deepEqual(numbers, [330, -330, 260, -260, -30, 60, -30, 60]);
+  assert.match(page, /The old ones stay on the paper\./);
+  assert.match(page, /more than -30 and less than 60/);
+  assert.match(page, /x is more than 330, or x is less than -330\. Then, in the next `if`: y is more than 260, or y is less than -260/);
+  assert.match(page, /4\. `x > 330`\. 340 is more than 330/);
+  // off the edge starts the game again: the middle, size 8, a new square
+  const game = playSnake(4);
+  game.turtle.setXY(325, 10);
+  game.turtle.setHeading(90);
+  game.turtle.setPenSize(30);
+  game.tick();
+  assert.deepEqual([game.turtle.x, game.turtle.y, game.turtle.penSize], [0, 0, 8]);
+});
+
+test('Step 17: the page names the blocks it uses, the frames it shows and a build that matches the program', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-17-steer-the-snake.md', import.meta.url), 'utf8');
+  for (const id of ['lesson-key-steer', 'lesson-every-spiral', 'lesson-snake']) assert.match(page, new RegExp(`sample="${id}"`));
+  // the two blocks the page builds are the two the sample has, line for line (random range, size of the square, colors)
+  const defined = Object.fromEntries(sampleById('lesson-snake').defines.map((d) => [d.name, d.body]));
+  assert.deepEqual(defined.food.map((block) => block.op), ['store3', 'store4', 'penup', 'setxy', 'store1', 'store2', 'setcolor', 'startfill', 'repeat', 'endfill', 'setcolor', 'setxy', 'pendown']);
+  assert.match(page, /set xy \(random -300 240\) \(random -220 130\)/);
+  assert.match(page, /set color 255 0 0/);
+  assert.match(page, /set color 0 150 0/);
+  assert.match(page, /repeat 4\n {8}forward 40/);
+  assert.deepEqual(defined.restart.map((block) => block.op), ['clean', 'setpensize', 'penup', 'setxy', 'setheading', 'pendown', 'call']);
+  assert.match(page, /set heading 90\n {4}pen down\n {4}food/);
+  assert.match(page, /every 2\n {4}forward 20/);
+  assert.equal(sampleById('lesson-snake').timers[0].tenths, 2);
+  assert.match(page, /The `every 2` block runs a `forward 20` five times a second/);
+});
+
+test('Step 18: the capstone opens real samples from the Samples page, names the three ways of listening, and its plan fits four boxes', () => {
+  const page = readFileSync(new URL('../../_turtlelessons/step-18-capstone-4.md', import.meta.url), 'utf8');
+  const named = [...page.matchAll(/turtlelab\/\?sample=([a-z0-9-]+)/g)].map((m) => m[1]);
+  assert.deepEqual(named, ['keyboard-painter', 'bouncing-turtle', 'click-flowers', 'catch-the-square', 'fat-snake']);
+  const listed = new Set(LISTED_SAMPLES.map((sample) => sample.id));
+  for (const id of named) assert.ok(listed.has(id), `${id} is on the Samples page, not only a lesson's demo`);
+  // the sentence for each sample says what it really does
+  const uses = (id, op) => { let found = false; for (const stack of sampleStacks(sampleById(id))) walkBlocks(stack.blocks, (block) => { if (block.op === op) found = true; }); return found; };
+  assert.ok(uses('keyboard-painter', 'onkey') && !uses('keyboard-painter', 'onstep'), 'the painter listens for keys');
+  assert.ok(uses('bouncing-turtle', 'onstep') && uses('bouncing-turtle', 'or'), 'the bouncing turtle has a timer and an or');
+  assert.ok(uses('click-flowers', 'onclick') && uses('click-flowers', 'call') && uses('click-flowers', 'random'), 'the flowers listen for clicks, have a block of their own and use random');
+  assert.ok(uses('catch-the-square', 'and') && uses('fat-snake', 'onkey') && uses('fat-snake', 'onstep'), 'and the two games are the ones from Steps 16 and 17');
+  for (const block of ['when paper clicked', 'when [key] pressed', 'every']) assert.ok(page.includes(`\`${block}\``), `names ${block}`);
+  assert.match(page, /You only have four boxes, `box1` to `box4`/);
+  assert.match(page, /Put `speed 4` under `start`/);
+  // the done-early idea works: a box plugged into every is read when the program starts listening, after an ask has put the answer in box1
+  assert.equal(sampleById('bouncing-turtle').timers[0].tenths, 0.5, 'and 0.5 is the fastest every may be, which the page says is too fast below');
+  assert.match(page, /smaller than 0\.5 on `every` is too fast/);
 });

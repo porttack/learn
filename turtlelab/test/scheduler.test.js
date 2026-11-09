@@ -514,3 +514,123 @@ test('an ask block inside a handler asks, and the click waits behind a question 
   sched.stop();
   await done;
 });
+
+// ---- Timers (the every blocks) ----------------------------------------------------------------------------------
+
+/** A repeating timer the test controls: `ring(i)` makes timer i go off once. */
+function fakeRepeats() {
+  const repeats = [];
+  return {
+    repeats,
+    setRepeat: (fn, ms) => {
+      repeats.push({ fn, ms, live: true });
+      return repeats.length - 1;
+    },
+    clearRepeat: (id) => {
+      repeats[id].live = false;
+    },
+    ring: (i) => repeats[i].fn(),
+  };
+}
+
+test('timers: they start when the program has run its last block, go off again and again, and stop with Stop', async () => {
+  const again = fakeRepeats();
+  const context = createContext({ turtle: new Turtle() });
+  const sched = new Scheduler({ ...fakeTime(), ...again, speed: 'instant' });
+  let asked = 0;
+  const done = sched.start(runBlocks([{ op: 'forward', args: [1] }], context), {
+    listen: true,
+    ticks: () => {
+      asked += 1;
+      return [{ ms: 200, make: () => runBlocks([{ op: 'forward', args: [10] }], context) }];
+    },
+  });
+  await flush();
+  assert.equal(asked, 1, 'the timers were made once the program was listening');
+  assert.deepEqual(again.repeats.map((r) => r.ms), [200]);
+  again.ring(0);
+  await flush();
+  assert.equal(context.turtle.y, 11);
+  again.ring(0);
+  again.ring(0); // (the second goes nowhere: the one before has not been picked up yet, so there is no pile)
+  await flush();
+  assert.equal(context.turtle.y, 21, 'one more tick, not two: a timer never queues a second tick while one waits or runs');
+  again.ring(0);
+  await flush();
+  assert.equal(context.turtle.y, 31, 'and once that tick is over the next one comes');
+  sched.stop();
+  assert.deepEqual(await done, { status: 'stopped' });
+  assert.equal(again.repeats[0].live, false, 'Stop cleared the timer');
+});
+
+test('timers: a program that has not got to listening has no timers yet, and one that ends or is stopped early never has them', async () => {
+  const again = fakeRepeats();
+  const context = createContext({ turtle: new Turtle() });
+  const time = fakeTime();
+  const sched = new Scheduler({ ...time, ...again, speed: 'slow' });
+  const done = sched.start(runBlocks([{ op: 'forward', args: [1] }, { op: 'forward', args: [1] }], context), { listen: true, ticks: () => [{ ms: 50, make: () => runBlocks([], context) }] });
+  await flush();
+  assert.equal(again.repeats.length, 0, 'the last block has not run yet');
+  sched.stop();
+  await done;
+  assert.equal(again.repeats.length, 0);
+  // a program that does not listen (the PDF's run) never makes them
+  const quiet = new Scheduler({ ...fakeTime(), ...again, speed: 'instant' });
+  let made = 0;
+  assert.deepEqual(await quiet.start(runBlocks([], context), { listen: false, ticks: () => { made += 1; return []; } }), { status: 'done' });
+  assert.equal(made, 0);
+});
+
+test('timers: several go off on their own, a stop block in a tick ends only that tick, and a slow tick is not run twice at once', async () => {
+  const again = fakeRepeats();
+  const context = createContext({ turtle: new Turtle() });
+  const sched = new Scheduler({ ...fakeTime(), ...again, speed: 'instant' });
+  const done = sched.start(runBlocks([], context), {
+    listen: true,
+    ticks: () => [
+      { ms: 100, make: () => runBlocks([{ op: 'forward', args: [1] }, { op: 'stop', args: [] }, { op: 'forward', args: [999] }], context) },
+      { ms: 300, make: () => runBlocks([{ op: 'right', args: [90] }], context) },
+    ],
+  });
+  await flush();
+  assert.deepEqual(again.repeats.map((r) => r.ms), [100, 300]);
+  again.ring(0);
+  again.ring(1);
+  await flush();
+  assert.equal(context.turtle.y, 1, 'the stop only ended the first tick');
+  assert.ok(sched.listening, 'the program is still listening');
+  sched.stop();
+  await done;
+});
+
+test('timers: a mistake while making them ends the program with that mistake, and a mistake in a tick does too', async () => {
+  const results = [];
+  const context = createContext({ turtle: new Turtle() });
+  const bad = new Scheduler({ ...fakeTime(), ...fakeRepeats(), speed: 'instant', onFinish: (r) => results.push(r) });
+  const hat = { op: 'onstep', args: [null] };
+  const first = await bad.start(runBlocks([], context), { listen: true, ticks: () => { throw new RunError('every needs a number', hat); } });
+  assert.equal(first.status, 'error');
+  assert.equal(first.error.block, hat);
+  assert.equal(bad.running, false);
+  const again = fakeRepeats();
+  const sched = new Scheduler({ ...fakeTime(), ...again, speed: 'instant' });
+  const done = sched.start(runBlocks([], context), { listen: true, ticks: () => [{ ms: 10, make: () => runBlocks([{ op: 'forward', args: [{ op: 'divide', args: [1, 0] }] }], context) }] });
+  await flush();
+  again.ring(0);
+  const result = await done;
+  assert.equal(result.status, 'error');
+  assert.equal(result.error.block.op, 'divide');
+  assert.equal(again.repeats[0].live, false, 'a program that ended in a mistake has no timers left');
+});
+
+test('timers: a new program takes the old one\'s timers away', async () => {
+  const again = fakeRepeats();
+  const context = createContext({ turtle: new Turtle() });
+  const sched = new Scheduler({ ...fakeTime(), ...again, speed: 'instant' });
+  sched.start(runBlocks([], context), { listen: true, ticks: () => [{ ms: 10, make: () => runBlocks([], context) }] });
+  await flush();
+  assert.equal(again.repeats[0].live, true);
+  const next = sched.start(runBlocks([{ op: 'forward', args: [1] }], context), { listen: false });
+  assert.equal(again.repeats[0].live, false);
+  await next;
+});

@@ -27,6 +27,7 @@ import { layoutStack, renderStack, walkNodes } from './block-view.js';
 import { HelpBubble } from './help-bubble.js';
 import { NOTE_MAX_CHARS, specOf } from '../core/blocks-spec.js';
 import { colorOfArgs } from '../core/color.js';
+import { KEYS, cleanKey } from '../core/keys.js';
 import { openColorPicker } from './color-picker.js';
 import { renameDefinition, setInput, uniquifyDefinition } from '../core/definitions.js';
 import { INPUT_MAX, NAME_MAX } from '../core/names.js';
@@ -287,6 +288,7 @@ export class Workspace {
     } else if (entry.type === 'nameslot') {
       if (entry.slot.editor === 'text') this.editText(entry);
       else if (entry.slot.editor === 'font') this.chooseFont(entry);
+      else if (entry.slot.editor === 'key') this.chooseKey(entry);
       else if (entry.slot.editor === 'color') this.chooseColor(entry);
       else this.editName(entry);
     } else if (entry.node.kind === 'note') {
@@ -981,6 +983,77 @@ export class Workspace {
     document.addEventListener('pointerdown', away, true);
     document.addEventListener('keydown', keys, true);
     options[LETTER_FONTS.findIndex((font) => font.id === current)].focus();
+  }
+
+  /**
+   * Open the list of keys under a when [key] pressed block's key box: the named keys (arrows, space, enter) on the first row, then the
+   * letters and the digits. Choosing one changes the block (one undo step); clicking anywhere else, or Escape, closes the list and
+   * changes nothing. (It shares fontMenuClose with the list of fonts: only one of them is open at a time.)
+   */
+  chooseKey(entry) {
+    this.closeFontMenu();
+    this.colorPickerClose?.();
+    const block = entry.node.block;
+    const box = entry.node.nameSlots[entry.index].el.getBoundingClientRect();
+    const stageBox = this.stage.getBoundingClientRect();
+    const current = cleanKey(block.key);
+
+    const menu = document.createElement('div');
+    menu.className = 'key-menu';
+    menu.setAttribute('role', 'listbox');
+    menu.setAttribute('aria-label', 'Key to listen for');
+    const options = KEYS.map((key) => {
+      const option = document.createElement('button');
+      option.type = 'button';
+      option.className = `key-option${key.label.length > 1 ? ' key-named' : ''}`; // (the named keys are wider than a letter or a digit)
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(key.id === current));
+      option.dataset.key = key.id;
+      option.textContent = key.label;
+      option.addEventListener('click', () => {
+        close();
+        if (key.id === current) return;
+        block.key = key.id;
+        this.render();
+        this.onChange();
+      });
+      menu.append(option);
+      return option;
+    });
+
+    let closed = false;
+    const away = (event) => {
+      if (!menu.contains(event.target)) close();
+    };
+    const keys = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close();
+      } else if (['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.key)) {
+        event.preventDefault();
+        const at = options.indexOf(document.activeElement);
+        const step = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? 1 : -1;
+        options[(at + step + options.length) % options.length].focus();
+      }
+    };
+    const close = () => {
+      if (closed) return;
+      closed = true;
+      this.fontMenuClose = null;
+      document.removeEventListener('pointerdown', away, true);
+      document.removeEventListener('keydown', keys, true);
+      menu.remove();
+    };
+    this.fontMenuClose = close;
+
+    this.stage.append(menu);
+    const room = this.stage.clientHeight - (box.bottom - stageBox.top) - 8;
+    const above = menu.offsetHeight > room && box.top - stageBox.top > menu.offsetHeight;
+    menu.style.left = `${Math.max(4, Math.min(box.left - stageBox.left, this.stage.clientWidth - menu.offsetWidth - 4))}px`;
+    menu.style.top = `${above ? box.top - stageBox.top - menu.offsetHeight - 4 : box.bottom - stageBox.top + 4}px`;
+    document.addEventListener('pointerdown', away, true);
+    document.addEventListener('keydown', keys, true);
+    options[KEYS.findIndex((key) => key.id === current)].focus();
   }
 
   /**

@@ -15,8 +15,9 @@ import { findRunStack, handlersOf } from '../js/core/project.js';
 import { definitionsOf } from '../js/core/definitions.js';
 import { runBlocks, createContext, Ask } from '../js/core/interpreter.js';
 import { Turtle } from '../js/core/turtle.js';
+import { cleanKey, keyOf } from '../js/core/keys.js';
 import { formatNumber } from '../js/core/format.js';
-import { SAMPLES, sampleStacks } from '../js/ui/samples.js';
+import { SAMPLES, sampleStacks, handlerCount } from '../js/ui/samples.js';
 
 const RUNNER = fileURLToPath(new URL('./python-runner.py', import.meta.url));
 const hasPython = spawnSync('python3', ['--version']).status === 0;
@@ -43,14 +44,16 @@ function mainLines(project) {
 
 // ---- Running both and comparing ---------------------------------------------------------------------
 
-function runPython(source, mode = 'run', answers = [], clicks = undefined) {
-  const result = spawnSync('python3', ['-I', RUNNER], { input: JSON.stringify({ source, mode, answers, clicks }), encoding: 'utf8' });
+function runPython(source, mode = 'run', answers = [], clicks = undefined, { keys = undefined, ticks = 0 } = {}) {
+  // (keys are given as ids, and the stand-in turtle is pressed with Python's names for them)
+  const pressed = keys?.map((id) => keyOf(id).python);
+  const result = spawnSync('python3', ['-I', RUNNER], { input: JSON.stringify({ source, mode, answers, clicks, keys: pressed, ticks }), encoding: 'utf8' });
   assert.equal(result.status, 0, `python3 failed:\n${result.stderr}\n--- program ---\n${source}`);
   return JSON.parse(result.stdout);
 }
 
 /** Run the blocks in TurtleLab's interpreter. Heading is given the way Python counts it. */
-function runBlocksHere(project, answers = [], clicks = []) {
+function runBlocksHere(project, answers = [], clicks = [], { keys = [], ticks = 0 } = {}) {
   const turtle = new Turtle();
   const printed = [];
   const { map } = definitionsOf(project);
@@ -70,8 +73,11 @@ function runBlocksHere(project, answers = [], clicks = []) {
   // then the clicks, as the page runs them: where the click was is set, and every handler runs, top to bottom
   for (const click of clicks) {
     context.mouse = { x: click[0], y: click[1] };
-    for (const handler of handlersOf(project)) drive(handler.blocks);
+    for (const handler of handlersOf(project)) if (handler.op === 'onclick') drive(handler.blocks);
   }
+  // then the keys (every handler for that key runs, in order), then each timer as many times as it goes off
+  for (const key of keys) for (const handler of handlersOf(project)) if (handler.op === 'onkey' && cleanKey(handler.hat.key) === key) drive(handler.blocks);
+  for (let tick = 0; tick < ticks; tick += 1) for (const handler of handlersOf(project)) if (handler.op === 'onstep') drive(handler.blocks);
   let length = 0;
   for (const op of turtle.ops) {
     if (op.type === 'line') length += Math.hypot(op.x2 - op.x1, op.y2 - op.y1);
@@ -83,10 +89,10 @@ function runBlocksHere(project, answers = [], clicks = []) {
 const turnBetween = (a, b2) => Math.abs((((a - b2) % 360) + 540) % 360 - 180);
 
 /** Check that Python and the blocks agree about where the turtle ended up and how far it drew. */
-function assertSame(project, label, { length = true, answers = [], clicks = undefined } = {}) {
+function assertSame(project, label, { length = true, answers = [], clicks = undefined, keys = undefined, ticks = 0 } = {}) {
   const source = toPython(project);
-  const python = runPython(source, 'run', answers, clicks);
-  const here = runBlocksHere(project, [...answers], clicks ?? []);
+  const python = runPython(source, 'run', answers, clicks, { keys, ticks });
+  const here = runBlocksHere(project, [...answers], clicks ?? [], { keys: keys ?? [], ticks });
   const near = (p, q, tolerance = 1e-6) => Math.abs(p - q) <= tolerance;
   assert.ok(near(python.x, here.x), `${label}: x is ${python.x} in Python and ${here.x} in the blocks\n${source}`);
   assert.ok(near(python.y, here.y), `${label}: y is ${python.y} in Python and ${here.y} in the blocks\n${source}`);
@@ -305,11 +311,11 @@ test('it is valid Python for every sample', needsPython, () => {
 
 test('every sample ends in the same place, having drawn as far, in Python and in the blocks', needsPython, () => {
   for (const sample of SAMPLES) {
-    // The wandering turtle turns by chance, and the game's square is put down by chance, and Python's chance is not ours. They are only checked to be valid.
-    if (sample.id === 'wandering-turtle' || sample.id === 'lesson-click-game') continue;
+    // The wandering turtle turns by chance, and the games' squares are put down by chance, and Python's chance is not ours. They are only checked to be valid.
+    if (sample.id === 'wandering-turtle' || sample.id === 'lesson-confetti-start' /* it ends at a random dot, so Python's chance and the blocks' cannot agree */ || (handlerCount(sample) > 0 && sample.concepts.includes('random'))) continue;
     // A write block draws letters that Python's turtle has no way to draw (see the test for it), so only where it ends is compared.
     // (a sample that waits for a person is given its answers and clicks, the same ones for Python and for the blocks)
-    assertSame(projectOf(...sampleStacks(sample)), sample.id, { length: !sample.concepts.includes('write'), answers: sample.answers ?? [], clicks: sample.clicks });
+    assertSame(projectOf(...sampleStacks(sample)), sample.id, { length: !sample.concepts.includes('write'), answers: sample.answers ?? [], clicks: sample.clicks, keys: sample.keys, ticks: sample.ticks ?? 0 });
   }
 });
 
@@ -548,6 +554,55 @@ test('click handlers: a click calls on_click with where it was, and the Python d
   assert.match(toPython(only), /# Your program starts here\nsetheading\(90\)\n[^\n]*\n[^\n]*\ntry:\n    onscreenclick\(on_click\)/, 'it starts the way TurtleLab does (facing up), then listens');
   assert.ok(!/Nothing runs yet/.test(toPython(only)));
   assertSame(only, 'only a handler', { clicks: [[0, 30]] });
+});
+
+test('key handlers: a key press calls its function, several for one key run in order, and the Python draws what the blocks draw', needsPython, () => {
+  const key = (id, ...blocks) => ({ x: 600, y: 0, blocks: [{ op: 'onkey', args: [], key: id }, ...blocks] });
+  const steer = projectOf(program(b('clean'), b('store1', 0)), key('right', b('right', 90)), key('left', b('left', 90)), key('up', b('forward', 25), b('store1', op('add', { op: 'box1' }, 1))));
+  for (const keys of [[], ['up'], ['right', 'up', 'up', 'left', 'left', 'up'], ['a', 'space', 'up']]) assertSame(steer, `${keys.join(' ')}`, { keys });
+  const source = toPython(steer);
+  assert.match(source, /^def on_key_right\(\):\n    right\(90\)/m);
+  assert.match(source, /^def on_key_up\(\):\n    global box1\n/m);
+  assert.match(source, /try:\n    onkeypress\(on_key_right, "Right"\).*\n    onkeypress\(on_key_left, "Left"\).*\n    onkeypress\(on_key_up, "Up"\).*\n    listen\(\).*\nexcept NameError:\n    pass/);
+  // two handlers for one key each are their own function, a stop only ends the one it is in, and the key runs them in order
+  const twice = projectOf(program(b('clean')), key('space', b('forward', 10), { op: 'stop', args: [] }, b('forward', 999)), key('space', b('right', 90), b('forward', 5)));
+  assertSame(twice, 'two handlers for space, a stop in the first', { keys: ['space', 'space'] });
+  assert.match(toPython(twice), /def on_key_space_1\(\):[\s\S]*def on_key_space_2\(\):[\s\S]*def on_key_space\(\):\n    on_key_space_1\(\)\n    on_key_space_2\(\)/);
+  // a letter, a digit and enter have their own names, and a page with only a key handler is a whole program (facing up first)
+  const names = projectOf(key('a', b('forward', 1)), key('7', b('forward', 2)), key('enter', b('forward', 4)));
+  assert.doesNotThrow(() => runPython(toPython(names), 'check'));
+  assert.match(toPython(names), /onkeypress\(on_key_a, "a"\)[\s\S]*onkeypress\(on_key_7, "7"\)[\s\S]*onkeypress\(on_key_enter, "Return"\)/);
+  assertSame(names, 'a letter, a digit and enter', { keys: ['a', '7', 'enter', 'enter'] });
+  assert.ok(!/Nothing runs yet/.test(toPython(names)));
+  // a key handler can read a box set by the program, and ask inside one works
+  assertSame(projectOf(program(b('clean'), b('store1', 12)), key('up', b('forward', { op: 'box1' }))), 'a key reads a box', { keys: ['up'] });
+});
+
+test('timers: an every block sets up its next time first and then does its blocks, and the Python draws what the blocks draw', needsPython, () => {
+  const every = (tenths, ...blocks) => ({ x: 600, y: 0, blocks: [{ op: 'onstep', args: [tenths] }, ...blocks] });
+  const walk = projectOf(program(b('clean'), b('store1', 0)), every(2, b('forward', 10), b('right', 15), b('store1', op('add', { op: 'box1' }, 1))));
+  for (const ticks of [0, 1, 5]) assertSame(walk, `${ticks} ticks`, { ticks });
+  const source = toPython(walk);
+  assert.match(source, /^def on_timer\(\):\n    global box1\n    try:\n        ontimer\(on_timer, 200\).*\n    except NameError:\n        pass.*\n    forward\(10\)/m);
+  assert.match(source, /try:\n    ontimer\(on_timer, 200\).*\nexcept NameError:\n    pass/);
+  // the time can be a box read when the program starts listening, and several timers each have their own function; a stop only ends that tick
+  const slower = projectOf(program(b('clean'), b('store2', 5)), every({ op: 'box2' }, b('forward', 3), { op: 'stop', args: [] }, b('forward', 999)), every(10, b('back', 1)));
+  assertSame(slower, 'two timers, a stop in the first', { ticks: 4 });
+  assert.match(toPython(slower), /def on_timer_1\(\):[\s\S]*ontimer\(on_timer_1, int\(box2 \* 100\)\)[\s\S]*def on_timer_2\(\):[\s\S]*ontimer\(on_timer_2, 1000\)/);
+  // keys and timers together (a snake in miniature), and a page with only a timer starts facing up
+  const both = projectOf(program(b('clean')), every(1, b('forward', 5)), { x: 600, y: 80, blocks: [{ op: 'onkey', args: [], key: 'left' }, b('left', 90)] });
+  assertSame(both, 'a timer and a key', { keys: ['left', 'left'], ticks: 3 });
+  const only = projectOf(every(5, b('forward', 2)));
+  assert.doesNotThrow(() => runPython(toPython(only), 'check'));
+  assertSame(only, 'only a timer', { ticks: 2 });
+});
+
+test('in EduBlocks, which has no onkeypress or ontimer, a program with a key handler and an every block still runs: the calls are guarded and nothing happens', needsPython, () => {
+  const project = projectOf(program(b('clean'), b('forward', 10)), { x: 600, y: 0, blocks: [{ op: 'onkey', args: [], key: 'up' }, b('forward', 99)] }, { x: 600, y: 90, blocks: [{ op: 'onstep', args: [3] }, b('forward', 99)] });
+  const result = runPython(toPython(project), 'run'); // (no keys, no ticks: no onkeypress, no ontimer, as in EduBlocks)
+  assert.equal(result.y, 10, 'the program ran and the handlers did not');
+  const { free } = namesUsedBy(project);
+  for (const name of ['onkeypress', 'listen', 'ontimer']) assert.ok(!free.includes(name), `${name} is only used where its absence is caught`);
 });
 
 test('in EduBlocks, which has no onscreenclick, a program with a click handler still runs: the call is guarded and nothing happens', needsPython, () => {

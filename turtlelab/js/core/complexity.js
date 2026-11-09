@@ -54,7 +54,8 @@ const CHANCE = new Set(['random', 'oneof']);
 const LOOPS = new Set(['repeat', 'forever']);
 const CONDITIONALS = new Set(['if', 'ifelse']);
 /** Blocks that are not "plain blocks" to count: the hats that start a stack, and notes. */
-const NOT_COUNTED = new Set(['start', 'to', 'onclick', 'note']);
+const HANDLER_KINDS = ['onclick', 'onkey', 'onstep'];
+const NOT_COUNTED = new Set(['start', 'to', 'onclick', 'onkey', 'onstep', 'note']);
 
 const boxNumber = (op, prefix) => {
   const m = new RegExp(`^${prefix}([1-9][0-9]*)$`).exec(op);
@@ -86,7 +87,9 @@ export function inspect(project) {
     blocks: 0, loops: 0, nestedLoops: 0, conditionals: 0, elseWays: 0, conditionalsInLoops: 0, operators: 0, chance: 0,
     stores: new Array(BOX_COUNT + 1).fill(0), reads: new Array(BOX_COUNT + 1).fill(0), counters: 0,
     inputs: 0, inputUses: 0, definitions: new Map(), calls: new Map(), recursive: new Set(),
-    asks: 0, handlers: 0, handlersWithBlocks: 0, mouseReads: 0, // user input: ask blocks, click handlers (and those with blocks in them), and reads of mouseX and mouseY
+    asks: 0, handlers: 0, handlersWithBlocks: 0, mouseReads: 0, // user input: ask blocks, event handlers (and those with blocks in them), and reads of mouseX and mouseY
+    handlerKinds: { onclick: 0, onkey: 0, onstep: 0 }, // ... of each kind: a click on the paper, a key, a timer
+    emptyHandler: null, // the kind of the first handler with nothing under it, for the tip
   };
 
   /** `loops` is how many loops this block is inside; `own` is the key of the block being defined (or null). */
@@ -141,14 +144,22 @@ export function inspect(project) {
       found.inputs += params.size;
       walk(blocks.slice(1), 0, key, params);
     } else {
-      if (blocks[0]?.op === 'onclick') {
+      if (HANDLER_KINDS.includes(blocks[0]?.op)) {
         found.handlers += 1;
+        found.handlerKinds[blocks[0].op] += 1;
         if (blocks.length > 1) found.handlersWithBlocks += 1; // an empty one earns nothing
+        else found.emptyHandler ??= blocks[0].op;
       }
       walk(blocks, 0, null, new Set());
     }
   }
   return found;
+}
+
+/** "1 click handler, 2 key handlers, 1 timer": the event handlers of each kind, in words. */
+function handlerWordsOf(kinds) {
+  const many = (count, one, more) => (count === 0 ? '' : `${count} ${count === 1 ? one : more}`);
+  return [many(kinds.onclick, 'click handler', 'click handlers'), many(kinds.onkey, 'key handler', 'key handlers'), many(kinds.onstep, 'timer', 'timers')].filter(Boolean).join(', ');
 }
 
 /**
@@ -213,7 +224,7 @@ export function scoreProject(project) {
   const bonusPoints = (ideas.loops ? POINTS.idea : 0) + (ideas.conditionals ? POINTS.idea : 0) + (ideas.ownBlocks ? POINTS.idea : 0) + (ideas.userInput ? POINTS.idea : 0)
     + (ideas.variables ? POINTS.variableIdea : 0) + (firstFour ? POINTS.allIdeas : 0);
   const askWords = found.asks === 0 ? '' : `${found.asks} ${found.asks === 1 ? 'ask' : 'asks'}`;
-  const handlerWords = found.handlers === 0 ? '' : `${found.handlers} click ${found.handlers === 1 ? 'handler' : 'handlers'}`;
+  const handlerWords = handlerWordsOf(found.handlerKinds);
 
   const parts = [
     { id: 'variables', label: 'Variables', count: variableCount, points: variablePoints, detail: variableCount === 0 ? '' : `${boxesUsed} ${boxesUsed === 1 ? 'box' : 'boxes'}, ${found.inputs} ${found.inputs === 1 ? 'input' : 'inputs'}${found.counters > 0 ? `, ${found.counters} ${found.counters === 1 ? 'counter' : 'counters'}` : ''}` },
@@ -242,11 +253,15 @@ function tipFor(ideas, found) {
   if (!ideas.ownBlocks) return 'Try making a block of your own with to, then use it.';
   if (found.counters === 0) return 'A counter is worth a lot: store in a box the same box plus 1, inside a loop.';
   if (found.nestedLoops === 0) return 'A loop inside a loop is worth more.';
-  if (found.handlers > 0 && found.handlersWithBlocks === 0) return 'Put blocks under when paper clicked, and they run every time you click the paper.';
+  if (found.handlers > 0 && found.handlersWithBlocks === 0) {
+    if (found.emptyHandler === 'onkey') return 'Put blocks under when key pressed, and they run every time you press the key.';
+    if (found.emptyHandler === 'onstep') return 'Put blocks under every, and they run again and again.';
+    return 'Put blocks under when paper clicked, and they run every time you click the paper.';
+  }
   if (!ideas.userInput) {
     return found.asks > 0
       ? 'The ask block puts its answer in box1. Use it: plug box1 into a block, like the number of a repeat.'
-      : 'Try input: the ask block asks for a number, and when paper clicked runs blocks every time you click.';
+      : 'Try input: the ask block asks for a number, and when paper clicked or when a key is pressed runs blocks every time.';
   }
   return 'You are using all the big ideas. Keep going: a block that uses itself earns more.';
 }

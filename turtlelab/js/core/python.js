@@ -27,7 +27,8 @@
 // This only writes text. A test runs the Python it makes (against a stand-in for the
 // turtle module) and checks it ends up where TurtleLab's own interpreter does.
 
-import { findRunStack, handlersOf, walkBlocks } from './project.js';
+import { HANDLER_OPS, findRunStack, handlersOf, walkBlocks } from './project.js';
+import { cleanKey, keyOf } from './keys.js';
 import { definitionsOf, isDefinition } from './definitions.js';
 import { nameKey, tidyName } from './names.js';
 import { formatNumber } from './format.js';
@@ -109,10 +110,13 @@ function survey(stacks) {
 export function toPython(project) {
   const { map: definitions } = definitionsOf(project);
   const { stack: main } = findRunStack(project);
-  const handlers = handlersOf(project);
+  const events = handlersOf(project); // every event handler: a click, a key, a timer
+  const handlers = events.filter((handler) => handler.op === 'onclick'); // the click handlers
+  const keyHandlers = events.filter((handler) => handler.op === 'onkey');
+  const stepHandlers = events.filter((handler) => handler.op === 'onstep');
   const notes = project.stacks.filter((stack) => stack.blocks[0]?.op === 'note').sort((a, b) => a.y - b.y || a.x - b.x);
   const defined = [...definitions.values()];
-  if (!main && defined.length === 0 && handlers.length === 0) {
+  if (!main && defined.length === 0 && events.length === 0) {
     return '# Drag some blocks onto the page and the Python for them shows up here.\n';
   }
 
@@ -128,11 +132,11 @@ export function toPython(project) {
   }
 
   const mainBlocks = main ? main.blocks : [];
-  const uses = survey([mainBlocks, ...defined.map((found) => found.body), ...handlers.map((handler) => handler.blocks)]);
+  const uses = survey([mainBlocks, ...defined.map((found) => found.body), ...events.map((handler) => handler.blocks), ...stepHandlers.map((handler) => [handler.hat])]);
   if (handlers.length > 0) uses.mouse = true; // a click handler sets mouseX and mouseY
   // TurtleLab's turtle starts facing up with a red pen and Python's faces east with a
   // black one, so a program that does not begin with `clean` is given that start.
-  const needsStart = (Boolean(main) || handlers.length > 0) && mainBlocks.find((block) => block.op !== 'start')?.op !== 'clean';
+  const needsStart = (Boolean(main) || events.length > 0) && mainBlocks.find((block) => block.op !== 'start')?.op !== 'clean';
   if (needsStart) uses.colors = true;
   const lines = [];
   const add = (text = '') => lines.push(text);
@@ -287,6 +291,67 @@ export function toPython(project) {
     }
   }
 
+  // Each key a `when [key] pressed` listens for becomes a function Python's turtle calls when the key is pressed (onkeypress). With several handlers
+  // for one key, each is its own function and the key's function runs them in order, the way every one runs on each press in the blocks.
+  const handlerContext = { functionNames, parameters: new Map(), inFunction: true, taken, track };
+  const globalsOf = (blocks) => {
+    const assigned = new Set();
+    walkBlocks(blocks, (block) => {
+      const box = /^store(\d+)$/.exec(block.op);
+      if (box) assigned.add(Number(box[1]));
+      if (block.op === 'ask') assigned.add(1);
+    });
+    return assigned.size > 0 ? [`${INDENT}global ${[...assigned].sort((a, b) => a - b).map((n) => `box${n}`).join(', ')}`] : [];
+  };
+  const keysUsed = new Map();
+  for (const handler of keyHandlers) {
+    const id = cleanKey(handler.hat.key);
+    if (!keysUsed.has(id)) keysUsed.set(id, []);
+    keysUsed.get(id).push(handler);
+  }
+  for (const [id, list] of keysUsed) {
+    const name = `on_key_${id}`;
+    if (list.length > 1) {
+      list.forEach((handler, i) => {
+        add();
+        add();
+        add(`def ${name}_${i + 1}():`);
+        globalsOf(handler.blocks).forEach((line) => add(line));
+        body(handler.blocks, 1, handlerContext).forEach((line) => add(line));
+      });
+    }
+    add();
+    add();
+    add(`# Runs each time the ${keyOf(id).label} key is pressed`);
+    add(`def ${name}():`);
+    if (list.length > 1) {
+      list.forEach((handler, i) => add(`${INDENT}${name}_${i + 1}()`));
+    } else {
+      globalsOf(list[0].blocks).forEach((line) => add(line));
+      body(list[0].blocks, 1, handlerContext).forEach((line) => add(line));
+    }
+  }
+
+  // Each `every` block becomes a function that sets up its own next time first (ontimer, in milliseconds), so it comes round again even if the
+  // blocks stop early, and then does the blocks. EduBlocks has no ontimer, so there the every blocks do nothing.
+  const timerCalls = stepHandlers.map((handler, i) => {
+    const tenths = handler.hat.args?.[0];
+    const ms = typeof tenths === 'number' ? fmt(tenths * 100) : `int(${expr(tenths, handlerContext, PRODUCT).text} * 100)`;
+    return { handler, name: stepHandlers.length === 1 ? 'on_timer' : `on_timer_${i + 1}`, ms };
+  });
+  for (const { handler, name, ms } of timerCalls) {
+    add();
+    add();
+    add(`# Runs again and again, ${typeof handler.hat.args?.[0] === 'number' ? `${fmt(handler.hat.args[0] / 10)} seconds apart` : 'as far apart as its number says'}`);
+    add(`def ${name}():`);
+    globalsOf(handler.blocks).forEach((line) => add(line));
+    add(`${INDENT}try:`);
+    add(`${INDENT}${INDENT}ontimer(${name}, ${ms})  # the next one is set up first, so it comes even if the blocks stop early`);
+    add(`${INDENT}except NameError:`);
+    add(`${INDENT}${INDENT}pass  # EduBlocks has no ontimer, so the every blocks do nothing there`);
+    body(handler.blocks, 1, handlerContext).forEach((line) => add(line));
+  }
+
   if (main) {
     const context = { functionNames, parameters: new Map(), inFunction: false, taken, track };
     add();
@@ -298,13 +363,13 @@ export function toPython(project) {
       add(size5(track));
     }
     body(mainBlocks, 0, context).forEach((line) => add(line));
-  } else if (handlers.length === 0) {
+  } else if (events.length === 0) {
     add();
     add('# Nothing runs yet: add a Start block, and under it a call to your block.');
   }
-  if (handlers.length > 0) {
+  if (events.length > 0) {
     if (!main) {
-      // only a click handler: nothing runs first, but the turtle still starts the way TurtleLab's does
+      // only event handlers: nothing runs first, but the turtle still starts the way TurtleLab's does
       add();
       add();
       add('# Your program starts here');
@@ -316,12 +381,28 @@ export function toPython(project) {
     }
     // Python's turtle calls on_click when the paper is clicked, once done() below is waiting for clicks. EduBlocks has no onscreenclick, so there the
     // clicks do nothing (it is allowed not to exist, like done()).
-    add('try:');
-    add(`${INDENT}onscreenclick(on_click)  # clicks on the paper call on_click`);
-    add('except NameError:');
-    add(`${INDENT}pass  # EduBlocks has no onscreenclick, so clicks do nothing there`);
+    if (handlers.length > 0) {
+      add('try:');
+      add(`${INDENT}onscreenclick(on_click)  # clicks on the paper call on_click`);
+      add('except NameError:');
+      add(`${INDENT}pass  # EduBlocks has no onscreenclick, so clicks do nothing there`);
+    }
+    // The same for keys (the window only hears them after listen) and for the timers.
+    if (keysUsed.size > 0) {
+      add('try:');
+      for (const id of keysUsed.keys()) add(`${INDENT}onkeypress(on_key_${id}, "${keyOf(id).python}")  # the ${keyOf(id).label} key calls on_key_${id}`);
+      add(`${INDENT}listen()  # the turtle window only hears keys after this`);
+      add('except NameError:');
+      add(`${INDENT}pass  # EduBlocks has no onkeypress, so keys do nothing there`);
+    }
+    if (timerCalls.length > 0) {
+      add('try:');
+      for (const { name, ms } of timerCalls) add(`${INDENT}ontimer(${name}, ${ms})  # starts the timer`);
+      add('except NameError:');
+      add(`${INDENT}pass  # EduBlocks has no ontimer, so the every blocks do nothing there`);
+    }
   }
-  if (main || handlers.length > 0) {
+  if (main || events.length > 0) {
     // done() keeps the turtle window open when the program is run as a file (and waiting for clicks). EduBlocks has no
     // done(), and does not need one, so it is not allowed to be an error there.
     add('try:');
@@ -332,7 +413,7 @@ export function toPython(project) {
 
   const loose = project.stacks.filter((stack) => {
     const op = stack.blocks[0]?.op;
-    return stack !== main && op !== 'note' && op !== 'to' && op !== 'onclick' && stack.blocks.length > 0;
+    return stack !== main && op !== 'note' && op !== 'to' && !HANDLER_OPS.has(op) && stack.blocks.length > 0;
   }).length;
   if (loose > 0) {
     add();

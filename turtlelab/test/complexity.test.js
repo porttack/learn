@@ -288,6 +288,27 @@ test('using input on top of the four older ideas makes five of five, and a progr
   assert.equal(scoreProject(allInBox2).ideas.userInput, false);
   const emptyHandler = project(...all.stacks.map((s) => s.blocks), handler());
   assert.match(scoreProject(emptyHandler).tip, /Put blocks under when paper clicked/);
+  assert.match(scoreProject(project(...all.stacks.map((s) => s.blocks), [{ op: 'onkey', args: [], key: 'up' }])).tip, /Put blocks under when key pressed/);
+  assert.match(scoreProject(project(...all.stacks.map((s) => s.blocks), [{ op: 'onstep', args: [5] }])).tip, /Put blocks under every/);
   // input did not change what the older ideas pay: the same program without input scores the same points in every other row
   for (const id of ['variables', 'loops', 'conditionals', 'ownBlocks', 'math', 'blocks']) assert.equal(part(without, id).points, part(scoreProject(project(...all.stacks.map((s) => s.blocks))), id).points);
+});
+
+test('key handlers and timers are event handlers too: they earn what a click handler earns only with blocks in them, and the detail says which kind', () => {
+  const stack = (hat, ...blocks) => ({ x: 600, y: 0, blocks: [hat, ...blocks] });
+  const key = { op: 'onkey', args: [], key: 'up' };
+  const timer = { op: 'onstep', args: [5] };
+  const click = { op: 'onclick', args: [] };
+  const part = (project, id) => scoreProject(project).parts.find((p) => p.id === id);
+  const forward = { op: 'forward', args: [10] };
+  const alone = (hat, ...blocks) => ({ stacks: [stack(hat, ...blocks)] });
+  assert.equal(part(alone(key, forward), 'userInput').detail, '1 key handler');
+  assert.equal(part(alone(timer, forward), 'userInput').detail, '1 timer');
+  assert.equal(part(alone(key), 'userInput').points, 0, 'an empty one earns nothing');
+  assert.equal(part(alone(key, forward), 'userInput').points, part(alone(click, forward), 'userInput').points, 'a key handler is worth what a click handler is');
+  const all = { stacks: [stack(click, forward), stack(key, forward), { x: 600, y: 90, blocks: [key, forward] }, stack(timer, forward)] };
+  assert.equal(part(all, 'userInput').detail, '1 click handler, 2 key handlers, 1 timer');
+  assert.equal(part(all, 'userInput').count, 4);
+  // the hats are not blocks that count, and a handler is not a stray stack
+  assert.equal(scoreProject(alone(key, forward)).parts.find((p) => p.id === 'blocks').count, 1);
 });

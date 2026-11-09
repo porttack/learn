@@ -140,6 +140,8 @@ const COMMANDS = {
   start: () => {},
   // a click handler's hat is only a name for the stack: the scheduler runs the blocks under it when the paper is clicked
   onclick: () => {},
+  onkey: () => {},
+  onstep: () => {},
   // a note is words for people, so running one does nothing
   note: () => {},
   // The `to` block only names a definition. It is never run: calling the block

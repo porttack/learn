@@ -31,6 +31,10 @@ const box3 = { op: 'box3' };
 const box4 = { op: 'box4' };
 const mouseX = { op: 'mousex' };
 const mouseY = { op: 'mousey' };
+const xNow = { op: 'x' };
+const yNow = { op: 'y' };
+const penSize = { op: 'pensize' };
+const onKey = (key, ...body) => ({ key, body });
 const input = (name) => ({ op: 'input', name });
 const call = (name, params, ...args) => ({ op: 'call', name, params, args });
 
@@ -118,6 +122,106 @@ const initialsProgram = () => [
   call('place', ['x', 'y'], 76, -60), call('letter C', []),
 ];
 
+const octagon = (ups) => Array.from({ length: 8 }, () => [...Array(ups).fill('up'), 'right']).flat(); // (the keys that draw an octagon: some ups, then a turn, eight times)
+
+/** The click game, shared by the Samples page's Catch the square and the lesson's frame of it (the frame hides the blocks). */
+const CLICK_GAME = {
+  concepts: ['when paper clicked', 'and', 'if', 'boxes', 'random', 'my own block', 'start fill'],
+  note: 'Click inside the red square. Each hit adds 1 to box1, your score, and the square jumps to a new place. box2 and box3 are where the square is, and box4 works out how far the click is from its corner.',
+  clicks: [[330, -260]], // (a click that always misses, so a check can tell the handler ran without knowing where the square is)
+  defines: [
+    {
+      name: 'target',
+      params: [],
+      body: [
+        b('clean'),
+        b('store2', b('random', -300, 240)),
+        b('store3', b('random', -220, 130)),
+        b('penup'),
+        b('setxy', box2, box3),
+        b('pendown'),
+        b('startfill'),
+        rep(4, b('forward', 60), b('right', 90)),
+        b('endfill'),
+      ],
+    },
+  ],
+  handlers: [
+    [
+      b('store4', minus(mouseX, box2)),
+      { op: 'if', args: [b('and', b('greater', box4, 0), b('less', box4, 60))], body: [
+        b('store4', minus(mouseY, box3)),
+        { op: 'if', args: [b('and', b('greater', box4, 0), b('less', box4, 60))], body: [b('store1', sum(box1, 1)), call('target', [])] },
+      ] },
+    ],
+  ],
+  program: [b('start'), b('clean'), b('store1', 0), call('target', [])],
+};
+
+/** The snake, shared by the Samples page's Fat snake and the lesson's frame of it (the frame hides the blocks). */
+const SNAKE_GAME = {
+  concepts: ['when key pressed', 'every', 'and', 'or', 'if', 'boxes', 'random', 'my own block', 'start fill', 'speed'],
+  note: 'Click the paper once, then steer with the arrow keys. Eating a red square makes the snake fatter (its pen size goes up). box1 and box2 are where the square is. box3 and box4 remember where the snake was.',
+  keys: ['up', 'right', 'down'],
+  ticks: 4,
+  defines: [
+    {
+      name: 'food',
+      params: [],
+      body: [
+        b('store3', xNow),
+        b('store4', yNow),
+        b('penup'),
+        b('setxy', b('random', -300, 240), b('random', -220, 130)),
+        b('store1', xNow),
+        b('store2', yNow),
+        b('setcolor', 255, 0, 0),
+        b('startfill'),
+        rep(4, b('forward', 40), b('right', 90)),
+        b('endfill'),
+        b('setcolor', 0, 150, 0),
+        b('setxy', box3, box4),
+        b('pendown'),
+      ],
+    },
+    {
+      name: 'restart',
+      params: [],
+      body: [
+        b('clean'),
+        b('setpensize', 8),
+        b('penup'),
+        b('setxy', 0, 0),
+        b('setheading', 90),
+        b('pendown'),
+        call('food', []),
+      ],
+    },
+  ],
+  keyHandlers: [
+    onKey('up', b('setheading', 0)),
+    onKey('right', b('setheading', 90)),
+    onKey('down', b('setheading', 180)),
+    onKey('left', b('setheading', 270)),
+  ],
+  timers: [
+    {
+      tenths: 2,
+      body: [
+        b('forward', 20),
+        { op: 'if', args: [b('or', b('greater', xNow, 330), b('less', xNow, -330))], body: [call('restart', [])] },
+        { op: 'if', args: [b('or', b('greater', yNow, 260), b('less', yNow, -260))], body: [call('restart', [])] },
+        b('store3', minus(xNow, box1)),
+        b('store4', minus(yNow, box2)),
+        { op: 'if', args: [b('and', b('greater', box3, -30), b('less', box3, 60))], body: [
+          { op: 'if', args: [b('and', b('greater', box4, -30), b('less', box4, 60))], body: [b('setpensize', sum(penSize, 4)), call('food', [])] },
+        ] },
+      ],
+    },
+  ],
+  program: [b('start'), b('clean'), b('speed', 4), call('restart', [])],
+};
+
 /**
  * The samples, easiest first. Fields:
  *   id        the name in ?sample=... (lowercase letters and dashes)
@@ -130,6 +234,11 @@ const initialsProgram = () => [
  *   defines   optional: blocks the sample makes, each { name, params, body }
  *   handlers  optional: click handlers, each a list of the blocks under a `when paper clicked` hat. They go with the blocks it makes (down the left), and a sample with one
  *             waits for clicks after its last block, until Stop.
+ *   keyHandlers optional: key handlers, each { key, body }: the blocks under a `when [key] pressed` hat (use `onKey('up', ...)`). They are packed with the blocks it makes and the click
+ *             handlers, and a sample with one waits for keys after its last block, until Stop.
+ *   timers    optional: timers, each { tenths, body }: the blocks under an `every [tenths]` hat. They start ticking once the last block has run.
+ *   keys      optional, for the tests and the browser checks only: the keys to press, in order, after the program has run (and the clicks have been made)
+ *   ticks     optional, for the tests and the browser checks only: how many times each timer goes off (after the keys are pressed)
  *   allLeft   optional, true to put the note, the program and the blocks it makes all down the left (note first, then the program, then the rest) and leave the right edge empty. For a
  *             sample that prints, since the Output box sits at the top right edge and would cover blocks there, and for one the student clicks on, so the whole paper is clear
  *   answers   optional, for the tests and the browser checks only: what to type when an ask block asks, in order (a sample that asks waits for a person, so the checks need to be one)
@@ -481,6 +590,86 @@ export const SAMPLES = [
   // These three are made for a stitching (embroidery) machine: only lines, no filled shapes, as few
   // separate lines as possible, and no more than two colors. Right-click Save and choose PES or DST.
   {
+    id: 'keyboard-painter',
+    title: 'Keyboard painter',
+    summary: 'Draw with the keyboard. The up and down arrows walk the turtle, left and right turn it, and r, g and b change its color.',
+    look: 'Three red, green and blue eight sided shapes, one inside the next',
+    concepts: ['when key pressed', 'forward', 'left', 'right', 'set color'],
+    note: 'Click the paper once, then press the keys: the arrows steer, and r, g and b change the color. Each when block runs every time you press its key. Press Stop when you are done.',
+    keys: ['b', ...octagon(1), 'g', ...octagon(2), 'r', ...octagon(3)],
+    allLeft: true,
+    keyHandlers: [
+      onKey('up', b('forward', 25)),
+      onKey('down', b('back', 25)),
+      onKey('left', b('left', 45)),
+      onKey('right', b('right', 45)),
+      onKey('r', b('setcolor', 255, 0, 0)),
+      onKey('g', b('setcolor', 0, 170, 0)),
+      onKey('b', b('setcolor', 0, 60, 255)),
+    ],
+    program: [b('start'), b('clean'), b('setpensize', 4)],
+  },
+  {
+    id: 'bouncing-turtle',
+    title: 'The bouncing turtle',
+    summary: 'A timer moves the turtle by itself. When it gets near an edge it backs up and turns, so it bounces around the paper and draws a pattern.',
+    look: 'Many straight lines crossing each other inside a rectangle',
+    concepts: ['every', 'or', 'if', 'forward', 'right', 'speed'],
+    note: 'Watch: the every block runs by itself, 20 times a second. The first if with or asks if the turtle is near the left or right edge, the second the top or bottom. Then it backs up and turns. Change the 97 to make a different pattern.',
+    ticks: 160,
+    timers: [
+      {
+        tenths: 0.5,
+        body: [
+          b('forward', 40),
+          { op: 'if', args: [b('or', b('greater', xNow, 300), b('less', xNow, -300))], body: [b('back', 40), b('right', 97)] },
+          { op: 'if', args: [b('or', b('greater', yNow, 230), b('less', yNow, -230))], body: [b('back', 40), b('right', 97)] },
+        ],
+      },
+    ],
+    program: [b('start'), b('clean'), b('setpensize', 2), b('speed', 4), b('right', 20)],
+  },
+  {
+    id: 'click-flowers',
+    title: 'Click flowers',
+    summary: 'Click the paper and a flower of turning squares opens where you clicked, in a color and a size chosen by chance.',
+    look: 'Several colorful flowers made of turning squares',
+    concepts: ['when paper clicked', 'mouseX and mouseY', 'my own block', 'random', 'repeat'],
+    note: 'Click the paper, again and again. Each click runs the blocks under when paper clicked: they move to where you clicked and use the flower block, which you can see on the left. Press Stop when you are done.',
+    clicks: [[-220, 110], [10, -90], [200, 120], [-110, -130], [140, -110]],
+    defines: [
+      {
+        name: 'flower',
+        params: ['size'],
+        body: [rep(12, rep(4, b('forward', input('size')), b('right', 90)), b('right', 30))],
+      },
+    ],
+    handlers: [
+      [
+        b('penup'),
+        b('setxy', mouseX, mouseY),
+        b('pendown'),
+        b('setcolor', b('random', 0, 255), b('random', 0, 255), b('random', 0, 255)),
+        call('flower', ['size'], b('random', 20, 40)),
+      ],
+    ],
+    program: [b('start'), b('clean'), b('setpensize', 2)],
+  },
+  {
+    id: 'catch-the-square',
+    title: 'Catch the square',
+    summary: 'A game. A red square sits at a random place. Click inside it to score a point, and it jumps somewhere else.',
+    look: 'A small red square on an empty paper',
+    ...CLICK_GAME,
+  },
+  {
+    id: 'fat-snake',
+    title: 'The fat snake',
+    summary: 'A game. The snake moves by itself, and you steer it with the arrow keys. Eat the red squares and it gets fatter. Go off the edge and it starts again.',
+    look: 'A green line on the paper and a small red square',
+    ...SNAKE_GAME,
+  },
+  {
     id: 'stitch-heart',
     title: 'A heart to stitch',
     summary: 'One unbroken line, which is what an embroidery machine likes best.',
@@ -605,6 +794,71 @@ export const SAMPLES = [
   // by 520. They are not on the Samples page and have no thumbnail. The four "bug" ones are broken on purpose: the note says what the program is FOR, never
   // what is wrong with it (the lesson, Step 11, has the hints and the answers).
   {
+    // Step 3's start on confetti: the pen and the x places are done, so a band of red dots shows at once, and the student fixes two things: the y places (picked
+    // from -20 to 20, so the band is thin: the paper runs -280 to 280) and the color (three plain numbers, red, until they plug a random block into each).
+    // test/lessons.test.js ("Step 3") fixes the numbers and checks the dots spread.
+    id: 'lesson-confetti-start',
+    listed: false,
+    title: 'Confetti, a start',
+    summary: 'Sixty red dots in a band across the middle, waiting for the places and the colors to be fixed.',
+    look: 'A thin band of red dots across the middle of the paper',
+    concepts: ['random', 'repeat', 'color', 'pen up and down'],
+    note: 'Sixty dots, but they all land in a thin band and they are all red. Fix the y place, then plug a random block into each color number, so the dots cover the paper in every color.',
+    program: [
+      b('start'),
+      b('clean'),
+      b('setpensize', 20),
+      rep(
+        60,
+        b('penup'),
+        b('setxy', b('random', -350, 350), b('random', -20, 20)),
+        b('pendown'),
+        b('setcolor', 255, 0, 0),
+        b('forward', 1),
+      ),
+    ],
+  },
+  {
+    // Step 2's checks for the turn a triangle and a pentagon need (the student works the turn out first, then runs these), and its "you choose the sides" demo.
+    // The sides demo walks 600 divided by the sides on each side, so a shape is about 600 steps around whether it has 3 sides or 100 and always fits the paper.
+    id: 'lesson-triangle',
+    listed: false,
+    title: 'A triangle',
+    summary: 'Three sides, with the turn that closes them.',
+    look: 'A blue triangle with thick sides',
+    concepts: ['repeat'],
+    note: 'A triangle is three sides and three turns. Press Run to check the turn you worked out. Then change the 120 to 100 and run it again.',
+    program: [b('start'), b('clean'), b('setcolor', 0, 90, 220), b('setpensize', 6), rep(3, b('forward', 120), b('right', 120))],
+  },
+  {
+    id: 'lesson-pentagon',
+    listed: false,
+    title: 'A pentagon',
+    summary: 'Five sides, with the turn that closes them.',
+    look: 'A blue pentagon with thick sides',
+    concepts: ['repeat'],
+    note: 'A pentagon is five sides and five turns. Press Run to check the turn you worked out. Then change the 5 on the repeat to 6 and run it again.',
+    program: [b('start'), b('clean'), b('setcolor', 0, 90, 220), b('setpensize', 6), rep(5, b('forward', 100), b('right', 72))],
+  },
+  {
+    id: 'lesson-sides-any',
+    listed: false,
+    title: 'Any number of sides, you choose',
+    summary: 'The program asks how many sides, then works out the turn itself.',
+    look: 'A blue shape with as many sides as the number that was typed',
+    concepts: ['ask', 'boxes', 'repeat', 'divide'],
+    note: 'Press Run, type a number of sides and press Enter. The turn is 360 divided by your number, so the shape always closes. Try 3, 5, 8, then 40 and 100.',
+    answers: [5],
+    program: [
+      b('start'),
+      b('clean'),
+      b('setcolor', 0, 90, 220),
+      b('setpensize', 5),
+      { op: 'ask', args: [], text: 'How many sides?' },
+      rep(box1, b('forward', b('divide', 600, box1)), b('right', b('divide', 360, box1))),
+    ],
+  },
+  {
     id: 'lesson-l',
     listed: false,
     title: 'Draw an L',
@@ -623,6 +877,36 @@ export const SAMPLES = [
       b('forward', 120),
       b('left', 90),
       b('forward', 60),
+    ],
+  },
+  {
+    // Step 1's second frame: how to travel between letters, with every block in the one program (no `to` blocks, which Step 8 teaches). Both letters start at their
+    // top left corner facing down, so the same four blocks (pen up, set xy, set heading 180, pen down) begin each one, and the L ends facing right (90), which is why
+    // the set heading before the I matters. test/lessons.test.js pins the page's claims about it.
+    id: 'lesson-travel',
+    listed: false,
+    title: 'Two letters, and how to travel',
+    summary: 'An L and an I, with the four blocks that walk the turtle from one letter to the next.',
+    look: 'A red letter L and, beside it, a tall red line, an I',
+    concepts: ['forward and turn', 'pen up and down', 'speed'],
+    note: 'Between the L and the I the turtle lifts the pen, walks to the next place, turns to face down and puts the pen down again. Watch it go.',
+    clearWidth: 130,
+    program: [
+      b('start'),
+      b('clean'),
+      b('speed', 2),
+      b('penup'),
+      b('setxy', -150, 60),
+      b('setheading', 180),
+      b('pendown'),
+      b('forward', 120),
+      b('left', 90),
+      b('forward', 60),
+      b('penup'),
+      b('setxy', -40, 60),
+      b('setheading', 180),
+      b('pendown'),
+      b('forward', 120),
     ],
   },
   {
@@ -932,39 +1216,58 @@ export const SAMPLES = [
     id: 'lesson-click-game',
     listed: false,
     hideBlocks: true, // (in a lesson's frame: the program is too big to sit beside the paper, and the page shows it as an outline)
-    title: 'Catch the square',
+    title: 'The click game',
     summary: 'A red square sits at a random place. Click inside it to score a point, and it jumps somewhere else.',
     look: 'A small red square on an empty paper',
-    concepts: ['when paper clicked', 'and', 'if', 'boxes', 'random', 'my own block', 'start fill'],
-    note: 'Click inside the red square. Each hit adds 1 to box1, your score, and the square jumps to a new place. box2 and box3 are where the square is, and box4 works out how far the click is from its corner.',
-    clicks: [[330, -260]], // (a click that always misses, so a check can tell the handler ran without knowing where the square is)
-    defines: [
+    ...CLICK_GAME,
+  },
+  {
+    id: 'lesson-key-steer',
+    listed: false,
+    title: 'Steer with the arrow keys',
+    summary: 'The program waits for keys. The up arrow walks the turtle forward, and the left and right arrows turn it.',
+    look: 'A turtle on an empty paper that leaves a line as it walks',
+    concepts: ['when key pressed', 'forward', 'left', 'right'],
+    note: 'Click the paper once, then press the arrow keys. Each when block runs every time you press its key. Press Stop when you are done.',
+    keys: ['up', 'up', 'right', 'up', 'left', 'left', 'up'],
+    allLeft: true,
+    keyHandlers: [
+      onKey('up', b('forward', 20)),
+      onKey('left', b('left', 90)),
+      onKey('right', b('right', 90)),
+    ],
+    program: [b('start'), b('clean'), b('setpensize', 4)],
+  },
+  {
+    id: 'lesson-every-spiral',
+    listed: false,
+    title: 'A spiral that draws itself',
+    summary: 'An every block runs again and again by itself. Each time it walks box1 steps, turns a quarter, and makes box1 bigger.',
+    look: 'A square spiral that grows from the middle of the paper',
+    concepts: ['every', 'boxes', 'forward', 'right'],
+    note: 'Watch: the blocks under every run by themselves, every 3 tenths of a second, until you press Stop. box1 grows each time, so the spiral does too.',
+    ticks: 8,
+    allLeft: true,
+    timers: [
       {
-        name: 'target',
-        params: [],
+        tenths: 3,
         body: [
-          b('clean'),
-          b('store2', b('random', -300, 240)),
-          b('store3', b('random', -220, 130)),
-          b('penup'),
-          b('setxy', box2, box3),
-          b('pendown'),
-          b('startfill'),
-          rep(4, b('forward', 60), b('right', 90)),
-          b('endfill'),
+          b('forward', box1),
+          b('right', 90),
+          b('store1', sum(box1, 8)),
         ],
       },
     ],
-    handlers: [
-      [
-        b('store4', minus(mouseX, box2)),
-        { op: 'if', args: [b('and', b('greater', box4, 0), b('less', box4, 60))], body: [
-          b('store4', minus(mouseY, box3)),
-          { op: 'if', args: [b('and', b('greater', box4, 0), b('less', box4, 60))], body: [b('store1', sum(box1, 1)), call('target', [])] },
-        ] },
-      ],
-    ],
-    program: [b('start'), b('clean'), b('store1', 0), call('target', [])],
+    program: [b('start'), b('clean'), b('setpensize', 4), b('store1', 8)],
+  },
+  {
+    id: 'lesson-snake',
+    listed: false,
+    hideBlocks: true, // (in a lesson's frame: the program is too big to sit beside the paper, and the page shows it as an outline)
+    title: 'The snake game',
+    summary: 'A snake that moves by itself, which you steer with the arrow keys. Eat the red squares and it grows fatter. Hit the edge and it starts again.',
+    look: 'A green line on the paper and a small red square',
+    ...SNAKE_GAME,
   },
 ];
 
@@ -972,6 +1275,11 @@ export const SAMPLE_IDS = SAMPLES.map((sample) => sample.id);
 
 /** The samples the Samples page shows (all of them, except the demos only a lesson page uses). */
 export const LISTED_SAMPLES = SAMPLES.filter((sample) => sample.listed !== false);
+
+/** How many event handlers (click, key and timer) a sample has: a sample with any waits for them after its last block, until Stop. */
+export function handlerCount(sample) {
+  return (sample.handlers?.length ?? 0) + (sample.keyHandlers?.length ?? 0) + (sample.timers?.length ?? 0);
+}
 
 /** The sample with this id, or null. Only a plain id matches, never anything inherited. */
 export function sampleById(id) {
@@ -1025,7 +1333,7 @@ export function sampleStacks(sample, measure = {}) {
   const note = { x: LEFT, y: TOP, blocks: [{ op: 'note', text: sample.note }] };
   const programSize = sizeOf(program);
 
-  if (!sample.defines?.length && !sample.handlers?.length) {
+  if (!sample.defines?.length && handlerCount(sample) === 0) {
     program.y = TOP + noteHigh + GAP;
     return [note, program];
   }
@@ -1041,6 +1349,8 @@ export function sampleStacks(sample, measure = {}) {
   const hatted = [
     ...(sample.defines ?? []).map((definition) => [{ op: 'to', name: definition.name, params: [...definition.params] }, ...structuredClone(definition.body)]),
     ...(sample.handlers ?? []).map((body) => [{ op: 'onclick', args: [] }, ...structuredClone(body)]),
+    ...(sample.keyHandlers ?? []).map(({ key, body }) => [{ op: 'onkey', args: [], key }, ...structuredClone(body)]),
+    ...(sample.timers ?? []).map(({ tenths, body }) => [{ op: 'onstep', args: [tenths] }, ...structuredClone(body)]),
   ];
   const items = hatted.map((blocks) => {
     const stack = { x: LEFT, y: TOP, blocks };
