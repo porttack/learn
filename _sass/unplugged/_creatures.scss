@@ -94,3 +94,68 @@
     background: none;
   }
 }
+
+// Worked examples before Part B (marked set -> expression).
+.creature-examples {
+  margin: 1em 0;
+  break-inside: avoid;
+}
+.creature-examples-table {
+  width: auto;
+  border-collapse: collapse;
+  margin: 0.5em 0;
+  td, th { border: 1px solid #000; padding: 4px 10px; vertical-align: middle; }
+  th { text-align: left; background: #eee; }
+  .creature-answer-row { margin: 0; }
+}
+.creature-examples-rules { margin: 0.5em 0 0; font-size: 0.95em; }
+
+// A written expression needs a full-width line, not the short inline one.
+.creature-reverse .fill-line {
+  display: block;
+  width: 100%;
+}
+.creature-examples-table .creature-answer-row li {
+  width: 1.6em;
+  height: 1.6em;
+  font-size: 0.8em;
+}
+// Boxes and the answer line share a row; a long set wraps its line below.
+.creature-reverse-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.4em 0.7em;
+  .creature-answer-row { margin: 0; }
+}
+.creature-answer-line {
+  flex: 1 1 14em;
+  min-height: 2.2em;
+  border-bottom: 1px solid $text-color;
+  line-height: 2.2;
+}
+.creature-worksheet > .name-line { display: none; }
+
+@media print {
+  // Fixed page: the grid stays on the reference sheet (made small enough to
+  // share a page with the intro); the questions are a separate printed
+  // worksheet with its own Name line: Part A on page 1, Part B on page 2.
+  .creature-grid { margin: 0.5em 0 0.6em; gap: 0.3em 0.3em; }
+  .creature { width: 3.6em; padding: 0.1em; }
+  .creature-worksheet { break-before: page; }
+  .creature-worksheet > .name-line { display: flex; }
+  .creature-worksheet .creature-part-b { break-before: page; margin-top: 0; }
+  .creature-worksheet .creature-reverse { margin: 0.55em 0; }
+  .creature-worksheet .creature-examples { margin: 0.5em 0; }
+  .creature-worksheet .creature-examples-table td,
+  .creature-worksheet .creature-examples-table th { padding: 2px 8px; }
+  .creature-worksheet .creature-examples-rules li { margin: 0; }
+}
+
+// Part B's first question comes already answered, in a handwriting-style
+// face, so a student sees what a finished answer looks like.
+.creature-given {
+  font-family: "Bradley Hand", "Segoe Print", "Comic Sans MS", "Chalkboard SE", cursive;
+  font-size: 1.25em;
+  padding-left: 0.4em;
+}

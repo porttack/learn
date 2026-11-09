@@ -4,6 +4,7 @@
 # assets/js/unplugged/creatures.js reads AND/OR/NOT case-insensitively, so
 # the same evaluator checks both this and the main worksheet.
 title: "Creature sorting: real if statements"
+style: python
 partA:
   - kind: evaluate
     expr: "striped and not round"

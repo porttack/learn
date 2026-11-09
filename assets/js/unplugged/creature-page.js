@@ -7,5 +7,7 @@ import { renderSet } from "./creatures-render.js";
 
 for (const script of document.querySelectorAll("script[data-creature-set]")) {
   const data = JSON.parse(script.textContent);
-  renderSet(data, document.querySelector(script.dataset.questions), document.querySelector(script.dataset.key));
+  renderSet(data, document.querySelector(script.dataset.questions), document.querySelector(script.dataset.key), {
+    split: script.hasAttribute("data-split"),
+  });
 }

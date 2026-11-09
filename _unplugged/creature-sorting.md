@@ -5,10 +5,13 @@ level: both
 kind: [single, supplementary]
 topics: [Boolean logic]
 time: 30
+reviewed: 2026-11-09
+name_line: false   # pages 1-2 are reference; the worksheet prints its own Name line
 grouping: Solo
 materials: "Pencil"
 scripts: [/assets/js/unplugged/creature-page.js]
 generator: /unplugged/creature-sorting-generator/
+slides: /unplugged/creature-sorting-slides/
 generator_presets:
   - { label: "One operator", query: "level=one" }
   - { label: "Two operators", query: "level=two" }
@@ -43,7 +46,7 @@ won't have to guess what a condition means. You'll know.
 
 Sixteen creatures, sixteen combinations of the four traits above. Every
 creature has a number so you can write down your answers without redrawing
-anything.
+anything. Keep this page next to you while you work on the questions.
 
 <noscript><p class="callout warning">This worksheet draws its creatures with JavaScript. Turn JavaScript on to see the questions.</p></noscript>
 
@@ -52,4 +55,4 @@ anything.
 
 <section class="answer-key creature-answer-key" id="key-creature_sorting"></section>
 
-<script type="application/json" data-creature-set data-questions="#q-creature_sorting" data-key="#key-creature_sorting">{{ site.data.unplugged.creature_sorting | jsonify }}</script>
+<script type="application/json" data-creature-set data-split data-questions="#q-creature_sorting" data-key="#key-creature_sorting">{{ site.data.unplugged.creature_sorting | jsonify }}</script>

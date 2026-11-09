@@ -3,7 +3,7 @@
 // creatures, drawn so every trait is a shape, not a color -- safe on a
 // black-and-white printer.
 
-import { CREATURES, normalizeSet } from "./creatures.js";
+import { CREATURES, normalizeSet, matchSet, formatExpr } from "./creatures.js";
 
 let gridCount = 0;
 
@@ -78,13 +78,7 @@ function evaluateKeyHtml(q, n) {
 
 function reverseQuestionHtml(q, n) {
   return `<div class="creature-q creature-reverse">
-    <p class="creature-q-prompt"><strong>${n}.</strong> These creatures (from the grid above) are marked:</p>
-    ${markedChipsHtml(q.marked)}
-    <p>Write an expression, using <code>round</code>, <code>has_hat</code>,
-    <code>two_eyes</code>, and <code>striped</code>, that picks out exactly
-    these creatures and no others.</p>
-    <p class="fill-line-paragraph"><span class="fill-line"></span></p>
-  </div>`;
+    <div class="creature-reverse-head"><strong>${n}.</strong> ${markedChipsHtml(q.marked)}<span class="creature-answer-line">${q.example ? `Example: <span class="creature-given">${q.key}</span>` : ""}</span></div>`;
 }
 
 function reverseKeyHtml(q, n) {
@@ -95,9 +89,45 @@ function reverseKeyHtml(q, n) {
   </div>`;
 }
 
+
+// Worked examples shown before Part B: marked set -> expression, computed by
+// the evaluator so they can never be wrong. The "not an expression" list is
+// the shapes students most often hand in by mistake.
+const EXAMPLE_EXPRS = [
+  "striped",
+  "NOT has_hat",
+  "round AND striped",
+  "has_hat OR two_eyes",
+  "NOT (round OR striped)",
+  "round AND NOT two_eyes AND has_hat",
+];
+
+function expressionExamplesHtml(style) {
+  const rows = EXAMPLE_EXPRS.map((e) => {
+    const marked = matchSet(e);
+    return `<tr><td>${markedChipsHtml(marked)}</td><td><code>${formatExpr(e, style)}</code></td></tr>`;
+  }).join("");
+  const k = style === "python" ? { and: "and", or: "or", not: "not" } : { and: "AND", or: "OR", not: "NOT" };
+  return `<div class="creature-examples">
+    <p><strong>What an expression looks like.</strong> Here are some marked sets and an expression that picks out exactly that set.
+    Check one against the grid to see why it works.</p>
+    <table class="creature-examples-table">
+      <thead><tr><th>Marked creatures</th><th>Expression</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <ul class="creature-examples-rules">
+      <li>An expression is made of trait words (<code>round</code>, <code>has_hat</code>, <code>two_eyes</code>, <code>striped</code>) joined by <code>${k.and}</code>, <code>${k.or}</code>, and <code>${k.not}</code>.</li>
+      <li>Two trait words always need a joiner between them: <code>round ${k.and} striped</code>, never <code>round striped</code>.</li>
+      <li><code>${k.not}</code> goes right before the trait (or the parentheses) it flips: <code>${k.not} has_hat</code>.</li>
+      <li>There is no word for "square" or "one eye". Say it with <code>${k.not}</code>: <code>${k.not} round</code> means square.</li>
+      <li>Use parentheses when <code>${k.not}</code> should flip a whole group: <code>${k.not} (round ${k.or} striped)</code>.</li>
+    </ul>
+  </div>`;
+}
+
 // Fills `qRoot` with the reference grid, Part A, and Part B, and `keyRoot`
 // (if given) with the matching answer key.
-export function renderSet(data, qRoot, keyRoot) {
+export function renderSet(data, qRoot, keyRoot, { split = false } = {}) {
   const { partA, partB } = data;
   let n = 0;
   const aQ = partA.map((q) => evaluateQuestionHtml(q, ++n)).join("");
@@ -105,15 +135,23 @@ export function renderSet(data, qRoot, keyRoot) {
   const bQ = partB.map((q) => reverseQuestionHtml(q, ++n)).join("");
   const bK = partB.map((q, i) => reverseKeyHtml(q, partA.length + i + 1)).join("");
 
-  qRoot.innerHTML = `${creatureGridHtml(CREATURES)}
-    <h2>Part A: which creatures?</h2>
+  // split: the grid stays on the reference sheet (page 1 in print) and the
+  // questions start a fresh printed page with their own Name line.
+  const nameLine = `<div class="name-line" aria-hidden="true"><span>Name <i></i></span><span>Date <i></i></span><span>Period <i></i></span></div>`;
+  const questions = `<h2>Part A: which creatures?</h2>
     <p>For each expression, circle every creature number it's true for on the
-    row below it. Use the grid above to check a creature's traits.</p>
+    row below it. Use the grid to check a creature's traits.</p>
     ${aQ}
-    <h2>Part B: write the expression</h2>
-    <p>Now go the other way. Some creatures are marked below. Write an
-    expression that picks out exactly that set and no others.</p>
+    <h2 class="creature-part-b">Part B: write the expression</h2>
+    <p>Now go the other way. The marked numbers are a set of creatures. Write an
+    expression, using <code>round</code>, <code>has_hat</code>,
+    <code>two_eyes</code>, and <code>striped</code>, that picks out exactly
+    that set and no others.</p>
+    ${expressionExamplesHtml(data.style || "AP")}
     ${bQ}`;
+  qRoot.innerHTML = split
+    ? `${creatureGridHtml(CREATURES)}<div class="creature-worksheet">${nameLine}${questions}</div>`
+    : `${creatureGridHtml(CREATURES)}${questions}`;
 
   if (keyRoot) {
     keyRoot.innerHTML = `<h2>Check your answers</h2>
