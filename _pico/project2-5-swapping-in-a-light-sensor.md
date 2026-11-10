@@ -1,13 +1,13 @@
 ---
 layout: lesson
-title: "Project 2.4: Swapping in a Light Sensor"
+title: "Project 2.5: Swapping in a Light Sensor"
 pathway: pico
-order: 111
-chapter: "p2.4"
+order: 112
+chapter: "p2.5"
 standards_carrier: picoprojects
 project: 2
-project_part: 4
-label: "Project 2.4"
+project_part: 5
+label: "Project 2.5"
 source: original
 subtitle: "The same code, a different kind of knob"
 ---
