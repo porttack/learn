@@ -1,0 +1,763 @@
+---
+title: "Project 2.2 Slides"
+permalink: /pico/project2-2-intro-slides/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Project 2.2: Reading a Potentiometer -- Slides</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/pico/favicon.svg">
+<style>
+  :root {
+    --accent: #2a7ae2;
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #57606a;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #e9edf1;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  #root { height: 100%; }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .stage-outer {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* Fixed-size design canvas, scaled to fit via a JS-computed transform --
+     lets every slide be authored at generous, fixed pixel sizes ("bigger
+     type") without hand-tuning responsive font sizes per breakpoint. */
+  .stage {
+    width: 1280px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.18);
+    padding: 80px 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .stage.ar-16-9 { height: 720px; }
+  .stage.ar-4-3 { height: 960px; }
+
+  .kicker {
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 18px;
+  }
+
+  .slide-title {
+    font-size: 64px;
+    line-height: 1.1;
+    margin: 0 0 40px;
+    font-weight: 700;
+  }
+
+  .slide-body {
+    font-size: 36px;
+    line-height: 1.5;
+  }
+
+  .slide-body ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+
+  .slide-body li {
+    margin-bottom: 22px;
+  }
+
+  .slide-body li:last-child { margin-bottom: 0; }
+
+  .slide-body a {
+    color: var(--accent);
+  }
+
+  .slide-image-row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .slide-image-row img {
+    max-height: 260px;
+    max-width: 620px;
+    flex: 0 1 auto;
+    min-width: 0;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-image-row .slide-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 30px;
+  }
+
+  .slide-image-row .slide-body li {
+    margin-bottom: 16px;
+  }
+
+  .slide-image-stack img {
+    display: block;
+    max-width: 100%;
+    max-height: 240px;
+    margin: 0 auto 28px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-image-stack .slide-body {
+    font-size: 32px;
+  }
+
+  .depth-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 14px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  .depth-nav.depth-up {
+    bottom: auto;
+    top: 14px;
+  }
+
+  .depth-nav:hover {
+    background: rgba(0,0,0,0.75);
+  }
+
+  .title-slide {
+    text-align: left;
+    justify-content: center;
+  }
+
+  .title-slide .slide-title {
+    font-size: 76px;
+    margin-bottom: 16px;
+  }
+
+  .title-slide .slide-subtitle {
+    font-size: 34px;
+    color: var(--muted);
+  }
+
+  .challenge-slide {
+    background: #f3edff;
+  }
+
+  .challenge-slide .kicker {
+    color: #6b3fd4;
+  }
+
+  .slide-counter-badge {
+    position: absolute;
+    bottom: 18px;
+    right: 24px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  /* --- Toolbar (not part of the scaled stage, so it stays a readable,
+     fixed size regardless of projector distance / zoom level) --- */
+  .toolbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #1b1f23;
+    color: #fff;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar button {
+    background: #333a42;
+    color: #fff;
+    border: 1px solid #4a545e;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .toolbar button:hover { background: #444e58; }
+  .toolbar button.active { background: var(--accent); border-color: var(--accent); }
+  .toolbar button:disabled { opacity: 0.4; cursor: default; }
+
+  .toolbar .spacer { flex: 1 1 auto; }
+  .toolbar .counter { min-width: 4.5em; text-align: center; }
+  .toolbar a.back-link { color: #9db8e8; text-decoration: none; font-size: 14px; }
+  .toolbar a.back-link:hover { text-decoration: underline; }
+
+  /* --- Speaker notes panel: docked below the stage, plain readable text,
+     hidden by default so a mirrored/projected display shows a clean deck.
+     Notes on the challenge slide carry the fuller explanation (what Pin
+     vs PWM traps to watch for) -- that reasoning is for the teacher to
+     draw out of the class, not for the projected slide itself. --- */
+  .notes-panel {
+    flex: 0 0 auto;
+    background: #f6f8fa;
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    max-height: 26vh;
+    overflow-y: auto;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .notes-panel h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+
+  .click-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30%;
+    cursor: pointer;
+  }
+  .click-zone.left { left: 0; }
+  .click-zone.right { right: 0; }
+
+  /* --- Outline / print-notes view: a plain scrollable page listing every
+     slide with its full speaker notes, meant for printing ahead of class. --- */
+  .outline {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .outline h1 { margin-bottom: 4px; }
+  .outline .outline-sub { color: var(--muted); margin-top: 0; }
+
+  .outline-slide {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    break-inside: avoid;
+  }
+
+  .outline-slide h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+  }
+
+  .outline-slide.outline-nested {
+    margin: 12px 0 12px 32px;
+    background: #f6f8fa;
+    border-style: dashed;
+  }
+
+  .outline-slide h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: var(--muted);
+  }
+
+  .outline-slide .outline-bullets {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 14px;
+  }
+
+  .outline-slide .outline-notes {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .outline-slide .outline-notes p:first-child { margin-top: 0; }
+
+  @media print {
+    .toolbar { display: none !important; }
+    .outline { height: auto; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+<script type="text/babel" data-type="module">
+{% raw %}
+const { useState, useEffect, useRef, useCallback } = React;
+
+// Edit this array to change the deck. `bullets` is what students see on the
+// slide (keep it short, they're reading fast); `notes` is only ever shown in
+// the notes panel or the printable outline, so it can be a full paragraph.
+//
+// The challenge slide keeps the lesson page's no-spoiler rule: it names the
+// goal and the tools (Pin vs PWM, three ways to reach leds.py), never the
+// assembled if/elif/elif/else chain. Anything more revealing belongs in
+// `notes`, which only the teacher sees, not projected to the whole room.
+const SLIDES = [
+  {
+    "kind": "title",
+    "kicker": "Project 2.2",
+    "title": "Reading a Potentiometer",
+    "subtitle": "What a knob is actually telling the Pico",
+    "notes": "One class period. Students already have the servo from 2.1 and a working leds.py habit. The new ideas: an analog input is a ratio of voltages, and a list of readings is how you tame noise. The list work (append, len, index) is deliberate practice for AP CSP, so use the vocabulary out loud every time."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Until now",
+    "title": "Pins Were On or Off",
+    "bullets": [
+      "Every pin you have used so far: fully on or fully off",
+      "A knob can sit anywhere in between",
+      "How does the Pico read \"in between\"?"
+    ],
+    "notes": "Open with the question and let a few students guess before moving on. Hold up a potentiometer and turn it."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "The physics",
+    "title": "A Knob Is Two Resistors",
+    "bullets": [
+      "Three pins: two outer legs and a wiper in the middle",
+      "The wiper splits the voltage between the legs",
+      "Turn the knob: the split changes, so the wiper voltage changes",
+      "This is a voltage divider"
+    ],
+    "notes": "The wiper slides along one long resistor and splits it into R_bottom and R_total minus R_bottom. Wiper voltage = 3.3 * R_bottom / R_total. They will check this formula with a multimeter at the end of class. A 1k and a 10k pot read identically because the ADC measures a ratio, not a resistance."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Wiring",
+    "title": "Three Wires",
+    "bullets": [
+      "Outer leg to 3V3",
+      "Outer leg to GND",
+      "Wiper (middle) to GP26"
+    ],
+    "notes": "Same rails as Project 2.1's servo power. Walk the room and check wiper placement before anyone plugs in. Only GP26, GP27 and GP28 read voltage; every other pin is purely digital, so a wiper on GP9 will not work.",
+    "down": [
+      {
+        "kind": "bullets",
+        "kicker": "Why not 5V?",
+        "title": "Never VBUS or VSYS",
+        "bullets": [
+          "VBUS and VSYS are 5V",
+          "The Pico's ADC only reads up to 3.3V",
+          "Above that the reading clips at the maximum and stops responding",
+          "Only GP26, 27 and 28 can read voltage"
+        ],
+        "notes": "An easy mistake to repeat with the joystick later, which is wired the same way. A clipped reading looks like a dead knob, which is a good debugging story."
+      }
+    ]
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Reading it",
+    "title": "Knob to Number",
+    "bullets": [
+      "pot = ADC(Pin(26))",
+      "pot.read_u16() gives 0 to 65535",
+      "65535 means the full 3.3V",
+      "volts = raw / 65535 * 3.3"
+    ],
+    "notes": "u16 means an unsigned 16-bit integer: 2 to the 16th is 65536 values. Connect to the binary work from Project 1.4 if it helps."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Predict",
+    "title": "Knob in the Middle",
+    "bullets": [
+      "What raw number do you expect?",
+      "What voltage?",
+      "Write your guess, then run it"
+    ],
+    "notes": "Expect about 32768 and 1.65V. Real knobs land near it, not on it. That gap sets up the next slide."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "A problem",
+    "title": "One Reading Wobbles",
+    "bullets": [
+      "Hold the knob perfectly still",
+      "Read it again and again",
+      "The number keeps changing"
+    ],
+    "notes": "Do this live if you can: a loop that prints a single read_u16() with the knob untouched. Ask where the wobble could come from before telling them."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "New data structure",
+    "title": "Collect Readings in a List",
+    "bullets": [
+      "samples = [] starts an empty list",
+      "samples.append(pot.read_u16()) adds one element",
+      "Do it 8 times in a for loop",
+      "len(samples) is how many elements it holds"
+    ],
+    "notes": "This replaces the one-line sum(... for _ in range(8)). Same result, but now the readings exist as data they can look at. Ask: what does len(samples) return after 3 iterations?"
+  },
+  {
+    "kind": "bullets",
+    "kicker": "AP vocabulary",
+    "title": "Say It Out Loud",
+    "bullets": [
+      "list: ordered collection under one name",
+      "element: one value in the list",
+      "index: its position, counting from 0",
+      "iteration: one pass through the loop"
+    ],
+    "notes": "These four match the grey strips on the worksheet. samples[0] is the first element and samples[7] the last. Use the words, not 'thing' or 'spot'."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Look at your data",
+    "title": "print(samples)",
+    "bullets": [
+      "Knob held still",
+      "You expect 8 identical numbers",
+      "You get 8 slightly different ones"
+    ],
+    "notes": "Have students read two or three of their lists aloud to a neighbor. Different Picos, different lists, same behavior. Remind them to remove the print before using the plotter."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Challenge",
+    "title": "Measure the Spread",
+    "bullets": [
+      "spread = biggest reading minus smallest",
+      "Two list tools: max() and min()",
+      "Print it next to your voltage",
+      "Record it with the knob low, middle, high"
+    ],
+    "notes": "No-spoiler rule: name the goal and the tools, never write the spread line on screen. The worksheet's Section D asks for the same number from their own data. The spread is electrical noise; it is the reason we average.",
+    "challenge": true,
+    "down": [
+      {
+        "kind": "bullets",
+        "kicker": "If a group is stuck",
+        "title": "A Nudge, Not the Answer",
+        "bullets": [
+          "What does max(samples) give you?",
+          "What does min(samples) give you?",
+          "What do you do to two numbers to find the gap between them?"
+        ],
+        "notes": "Three guiding questions, not a solution. Use only with a group that is stuck."
+      }
+    ]
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Why average",
+    "title": "Noise Cancels Out",
+    "bullets": [
+      "Each reading is off by a little, in either direction",
+      "raw = sum(samples) // len(samples)",
+      "The average is closer to the truth than any one reading",
+      "// divides and drops the remainder"
+    ],
+    "notes": "A single reading can be off by about the spread; the average of eight is much closer. Tie the integer division back to the worksheet: 250460 // 8 is 31307 even though the true average is 31307.5."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Check the claim",
+    "title": "Prove It With a Multimeter",
+    "bullets": [
+      "Measure wiper to ground while the program runs",
+      "Compare to what the Pico prints",
+      "Unplug, then measure R_bottom and R_total",
+      "Calculate 3.3 * R_bottom / R_total"
+    ],
+    "notes": "Their 3V3 rail may read nearer 3.25V than 3.3. That is the point: the program has been running on an assumption. Section B of the worksheet records five knob positions."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Paper time",
+    "title": "The Worksheet",
+    "bullets": [
+      "A: check your wiring",
+      "B: five knob positions, two voltages",
+      "C: lists on paper, before touching code",
+      {"text":"D and E: your own data, then why we average","href":"/pico/project2-2-worksheet/"}
+    ],
+    "notes": "Link: /pico/project2-2-worksheet/. Print the two pages front and back. Section C is meant to be done on paper first, so students predict samples[8] before they ever see an IndexError."
+  },
+  {
+    "kind": "bullets",
+    "kicker": "Next",
+    "title": "Where This Goes",
+    "bullets": [
+      "Turning the knob reliably changes your printed voltage",
+      "You can explain why",
+      "Project 2.3: that same number lights a NeoPixel bar"
+    ],
+    "notes": "Do not move on until students can explain the voltage divider and the reason for averaging in their own words. The same raw and volts variables feed Project 2.3 unchanged."
+  },
+  {
+    "kind": "title",
+    "title": "Questions?",
+    "subtitle": "Wire it up.",
+    "notes": "Open the floor briefly, then get Picos plugged in."
+  }
+];
+
+// A bullet is either a plain string, or { text, href } to render as a link
+// (used for pointing straight at the chapter or the Notes page).
+function renderBullets(bullets) {
+  return (
+    <ul>
+      {bullets.map((b, i) => (
+        <li key={i}>{typeof b === "string" ? b : <a href={b.href}>{b.text}</a>}</li>
+      ))}
+    </ul>
+  );
+}
+
+function Stage({ slide, aspect }) {
+  const arClass = aspect === "4:3" ? "ar-4-3" : "ar-16-9";
+  if (slide.kind === "title") {
+    return (
+      <div className={"stage title-slide " + arClass}>
+        {slide.kicker && <p className="kicker">{slide.kicker}</p>}
+        <h1 className="slide-title">{slide.title}</h1>
+        {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+      </div>
+    );
+  }
+  if (slide.kind === "image") {
+    const rowClass = slide.wide ? "slide-image-stack" : "slide-image-row";
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className={rowClass}>
+          <img src={slide.image} alt="" />
+          <div className="slide-body">{renderBullets(slide.bullets)}</div>
+        </div>
+      </div>
+    );
+  }
+  const extraClass = slide.challenge ? " challenge-slide" : "";
+  return (
+    <div className={"stage " + arClass + extraClass}>
+      <p className="kicker">{slide.kicker}</p>
+      <h1 className="slide-title">{slide.title}</h1>
+      <div className="slide-body">{renderBullets(slide.bullets)}</div>
+    </div>
+  );
+}
+
+function ScaledStage({ slide, aspect }) {
+  const outerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const designW = 1280;
+  const designH = aspect === "4:3" ? 960 : 720;
+
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const recompute = () => {
+      const rect = el.getBoundingClientRect();
+      const s = Math.min((rect.width * 0.98) / designW, (rect.height * 0.98) / designH);
+      setScale(s > 0 ? s : 1);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => { ro.disconnect(); window.removeEventListener("resize", recompute); };
+  }, [designH]);
+
+  return (
+    <div className="stage-outer" ref={outerRef}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}>
+        <Stage slide={slide} aspect={aspect} />
+      </div>
+    </div>
+  );
+}
+
+function bulletsToText(bullets) {
+  return bullets.map(b => (typeof b === "string" ? b : b.text)).join(" / ");
+}
+
+function OutlineCard({ slide, heading, nested }) {
+  return (
+    <div className={"outline-slide" + (nested ? " outline-nested" : "")}>
+      {nested ? <h3>{heading}</h3> : <h2>{heading}</h2>}
+      {slide.bullets && <p className="outline-bullets">On slide: {bulletsToText(slide.bullets)}</p>}
+      <div className="outline-notes"><p>{slide.notes}</p></div>
+    </div>
+  );
+}
+
+function Outline() {
+  return (
+    <div className="outline">
+      <h1>Project 2.2: Reading a Potentiometer</h1>
+      <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
+      {SLIDES.map((s, i) => (
+        <React.Fragment key={i}>
+          <OutlineCard slide={s} heading={`${i + 1}. ${s.title}`} />
+          {(s.down || []).map((d, j) => (
+            <OutlineCard slide={d} heading={`Extra: ${d.title}`} nested key={j} />
+          ))}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+// Deep-linking: ?slide=3 opens on that slide (1-indexed, to match the
+// on-screen counter), ?extra=1 additionally drops into that slide's Nth
+// "down" slide if it has any, ?outline=1 opens straight into the
+// speaker-notes outline -- handy for linking straight to a specific slide,
+// or handing a substitute teacher the notes view without them finding the
+// button.
+function initialStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const slideParam = parseInt(params.get("slide"), 10);
+  const index = Number.isInteger(slideParam) ? Math.min(Math.max(slideParam - 1, 0), SLIDES.length - 1) : 0;
+  const maxExtra = (SLIDES[index].down || []).length;
+  const extraParam = parseInt(params.get("extra"), 10);
+  const subIndex = Number.isInteger(extraParam) ? Math.min(Math.max(extraParam, 0), maxExtra) : 0;
+  const mode = params.get("outline") ? "outline" : "deck";
+  return { index, subIndex, mode };
+}
+
+function App() {
+  const initial = initialStateFromUrl();
+  const [index, setIndex] = useState(initial.index);
+  const [subIndex, setSubIndex] = useState(initial.subIndex);
+  const [showNotes, setShowNotes] = useState(false);
+  const [aspect, setAspect] = useState("16:9");
+  const [mode, setMode] = useState(initial.mode); // "deck" | "outline"
+
+  const topSlide = SLIDES[index];
+  const downSlides = topSlide.down || [];
+  const slide = subIndex === 0 ? topSlide : downSlides[subIndex - 1];
+
+  const next = useCallback(() => { setIndex(i => Math.min(i + 1, SLIDES.length - 1)); setSubIndex(0); }, []);
+  const prev = useCallback(() => { setIndex(i => Math.max(i - 1, 0)); setSubIndex(0); }, []);
+  const goDown = useCallback(() => setSubIndex(s => Math.min(s + 1, downSlides.length)), [downSlides.length]);
+  const goUp = useCallback(() => setSubIndex(s => Math.max(s - 1, 0)), []);
+
+  useEffect(() => {
+    function onKey(e) {
+      if (mode !== "deck") {
+        if (e.key === "Escape") setMode("deck");
+        return;
+      }
+      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); goDown(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); goUp(); }
+      else if (e.key === "n" || e.key === "N") setShowNotes(v => !v);
+      else if (e.key === "f" || e.key === "F") toggleFullscreen();
+      else if (e.key === "o" || e.key === "O") setMode("outline");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mode, next, prev, goDown, goUp]);
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+
+  if (mode === "outline") {
+    return (
+      <div className="app">
+        <div className="toolbar">
+          <a className="back-link" href="/pico/project2-2-reading-a-potentiometer/">&larr; Project 2.2</a>
+          <div className="spacer"></div>
+          <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
+          <button onClick={() => window.print()}>Print</button>
+        </div>
+        <Outline />
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      <div className="stage-outer" style={{ position: "relative" }}>
+        <ScaledStage slide={slide} aspect={aspect} />
+        <div className="click-zone left" onClick={prev} title="Previous slide"></div>
+        <div className="click-zone right" onClick={next} title="Next slide"></div>
+        {subIndex > 0 && (
+          <button className="depth-nav depth-up" onClick={goUp} title="Back to the main flow">&#9650; Back</button>
+        )}
+        {subIndex < downSlides.length && (
+          <button className="depth-nav depth-down" onClick={goDown} title="More about this slide">&#9660; More</button>
+        )}
+        <div className="slide-counter-badge">
+          {index + 1} / {SLIDES.length}
+          {subIndex > 0 && <span> &middot; extra {subIndex}/{downSlides.length}</span>}
+        </div>
+      </div>
+      {showNotes && (
+        <div className="notes-panel">
+          <h3>Speaker notes</h3>
+          <p>{slide.notes}</p>
+        </div>
+      )}
+      <div className="toolbar">
+        <a className="back-link" href="/pico/project2-2-reading-a-potentiometer/">&larr; Project 2.2</a>
+        <div className="spacer"></div>
+        <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
+        <span className="counter">{index + 1} / {SLIDES.length}</span>
+        <button onClick={next} disabled={index === SLIDES.length - 1}>Next &rarr;</button>
+        <button className={showNotes ? "active" : ""} onClick={() => setShowNotes(v => !v)}>Notes (N)</button>
+        <button onClick={() => setMode("outline")}>Print notes (O)</button>
+        <button onClick={() => setAspect(a => a === "16:9" ? "4:3" : "16:9")}>{aspect}</button>
+        <button onClick={toggleFullscreen}>Fullscreen (F)</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+{% endraw %}
+</script>
+</body>
+</html>

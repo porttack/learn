@@ -12,6 +12,7 @@ source: original
 subtitle: "What a knob is actually telling the Pico"
 organizer: /pico/project2-2-worksheet/
 organizer_label: "Worksheet"
+slides: /pico/project2-2-intro-slides/
 ---
 
 This project asks a question the last one skipped over: when you read a
