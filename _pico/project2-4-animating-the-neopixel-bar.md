@@ -10,6 +10,8 @@ project_part: 4
 label: "Project 2.4"
 source: original
 subtitle: "An animation is a list of lists, and the knob can scrub through it"
+organizer: /pico/project2-4-worksheet/
+organizer_label: "Worksheet"
 ---
 
 This is for after Project 2.3's bar is working. Keep the same wiring: the
