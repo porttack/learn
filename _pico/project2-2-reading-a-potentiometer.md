@@ -10,6 +10,8 @@ project_part: 2
 label: "Project 2.2"
 source: original
 subtitle: "What a knob is actually telling the Pico"
+organizer: /pico/project2-2-worksheet/
+organizer_label: "Worksheet"
 ---
 
 This project asks a question the last one skipped over: when you read a
