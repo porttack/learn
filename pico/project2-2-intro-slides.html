@@ -61,6 +61,23 @@ permalink: /pico/project2-2-intro-slides/
   .stage.ar-16-9 { height: 720px; }
   .stage.ar-4-3 { height: 960px; }
 
+  .pot-slide { padding-top: 56px; padding-bottom: 40px; }
+  .pot-slide .slide-title { font-size: 52px; margin-bottom: 14px; }
+  .pot-slide .kicker { margin-bottom: 8px; }
+  .pot-demo { display: flex; gap: 28px; align-items: center; }
+  .pot-demo svg { flex: 0 0 700px; width: 700px; height: auto; }
+  .pot-demo svg text { fill: currentColor; font-family: inherit; font-size: 18px; }
+  .pot-demo .pd-mono { font-family: "Courier New", Courier, monospace; }
+  .pot-panel { flex: 1; font-size: 22px; }
+  .pot-panel table { width: 100%; border-collapse: collapse; font-family: "Courier New", Courier, monospace; }
+  .pot-panel td { border-top: 1px solid var(--border); padding: 6px 4px; }
+  .pot-panel td:last-child { text-align: right; font-weight: bold; }
+  .pot-panel tr.pot-v td:last-child { font-size: 30px; }
+  .pot-panel tr.pot-v td { border-top: 2px solid var(--ink); }
+  .pot-controls { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; font-size: 22px; }
+  .pot-controls input[type=range] { width: 100%; height: 28px; }
+  .pot-controls select, .pot-controls button { font-size: 22px; padding: 4px 14px; }
+
   .kicker {
     font-size: 28px;
     color: var(--accent);
@@ -255,6 +272,7 @@ permalink: /pico/project2-2-intro-slides/
     width: 30%;
     cursor: pointer;
   }
+  .click-zone.narrow { width: 5%; }  /* on the pot slide the controls need the room */
   .click-zone.left { left: 0; }
   .click-zone.right { right: 0; }
 
@@ -358,12 +376,18 @@ const SLIDES = [
     "kicker": "The physics",
     "title": "A Knob Is Two Resistors",
     "bullets": [
-      "Three pins: two outer legs and a wiper in the middle",
-      "The wiper splits the voltage between the legs",
-      "Turn the knob: the split changes, so the wiper voltage changes",
-      "This is a voltage divider"
+      "Inside: one strip of resistor, with a wiper sliding along it",
+      "The wiper splits it into two resistors in series, with the same current through both",
+      "Ohm's law: V = I × R",
+      "Wiper voltage = 3.3 × R_bottom / R_total"
     ],
-    "notes": "The wiper slides along one long resistor and splits it into R_bottom and R_total minus R_bottom. Wiper voltage = 3.3 * R_bottom / R_total. They will check this formula with a multimeter at the end of class. A 1k and a 10k pot read identically because the ADC measures a ratio, not a resistance."
+    "notes": "The next slide is the animated pot. Walk the Ohm's law steps: one current through the whole strip (I = 3.3 / R_total), then V_wiper = I times R_bottom, and the current cancels. Switch the animation from 10k to 1k: the current is ten times bigger but the wiper voltage does not move, which is why either pot works. The ADC pin draws very little current, so it just reads the divider's voltage. They check the formula with a multimeter at the end of class."
+  },
+  {
+    "kind": "pot",
+    "kicker": "Try it",
+    "title": "Drag the Knob",
+    "notes": "Drag the slider or press Sweep and ask what the wiper voltage will be before each stop. Point at R_bottom over R_total: at the middle it is half, so half of 3.3V. Then switch Pot from 10k to 1k. The current jumps to ten times as big but the wiper voltage does not move, because only the fraction matters. The same animation is in the lesson page. Note: arrow keys move the slider while it has focus; click the slide background to give the arrow keys back to the deck."
   },
   {
     "kind": "bullets",
@@ -469,7 +493,7 @@ const SLIDES = [
       "Print it next to your voltage",
       "Record it with the knob low, middle, high"
     ],
-    "notes": "No-spoiler rule: name the goal and the tools, never write the spread line on screen. The worksheet's Section D asks for the same number from their own data. The spread is electrical noise; it is the reason we average.",
+    "notes": "No-spoiler rule: name the goal and the tools, never write the spread line on screen. The worksheet's Section E asks for the same number from their own data. The spread is electrical noise; it is the reason we average.",
     "challenge": true,
     "down": [
       {
@@ -516,10 +540,11 @@ const SLIDES = [
     "bullets": [
       "A: check your wiring",
       "B: five knob positions, two voltages",
-      "C: lists on paper, before touching code",
-      {"text":"D and E: your own data, then why we average","href":"/pico/project2-2-worksheet/"}
+      "C: the voltage divider on paper",
+      "D: lists on paper, before touching code",
+      {"text":"E and F: your own data, then why we average","href":"/pico/project2-2-worksheet/"}
     ],
-    "notes": "Link: /pico/project2-2-worksheet/. Print the two pages front and back. Section C is meant to be done on paper first, so students predict samples[8] before they ever see an IndexError."
+    "notes": "Link: /pico/project2-2-worksheet/. Print the two pages front and back. Section D is meant to be done on paper first, so students predict samples[8] before they ever see an IndexError."
   },
   {
     "kind": "bullets",
@@ -552,6 +577,88 @@ function renderBullets(bullets) {
   );
 }
 
+function PotDemo() {
+  const [pos, setPos] = useState(50);
+  const [rtotal, setRtotal] = useState(10);
+  const [sweeping, setSweeping] = useState(false);
+  const dirRef = useRef(1);
+  useEffect(() => {
+    if (!sweeping) return;
+    const id = setInterval(() => {
+      setPos(p => {
+        let n = p + dirRef.current * 2;
+        if (n >= 100) { n = 100; dirRef.current = -1; } else if (n <= 0) { n = 0; dirRef.current = 1; }
+        return n;
+      });
+    }, 30);
+    return () => clearInterval(id);
+  }, [sweeping]);
+
+  const TOP = 60, BOT = 260, SPAN = BOT - TOP;
+  const t = pos / 100;                      // 0 = wiper at the GND end, 1 = at the 3V3 end
+  const rb = t * rtotal, rtop = rtotal - rb;
+  const cur = 3.3 / rtotal;                 // milliamps (resistance is in kilohms)
+  const v = cur * rb;                       // Ohm's law across R_bottom
+  const wy = BOT - SPAN * t;
+  const zig = (y1, y2) => {
+    const len = y2 - y1;
+    if (len < 1) return "";
+    const n = Math.max(2, Math.round(len / 10));
+    let d = "M100," + y1;
+    for (let i = 1; i < n; i++) d += " L" + (i % 2 ? 114 : 86) + "," + (y1 + len * i / n);
+    return d + " L100," + y2;
+  };
+  const rad = (-135 + 270 * t) * Math.PI / 180;
+  return (
+    <div className="pot-demo">
+      <svg viewBox="-100 0 660 320" role="img" aria-label="A potentiometer drawn as a resistor with a sliding wiper that splits it into R top and R bottom">
+        <defs>
+          <marker id="pot-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
+          </marker>
+        </defs>
+        <g stroke="currentColor" strokeWidth="2" fill="none">
+          <line x1="100" y1="34" x2="100" y2="60" />
+          <line x1="100" y1="260" x2="100" y2="286" />
+          <path d={zig(TOP, wy)} stroke="#b5541c" strokeWidth="3" />
+          <path d={zig(wy, BOT)} stroke="#1a6fb5" strokeWidth="3" />
+          <line x1="214" y1={wy} x2="112" y2={wy} strokeWidth="3" markerEnd="url(#pot-arrow)" />
+          <rect x="380" y="60" width="36" height="200" />
+          <circle cx="512" cy="160" r="44" />
+          <line x1="512" y1="160" x2={512 + 38 * Math.sin(rad)} y2={160 - 38 * Math.cos(rad)} strokeWidth="4" />
+        </g>
+        <rect x="381" y={BOT - SPAN * t} width="34" height={SPAN * t} fill="#2a7ae2" opacity="0.75" />
+        <text x="100" y="24" textAnchor="middle">3V3</text>
+        <text x="100" y="306" textAnchor="middle">GND</text>
+        <text x="222" y={wy + 6}>wiper, to GP26</text>
+        {wy - TOP > 24 && <text x="76" y={(TOP + wy) / 2 + 6} textAnchor="end" className="pd-mono">R_top {rtop.toFixed(1)}k</text>}
+        {BOT - wy > 24 && <text x="76" y={(wy + BOT) / 2 + 6} textAnchor="end" className="pd-mono">R_bottom {rb.toFixed(1)}k</text>}
+        <text x="398" y="50" textAnchor="middle">wiper voltage</text>
+        <text x="424" y="72" className="pd-mono">3.3 V</text>
+        <text x="424" y="260" className="pd-mono">0 V</text>
+        <text x="398" y="284" textAnchor="middle" className="pd-mono" fontWeight="bold">{v.toFixed(2)} V</text>
+        <text x="512" y="226" textAnchor="middle">knob</text>
+      </svg>
+      <div className="pot-panel">
+        <table><tbody>
+          <tr><td>R_top</td><td>{rtop.toFixed(2)} k</td></tr>
+          <tr><td>R_bottom</td><td>{rb.toFixed(2)} k</td></tr>
+          <tr><td>I = 3.3/R_total</td><td>{cur.toFixed(2)} mA</td></tr>
+          <tr className="pot-v"><td>V = I x R_bottom</td><td>{v.toFixed(2)} V</td></tr>
+          <tr><td>read_u16()</td><td>{Math.round(t * 65535)}</td></tr>
+        </tbody></table>
+        <div className="pot-controls">
+          <input type="range" min="0" max="100" step="1" value={pos} aria-label="Knob position"
+                 onChange={e => { setSweeping(false); setPos(parseInt(e.target.value, 10)); }} />
+          <label>Pot <select value={rtotal} onChange={e => setRtotal(parseFloat(e.target.value))}>
+            <option value="10">10k</option><option value="1">1k</option></select></label>
+          <button onClick={() => setSweeping(x => !x)}>{sweeping ? "Stop" : "Sweep"}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Stage({ slide, aspect }) {
   const arClass = aspect === "4:3" ? "ar-4-3" : "ar-16-9";
   if (slide.kind === "title") {
@@ -560,6 +667,15 @@ function Stage({ slide, aspect }) {
         {slide.kicker && <p className="kicker">{slide.kicker}</p>}
         <h1 className="slide-title">{slide.title}</h1>
         {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+      </div>
+    );
+  }
+  if (slide.kind === "pot") {
+    return (
+      <div className={"stage pot-slide " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <PotDemo />
       </div>
     );
   }
@@ -683,6 +799,10 @@ function App() {
 
   useEffect(() => {
     function onKey(e) {
+      // Let a focused slider, select or button use its own keys (the pot demo has them).
+      const tag = e.target && e.target.tagName;
+      if (tag === "INPUT" || tag === "SELECT") return;
+      if (tag === "BUTTON" && (e.key === " " || e.key === "Enter")) return;
       if (mode !== "deck") {
         if (e.key === "Escape") setMode("deck");
         return;
@@ -722,8 +842,8 @@ function App() {
     <div className="app">
       <div className="stage-outer" style={{ position: "relative" }}>
         <ScaledStage slide={slide} aspect={aspect} />
-        <div className="click-zone left" onClick={prev} title="Previous slide"></div>
-        <div className="click-zone right" onClick={next} title="Next slide"></div>
+        <div className={"click-zone left" + (slide.kind === "pot" ? " narrow" : "")} onClick={prev} title="Previous slide"></div>
+        <div className={"click-zone right" + (slide.kind === "pot" ? " narrow" : "")} onClick={next} title="Next slide"></div>
         {subIndex > 0 && (
           <button className="depth-nav depth-up" onClick={goUp} title="Back to the main flow">&#9650; Back</button>
         )}

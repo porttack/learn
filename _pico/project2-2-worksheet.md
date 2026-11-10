@@ -49,6 +49,7 @@ companion: true
 
 <p><em>Use this with <a href="/pico/project2-2-reading-a-potentiometer/">Project 2.2: Reading a Potentiometer</a>. Your answers can be short: you do not need full sentences.</em></p>
 
+<div class="ws-strip"><b>voltage divider</b>: two resistors in series that split a voltage; the wiper reads the split</div>
 <div class="ws-strip"><b>list</b>: an ordered collection of values stored under one name</div>
 <div class="ws-strip"><b>element</b>: one value inside a list</div>
 <div class="ws-strip"><b>index</b>: an element's position in the list, counting from 0</div>
@@ -69,7 +70,16 @@ companion: true
 
 <div class="ws-page2"></div>
 
-<h2>C. Lists on paper</h2>
+<h2>C. The voltage divider on paper</h2>
+
+<p>Ohm's law says <b>V = I × R</b>. The wiper voltage is <b>V_wiper = 3.3 × R_bottom / R_total</b>. Use the 10k pot from your kit. No calculator needed.</p>
+
+<div class="ws-row"><div class="ws-q">Knob turned all the way to the ground end. R_bottom is 0. What is V_wiper?</div><div class="ws-a"><div class="ln"></div></div></div>
+<div class="ws-row"><div class="ws-q">Knob exactly in the middle. R_bottom is half of R_total. About what is V_wiper?</div><div class="ws-a"><div class="ln"></div></div></div>
+<div class="ws-row"><div class="ws-q">Knob turned all the way to the 3V3 end. What is V_wiper?</div><div class="ws-a"><div class="ln"></div></div></div>
+<div class="ws-row"><div class="ws-q">Swap the 10k pot for a 1k pot. Does the current through the pot get bigger, smaller, or stay the same? Does V_wiper change?</div><div class="ws-a"><div class="ln"></div><div class="ln"></div></div></div>
+
+<h2>D. Lists on paper</h2>
 
 <p>Do these before you touch the code. Here is a list:</p>
 
@@ -79,15 +89,15 @@ companion: true
 <div class="ws-row"><div class="ws-q">What is the first element? <code>samples[0]</code></div><div class="ws-a"><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">What is the last element? <code>samples[7]</code></div><div class="ws-a"><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">The spread: <code>max(samples) - min(samples)</code></div><div class="ws-a"><div class="ln"></div></div></div>
-<div class="ws-row"><div class="ws-q">The average: <code>sum(samples) // len(samples)</code></div><div class="ws-a"><div class="ln"></div></div></div>
+<div class="ws-row"><div class="ws-q">About what is the average of the 8 elements? A close guess is fine. <code>sum(samples) // len(samples)</code> finds it exactly.</div><div class="ws-a"><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">Predict what this does, and why: <code>samples[8]</code></div><div class="ws-a"><div class="ln"></div><div class="ln"></div></div></div>
 
-<h2>D. Your own data</h2>
+<h2>E. Your own data</h2>
 
 <div class="ws-row"><div class="ws-q">Hold the knob still. Add <code>print(samples)</code> to your program and copy one printed list.</div><div class="ws-a"><div class="ln"></div><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">Its spread, <code>max(samples) - min(samples)</code>:</div><div class="ws-a"><div class="ln"></div></div></div>
 
-<h2>E. Reflection</h2>
+<h2>F. Reflection</h2>
 
 <div class="ws-row"><div class="ws-q">Why does the program average 8 readings instead of using just one? Use the word <b>list</b> in your answer.</div><div class="ws-a"><div class="ln"></div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div></div>
 

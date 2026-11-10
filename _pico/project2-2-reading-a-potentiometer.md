@@ -41,9 +41,47 @@ Pico's ADC can only read up to 3.3V, so a reading above that just clips at
 the maximum and stops responding to the knob. It's an easy mistake to
 repeat with the joystick later, which is wired the exact same way.
 
-A 1k and a 10k potentiometer read identically here. The ADC measures a
-ratio of voltages, not a specific resistance, so the exact value doesn't
-matter as long as both outer legs are connected.
+A 1k and a 10k potentiometer both work here, as long as both outer legs are
+connected. The next section shows why the exact value doesn't matter.
+
+### How a knob makes a voltage
+
+Inside a potentiometer is one long strip of resistive material, with a wiper
+that slides along it. Your two outer wires put 3.3V across the whole strip, so
+a small current flows through it from 3V3 to ground. The wiper touches the
+strip at some point and splits it into two resistors, one on each side of the
+wiper: `R_top` (between 3V3 and the wiper) and `R_bottom` (between the wiper
+and ground). They are in series, so the **same current** flows through both.
+
+That is where Ohm's law comes in: **V = I × R**, voltage equals current times
+resistance. Use it twice:
+
+1. The whole strip has a resistance of `R_total`, and 3.3V across it, so the
+   current is `I = 3.3 / R_total`.
+2. The voltage at the wiper is the voltage across the part below it, so
+   `V_wiper = I × R_bottom`.
+
+Put them together and the current cancels out:
+
+```
+V_wiper = 3.3 × R_bottom / R_total
+```
+
+The wiper voltage is just 3.3V times the fraction of the strip that is below
+the wiper. Halfway up the strip, you get half of 3.3V. At the ground end,
+`R_bottom` is 0, so the voltage is 0. At the 3V3 end, `R_bottom` is all of
+`R_total`, so you get the full 3.3V. This circuit is called a **voltage
+divider**.
+
+Drag the knob, or press Sweep, and watch the wiper split the resistor:
+
+{% include pot-divider.html %}
+
+Now switch the pot from 10k to 1k and watch the readouts. The current gets ten
+times bigger, but the wiper voltage doesn't change at all, because it depends
+only on the *fraction* `R_bottom / R_total`. That is why a 1k and a 10k pot
+read identically here. The Pico's ADC pin draws very little current, so it
+just reads the voltage the divider makes.
 
 ### Read the knob into a number
 
@@ -123,8 +161,9 @@ The code claims a specific voltage. Check it.
    leg of the potentiometer. Call the one going to ground `R_bottom` and
    the full end-to-end resistance `R_total`.
 3. Calculate `3.3 * R_bottom / R_total` by hand and compare it to what you
-   measured in step 1. This is the actual voltage-divider formula, the
-   same ratio your code is approximating with `read_u16()`.
+   measured in step 1. This is the voltage-divider formula you got from
+   Ohm's law above, the same ratio your code is approximating with
+   `read_u16()`.
 
 Your 3V3 rail might measure closer to 3.25V than exactly 3.3. That's real:
 the code assumes 3.3 because that's the nominal, advertised voltage, not

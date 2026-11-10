@@ -1,0 +1,127 @@
+<!--
+  Animated potentiometer voltage divider (Project 2.2). Self-contained: no
+  network requests, nothing stored. Drag the slider (or press Sweep) and the
+  wiper slides along the resistor, splitting it into R_top and R_bottom. The
+  readouts show Ohm's law at work: one current, V = I x R_bottom.
+  Include it once per page.
+-->
+<style>
+  .potdiv { border: 1px solid #c9ced4; border-radius: 8px; padding: 12px; margin: 1.2em 0; max-width: 640px; }
+  .potdiv svg { width: 100%; height: auto; display: block; }
+  .potdiv svg text { fill: currentColor; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 14px; }
+  .potdiv .pd-mono { font-family: "Courier New", Courier, monospace; }
+  .potdiv .pd-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 8px 0; }
+  .potdiv .pd-controls input[type=range] { flex: 1 1 200px; }
+  .potdiv .pd-controls button, .potdiv .pd-controls select { font-size: 0.95em; padding: 3px 10px; }
+  .potdiv table { border-collapse: collapse; width: 100%; margin: 6px 0 0; font-family: "Courier New", Courier, monospace; font-size: 0.95em; }
+  .potdiv td { border-top: 1px solid #c9ced4; padding: 3px 6px; }
+  .potdiv td:last-child { text-align: right; font-weight: bold; }
+  @media print { .potdiv .pd-controls { display: none; } }
+</style>
+<div class="potdiv" id="potdiv">
+  <svg viewBox="-70 0 630 320" role="img" aria-label="A potentiometer drawn as one resistor with a sliding wiper. The wiper splits it into R top and R bottom, and the voltage at the wiper rises as the wiper moves toward 3V3.">
+    <defs>
+      <marker id="pd-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+        <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+      </marker>
+    </defs>
+    <g stroke="currentColor" stroke-width="2" fill="none">
+      <line x1="100" y1="34" x2="100" y2="60"/>
+      <line x1="100" y1="260" x2="100" y2="286"/>
+      <path id="pd-top" stroke="#b5541c" stroke-width="3"/>
+      <path id="pd-bot" stroke="#1a6fb5" stroke-width="3"/>
+      <line id="pd-wiper" x1="214" x2="112" stroke-width="3" marker-end="url(#pd-arrow)"/>
+      <rect x="380" y="60" width="36" height="200" stroke-width="2"/>
+      <circle cx="512" cy="160" r="44" stroke-width="2"/>
+      <line id="pd-pointer" x1="512" y1="160" x2="512" y2="122" stroke-width="4"/>
+    </g>
+    <rect id="pd-fill" x="381" width="34" fill="#2a7ae2" opacity="0.75"/>
+    <text x="100" y="24" text-anchor="middle">3V3</text>
+    <text x="100" y="306" text-anchor="middle">GND</text>
+    <text id="pd-wlabel" x="222" font-size="14">wiper, to GP26</text>
+    <text id="pd-rtop" x="76" text-anchor="end" class="pd-mono"></text>
+    <text id="pd-rbot" x="76" text-anchor="end" class="pd-mono"></text>
+    <text x="398" y="50" text-anchor="middle">wiper voltage</text>
+    <text id="pd-vtext" x="398" y="282" text-anchor="middle" class="pd-mono" font-weight="bold"></text>
+    <text x="424" y="72" class="pd-mono">3.3 V</text>
+    <text x="424" y="260" class="pd-mono">0 V</text>
+    <text x="512" y="226" text-anchor="middle">knob</text>
+  </svg>
+  <div class="pd-controls">
+    <label for="pd-slider">Knob position</label>
+    <input id="pd-slider" type="range" min="0" max="100" step="1" value="50">
+    <label for="pd-total">Pot</label>
+    <select id="pd-total"><option value="10">10k</option><option value="1">1k</option></select>
+    <button type="button" id="pd-sweep">Sweep</button>
+  </div>
+  <table aria-label="Readings for the current knob position">
+    <tr><td>R_top (3V3 to wiper)</td><td id="pd-o-top"></td></tr>
+    <tr><td>R_bottom (wiper to GND)</td><td id="pd-o-bot"></td></tr>
+    <tr><td>I = 3.3 V / R_total</td><td id="pd-o-i"></td></tr>
+    <tr><td>V = I x R_bottom</td><td id="pd-o-v"></td></tr>
+    <tr><td>read_u16() gives about</td><td id="pd-o-raw"></td></tr>
+  </table>
+  <noscript><p>This animation needs JavaScript. The wiper splits the pot into R_top and R_bottom, and the wiper voltage is 3.3 x R_bottom / R_total.</p></noscript>
+</div>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var TOP = 60, BOT = 260, SPAN = BOT - TOP;
+  var slider = $("pd-slider"), total = $("pd-total"), sweep = $("pd-sweep");
+  var timer = null, dir = 1;
+
+  // A zigzag resistor symbol between two y values.
+  function zig(y1, y2) {
+    var len = y2 - y1;
+    if (len < 1) return "";
+    var n = Math.max(2, Math.round(len / 10)), pts = ["M100," + y1];
+    for (var i = 1; i < n; i++) pts.push("L" + (i % 2 ? 114 : 86) + "," + (y1 + len * i / n));
+    pts.push("L100," + y2);
+    return pts.join(" ");
+  }
+  function fmt(x, d) { return x.toFixed(d); }
+
+  function draw() {
+    var t = slider.value / 100;                 // 0 = wiper at GND end, 1 = at 3V3 end
+    var rt = parseFloat(total.value);           // total resistance in kilohms
+    var rb = t * rt, rtop = rt - rb;            // R_bottom and R_top
+    var i = 3.3 / rt;                           // milliamps, because resistance is in kilohms
+    var v = i * rb;                             // volts: Ohm's law across R_bottom
+    var wy = BOT - SPAN * t;
+    $("pd-top").setAttribute("d", zig(TOP, wy));
+    $("pd-bot").setAttribute("d", zig(wy, BOT));
+    $("pd-wiper").setAttribute("y1", wy); $("pd-wiper").setAttribute("y2", wy);
+    $("pd-wlabel").setAttribute("y", wy + 5);
+    var rtopEl = $("pd-rtop"), rbotEl = $("pd-rbot");
+    rtopEl.textContent = (wy - TOP > 22) ? "R_top " + fmt(rtop, 1) + "k" : "";
+    rtopEl.setAttribute("y", (TOP + wy) / 2 + 5);
+    rbotEl.textContent = (BOT - wy > 22) ? "R_bottom " + fmt(rb, 1) + "k" : "";
+    rbotEl.setAttribute("y", (wy + BOT) / 2 + 5);
+    var fillH = SPAN * t;
+    $("pd-fill").setAttribute("y", BOT - fillH); $("pd-fill").setAttribute("height", fillH);
+    $("pd-vtext").textContent = fmt(v, 2) + " V";
+    var ang = -135 + 270 * t, rad = ang * Math.PI / 180;
+    $("pd-pointer").setAttribute("x2", 512 + 38 * Math.sin(rad));
+    $("pd-pointer").setAttribute("y2", 160 - 38 * Math.cos(rad));
+    $("pd-o-top").textContent = fmt(rtop, 2) + " k";
+    $("pd-o-bot").textContent = fmt(rb, 2) + " k";
+    $("pd-o-i").textContent = fmt(i, 2) + " mA";
+    $("pd-o-v").textContent = fmt(v, 2) + " V";
+    $("pd-o-raw").textContent = Math.round(t * 65535);
+  }
+
+  function stop() { if (timer) { clearInterval(timer); timer = null; } sweep.textContent = "Sweep"; }
+  sweep.addEventListener("click", function () {
+    if (timer) { stop(); return; }
+    sweep.textContent = "Stop";
+    timer = setInterval(function () {
+      var next = parseInt(slider.value, 10) + dir * 2;
+      if (next >= 100) { next = 100; dir = -1; } else if (next <= 0) { next = 0; dir = 1; }
+      slider.value = next; draw();
+    }, 30);
+  });
+  slider.addEventListener("input", function () { stop(); draw(); });
+  total.addEventListener("change", draw);
+  draw();
+})();
+</script>
