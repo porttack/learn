@@ -51,9 +51,14 @@ import time
 pot = ADC(Pin(26))   # only GP26, 27, 28 can read analog voltages
 
 while True:
-    # Read the pot 8 times and average them. A single reading jitters a
-    # little; averaging smooths that out.
-    raw = sum(pot.read_u16() for _ in range(8)) // 8
+    # A list is an ordered collection of values. Start with an empty one,
+    # then append 8 readings to it. A single reading jitters a little.
+    samples = []
+    for _ in range(8):
+        samples.append(pot.read_u16())
+
+    # Average the list: add up its elements, divide by how many there are.
+    raw = sum(samples) // len(samples)
 
     # read_u16() gives 0 to 65535, where 65535 means the full 3.3V.
     volts = raw / 65535 * 3.3
@@ -62,15 +67,43 @@ while True:
     time.sleep_ms(100)
 ```
 
-If `sum(pot.read_u16() for _ in range(8))` looks unfamiliar, here's the
-same averaging written as an explicit loop instead:
+Each reading you append goes into the next open spot in the list. Every
+element has an index, its position in the list, counting from 0, so
+`samples[0]` is the first reading and `samples[7]` is the last.
+`len(samples)` is how many elements it holds, which is 8 here. Using
+`len(samples)` instead of typing 8 again means the average stays correct if
+you ever change how many readings you take.
+
+### Look at your samples
+
+Add one line right after the `for` loop, before `raw` is calculated:
 
 ```python
-total = 0
-for _ in range(8):
-    total += pot.read_u16()
-raw = total // 8
+    print(samples)
 ```
+
+Run it and hold the knob perfectly still. You'd expect eight identical
+numbers. You'll get eight slightly different ones. Remove the line when
+you're done looking, or the Plotter below will try to plot a whole list.
+
+<aside class="callout note" markdown="1">
+**WHY WE AVERAGE: MEASURE THE SPREAD**
+
+The gap between your biggest and smallest reading is the spread. A knob
+that isn't moving still has a spread above zero, because the ADC picks up
+tiny bits of electrical noise from the wiring and the Pico itself. That
+noise is the reason we average: one reading can be off by the spread, but
+the average of eight is much closer to the truth.
+
+Add this line after the `for` loop and print it next to your voltage:
+
+```python
+    spread = ...   # TODO: max(samples) minus min(samples)
+```
+
+Write down your spread with the knob at the bottom, the middle, and the top.
+Is it the same at all three?
+</aside>
 
 Run it, then open Thonny's **View > Plotter**. Turn the knob and watch the
 live plot respond. The text before the number in `print()` becomes that
