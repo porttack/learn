@@ -10,6 +10,7 @@ project_part: 3
 label: "Project 2.3"
 source: original
 subtitle: "The voltage you can already read gets something fun to control"
+slides: /pico/project2-3-intro-slides/
 ---
 
 This is for after Project 2.2's potentiometer-reading loop is working and
