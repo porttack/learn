@@ -72,11 +72,12 @@ companion: true
 
 <h2>C. The voltage divider on paper</h2>
 
-<p>Ohm's law says <b>V = I × R</b>. The wiper voltage is <b>V_wiper = 3.3 × R_bottom / R_total</b>. Use the 10k pot from your kit. No calculator needed.</p>
+<p>Ohm's law says <b>V = I × R</b>. The wiper voltage is <b>V_wiper = 3.3 × R_bottom / R_total</b>. Use the 10k pot from your kit.</p>
 
 <div class="ws-row"><div class="ws-q">Knob turned all the way to the ground end. R_bottom is 0. What is V_wiper?</div><div class="ws-a"><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">Knob exactly in the middle. R_bottom is half of R_total. About what is V_wiper?</div><div class="ws-a"><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">Knob turned all the way to the 3V3 end. What is V_wiper?</div><div class="ws-a"><div class="ln"></div></div></div>
+<div class="ws-row"><div class="ws-q">With the 10k pot (10,000 ohms), what is the current through the whole strip? Use I = 3.3 / R_total. Give your answer in milliamps.</div><div class="ws-a"><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">Swap the 10k pot for a 1k pot. Does the current through the pot get bigger, smaller, or stay the same? Does V_wiper change?</div><div class="ws-a"><div class="ln"></div><div class="ln"></div></div></div>
 
 <h2>D. Lists on paper</h2>
@@ -89,7 +90,6 @@ companion: true
 <div class="ws-row"><div class="ws-q">What is the first element? <code>samples[0]</code></div><div class="ws-a"><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">What is the last element? <code>samples[7]</code></div><div class="ws-a"><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">The spread: <code>max(samples) - min(samples)</code></div><div class="ws-a"><div class="ln"></div></div></div>
-<div class="ws-row"><div class="ws-q">About what is the average of the 8 elements? A close guess is fine. <code>sum(samples) // len(samples)</code> finds it exactly.</div><div class="ws-a"><div class="ln"></div></div></div>
 <div class="ws-row"><div class="ws-q">Predict what this does, and why: <code>samples[8]</code></div><div class="ws-a"><div class="ln"></div><div class="ln"></div></div></div>
 
 <h2>E. Your own data</h2>
