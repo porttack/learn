@@ -66,6 +66,7 @@ If you can write one, the other will feel familiar.
 | Part | What it does | License |
 |---|---|---|
 | OpenSCAD (a snapshot dated 2025-01-19, built for the web) | Reads your code and builds the model. It uses the Manifold geometry library for fast cutting and joining of shapes. | GPL-2.0-or-later (Manifold: Apache-2.0) |
+| DejaVu fonts | The letters used by `text()`. | Free (Bitstream Vera license) |
 | WebAssembly and a Web Worker | WebAssembly lets the program written for desktops run in a browser. The worker runs it off the main page, so the page stays responsive and **Stop** works if a script never finishes. | Part of the browser |
 | CodeMirror 6 | The editor: colors, indenting, suggestions, undo. | MIT |
 | three.js | Draws the 3D model, the grid, the axes and the arrows. | MIT |
@@ -101,7 +102,10 @@ finished model, they are not part of OpenSCAD.
 
 ## What is not here yet
 
-- **Fonts:** the `text()` command does not work, because no fonts are included.
+- **Fonts:** `text()` works with three fonts: DejaVu Sans, DejaVu Sans Bold and
+  DejaVu Sans Mono. Use them by name, for example
+  `text("Hi", font="DejaVu Sans:style=Bold")`. Other fonts are not included, and
+  the fonts are downloaded only when your script uses `text()`.
 - **Libraries:** `use <...>` and `include <...>` of outside libraries (such as
   MCAD or BOSL) do not work, and neither does `import()` of a file. Everything
   has to be in your one script.

@@ -27,3 +27,10 @@ To rebuild: in a scratch folder `npm i codemirror @codemirror/language
 @codemirror/autocomplete @codemirror/commands @codemirror/state @codemirror/view
 @lezer/highlight esbuild`, copy `src/editor-entry.js` there, and run
 `npx esbuild editor-entry.js --bundle --minify --format=esm --outfile=editor.js`.
+
+## Fonts
+
+`fonts/` holds DejaVu Sans, DejaVu Sans Bold and DejaVu Sans Mono (from the npm package
+`dejavu-fonts-ttf` 2.37.3), so OpenSCAD's `text()` works. Their license (Bitstream Vera
+license plus public domain changes) is in `fonts/LICENSE-DejaVu.txt`. The page loads them only
+when a script uses `text(`.
