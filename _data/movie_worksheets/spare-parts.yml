@@ -1,0 +1,35 @@
+part1:
+  - q: "What subject does Dr. Cameron teach at Carl Hayden?"
+    options: ["Computer Science", "Math", "Science", "Engineering"]
+    answer: ""
+  - q: "What city does the underwater robotics competition take place in?"
+    options: ["Phoenix, Arizona", "Santa Barbara, California", "San Diego, California", "Miami, Florida"]
+    answer: B
+  - q: "Which team member has the most technical experience at the beginning?"
+    options: ["Oscar", "Luis", "Lorenzo", "Cristian"]
+    answer: ""
+  - q: "What everyday material do they use to make their robot waterproof?"
+    options: ["Duct tape", "Tampons", "Plastic bags", "Aluminum foil"]
+    answer: B
+  - q: "What advantage does their robot have over the expensive MIT robot?"
+    options: ["It's faster underwater", "It can go deeper", "It's more maneuverable in tight spaces", "It has better cameras"]
+    answer: ""
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Working with Constraints"
+    text: "The Carl Hayden team had an $800 budget while MIT had $11,000. Describe two creative solutions the team used to build their robot cheaply. How did their \"disadvantages\" sometimes work in their favor?"
+    lines: 5
+  - label: "Problem Solving"
+    text: "Choose ONE technical challenge the team faces in building their robot. Describe the problem and explain step by step how they solve it (like writing an algorithm)."
+    fields:
+      - { label: "Problem:" }
+      - { label: "Steps to solve it:", lines: 4 }
+  - label: "Skills and Roles"
+    text: "Each team member brought different strengths: technical skills, leadership, creativity, determination. In real computer science and engineering projects, why is it important to have people with different skills working together?"
+    lines: 4
+  - label: "Your Turn"
+    text: "If you had to build a robot to solve a problem at our school (like cleaning, helping in the library, etc.), what would you design? What challenges would you face with a limited budget?"
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which Carl Hayden student in the movie do you think you are most like and why? Consider their personality, strengths, and role on the team."
+    lines: 4

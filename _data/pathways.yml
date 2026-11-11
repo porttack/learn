@@ -122,6 +122,18 @@
     classic Creative Commons and public-domain unplugged activities, rewritten
     as ready-to-print sheets students can do on their own.
 
+- id: movies
+  title: "Student Movies"
+  collection: movies
+  url: /movies/
+  banner: /assets/img/movies/movies-banner.png
+  nav: none
+  blurb: >-
+    Movies worth watching in class, each with a trailer, a short summary,
+    Common Sense Media and Rotten Tomatoes ratings, and a printable two sided
+    worksheet. Questions to answer while you watch, then questions about
+    character, feelings and how people treat each other.
+
 - id: rovrobotics
   banner: /assets/img/rovrobotics/banner.png
   title: "ROV Robotics"

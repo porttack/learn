@@ -1,0 +1,21 @@
+---
+layout: minimal
+---
+{% assign ws = site.data.movie_worksheets[page.slug] %}
+<article class="movie-page">
+  <p class="pathway-back"><a href="{{ '/movies/' | relative_url }}">&larr; Movies</a></p>
+  <h1>{{ page.title }}</h1>
+  <p class="movie-meta"><em>Directed by {{ page.director }} | {{ page.studio }} ({{ page.year }}) | Rated {{ page.rating }} | {{ page.runtime }} minutes</em></p>
+  <ul class="movie-facts">
+    <li><strong>Grades:</strong> {{ page.grades }}</li>
+    <li><strong>Common Sense Media:</strong> <a href="https://www.commonsensemedia.org/movie-reviews/{{ page.slug }}">parents say {{ page.csm_parents }}+, kids say {{ page.csm_kids }}+</a></li>
+    <li><strong>Rotten Tomatoes:</strong> {{ page.rt_critics }}% critics, {{ page.rt_audience }}% audience</li>
+  </ul>
+  {% if page.trailer and page.trailer != "" %}
+  <div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/{{ page.trailer }}" title="{{ page.title }} trailer" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+  {% endif %}
+  {{ content }}
+  <p class="movie-actions">
+    <a class="print-button" href="{{ '/movies/' | append: page.slug | append: '-worksheet/' | relative_url }}">Printable worksheet</a>
+  </p>
+</article>

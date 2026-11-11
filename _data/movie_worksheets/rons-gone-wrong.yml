@@ -1,0 +1,35 @@
+part1:
+  - q: "What makes Barney different from other kids at the beginning of the movie?"
+    options: ["He's the only one without a B-Bot", "He doesn't have any friends", "He's new to the school", "He doesn't like technology"]
+    answer: A
+  - q: "What is a B-Bot supposed to do?"
+    options: ["Do your homework", "Be your best friend and help you connect with others", "Protect you from danger", "Clean your room"]
+    answer: B
+  - q: "What's wrong with Ron when Barney first gets him?"
+    options: ["His screen is cracked", "He can't walk properly", "He's not connected to the internet/cloud", "His battery doesn't work"]
+    answer: C
+  - q: "How does Ron learn about Barney?"
+    options: ["By downloading Barney's data from the cloud", "By asking Barney questions and spending time with him", "Another B-Bot tells him", "He reads Barney's school records"]
+    answer: B
+  - q: "What does the Bubble company want to do with the B-Bots' data?"
+    options: ["Delete it to protect privacy", "Use it to make better robots", "Sell it to make money", "Share it with parents"]
+    answer: C
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Privacy and Data"
+    text: "Real social media apps and devices collect data about you (what you like, who your friends are, where you go). What does this movie suggest could go wrong when companies collect too much data about kids? Give at least ONE example from the film."
+    lines: 4
+  - label: "Real vs. Fiction"
+    text: "Do you think robots like B-Bots could exist in real life today?"
+    circle: "YES, mostly possible now / MAYBE, in 5 to 10 years / NO, science fiction"
+    fields:
+      - { label: "Explain your answer:", lines: 3 }
+  - label: "Your Opinion"
+    text: "At the end of the movie, which type of friend would you rather have? (There's no wrong answer!)"
+    choices:
+      - "A perfect B-Bot that knows everything about you from the internet"
+      - "A glitchy Ron who learns about you slowly by spending time together"
+      - "No robot, just human friends"
+    fields:
+      - { label: "Why?", lines: 3 }
+bonus: "Draw Ron or design your own robot friend on the back of this page."

@@ -1,0 +1,33 @@
+part1:
+  - q: "What is the name of the German encryption machine that Alan Turing and his team must break?"
+    options: ["Colossus", "Enigma", "Bombe", "Ultra"]
+    answer: B
+  - q: "What does Alan name his codebreaking machine?"
+    options: ["Enigma", "Colossus", "Christopher", "Victory"]
+    answer: C
+  - q: "Who brings the diverse perspectives that help the team succeed?"
+    options: ["Only the Cambridge-educated men", "Joan (a woman) and Alan (an outsider) bring different approaches", "The government officials overseeing the project", "Only Alan's mathematical genius"]
+    answer: B
+  - q: "What happens to Alan Turing after the war ends?"
+    options: ["He becomes a celebrated war hero", "He continues working for the government", "He is prosecuted for being homosexual", "He becomes a university professor"]
+    answer: C
+  - q: "What difficult decision must the team make once they can read German messages?"
+    options: ["Whether to tell the public about their success", "Which messages to act on without revealing they broke the code", "Whether to share their methods with other countries", "How to make their machine work faster"]
+    answer: B
+part2_title: "Think About Character and Society"
+part2:
+  - label: "Outsiders Drive Innovation"
+    text: "Alan Turing was an outsider who thought differently, and Joan Clarke faced barriers as a woman in a male field. How did these \"outsiders\" end up being the ones who made breakthrough contributions? What does this teach us about listening to marginalized voices?"
+    lines: 4
+  - label: "The Cost of Discrimination"
+    text: "Alan Turing helped win the war and practically invented computers, but society persecuted him and he died young. How does discrimination against individuals hurt all of society? Give a modern example."
+    lines: 4
+  - label: "Dangerous Secrets"
+    text: "The movie shows both the need for wartime secrecy AND the dangers when governments have too much secret power over people's lives. How do we balance security needs with protecting people's rights in a democracy?"
+    lines: 4
+  - label: "Standing Up Today"
+    text: "Alan and Joan faced discrimination but persevered. Joan even stood up for Alan when others wouldn't. Describe someone you know (or know of) who has shown courage by standing up for what's right, even when it was difficult."
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? Consider their personality, strengths, and how they work with others. (You could choose Alan Turing, Joan Clarke, Hugh Alexander, or another character.)"
+    lines: 4

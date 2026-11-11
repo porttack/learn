@@ -1,0 +1,34 @@
+part1:
+  - q: "What causes Roz to be stranded on the island?"
+    options: ["A storm shipwrecks her", "She falls off a cargo ship", "Her battery dies during transport", "She is abandoned by humans"]
+    answer: A
+  - q: "What is the first thing Roz learns to do on the island?"
+    options: ["Build shelter", "Communicate with animals", "Find food", "Repair herself"]
+    answer: ""
+  - q: "Which animal becomes Roz's first real friend?"
+    options: ["Brightbill the gosling", "Fink the fox", "Pinktail the opossum", "Thunderbolt the falcon"]
+    answer: ""
+  - q: "How does Roz learn the animals' language?"
+    options: ["She downloads it from the internet", "She observes and mimics their sounds", "Another robot teaches her", "She was pre-programmed with it"]
+    answer: B
+  - q: "What natural disaster threatens all the animals?"
+    options: ["Earthquake", "Flood", "Winter storm/blizzard", "Forest fire"]
+    answer: C
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Programming and Learning"
+    text: "Streaming services like Netflix keep track of what shows you watch and then suggest similar shows you might like. At the beginning, Roz follows her basic programming, but she gets better at helping animals over time. How does Roz learn and improve in a way that's similar to how Netflix learns what you like?"
+    lines: 5
+  - label: "Problem Solving"
+    text: "Choose ONE problem Roz faces in the movie. Describe the problem and explain step by step how she solves it (like writing an algorithm). Good problems might be: (A) Teaching Brightbill to fly, (B) Surviving the winter storm, (C) Getting animals to trust her, (D) Learning to communicate with animals."
+    fields:
+      - { label: "Problem:" }
+      - { label: "Steps to solve it:", lines: 4 }
+  - label: "Real vs. Fiction"
+    text: "List THREE things Roz can do in the movie. For each one, write whether you think real robots can do this TODAY or if it's still science fiction, and why."
+    table:
+      head: ["What Roz can do", "Real today or science fiction?", "Why?"]
+      rows: ["", "", ""]
+  - label: "Your Turn"
+    text: "If you were designing a robot helper for your school, what would you want it to learn how to do? What challenges might it face?"
+    lines: 4

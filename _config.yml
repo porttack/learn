@@ -40,6 +40,10 @@ collections:
     output: true
     permalink: /turtle-lessons/:name/
 
+  movies:
+    output: true
+    permalink: /movies/:name/
+
 defaults:
   - scope: { path: "", type: "pico" }
     values:

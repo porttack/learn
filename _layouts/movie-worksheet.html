@@ -1,0 +1,58 @@
+---
+layout: minimal
+---
+{% assign film = site.movies | where: "slug", page.movie | first %}
+{% assign ws = site.data.movie_worksheets[page.movie] %}
+<article class="movie-worksheet">
+  <div class="worksheet-screen-only">
+    <p class="pathway-back"><a href="{{ film.url | relative_url }}">&larr; {{ film.title }}</a></p>
+    <p><button class="print-button" onclick="window.print()">Print this worksheet</button> Two printed sides. Print double sided, or print the back separately.</p>
+  </div>
+
+  <p class="ws-name">Name: <span class="fill-line"></span> Period: <span class="fill-line short"></span> Date: <span class="fill-line short"></span></p>
+  <h1 class="ws-title">Movie: {{ film.title }}</h1>
+  <p class="ws-meta"><em>Directed by {{ film.director }} | {{ film.studio }} ({{ film.year }}) | Rated {{ film.rating }} | {{ film.runtime }} minutes</em></p>
+  <p class="ws-sides">There are two sides to this worksheet. Do both sides!</p>
+
+  <h2>Part 1: Watch and Learn (answer while watching)</h2>
+  <p><strong>Circle the best answer.</strong></p>
+  <ol class="ws-mc">
+  {% for q in ws.part1 %}
+    <li><p class="ws-q">{{ q.q }}</p>
+      <ul class="ws-options">
+      {% for o in q.options %}<li><span class="ws-letter">{{ "ABCD" | slice: forloop.index0 }})</span> {{ o }}</li>{% endfor %}
+      </ul>
+    </li>
+  {% endfor %}
+  </ol>
+
+  <div class="ws-back">
+  <h2>Part 2: {{ ws.part2_title }}</h2>
+  <ol class="ws-free" start="6">
+  {% for q in ws.part2 %}
+    <li>
+      <p class="ws-q">{% if q.label %}<strong>{{ q.label }}:</strong> {% endif %}{{ q.text }}</p>
+      {% if q.choices %}
+        {% if q.circle %}<p class="ws-circle">Circle one: {{ q.circle }}</p>{% endif %}
+        <ul class="ws-choices">{% for c in q.choices %}<li>{{ c }}</li>{% endfor %}</ul>
+      {% endif %}
+      {% if q.table %}
+        <table class="sheet-table ws-table"><thead><tr>{% for h in q.table.head %}<th>{{ h }}</th>{% endfor %}</tr></thead>
+        <tbody>
+        {% for r in q.table.rows %}<tr><td>{{ r }}</td>{% for h in q.table.head offset:1 %}<td></td>{% endfor %}</tr>{% endfor %}
+        {% for row in q.table.cells %}<tr>{% for c in row %}<td>{{ c }}</td>{% endfor %}</tr>{% endfor %}
+        </tbody></table>
+      {% endif %}
+      {% if q.fields %}
+        {% for f in q.fields %}<p class="ws-field"><strong>{{ f.label }}</strong> {% if f.lines %}{% else %}<span class="fill-line"></span>{% endif %}</p>
+        {% if f.lines %}{% for i in (1..f.lines) %}<p class="fill-line ws-line"></p>{% endfor %}{% endif %}
+        {% endfor %}
+      {% elsif q.lines %}
+        {% for i in (1..q.lines) %}<p class="fill-line ws-line"></p>{% endfor %}
+      {% endif %}
+    </li>
+  {% endfor %}
+  </ol>
+  {% if ws.bonus %}<p class="ws-bonus"><strong>Bonus (if you finish early):</strong> {{ ws.bonus }}</p>{% endif %}
+  </div>
+</article>

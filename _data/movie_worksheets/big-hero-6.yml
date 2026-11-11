@@ -1,0 +1,30 @@
+part1:
+  - q: "What type of robot is Baymax originally designed to be?"
+    options: ["A fighting robot", "A personal healthcare companion", "A manufacturing robot", "A search and rescue robot"]
+    answer: B
+  - q: "What invention does Hiro create for the science showcase?"
+    options: ["Flying robot", "Microbots controlled by neural transmitter", "Artificial intelligence software", "Teleportation device"]
+    answer: B
+  - q: "Who is revealed to be the masked villain?"
+    options: ["Alistair Krei", "Professor Callaghan", "Yama", "Tadashi"]
+    answer: B
+  - q: "What does Hiro initially want to use Baymax and his friends for?"
+    options: ["To help people", "To win a competition", "To get revenge", "To become famous"]
+    answer: C
+  - q: "How does the team ultimately save Callaghan's daughter?"
+    options: ["They destroy the portal", "They reprogram the microbots", "Baymax flies into the portal with Hiro to rescue her", "They convince Callaghan to help them"]
+    answer: C
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Design Process"
+    text: "Hiro goes through multiple versions of upgrading Baymax (adding armor, flight, etc.). This is similar to how programmers and engineers work. Describe the process Hiro uses to improve Baymax. Why is testing and redesigning important in computer science and robotics?"
+    lines: 7
+  - label: "Artificial Intelligence"
+    text: "Baymax has programming that guides his behavior (his healthcare protocols). But he also learns and adapts based on his experiences with Hiro. Describe ONE scene where Baymax follows his programming and ONE scene where he seems to go beyond it. What does this teach us about AI?"
+    fields:
+      - { label: "Scene following programming:", lines: 2 }
+      - { label: "Scene going beyond programming:", lines: 2 }
+      - { label: "What this teaches us:", lines: 2 }
+  - label: "Personal Connection"
+    text: "Hiro has to make a choice between using his talents for revenge or using them to help people. Have you ever had to make a choice between doing something that felt good in the moment versus doing what was right? Or, which character in the movie do you relate to most and why?"
+    lines: 5

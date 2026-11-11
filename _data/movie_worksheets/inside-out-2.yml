@@ -1,0 +1,29 @@
+part1:
+  - q: "What new emotion appears at headquarters when Riley becomes a teenager?"
+    options: ["Embarrassment", "Anxiety", "Envy", "All of the above"]
+    answer: D
+  - q: "What is Riley trying to accomplish at hockey camp?"
+    options: ["Learn a new position", "Make the high school team (the Firehawks)", "Become team captain", "Win a championship"]
+    answer: B
+  - q: "What does Anxiety do to Riley's Sense of Self?"
+    options: ["Adds positive memories to it", "Removes it and creates a new one based on fears", "Shares it with the other emotions", "Protects it from negative thoughts"]
+    answer: B
+  - q: "Where do Joy and the other original emotions get sent when Anxiety takes over?"
+    options: ["The Memory Dump", "The Back of the Mind", "The Vault", "Dream Productions"]
+    answer: B
+  - q: "How does Riley ultimately deal with her anxiety at the end?"
+    options: ["She suppresses all anxious thoughts", "She learns all her emotions (including anxiety) are part of who she is", "She decides to quit hockey", "Joy takes complete control again"]
+    answer: B
+part2_title: "Think and Reflect"
+part2:
+  - text: "Riley's friends Bree and Grace are going to a different high school. Have you ever worried about losing touch with friends or making new friends? What advice would you give to someone in that situation?"
+    lines: 5
+  - text: "Anxiety tries to help Riley by planning for every possible problem, but it actually makes things worse. Describe a time when worrying too much about something made it harder to do your best."
+    lines: 5
+  - text: "The movie shows that all emotions, even uncomfortable ones like anxiety, embarrassment, and envy, are normal parts of growing up. Which new emotion from the movie (Anxiety, Embarrassment, Envy, or Ennui) do you relate to most right now? Why?"
+    lines: 5
+  - text: "At the end, Riley learns she can be both good AND bad, brave AND scared, and that's okay. Why do you think it's important to accept all parts of yourself instead of only focusing on being \"perfect\"?"
+    lines: 5
+  - label: "Personal Connection"
+    text: "If you could add one MORE new emotion to Riley's headquarters that wasn't in the movie, what would it be and why? How would it help or challenge Riley?"
+    lines: 5

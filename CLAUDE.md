@@ -227,6 +227,62 @@ the home card's id, and a tiny `jslogo/` folder remains only to forward old link
 - It has a home page card in `_data/pathways.yml` and entries in `LICENSE`, `license.md` and `privacy.md`. It is not in the site menu (the menu is copied into several
   pages and pinned by a test); add it there if you want it.
 
+### Student Movies (`_movies/`, `movies/`, `_data/movie_worksheets/`)
+
+Movie suggestions and companion worksheets for substitute days (grades 6 to 11, mostly 6th). The goal is **character
+development and social-emotional learning (SEL)**, not CS content. A worksheet succeeds if it makes kids think and be
+better people. A CS/robotics angle ("Think Like a Computer Scientist") is fine when the film naturally supports it or the
+user asks for it; SEL is the default.
+
+**Built 2026-11-10** from the user's .docx worksheets (zip in `attic/`). A film is three small files plus data, and the
+layouts do the rest: `_movies/<slug>.md` (collection, `layout: movie`; front matter `director`, `studio`, `year`, `rating`,
+`runtime`, `blurb`, `trailer` (YouTube id, embedded via youtube-nocookie), `grades`, `cs` (1 to 5), `rt_critics`, `rt_audience`; `/movies/` is a table built from these; body is "What happens" and "Why we watch it"), `movies/<slug>-worksheet.md` (`layout: movie-worksheet`,
+`movie: <slug>`, `permalink`), and `_data/movie_worksheets/<slug>.yml` (Part 1 questions with `answer`, Part 2 items with
+`label`, `text`, `lines`, optional `fields`, `choices`, `circle`, `table`, and `bonus`). The worksheet is printed HTML
+(print CSS at the end of `assets/main.scss`); after adding or editing one, print it with headless Chrome and check
+`pdfinfo` says 2 pages. `movies/teacher-notes.md` is a plain page (answer keys read from the data, plus Ron's Gone Wrong
+discussion questions); a blank `answer:` means "to check against the film". Home page card "Student Movies" (banner source `tools/banners/movies.svg`, after CS Unplugged); not in the site menu. Not yet done: CASEL tags in the teacher notes, standards links, and the streaming service for each film
+(changes often, so verify before adding). Grades and `cs` are the author's-judgment defaults, not the user's. No .docx export built; the user has the originals.
+
+**Film selection rules**
+- Age-appropriateness across grades 6 to 9 is non-negotiable. Verify the actual rating (G, PG, PG-13, TV-PG, TV-14) and flag
+  anything above PG or any content concern before recommending.
+- Must hold a room without the teacher: engaging, calm enough pacing, no facilitation needed.
+- Prefer character growth, emotional intelligence, community and civic themes.
+- Note where it streams (Apple TV is primary, Netflix secondary).
+
+**Worksheet structure** (student-facing, two printed sides)
+- Header: `Movie: <Title>`; an italic line `Directed by <Director> | <Studio> (<Year>) | Rated <X> | <N> minutes`;
+  `Name: ____  Period: ____  Date: ____`.
+- **Part 1, Watch and Learn** (answer while watching): about 5 multiple choice, "Circle the best answer", options A to D.
+  Roughly 3 plot comprehension and 2 that need reading a social or emotional situation. Follow the film's chronology so
+  students can answer as they watch. Plausible distractors, one clearly correct answer.
+- **Part 2, Social-Emotional Learning** (or Think Like a Computer Scientist), on the back: 4 to 5 free-response questions.
+  Each opens with a bold label ("Self-Awareness:", "Empathy:", "Relationship Skills:") then a specific scene or moment, then
+  a reflection prompt. Built on CASEL's five competencies: Self-Awareness, Self-Management, Social Awareness, Relationship
+  Skills, Responsible Decision-Making.
+  - Observational and analytical, not personal disclosure, especially for older students. Nobody should feel they must
+    reveal something private.
+  - Always end with a Personal Connection question: "Which character in the movie do you think you are most like and why?"
+    with a short list of character options.
+  - Sentence starters sparingly, only where scaffolding helps; none on questions meant to show how a student really thinks.
+  - Answer lines after each free-response question in printable versions.
+
+**Teacher notes** (their own page, reachable only by URL like the TurtleLab teacher notes; never a collection member that
+shows up as pager navigation on a student page): Part 1 answer key, the CASEL competency each Part 2 question targets,
+content warnings, discussion follow-ups. **Competency labels and answer keys never appear on the student worksheet.**
+
+**Style:** no em dashes or en dashes in student-facing text (the site-wide rule); reading level for 6th grade unless the
+film is specifically for high school; two printed sides (verify with print-to-PDF and `pdfinfo`).
+
+**Output for each film:** a suggestion entry (title, rating, runtime, streaming service, one paragraph on why it fits), a
+student worksheet page, teacher notes, and a **.docx of the worksheet** for printing or importing into Google Docs. The user
+imports into Docs themselves: **never write to Google Drive.** Minimal preamble. On feedback (too personal, too long, too
+technical) make targeted revisions, not full rewrites.
+
+**Films already done** (worksheets exist outside this repo): The Wild Robot, WALL-E, Ron's Gone Wrong, Inside Out 2,
+Big Hero 6, Spare Parts, The Imitation Game, Kiki's Delivery Service, My Neighbor Totoro. Planned: Spirited Away.
+
 ### Teacher planning notes
 
 Two non-collection, non-published directories (Jekyll ignores underscore

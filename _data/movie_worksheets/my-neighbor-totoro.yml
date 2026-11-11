@@ -1,0 +1,31 @@
+part1:
+  - q: "Why are Satsuki and Mei moving to a new house in the countryside?"
+    options: ["Their father got a new job in the city", "To be closer to their mother, who is in the hospital", "They were evicted from their old home", "They want to live near the forest"]
+    answer: B
+  - q: "What unusual form of transportation appears at the bus stop?"
+    options: ["A flying carpet", "A giant bird", "A cat-shaped bus (Catbus)", "A magic train"]
+    answer: C
+  - q: "How does Mei first discover Totoro?"
+    options: ["He knocks on their front door", "She follows small Totoros into the forest and falls into his sleeping spot", "Her father introduces them", "He appears at her school"]
+    answer: B
+  - q: "When Totoro seems confused by the umbrella, Satsuki smiles and shows him how it works. What does this tell us about her?"
+    options: ["She's showing off", "She feels sorry for him and wants to leave", "She's comfortable with someone who is different from her", "She's trying to get him to go away"]
+    answer: C
+  - q: "At the end of the movie, Totoro and the Catbus help Satsuki find Mei quietly, without asking for anything in return. What does this suggest about what it means to help someone?"
+    options: ["Helping is only worth it if people know you did it", "You should only help people who have helped you first", "Real help sometimes looks like showing up without being asked", "Helping is easier when you have special powers"]
+    answer: C
+part2_title: "Think About the Movie"
+part2:
+  - text: "Satsuki acts like everything is fine even when it isn't. Why do you think people do that? When does it help, and when does it backfire?"
+    lines: 5
+  - text: "When things go wrong, Satsuki keeps moving even when she's scared. What's something you do or could do when stress or fear makes it hard to keep going?"
+    fields:
+      - { label: "When things get hard, one thing that helps me is", lines: 3 }
+  - text: "The girls meet creatures that are completely different from them, but they respond with curiosity instead of fear. Think of someone you know who is different from you in some way. What's one thing you've learned or could learn from them?"
+    lines: 5
+  - text: "Granny and the neighbors help without being asked. What makes someone the kind of person others turn to when things go wrong?"
+    lines: 5
+  - label: "Personal Connection"
+    text: "Which character in the movie reminds you most of yourself, and why? Try to point to something specific they do, not just how they feel. (You could choose Satsuki, Mei, their father, Granny, Totoro, or another character.)"
+    fields:
+      - { label: "The character I'm most like is", lines: 4 }

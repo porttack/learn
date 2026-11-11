@@ -1,0 +1,37 @@
+part1:
+  - q: "What is WALL-E's main job on Earth?"
+    options: ["Growing plants", "Compacting and stacking trash", "Repairing other robots", "Communicating with humans"]
+    answer: B
+  - q: "What type of robot is EVE designed to be?"
+    options: ["A cleaning robot like WALL-E", "A reconnaissance robot searching for plant life", "A security robot for the ship", "A companion robot for humans"]
+    answer: B
+  - q: "What is the name of the spaceship where humans live?"
+    options: ["The Enterprise", "The Discovery", "The Axiom", "The Genesis"]
+    answer: C
+  - q: "What does WALL-E find that becomes very important to the story?"
+    options: ["A working computer", "Another robot", "A small green plant", "A message from humans"]
+    answer: C
+  - q: "Who or what has been controlling the Axiom ship and keeping humans from returning to Earth?"
+    options: ["The Captain", "AUTO (the autopilot computer)", "Buy-n-Large Corporation", "The cleaning robots"]
+    answer: B
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Robot Types and Programming"
+    text: "WALL-E and EVE are very different robots with different jobs. Compare their programming. What is each robot designed to do? How does WALL-E go beyond his basic programming?"
+    lines: 4
+  - label: "Artificial Intelligence vs. Automation"
+    text: "AUTO follows his programming exactly, while WALL-E learns and makes choices. What's the difference between a machine that just follows rules (automation) and one that can learn and adapt (AI)? Give an example from the movie."
+    lines: 4
+  - label: "Technology and Human Behavior"
+    text: "On the Axiom, humans rely completely on technology and robots for everything. List TWO problems this creates and TWO benefits this technology provides."
+    fields:
+      - { label: "Problems:", lines: 2 }
+      - { label: "Benefits:", lines: 2 }
+  - label: "Problem Solving Algorithm"
+    text: "Choose ONE problem WALL-E solves in the movie. Write out the steps he takes to solve it, like you're writing code instructions."
+    fields:
+      - { label: "Problem:" }
+      - { label: "Steps:", lines: 4 }
+  - label: "Your Turn"
+    text: "If you could design a robot like WALL-E to help solve a real problem in our world today, what would you want it to do? What challenges might it face?"
+    lines: 4
