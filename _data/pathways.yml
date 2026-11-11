@@ -1,76 +1,17 @@
-- id: electronics101
-  title: "Electronics 101"
-  collection: electronics101
-  url: /electronics101/
-  blurb: >-
-    Build nine circuits in Tinkercad, from a single AA cell to a micro:bit
-    aiming a servo, then rebuild the last five with real parts. You build
-    first and we talk about it after. Foundational material shared across
-    courses, meant to run alongside the early Pico lessons.
-
-- id: pico
-  title: "MicroPython on Pi Pico and Projects"
-  collection: pico
-  url: /pico/
-  standards_carrier: pico
-  nav_top: true
-  image: /assets/img/pico/fig-1-1.jpg
-  blurb: >-
-    Get acquainted with the Raspberry Pi Pico and MicroPython: wiring,
-    flashing firmware, and physical computing fundamentals. Foundational
-    material shared across courses, not specific to any one class.
-
-- id: working-in-python
-  title: "Working in Python"
-  url: /working-in-python/
-  image: /assets/img/working-in-python/banner.png
-  blurb: >-
-    An AP CSP-oriented adaptation of Allen Downey's <em>Think Python</em>,
-    3rd edition (CC BY-NC-SA 4.0). Mirrored here from its own book repo,
-    which also publishes independently at
-    <a href="https://python.porttack.com">python.porttack.com</a>.
-
-- id: rovrobotics
-  title: "ROV Robotics"
-  collection: rovrobotics
-  url: /rovrobotics/
-  suggest_edits: true
-  blurb: >-
-    The curriculum and working practices behind a MATE ROV team run as an
-    engineering company. Sprints, pool days, design decision records, and a
-    library of lesson cards covering water physics, electricity, control,
-    software, and ocean science.
-
-- id: python3d
-  title: "Python in 3D"
-  url: /python3d/
-  blurb: >-
-    Write Python, watch it become an actual 3D model you can spin around
-    and print. Same idea as the 2D shapes you already know, one more
-    axis: boxes, cylinders, extruded text, booleans, holes.
-
 - id: turtlelab
   title: "TurtleLab"
   url: /turtlelab/
   # The banner lives inside turtlelab/ because it shows Sugar-derived artwork
   # (the blocks and the turtle), which must stay in the AGPL part of the repo.
-  image: /turtlelab/images/banner.png
+  banner: /turtlelab/images/banner.png
   blurb: >-
     Snap blocks together and watch a turtle draw: squares, spirals, flowers,
     anything you can plan. A block-based drawing tool with variables, loops
     and math. It runs entirely in your browser, with nothing to install and
     nothing sent anywhere.
 
-- id: jslogo
-  title: "JSLogo: a real Logo"
-  url: /logo/
-  blurb: >-
-    A real Logo interpreter that runs in your browser: type forward, repeat
-    and procedures of your own. It is a copy of Joshua Bell's open source
-    JSLogo, kept here so that nothing you type goes to another website.
-    TurtleLab's Logo box can open its programs in it.
-
 - id: turtlelessons
+  banner: /assets/img/turtlelessons/banner.png
   title: "TurtleLab Lessons"
   collection: turtlelessons
   url: /turtle-lessons/
@@ -88,6 +29,68 @@
     Then build a click game that uses and, or and not. Then steer a snake with
     the keyboard, moved by a timer. Last, make a game of your own.
 
+- id: python3d-studio
+  banner: /assets/img/python3d/studio-banner.png
+  title: "Python in 3D Studio"
+  url: /python3d/studio/
+  blurb: >-
+    The tool the lessons use, open on its own: type Python, see the 3D model
+    appear, spin it around, and export it for printing. Start here if you
+    already know what you want to build.
+
+- id: python3d
+  banner: /assets/img/python3d/lessons-banner.png
+  title: "Python in 3D Lessons"
+  url: /python3d/
+  blurb: >-
+    A short series of lessons: write Python and watch it become an actual 3D
+    model you can spin around and print. Same idea as the 2D shapes you
+    already know, one more axis: boxes, cylinders, extruded text, booleans,
+    holes.
+
+- id: pico
+  banner: /assets/img/pico/banner.png
+  title: "MicroPython on Pi Pico and Projects"
+  collection: pico
+  url: /pico/
+  standards_carrier: pico
+  nav_top: true
+  blurb: >-
+    Get acquainted with the Raspberry Pi Pico and MicroPython: wiring,
+    flashing firmware, and physical computing fundamentals. Foundational
+    material shared across courses, not specific to any one class.
+
+- id: picoprojects
+  title: "Pi Pico Projects"
+  url: /picoprojects/
+  banner: /assets/img/pico/projects-banner.png
+  blurb: >-
+    Physical computing with the Raspberry Pi Pico for students who already
+    know a little programming: LEDs and PWM, switches, a potentiometer, a
+    servo. Each project has slides and a worksheet. A faster, more computer
+    science flavored companion to the MicroPython book above.
+
+- id: electronics101
+  banner: /assets/img/electronics101/banner.png
+  title: "Electronics 101"
+  collection: electronics101
+  url: /electronics101/
+  blurb: >-
+    Build nine circuits in Tinkercad, from a single AA cell to a micro:bit
+    aiming a servo, then rebuild the last five with real parts. You build
+    first and we talk about it after. Foundational material shared across
+    courses, meant to run alongside the early Pico lessons.
+
+- id: working-in-python
+  title: "Working in Python"
+  url: /working-in-python/
+  banner: /assets/img/working-in-python/banner.png
+  blurb: >-
+    An AP CSP-oriented adaptation of Allen Downey's <em>Think Python</em>,
+    3rd edition (CC BY-NC-SA 4.0). Mirrored here from its own book repo,
+    which also publishes independently at
+    <a href="https://python.porttack.com">python.porttack.com</a>.
+
 - id: cs50psets
   title: "CS50 Problems"
   collection: cs50psets
@@ -95,7 +98,7 @@
   suggest_edits: true
   item_label: "Problem"
   standards_carrier: cs50psets
-  image: /assets/img/cs50psets/banner.png
+  banner: /assets/img/cs50psets/banner.png
   blurb: >-
     A mix of problem sets: some adapted from Harvard's CS50 AP and CS50
     Python curricula, some written from scratch by teachers and past
@@ -108,7 +111,7 @@
   url: /unplugged/
   standards_carrier: unplugged
   standards_locator: slug
-  image: /assets/img/unplugged/unplugged.png
+  banner: /assets/img/unplugged/unplugged-banner.png
   nav: none
   name_line: true
   suggest_edits: true
@@ -119,7 +122,30 @@
     classic Creative Commons and public-domain unplugged activities, rewritten
     as ready-to-print sheets students can do on their own.
 
+- id: rovrobotics
+  banner: /assets/img/rovrobotics/banner.png
+  title: "ROV Robotics"
+  collection: rovrobotics
+  url: /rovrobotics/
+  suggest_edits: true
+  blurb: >-
+    The curriculum and working practices behind a MATE ROV team run as an
+    engineering company. Sprints, pool days, design decision records, and a
+    library of lesson cards covering water physics, electricity, control,
+    software, and ocean science.
+
+- id: jslogo
+  banner: /assets/img/jslogo/banner.png
+  title: "Logo"
+  url: /logo/
+  blurb: >-
+    A real Logo interpreter that runs in your browser: type forward, repeat
+    and procedures of your own. It is a copy of Joshua Bell's open source
+    JSLogo, kept here so that nothing you type goes to another website.
+    TurtleLab's Logo box can open its programs in it.
+
 - id: ap-csp-reference
+  banner: /assets/img/ap-csp-reference/banner.png
   title: "AP CSP Reference"
   url: /ap-csp-reference/
   blurb: >-
@@ -131,7 +157,7 @@
 - id: standards
   title: "Standards"
   url: /standards/
-  image: /assets/img/standards/standards.png
+  banner: /assets/img/standards/standards.png
   blurb: >-
     A visual coverage map across every course and curriculum reviewed here,
     against AP CSP, California 9-12 CS, CSTA 2026, and CA CTE (ICT)

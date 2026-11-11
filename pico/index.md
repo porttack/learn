@@ -6,7 +6,7 @@ source: original
 ---
 
 <div class="pathway-banner-row" markdown="0">
-<img class="pathway-banner" src="{{ '/assets/img/pico/fig-1-1.jpg' | relative_url }}" alt="MicroPython on Pi Pico and Projects">
+<img class="pathway-banner" src="{{ '/assets/img/pico/banner.png' | relative_url }}" alt="MicroPython on Pi Pico and Projects">
 <a href="#projects" class="projects-cta">
   <svg class="projects-cta-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
     <path d="M5 18 L5 11 L13 11 L13 6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>

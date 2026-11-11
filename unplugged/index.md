@@ -4,7 +4,7 @@ title: "CS Unplugged"
 permalink: /unplugged/
 ---
 
-<img class="unplugged-banner" src="{{ '/assets/img/unplugged/unplugged.png' | relative_url }}" alt="CS Unplugged">
+<img class="unplugged-banner" src="{{ '/assets/img/unplugged/unplugged-banner.png' | relative_url }}" alt="CS Unplugged">
 
 # CS Unplugged
 

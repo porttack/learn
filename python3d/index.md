@@ -6,6 +6,8 @@ permalink: /python3d/
 
 <div class="playground-landing" markdown="1">
 
+<img class="pathway-banner" src="{{ '/assets/img/python3d/lessons-banner.png' | relative_url }}" alt="Python in 3D Lessons">
+
 # Python in 3D
 
 Write a few lines of Python and watch a real shape appear: a circle here, a

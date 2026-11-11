@@ -1,11 +1,13 @@
 ---
 layout: minimal
-title: "Pico Projects"
+title: "Pi Pico Projects"
 permalink: /picoprojects/
 source: original
 ---
 
-# Pico Projects
+<img class="pathway-banner" src="{{ '/assets/img/pico/projects-banner.png' | relative_url }}" alt="Pi Pico Projects">
+
+# Pi Pico Projects
 
 A sequenced introduction to the Raspberry Pi Pico and physical computing, for students who aren't starting from zero: some computer science or Python background is assumed, so it moves faster than the [MicroPython on Pi Pico]({{ '/pico/' | relative_url }}) book and stays closer to computer science concepts early on. Built for AP Computer Science Principles and Programming with Robotics students. Each project is roughly sized for a class period or two, with its own slides and a worksheet or graphic organizer to go with it, and checkpoints along the way so a teacher can check in on student progress. Under active development, fall 2026.
 
