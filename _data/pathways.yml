@@ -4,6 +4,7 @@
   # The banner lives inside turtlelab/ because it shows Sugar-derived artwork
   # (the blocks and the turtle), which must stay in the AGPL part of the repo.
   banner: /turtlelab/images/banner.png
+  banner_alt: "TurtleLab: code blocks beside a spiral the turtle drew"
   blurb: >-
     Snap blocks together and watch a turtle draw: squares, spirals, flowers,
     anything you can plan. A block-based drawing tool with variables, loops
@@ -12,6 +13,7 @@
 
 - id: turtlelessons
   banner: /assets/img/turtlelessons/banner.png
+  banner_alt: "TurtleLab Lessons: four steps rising like stairs, topped with a star"
   title: "TurtleLab Lessons"
   collection: turtlelessons
   url: /turtle-lessons/
@@ -31,6 +33,7 @@
 
 - id: python3d-studio
   banner: /assets/img/python3d/studio-banner.png
+  banner_alt: "Python in 3D Studio: a blue 3D cube with a hole, next to a few lines of code"
   title: "Python in 3D Studio"
   url: /python3d/studio/
   blurb: >-
@@ -40,6 +43,7 @@
 
 - id: python3d
   banner: /assets/img/python3d/lessons-banner.png
+  banner_alt: "Python in 3D Lessons: a flat square becomes a solid cube, then a cube with a hole"
   title: "Python in 3D Lessons"
   url: /python3d/
   blurb: >-
@@ -50,6 +54,7 @@
 
 - id: pico
   banner: /assets/img/pico/banner.png
+  banner_alt: "MicroPython on Pi Pico and Projects: a Raspberry Pi Pico board"
   title: "MicroPython on Pi Pico and Projects"
   collection: pico
   url: /pico/
@@ -64,6 +69,7 @@
   title: "Pi Pico Projects"
   url: /picoprojects/
   banner: /assets/img/pico/projects-banner.png
+  banner_alt: "Pi Pico Projects: three glowing LEDs and a knob on a dark rose background"
   blurb: >-
     Physical computing with the Raspberry Pi Pico for students who already
     know a little programming: LEDs and PWM, switches, a potentiometer, a
@@ -72,6 +78,7 @@
 
 - id: electronics101
   banner: /assets/img/electronics101/banner.png
+  banner_alt: "Electronics 101: a simple circuit with a resistor and a lamp"
   title: "Electronics 101"
   collection: electronics101
   url: /electronics101/
@@ -85,6 +92,7 @@
   title: "Working in Python"
   url: /working-in-python/
   banner: /assets/img/working-in-python/banner.png
+  banner_alt: "Working in Python: rows of books on either side of a few lines of Python. Jupyter notebooks that run in your browser"
   blurb: >-
     An AP CSP-oriented adaptation of Allen Downey's <em>Think Python</em>,
     3rd edition (CC BY-NC-SA 4.0). Mirrored here from its own book repo,
@@ -99,6 +107,7 @@
   item_label: "Problem"
   standards_carrier: cs50psets
   banner: /assets/img/cs50psets/banner.png
+  banner_alt: "CS50 Problems: CS50 extra problems and practice for CS50 AP and CS50 Python, on a red circuit board"
   blurb: >-
     A mix of problem sets: some adapted from Harvard's CS50 AP and CS50
     Python curricula, some written from scratch by teachers and past
@@ -112,6 +121,7 @@
   standards_carrier: unplugged
   standards_locator: slug
   banner: /assets/img/unplugged/unplugged-banner.png
+  banner_alt: "CS Unplugged: a computer chip with its plug pulled out. Great for subs"
   nav: none
   name_line: true
   suggest_edits: true
@@ -127,6 +137,7 @@
   collection: movies
   url: /movies/
   banner: /assets/img/movies/movies-banner.png
+  banner_alt: "Student Movies: a film frame and a bucket of popcorn. Great for subs"
   nav: none
   blurb: >-
     Movies worth watching in class, each with a trailer, a short summary,
@@ -136,6 +147,7 @@
 
 - id: rovrobotics
   banner: /assets/img/rovrobotics/banner.png
+  banner_alt: "ROV Robotics: a yellow underwater robot with bubbles rising"
   title: "ROV Robotics"
   collection: rovrobotics
   url: /rovrobotics/
@@ -148,6 +160,7 @@
 
 - id: jslogo
   banner: /assets/img/jslogo/banner.png
+  banner_alt: "Logo: a real Logo interpreter in your browser, drawing tilted squares with a turtle"
   title: "Logo"
   url: /logo/
   blurb: >-
@@ -158,6 +171,7 @@
 
 - id: ap-csp-reference
   banner: /assets/img/ap-csp-reference/banner.png
+  banner_alt: "AP CSP Reference: exam pseudocode next to its Python translation"
   title: "AP CSP Reference"
   url: /ap-csp-reference/
   blurb: >-
@@ -170,6 +184,7 @@
   title: "Standards"
   url: /standards/
   banner: /assets/img/standards/standards.png
+  banner_alt: "Standards Alignments: a compass rose over a map of intersecting lines with checkmarks"
   blurb: >-
     A visual coverage map across every course and curriculum reviewed here,
     against AP CSP, California 9-12 CS, CSTA 2026, and CA CTE (ICT)

@@ -191,9 +191,9 @@ figure.figure-small img {
 // not a full-width banner, just a little visual anchor near the intro text.
 .pathway-hero-image {
   display: block;
-  width: fit-content;
-  max-width: 280px;
-  margin: 1.2em 0;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 0 0.5em;
 
   img {
     display: block;
@@ -1497,6 +1497,25 @@ figure.figure-small img {
 .lesson-list {
   list-style: none;
   padding-left: 0;
+}
+
+// Home page: each section is its banner with the excerpt under it. The
+// section's name is a visually hidden heading (see index.md).
+.pathway-list {
+  margin: 1.5em 0 0;
+
+  li {
+    margin-bottom: 1.8em;
+  }
+
+  .pathway-hero-image {
+    max-width: 420px;
+    margin: 0 0 0.5em;
+  }
+
+  p {
+    margin: 0;
+  }
 }
 
 .lesson-list li {
