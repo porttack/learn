@@ -168,12 +168,12 @@ permalink: /openscad/
 <dialog id="ghOpenDlg" aria-labelledby="ghOpenTitle">
   <div class="dlghead"><h2 id="ghOpenTitle">Open from GitHub</h2><span></span><button class="secondary" data-close aria-label="Close">Close</button></div>
   <label class="fld">Link to a .scad file, or to a whole repository to see its .scad files
-    <input id="ghOpenUrl" type="url" spellcheck="false" placeholder="https://github.com/you/repo" autocomplete="off">
+    <input id="ghOpenUrl" type="url" spellcheck="false" placeholder="you/repo   or   https://github.com/you/repo/blob/main/part.scad" autocomplete="off">
   </label>
   <label class="fld">Personal access token (only for a private repository)
     <input id="ghOpenToken" type="password" spellcheck="false" autocomplete="off" placeholder="leave empty for a public repository">
   </label>
-  <div class="hint">Paste the address of a file (it opens at once) or of a repository or folder (you get a list of its .scad files to pick from). A file opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. It is sent only to GitHub, only now, and is never saved.</div>
+  <div class="hint">Paste the address of a file (it opens at once) or of a repository or folder (you can type just <b>owner/repo</b>) (you get a list of its .scad files to pick from). A file opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. It is sent only to GitHub, only now, and is never saved.</div>
   <div id="ghOpenMsg" class="ghmsg" role="status"></div>
   <div id="ghList" hidden></div>
   <div class="dlgfoot"><span></span><button id="ghOpenGo">Open</button></div>
@@ -483,9 +483,17 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
 // ---- GitHub: open a file by its link, save with a token you paste each time ----
 {
   const SRC = "openscad:src:";
+  // Lets people leave off the start: "owner/repo", "github.com/owner/repo" and the full link all work.
+  function normGitHub(input) {
+    let t = (input || "").trim();
+    if (!t || /^[a-z][a-z0-9+.-]*:\/\//i.test(t)) return t;
+    if (/^raw\.githubusercontent\.com\//i.test(t)) return "https://" + t;
+    t = t.replace(/^(www\.)?github\.com\//i, "").replace(/^\/+/, "");
+    return t.split("/").filter(Boolean).length >= 2 ? "https://github.com/" + t : t;
+  }
   // Understands github.com/.../blob/<branch>/<path>, .../raw/..., and raw.githubusercontent.com links.
   function parseGitHub(input) {
-    let u; try { u = new URL((input || "").trim()); } catch (e) { return null; }
+    let u; try { u = new URL(normGitHub(input)); } catch (e) { return null; }
     const p = u.pathname.split("/").filter(Boolean).map(decodeURIComponent);
     if (u.hostname === "raw.githubusercontent.com" && p.length >= 4) {
       let rest = p.slice(2);
@@ -537,7 +545,7 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
 
   // A link to a repository (or a folder in it), not to a file: github.com/you/repo[/tree/branch[/folder]]
   function parseRepo(input) {
-    let u; try { u = new URL((input || "").trim()); } catch (e) { return null; }
+    let u; try { u = new URL(normGitHub(input)); } catch (e) { return null; }
     if (u.hostname !== "github.com" && u.hostname !== "www.github.com") return null;
     const p = u.pathname.split("/").filter(Boolean).map(decodeURIComponent);
     if (p.length < 2) return null;
