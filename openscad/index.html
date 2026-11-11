@@ -62,7 +62,12 @@ permalink: /openscad/
   #log { flex:none; height:var(--logh, 30%); min-height:36px; overflow:auto; margin:0; padding:8px 10px; background:#14181d; color:#d7dde4; font:12.5px/1.45 ui-monospace, Menlo, Consolas, monospace; white-space:pre-wrap; }
   #log .err { color:#ff8b8b; } #log .warn { color:#f2cc60; }
   #view { position:relative; background:#dfe5ec; min-width:0; min-height:0; overflow:hidden; }
+  .zoom, #legend, #sizepanel, #hint { z-index:3; }
   #view canvas { position:absolute; inset:0; display:block; width:100%; height:100%; }
+  #legend { position:absolute; left:10px; top:10px; background:rgba(255,255,255,.9); border:1px solid var(--border); border-radius:6px; padding:4px 8px; font-size:12.5px; pointer-events:none; }
+  #legend i { display:inline-block; width:11px; height:11px; background:#e5383b; border-radius:2px; margin-right:6px; vertical-align:-1px; }
+  #sizepanel { position:absolute; left:10px; bottom:30px; background:rgba(255,255,255,.93); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font:12.5px/1.5 ui-monospace, Menlo, Consolas, monospace; pointer-events:none; white-space:pre; }
+  #sizepanel b { font-family:system-ui, sans-serif; color:var(--muted); font-weight:600; }
   #hint { position:absolute; left:10px; bottom:8px; color:var(--muted); font-size:12px; pointer-events:none; }
   @media (max-width: 760px) { main { grid-template-columns:1fr; grid-template-rows:minmax(140px, var(--toph, 1fr)) 8px minmax(140px, 1fr); } .split.v { cursor:row-resize; } .split.v::after { height:2px; width:36px; } }
 </style>
@@ -94,6 +99,8 @@ permalink: /openscad/
       <button id="download" disabled>Download STL</button>
       <hr>
       <button id="share">Copy share link</button>
+      <hr>
+      <button id="exOverhang" title="A small model made to show what Show overhangs does">Example: overhang test</button>
     </div>
   </div>
   <div class="menu">
@@ -107,6 +114,17 @@ permalink: /openscad/
       <hr>
       <button id="orient" disabled title="Tip the model onto the face that needs the least support. Changes the preview and the downloaded STL, not your code.">Auto-orient</button>
       <button id="unorient" hidden>Undo orient</button>
+    </div>
+  </div>
+  <div class="menu">
+    <button class="secondary menubtn" aria-haspopup="true" aria-expanded="false">View &#9662;</button>
+    <div class="menulist" hidden>
+      <div class="row"><label><input id="optScale" type="checkbox"> Show scale numbers on the axes</label></div>
+      <div class="row"><label><input id="optSize" type="checkbox"> Show size and center panel</label></div>
+      <hr>
+      <button id="vTop">View from above</button>
+      <button id="vUnder">View from below</button>
+      <button id="vFit">Center and fit</button>
     </div>
   </div>
   <div class="menu">
@@ -149,7 +167,10 @@ permalink: /openscad/
       <button id="zin" class="secondary" title="Zoom in" aria-label="Zoom in">+</button>
       <button id="zout" class="secondary" title="Zoom out" aria-label="Zoom out">&minus;</button>
       <button id="zfit" class="secondary" title="Center and fit the model in view" aria-label="Fit to view">Fit</button>
+      <button id="zunder" class="secondary" title="Look from below (where overhangs are)" aria-label="View from below">Under</button>
     </div>
+    <div id="legend" hidden></div>
+    <div id="sizepanel" hidden></div>
     <div id="hint">Drag to turn, scroll to zoom, right-drag to pan. Z is up.</div></div>
 </main>
 
@@ -300,6 +321,33 @@ function saveText(text, filename, type) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 const fileBase = (n) => (n || "drawing").replace(/[^\w .-]+/g, "_").trim().replace(/\s+/g, "-") || "drawing";
+const OVERHANG_EXAMPLE = `// Overhang test. Press Render, then Print > Show overhangs steeper than 45.
+// Then click "Under" (top right of the 3D view) to look at the arms from below.
+//
+// Four pillars, each with an arm that leans out at a different angle above flat.
+//   15 and 30 degrees: shallow arms. They hang almost flat, so the underside
+//                      is RED: a printer would need support there.
+//   45 degrees:        right at the limit. Not red: it prints fine.
+//   60 degrees:        steep. Not red.
+// The flat bottoms of the pillars sit on the bed, so they are never red.
+// Change the 45 in the Print menu to see the limit move.
+
+module test(angle) {
+  cube([6, 6, 30]);
+  translate([6, 0, 30]) rotate([0, -angle, 0]) cube([25, 6, 3]);
+}
+for (i = [0 : 3]) translate([i * 45, 0, 0]) test([15, 30, 45, 60][i]);
+`;
+$("exOverhang").onclick = () => {
+  saveNow();
+  currentName = freeName("overhang example");
+  nameEl.value = currentName;
+  editor.set(OVERHANG_EXAMPLE, false);
+  saveNow(); fillNames();
+  $("optSize").checked = true; $("optSize").onchange();
+  $("ovh").checked = true;
+  render();
+};
 $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".scad", "text/plain");
 
 // ---- the list of every drawing kept in this browser ----
@@ -411,7 +459,9 @@ scene.add(sun, sun.target);
 const grid = new THREE.GridHelper(200, 20, 0x8895a3, 0xb7c1cc);
 grid.rotation.x = Math.PI / 2;
 scene.add(grid);
-scene.add(new THREE.AxesHelper(30));
+const labelSprites = [];
+const axes = new THREE.AxesHelper(30);
+scene.add(axes);
 let mesh = null;
 const mat = new THREE.MeshStandardMaterial({ color: 0xf2b134, roughness: 0.55, metalness: 0.05 });
 
@@ -424,6 +474,7 @@ function resize() {
 new ResizeObserver(resize).observe(view);
 (function loop() {
   requestAnimationFrame(loop);
+  for (const sp of labelSprites) { const k = camera.position.distanceTo(sp.position) * 0.034; sp.scale.set(k * (sp.userData.big ? 2.6 : 1.9), k, 1); }
   sun.position.copy(camera.position).add(new THREE.Vector3(40, 60, 80));
   sun.target.position.copy(controls.target);
   controls.update();
@@ -466,13 +517,16 @@ function overhangArea(facts, minZ, limitDeg) {
 
 function limit() { return Math.min(89, Math.max(1, Number($("ovhAngle").value) || 45)); }
 
+let lastBox = null;
 function rebuild(frame) {
   if (!baseGeom) return;
   let g = baseGeom.clone();
   g.applyMatrix4(orient);
   g.computeBoundingBox();
-  g.translate(0, 0, -g.boundingBox.min.z);       // sit on the bed
-  g.computeBoundingBox();
+  // A model you have turned is set down on the bed (z = 0); an untouched one keeps the
+  // exact coordinates OpenSCAD gave it, so what you see matches what Download STL writes.
+  if (turned) { g.translate(0, 0, -g.boundingBox.min.z); g.computeBoundingBox(); }
+  const lo = g.boundingBox.min.z;
   const facts = triFacts(g, null);
   const tilt = $("ovh").checked;
   g = toCreasedNormals(g, 0.6);
@@ -480,17 +534,19 @@ function rebuild(frame) {
     const lim = -(Math.sin(limit() * Math.PI / 180) + SLACK), col = new Float32Array(g.attributes.position.count * 3);
     const base = new THREE.Color(0xf2b134);
     for (let t = 0; t < facts.length; t++) {
-      const f = facts[t], c = (f.maxZ > 0.01 && f.nz < lim) ? RED : base;
+      const f = facts[t], c = (f.maxZ > lo + 0.01 && f.nz < lim) ? RED : base;
       for (let k = 0; k < 3; k++) { col[(3 * t + k) * 3] = c.r; col[(3 * t + k) * 3 + 1] = c.g; col[(3 * t + k) * 3 + 2] = c.b; }
     }
     g.setAttribute("color", new THREE.BufferAttribute(col, 3));
   }
   mat.vertexColors = tilt; mat.needsUpdate = true;
   if (tilt) {
-    const o = overhangArea(facts, 0, limit());
+    const o = overhangArea(facts, lo, limit());
     const pct = o.total ? o.over / o.total * 100 : 0;
     $("ovhInfo").textContent = o.over < 1e-9 ? `No faces steeper than ${limit()}\u00b0: nothing needs support.` : `${pct.toFixed(1)}% of the surface (${o.over.toFixed(0)} mm\u00b2, red) needs support.`;
-  } else $("ovhInfo").textContent = "Turn on to see which faces need support.";
+    $("legend").hidden = false;
+    $("legend").innerHTML = `<i></i>Red: steeper than ${limit()}\u00b0, needs support`;
+  } else { $("ovhInfo").textContent = "Turn on to see which faces need support."; $("legend").hidden = true; }
   if (mesh) { scene.remove(mesh); mesh.geometry.dispose(); }
   mesh = new THREE.Mesh(g, mat);
   scene.add(mesh);
@@ -499,14 +555,16 @@ function rebuild(frame) {
   const r = Math.max(size.x, size.y, size.z, 1);
   grid.position.z = box.min.z;
   grid.scale.setScalar(Math.max(1, Math.ceil(r * 2 / 200)));
+  lastBox = box.clone();
+  updateSizePanel(); buildScale();
   if (frame) fitView();
 }
 // Bring the model into the middle of the view, filling it, seen from the usual angle.
-function fitView(keepAngle) {
+function fitView(keepAngle, dirOverride) {
   if (!mesh) return;
   const g = mesh.geometry; g.computeBoundingSphere();
   const ctr = g.boundingSphere.center, r = Math.max(g.boundingSphere.radius, 0.5);
-  const dir = keepAngle ? camera.position.clone().sub(controls.target).normalize() : new THREE.Vector3(0.9, -1.3, 0.9).normalize();
+  const dir = dirOverride ? dirOverride.clone().normalize() : keepAngle ? camera.position.clone().sub(controls.target).normalize() : new THREE.Vector3(0.9, -1.3, 0.9).normalize();
   const half = Math.atan(Math.tan(camera.fov * Math.PI / 360) * Math.min(1, camera.aspect));
   const dist = r / Math.sin(half) * 1.3;
   controls.target.copy(ctr);
@@ -520,6 +578,81 @@ function zoomBy(f) {
 $("zin").onclick = () => zoomBy(1 / 1.3);
 $("zout").onclick = () => zoomBy(1.3);
 $("zfit").onclick = () => fitView(true);
+$("vFit").onclick = () => fitView(true);
+const FROM_BELOW = new THREE.Vector3(0.25, -0.35, -1), FROM_ABOVE = new THREE.Vector3(0.25, -0.35, 1);
+$("zunder").onclick = $("vUnder").onclick = () => fitView(false, FROM_BELOW);
+$("vTop").onclick = () => fitView(false, FROM_ABOVE);
+
+// ---- size and center panel ----
+const fmt = (v) => (Math.abs(v) < 5e-4 ? 0 : v).toFixed(2).replace(/\.?0+$/, "");
+function updateSizePanel() {
+  const el = $("sizepanel");
+  el.hidden = !$("optSize").checked || !lastBox;
+  if (el.hidden) return;
+  const b = lastBox, sz = b.getSize(new THREE.Vector3()), c = b.getCenter(new THREE.Vector3());
+  const row = (l, v) => `${l} ${fmt(v).padStart(9)}`;
+  el.textContent = `Size   (mm)\n${row("X", sz.x)}\n${row("Y", sz.y)}\n${row("Z", sz.z)}\nCenter (mm)\n${row("X", c.x)}\n${row("Y", c.y)}\n${row("Z", c.z)}` + (turned ? "\n(turned, on the bed)" : "");
+}
+
+// ---- scale numbers along the axes ----
+const scaleGroup = new THREE.Group(); scene.add(scaleGroup);
+const labelCache = new Map();
+function labelTexture(text, color) {
+  const key = text + color;
+  if (labelCache.has(key)) return labelCache.get(key);
+  const cv = document.createElement("canvas"); cv.width = 128; cv.height = 64;
+  const x = cv.getContext("2d");
+  x.font = "bold 34px system-ui, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+  x.lineWidth = 7; x.strokeStyle = "rgba(255,255,255,.95)"; x.strokeText(text, 64, 32);
+  x.fillStyle = color; x.fillText(text, 64, 32);
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+  labelCache.set(key, tex);
+  return tex;
+}
+function niceStep(range) {
+  const raw = range / 7, pow = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / pow;
+  return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * pow;
+}
+function buildScale() {
+  scaleGroup.clear(); labelSprites.length = 0;
+  const on = $("optScale").checked && lastBox;
+  axes.visible = !on;
+  if (!on) return;
+  const b = lastBox, size = b.getSize(new THREE.Vector3());
+  const span = Math.max(size.x, size.y, size.z, 1);
+  const step = niceStep(span), tick = span * 0.012;
+  const lo = (m, v) => Math.min(0, m, v), hi = (m, v) => Math.max(0, m, v);
+  const ext = { x: [Math.min(0, b.min.x), Math.max(0, b.max.x)], y: [Math.min(0, b.min.y), Math.max(0, b.max.y)], z: [Math.min(0, b.min.z), Math.max(0, b.max.z)] };
+  const colors = { x: "#c62828", y: "#2e7d32", z: "#1565c0" };
+  const pts = [];
+  for (const ax of ["x", "y", "z"]) {
+    const [a, c] = ext[ax];
+    const first = Math.ceil(a / step - 1e-9) * step;
+    const v = (t) => ax === "x" ? [t, 0, 0] : ax === "y" ? [0, t, 0] : [0, 0, t];
+    const tk = (t) => { const p = v(t); const q = ax === "z" ? [tick, 0, 0] : [0, ax === "x" ? tick : 0, ax === "x" ? 0 : 0]; return [p, [p[0] + (ax === "x" ? 0 : tick), p[1] + (ax === "x" ? tick : 0), p[2]]]; };
+    const lineMat = new THREE.LineBasicMaterial({ color: new THREE.Color(colors[ax]), depthTest: false });
+    const geom = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...v(a)), new THREE.Vector3(...v(c + step * 0.35))]);
+    const ln = new THREE.Line(geom, lineMat); ln.renderOrder = 5; scaleGroup.add(ln);
+    const tp = [];
+    for (let t = first; t <= c + 1e-9; t += step) { const [p, q] = tk(t); tp.push(new THREE.Vector3(...p), new THREE.Vector3(...q)); }
+    const ticks = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(tp), lineMat); ticks.renderOrder = 5; scaleGroup.add(ticks);
+    const decimals = step >= 1 ? 0 : Math.min(4, Math.ceil(-Math.log10(step)));
+    for (let t = first; t <= c + 1e-9; t += step) {
+      const label = (Math.abs(t) < step / 1000 ? 0 : t).toFixed(decimals);
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: labelTexture(label, colors[ax]), depthTest: false, transparent: true }));
+      sp.position.set(...v(t)); sp.center.set(ax === "z" ? 1.15 : 0.5, ax === "z" ? 0.5 : 1.2); sp.renderOrder = 6;
+      scaleGroup.add(sp); labelSprites.push(sp);
+    }
+    const name = new THREE.Sprite(new THREE.SpriteMaterial({ map: labelTexture(ax.toUpperCase() + " (mm)", colors[ax]), depthTest: false, transparent: true }));
+    name.position.set(...v(c + step * 0.6)); name.center.set(0.5, 0.5); name.renderOrder = 6; name.userData.big = true;
+    scaleGroup.add(name); labelSprites.push(name);
+  }
+}
+for (const [id, fn] of [["optScale", buildScale], ["optSize", updateSizePanel]]) {
+  const el = $(id);
+  try { el.checked = localStorage.getItem("openscad:" + id) === "1"; } catch (e) {}
+  el.onchange = () => { store(false, "openscad:" + id, el.checked ? "1" : "0"); fn(); };
+}
 
 function show(buffer) {
   if (baseGeom) baseGeom.dispose();
