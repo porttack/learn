@@ -18,3 +18,12 @@ content in here.
 The page makes no request to any other site except the 3D viewer library
 (three.js, from the same CDN Python in 3D uses). Your code is not sent anywhere;
 it is kept only in this browser's local storage so it is still there tomorrow.
+
+## The editor
+
+`editor.js` is CodeMirror 6 (MIT, https://codemirror.net) bundled with esbuild, plus
+our own OpenSCAD colouring, auto-indent and completion from `src/editor-entry.js`.
+To rebuild: in a scratch folder `npm i codemirror @codemirror/language
+@codemirror/autocomplete @codemirror/commands @codemirror/state @codemirror/view
+@lezer/highlight esbuild`, copy `src/editor-entry.js` there, and run
+`npx esbuild editor-entry.js --bundle --minify --format=esm --outfile=editor.js`.

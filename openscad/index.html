@@ -23,7 +23,12 @@ permalink: /openscad/
   #status { color:var(--muted); margin-left:auto; }
   main { display:grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); height:calc(100% - 49px); }
   .left { display:flex; flex-direction:column; min-width:0; border-right:1px solid var(--border); }
-  textarea { flex:1; width:100%; resize:none; border:0; padding:10px; font:13px/1.45 ui-monospace, Menlo, Consolas, monospace; tab-size:2; background:var(--paper); color:var(--ink); outline:none; }
+  #editor { flex:1; min-height:0; overflow:hidden; background:var(--paper); }
+  #editor .cm-editor { height:100%; } #editor .cm-editor.cm-focused { outline:none; }
+  a.btn { font:inherit; padding:6px 12px; border:1px solid var(--accent); background:var(--paper); color:var(--accent); border-radius:6px; text-decoration:none; }
+  .tool { display:inline-flex; align-items:center; gap:4px; color:var(--muted); font-size:13px; }
+  .tool input[type=number] { width:3.4em; font:inherit; padding:2px 4px; }
+  .sep { width:1px; align-self:stretch; background:var(--border); margin:0 4px; }
   #log { height:30%; overflow:auto; margin:0; padding:8px 10px; background:#14181d; color:#d7dde4; font:12.5px/1.45 ui-monospace, Menlo, Consolas, monospace; white-space:pre-wrap; border-top:1px solid var(--border); }
   #log .err { color:#ff8b8b; } #log .warn { color:#f2cc60; }
   #view { position:relative; background:#dfe5ec; min-width:0; }
@@ -49,12 +54,17 @@ permalink: /openscad/
   <button id="download" class="secondary" disabled>Download STL</button>
   <button id="open" class="secondary">Open .scad</button>
   <button id="share" class="secondary">Copy share link</button>
+  <a class="btn" href="https://openscad.org/cheatsheet/" target="_blank" rel="noopener">Cheatsheet</a>
+  <span class="sep"></span>
+  <label class="tool" title="Paint faces red that tilt past this angle from straight up and would need support when printed (Z is up, the bed is Z = 0)."><input id="ovh" type="checkbox"> Overhangs &gt; <input id="ovhAngle" type="number" min="1" max="89" value="45">&deg;</label>
+  <button id="orient" class="secondary" disabled title="Tip the model onto the face that needs the least support. Changes the preview and the downloaded STL, not your code.">Auto-orient</button>
+  <button id="unorient" class="secondary" hidden>Undo orient</button>
   <input id="file" type="file" accept=".scad,text/plain" hidden>
   <span id="status">Loading...</span>
 </header>
 <main>
   <div class="left">
-    <textarea id="code" spellcheck="false" aria-label="OpenSCAD code"></textarea>
+    <div id="editor" aria-label="OpenSCAD code"></div>
     <pre id="log" aria-live="polite"></pre>
   </div>
   <div id="view"><div id="hint">Drag to turn, scroll to zoom, right-drag to pan. Z is up.</div></div>
@@ -63,9 +73,11 @@ permalink: /openscad/
 <script type="module">
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { STLExporter } from "three/addons/exporters/STLExporter.js";
 import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
 import LZString from "lz-string";
+import { createEditor } from "./editor.js";
 
 const SAMPLE = `// A washer with a bolt hole circle. Edit it and press Render.
 $fn = 64;
@@ -81,26 +93,19 @@ echo(str("holes: ", n));
 `;
 const KEY = "openscad:code";
 const $ = (id) => document.getElementById(id);
-const code = $("code"), logEl = $("log"), statusEl = $("status");
+const logEl = $("log"), statusEl = $("status");
 
 function store(get, k, v) { try { return get ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch (e) { return null; } }
 
 // Starting code: a share link wins, then what was here last time, then the sample.
-(function start() {
-  let c = null;
+let initial = null;
+{
   const m = location.hash.match(/[#&]code=([^&]+)/);
-  if (m) c = LZString.decompressFromEncodedURIComponent(m[1]);
-  code.value = c || store(true, KEY) || SAMPLE;
-})();
-code.addEventListener("input", () => store(false, KEY, code.value));
-code.addEventListener("keydown", (e) => {
-  if (e.key === "Tab") {
-    e.preventDefault();
-    const s = code.selectionStart;
-    code.setRangeText("  ", s, code.selectionEnd, "end");
-    code.dispatchEvent(new Event("input"));
-  }
-  if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); render(); }
+  if (m) initial = LZString.decompressFromEncodedURIComponent(m[1]);
+}
+const editor = createEditor($("editor"), initial || store(true, KEY) || SAMPLE, {
+  onChange: () => store(false, KEY, editor.get()),
+  onRun: () => render(),
 });
 
 // ---- viewer (Z up, like OpenSCAD) ----
@@ -145,21 +150,122 @@ new ResizeObserver(resize).observe(view);
   if (renderer) renderer.render(scene, camera);
 })();
 
-function show(buffer) {
-  let geom = new STLLoader().parse(buffer);
-  geom = toCreasedNormals(geom, 0.6);
+// The model as the engine made it (baseGeom) and how it has been turned since
+// (orient). What you see and what Download gives is baseGeom turned by orient.
+let baseGeom = null, orient = new THREE.Matrix4(), turned = false;
+const RED = new THREE.Color(0xe5383b);
+
+// Per-triangle facts for a flat (non indexed) geometry: normal z and area.
+function triFacts(geom, m) {
+  const pos = geom.attributes.position, n = pos.count / 3, out = [];
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), nrm = new THREE.Vector3();
+  for (let i = 0; i < n; i++) {
+    a.fromBufferAttribute(pos, 3 * i); b.fromBufferAttribute(pos, 3 * i + 1); c.fromBufferAttribute(pos, 3 * i + 2);
+    if (m) { a.applyMatrix4(m); b.applyMatrix4(m); c.applyMatrix4(m); }
+    nrm.crossVectors(b.clone().sub(a), c.clone().sub(a));
+    const area = nrm.length() / 2;
+    if (area > 0) nrm.normalize();
+    out.push({ nx: nrm.x, ny: nrm.y, nz: nrm.z, area, minZ: Math.min(a.z, b.z, c.z), maxZ: Math.max(a.z, b.z, c.z) });
+  }
+  return out;
+}
+// A face needs support if it points down past the limit and is not sitting on the bed.
+function overhangArea(facts, minZ, limitDeg) {
+  const lim = -Math.sin(limitDeg * Math.PI / 180);
+  let over = 0, total = 0, bed = 0;
+  for (const f of facts) {
+    total += f.area;
+    const onBed = f.maxZ <= minZ + 0.01;
+    if (onBed) bed += f.area; else if (f.nz < lim) over += f.area;
+  }
+  return { over, total, bed };
+}
+
+function limit() { return Math.min(89, Math.max(1, Number($("ovhAngle").value) || 45)); }
+
+function rebuild(frame) {
+  if (!baseGeom) return;
+  let g = baseGeom.clone();
+  g.applyMatrix4(orient);
+  g.computeBoundingBox();
+  g.translate(0, 0, -g.boundingBox.min.z);       // sit on the bed
+  g.computeBoundingBox();
+  const facts = triFacts(g, null);
+  const tilt = $("ovh").checked;
+  g = toCreasedNormals(g, 0.6);
+  if (tilt) {
+    const lim = -Math.sin(limit() * Math.PI / 180), col = new Float32Array(g.attributes.position.count * 3);
+    const base = new THREE.Color(0xf2b134);
+    for (let t = 0; t < facts.length; t++) {
+      const f = facts[t], c = (f.maxZ > 0.01 && f.nz < lim) ? RED : base;
+      for (let k = 0; k < 3; k++) { col[(3 * t + k) * 3] = c.r; col[(3 * t + k) * 3 + 1] = c.g; col[(3 * t + k) * 3 + 2] = c.b; }
+    }
+    g.setAttribute("color", new THREE.BufferAttribute(col, 3));
+  }
+  mat.vertexColors = tilt; mat.needsUpdate = true;
   if (mesh) { scene.remove(mesh); mesh.geometry.dispose(); }
-  mesh = new THREE.Mesh(geom, mat);
+  mesh = new THREE.Mesh(g, mat);
   scene.add(mesh);
-  geom.computeBoundingBox();
-  const box = geom.boundingBox, size = box.getSize(new THREE.Vector3()), ctr = box.getCenter(new THREE.Vector3());
+  g.computeBoundingBox();
+  const box = g.boundingBox, size = box.getSize(new THREE.Vector3()), ctr = box.getCenter(new THREE.Vector3());
   const r = Math.max(size.x, size.y, size.z, 1);
-  controls.target.copy(ctr);
-  camera.position.copy(ctr).add(new THREE.Vector3(0.9, -1.3, 0.9).multiplyScalar(r * 1.6));
-  camera.near = r / 100; camera.far = r * 100; camera.updateProjectionMatrix();
   grid.position.z = box.min.z;
   grid.scale.setScalar(Math.max(1, Math.ceil(r * 2 / 200)));
+  if (frame) {
+    controls.target.copy(ctr);
+    camera.position.copy(ctr).add(new THREE.Vector3(0.9, -1.3, 0.9).multiplyScalar(r * 1.6));
+    camera.near = r / 100; camera.far = r * 100; camera.updateProjectionMatrix();
+  }
 }
+
+function show(buffer) {
+  if (baseGeom) baseGeom.dispose();
+  baseGeom = new STLLoader().parse(buffer);
+  orient = new THREE.Matrix4(); turned = false;
+  $("unorient").hidden = true;
+  $("orient").disabled = false;
+  rebuild(true);
+}
+$("ovh").onchange = () => rebuild(false);
+$("ovhAngle").onchange = () => rebuild(false);
+
+// Auto-orient: try each big flat face (and the six axes) as the bottom, keep the
+// one that needs the least support, a little height and a wide base as tie breakers.
+$("orient").onclick = () => {
+  if (!baseGeom) return;
+  const facts = triFacts(baseGeom, null);
+  const buckets = new Map();
+  for (const f of facts) {
+    if (f.area <= 0) continue;
+    const key = [f.nx, f.ny, f.nz].map((v) => Math.round(v * 50)).join(",");
+    const b = buckets.get(key) || { n: new THREE.Vector3(), area: 0 };
+    b.n.add(new THREE.Vector3(f.nx, f.ny, f.nz).multiplyScalar(f.area)); b.area += f.area;
+    buckets.set(key, b);
+  }
+  const cands = [...buckets.values()].sort((a, b) => b.area - a.area).slice(0, 24).map((b) => b.n.normalize());
+  for (const v of [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]]) cands.push(new THREE.Vector3(...v));
+  const down = new THREE.Vector3(0, 0, -1), lim = limit();
+  let best = null;
+  for (const n of cands) {
+    const m = new THREE.Matrix4().makeRotationFromQuaternion(new THREE.Quaternion().setFromUnitVectors(n, down));
+    const fa = triFacts(baseGeom, m);
+    let lo = Infinity, hi = -Infinity, xs = 0;
+    for (const f of fa) { lo = Math.min(lo, f.minZ); hi = Math.max(hi, f.maxZ); }
+    const { over, total, bed } = overhangArea(fa, lo, lim);
+    const score = over / total + 0.15 * (hi - lo) / Math.sqrt(total) - 0.3 * bed / total;
+    if (!best || score < best.score) best = { score, m, over: over / total, n };
+  }
+  const before = (() => { const fa = triFacts(baseGeom, orient); let lo = Infinity; for (const f of fa) lo = Math.min(lo, f.minZ); const r = overhangArea(fa, lo, lim); return r.over / r.total; })();
+  if (best.over >= before - 1e-6 && !turned) { addLog(`Auto-orient: this is already about the best way up (${(before * 100).toFixed(1)}% of the surface needs support).`); return; }
+  orient = best.m; turned = true;
+  $("unorient").hidden = false;
+  rebuild(false);
+  $("ovh").checked = true; rebuild(false);
+  const e = best.m.elements;
+  addLog(`Auto-orient: support needed ${(before * 100).toFixed(1)}% -> ${(best.over * 100).toFixed(1)}% of the surface (limit ${lim}\u00b0). The preview and Download STL are turned; your code is not.`);
+  addLog(`To print this way, wrap your model in: multmatrix([[${e[0].toFixed(4)},${e[4].toFixed(4)},${e[8].toFixed(4)},0],[${e[1].toFixed(4)},${e[5].toFixed(4)},${e[9].toFixed(4)},0],[${e[2].toFixed(4)},${e[6].toFixed(4)},${e[10].toFixed(4)},0],[0,0,0,1]]) { ... }  (then lift it so its lowest point is at z = 0)`);
+};
+$("unorient").onclick = () => { orient = new THREE.Matrix4(); turned = false; $("unorient").hidden = true; rebuild(false); };
 
 // ---- worker ----
 let worker = null, stlBytes = null, running = false;
@@ -205,7 +311,7 @@ function render() {
   $("stop").disabled = false;
   statusEl.textContent = "Rendering...";
   t0 = performance.now();
-  worker.postMessage({ code: code.value });
+  worker.postMessage({ code: editor.get() });
 }
 $("render").onclick = render;
 $("stop").onclick = () => {
@@ -215,8 +321,15 @@ $("stop").onclick = () => {
 };
 $("download").onclick = () => {
   if (!stlBytes) return;
+  let bytes = stlBytes;
+  if (turned && mesh) {
+    const m = new THREE.Mesh(baseGeom.clone().applyMatrix4(orient));
+    m.geometry.computeBoundingBox();
+    m.geometry.translate(0, 0, -m.geometry.boundingBox.min.z);
+    bytes = new STLExporter().parse(m, { binary: true });
+  }
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([stlBytes], { type: "model/stl" }));
+  a.href = URL.createObjectURL(new Blob([bytes], { type: "model/stl" }));
   a.download = "model.stl";
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
@@ -225,12 +338,11 @@ $("open").onclick = () => $("file").click();
 $("file").onchange = async (e) => {
   const f = e.target.files[0];
   if (!f) return;
-  code.value = await f.text();
-  code.dispatchEvent(new Event("input"));
+  editor.set(await f.text());
   e.target.value = "";
 };
 $("share").onclick = async () => {
-  const url = location.origin + location.pathname + "#code=" + LZString.compressToEncodedURIComponent(code.value);
+  const url = location.origin + location.pathname + "#code=" + LZString.compressToEncodedURIComponent(editor.get());
   history.replaceState(null, "", url);
   try { await navigator.clipboard.writeText(url); statusEl.textContent = "Link copied"; }
   catch (e) { statusEl.textContent = "Link is in the address bar"; }
