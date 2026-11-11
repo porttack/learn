@@ -516,6 +516,7 @@ new ResizeObserver(resize).observe(view);
 
 // The model as the engine made it (baseGeom) and how it has been turned since
 // (orient). What you see and what Download gives is baseGeom turned by orient.
+let ovhBeforeOrient = null;
 let baseGeom = null, orient = new THREE.Matrix4(), turned = false;
 const RED = new THREE.Color(0xe5383b);
 
@@ -572,7 +573,9 @@ function rebuild(frame) {
     }
     g.setAttribute("color", new THREE.BufferAttribute(col, 3));
   }
-  mat.vertexColors = tilt; mat.needsUpdate = true;
+  // With vertex colors the material color multiplies them, so it must be white then
+  // (otherwise the yellow is multiplied by itself and turns orange).
+  mat.vertexColors = tilt; mat.color.set(tilt ? 0xffffff : 0xf2b134); mat.needsUpdate = true;
   if (tilt) {
     const o = overhangArea(facts, lo, limit());
     const pct = o.total ? o.over / o.total * 100 : 0;
@@ -690,7 +693,7 @@ for (const [id, fn, dflt] of [["optScale", buildScale, "0"], ["optScaleX", build
 function show(buffer) {
   if (baseGeom) baseGeom.dispose();
   baseGeom = new STLLoader().parse(buffer);
-  orient = new THREE.Matrix4(); turned = false;
+  orient = new THREE.Matrix4(); turned = false; ovhBeforeOrient = null;
   $("unorient").hidden = true;
   $("orient").disabled = false;
   rebuild(true);
@@ -729,12 +732,13 @@ $("orient").onclick = () => {
   orient = best.m; turned = true;
   $("unorient").hidden = false;
   rebuild(false);
+  if (ovhBeforeOrient === null) ovhBeforeOrient = $("ovh").checked;
   $("ovh").checked = true; rebuild(true);
   const e = best.m.elements;
   addLog(`Auto-orient: support needed ${(before * 100).toFixed(1)}% -> ${(best.over * 100).toFixed(1)}% of the surface (limit ${lim}\u00b0). The preview and Download STL are turned; your code is not.`);
   addLog(`To print this way, wrap your model in: multmatrix([[${e[0].toFixed(4)},${e[4].toFixed(4)},${e[8].toFixed(4)},0],[${e[1].toFixed(4)},${e[5].toFixed(4)},${e[9].toFixed(4)},0],[${e[2].toFixed(4)},${e[6].toFixed(4)},${e[10].toFixed(4)},0],[0,0,0,1]]) { ... }  (then lift it so its lowest point is at z = 0)`);
 };
-$("unorient").onclick = () => { orient = new THREE.Matrix4(); turned = false; $("unorient").hidden = true; rebuild(true); };
+$("unorient").onclick = () => { orient = new THREE.Matrix4(); turned = false; $("unorient").hidden = true; if (ovhBeforeOrient !== null) $("ovh").checked = ovhBeforeOrient; ovhBeforeOrient = null; rebuild(true); };
 
 // ---- resizable panes ----
 {
