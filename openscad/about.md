@@ -30,6 +30,10 @@ nothing to install and no account to make.
 - **Keep many drawings.** Give a drawing a name and it is saved in this browser
   as you type. **File, My drawings** lists all of them, and you can back them
   up to a file and restore them later.
+- **Share through GitHub.** **File, Open from GitHub** opens a `.scad` file from a
+  public repository when you paste its link. **File, Save to GitHub** puts your
+  drawing in a repository with a note about the change. A link like
+  `/openscad/#gh=` followed by a GitHub file link opens that file for anyone.
 - **Look at the model.** Turn it, zoom, fit it to the window, look from below,
   show scale numbers on the axes, and show its size and center.
 - **Check it for printing.** **Print, Show overhangs** paints in red the faces
@@ -95,6 +99,10 @@ finished model, they are not part of OpenSCAD.
 - Your code and drawings are never sent to a server. They live in this
   browser's local storage, on this computer, and are gone if the site's data is
   cleared. Use **File, My drawings, Back up all** for anything you care about.
+- GitHub is only contacted when you use Open from GitHub or Save to GitHub. Saving
+  needs a personal access token that you paste each time. It is sent only to
+  GitHub, in that one request, and the page never stores it. Make the token for
+  one repository only, with permission to write contents, and let it expire soon.
 - The page does load two small code libraries (three.js and lz-string) from a
   public library host, the same way the Python in 3D pages do. That host can see
   that a page asked for them, as any host would, but it never receives your
@@ -109,6 +117,8 @@ finished model, they are not part of OpenSCAD.
 - **Libraries:** `use <...>` and `include <...>` of outside libraries (such as
   MCAD or BOSL) do not work, and neither does `import()` of a file. Everything
   has to be in your one script.
+- **GitHub:** only public repositories can be opened, and files must be one `.scad`
+  script (no other files are fetched yet).
 - **Size:** the first time you open the page it downloads the engine, which is
   about 11 MB. After that your browser keeps it.
 - **Overhangs:** the red faces are a guide. A real 3D printer's software has the
