@@ -101,9 +101,10 @@ finished model, they are not part of OpenSCAD.
   browser's local storage, on this computer, and are gone if the site's data is
   cleared. Use **File, My drawings, Back up all** for anything you care about.
 - GitHub is only contacted when you use Open from GitHub or Save to GitHub. Saving
-  needs a personal access token that you paste each time, and so does opening a
+  needs a personal access token that you paste once per visit, and so does opening a
   file from a private repository (a public one needs no token). It is sent only to
-  GitHub, in that one request, and the page never stores it. Make the token for
+  GitHub. The page keeps it in memory while it stays open, so you do not have to
+  retype it, and never writes it to disk: reload or close the page and it is gone. Make the token for
   one repository only, with permission to write contents, and let it expire soon.
 - The page does load two small code libraries (three.js and lz-string) from a
   public library host, the same way the Python in 3D pages do. That host can see

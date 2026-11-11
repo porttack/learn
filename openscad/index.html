@@ -173,7 +173,7 @@ permalink: /openscad/
   <label class="fld">Personal access token (only for a private repository)
     <input id="ghOpenToken" type="password" spellcheck="false" autocomplete="off" placeholder="leave empty for a public repository">
   </label>
-  <div class="hint">Paste the address of a file (it opens at once) or of a repository or folder (you can type just <b>owner/repo</b>) (you get a list of its .scad files to pick from). A file opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. It is sent only to GitHub, only now, and is never saved.</div>
+  <div class="hint">Paste the address of a file (it opens at once) or of a repository or folder (you can type just <b>owner/repo</b>) (you get a list of its .scad files to pick from). A file opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. It is sent only to GitHub. This page keeps it in memory while it stays open, so you do not retype it, and never writes it to disk.</div>
   <div id="ghOpenMsg" class="ghmsg" role="status"></div>
   <div id="ghList" hidden></div>
   <div class="dlgfoot"><span></span><button id="ghOpenGo">Open</button></div>
@@ -189,7 +189,7 @@ permalink: /openscad/
   <label class="fld">Personal access token
     <input id="ghSaveToken" type="password" spellcheck="false" autocomplete="off" placeholder="github_pat_...">
   </label>
-  <div class="hint">The token is sent only to GitHub, only now, and is never saved: you paste it each time. Make one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub, Settings, Fine-grained tokens</a> with access to just this repository and <b>Contents: Read and write</b>, and let it expire soon.</div>
+  <div class="hint">The token is sent only to GitHub. This page keeps it in memory while it stays open, so you do not retype it, and never writes it to disk: reload or close the page and it is forgotten. Make one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub, Settings, Fine-grained tokens</a> with access to just this repository and <b>Contents: Read and write</b>, and let it expire soon.</div>
   <div id="ghSaveOut" class="ghmsg" role="status"></div>
   <div class="dlgfoot"><span></span><button id="ghSaveGo">Save to GitHub</button></div>
 </dialog>
@@ -557,10 +557,10 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
   async function listScad(rp, token, msgEl, listEl) {
     const headers = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
     if (token) headers.Authorization = "Bearer " + token;
-    const fail = (r) => say(msgEl, r.status === 401 ? "GitHub did not accept that token. Check that you copied all of it and that it has not expired."
+    const fail = (r) => { say(msgEl, r.status === 401 ? "GitHub did not accept that token. Check that you copied all of it and that it has not expired."
       : r.status === 404 ? "GitHub cannot find that repository. Check the link. If it is private, paste a token below."
       : r.status === 403 ? "GitHub is limiting requests from this computer for now (60 an hour without a token). Wait a while, or paste a token."
-      : `GitHub answered ${r.status}.`, "err");
+      : `GitHub answered ${r.status}.`, "err"); return false; };
     say(msgEl, "Looking...");
     try {
       let ref = rp.ref;
@@ -584,7 +584,7 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
         b.title = path;
         b.onclick = async () => {
           const tokenEl = $("ghOpenToken");
-          if (await openFromGitHub(blobUrl({ owner: rp.owner, repo: rp.repo, ref, path }), msgEl, tokenEl.value.trim())) { tokenEl.value = ""; ghOpenDlg.close(); }
+          if (await openFromGitHub(blobUrl({ owner: rp.owner, repo: rp.repo, ref, path }), msgEl, tokenEl.value.trim())) { openToken = tokenEl.value.trim(); ghOpenDlg.close(); }
         };
         listEl.append(b);
       }
@@ -592,23 +592,30 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
       if (files.length > 300) extra.push(`Showing the first 300 of ${files.length}. Paste a folder link to narrow it down.`);
       if (data.truncated) extra.push("GitHub says this repository is too big to list completely.");
       if (extra.length) listEl.append(Object.assign(document.createElement("div"), { className: "note", textContent: extra.join(" ") }));
+      return true;
     } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); }
+    return false;
   }
 
+  // Tokens are remembered only in this variable (page memory): never in local or session storage.
+  let openToken = "", saveToken = "";
+  const LAST_OPEN = "openscad:ghLastOpen", LAST_SAVE = "openscad:ghLastSave";
   const ghOpenDlg = $("ghOpenDlg"), ghSaveDlg = $("ghSaveDlg");
   for (const d of [ghOpenDlg, ghSaveDlg]) {
     d.querySelector("[data-close]").onclick = () => d.close();
     d.addEventListener("close", () => d.querySelectorAll('input[type="password"]').forEach((i) => { i.value = ""; }));
     d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
   }
-  $("ghOpen").onclick = () => { $("ghOpenUrl").value = ""; $("ghOpenToken").value = ""; $("ghList").hidden = true; say($("ghOpenMsg"), ""); ghOpenDlg.showModal(); $("ghOpenUrl").focus(); };
+  $("ghOpen").onclick = () => { $("ghOpenUrl").value = store(true, LAST_OPEN) || ""; $("ghOpenToken").value = openToken; $("ghList").hidden = true; say($("ghOpenMsg"), ""); ghOpenDlg.showModal(); $("ghOpenUrl").focus(); };
   const goOpen = async () => {
     const tokenEl = $("ghOpenToken"), link = $("ghOpenUrl").value, listEl = $("ghList");
-    if (!parseGitHub(link) && parseRepo(link)) { await listScad(parseRepo(link), tokenEl.value.trim(), $("ghOpenMsg"), listEl); return; }
+    if (!parseGitHub(link) && parseRepo(link)) {
+      if (await listScad(parseRepo(link), tokenEl.value.trim(), $("ghOpenMsg"), listEl)) { openToken = tokenEl.value.trim(); store(false, LAST_OPEN, link.trim()); }
+      return;
+    }
     listEl.hidden = true;
     const ok = await openFromGitHub(link, $("ghOpenMsg"), tokenEl.value.trim());
-    tokenEl.value = "";
-    if (ok) ghOpenDlg.close();
+    if (ok) { openToken = tokenEl.value.trim(); store(false, LAST_OPEN, link.trim()); ghOpenDlg.close(); }
   };
   $("ghOpenGo").onclick = goOpen;
   $("ghOpenUrl").addEventListener("keydown", (e) => { if (e.key === "Enter") goOpen(); });
@@ -617,9 +624,9 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
   // Saving uses GitHub's contents API. It needs the file's current "sha" when the file already exists.
   const b64 = (str) => { let bin = ""; new TextEncoder().encode(str).forEach((b) => { bin += String.fromCharCode(b); }); return btoa(bin); };
   $("ghSave").onclick = () => {
-    $("ghSaveUrl").value = store(true, SRC + currentName) || "";
+    $("ghSaveUrl").value = store(true, SRC + currentName) || store(true, LAST_SAVE) || "";
     $("ghSaveMsg").value = `Update ${fileBase(currentName)}.scad`;
-    $("ghSaveToken").value = "";
+    $("ghSaveToken").value = saveToken;
     say($("ghSaveOut"), "");
     ghSaveDlg.showModal();
     ($("ghSaveUrl").value ? $("ghSaveToken") : $("ghSaveUrl")).focus();
@@ -645,7 +652,8 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
       if (put.ok) {
         const data = await put.json();
         store(false, SRC + currentName, blobUrl(g));
-        tokenEl.value = "";
+        store(false, LAST_SAVE, blobUrl(g));
+        saveToken = token;
         out.className = "ghmsg ok"; out.textContent = (sha ? "Updated " : "Created ") + g.path + ". ";
         const a = Object.assign(document.createElement("a"), { href: data.content && data.content.html_url || blobUrl(g), target: "_blank", rel: "noopener", textContent: "View it on GitHub" });
         out.append(a);
