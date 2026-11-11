@@ -18,27 +18,48 @@
 - title: Home (learn.porttack.com)
   url: /
   icon: /assets/img/favicon.svg
-- title: MicroPython on Pi Pico and Projects
-  url: /pico/
-  icon: /assets/img/pico/favicon.svg
-- title: Electronics 101
-  url: /electronics101/
-- title: Working in Python
-  url: /working-in-python/
-  icon: /assets/img/working-in-python/favicon.svg
-- title: Python in 3D
-  url: /python3d/
 - title: TurtleLab
   url: /turtlelab/
   icon: /turtlelab/images/favicon.svg
 - title: TurtleLab Lessons
   url: /turtle-lessons/
+  icon: /assets/img/turtlelessons/favicon.svg
+- title: Python in 3D Studio
+  url: /python3d/studio/
+  icon: /assets/img/python3d/studio-favicon.svg
+- title: Python in 3D Lessons
+  url: /python3d/
+  icon: /assets/img/python3d/lessons-favicon.svg
+- title: MicroPython on Pi Pico and Projects
+  url: /pico/
+  icon: /assets/img/pico/favicon.svg
+- title: Pi Pico Projects
+  url: /picoprojects/
+  icon: /assets/img/pico/projects-favicon.svg
+- title: Electronics 101
+  url: /electronics101/
+  icon: /assets/img/electronics101/favicon.svg
+- title: Working in Python
+  url: /working-in-python/
+  icon: /assets/img/working-in-python/favicon.svg
 - title: CS50 Problems
   url: /cs50-psets/
   icon: /assets/img/cs50psets/favicon.svg
 - title: CS Unplugged
   url: /unplugged/
   icon: /assets/img/unplugged/favicon.png
+- title: Student Movies
+  url: /movies/
+  icon: /assets/img/movies/favicon.svg
+- title: ROV Robotics
+  url: /rovrobotics/
+  icon: /assets/img/rovrobotics/favicon.svg
+- title: Logo
+  url: /logo/
+  icon: /assets/img/jslogo/favicon.svg
+- title: AP CSP Reference
+  url: /ap-csp-reference/
+  icon: /assets/img/ap-csp-reference/favicon.svg
 - title: Standards
   url: /standards/
   icon: /assets/img/standards/favicon.svg

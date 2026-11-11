@@ -55,7 +55,7 @@ test('every page uses the turtle as its icon, and the icon is a plain, safe SVG'
 
 test('the home page card has a banner, which is a PNG the size of the other cards', () => {
   const pathways = readFileSync(new URL('../_data/pathways.yml', here), 'utf8');
-  assert.match(pathways, /- id: turtlelab[\s\S]*?image: \/turtlelab\/images\/banner\.png/);
+  assert.match(pathways, /- id: turtlelab[\s\S]*?banner: \/turtlelab\/images\/banner\.png/);
   const banner = readFileSync(new URL('images/banner.png', here));
   assert.deepEqual([...banner.subarray(0, 4)], [0x89, 0x50, 0x4e, 0x47]);
   assert.equal(banner.readUInt32BE(16), 1024, 'width');

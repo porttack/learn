@@ -94,7 +94,7 @@ footer a { color: var(--accent); }
 }
 .site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
 .site-menu .site-menu-panel {
-  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2;
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2; max-height: calc(100vh - 4rem); overflow-y: auto;
   background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
 }
 .site-menu .site-menu-panel a {
@@ -120,12 +120,20 @@ footer a { color: var(--accent); }
 <label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
 <nav class="site-menu-panel">
 <a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/turtlelab/"><img src="/turtlelab/images/favicon.svg" class="site-menu-item-icon" alt="">TurtleLab</a>
+<a href="/turtle-lessons/"><img src="/assets/img/turtlelessons/favicon.svg" class="site-menu-item-icon" alt="">TurtleLab Lessons</a>
+<a href="/python3d/studio/"><img src="/assets/img/python3d/studio-favicon.svg" class="site-menu-item-icon" alt="">Python in 3D Studio</a>
+<a href="/python3d/"><img src="/assets/img/python3d/lessons-favicon.svg" class="site-menu-item-icon" alt="">Python in 3D Lessons</a>
 <a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
-<a href="/electronics101/"><span class="site-menu-item-icon" aria-hidden="true"></span>Electronics 101</a>
+<a href="/picoprojects/"><img src="/assets/img/pico/projects-favicon.svg" class="site-menu-item-icon" alt="">Pi Pico Projects</a>
+<a href="/electronics101/"><img src="/assets/img/electronics101/favicon.svg" class="site-menu-item-icon" alt="">Electronics 101</a>
 <a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
-<a href="/python3d/"><span class="site-menu-item-icon" aria-hidden="true"></span>Python in 3D</a>
 <a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
 <a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/movies/"><img src="/assets/img/movies/favicon.svg" class="site-menu-item-icon" alt="">Student Movies</a>
+<a href="/rovrobotics/"><img src="/assets/img/rovrobotics/favicon.svg" class="site-menu-item-icon" alt="">ROV Robotics</a>
+<a href="/logo/"><img src="/assets/img/jslogo/favicon.svg" class="site-menu-item-icon" alt="">Logo</a>
+<a href="/ap-csp-reference/"><img src="/assets/img/ap-csp-reference/favicon.svg" class="site-menu-item-icon" alt="">AP CSP Reference</a>
 <a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
 </nav>
 </div>

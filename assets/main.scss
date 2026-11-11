@@ -75,6 +75,9 @@ $content-width: 900px;
     border: 1px solid $grey-color-light;
     border-radius: 4px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    // 16 items is taller than a short laptop window: let the panel scroll.
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
 
     a {
       display: flex;
