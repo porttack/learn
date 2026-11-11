@@ -595,7 +595,9 @@ function rebuild(frame) {
     const pct = o.total ? o.over / o.total * 100 : 0;
     $("ovhInfo").textContent = o.over < 1e-9 ? `No faces steeper than ${limit()}\u00b0: nothing needs support.` : `${pct.toFixed(1)}% of the surface (${o.over.toFixed(0)} mm\u00b2, red) needs support.`;
     $("legend").hidden = false;
-    $("legend").innerHTML = `<i></i>Red: steeper than ${limit()}\u00b0, needs support`;
+    $("legend").innerHTML = o.over < 1e-9
+      ? `No overhang steeper than ${limit()}\u00b0: nothing needs support`
+      : `<i></i>Overhang (red, steeper than ${limit()}\u00b0): <b>${o.over.toFixed(1)} mm\u00b2</b> of ${o.total.toFixed(0)} mm\u00b2 (${pct.toFixed(1)}%)`;
   } else { $("ovhInfo").textContent = "Turn on to see which faces need support."; $("legend").hidden = true; }
   if (mesh) { scene.remove(mesh); mesh.geometry.dispose(); }
   mesh = new THREE.Mesh(g, mat);
