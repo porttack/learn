@@ -167,7 +167,10 @@ permalink: /openscad/
   <label class="fld">Link to a .scad file in a public repo
     <input id="ghOpenUrl" type="url" spellcheck="false" placeholder="https://github.com/you/repo/blob/main/part.scad" autocomplete="off">
   </label>
-  <div class="hint">Open the file on GitHub and copy the address from the browser, or use the Raw button's address. It opens as a new drawing here; your other drawings are not touched.</div>
+  <label class="fld">Personal access token (only for a private repository)
+    <input id="ghOpenToken" type="password" spellcheck="false" autocomplete="off" placeholder="leave empty for a public repository">
+  </label>
+  <div class="hint">Open the file on GitHub and copy the address from the browser. It opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. It is sent only to GitHub, only now, and is never saved.</div>
   <div id="ghOpenMsg" class="ghmsg" role="status"></div>
   <div class="dlgfoot"><span></span><button id="ghOpenGo">Open</button></div>
 </dialog>
@@ -495,14 +498,25 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
   const blobUrl = (g) => `https://github.com/${g.owner}/${g.repo}/blob/${encodeURIComponent(g.ref)}/${encPath(g.path)}`;
   const say = (el, text, kind) => { el.className = "ghmsg" + (kind ? " " + kind : ""); el.textContent = text; };
 
-  async function openFromGitHub(link, msgEl) {
+  async function openFromGitHub(link, msgEl, token) {
     const g = parseGitHub(link);
     if (!g) { say(msgEl, "That does not look like a link to a file on GitHub. It should look like https://github.com/you/repo/blob/main/part.scad", "err"); return false; }
     say(msgEl, "Opening...");
     let text;
     try {
-      const r = await fetch(`https://raw.githubusercontent.com/${g.owner}/${g.repo}/${encodeURIComponent(g.ref)}/${encPath(g.path)}`);
-      if (!r.ok) { say(msgEl, r.status === 404 ? "GitHub says that file is not there. Check the link, and that the repository is public." : `GitHub answered ${r.status}.`, "err"); return false; }
+      // With a token the file is read through GitHub's API (works for private repositories);
+      // without one it comes straight from raw.githubusercontent.com (public repositories only).
+      const r = token
+        ? await fetch(`https://api.github.com/repos/${g.owner}/${g.repo}/contents/${encPath(g.path)}?ref=${encodeURIComponent(g.ref)}`,
+            { headers: { Authorization: "Bearer " + token, Accept: "application/vnd.github.raw+json", "X-GitHub-Api-Version": "2022-11-28" } })
+        : await fetch(`https://raw.githubusercontent.com/${g.owner}/${g.repo}/${encodeURIComponent(g.ref)}/${encPath(g.path)}`);
+      if (!r.ok) {
+        say(msgEl, r.status === 401 ? "GitHub did not accept that token. Check that you copied all of it and that it has not expired."
+          : r.status === 404 ? (token ? "GitHub cannot find that file, or the token has no access to that repository."
+                                      : "GitHub says that file is not there. Check the link. If the repository is private, paste a token below.")
+          : `GitHub answered ${r.status}.`, "err");
+        return false;
+      }
       text = await r.text();
     } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); return false; }
     if (text.length > 1500000) { say(msgEl, "That file is too big to open here.", "err"); return false; }
@@ -522,10 +536,16 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
     d.querySelector("[data-close]").onclick = () => d.close();
     d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
   }
-  $("ghOpen").onclick = () => { $("ghOpenUrl").value = ""; say($("ghOpenMsg"), ""); ghOpenDlg.showModal(); $("ghOpenUrl").focus(); };
-  const goOpen = async () => { if (await openFromGitHub($("ghOpenUrl").value, $("ghOpenMsg"))) ghOpenDlg.close(); };
+  $("ghOpen").onclick = () => { $("ghOpenUrl").value = ""; $("ghOpenToken").value = ""; say($("ghOpenMsg"), ""); ghOpenDlg.showModal(); $("ghOpenUrl").focus(); };
+  const goOpen = async () => {
+    const tokenEl = $("ghOpenToken");
+    const ok = await openFromGitHub($("ghOpenUrl").value, $("ghOpenMsg"), tokenEl.value.trim());
+    tokenEl.value = "";
+    if (ok) ghOpenDlg.close();
+  };
   $("ghOpenGo").onclick = goOpen;
   $("ghOpenUrl").addEventListener("keydown", (e) => { if (e.key === "Enter") goOpen(); });
+  $("ghOpenToken").addEventListener("keydown", (e) => { if (e.key === "Enter") goOpen(); });
 
   // Saving uses GitHub's contents API. It needs the file's current "sha" when the file already exists.
   const b64 = (str) => { let bin = ""; new TextEncoder().encode(str).forEach((b) => { bin += String.fromCharCode(b); }); return btoa(bin); };
@@ -576,7 +596,16 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
 
   // A link like /openscad/#gh=<github file link> opens that file.
   const gh = location.hash.match(/[#&]gh=([^&]+)/);
-  if (gh) openFromGitHub(decodeURIComponent(gh[1]), document.createElement("div"));
+  if (gh) {
+    const link = decodeURIComponent(gh[1]), msg = document.createElement("div");
+    // If the link cannot be opened (for example a private repository), show the Open dialog with it filled in.
+    openFromGitHub(link, msg).then((ok) => {
+      if (ok) return;
+      $("ghOpenUrl").value = link; $("ghOpenToken").value = "";
+      say($("ghOpenMsg"), msg.textContent, "err");
+      ghOpenDlg.showModal();
+    });
+  }
 }
 
 // ---- text size ----

@@ -100,7 +100,8 @@ finished model, they are not part of OpenSCAD.
   browser's local storage, on this computer, and are gone if the site's data is
   cleared. Use **File, My drawings, Back up all** for anything you care about.
 - GitHub is only contacted when you use Open from GitHub or Save to GitHub. Saving
-  needs a personal access token that you paste each time. It is sent only to
+  needs a personal access token that you paste each time, and so does opening a
+  file from a private repository (a public one needs no token). It is sent only to
   GitHub, in that one request, and the page never stores it. Make the token for
   one repository only, with permission to write contents, and let it expire soon.
 - The page does load two small code libraries (three.js and lz-string) from a
@@ -117,8 +118,8 @@ finished model, they are not part of OpenSCAD.
 - **Libraries:** `use <...>` and `include <...>` of outside libraries (such as
   MCAD or BOSL) do not work, and neither does `import()` of a file. Everything
   has to be in your one script.
-- **GitHub:** only public repositories can be opened, and files must be one `.scad`
-  script (no other files are fetched yet).
+- **GitHub:** each file is opened or saved on its own, and nothing else in the
+  repository is fetched yet, so `use <other.scad>` still does not work.
 - **Size:** the first time you open the page it downloads the engine, which is
   about 11 MB. After that your browser keeps it.
 - **Overhangs:** the red faces are a guide. A real 3D printer's software has the
