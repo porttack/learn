@@ -54,6 +54,9 @@
 - title: ROV Robotics
   url: /rovrobotics/
   icon: /assets/img/rovrobotics/favicon.svg
+- title: OpenSCAD
+  url: /openscad/
+  icon: /assets/img/openscad/favicon.svg
 - title: Logo
   url: /logo/
   icon: /assets/img/jslogo/favicon.svg

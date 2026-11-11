@@ -158,6 +158,17 @@
     library of lesson cards covering water physics, electricity, control,
     software, and ocean science.
 
+- id: openscad
+  banner: /assets/img/openscad/banner.png
+  banner_alt: "OpenSCAD: a yellow washer with bolt holes next to a few lines of OpenSCAD code"
+  title: "OpenSCAD"
+  url: /openscad/
+  blurb: >-
+    The real OpenSCAD, running in your browser: type code, see the 3D model,
+    check which parts of it overhang for printing, and download an STL. Your
+    drawings are saved by name in this browser and nothing you type goes to
+    another website.
+
 - id: jslogo
   banner: /assets/img/jslogo/banner.png
   banner_alt: "Logo: a real Logo interpreter in your browser, drawing tilted squares with a turtle"
