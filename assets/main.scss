@@ -2201,3 +2201,14 @@ table.checkoff.light-message td {
 }
 .movie-table th[aria-sort="ascending"] .sort-btn::after { content: " \25B2"; font-size: 0.7em; }
 .movie-table th[aria-sort="descending"] .sort-btn::after { content: " \25BC"; font-size: 0.7em; }
+
+// Movie pages: the answer key and teacher notes stay hidden unless the address has ?key=1.
+.movie-page .movie-key { display: none; margin-top: 2em; border-top: 2px solid $grey-color-light; }
+html.show-key .movie-page .movie-key { display: block; }
+@media print {
+  // Printing always includes the answer key and teacher notes.
+  .movie-page .movie-key { display: block; }
+  .movie-page .movie-before, .movie-page .movie-key { break-inside: auto; }
+  .movie-page .movie-actions { display: none; }
+  .movie-page iframe { display: none !important; }
+}

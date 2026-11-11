@@ -6,6 +6,8 @@ permalink: /movies/teacher-notes/
 
 # Movies: teacher notes
 
+The same notes now live on each movie's own page (the answer key shows when the address ends in `?key=1`, and the warm-ups are always shown). This page keeps every key in one place.
+
 Answer keys for Part 1 of each worksheet. A blank answer means the key still needs to be checked against the film. Check ratings and content for your own students before showing a film. Spare Parts and The Imitation Game are PG-13; The Imitation Game deals with war, a suicide and the prosecution of a gay man, so it suits older students best.
 
 {% assign films = site.movies | sort: "title" %}
@@ -15,6 +17,12 @@ Answer keys for Part 1 of each worksheet. A blank answer means the key still nee
 
 {% for q in ws.part1 %}{{ forloop.index }}. {% if q.answer != "" %}**{{ q.answer }}**{% else %}(to check){% endif %} {{ q.q }}
 {% endfor %}
+
+{% if ws.before %}
+**Teacher ideas (before the movie)**
+
+{{ ws.before | markdownify }}
+{% endif %}
 
 {% if ws.teacher %}{{ ws.teacher | markdownify }}{% endif %}
 

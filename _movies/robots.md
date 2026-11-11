@@ -14,6 +14,7 @@ csm_parents: 6   # Common Sense Media age, checked 2026-11-10
 csm_kids: 7
 rt_audience: 54
 runtime: 91
+before_you_watch: "Think about this: what is something you really wanted, finally got, and then realized wasn't worth it? Why did you want it so much?"
 ---
 
 ## What happens

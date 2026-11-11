@@ -241,7 +241,7 @@ layouts do the rest: `_movies/<slug>.md` (collection, `layout: movie`; front mat
 `label`, `text`, `lines`, optional `fields`, `choices`, `circle`, `table`, and `bonus`). The worksheet is printed HTML
 (print CSS at the end of `assets/main.scss`); after adding or editing one, print it with headless Chrome and check
 `pdfinfo` says 2 pages. `movies/teacher-notes.md` is a plain page (answer keys read from the data, plus Ron's Gone Wrong
-discussion questions); a blank `answer:` means "to check against the film". Home page card "Student Movies" (banner source `tools/banners/movies.svg`, after CS Unplugged); not in the site menu. Not yet done: CASEL tags in the teacher notes, standards links, and the streaming service for each film
+discussion questions); an optional `before:` (markdown) in the data holds pre-movie warm-up ideas for the teacher notes, and an optional `before_you_watch:` front matter question shows on the movie page right under the teacher ideas (Robots has both; useful when a film is shorter than the block); a movie page's answer key and notes show on screen only with `?key=1` but always print; a blank `answer:` means "to check against the film". Home page card "Student Movies" (banner source `tools/banners/movies.svg`, after CS Unplugged); not in the site menu. Not yet done: CASEL tags in the teacher notes, standards links, and the streaming service for each film
 (changes often, so verify before adding). Grades and `cs` are the author's-judgment defaults, not the user's. No .docx export built; the user has the originals.
 
 **Film selection rules**

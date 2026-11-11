@@ -2,9 +2,9 @@ part1:
   - q: "Why does Rodney leave Rivet Town and travel to Robot City?"
     options: ["His family is moving there for his dad's new job", "To show his invention to Bigweld and get a job at Bigweld Industries", "To compete in a robot race", "To buy spare parts for his dad"]
     answer: B
-  - q: "What is Bigweld's famous motto?"
-    options: ["\"Faster, stronger, shinier\"", "\"Why be you when you can be new?\"", "\"See a need, fill a need\"", "\"Never give up, never break down\""]
-    answer: C
+  - q: "What does Rodney invent at the start of the movie?"
+    options: ["A flying car", "The Wonderbot, a little robot that helps wash dishes", "A robot dog", "A rocket ship"]
+    answer: B
   - q: "What does Ratchet stop making so that older robots are forced to buy expensive upgrades?"
     options: ["Oil", "Spare parts", "Batteries", "Paint"]
     answer: B
@@ -17,29 +17,29 @@ part1:
 part2_title: "Think About Character"
 part2:
   - label: "Not Giving Up"
-    text: "Rodney gets turned away again and again: at the Bigweld Industries gate, by Ratchet, and even by Bigweld himself. Describe one moment when Rodney could have quit. What did he do instead, and what does that show about how to handle setbacks?"
+    text: "Rodney gets turned away many times. Pick one time he could have quit. What did he do instead?"
     lines: 2
   - label: "Who Gets Left Behind"
-    text: "Ratchet calls older robots \"outmodes\" and treats them as worthless. How does the movie show that the robots Ratchet dismisses (like Fender, Aunt Fanny, and the Rusties) actually have value? Where do you see people or ads in real life sending the message that you need to be \"new\" to be good enough?"
+    text: "Ratchet calls old robots \"outmodes\" and says they are worthless. How does the movie show they still matter? Have you seen an ad that tried to make you want something new?"
     lines: 2
   - label: "See a Need, Fill a Need"
-    text: "Rodney starts fixing broken robots in his neighborhood, even when they can't pay him. Name one real need you have noticed at our school or in our community. Describe how someone your age could help fill it."
+    text: "Rodney fixes broken robots, even when they can't pay. Name one need at our school or in our town. How could a kid your age help?"
     lines: 2
   - label: "Fender's Budget"
-    text: "Ratchet wants every robot to spend money on shiny upgrades instead of the parts they actually need. Fender earns 100 bolts a week. Label each item Need or Want."
+    text: "Fender earns 100 bolts a week. Mark each item Need or Want."
     table:
       head: ["Item", "Cost (bolts)", "Need or Want?"]
       cells:
         - ["Oil and fuel", "25", ""]
-        - ["Rent for his room at Aunt Fanny's", "30", ""]
-        - ["Spare part to fix his arm that keeps falling off", "20", ""]
-        - ["Shiny chrome upgrade from Bigweld Industries", "60", ""]
+        - ["Rent", "30", ""]
+        - ["Spare part for his arm", "20", ""]
+        - ["Shiny chrome upgrade", "60", ""]
         - ["Movie night with friends", "10", ""]
     fields:
-      - { label: "a) Add up the needs. How much money is left after Fender pays for them?" }
-      - { label: "b) Can Fender afford the upgrade this week? If he really wants it, how could he plan to get it without skipping his needs?", lines: 2 }
+      - { label: "a) Add up the needs. How much is left?" }
+      - { label: "b) Can Fender buy the upgrade this week? How could he save up for it?", lines: 2 }
   - label: "Personal Connection"
-    text: "Which character in the movie do you think you are most like and why? Think about their personality, how they treat others, and what matters most to them. (You could choose Rodney, Fender, Piper, Cappy, Bigweld, Herb, Aunt Fanny, or another character.)"
+    text: "Which character are you most like? Why? (Rodney, Fender, Piper, Cappy, Bigweld, Herb, Aunt Fanny, or another character)"
     lines: 2
 teacher: |
   Questions 1 to 3 are plot comprehension. Questions 4 and 5 ask students to read motive and message rather than recall plot.
@@ -55,3 +55,16 @@ teacher: |
   - 10: Self-Awareness (self-reflection and identity)
 
   Content note: Rated PG for brief language and some rude humor, mostly slapstick and bodily-noise jokes. Fine for grades 6 to 9.
+before: |
+  Short warm-ups for the start of the block (each takes 2 to 5 minutes, and they matter most when the film is shorter than the period). All of them tie to the film's themes of wanting new things, being worth something, and noticing needs.
+
+  - **[Wheel of Names](https://wheelofnames.com/) (the one used in class):** paste in the class list and spin to pick who answers. "What's something you really wanted, got, and then realized wasn't worth it?" Spin for several students. It sets up Ratchet's upgrades and the needs vs. wants question on the back.
+  - **Show of hands:** quick questions, hands up, no explanations needed. Then pick a few hands to say more.
+    - Who has ever bought something because an ad or a friend made it look cool?
+    - Who has ever bought something and regretted it?
+    - Who has a phone or game that suddenly needed an upgrade or got slow?
+  - **Slogan check:** put "Why be you when you can be new?" on the board with no context. Ask where students have seen a message like it (ads, social media, shoe and phone releases). Revisit it at question 5.
+  - **New or needed? (four corners):** Would you rather be the newest model or the one everyone depends on? Corners: newest, needed, both, neither. One student per corner explains.
+  - **One minute quick-write:** "Name something that is old or broken and still worth keeping or fixing." Share two or three. This sets up Fender and the Rusties.
+  - **See a need:** pairs have 90 seconds to name one thing at school that bothers people and an invention that could fix it. Come back to it after the film at question 8.
+  - **Predict from the title:** what would a city made only of robots be like, and who might get left out? Write guesses on the board and check them at the end.

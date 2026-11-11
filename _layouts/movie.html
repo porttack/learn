@@ -15,7 +15,34 @@ layout: minimal
   <div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/{{ page.trailer }}" title="{{ page.title }} trailer" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
   {% endif %}
   {{ content }}
+  {% if ws.before %}
+  <section class="movie-before">
+    <h2>Teacher ideas (before the movie)</h2>
+    {{ ws.before | markdownify }}
+  </section>
+  {% endif %}
+  {% if page.before_you_watch %}
+  <section class="movie-watch-prompt">
+    <h2>Before you watch</h2>
+    <p>{{ page.before_you_watch }}</p>
+  </section>
+  {% endif %}
+  <section class="movie-key" id="teacher-notes">
+    <h2>Answer key and teacher notes</h2>
+    <ol>{% for q in ws.part1 %}<li>{% if q.answer != "" %}<strong>{{ q.answer }}</strong>{% else %}(to check){% endif %} {{ q.q }}</li>{% endfor %}</ol>
+    {% if ws.teacher %}{{ ws.teacher | markdownify }}{% endif %}
+  </section>
   <p class="movie-actions">
+    <button class="print-button" type="button" onclick="window.print()">Print these notes</button>
+    <a class="print-button movie-key-link" href="?key=1#teacher-notes">Show answer key</a>
     <a class="print-button" href="{{ '/movies/' | append: page.slug | append: '-worksheet/' | relative_url }}">Printable worksheet</a>
   </p>
 </article>
+<script>
+(function () {
+  var shown = new URLSearchParams(location.search).has("key");
+  if (shown) document.documentElement.classList.add("show-key");
+  var link = document.querySelector(".movie-key-link");
+  if (link && shown) { link.textContent = "Hide answer key"; link.href = location.pathname; }
+})();
+</script>
