@@ -33,8 +33,14 @@ nothing to install and no account to make.
 - **Share through GitHub.** **File, Open from GitHub** opens a `.scad` file from a
   repository (public, or private with a token) when you paste its link, or lists all the `.scad` files in a
   repository when you paste the repository's link. **File, Save to GitHub** puts your
-  drawing in a repository with a note about the change. A link like
-  `/openscad/#gh=` followed by a GitHub file link opens that file for anyone.
+  drawing in a repository with a note about the change. If you changed a file
+  that someone else also changed, it stops and tells you instead of erasing
+  their work.
+- **Share a link.** **File, Copy share link** makes a link with your exact code. If
+  the drawing came from a GitHub file, the link remembers that file, so the person
+  you send it to can change the code and save it back with their own token.
+  **Copy link to the GitHub file** makes a link that opens the file as it is on
+  GitHub right now.
 - **Look at the model.** Turn it, zoom, fit it to the window, look from below,
   show scale numbers on the axes, and show its size and center.
 - **Check it for printing.** **Print, Show overhangs** paints in red the faces

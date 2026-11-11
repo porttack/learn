@@ -121,7 +121,8 @@ permalink: /openscad/
       <button id="download" disabled>Download STL</button>
       <button id="ghSave">Save to GitHub&hellip;</button>
       <hr>
-      <button id="share">Copy share link</button>
+      <button id="share" title="A link with this exact code. If it came from GitHub, the link also says which file.">Copy share link</button>
+      <button id="shareGh" title="A link that opens the file as it is on GitHub right now">Copy link to the GitHub file</button>
       <hr>
       <button id="exOverhang" title="A small model made to show what Show overhangs does">Example: overhang test</button>
     </div>
@@ -190,6 +191,7 @@ permalink: /openscad/
     <input id="ghSaveToken" type="password" spellcheck="false" autocomplete="off" placeholder="github_pat_...">
   </label>
   <div class="hint">The token is sent only to GitHub. This page keeps it in memory while it stays open, so you do not retype it, and never writes it to disk: reload or close the page and it is forgotten. Make one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub, Settings, Fine-grained tokens</a> with access to just this repository and <b>Contents: Read and write</b>, and let it expire soon.</div>
+  <label id="ghForceRow" class="hint" hidden><input id="ghForce" type="checkbox"> Replace the newer version on GitHub anyway</label>
   <div id="ghSaveOut" class="ghmsg" role="status"></div>
   <div class="dlgfoot"><span></span><button id="ghSaveGo">Save to GitHub</button></div>
 </dialog>
@@ -275,12 +277,13 @@ function freeName(base) {
   return n;
 }
 const TIME = "openscad:time:";
+const SRC = "openscad:src:", BASE = "openscad:base:";   // the GitHub file a drawing came from, and its version then
 function saveNow(touch = true) {
   store(false, PREFIX + currentName, editor.get());
   store(false, CURRENT, currentName);
   if (touch || !store(true, TIME + currentName)) store(false, TIME + currentName, String(Date.now()));
 }
-function removeDoc(name) { try { localStorage.removeItem(PREFIX + name); localStorage.removeItem(TIME + name); localStorage.removeItem("openscad:src:" + name); } catch (e) {} }
+function removeDoc(name) { try { localStorage.removeItem(PREFIX + name); localStorage.removeItem(TIME + name); localStorage.removeItem(SRC + name); localStorage.removeItem(BASE + name); } catch (e) {} }
 function openDrawing(n) {
   const text = store(true, PREFIX + n);
   if (text === null) return false;
@@ -295,12 +298,16 @@ function openDrawing(n) {
 
 // Starting point: a share link wins (kept as its own drawing), then the drawing used last
 // time, then an old unnamed save from before names existed, then the sample.
-let initial = null;
+let initial = null, sharedSrc = null, sharedBase = null;
 {
   const m = location.hash.match(/[#&]code=([^&]+)/);
   if (m) initial = LZString.decompressFromEncodedURIComponent(m[1]);
+  // A share link can also carry the GitHub file the code came from, so the person it is
+  // shared with can save changes back there (with their own token).
+  const sm = location.hash.match(/[#&]src=([^&]+)/), bm = location.hash.match(/[#&]base=([0-9a-f]{40})/);
+  if (initial && sm) { try { sharedSrc = decodeURIComponent(sm[1]); } catch (e) {} if (bm) sharedBase = bm[1]; }
 }
-if (initial) currentName = freeName("shared drawing");
+if (initial) currentName = freeName(sharedSrc ? (sharedSrc.split("/").pop().replace(/\.scad$/i, "") || "shared drawing") : "shared drawing");
 else {
   const last = store(true, CURRENT);
   const legacy = store(true, "openscad:code");
@@ -315,6 +322,7 @@ const editor = createEditor($("editor"), initial, {
   onUpdate: (st) => { $("undo").disabled = !st.canUndo; $("redo").disabled = !st.canRedo; },
 });
 saveNow(false); fillNames();
+if (sharedSrc) { store(false, SRC + currentName, sharedSrc); if (sharedBase) store(false, BASE + currentName, sharedBase); }
 $("undo").onclick = () => editor.undo();
 $("redo").onclick = () => editor.redo();
 
@@ -330,12 +338,13 @@ nameEl.addEventListener("change", () => {
     statusEl.textContent = `Opened "${n}"`;
   } else {
     const t = store(true, TIME + currentName);
-    const src = store(true, "openscad:src:" + currentName);
+    const src = store(true, SRC + currentName), base = store(true, BASE + currentName);
     removeDoc(currentName);
     currentName = n;
     saveNow(false);
     if (t) store(false, TIME + n, t);
-    if (src) store(false, "openscad:src:" + n, src);
+    if (src) store(false, SRC + n, src);
+    if (base) store(false, BASE + n, base);
     statusEl.textContent = `Saved as "${n}"`;
   }
   fillNames();
@@ -482,7 +491,6 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
 
 // ---- GitHub: open a file by its link, save with a token you paste each time ----
 {
-  const SRC = "openscad:src:";
   // Lets people leave off the start: "owner/repo", "github.com/owner/repo" and the full link all work.
   function normGitHub(input) {
     let t = (input || "").trim();
@@ -510,11 +518,20 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
   const blobUrl = (g) => `https://github.com/${g.owner}/${g.repo}/blob/${encodeURIComponent(g.ref)}/${encPath(g.path)}`;
   const say = (el, text, kind) => { el.className = "ghmsg" + (kind ? " " + kind : ""); el.textContent = text; };
 
+  // The id GitHub gives a file's contents (a "blob sha"): sha1 of "blob <bytes>\0" + the bytes.
+  // Knowing it lets Save notice that someone changed the file after you opened it.
+  async function gitBlobSha(buf) {
+    try {
+      const head = new TextEncoder().encode(`blob ${buf.byteLength}\0`);
+      const all = new Uint8Array(head.length + buf.byteLength); all.set(head); all.set(new Uint8Array(buf), head.length);
+      return [...new Uint8Array(await crypto.subtle.digest("SHA-1", all))].map((b) => b.toString(16).padStart(2, "0")).join("");
+    } catch (e) { return null; }
+  }
   async function openFromGitHub(link, msgEl, token) {
     const g = parseGitHub(link);
     if (!g) { say(msgEl, "That does not look like a link to a file or a repository on GitHub. A file looks like https://github.com/you/repo/blob/main/part.scad", "err"); return false; }
     say(msgEl, "Opening...");
-    let text;
+    let text, baseSha = null;
     try {
       // With a token the file is read through GitHub's API (works for private repositories);
       // without one it comes straight from raw.githubusercontent.com (public repositories only).
@@ -529,7 +546,9 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
           : `GitHub answered ${r.status}.`, "err");
         return false;
       }
-      text = await r.text();
+      const buf = await r.arrayBuffer();
+      text = new TextDecoder().decode(buf);
+      baseSha = await gitBlobSha(buf);
     } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); return false; }
     if (text.length > 1500000) { say(msgEl, "That file is too big to open here.", "err"); return false; }
     saveNow();
@@ -538,6 +557,7 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
     editor.set(text, false);
     saveNow();
     store(false, SRC + currentName, blobUrl(g));
+    if (baseSha) store(false, BASE + currentName, baseSha);
     fillNames();
     statusEl.textContent = `Opened ${g.path} from GitHub`;
     return true;
@@ -627,6 +647,7 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
     $("ghSaveUrl").value = store(true, SRC + currentName) || store(true, LAST_SAVE) || "";
     $("ghSaveMsg").value = `Update ${fileBase(currentName)}.scad`;
     $("ghSaveToken").value = saveToken;
+    $("ghForce").checked = false; $("ghForceRow").hidden = true;
     say($("ghSaveOut"), "");
     ghSaveDlg.showModal();
     ($("ghSaveUrl").value ? $("ghSaveToken") : $("ghSaveUrl")).focus();
@@ -646,12 +667,19 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
       if (cur.ok) sha = (await cur.json()).sha;
       else if (cur.status === 401) return say(out, "GitHub did not accept that token. Check that you copied all of it and that it has not expired.", "err");
       else if (cur.status !== 404) return say(out, `GitHub answered ${cur.status} when looking for the file.`, "err");
+      // If this drawing was opened from this same file, make sure the file has not changed since.
+      const base = store(true, BASE + currentName), same = store(true, SRC + currentName) === blobUrl(g);
+      if (sha && base && same && sha !== base && !$("ghForce").checked) {
+        $("ghForceRow").hidden = false;
+        return say(out, "Someone changed this file on GitHub after you opened it. Saving now would erase their change. Open the latest version (File, Open from GitHub), put your changes into it, and save again. Or tick the box below to replace their version anyway.", "err");
+      }
       const body = { message: $("ghSaveMsg").value.trim() || "Update from OpenSCAD in the browser", content: b64(editor.get()), branch: g.ref };
       if (sha) body.sha = sha;
       const put = await fetch(api, { method: "PUT", headers: { ...headers, "Content-Type": "application/json" }, body: JSON.stringify(body) });
       if (put.ok) {
         const data = await put.json();
         store(false, SRC + currentName, blobUrl(g));
+        if (data.content && data.content.sha) store(false, BASE + currentName, data.content.sha);
         store(false, LAST_SAVE, blobUrl(g));
         saveToken = token;
         out.className = "ghmsg ok"; out.textContent = (sha ? "Updated " : "Created ") + g.path + ". ";
@@ -1113,11 +1141,23 @@ $("file").onchange = async (e) => {
   editor.set(await f.text());
   e.target.value = "";
 };
-$("share").onclick = async () => {
-  const url = location.origin + location.pathname + "#code=" + LZString.compressToEncodedURIComponent(editor.get());
+async function copyLink(url) {
   history.replaceState(null, "", url);
   try { await navigator.clipboard.writeText(url); statusEl.textContent = "Link copied"; }
   catch (e) { statusEl.textContent = "Link is in the address bar"; }
+}
+// Shares this exact code. If the drawing is tied to a GitHub file, the link also names that
+// file, so whoever opens it can save changes back to it with their own token.
+$("share").onclick = () => {
+  const src = store(true, SRC + currentName), base = store(true, BASE + currentName);
+  copyLink(location.origin + location.pathname + "#code=" + LZString.compressToEncodedURIComponent(editor.get())
+    + (src ? "&src=" + encodeURIComponent(src) + (base ? "&base=" + base : "") : ""));
+};
+// Shares the file as it is on GitHub right now (not this drawing's unsaved edits).
+$("shareGh").onclick = () => {
+  const src = store(true, SRC + currentName);
+  if (!src) { statusEl.textContent = "This drawing is not tied to a GitHub file yet. Use Save to GitHub first."; return; }
+  copyLink(location.origin + location.pathname + "#gh=" + encodeURIComponent(src));
 };
 
 spawn();
