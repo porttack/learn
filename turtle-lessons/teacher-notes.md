@@ -214,6 +214,8 @@ TurtleLab has a **write** block (Notes palette, next to the sticky note) that dr
 
 > Do not use the write block in this assignment. The letters and the picture have to come from your own blocks.
 
+**Or turn it off with a link.** Give students `https://learn.porttack.com/turtlelab/?nowrite=1` instead of the plain TurtleLab address. On that page the Notes palette has no write block (and no set font or set curve, which only matter with it), and a program that has one, opened from a file for example, will not run: the block is outlined and a message says it is turned off. The Logo box refuses the write word there too. The Step 1 page already sends students to that link. It lives only in the address, so a student who types the plain address gets write back; the PDF does not show which address it was made at. Use the line above as well if it matters.
+
 It is fine, and fun, for names on a finished picture and for the embroidery samples.
 
 ## The Logo box

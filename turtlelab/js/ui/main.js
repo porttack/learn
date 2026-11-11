@@ -52,6 +52,10 @@ const params = new URLSearchParams(location.search);
 // ?embed=1: TurtleLab in a frame on a lesson page. A slim toolbar (the stylesheet; js/embed-flag.js sets the class early), no antics, treats or fish, and like a sample it
 // never reads or writes what a student saved. (Build the address with ?sample=lesson-box-size&embed=1; see "Embedding in lessons" in CLAUDE.md.)
 const embed = params.get('embed') === '1';
+// ?nowrite=1: the write block (and its font and curve settings) is left out of the palette, and a program with one will not run. A teacher gives this
+// address for an assignment that is to draw letters piece by piece. It lives only in the address: nothing is stored, and the plain address has write.
+const noWrite = params.get('nowrite') === '1';
+const WRITE_OPS = ['write', 'setfont', 'setcurve'];
 
 document.title = APP_NAME;
 $('app-name').textContent = APP_NAME;
@@ -199,6 +203,12 @@ let runHasWrite = false; // does the program being run write words? (the words' 
 function writesWords(stacks) {
   let found = false;
   for (const stack of stacks) walkBlocks(stack.blocks, (block) => { if (block.op === 'write') found = true; });
+  return found;
+}
+/** Does any of these stacks have a write block, or one of its font and curve settings? (what ?nowrite=1 turns off) */
+function usesWriteBlocks(stacks) {
+  let found = false;
+  for (const stack of stacks) walkBlocks(stack.blocks, (block) => { if (WRITE_OPS.includes(block.op)) found = true; });
   return found;
 }
 /** A wait at least this long (milliseconds) makes the turtle yawn. A shorter one is just a pause. */
@@ -353,6 +363,16 @@ function runStack(stack) {
     }
     return;
   }
+  if (noWrite) {
+    // The page was opened with ?nowrite=1: the block is not in the palette, but one can still arrive in a file that was opened.
+    let found = null;
+    for (const each of project.stacks) walkBlocks(each.blocks, (block) => { if (!found && WRITE_OPS.includes(block.op)) found = block; });
+    if (found) {
+      workspace.setError(found);
+      say('The write block is turned off on this page. Draw your letters piece by piece with blocks like forward, left, right, set xy and arc.');
+      return;
+    }
+  }
   const { map: definitions, duplicate } = definitionsOf(project);
   if (duplicate) {
     workspace.setError(duplicate);
@@ -494,6 +514,12 @@ function runLogo(text) {
     say('There is nothing in the Logo box to run yet.');
     return;
   }
+  if (noWrite && usesWriteBlocks(compiled.stacks)) {
+    // (the Logo box can type write too, so it is turned off here as well)
+    logoBox.say('The write word is turned off on this page. Draw your letters with forward, left, right and the others.', true);
+    say('The write block is turned off on this page.');
+    return;
+  }
   logoBox.clearProblem();
   beginRun(compiled.main, handlersOf({ stacks: compiled.stacks }), definitionsOf({ stacks: compiled.stacks }).map, compiled.stacks, true);
 }
@@ -599,7 +625,7 @@ workspace = new Workspace({
   onPaletteHover: (hovering) => palettes.setTrashHover(hovering),
   onPaperClick: paperClicked,
 });
-palettes = new PaletteUI({ stage, workspace, burpChance: params.get('burp') === 'always' ? 1 : undefined }); // (?burp=always makes the shark burp after every meal, for trying it out)
+palettes = new PaletteUI({ stage, workspace, hiddenOps: noWrite ? WRITE_OPS : [], burpChance: params.get('burp') === 'always' ? 1 : undefined }); // (?burp=always makes the shark burp after every meal, for trying it out)
 // A fish swims across the window, and the shark watches it (and eats it if it is clicked). A fishing boat sails in and tries to harpoon the shark (and the can).
 // They are treats for doing work (reward.js), not something that happens on its own: `auto: false`. They never share the shark.
 // (?fish=now and ?boat=now send one 0.4 s after the page opens, for trying them out.)

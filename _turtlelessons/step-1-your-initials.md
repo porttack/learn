@@ -45,7 +45,7 @@ Now build the same L yourself.
 <aside class="callout note" markdown="1">
 **Build in a fresh tab**
 
-Open <a href="{{ '/turtlelab/' | relative_url }}" target="_blank" rel="noopener">TurtleLab</a> in a new tab and keep this page next to it. That tab remembers your blocks if you refresh.
+Open <a href="{{ '/turtlelab/?nowrite=1' | relative_url }}" target="_blank" rel="noopener">TurtleLab</a> in a new tab and keep this page next to it. That tab remembers your blocks if you refresh. Its Notes palette has no `write` block, on purpose: you draw the letters yourself.
 </aside>
 
 The round buttons on the left open the palettes of blocks (point at one to see its name). Drag a block out, and snap the next one under it. Tap a number on a block to change it.

@@ -25,9 +25,11 @@ export class PaletteUI {
    * @param {object} options
    * @param {HTMLElement} options.stage
    * @param {import('./workspace.js').Workspace} options.workspace
+   * @param {string[]} [options.hiddenOps] blocks left out of the palettes (the page was opened with ?nowrite=1)
    * @param {number} [options.burpChance] how often the shark burps after a meal (0 to 1), for trying it out
    */
-  constructor({ stage, workspace, burpChance }) {
+  constructor({ stage, workspace, burpChance, hiddenOps = [] }) {
+    this.hiddenOps = new Set(hiddenOps);
     this.stage = stage;
     this.workspace = workspace;
     this.selected = null;
@@ -98,7 +100,7 @@ export class PaletteUI {
     const project = this.workspace.project;
     const entries = [];
     for (const [op, spec] of Object.entries(BLOCKS)) {
-      if (spec.palette !== id || spec.dynamic) continue;
+      if (spec.palette !== id || spec.dynamic || this.hiddenOps.has(op)) continue;
       entries.push({ op, make: () => (op === 'to' ? newDefinition(project) : newBlock(op)), help: spec.help });
     }
     if (id === 'myblocks') {
