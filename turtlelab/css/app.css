@@ -193,6 +193,25 @@ body {
 /* Chalk is light on dark like the other dark papers; its grain (a mask that lets the board show through) is put on by script. */
 .paper-box.paper-chalkboard .paper-sketch { filter: invert(1) hue-rotate(180deg); }
 
+/* A preview of a tapped palette block: grey lines over the paper that fade out. Clicks go through it. */
+.paper-peek {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.paper-peek[hidden] { display: none; }
+.paper-peek.fading { opacity: 0; transition: opacity 0.9s ease-out; }
+/* While a preview plays the turtle glides to the far end and back. */
+.turtle-sprite.peeking { transition: transform 0.5s ease-in-out; }
+@media (prefers-reduced-motion: reduce) {
+  .turtle-sprite.peeking { transition: none; }
+  .paper-peek.fading { transition-duration: 0.3s; }
+}
+
 .turtle-sprite {
   position: absolute;
   left: 0;

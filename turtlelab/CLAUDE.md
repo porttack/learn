@@ -980,8 +980,8 @@ programs may keep a stale preview for a while. Other pages (guide, samples, abou
   `touch-action: pan-y`: vertical swipes scroll it, sideways drags pull a block
   out. The grab offset is measured from the press point, not from where the
   pointer is when the drag starts (a fast drag has already moved).
-- **Tapping** a stack runs it; tapping a palette block runs that one block
-  (a lone reporter shows its value in the message bar). **Dropping anywhere in
+- **Tapping** a stack runs it. **Tapping a palette block never changes anything** (2026-11-10, the user: kids tapped palette blocks to move the turtle without building a program; asked for a grey line that fades and the turtle going back): `tapPaletteBlock` in `main.js` runs a movement block (`forward`, `back`, `left`, `right`, `arc`, `setxy`, `setheading`) on a scratch turtle and `CanvasView.peek` draws its lines in grey on `canvas.paper-peek`, glides the sprite to the end and back (`peekPose`), and fades; the real turtle, picture and boxes are untouched, and `applyOp` cancels a preview. Any other block says what it does and to drag it out; reporters still show their value (`dev/peek-checks.mjs`).
+  (A lone reporter shows its value in the message bar.) **Dropping anywhere in
   the left column deletes** (`PaletteUI.isOver`: everything left of the palette
   or its open flyout, top to bottom, including past the window's edge). It used
   to be only the strip of buttons, so a drop just below or beside them silently

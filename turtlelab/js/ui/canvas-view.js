@@ -276,6 +276,16 @@ export class CanvasView {
     this.gridCanvas.hidden = true;
     this.gridCtx = this.gridCanvas.getContext('2d');
 
+    // A grey preview of what a tapped palette block would draw. It lies over the paper and fades; it is never part of the picture (nothing is saved or exported from it).
+    this.peekCanvas = document.createElement('canvas');
+    this.peekCanvas.className = 'paper-peek';
+    this.peekCanvas.width = PAPER_W * PIXEL_RATIO;
+    this.peekCanvas.height = PAPER_H * PIXEL_RATIO;
+    this.peekCanvas.hidden = true;
+    this.peekCtx = this.peekCanvas.getContext('2d');
+    this.peekPose = null; // where the turtle is shown while a preview plays (not where it is)
+    this.peekTimer = null;
+
     this.sprite = document.createElement('div');
     this.sprite.className = 'turtle-sprite';
     this.sprite.innerHTML = spriteSvg();
@@ -298,7 +308,7 @@ export class CanvasView {
     this.breathing = false;
     this.poops = []; // the ones falling now: { el, timer }
     this.screen = { x: 0, y: 0 }; // where the turtle's middle is in the window, as of the last sync
-    this.box.append(this.canvas, this.sketchCanvas, this.styleCanvas, this.gridCanvas, this.sprite);
+    this.box.append(this.canvas, this.sketchCanvas, this.styleCanvas, this.gridCanvas, this.peekCanvas, this.sprite);
     // The Zzz and the bubbles float up off the top of the window, so they live in the layer above everything, not in the paper.
     sky().append(this.zzz, this.bubbles);
     stage.append(this.box);
@@ -323,9 +333,49 @@ export class CanvasView {
 
   /** Draw an op the turtle just made. */
   applyOp(op) {
+    this.cancelPeek(); // a real drawing always wins over a preview
     if (op.type === 'clear') this.dropPicture();
     paintOp(this.ctx, op, this.drawView);
     if (this.hand) paintHandOp(this.sketchCtx, op, this.drawView, { chalk: this.hand === 'chalk', look: this.handLook });
+  }
+
+  /**
+   * Show what a tapped palette block would do without doing it: the lines it would draw appear in grey and fade, and the turtle walks
+   * (or turns) to where it would end up and then comes back. `ops` are the line and arc ops from a scratch turtle, `end` is where that
+   * turtle stopped. Nothing here touches the real turtle, the picture or the saved ops.
+   */
+  peek(ops, end) {
+    this.cancelPeek();
+    const { ctx } = { ctx: this.peekCtx };
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, this.peekCanvas.width, this.peekCanvas.height);
+    for (const op of ops) paintOp(ctx, { ...op, color: [130, 130, 130], size: Math.max(3, Number(op.size) || 0) }, this.drawView);
+    this.peekCanvas.classList.remove('fading');
+    this.peekCanvas.hidden = ops.length === 0;
+    // Turn the short way round, so a turn from 350 to 10 is a turn of 20 and not a spin of 340.
+    const start = this.turtle.heading;
+    const turn = ((((end.heading - start) % 360) + 540) % 360) - 180;
+    this.peekPose = { x: end.x, y: end.y, heading: start + turn };
+    this.sprite.classList.add('peeking');
+    this.sync();
+    this.peekTimer = setTimeout(() => {
+      this.peekPose = null; // the turtle goes home (the sprite's transition animates it)
+      this.sync();
+      this.peekCanvas.classList.add('fading');
+      this.peekTimer = setTimeout(() => this.cancelPeek(), PEEK_FADE_MS + 100);
+    }, PEEK_HOLD_MS);
+  }
+
+  /** End a preview at once: the grey lines go, the turtle is where it really is. */
+  cancelPeek() {
+    clearTimeout(this.peekTimer);
+    this.peekTimer = null;
+    if (!this.peekPose && this.peekCanvas.hidden && !this.sprite.classList.contains('peeking')) return;
+    this.peekPose = null;
+    this.peekCanvas.hidden = true;
+    this.peekCanvas.classList.remove('fading');
+    this.sprite.classList.remove('peeking');
+    this.sync();
   }
 
   /** Let go of the opened picture (an ImageBitmap is memory the page has to give back). */
@@ -679,7 +729,7 @@ export class CanvasView {
     }
     this.sprite.classList.toggle('pen-up', !this.turtle.penDown);
     // While a write block is tracing letters, the turtle is shown at the tip of its pen, facing the way it is drawing.
-    const shown = this.turtle.writing ?? this.turtle;
+    const shown = this.peekPose ?? this.turtle.writing ?? this.turtle;
     const { heading } = shown;
     const at = this.drawnPoint(shown.x, shown.y);
     const px = (at.x / PIXEL_RATIO) * this.scale;
@@ -914,6 +964,10 @@ export class CanvasView {
     };
   }
 }
+
+/** How long a preview holds the turtle at the far end, and how long the grey lines take to fade. */
+const PEEK_HOLD_MS = 700;
+const PEEK_FADE_MS = 900;
 
 function clamp(n, low, high) {
   return Math.min(high, Math.max(low, n));

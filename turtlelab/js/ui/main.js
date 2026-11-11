@@ -363,6 +363,44 @@ function runStack(stack) {
 }
 
 /**
+ * A tap on a block in the palette. It never changes the picture, the turtle or the boxes: a block that moves the turtle shows a grey
+ * preview that fades while the turtle walks there and comes back; a block that only reads something (a reporter) still shows its value;
+ * every other block says what it does. To make anything happen, a block has to be dragged out and run.
+ */
+const PEEK_BLOCKS = new Set(['forward', 'back', 'left', 'right', 'arc', 'setxy', 'setheading']);
+
+function tapPaletteBlock(block) {
+  const stack = { x: 0, y: 0, blocks: [block] };
+  if (isHandler(stack) || isDefinition(stack) || isReporterStack(stack)) {
+    runStack(stack); // these only explain themselves or read a value
+    return;
+  }
+  const spec = BLOCKS[block.op];
+  if (!spec || spec.kind === 'note') return;
+  if (!PEEK_BLOCKS.has(block.op)) {
+    say(`${spec.help ?? spec.label} To use it, drag it into the workspace.`);
+    return;
+  }
+  if (scheduler.running) {
+    say('A program is running. Press Stop first, or wait for it to finish.');
+    return;
+  }
+  const ops = [];
+  const scratch = new Turtle({ onOp: (op) => ops.push(op) });
+  Object.assign(scratch, { x: turtle.x, y: turtle.y, heading: turtle.heading, penDown: turtle.penDown, penSize: turtle.penSize, color: turtle.color.slice() });
+  const scratchContext = createContext({ turtle: scratch, boxes: context.boxes.slice() });
+  try {
+    for (const step of runBlocks([block], scratchContext)) void step;
+  } catch (error) {
+    if (!(error instanceof RunError)) throw error;
+    say(error.message);
+    return;
+  }
+  view.peek(ops.filter((op) => op.type === 'line' || op.type === 'arc'), scratch);
+  say('Just a preview. To draw it for real, drag the block into the workspace and press Run.');
+}
+
+/**
  * Start a program: the blocks to run, the event handlers there are (a program with any keeps listening for clicks, keys and its timers after its
  * last block, until Stop; a run made for the PDF just ends, since nobody will click), the blocks the student made, and all the stacks (to know if
  * it writes words).
@@ -554,7 +592,7 @@ workspace = new Workspace({
     autosave.schedule();
   },
   onRunStack: runStack,
-  onRunPaletteBlock: (block) => runStack({ x: 0, y: 0, blocks: [block] }),
+  onRunPaletteBlock: (block) => tapPaletteBlock(block),
   onMessage: say,
   eater: { mouthPoint: (options) => palettes.eater.mouthPoint(options), feed: (meal) => palettes.eater.feed(meal), spit: (ms) => palettes.eater.spit(ms) },
   isOverPalette: (x, y, rect) => palettes.isOver(x, y, rect),
