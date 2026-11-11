@@ -63,6 +63,9 @@ permalink: /openscad/
   .fld { display:flex; flex-direction:column; gap:4px; font-size:13px; color:var(--muted); }
   .fld input { font:15px system-ui, sans-serif; padding:7px 9px; border:1px solid var(--border); border-radius:6px; color:var(--ink); }
   .hint { font-size:12.5px; color:var(--muted); } .hint a { color:var(--accent); }
+  #ghList { max-height:240px; overflow:auto; border:1px solid var(--border); border-radius:6px; }
+  #ghList button { display:block; width:100%; text-align:left; background:none; border:0; border-bottom:1px solid #eef0f3; color:var(--ink); padding:6px 10px; font:13px ui-monospace, Menlo, Consolas, monospace; cursor:pointer; }
+  #ghList button:hover { background:#e8f0fc; } #ghList .note { padding:6px 10px; color:var(--muted); font-size:12.5px; }
   .ghmsg { min-height:1.3em; font-size:13px; } .ghmsg.err { color:var(--err); } .ghmsg.ok { color:#1a7f37; }
   dialog { border:1px solid var(--border); border-radius:10px; padding:14px 16px; width:min(720px, 94vw); max-height:84vh; color:var(--ink); background:var(--paper); }
   dialog::backdrop { background:rgba(20,24,29,.45); }
@@ -164,14 +167,15 @@ permalink: /openscad/
 </header>
 <dialog id="ghOpenDlg" aria-labelledby="ghOpenTitle">
   <div class="dlghead"><h2 id="ghOpenTitle">Open from GitHub</h2><span></span><button class="secondary" data-close aria-label="Close">Close</button></div>
-  <label class="fld">Link to a .scad file in a public repo
-    <input id="ghOpenUrl" type="url" spellcheck="false" placeholder="https://github.com/you/repo/blob/main/part.scad" autocomplete="off">
+  <label class="fld">Link to a .scad file, or to a whole repository to see its .scad files
+    <input id="ghOpenUrl" type="url" spellcheck="false" placeholder="https://github.com/you/repo" autocomplete="off">
   </label>
   <label class="fld">Personal access token (only for a private repository)
     <input id="ghOpenToken" type="password" spellcheck="false" autocomplete="off" placeholder="leave empty for a public repository">
   </label>
-  <div class="hint">Open the file on GitHub and copy the address from the browser. It opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. It is sent only to GitHub, only now, and is never saved.</div>
+  <div class="hint">Paste the address of a file (it opens at once) or of a repository or folder (you get a list of its .scad files to pick from). A file opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. It is sent only to GitHub, only now, and is never saved.</div>
   <div id="ghOpenMsg" class="ghmsg" role="status"></div>
+  <div id="ghList" hidden></div>
   <div class="dlgfoot"><span></span><button id="ghOpenGo">Open</button></div>
 </dialog>
 <dialog id="ghSaveDlg" aria-labelledby="ghSaveTitle">
@@ -500,7 +504,7 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
 
   async function openFromGitHub(link, msgEl, token) {
     const g = parseGitHub(link);
-    if (!g) { say(msgEl, "That does not look like a link to a file on GitHub. It should look like https://github.com/you/repo/blob/main/part.scad", "err"); return false; }
+    if (!g) { say(msgEl, "That does not look like a link to a file or a repository on GitHub. A file looks like https://github.com/you/repo/blob/main/part.scad", "err"); return false; }
     say(msgEl, "Opening...");
     let text;
     try {
@@ -531,15 +535,70 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
     return true;
   }
 
+  // A link to a repository (or a folder in it), not to a file: github.com/you/repo[/tree/branch[/folder]]
+  function parseRepo(input) {
+    let u; try { u = new URL((input || "").trim()); } catch (e) { return null; }
+    if (u.hostname !== "github.com" && u.hostname !== "www.github.com") return null;
+    const p = u.pathname.split("/").filter(Boolean).map(decodeURIComponent);
+    if (p.length < 2) return null;
+    if (p.length === 2) return { owner: p[0], repo: p[1].replace(/\.git$/, ""), ref: null, dir: "" };
+    if (p[2] === "tree" && p.length >= 4) return { owner: p[0], repo: p[1], ref: p[3], dir: p.slice(4).join("/") };
+    return null;
+  }
+  // Lists every .scad file in the repository (one request for the whole tree).
+  async function listScad(rp, token, msgEl, listEl) {
+    const headers = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+    if (token) headers.Authorization = "Bearer " + token;
+    const fail = (r) => say(msgEl, r.status === 401 ? "GitHub did not accept that token. Check that you copied all of it and that it has not expired."
+      : r.status === 404 ? "GitHub cannot find that repository. Check the link. If it is private, paste a token below."
+      : r.status === 403 ? "GitHub is limiting requests from this computer for now (60 an hour without a token). Wait a while, or paste a token."
+      : `GitHub answered ${r.status}.`, "err");
+    say(msgEl, "Looking...");
+    try {
+      let ref = rp.ref;
+      if (!ref) {
+        const r0 = await fetch(`https://api.github.com/repos/${rp.owner}/${rp.repo}`, { headers });
+        if (!r0.ok) return fail(r0);
+        ref = (await r0.json()).default_branch;
+      }
+      const r = await fetch(`https://api.github.com/repos/${rp.owner}/${rp.repo}/git/trees/${encodeURIComponent(ref)}?recursive=1`, { headers });
+      if (!r.ok) return fail(r);
+      const data = await r.json();
+      const prefix = rp.dir ? rp.dir.replace(/\/$/, "") + "/" : "";
+      const files = (data.tree || []).filter((t) => t.type === "blob" && /\.scad$/i.test(t.path) && t.path.startsWith(prefix))
+        .map((t) => t.path).sort((a, b) => a.localeCompare(b));
+      listEl.replaceChildren(); listEl.hidden = false;
+      if (!files.length) { say(msgEl, `No .scad files found in ${rp.owner}/${rp.repo}${prefix ? "/" + prefix : ""} (branch ${ref}).`, "err"); listEl.hidden = true; return; }
+      say(msgEl, `${files.length} .scad file${files.length === 1 ? "" : "s"} in ${rp.owner}/${rp.repo}${prefix ? "/" + prefix : ""} (branch ${ref}). Click one to open it.`);
+      for (const path of files.slice(0, 300)) {
+        const b = document.createElement("button");
+        b.textContent = prefix ? path.slice(prefix.length) : path;
+        b.title = path;
+        b.onclick = async () => {
+          const tokenEl = $("ghOpenToken");
+          if (await openFromGitHub(blobUrl({ owner: rp.owner, repo: rp.repo, ref, path }), msgEl, tokenEl.value.trim())) { tokenEl.value = ""; ghOpenDlg.close(); }
+        };
+        listEl.append(b);
+      }
+      const extra = [];
+      if (files.length > 300) extra.push(`Showing the first 300 of ${files.length}. Paste a folder link to narrow it down.`);
+      if (data.truncated) extra.push("GitHub says this repository is too big to list completely.");
+      if (extra.length) listEl.append(Object.assign(document.createElement("div"), { className: "note", textContent: extra.join(" ") }));
+    } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); }
+  }
+
   const ghOpenDlg = $("ghOpenDlg"), ghSaveDlg = $("ghSaveDlg");
   for (const d of [ghOpenDlg, ghSaveDlg]) {
     d.querySelector("[data-close]").onclick = () => d.close();
+    d.addEventListener("close", () => d.querySelectorAll('input[type="password"]').forEach((i) => { i.value = ""; }));
     d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
   }
-  $("ghOpen").onclick = () => { $("ghOpenUrl").value = ""; $("ghOpenToken").value = ""; say($("ghOpenMsg"), ""); ghOpenDlg.showModal(); $("ghOpenUrl").focus(); };
+  $("ghOpen").onclick = () => { $("ghOpenUrl").value = ""; $("ghOpenToken").value = ""; $("ghList").hidden = true; say($("ghOpenMsg"), ""); ghOpenDlg.showModal(); $("ghOpenUrl").focus(); };
   const goOpen = async () => {
-    const tokenEl = $("ghOpenToken");
-    const ok = await openFromGitHub($("ghOpenUrl").value, $("ghOpenMsg"), tokenEl.value.trim());
+    const tokenEl = $("ghOpenToken"), link = $("ghOpenUrl").value, listEl = $("ghList");
+    if (!parseGitHub(link) && parseRepo(link)) { await listScad(parseRepo(link), tokenEl.value.trim(), $("ghOpenMsg"), listEl); return; }
+    listEl.hidden = true;
+    const ok = await openFromGitHub(link, $("ghOpenMsg"), tokenEl.value.trim());
     tokenEl.value = "";
     if (ok) ghOpenDlg.close();
   };

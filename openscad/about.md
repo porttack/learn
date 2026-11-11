@@ -31,7 +31,8 @@ nothing to install and no account to make.
   as you type. **File, My drawings** lists all of them, and you can back them
   up to a file and restore them later.
 - **Share through GitHub.** **File, Open from GitHub** opens a `.scad` file from a
-  public repository when you paste its link. **File, Save to GitHub** puts your
+  repository (public, or private with a token) when you paste its link, or lists all the `.scad` files in a
+  repository when you paste the repository's link. **File, Save to GitHub** puts your
   drawing in a repository with a note about the change. A link like
   `/openscad/#gh=` followed by a GitHub file link opens that file for anyone.
 - **Look at the model.** Turn it, zoom, fit it to the window, look from below,
