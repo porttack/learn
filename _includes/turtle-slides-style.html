@@ -1,0 +1,78 @@
+{% comment %}
+  The look of a TurtleLab Lessons slide deck (the page's <style>). Pairs with turtle-slides-engine.html.
+  Same design as the pico and unplugged decks: a 1280 wide canvas scaled to fit, toolbar and notes panel outside the canvas.
+{% endcomment %}
+<style>
+  :root { --accent: #1f6f9f; --ink: #1b1f23; --paper: #ffffff; --muted: #57606a; --border: #d0d7de; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: #e9edf1; color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  #root { height: 100%; }
+  .app { display: flex; flex-direction: column; height: 100%; }
+  .stage-outer { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; overflow: hidden; min-height: 0; position: relative; }
+  .stage { width: 1280px; background: var(--paper); border-radius: 12px; box-shadow: 0 4px 30px rgba(0,0,0,0.18);
+    padding: 70px 96px; display: flex; flex-direction: column; justify-content: center; flex: 0 0 auto; }
+  .stage.ar-16-9 { height: 720px; }
+  .stage.ar-4-3 { height: 960px; }
+  .kicker { font-size: 28px; color: var(--accent); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin: 0 0 16px; }
+  .slide-title { font-size: 60px; line-height: 1.1; margin: 0 0 32px; font-weight: 700; }
+  .slide-body { font-size: 36px; line-height: 1.45; }
+  .slide-body ul { margin: 0; padding-left: 1.1em; }
+  .slide-body li { margin-bottom: 18px; }
+  .slide-body li:last-child { margin-bottom: 0; }
+  .slide-body code, .slide-html code { font-family: ui-monospace, Menlo, Consolas, monospace; background: #eef3f7; border-radius: 6px; padding: 0 8px; font-size: 0.9em; }
+  .slide-body a { color: var(--accent); }
+  .title-slide .slide-title { font-size: 76px; margin-bottom: 16px; }
+  .title-slide .slide-subtitle { font-size: 34px; color: var(--muted); }
+  .slide-code { margin: 24px 0 0; padding: 22px 28px; background: #1b1f23; color: #e8eef4; border-radius: 10px;
+    font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 30px; line-height: 1.4; }
+  .slide-side { display: flex; gap: 56px; align-items: center; }
+  .slide-side .slide-body { flex: 1 1 auto; font-size: 32px; }
+  .slide-side .slide-html { flex: 0 0 auto; }
+  .slide-table { border-collapse: collapse; font-size: 34px; margin: 0; }
+  .slide-table th, .slide-table td { border: 2px solid var(--border); padding: 10px 28px; text-align: left; }
+  .slide-table th { background: #eef3f7; }
+  .answer-slide { background: #eefaf1; }
+  .answer-slide .kicker { color: #1e7a46; }
+  /* a live TurtleLab on the slide: text on the left, the real app (slim mode) on the right */
+  .stage.stage-demo { padding: 30px 44px; }
+  .stage-demo .kicker { font-size: 22px; margin-bottom: 8px; }
+  .stage-demo .slide-title { font-size: 44px; margin-bottom: 22px; }
+  .demo-row { display: flex; gap: 32px; align-items: flex-start; }
+  .demo-text { flex: 1 1 0; min-width: 0; }
+  .demo-text .slide-body { font-size: 28px; }
+  .demo-text .slide-body li { margin-bottom: 14px; }
+  .demo-frame { flex: 0 0 auto; width: 760px; height: 560px; border: 2px solid var(--border); border-radius: 8px; background: #fff; }
+  .demo-hint { margin-top: 18px; font-size: 20px; color: var(--muted); }
+  .depth-nav { position: absolute; left: 50%; transform: translateX(-50%); bottom: 14px; background: rgba(0,0,0,0.55); color: #fff;
+    border: none; border-radius: 20px; padding: 8px 18px; font-size: 14px; cursor: pointer; z-index: 3; }
+  .depth-nav.depth-up { bottom: auto; top: 14px; }
+  .depth-nav:hover { background: rgba(0,0,0,0.75); }
+  .slide-counter-badge { position: absolute; bottom: 18px; right: 24px; font-size: 15px; color: var(--muted); }
+  .toolbar { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: #1b1f23; color: #fff; font-size: 14px; flex-wrap: wrap; }
+  .toolbar button { background: #333a42; color: #fff; border: 1px solid #4a545e; border-radius: 6px; padding: 6px 12px; font-size: 14px; cursor: pointer; }
+  .toolbar button:hover { background: #444e58; }
+  .toolbar button.active { background: var(--accent); border-color: var(--accent); }
+  .toolbar button:disabled { opacity: 0.4; cursor: default; }
+  .toolbar .spacer { flex: 1 1 auto; }
+  .toolbar .counter { min-width: 4.5em; text-align: center; }
+  .toolbar a.back-link { color: #9db8e8; text-decoration: none; font-size: 14px; }
+  .toolbar a.back-link:hover { text-decoration: underline; }
+  .notes-panel { flex: 0 0 auto; background: #f6f8fa; border-top: 1px solid var(--border); padding: 16px 24px; max-height: 26vh; overflow-y: auto; font-size: 17px; line-height: 1.5; }
+  .notes-panel h3 { margin: 0 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .click-zone { position: absolute; top: 0; bottom: 0; width: 30%; cursor: pointer; }
+  .click-zone.narrow { width: 5%; }
+  .click-zone.left { left: 0; }
+  .click-zone.right { right: 0; }
+  .outline { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; overflow-y: auto; height: 100%; }
+  .outline h1 { margin-bottom: 4px; }
+  .outline .outline-sub { color: var(--muted); margin-top: 0; }
+  .outline-slide { border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin: 20px 0; break-inside: avoid; }
+  .outline-slide h2 { margin: 0 0 8px; font-size: 22px; }
+  .outline-slide.outline-nested { margin: 12px 0 12px 32px; background: #f6f8fa; border-style: dashed; }
+  .outline-slide h3 { margin: 0 0 6px; font-size: 18px; color: var(--muted); }
+  .outline-slide .outline-bullets { color: var(--muted); font-size: 15px; margin: 0 0 14px; }
+  .outline-slide .outline-notes { font-size: 16px; line-height: 1.5; }
+  .outline-slide .outline-notes p:first-child { margin-top: 0; }
+  @media print { .toolbar { display: none !important; } .outline { height: auto; overflow: visible; } }
+</style>

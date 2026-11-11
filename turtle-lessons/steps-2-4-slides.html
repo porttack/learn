@@ -1,0 +1,345 @@
+---
+title: "Steps 2 to 4 Slides"
+permalink: /turtle-lessons/steps-2-4-slides/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Steps 2 to 4: Repeat, chance, decide (slides)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/turtlelab/images/favicon.svg">
+{% include turtle-slides-style.html %}
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+<script>
+var PATTERN = '<table class="slide-table"><tr><th>Shape</th><th>Sides</th><th>Turn</th></tr>' +
+  '<tr><td>Triangle</td><td>3</td><td>120</td></tr>' +
+  '<tr><td>Square</td><td>4</td><td>90</td></tr>' +
+  '<tr><td>Pentagon</td><td>5</td><td>72</td></tr></table>';
+
+window.DECK = {
+  title: "Steps 2 to 4: Repeat, chance, decide",
+  backHref: "/turtle-lessons/",
+  backLabel: "TurtleLab Lessons",
+  slides: [
+    {
+      kind: "title",
+      kicker: "TurtleLab Lessons, Steps 2 to 4",
+      title: "Repeat, Chance, Decide",
+      subtitle: "Say it once. Let chance draw. Choose a path.",
+      notes: "One deck for Steps 2, 3 and 4. Slides with a frame on the right are the real TurtleLab in its slim mode: Run works, Start over resets the demo, nothing in a frame is saved. The down arrow shows an answer slide, so keep it hidden until students have predicted. A printable worksheet for all three steps is at /turtle-lessons/steps-2-4-worksheet/."
+    },
+    {
+      kind: "title",
+      kicker: "Step 2",
+      title: "Say It Once",
+      subtitle: "The repeat block",
+      notes: "Section break."
+    },
+    {
+      kind: "bullets",
+      kicker: "Step 2",
+      title: "A Square Takes Eight Blocks",
+      bullets: [
+        "<code>forward</code> and <code>right</code>, four times over",
+        "Computers are very good at repeating",
+        "So say it once: the <code>repeat</code> block (Flow palette)",
+        "It runs the blocks inside it again and again"
+      ],
+      notes: "Students who did Step 1 already counted eight blocks for the square frame around their initials."
+    },
+    {
+      kind: "bullets",
+      kicker: "Try it",
+      title: "A Square, Repeated",
+      demo: { sample: "square", hint: "Change a number, press Run. Start over puts it back." },
+      bullets: [
+        "The blocks inside the <code>repeat</code> are the ones that repeat",
+        "The number on the <code>repeat</code> says how many times",
+        "One <code>forward</code> and one <code>right</code>, said once"
+      ],
+      notes: "Let students change the forward length and the repeat count and see what breaks."
+    },
+    {
+      kind: "bullets",
+      kicker: "Predict",
+      title: "Make a Triangle",
+      bullets: [
+        "Change the 4 to a 3 and press Run. Is it a triangle? Why not?",
+        "To come back facing the same way, the turtle must turn one full circle: <code>360</code> degrees in all",
+        "A triangle has 3 turns. What number, three times, makes 360?"
+      ],
+      notes: "Let students try the 4 to 3 change in the previous frame first, so they see the open shape. Then predict the turn before showing the demo.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Answer",
+          title: "The Turn Is 120",
+          bullets: [
+            "3 × 120 = 360",
+            "With 100, three turns make 300, not 360, so the triangle stays open"
+          ],
+          notes: "This is the check-your-answers box on the student page."
+        }
+      ]
+    },
+    {
+      kind: "bullets",
+      kicker: "Check it",
+      title: "The Triangle",
+      demo: { sample: "lesson-triangle", hint: "Now change the 120 to 100 and press Run. What happens, and why?" },
+      bullets: [
+        "A <code>forward</code> and a <code>right</code> of 120, repeated 3 times",
+        "Try 100 for the turn"
+      ],
+      notes: "The open triangle with 100 is the point: the turns have to add to 360."
+    },
+    {
+      kind: "bullets",
+      kicker: "Predict",
+      title: "Make a Pentagon",
+      bullets: [
+        "5 sides. What number, five times, makes 360?",
+        "Write your prediction down",
+        "Then try it, and check against the next frame"
+      ],
+      notes: "Same move as the triangle, with less help.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Answer",
+          title: "The Turn Is 72",
+          bullets: [
+            "5 × 72 = 360",
+            "Make it 6 sides and the sixth draws over the first: five sides already closed the shape"
+          ],
+          notes: "Student page check-your-answers."
+        }
+      ]
+    },
+    {
+      kind: "bullets",
+      kicker: "Check it",
+      title: "The Pentagon",
+      demo: { sample: "lesson-pentagon", hint: "Change the 5 on the repeat to 6, keeping the turn. What does the sixth side do?" },
+      bullets: [
+        "A <code>forward</code> and a <code>right</code> of 72, repeated 5 times"
+      ],
+      notes: "The sixth side retraces the first."
+    },
+    {
+      kind: "bullets",
+      kicker: "The pattern",
+      title: "Turn × Sides = 360",
+      html: PATTERN,
+      bullets: [
+        "<code>turn = 360 ÷ number of sides</code>",
+        "Try a hexagon, an octagon, and a shape with 12 sides"
+      ],
+      notes: "Students work out the three turns on paper and test them in the square frame.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Answers",
+          title: "Hexagon, Octagon, 12 Sides",
+          bullets: [
+            "Hexagon: 360 ÷ 6 = 60",
+            "Octagon: 360 ÷ 8 = 45",
+            "12 sides: 360 ÷ 12 = 30"
+          ],
+          notes: "Computed from turn = 360 ÷ sides."
+        }
+      ]
+    },
+    {
+      kind: "bullets",
+      kicker: "You choose",
+      title: "Ask for the Sides",
+      demo: { sample: "lesson-sides-any", hint: "Press Run, type a number, press Enter. Run again to be asked again." },
+      bullets: [
+        "The program asks how many sides and works out the turn: 360 ÷ your number",
+        "Type 3, then 5, then 8",
+        "Then 40, then 100. What does it look like, and why?"
+      ],
+      notes: "Two blocks here are new, ask and box1, and they come back in Steps 6 and 13. Students only use them for now.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Answers",
+          title: "Nearly a Circle",
+          bullets: [
+            "3, 5, 8: a triangle, a pentagon, an octagon",
+            "With 40 sides each turn is 9 degrees, with 100 it is 3.6, so the corners are too small to see",
+            "A circle is what you get when the sides keep growing"
+          ],
+          notes: "Done early on the student page: type 2. The turn is 180, so the turtle draws a single line out and back."
+        }
+      ]
+    },
+    {
+      kind: "title",
+      kicker: "Step 3",
+      title: "Let Chance Draw",
+      subtitle: "The random block",
+      notes: "Section break."
+    },
+    {
+      kind: "bullets",
+      kicker: "Step 3",
+      title: "Same Steps, Different Picture",
+      bullets: [
+        "So far every Run gives the same picture",
+        "The <code>random</code> block (Math palette) picks a number each time it is used",
+        "Art, games and simulations all use chance"
+      ],
+      notes: "Ask for places students have seen chance in games: dice, shuffled music, loot drops."
+    },
+    {
+      kind: "bullets",
+      kicker: "Try it",
+      title: "Color Burst",
+      demo: { sample: "color-burst", hint: "Guess first: will the second picture match the first? Then Run it three times." },
+      bullets: [
+        "Each slot of <code>set color</code> holds a <code>random 0 255</code>",
+        "Red, green and blue are each 0 to 255",
+        "50 rays, turning 7.2 each time"
+      ],
+      notes: "Have students make the guess out loud before the second run.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Work out",
+          title: "The Numbers",
+          bullets: [
+            "<code>random 0 255</code> gives 0 at the least and 255 at the most",
+            "50 × 7.2 = 360, one full circle",
+            "100 rays: turn 3.6, because 360 ÷ 100 = 3.6"
+          ],
+          notes: "Numbers on a block do not have to be whole numbers."
+        }
+      ]
+    },
+    {
+      kind: "bullets",
+      kicker: "Change it",
+      title: "Two Changes, One at a Time",
+      bullets: [
+        "Drop a <code>random</code> block onto the 200 so the rays have different lengths",
+        "Change the number of rays and the turn so they still go all the way around",
+        "A round block plugs into a round number slot. Drag it out to get a plain number back"
+      ],
+      notes: "Run after each change. Many students change rays without changing the turn first, which is a good place to point back at turn = 360 ÷ number."
+    },
+    {
+      kind: "bullets",
+      kicker: "Build",
+      title: "Confetti, Part One",
+      demo: { sample: "lesson-confetti-start", hint: "Two things are wrong. You can fix both." },
+      bullets: [
+        "The dots land in a thin band. Change the numbers in the y <code>random</code>. The paper runs from -280 to 280",
+        "Every dot is red. Plug a <code>random</code> into each of the three <code>set color</code> slots"
+      ],
+      notes: "Answers on the next slide with the down arrow. When it works, run it twice and ask whether the two runs match.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Answers",
+          title: "Two Fixes",
+          bullets: [
+            "y gets <code>random -280 280</code>",
+            "Each <code>set color</code> slot gets <code>random 0 255</code>"
+          ],
+          notes: "Done early: random pen size, your own x range, or a build from a blank page."
+        }
+      ]
+    },
+    {
+      kind: "title",
+      kicker: "Step 4",
+      title: "Choose a Path",
+      subtitle: "if and else",
+      notes: "Section break."
+    },
+    {
+      kind: "bullets",
+      kicker: "Step 4",
+      title: "A Fork in the Road",
+      bullets: [
+        "A question has a yes or no answer",
+        "Yes: take one road. No: take the other",
+        "The <code>if</code> block with an <code>else</code> mouth (Flow palette)",
+        "<code>Exactly one</code> of the two runs. Never both, never neither"
+      ],
+      notes: "Stress the last line: it is the whole block. There are two if blocks in the Flow palette; this one has the else mouth."
+    },
+    {
+      kind: "bullets",
+      kicker: "Try it",
+      title: "Wandering Turtle",
+      demo: { sample: "wandering-turtle", hint: "Run it three times. Are the drawings the same?" },
+      bullets: [
+        "The question reads <code>random 1 2 = 1</code>",
+        "A coin flip: yes takes the top mouth, no takes the else mouth",
+        "Which way does each mouth turn?"
+      ],
+      notes: "Students should answer: can it do both in one pass? Neither? (No to both.) Different drawings because of chance."
+    },
+    {
+      kind: "bullets",
+      kicker: "Trace it",
+      title: "Six Flips on Paper",
+      bullets: [
+        "The flips: 1, 1, 2, 1, 2, 2",
+        "The turtle starts facing up, heading 0",
+        "A 1 turns right 90. A 2 turns left 90",
+        "Write the heading after each flip. The first is 90"
+      ],
+      notes: "Give a minute on paper. The worksheet has a table for this.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Answer",
+          title: "90, 180, 90, 180, 90, 0",
+          bullets: [
+            "Flip 1: 90. Flip 2: 180. Flip 3 (a 2): 90",
+            "Flip 4: 180. Flip 5 (a 2): 90. Flip 6 (a 2): 0"
+          ],
+          notes: "Add or subtract 90 each time."
+        }
+      ]
+    },
+    {
+      kind: "bullets",
+      kicker: "Change it",
+      title: "Show Which Road It Took",
+      code: "repeat 120\n    if  random 1 2 = 1\n        set color (one color)\n        right 90\n    else\n        set color (another color)\n        left 90\n    forward 15",
+      bullets: [
+        "Change the turns: heads right 60, tails left 120. What happens?",
+        "Put a different <code>set color</code> in each mouth"
+      ],
+      notes: "The stack shape is the same one printed on the student page. To save a PDF students work in a full-size tab (Open full size under a frame)."
+    },
+    {
+      kind: "bullets",
+      kicker: "Keep it",
+      title: "Save Your Work",
+      bullets: [
+        "A frame has no PDF button, so use Open full size, make your changes there, and press <code>PDF</code>",
+        "Step 4: add a sticky note with your name and one sentence about what your if and else decides"
+      ],
+      notes: "Done early for Step 4: turn right only about 1 time in 4. That needs a random block with different numbers and a < or = block."
+    }
+  ]
+};
+</script>
+
+{% include turtle-slides-engine.html %}
+</body>
+</html>

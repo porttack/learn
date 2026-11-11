@@ -1,0 +1,233 @@
+{% comment %}
+  The engine of a TurtleLab Lessons slide deck. The page defines window.DECK first:
+    { title, backHref, backLabel, slides: [...] }
+  A slide: { kind: "title" | "bullets" | "answer", kicker, title, subtitle, bullets: [string], html, side: true, code, demo: {sample, grid, hint}, notes, down: [slides] }
+    bullets   short lines (a string may hold <code>...</code>), what a student reads
+    html      a picture or table, as HTML (below the bullets, or beside them with side: true)
+    demo      a live TurtleLab in its slim mode (?embed=1) on the right of the slide, nothing in it is saved
+    notes     only in the notes panel and the printable outline, never on the slide
+    down      extra slides (answers, detail) reached with the down arrow, skipped by next and previous
+  Same keys as the other decks: arrows, space, N notes, O outline, F fullscreen; ?slide=N&extra=M deep links, ?outline=1.
+{% endcomment %}
+<script type="text/babel" data-type="module">
+{% raw %}
+const { useState, useEffect, useRef, useCallback } = React;
+const DECK = window.DECK;
+const SLIDES = DECK.slides;
+
+// Bullets and html are written by us in this file, never by a visitor, so they are set as HTML (they hold <code> spans).
+function Bullets({ bullets }) {
+  return (
+    <ul>
+      {bullets.map((b, i) => <li key={i} dangerouslySetInnerHTML={{ __html: b }} />)}
+    </ul>
+  );
+}
+
+function demoUrl(demo) {
+  return "/turtlelab/?sample=" + demo.sample + (demo.grid ? "&grid=" + demo.grid : "") + "&embed=1";
+}
+
+function Stage({ slide, aspect }) {
+  const ar = aspect === "4:3" ? "ar-4-3" : "ar-16-9";
+  if (slide.kind === "title") {
+    return (
+      <div className={"stage title-slide " + ar}>
+        {slide.kicker && <p className="kicker">{slide.kicker}</p>}
+        <h1 className="slide-title">{slide.title}</h1>
+        {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+      </div>
+    );
+  }
+  const extra = slide.kind === "answer" ? " answer-slide" : "";
+  if (slide.demo) {
+    return (
+      <div className={"stage stage-demo " + ar + extra}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="demo-row">
+          <div className="demo-text">
+            {slide.bullets && <div className="slide-body"><Bullets bullets={slide.bullets} /></div>}
+            {slide.demo.hint && <p className="demo-hint">{slide.demo.hint}</p>}
+          </div>
+          <iframe className="demo-frame" key={slide.demo.sample} src={demoUrl(slide.demo)} title={slide.title}></iframe>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className={"stage " + ar + extra}>
+      <p className="kicker">{slide.kicker}</p>
+      <h1 className="slide-title">{slide.title}</h1>
+      {slide.side ? (
+        <div className="slide-side">
+          <div className="slide-body"><Bullets bullets={slide.bullets} /></div>
+          <div className="slide-html" dangerouslySetInnerHTML={{ __html: slide.html }} />
+        </div>
+      ) : (
+        <>
+          {slide.html && <div className="slide-html" dangerouslySetInnerHTML={{ __html: slide.html }} />}
+          {slide.bullets && <div className="slide-body" style={slide.html ? { marginTop: 28 } : undefined}><Bullets bullets={slide.bullets} /></div>}
+          {slide.code && <pre className="slide-code">{slide.code}</pre>}
+        </>
+      )}
+    </div>
+  );
+}
+
+function ScaledStage({ slide, aspect }) {
+  const outerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const designW = 1280;
+  const designH = aspect === "4:3" ? 960 : 720;
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const recompute = () => {
+      const r = el.getBoundingClientRect();
+      const s = Math.min((r.width * 0.98) / designW, (r.height * 0.98) / designH);
+      setScale(s > 0 ? s : 1);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => { ro.disconnect(); window.removeEventListener("resize", recompute); };
+  }, [designH]);
+  return (
+    <div className="stage-outer" ref={outerRef}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}>
+        <Stage slide={slide} aspect={aspect} />
+      </div>
+    </div>
+  );
+}
+
+function plain(html) { return html.replace(/<[^>]+>/g, ""); }
+
+function OutlineCard({ slide, heading, nested }) {
+  return (
+    <div className={"outline-slide" + (nested ? " outline-nested" : "")}>
+      {nested ? <h3>{heading}</h3> : <h2>{heading}</h2>}
+      {slide.bullets && <p className="outline-bullets">On slide: {slide.bullets.map(plain).join(" / ")}</p>}
+      {slide.demo && <p className="outline-bullets">Live TurtleLab on this slide: {demoUrl(slide.demo)}</p>}
+      <div className="outline-notes"><p>{slide.notes}</p></div>
+    </div>
+  );
+}
+
+function Outline() {
+  return (
+    <div className="outline">
+      <h1>{DECK.title}</h1>
+      <p className="outline-sub">Speaker notes outline, for printing. Indented cards are the optional down arrow slides (answers and detail), skipped by the normal next and previous.</p>
+      {SLIDES.map((s, i) => (
+        <React.Fragment key={i}>
+          <OutlineCard slide={s} heading={`${i + 1}. ${s.title}`} />
+          {(s.down || []).map((d, j) => <OutlineCard slide={d} heading={`Extra: ${d.title}`} nested key={j} />)}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+function initialStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const slideParam = parseInt(params.get("slide"), 10);
+  const index = Number.isInteger(slideParam) ? Math.min(Math.max(slideParam - 1, 0), SLIDES.length - 1) : 0;
+  const maxExtra = (SLIDES[index].down || []).length;
+  const extraParam = parseInt(params.get("extra"), 10);
+  const subIndex = Number.isInteger(extraParam) ? Math.min(Math.max(extraParam, 0), maxExtra) : 0;
+  return { index, subIndex, mode: params.get("outline") ? "outline" : "deck" };
+}
+
+function App() {
+  const initial = initialStateFromUrl();
+  const [index, setIndex] = useState(initial.index);
+  const [subIndex, setSubIndex] = useState(initial.subIndex);
+  const [showNotes, setShowNotes] = useState(false);
+  const [aspect, setAspect] = useState("16:9");
+  const [mode, setMode] = useState(initial.mode);
+
+  const topSlide = SLIDES[index];
+  const downSlides = topSlide.down || [];
+  const slide = subIndex === 0 ? topSlide : downSlides[subIndex - 1];
+
+  const next = useCallback(() => { setIndex(i => Math.min(i + 1, SLIDES.length - 1)); setSubIndex(0); }, []);
+  const prev = useCallback(() => { setIndex(i => Math.max(i - 1, 0)); setSubIndex(0); }, []);
+  const goDown = useCallback(() => setSubIndex(s => Math.min(s + 1, downSlides.length)), [downSlides.length]);
+  const goUp = useCallback(() => setSubIndex(s => Math.max(s - 1, 0)), []);
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+
+  useEffect(() => {
+    function onKey(e) {
+      if (mode !== "deck") { if (e.key === "Escape") setMode("deck"); return; }
+      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); goDown(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); goUp(); }
+      else if (e.key === "n" || e.key === "N") setShowNotes(v => !v);
+      else if (e.key === "f" || e.key === "F") toggleFullscreen();
+      else if (e.key === "o" || e.key === "O") setMode("outline");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mode, next, prev, goDown, goUp]);
+
+  if (mode === "outline") {
+    return (
+      <div className="app">
+        <div className="toolbar">
+          <a className="back-link" href={DECK.backHref}>&larr; {DECK.backLabel}</a>
+          <div className="spacer"></div>
+          <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
+          <button onClick={() => window.print()}>Print</button>
+        </div>
+        <Outline />
+      </div>
+    );
+  }
+
+  // On a slide with a live TurtleLab the side click zones shrink, so the frame (and its Run button) stays clickable.
+  const zoneClass = "click-zone" + (slide.demo ? " narrow" : "");
+  return (
+    <div className="app">
+      <div className="stage-outer" style={{ position: "relative" }}>
+        <ScaledStage slide={slide} aspect={aspect} />
+        <div className={zoneClass + " left"} onClick={prev} title="Previous slide"></div>
+        <div className={zoneClass + " right"} onClick={next} title="Next slide"></div>
+        {subIndex > 0 && <button className="depth-nav depth-up" onClick={goUp} title="Back to the main flow">&#9650; Back</button>}
+        {subIndex < downSlides.length && <button className="depth-nav depth-down" onClick={goDown} title="Answer or more detail">&#9660; More</button>}
+        <div className="slide-counter-badge">
+          {index + 1} / {SLIDES.length}
+          {subIndex > 0 && <span> &middot; extra {subIndex}/{downSlides.length}</span>}
+        </div>
+      </div>
+      {showNotes && (
+        <div className="notes-panel">
+          <h3>Speaker notes</h3>
+          <p>{slide.notes}</p>
+        </div>
+      )}
+      <div className="toolbar">
+        <a className="back-link" href={DECK.backHref}>&larr; {DECK.backLabel}</a>
+        <div className="spacer"></div>
+        <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
+        <span className="counter">{index + 1} / {SLIDES.length}</span>
+        <button onClick={next} disabled={index === SLIDES.length - 1}>Next &rarr;</button>
+        <button className={showNotes ? "active" : ""} onClick={() => setShowNotes(v => !v)}>Notes (N)</button>
+        <button onClick={() => setMode("outline")}>Print notes (O)</button>
+        <button onClick={() => setAspect(a => a === "16:9" ? "4:3" : "16:9")}>{aspect}</button>
+        <button onClick={toggleFullscreen}>Fullscreen (F)</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+{% endraw %}
+</script>

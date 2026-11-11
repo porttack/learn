@@ -32,6 +32,7 @@ You need a computer with Chrome and a pencil. There is nothing to install. Every
 
 [Print all eighteen steps]({{ '/turtle-lessons/print/' | relative_url }}) ·
 [Print the planning sheet for the first capstone]({{ '/turtle-lessons/planning-sheet/' | relative_url }}) ·
+[Print the worksheet for Steps 2 to 4]({{ '/turtle-lessons/steps-2-4-worksheet/' | relative_url }}) ·
 [More samples to try]({{ '/turtlelab/samples.html' | relative_url }})
 
 ## For teachers

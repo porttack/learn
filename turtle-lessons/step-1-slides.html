@@ -1,0 +1,259 @@
+---
+title: "Step 1 Slides"
+permalink: /turtle-lessons/step-1-slides/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Step 1: Your initials (slides)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/turtlelab/images/favicon.svg">
+{% include turtle-slides-style.html %}
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+<script>
+var COMPASS = '<svg width="520" height="400" viewBox="0 0 520 400" role="img" aria-label="Heading 0 is up, 90 is right, 180 is down, 270 is left">' +
+  '<circle cx="260" cy="200" r="110" fill="#fff" stroke="#1f6f9f" stroke-width="4"/>' +
+  '<path d="M260 100 L260 300 M160 200 L360 200" stroke="#d0d7de" stroke-width="3"/>' +
+  '<polygon points="260,150 240,198 280,198" fill="#1e7a46"/>' +
+  '<g font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#1b1f23">' +
+  '<text x="260" y="62" text-anchor="middle">0 up</text><text x="260" y="360" text-anchor="middle">180 down</text>' +
+  '<text x="385" y="210" text-anchor="start">90 right</text>' +
+  '<text x="135" y="210" text-anchor="end">270 left</text></g></svg>';
+
+var BLOCKS = '<table class="slide-table"><tr><th>Palette</th><th>Blocks</th></tr>' +
+  '<tr><td>Flow</td><td><code>start</code></td></tr>' +
+  '<tr><td>Turtle</td><td><code>clean</code> <code>set xy</code> <code>set heading</code> <code>forward</code> <code>left</code></td></tr>' +
+  '<tr><td>Pen</td><td><code>pen up</code> <code>pen down</code></td></tr></table>';
+
+window.DECK = {
+  title: "Step 1: Your initials",
+  backHref: "/turtle-lessons/step-1-your-initials/",
+  backLabel: "Step 1: Your initials",
+  slides: [
+    {
+      kind: "title",
+      kicker: "TurtleLab Lessons, Step 1",
+      title: "Your Initials",
+      subtitle: "Give a turtle exact steps to draw them",
+      notes: "Opening slide for Step 1. The student page is /turtle-lessons/step-1-your-initials/. Slides with a frame on the right are the real TurtleLab in its slim mode: Run works, Start over resets the demo, and nothing in a frame is saved. Press the down arrow for an answer slide and keep it hidden until students have predicted."
+    },
+    {
+      kind: "bullets",
+      kicker: "Big idea",
+      title: "A Computer Does Exactly What You Say",
+      bullets: [
+        "In the order you say it",
+        "And nothing else",
+        "So the steps have to be exact",
+        "Plan on paper first. People who plan finish early"
+      ],
+      notes: "Ask for an example of a direction a person would understand but a computer would not (\"go to the door\"). The turtle is the same: it has no idea what an L is, only forward, turn, pen up and pen down."
+    },
+    {
+      kind: "bullets",
+      kicker: "How the turtle thinks",
+      title: "The Paper Is a Graph",
+      bullets: [
+        "The middle is (0, 0)",
+        "x goes right, <code>y goes up</code>",
+        "A bigger y is higher on the page",
+        "Every place has two numbers: (x, y)"
+      ],
+      notes: "Students who have done graphing already know this; the one surprise is that y goes up (a screen's own pixels count y downward, TurtleLab does not). Point at the middle of the grid on the next demo slide."
+    },
+    {
+      kind: "bullets",
+      kicker: "How the turtle thinks",
+      title: "Heading: Which Way It Faces",
+      side: true,
+      html: COMPASS,
+      bullets: [
+        "0 faces up",
+        "90 faces right",
+        "180 faces down",
+        "270 faces left"
+      ],
+      notes: "Heading is measured clockwise from up, like a compass. Ask: if the turtle faces 90 and turns right 90, what heading now? (180.) Keep this slide up while students predict on the next one."
+    },
+    {
+      kind: "bullets",
+      kicker: "How the turtle thinks",
+      title: "Turn, Move, Draw",
+      bullets: [
+        "<code>right</code> and <code>left</code> turn the turtle, they do not move it",
+        "<code>forward</code> moves it the way it faces",
+        "Pen down: it draws as it moves",
+        "Pen up: it moves without drawing"
+      ],
+      notes: "A common confusion is that left 90 moves the turtle left. It only turns it. The pen decides whether a move leaves a line, which is what makes travel between letters possible later."
+    },
+    {
+      kind: "bullets",
+      kicker: "Predict first",
+      title: "Where Will the L End Up?",
+      bullets: [
+        "The turtle starts at (-150, 60) facing down",
+        "Read the blocks from the top down",
+        "Write down your prediction: where does it end, and which way does it face?"
+      ],
+      notes: "Give students a minute to write a prediction on paper before the demo. The prediction habit is part of the Check yourself list on the student page.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Answer",
+          title: "It Ends at (-90, -60), Facing Right",
+          bullets: [
+            "<code>left 90</code> turns the turtle from facing down to facing right",
+            "Then it walks 60 to the right"
+          ],
+          notes: "If a student says facing left: the turtle faces down, and turning left from facing down points it to the right, the way you would turn if you walked toward the bottom of the page. The demo shows it, look at the turtle's nose."
+        }
+      ]
+    },
+    {
+      kind: "bullets",
+      kicker: "Watch one",
+      title: "Run the L",
+      demo: { sample: "lesson-l", grid: "numbers", hint: "Press Run. It is slow on purpose. Check your prediction against the grid." },
+      bullets: [
+        "The grid shows x and y",
+        "Look at the turtle's nose when it stops"
+      ],
+      notes: "This is the real app. The speed block is in this demo to slow it down; students leave it out when they build their own."
+    },
+    {
+      kind: "bullets",
+      kicker: "Your turn",
+      title: "Build the Same L",
+      html: BLOCKS,
+      bullets: [
+        "Same blocks, same order, same numbers",
+        "Leave out the <code>speed</code> block",
+        "<code>clean</code> wipes the paper so every run starts the same way",
+        "Build in a fresh tab of TurtleLab, it remembers your blocks"
+      ],
+      notes: "Students build in a fresh TurtleLab tab (not in a frame, a frame never saves). The round buttons on the left open the palettes; pointing at one shows its name."
+    },
+    {
+      kind: "bullets",
+      kicker: "Plan",
+      title: "Plan Your Initials on Paper",
+      bullets: [
+        "Sketch straight-line letters on the grid, about 120 tall",
+        "The grid numbers are the x and y you type into <code>set xy</code>",
+        "For each letter write: where it starts, which way it faces, and the moves",
+        "Like <code>forward 120, left 90, forward 60</code>"
+      ],
+      notes: "The printable grid is on the student page (and TurtleLab can show the same grid with its grid button). Straight lines only at first; curves are in Done early."
+    },
+    {
+      kind: "bullets",
+      kicker: "Between letters",
+      title: "How Does the Turtle Get to the Next Letter?",
+      bullets: [
+        "Four blocks: <code>pen up</code>, <code>set xy</code>, <code>set heading</code>, <code>pen down</code>",
+        "Nothing is drawn on the way",
+        "Use the same four between every two letters"
+      ],
+      notes: "These are the first four blocks of the L, which students already used. The point is that travel is not a new idea, it is the start of a letter without the drawing.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Why each one",
+          title: "Four Blocks, Four Jobs",
+          bullets: [
+            "Pen up: so nothing is drawn on the way",
+            "<code>set xy</code>: picks the place",
+            "<code>set heading</code>: faces the way the letter starts",
+            "Pen down: ready to draw"
+          ],
+          notes: "Answers to question 1 on the student page."
+        }
+      ]
+    },
+    {
+      kind: "bullets",
+      kicker: "Watch one",
+      title: "An L and an I",
+      demo: { sample: "lesson-travel", grid: "numbers", hint: "Change the 180 above the I to 90 and press Run. Start over puts it back." },
+      bullets: [
+        "Which four blocks walk from the L to the I?",
+        "The turtle ends the L facing right. Why does the I still draw downward?",
+        "Change the 180 above the I to 90. What happens?"
+      ],
+      notes: "Let students try question 3 in the frame before you discuss. Answers are on the next slide with the down arrow.",
+      down: [
+        {
+          kind: "answer",
+          kicker: "Answers",
+          title: "Set the Heading Every Time",
+          bullets: [
+            "<code>set heading 180</code> turns the turtle to face down before the pen goes down, so how the L ended does not matter",
+            "With 90 the I lies on its side and runs right: a letter is drawn in whatever direction the turtle faces"
+          ],
+          notes: "The takeaway is to set the heading before every letter."
+        }
+      ]
+    },
+    {
+      kind: "bullets",
+      kicker: "Build",
+      title: "One Letter at a Time",
+      bullets: [
+        "Build a letter, tap its stack to test it, then start the next",
+        "Draw every letter piece by piece: <code>forward</code>, <code>left</code>, <code>right</code>, <code>set xy</code>, <code>arc</code>",
+        "Do not use the <code>write</code> block. It writes the letters for you, and building them is the point",
+        "When the initials are done, draw a square frame around them and count the blocks it took"
+      ],
+      notes: "If the assignment should not allow write, this slide already says so. The block count for the frame comes back in Step 2 when repeat does it in far fewer blocks."
+    },
+    {
+      kind: "bullets",
+      kicker: "Check yourself",
+      title: "Is It Done?",
+      bullets: [
+        "Anyone can read each initial without seeing your plan",
+        "No stray lines between letters",
+        "You predicted where the L would end, and you checked",
+        "You built every letter yourself, with no <code>write</code> block"
+      ],
+      notes: "This is the same list as the student page."
+    },
+    {
+      kind: "bullets",
+      kicker: "Keep it",
+      title: "Make Your PDF",
+      bullets: [
+        "Add a sticky note first: Notes palette, drag out a note, type your name",
+        "Press the <code>PDF</code> button on the toolbar",
+        "It saves your blocks, your note and your drawing, with a grid of x and y numbers",
+        "To get your blocks back: Open in TurtleLab and choose the PDF"
+      ],
+      notes: "The PDF carries the blocks inside it, so it doubles as a save file."
+    },
+    {
+      kind: "bullets",
+      kicker: "Done early?",
+      title: "Curves and Color",
+      bullets: [
+        "<code>arc</code> takes an angle and a radius. Positive curves right, negative curves left. Try 180 with a radius of 50",
+        "<code>set color</code> takes red, green and blue from 0 to 255. Red is 255, 0, 0. Black is 0, 0, 0. White is 255, 255, 255",
+        "Give each letter its own color"
+      ],
+      notes: "Letters like C, O, S, D, B and U need curves. Color comes back in Step 10."
+    }
+  ]
+};
+</script>
+
+{% include turtle-slides-engine.html %}
+</body>
+</html>
