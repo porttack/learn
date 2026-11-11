@@ -45,6 +45,7 @@ permalink: /openscad/
   .menulist hr { border:0; border-top:1px solid var(--border); margin:4px 0; }
   .menulist .row { display:flex; align-items:center; gap:6px; padding:7px 10px; white-space:nowrap; }
   .menulist .row input[type=number] { width:3.4em; font:inherit; padding:2px 4px; }
+  .menulist .row.sub { padding-left:34px; gap:14px; padding-top:0; } .cx { color:#c62828; font-weight:600; } .cy { color:#2e7d32; font-weight:600; } .cz { color:#1565c0; font-weight:600; }
   .menulist .info { padding:0 10px 6px 34px; color:var(--muted); font-size:12.5px; max-width:260px; }
   dialog { border:1px solid var(--border); border-radius:10px; padding:14px 16px; width:min(720px, 94vw); max-height:84vh; color:var(--ink); background:var(--paper); }
   dialog::backdrop { background:rgba(20,24,29,.45); }
@@ -120,6 +121,8 @@ permalink: /openscad/
     <button class="secondary menubtn" aria-haspopup="true" aria-expanded="false">View &#9662;</button>
     <div class="menulist" hidden>
       <div class="row"><label><input id="optScale" type="checkbox"> Show scale numbers on the axes</label></div>
+      <div class="row sub"><label><input id="optScaleX" type="checkbox" checked> <span class="cx">X</span></label><label><input id="optScaleY" type="checkbox" checked> <span class="cy">Y</span></label><label><input id="optScaleZ" type="checkbox" checked> <span class="cz">Z</span></label></div>
+      <div class="row"><label><input id="optGizmo" type="checkbox"> Show X Y Z orientation arrows</label></div>
       <div class="row"><label><input id="optSize" type="checkbox"> Show size and center panel</label></div>
       <hr>
       <button id="vTop">View from above</button>
@@ -442,6 +445,7 @@ let renderer = null;
 try {
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(devicePixelRatio);
+  renderer.autoClear = false;
   view.appendChild(renderer.domElement);
 } catch (e) {
   $("hint").textContent = "This browser cannot draw 3D, but Render and Download STL still work.";
@@ -471,14 +475,43 @@ function resize() {
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
+// Small X Y Z arrows in the corner that turn with the view.
+const gizmoScene = new THREE.Scene();
+const gizmoCam = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
+for (const [name, dir, col] of [["X", [1, 0, 0], 0xc62828], ["Y", [0, 1, 0], 0x2e7d32], ["Z", [0, 0, 1], 0x1565c0]]) {
+  const d = new THREE.Vector3(...dir);
+  gizmoScene.add(new THREE.ArrowHelper(d, new THREE.Vector3(), 1.25, col, 0.38, 0.2));
+  const cv = document.createElement("canvas"); cv.width = 64; cv.height = 64;
+  const x = cv.getContext("2d"); x.font = "400 38px system-ui, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+  x.fillStyle = "#" + col.toString(16).padStart(6, "0"); x.fillText(name, 32, 34);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), depthTest: false, transparent: true }));
+  sp.position.copy(d.multiplyScalar(1.55)); sp.scale.set(0.6, 0.6, 1);
+  gizmoScene.add(sp);
+}
 new ResizeObserver(resize).observe(view);
 (function loop() {
   requestAnimationFrame(loop);
-  for (const sp of labelSprites) { const k = camera.position.distanceTo(sp.position) * 0.034; sp.scale.set(k * (sp.userData.big ? 2.6 : 1.9), k, 1); }
+  for (const sp of labelSprites) { const k = camera.position.distanceTo(sp.position) * 0.034; sp.scale.set(k * (sp.userData.big ? 2.3 : 1.7), k * 0.9, 1); }
   sun.position.copy(camera.position).add(new THREE.Vector3(40, 60, 80));
   sun.target.position.copy(controls.target);
   controls.update();
-  if (renderer) renderer.render(scene, camera);
+  if (renderer) {
+    const w = view.clientWidth, h = view.clientHeight;
+    renderer.setScissorTest(false);
+    renderer.setViewport(0, 0, w, h);
+    renderer.clear();
+    renderer.render(scene, camera);
+    if ($("optGizmo").checked) {
+      const S = Math.min(140, Math.floor(Math.min(w, h) / 3));
+      gizmoCam.position.copy(camera.position).sub(controls.target).normalize().multiplyScalar(5.4);
+      gizmoCam.up.copy(camera.up); gizmoCam.lookAt(0, 0, 0);
+      renderer.clearDepth();
+      renderer.setScissorTest(true);
+      renderer.setViewport(w - S - 10, 10, S, S); renderer.setScissor(w - S - 10, 10, S, S);
+      renderer.render(gizmoScene, gizmoCam);
+      renderer.setScissorTest(false);
+    }
+  }
 })();
 
 // The model as the engine made it (baseGeom) and how it has been turned since
@@ -602,8 +635,7 @@ function labelTexture(text, color) {
   if (labelCache.has(key)) return labelCache.get(key);
   const cv = document.createElement("canvas"); cv.width = 128; cv.height = 64;
   const x = cv.getContext("2d");
-  x.font = "bold 34px system-ui, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
-  x.lineWidth = 7; x.strokeStyle = "rgba(255,255,255,.95)"; x.strokeText(text, 64, 32);
+  x.font = "300 30px system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
   x.fillStyle = color; x.fillText(text, 64, 32);
   const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
   labelCache.set(key, tex);
@@ -626,6 +658,7 @@ function buildScale() {
   const colors = { x: "#c62828", y: "#2e7d32", z: "#1565c0" };
   const pts = [];
   for (const ax of ["x", "y", "z"]) {
+    if (!$("optScale" + ax.toUpperCase()).checked) continue;
     const [a, c] = ext[ax];
     const first = Math.ceil(a / step - 1e-9) * step;
     const v = (t) => ax === "x" ? [t, 0, 0] : ax === "y" ? [0, t, 0] : [0, 0, t];
@@ -648,9 +681,9 @@ function buildScale() {
     scaleGroup.add(name); labelSprites.push(name);
   }
 }
-for (const [id, fn] of [["optScale", buildScale], ["optSize", updateSizePanel]]) {
+for (const [id, fn, dflt] of [["optScale", buildScale, "0"], ["optScaleX", buildScale, "1"], ["optScaleY", buildScale, "1"], ["optScaleZ", buildScale, "1"], ["optSize", updateSizePanel, "0"], ["optGizmo", () => {}, "0"]]) {
   const el = $(id);
-  try { el.checked = localStorage.getItem("openscad:" + id) === "1"; } catch (e) {}
+  try { el.checked = (localStorage.getItem("openscad:" + id) ?? dflt) === "1"; } catch (e) {}
   el.onchange = () => { store(false, "openscad:" + id, el.checked ? "1" : "0"); fn(); };
 }
 
