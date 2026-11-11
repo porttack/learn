@@ -36,12 +36,29 @@ permalink: /openscad/
   #name { font:inherit; padding:5px 8px; border:1px solid var(--border); border-radius:6px; width:10em; }
   .zoom { position:absolute; right:10px; top:10px; display:flex; flex-direction:column; gap:6px; }
   .zoom button { background:var(--paper); color:var(--accent); box-shadow:0 1px 3px rgba(0,0,0,.15); }
+  .menu { position:relative; }
+  .menulist { position:absolute; top:100%; left:0; margin-top:4px; z-index:30; min-width:240px; background:var(--paper); border:1px solid var(--border); border-radius:8px; box-shadow:0 6px 20px rgba(0,0,0,.18); padding:4px; }
+  .menulist[hidden] { display:none; }
+  .menulist button, .menulist a { display:block; width:100%; text-align:left; background:none; border:0; color:var(--ink); padding:7px 10px; border-radius:5px; text-decoration:none; font:inherit; cursor:pointer; }
+  .menulist button:hover:not(:disabled), .menulist a:hover { background:#e8f0fc; }
+  .menulist button[hidden] { display:none; }
+  .menulist hr { border:0; border-top:1px solid var(--border); margin:4px 0; }
+  .menulist .row { display:flex; align-items:center; gap:6px; padding:7px 10px; white-space:nowrap; }
+  .menulist .row input[type=number] { width:3.4em; font:inherit; padding:2px 4px; }
+  .menulist .info { padding:0 10px 6px 34px; color:var(--muted); font-size:12.5px; max-width:260px; }
+  dialog { border:1px solid var(--border); border-radius:10px; padding:14px 16px; width:min(720px, 94vw); max-height:84vh; color:var(--ink); background:var(--paper); }
+  dialog::backdrop { background:rgba(20,24,29,.45); }
+  dialog[open] { display:flex; flex-direction:column; gap:10px; }
+  .dlghead { display:flex; align-items:center; gap:10px; } .dlghead h2 { font-size:18px; margin:0; } .dlghead span { color:var(--muted); flex:1; }
+  #drawersFilter { font:inherit; padding:6px 8px; border:1px solid var(--border); border-radius:6px; }
+  #drawersList { overflow:auto; min-height:80px; border:1px solid var(--border); border-radius:6px; }
+  .drow { display:flex; align-items:center; gap:8px; padding:7px 10px; border-bottom:1px solid #eef0f3; }
+  .drow:last-child { border-bottom:0; } .drow.cur { background:#eef5ff; }
+  .drow .nm { flex:1; min-width:0; } .drow .nm b { display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } .drow .nm small { color:var(--muted); }
+  .drow button { padding:3px 8px; } .drow button.del { color:var(--err); border-color:var(--err); }
+  .dlgfoot { display:flex; flex-wrap:wrap; align-items:center; gap:8px; color:var(--muted); font-size:12.5px; } .dlgfoot span { flex:1 1 260px; }
   #editor { flex:1; min-height:0; overflow:hidden; background:var(--paper); }
   #editor .cm-editor { height:100%; } #editor .cm-editor.cm-focused { outline:none; }
-  a.btn { font:inherit; padding:5px 9px; border:1px solid var(--accent); background:var(--paper); color:var(--accent); border-radius:6px; text-decoration:none; }
-  .tool { display:inline-flex; align-items:center; gap:4px; color:var(--muted); font-size:13px; }
-  .tool input[type=number] { width:3.4em; font:inherit; padding:2px 4px; }
-  .sep { width:1px; align-self:stretch; background:var(--border); margin:0 4px; }
   #log { flex:none; height:var(--logh, 30%); min-height:36px; overflow:auto; margin:0; padding:8px 10px; background:#14181d; color:#d7dde4; font:12.5px/1.45 ui-monospace, Menlo, Consolas, monospace; white-space:pre-wrap; }
   #log .err { color:#ff8b8b; } #log .warn { color:#f2cc60; }
   #view { position:relative; background:#dfe5ec; min-width:0; min-height:0; overflow:hidden; }
@@ -64,20 +81,55 @@ permalink: /openscad/
   <h1>OpenSCAD</h1>
   <input id="name" list="names" spellcheck="false" aria-label="Name of this drawing" title="Name of this drawing. Your work is saved in this browser under this name as you type. Type another saved name to open it." placeholder="name your drawing">
   <datalist id="names"></datalist>
-  <button id="new" class="secondary" title="Start a new drawing (the current one stays saved)">New</button>
   <button id="render" title="Ctrl or Cmd + Enter">Render</button>
   <button id="stop" class="secondary" disabled>Stop</button>
-  <button id="download" class="secondary" disabled>Download STL</button>
-  <button id="open" class="secondary">Open .scad</button>
-  <button id="share" class="secondary">Copy share link</button>
-  <a class="btn" href="https://openscad.org/cheatsheet/" target="_blank" rel="noopener">Cheatsheet</a>
-  <span class="sep"></span>
-  <label class="tool" title="Paint faces red that tilt past this angle from straight up and would need support when printed (Z is up, the bed is Z = 0)."><input id="ovh" type="checkbox"> Overhangs &gt; <input id="ovhAngle" type="number" min="1" max="89" value="45">&deg;</label>
-  <button id="orient" class="secondary" disabled title="Tip the model onto the face that needs the least support. Changes the preview and the downloaded STL, not your code.">Auto-orient</button>
-  <button id="unorient" class="secondary" hidden>Undo orient</button>
+  <div class="menu">
+    <button class="secondary menubtn" aria-haspopup="true" aria-expanded="false">File &#9662;</button>
+    <div class="menulist" hidden>
+      <button id="new">New drawing</button>
+      <button id="drawings">My drawings&hellip;</button>
+      <button id="open">Open a .scad file&hellip;</button>
+      <hr>
+      <button id="dlscad">Download .scad</button>
+      <button id="download" disabled>Download STL</button>
+      <hr>
+      <button id="share">Copy share link</button>
+    </div>
+  </div>
+  <div class="menu">
+    <button class="secondary menubtn" aria-haspopup="true" aria-expanded="false">Print &#9662;</button>
+    <div class="menulist" hidden>
+      <div class="row" title="Paint faces red that tilt past this angle from straight up and would need support when printed (Z is up, the bed is Z = 0).">
+        <label><input id="ovh" type="checkbox"> Show overhangs steeper than</label>
+        <input id="ovhAngle" type="number" min="1" max="89" value="45">&deg;
+      </div>
+      <div class="info" id="ovhInfo">Turn on to see which faces need support.</div>
+      <hr>
+      <button id="orient" disabled title="Tip the model onto the face that needs the least support. Changes the preview and the downloaded STL, not your code.">Auto-orient</button>
+      <button id="unorient" hidden>Undo orient</button>
+    </div>
+  </div>
+  <div class="menu">
+    <button class="secondary menubtn" aria-haspopup="true" aria-expanded="false">Help &#9662;</button>
+    <div class="menulist" hidden>
+      <a href="https://openscad.org/cheatsheet/" target="_blank" rel="noopener">OpenSCAD cheatsheet</a>
+      <a href="https://openscad.org/documentation.html" target="_blank" rel="noopener">OpenSCAD manual</a>
+    </div>
+  </div>
   <input id="file" type="file" accept=".scad,text/plain" hidden>
+  <input id="importfile" type="file" accept=".json,application/json" hidden>
   <span id="status">Loading...</span>
 </header>
+<dialog id="drawersDlg" aria-labelledby="drawersTitle">
+  <div class="dlghead"><h2 id="drawersTitle">My drawings</h2><span id="drawersCount"></span><button id="drawersClose" class="secondary" aria-label="Close">Close</button></div>
+  <input id="drawersFilter" type="search" placeholder="Filter by name" aria-label="Filter drawings">
+  <div id="drawersList"></div>
+  <div class="dlgfoot">
+    <span>These are stored only in this browser on this computer. Clearing site data erases them, so back up what matters.</span>
+    <button id="exportAll" class="secondary">Back up all (.json)</button>
+    <button id="importAll" class="secondary">Restore from backup&hellip;</button>
+  </div>
+</dialog>
 <main>
   <div class="left">
     <div class="editorbar">
@@ -146,7 +198,24 @@ function freeName(base) {
   while (have.has(n)) n = base + " " + i++;
   return n;
 }
-function saveNow() { store(false, PREFIX + currentName, editor.get()); store(false, CURRENT, currentName); }
+const TIME = "openscad:time:";
+function saveNow(touch = true) {
+  store(false, PREFIX + currentName, editor.get());
+  store(false, CURRENT, currentName);
+  if (touch || !store(true, TIME + currentName)) store(false, TIME + currentName, String(Date.now()));
+}
+function removeDoc(name) { try { localStorage.removeItem(PREFIX + name); localStorage.removeItem(TIME + name); } catch (e) {} }
+function openDrawing(n) {
+  const text = store(true, PREFIX + n);
+  if (text === null) return false;
+  if (n !== currentName) saveNow();
+  currentName = n;
+  nameEl.value = n;
+  editor.set(text, false);
+  store(false, CURRENT, n);
+  fillNames();
+  return true;
+}
 
 // Starting point: a share link wins (kept as its own drawing), then the drawing used last
 // time, then an old unnamed save from before names existed, then the sample.
@@ -169,7 +238,7 @@ const editor = createEditor($("editor"), initial, {
   onRun: () => render(),
   onUpdate: (st) => { $("undo").disabled = !st.canUndo; $("redo").disabled = !st.canRedo; },
 });
-saveNow(); fillNames();
+saveNow(false); fillNames();
 $("undo").onclick = () => editor.undo();
 $("redo").onclick = () => editor.redo();
 
@@ -181,15 +250,14 @@ nameEl.addEventListener("change", () => {
   if (n === currentName) return;
   const existing = store(true, PREFIX + n);
   if (existing !== null) {
-    saveNow();
-    currentName = n;
-    editor.set(existing, false);
-    store(false, CURRENT, n);
+    openDrawing(n);
     statusEl.textContent = `Opened "${n}"`;
   } else {
-    try { localStorage.removeItem(PREFIX + currentName); } catch (e) {}
+    const t = store(true, TIME + currentName);
+    removeDoc(currentName);
     currentName = n;
-    saveNow();
+    saveNow(false);
+    if (t) store(false, TIME + n, t);
     statusEl.textContent = `Saved as "${n}"`;
   }
   fillNames();
@@ -204,6 +272,108 @@ $("new").onclick = () => {
   statusEl.textContent = `New drawing "${currentName}"`;
   editor.focus();
 };
+
+// ---- menus ----
+{
+  const menus = [...document.querySelectorAll(".menu")];
+  const closeAll = (except) => menus.forEach((m) => {
+    if (m === except) return;
+    m.querySelector(".menulist").hidden = true;
+    m.querySelector(".menubtn").setAttribute("aria-expanded", "false");
+  });
+  menus.forEach((m) => {
+    const btn = m.querySelector(".menubtn"), list = m.querySelector(".menulist");
+    btn.onclick = (e) => { e.stopPropagation(); closeAll(m); list.hidden = !list.hidden; btn.setAttribute("aria-expanded", String(!list.hidden)); };
+    // choosing an item closes the menu; the overhang controls stay open so you can see their effect
+    list.addEventListener("click", (e) => { if (e.target.closest("button, a")) closeAll(); });
+  });
+  document.addEventListener("click", (e) => { if (!e.target.closest(".menu")) closeAll(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeAll(); });
+}
+
+// ---- downloads of text ----
+function saveText(text, filename, type) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+const fileBase = (n) => (n || "drawing").replace(/[^\w .-]+/g, "_").trim().replace(/\s+/g, "-") || "drawing";
+$("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".scad", "text/plain");
+
+// ---- the list of every drawing kept in this browser ----
+{
+  const dlg = $("drawersDlg"), list = $("drawersList"), filter = $("drawersFilter");
+  const ago = (t) => {
+    if (!t) return "";
+    const m = Math.round((Date.now() - t) / 60000);
+    if (m < 1) return "just now"; if (m < 60) return m + " min ago";
+    const h = Math.round(m / 60); if (h < 24) return h + " h ago";
+    return new Date(t).toLocaleDateString();
+  };
+  function draw() {
+    saveNow(false);
+    const q = filter.value.trim().toLowerCase();
+    const all = savedNames().map((n) => ({ n, t: Number(store(true, TIME + n)) || 0, c: store(true, PREFIX + n) || "" }));
+    all.sort((a, b) => b.t - a.t || a.n.localeCompare(b.n));
+    const shown = all.filter((d) => !q || d.n.toLowerCase().includes(q));
+    $("drawersCount").textContent = `${all.length} saved` + (q ? `, ${shown.length} shown` : "");
+    list.replaceChildren();
+    if (!shown.length) list.append(Object.assign(document.createElement("div"), { className: "drow", textContent: "Nothing here." }));
+    for (const d of shown) {
+      const row = document.createElement("div");
+      row.className = "drow" + (d.n === currentName ? " cur" : "");
+      const nm = document.createElement("div"); nm.className = "nm";
+      const b = document.createElement("b"); b.textContent = d.n + (d.n === currentName ? "  (open now)" : "");
+      const sm = document.createElement("small"); sm.textContent = [ago(d.t), (d.c.split("\n").length === 1 ? "1 line" : d.c.split("\n").length + " lines")].filter(Boolean).join(" \u00b7 ");
+      nm.append(b, sm);
+      const mk = (label, cls, fn) => { const x = document.createElement("button"); x.className = "secondary " + cls; x.textContent = label; x.onclick = fn; return x; };
+      row.append(nm,
+        mk("Open", "", () => { openDrawing(d.n); dlg.close(); statusEl.textContent = `Opened "${d.n}"`; }),
+        mk(".scad", "", () => saveText(d.c, fileBase(d.n) + ".scad", "text/plain")),
+        mk("Delete", "del", () => {
+          if (!confirm(`Delete "${d.n}" from this browser? This cannot be undone.`)) return;
+          removeDoc(d.n);
+          if (d.n === currentName) {
+            const next = savedNames()[0];
+            if (next) openDrawing(next); else { currentName = "untitled"; nameEl.value = currentName; editor.set("// New drawing\n", false); saveNow(); }
+          }
+          fillNames(); draw();
+        }));
+      list.append(row);
+    }
+  }
+  $("drawings").onclick = () => { filter.value = ""; draw(); dlg.showModal(); };
+  filter.oninput = draw;
+  $("drawersClose").onclick = () => dlg.close();
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+  $("exportAll").onclick = () => {
+    saveNow(false);
+    const drawings = savedNames().map((n) => ({ name: n, code: store(true, PREFIX + n) || "", time: Number(store(true, TIME + n)) || 0 }));
+    saveText(JSON.stringify({ format: "openscad-drawings", version: 1, drawings }, null, 1), `openscad-drawings-${new Date().toISOString().slice(0, 10)}.json`, "application/json");
+  };
+  $("importAll").onclick = () => $("importfile").click();
+  $("importfile").onchange = async (e) => {
+    const f = e.target.files[0]; e.target.value = "";
+    if (!f) return;
+    try {
+      const data = JSON.parse(await f.text());
+      if (data.format !== "openscad-drawings" || !Array.isArray(data.drawings)) throw new Error("not a backup file");
+      let added = 0, same = 0;
+      for (const d of data.drawings) {
+        if (typeof d.name !== "string" || typeof d.code !== "string") continue;
+        const have = store(true, PREFIX + d.name);
+        if (have === d.code) { same++; continue; }
+        const name = have === null ? cleanName(d.name) : freeName(cleanName(d.name) + " (restored)");
+        store(false, PREFIX + name, d.code); store(false, TIME + name, String(d.time || Date.now()));
+        added++;
+      }
+      fillNames(); draw();
+      statusEl.textContent = `Restored ${added} drawing${added === 1 ? "" : "s"}` + (same ? `, ${same} already here` : "");
+    } catch (err) { alert("That file is not an OpenSCAD drawings backup."); }
+  };
+}
 
 // ---- text size ----
 let fontSize = Number(store(true, "openscad:fontsize")) || 13;
@@ -280,8 +450,11 @@ function triFacts(geom, m) {
   return out;
 }
 // A face needs support if it points down past the limit and is not sitting on the bed.
+// A face exactly at the limit (say a 45 degree ramp, which prints fine) is not flagged:
+// the 0.01 slack stops rounding noise from deciding it.
+const SLACK = 0.01;
 function overhangArea(facts, minZ, limitDeg) {
-  const lim = -Math.sin(limitDeg * Math.PI / 180);
+  const lim = -(Math.sin(limitDeg * Math.PI / 180) + SLACK);
   let over = 0, total = 0, bed = 0;
   for (const f of facts) {
     total += f.area;
@@ -304,7 +477,7 @@ function rebuild(frame) {
   const tilt = $("ovh").checked;
   g = toCreasedNormals(g, 0.6);
   if (tilt) {
-    const lim = -Math.sin(limit() * Math.PI / 180), col = new Float32Array(g.attributes.position.count * 3);
+    const lim = -(Math.sin(limit() * Math.PI / 180) + SLACK), col = new Float32Array(g.attributes.position.count * 3);
     const base = new THREE.Color(0xf2b134);
     for (let t = 0; t < facts.length; t++) {
       const f = facts[t], c = (f.maxZ > 0.01 && f.nz < lim) ? RED : base;
@@ -313,6 +486,11 @@ function rebuild(frame) {
     g.setAttribute("color", new THREE.BufferAttribute(col, 3));
   }
   mat.vertexColors = tilt; mat.needsUpdate = true;
+  if (tilt) {
+    const o = overhangArea(facts, 0, limit());
+    const pct = o.total ? o.over / o.total * 100 : 0;
+    $("ovhInfo").textContent = o.over < 1e-9 ? `No faces steeper than ${limit()}\u00b0: nothing needs support.` : `${pct.toFixed(1)}% of the surface (${o.over.toFixed(0)} mm\u00b2, red) needs support.`;
+  } else $("ovhInfo").textContent = "Turn on to see which faces need support.";
   if (mesh) { scene.remove(mesh); mesh.geometry.dispose(); }
   mesh = new THREE.Mesh(g, mat);
   scene.add(mesh);
@@ -385,12 +563,12 @@ $("orient").onclick = () => {
   orient = best.m; turned = true;
   $("unorient").hidden = false;
   rebuild(false);
-  $("ovh").checked = true; rebuild(false);
+  $("ovh").checked = true; rebuild(true);
   const e = best.m.elements;
   addLog(`Auto-orient: support needed ${(before * 100).toFixed(1)}% -> ${(best.over * 100).toFixed(1)}% of the surface (limit ${lim}\u00b0). The preview and Download STL are turned; your code is not.`);
   addLog(`To print this way, wrap your model in: multmatrix([[${e[0].toFixed(4)},${e[4].toFixed(4)},${e[8].toFixed(4)},0],[${e[1].toFixed(4)},${e[5].toFixed(4)},${e[9].toFixed(4)},0],[${e[2].toFixed(4)},${e[6].toFixed(4)},${e[10].toFixed(4)},0],[0,0,0,1]]) { ... }  (then lift it so its lowest point is at z = 0)`);
 };
-$("unorient").onclick = () => { orient = new THREE.Matrix4(); turned = false; $("unorient").hidden = true; rebuild(false); };
+$("unorient").onclick = () => { orient = new THREE.Matrix4(); turned = false; $("unorient").hidden = true; rebuild(true); };
 
 // ---- resizable panes ----
 {
@@ -495,7 +673,7 @@ $("download").onclick = () => {
   }
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([bytes], { type: "model/stl" }));
-  a.download = currentName.replace(/[^\w .-]+/g, "_").trim().replace(/\s+/g, "-") + ".stl";
+  a.download = fileBase(currentName) + ".stl";
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 };
