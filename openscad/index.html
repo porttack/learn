@@ -477,7 +477,7 @@ function resize() {
 }
 // Small X Y Z arrows in the corner that turn with the view.
 const gizmoScene = new THREE.Scene();
-const gizmoCam = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
+const gizmoCam = new THREE.OrthographicCamera(-2.05, 2.05, 2.05, -2.05, 0.1, 30);
 for (const [name, dir, col] of [["X", [1, 0, 0], 0xc62828], ["Y", [0, 1, 0], 0x2e7d32], ["Z", [0, 0, 1], 0x1565c0]]) {
   const d = new THREE.Vector3(...dir);
   gizmoScene.add(new THREE.ArrowHelper(d, new THREE.Vector3(), 1.25, col, 0.38, 0.2));
@@ -502,8 +502,8 @@ new ResizeObserver(resize).observe(view);
     renderer.clear();
     renderer.render(scene, camera);
     if ($("optGizmo").checked) {
-      const S = Math.min(140, Math.floor(Math.min(w, h) / 3));
-      gizmoCam.position.copy(camera.position).sub(controls.target).normalize().multiplyScalar(5.4);
+      const S = Math.min(170, Math.floor(Math.min(w, h) / 3));
+      gizmoCam.position.copy(camera.position).sub(controls.target).normalize().multiplyScalar(8);
       gizmoCam.up.copy(camera.up); gizmoCam.lookAt(0, 0, 0);
       renderer.clearDepth();
       renderer.setScissorTest(true);
