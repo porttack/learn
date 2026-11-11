@@ -124,6 +124,23 @@ $content-width: 900px;
   margin-right: 3em;
 }
 
+// On a phone, minima collapses this nav into its own hamburger, which sat
+// beside our site menu's hamburger and made two, so hide minima's nav at
+// minima's phone width, except on the home page (which has no site menu). Its
+// links (Home, About, Licensing) are reached from the home page on a phone;
+// the site menu itself lists Home and Licensing, not About.
+@media (max-width: 600px) {
+  .site-header:not(.site-header-home) .site-nav {
+    display: none;
+  }
+}
+
+// The home page has no site menu (its banners are the menu), so minima's nav
+// needs no room kept for it and stays, collapsed to its hamburger on a phone.
+.site-header-home .site-nav {
+  margin-right: 0;
+}
+
 .pathway-back {
   font-size: 0.9em;
   margin-bottom: 0.5em;

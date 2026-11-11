@@ -1,8 +1,12 @@
 <!-- Local override of minima's own _includes/header.html: same markup, plus
      the site-menu hamburger (site.data.site_menu) that every layout: minimal
-     page already shows. Keeps layout: default pages (home, license, privacy,
-     etc.) from being the only place that menu is missing. -->
-<header class="site-header" role="banner">
+     page already shows. Keeps layout: default pages (license, privacy, about,
+     etc.) from being the only place that menu is missing. The home page
+     (site-header-home) leaves it out: its grid of banners is the menu, and
+     minima's own nav (Home, About, Licensing) stays, even collapsed on a phone. -->
+{%- assign on_home = false -%}
+{%- if page.url == "/" -%}{%- assign on_home = true -%}{%- endif -%}
+<header class="site-header{% if on_home %} site-header-home{% endif %}" role="banner">
 
   <div class="wrapper">
     {%- assign default_paths = site.pages | map: "path" -%}
@@ -31,6 +35,6 @@
       </nav>
     {%- endif -%}
 
-    {%- include site-menu.html -%}
+    {%- unless on_home -%}{%- include site-menu.html -%}{%- endunless -%}
   </div>
 </header>

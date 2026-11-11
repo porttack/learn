@@ -122,6 +122,7 @@ SITE_MENU_HTML = """<div class="site-menu">
 <a href="/logo/"><img src="/assets/img/jslogo/favicon.svg" class="site-menu-item-icon" alt="">Logo</a>
 <a href="/ap-csp-reference/"><img src="/assets/img/ap-csp-reference/favicon.svg" class="site-menu-item-icon" alt="">AP CSP Reference</a>
 <a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+<a href="/license/"><span class="site-menu-item-icon" aria-hidden="true"></span>Licensing</a>
 </nav>
 </div>"""
 
