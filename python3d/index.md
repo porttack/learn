@@ -48,6 +48,10 @@ before diving in.
     <strong>Advanced: Polyhedrons &rarr;</strong>
     <span>Optional bonus lesson. Points and faces -- the raw building blocks every 3D shape (and every .stl file) is made of.</span>
   </a>
+  <a class="playground-card" href="{{ '/openscad/' | relative_url }}">
+    <strong>OpenSCAD in the browser &rarr;</strong>
+    <span>Already writing real OpenSCAD? Paste a .scad script, render it, and download an STL. Runs the real OpenSCAD in your browser.</span>
+  </a>
   <a class="playground-card" href="{{ '/python3d/studio/' | relative_url }}">
     <strong>Open the Studio &rarr;</strong>
     <span>Write Python on the left, watch the model update live on the right.</span>

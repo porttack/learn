@@ -1,0 +1,245 @@
+---
+title: "OpenSCAD in the Browser"
+permalink: /openscad/
+---
+{% raw %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OpenSCAD in the Browser</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='15' y='30' width='45' height='45' fill='%23f9d72c'/%3E%3Crect x='40' y='20' width='45' height='45' fill='%23111' opacity='.8'/%3E%3C/svg%3E">
+<style>
+  :root { --accent:#2a7ae2; --ink:#1b1f23; --paper:#fff; --muted:#57606a; --border:#d0d7de; --err:#d1242f; --warn:#7a5b00; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:#e9edf1; color:var(--ink); font:15px/1.4 system-ui, sans-serif; }
+  header { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 12px; background:var(--paper); border-bottom:1px solid var(--border); }
+  header h1 { font-size:17px; margin:0 12px 0 0; }
+  header a { color:var(--accent); }
+  button { font:inherit; padding:6px 12px; border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:6px; cursor:pointer; }
+  button.secondary { background:var(--paper); color:var(--accent); }
+  button:disabled { opacity:.45; cursor:default; }
+  #status { color:var(--muted); margin-left:auto; }
+  main { display:grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); height:calc(100% - 49px); }
+  .left { display:flex; flex-direction:column; min-width:0; border-right:1px solid var(--border); }
+  textarea { flex:1; width:100%; resize:none; border:0; padding:10px; font:13px/1.45 ui-monospace, Menlo, Consolas, monospace; tab-size:2; background:var(--paper); color:var(--ink); outline:none; }
+  #log { height:30%; overflow:auto; margin:0; padding:8px 10px; background:#14181d; color:#d7dde4; font:12.5px/1.45 ui-monospace, Menlo, Consolas, monospace; white-space:pre-wrap; border-top:1px solid var(--border); }
+  #log .err { color:#ff8b8b; } #log .warn { color:#f2cc60; }
+  #view { position:relative; background:#dfe5ec; min-width:0; }
+  #view canvas { display:block; width:100%; height:100%; }
+  #hint { position:absolute; left:10px; bottom:8px; color:var(--muted); font-size:12px; pointer-events:none; }
+  @media (max-width: 760px) { main { grid-template-columns:1fr; grid-template-rows:1fr 1fr; } .left { border-right:0; } }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/",
+    "lz-string": "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/+esm"
+  }
+}
+</script>
+</head>
+<body>
+<header>
+  <h1>OpenSCAD in the Browser</h1>
+  <button id="render" title="Ctrl or Cmd + Enter">Render</button>
+  <button id="stop" class="secondary" disabled>Stop</button>
+  <button id="download" class="secondary" disabled>Download STL</button>
+  <button id="open" class="secondary">Open .scad</button>
+  <button id="share" class="secondary">Copy share link</button>
+  <input id="file" type="file" accept=".scad,text/plain" hidden>
+  <span id="status">Loading...</span>
+</header>
+<main>
+  <div class="left">
+    <textarea id="code" spellcheck="false" aria-label="OpenSCAD code"></textarea>
+    <pre id="log" aria-live="polite"></pre>
+  </div>
+  <div id="view"><div id="hint">Drag to turn, scroll to zoom, right-drag to pan. Z is up.</div></div>
+</main>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { STLLoader } from "three/addons/loaders/STLLoader.js";
+import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
+import LZString from "lz-string";
+
+const SAMPLE = `// A washer with a bolt hole circle. Edit it and press Render.
+$fn = 64;
+n = 6;
+difference() {
+  cylinder(d = 40, h = 5);
+  translate([0, 0, -1]) cylinder(d = 12, h = 7);
+  for (i = [0 : n - 1])
+    rotate(i * 360 / n)
+      translate([14, 0, -1]) cylinder(d = 4, h = 7);
+}
+echo(str("holes: ", n));
+`;
+const KEY = "openscad:code";
+const $ = (id) => document.getElementById(id);
+const code = $("code"), logEl = $("log"), statusEl = $("status");
+
+function store(get, k, v) { try { return get ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch (e) { return null; } }
+
+// Starting code: a share link wins, then what was here last time, then the sample.
+(function start() {
+  let c = null;
+  const m = location.hash.match(/[#&]code=([^&]+)/);
+  if (m) c = LZString.decompressFromEncodedURIComponent(m[1]);
+  code.value = c || store(true, KEY) || SAMPLE;
+})();
+code.addEventListener("input", () => store(false, KEY, code.value));
+code.addEventListener("keydown", (e) => {
+  if (e.key === "Tab") {
+    e.preventDefault();
+    const s = code.selectionStart;
+    code.setRangeText("  ", s, code.selectionEnd, "end");
+    code.dispatchEvent(new Event("input"));
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); render(); }
+});
+
+// ---- viewer (Z up, like OpenSCAD) ----
+const view = $("view");
+let renderer = null;
+try {
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(devicePixelRatio);
+  view.appendChild(renderer.domElement);
+} catch (e) {
+  $("hint").textContent = "This browser cannot draw 3D, but Render and Download STL still work.";
+}
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xdfe5ec);
+THREE.Object3D.DEFAULT_UP.set(0, 0, 1);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100000);
+camera.up.set(0, 0, 1);
+camera.position.set(120, -160, 110);
+const controls = new OrbitControls(camera, renderer ? renderer.domElement : view);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8899aa, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+scene.add(sun, sun.target);
+const grid = new THREE.GridHelper(200, 20, 0x8895a3, 0xb7c1cc);
+grid.rotation.x = Math.PI / 2;
+scene.add(grid);
+scene.add(new THREE.AxesHelper(30));
+let mesh = null;
+const mat = new THREE.MeshStandardMaterial({ color: 0xf2b134, roughness: 0.55, metalness: 0.05 });
+
+function resize() {
+  const w = view.clientWidth, h = view.clientHeight;
+  if (renderer) renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(view);
+(function loop() {
+  requestAnimationFrame(loop);
+  sun.position.copy(camera.position).add(new THREE.Vector3(40, 60, 80));
+  sun.target.position.copy(controls.target);
+  controls.update();
+  if (renderer) renderer.render(scene, camera);
+})();
+
+function show(buffer) {
+  let geom = new STLLoader().parse(buffer);
+  geom = toCreasedNormals(geom, 0.6);
+  if (mesh) { scene.remove(mesh); mesh.geometry.dispose(); }
+  mesh = new THREE.Mesh(geom, mat);
+  scene.add(mesh);
+  geom.computeBoundingBox();
+  const box = geom.boundingBox, size = box.getSize(new THREE.Vector3()), ctr = box.getCenter(new THREE.Vector3());
+  const r = Math.max(size.x, size.y, size.z, 1);
+  controls.target.copy(ctr);
+  camera.position.copy(ctr).add(new THREE.Vector3(0.9, -1.3, 0.9).multiplyScalar(r * 1.6));
+  camera.near = r / 100; camera.far = r * 100; camera.updateProjectionMatrix();
+  grid.position.z = box.min.z;
+  grid.scale.setScalar(Math.max(1, Math.ceil(r * 2 / 200)));
+}
+
+// ---- worker ----
+let worker = null, stlBytes = null, running = false;
+function spawn() {
+  worker = new Worker(new URL("./worker.js", import.meta.url), { type: "module" });
+  worker.onmessage = onResult;
+  worker.onerror = (e) => { finish(); addLog("ERROR: the engine failed to load (" + (e.message || "see console") + ")"); };
+}
+function addLog(line) {
+  const d = document.createElement("div");
+  if (/^(ERROR|Parser error|Can't parse)/i.test(line)) d.className = "err";
+  else if (/^WARNING/i.test(line)) d.className = "warn";
+  d.textContent = line;
+  logEl.appendChild(d);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+function finish() {
+  running = false;
+  $("render").disabled = false;
+  $("stop").disabled = true;
+}
+let t0 = 0;
+function onResult(e) {
+  const { ok, log, stl } = e.data;
+  const secs = ((performance.now() - t0) / 1000).toFixed(1);
+  (log || []).forEach(addLog);
+  finish();
+  if (ok) {
+    stlBytes = stl;
+    if (renderer) show(stl);
+    $("download").disabled = false;
+    statusEl.textContent = `Done in ${secs} s`;
+  } else {
+    statusEl.textContent = "Nothing to show (see messages below the code)";
+    if (!(log || []).length) addLog("ERROR: OpenSCAD made no model. Is there a shape at the top level of your code?");
+  }
+}
+function render() {
+  if (running) return;
+  running = true;
+  logEl.textContent = "";
+  $("render").disabled = true;
+  $("stop").disabled = false;
+  statusEl.textContent = "Rendering...";
+  t0 = performance.now();
+  worker.postMessage({ code: code.value });
+}
+$("render").onclick = render;
+$("stop").onclick = () => {
+  worker.terminate(); spawn(); finish();
+  statusEl.textContent = "Stopped";
+  addLog("Stopped.");
+};
+$("download").onclick = () => {
+  if (!stlBytes) return;
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([stlBytes], { type: "model/stl" }));
+  a.download = "model.stl";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+$("open").onclick = () => $("file").click();
+$("file").onchange = async (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  code.value = await f.text();
+  code.dispatchEvent(new Event("input"));
+  e.target.value = "";
+};
+$("share").onclick = async () => {
+  const url = location.origin + location.pathname + "#code=" + LZString.compressToEncodedURIComponent(code.value);
+  history.replaceState(null, "", url);
+  try { await navigator.clipboard.writeText(url); statusEl.textContent = "Link copied"; }
+  catch (e) { statusEl.textContent = "Link is in the address bar"; }
+};
+
+spawn();
+statusEl.textContent = "Ready";
+render();
+</script>
+</body>
+</html>
+{% endraw %}
