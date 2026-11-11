@@ -13,7 +13,9 @@ permalink: /openscad/
 <style>
   :root { --accent:#2a7ae2; --ink:#1b1f23; --paper:#fff; --muted:#57606a; --border:#d0d7de; --err:#d1242f; --warn:#7a5b00; }
   * { box-sizing: border-box; }
-  html, body { margin:0; height:100%; background:#e9edf1; color:var(--ink); font:15px/1.4 system-ui, sans-serif; }
+  html, body { margin:0; height:100%; overflow:hidden; background:#e9edf1; color:var(--ink); font:15px/1.4 system-ui, sans-serif; }
+  body { display:flex; flex-direction:column; height:100vh; height:100dvh; }
+  header { flex:none; }
   header { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 12px; background:var(--paper); border-bottom:1px solid var(--border); }
   header h1 { font-size:15px; margin:0 6px 0 0; white-space:nowrap; }
   header a { color:var(--accent); }
@@ -21,8 +23,13 @@ permalink: /openscad/
   button.secondary { background:var(--paper); color:var(--accent); }
   button:disabled { opacity:.45; cursor:default; }
   #status { color:var(--muted); margin-left:auto; }
-  main { display:grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); height:calc(100% - 49px); }
-  .left { display:flex; flex-direction:column; min-width:0; border-right:1px solid var(--border); }
+  main { flex:1; min-height:0; display:grid; grid-template-columns: minmax(240px, var(--leftw, 1fr)) 8px minmax(240px, 1fr); }
+  .left { display:flex; flex-direction:column; min-width:0; min-height:0; }
+  .split { background:var(--border); touch-action:none; position:relative; flex:none; }
+  .split:hover, .split.drag, .split:focus-visible { background:var(--accent); outline:none; }
+  .split.v { cursor:col-resize; } .split.h { cursor:row-resize; height:8px; }
+  .split::after { content:""; position:absolute; inset:0; margin:auto; background:rgba(255,255,255,.7); border-radius:2px; }
+  .split.v::after { width:2px; height:36px; } .split.h::after { height:2px; width:36px; }
   .editorbar { display:flex; align-items:center; gap:6px; padding:4px 8px; background:#f6f8fa; border-bottom:1px solid var(--border); }
   .editorbar button, .zoom button { padding:2px 9px; min-width:30px; }
   .editorbar .size { color:var(--muted); font-size:12px; min-width:2.6em; text-align:center; }
@@ -35,12 +42,12 @@ permalink: /openscad/
   .tool { display:inline-flex; align-items:center; gap:4px; color:var(--muted); font-size:13px; }
   .tool input[type=number] { width:3.4em; font:inherit; padding:2px 4px; }
   .sep { width:1px; align-self:stretch; background:var(--border); margin:0 4px; }
-  #log { height:30%; overflow:auto; margin:0; padding:8px 10px; background:#14181d; color:#d7dde4; font:12.5px/1.45 ui-monospace, Menlo, Consolas, monospace; white-space:pre-wrap; border-top:1px solid var(--border); }
+  #log { flex:none; height:var(--logh, 30%); min-height:36px; overflow:auto; margin:0; padding:8px 10px; background:#14181d; color:#d7dde4; font:12.5px/1.45 ui-monospace, Menlo, Consolas, monospace; white-space:pre-wrap; }
   #log .err { color:#ff8b8b; } #log .warn { color:#f2cc60; }
-  #view { position:relative; background:#dfe5ec; min-width:0; }
-  #view canvas { display:block; width:100%; height:100%; }
+  #view { position:relative; background:#dfe5ec; min-width:0; min-height:0; overflow:hidden; }
+  #view canvas { position:absolute; inset:0; display:block; width:100%; height:100%; }
   #hint { position:absolute; left:10px; bottom:8px; color:var(--muted); font-size:12px; pointer-events:none; }
-  @media (max-width: 760px) { main { grid-template-columns:1fr; grid-template-rows:1fr 1fr; } .left { border-right:0; } }
+  @media (max-width: 760px) { main { grid-template-columns:1fr; grid-template-rows:minmax(140px, var(--toph, 1fr)) 8px minmax(140px, 1fr); } .split.v { cursor:row-resize; } .split.v::after { height:2px; width:36px; } }
 </style>
 <script type="importmap">
 {
@@ -82,8 +89,10 @@ permalink: /openscad/
       <button id="fsUp" class="secondary" title="Bigger text" aria-label="Bigger text">A+</button>
     </div>
     <div id="editor" aria-label="OpenSCAD code"></div>
+    <div id="hsplit" class="split h" role="separator" aria-orientation="horizontal" aria-label="Resize the messages box" tabindex="0"></div>
     <pre id="log" aria-live="polite"></pre>
   </div>
+  <div id="vsplit" class="split v" role="separator" aria-label="Resize the editor and the 3D view" tabindex="0" title="Drag to resize. Double-click to reset."></div>
   <div id="view"><div class="zoom">
       <button id="zin" class="secondary" title="Zoom in" aria-label="Zoom in">+</button>
       <button id="zout" class="secondary" title="Zoom out" aria-label="Zoom out">&minus;</button>
@@ -382,6 +391,46 @@ $("orient").onclick = () => {
   addLog(`To print this way, wrap your model in: multmatrix([[${e[0].toFixed(4)},${e[4].toFixed(4)},${e[8].toFixed(4)},0],[${e[1].toFixed(4)},${e[5].toFixed(4)},${e[9].toFixed(4)},0],[${e[2].toFixed(4)},${e[6].toFixed(4)},${e[10].toFixed(4)},0],[0,0,0,1]]) { ... }  (then lift it so its lowest point is at z = 0)`);
 };
 $("unorient").onclick = () => { orient = new THREE.Matrix4(); turned = false; $("unorient").hidden = true; rebuild(false); };
+
+// ---- resizable panes ----
+{
+  const main = document.querySelector("main"), left = document.querySelector(".left");
+  const narrow = () => matchMedia("(max-width: 760px)").matches;
+  const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const saved = (k) => Number(store(true, "openscad:" + k)) || 0;
+  const setLeft = (px) => { const r = main.getBoundingClientRect(); const v = clamp(px, 240, r.width - 248); main.style.setProperty("--leftw", v + "px"); return v; };
+  const setTop = (px) => { const r = main.getBoundingClientRect(); const v = clamp(px, 140, r.height - 148); main.style.setProperty("--toph", v + "px"); return v; };
+  const setLog = (px) => { const r = left.getBoundingClientRect(); const v = clamp(px, 36, r.height - 120); $("log").style.setProperty("--logh", v + "px"); return v; };
+  const apply = () => {
+    if (narrow()) { if (saved("toph")) setTop(saved("toph")); else main.style.removeProperty("--toph"); }
+    else if (saved("leftw")) setLeft(saved("leftw")); else main.style.removeProperty("--leftw");
+    if (saved("logh")) setLog(saved("logh"));
+  };
+  apply();
+  addEventListener("resize", apply);
+  function drag(el, move, key, reset) {
+    el.addEventListener("pointerdown", (e) => {
+      el.setPointerCapture(e.pointerId); el.classList.add("drag"); e.preventDefault();
+      const mv = (ev) => move(ev);
+      const up = () => { el.classList.remove("drag"); el.removeEventListener("pointermove", mv); el.removeEventListener("pointerup", up); el.removeEventListener("pointercancel", up); };
+      el.addEventListener("pointermove", mv); el.addEventListener("pointerup", up); el.addEventListener("pointercancel", up);
+    });
+    el.addEventListener("dblclick", reset);
+    el.addEventListener("keydown", (e) => {
+      const d = { ArrowLeft: -24, ArrowUp: -24, ArrowRight: 24, ArrowDown: 24 }[e.key];
+      if (d) { e.preventDefault(); move({ step: d }); }
+    });
+  }
+  drag($("vsplit"), (e) => {
+    if (narrow()) { const v = setTop(e.step ? main.querySelector(".left").getBoundingClientRect().height + e.step : e.clientY - main.getBoundingClientRect().top); store(false, "openscad:toph", String(v)); }
+    else { const v = setLeft(e.step ? left.getBoundingClientRect().width + e.step : e.clientX - main.getBoundingClientRect().left); store(false, "openscad:leftw", String(v)); }
+  }, null, () => { main.style.removeProperty("--leftw"); main.style.removeProperty("--toph"); store(false, "openscad:leftw", "0"); store(false, "openscad:toph", "0"); });
+  drag($("hsplit"), (e) => {
+    const r = left.getBoundingClientRect();
+    const v = setLog(e.step ? $("log").getBoundingClientRect().height - e.step : r.bottom - e.clientY);
+    store(false, "openscad:logh", String(v));
+  }, null, () => { $("log").style.removeProperty("--logh"); store(false, "openscad:logh", "0"); });
+}
 
 // ---- worker ----
 let worker = null, stlBytes = null, running = false;
