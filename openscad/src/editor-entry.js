@@ -2,10 +2,10 @@
 // completion. Bundled once by esbuild into ../editor.js (MIT-licensed libraries).
 import { EditorView, basicSetup } from "codemirror";
 import { keymap } from "@codemirror/view";
-import { Prec } from "@codemirror/state";
+import { Prec, EditorState } from "@codemirror/state";
 import { StreamLanguage, indentService, HighlightStyle, syntaxHighlighting } from "@codemirror/language";
 import { autocompletion, snippetCompletion, completeFromList } from "@codemirror/autocomplete";
-import { indentWithTab } from "@codemirror/commands";
+import { indentWithTab, undo, redo, undoDepth, redoDepth } from "@codemirror/commands";
 import { tags as t } from "@lezer/highlight";
 
 const KEYWORDS = "module function if else for let each include use intersection_for assign".split(" ");
@@ -107,10 +107,8 @@ function complete(ctx) {
   return { from: word.from, options: [...own, ...staticOptions], validFor: /^\$?\w*$/ };
 }
 
-export function createEditor(parent, doc, { onChange, onRun } = {}) {
-  const view = new EditorView({
-    parent, doc,
-    extensions: [
+export function createEditor(parent, doc, { onChange, onRun, onUpdate } = {}) {
+  const extensions = [
       basicSetup, language, syntaxHighlighting(HighlightStyle.define([
         { tag: t.keyword, color: "#a626a4", fontWeight: "600" },
         { tag: t.atom, color: "#986801" },
@@ -125,13 +123,22 @@ export function createEditor(parent, doc, { onChange, onRun } = {}) {
       autocompletion({ override: [complete] }),
       Prec.highest(keymap.of([{ key: "Mod-Enter", run: () => { onRun && onRun(); return true; } }])),
       keymap.of([indentWithTab]),
-      EditorView.updateListener.of((u) => { if (u.docChanged && onChange) onChange(); }),
-      EditorView.theme({ "&": { height: "100%", fontSize: "13px" }, ".cm-scroller": { fontFamily: "ui-monospace, Menlo, Consolas, monospace", lineHeight: "1.45" } }),
-    ],
-  });
+      EditorView.updateListener.of((u) => {
+        if (u.docChanged && onChange) onChange();
+        if (onUpdate) onUpdate({ canUndo: undoDepth(u.state) > 0, canRedo: redoDepth(u.state) > 0 });
+      }),
+      EditorView.theme({ "&": { height: "100%", fontSize: "var(--ed-size, 13px)" }, ".cm-scroller": { fontFamily: "ui-monospace, Menlo, Consolas, monospace", lineHeight: "1.45" } }),
+  ];
+  const view = new EditorView({ parent, doc, extensions });
   return {
     get: () => view.state.doc.toString(),
-    set: (s) => view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: s } }),
+    // keepHistory false starts a fresh drawing (Undo cannot go back into the old one)
+    set: (text, keepHistory = true) => keepHistory
+      ? view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: text } })
+      : view.setState(EditorState.create({ doc: text, extensions })),
+    undo: () => { undo(view); view.focus(); },
+    redo: () => { redo(view); view.focus(); },
+    remeasure: () => view.requestMeasure(),
     focus: () => view.focus(),
   };
 }

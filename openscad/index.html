@@ -15,17 +15,23 @@ permalink: /openscad/
   * { box-sizing: border-box; }
   html, body { margin:0; height:100%; background:#e9edf1; color:var(--ink); font:15px/1.4 system-ui, sans-serif; }
   header { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 12px; background:var(--paper); border-bottom:1px solid var(--border); }
-  header h1 { font-size:17px; margin:0 12px 0 0; }
+  header h1 { font-size:15px; margin:0 6px 0 0; white-space:nowrap; }
   header a { color:var(--accent); }
-  button { font:inherit; padding:6px 12px; border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:6px; cursor:pointer; }
+  button { font:inherit; padding:5px 9px; border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:6px; cursor:pointer; }
   button.secondary { background:var(--paper); color:var(--accent); }
   button:disabled { opacity:.45; cursor:default; }
   #status { color:var(--muted); margin-left:auto; }
   main { display:grid; grid-template-columns: minmax(300px, 1fr) minmax(300px, 1fr); height:calc(100% - 49px); }
   .left { display:flex; flex-direction:column; min-width:0; border-right:1px solid var(--border); }
+  .editorbar { display:flex; align-items:center; gap:6px; padding:4px 8px; background:#f6f8fa; border-bottom:1px solid var(--border); }
+  .editorbar button, .zoom button { padding:2px 9px; min-width:30px; }
+  .editorbar .size { color:var(--muted); font-size:12px; min-width:2.6em; text-align:center; }
+  #name { font:inherit; padding:5px 8px; border:1px solid var(--border); border-radius:6px; width:10em; }
+  .zoom { position:absolute; right:10px; top:10px; display:flex; flex-direction:column; gap:6px; }
+  .zoom button { background:var(--paper); color:var(--accent); box-shadow:0 1px 3px rgba(0,0,0,.15); }
   #editor { flex:1; min-height:0; overflow:hidden; background:var(--paper); }
   #editor .cm-editor { height:100%; } #editor .cm-editor.cm-focused { outline:none; }
-  a.btn { font:inherit; padding:6px 12px; border:1px solid var(--accent); background:var(--paper); color:var(--accent); border-radius:6px; text-decoration:none; }
+  a.btn { font:inherit; padding:5px 9px; border:1px solid var(--accent); background:var(--paper); color:var(--accent); border-radius:6px; text-decoration:none; }
   .tool { display:inline-flex; align-items:center; gap:4px; color:var(--muted); font-size:13px; }
   .tool input[type=number] { width:3.4em; font:inherit; padding:2px 4px; }
   .sep { width:1px; align-self:stretch; background:var(--border); margin:0 4px; }
@@ -48,7 +54,10 @@ permalink: /openscad/
 </head>
 <body>
 <header>
-  <h1>OpenSCAD in the Browser</h1>
+  <h1>OpenSCAD</h1>
+  <input id="name" list="names" spellcheck="false" aria-label="Name of this drawing" title="Name of this drawing. Your work is saved in this browser under this name as you type. Type another saved name to open it." placeholder="name your drawing">
+  <datalist id="names"></datalist>
+  <button id="new" class="secondary" title="Start a new drawing (the current one stays saved)">New</button>
   <button id="render" title="Ctrl or Cmd + Enter">Render</button>
   <button id="stop" class="secondary" disabled>Stop</button>
   <button id="download" class="secondary" disabled>Download STL</button>
@@ -64,10 +73,23 @@ permalink: /openscad/
 </header>
 <main>
   <div class="left">
+    <div class="editorbar">
+      <button id="undo" class="secondary" disabled title="Undo (Ctrl/Cmd+Z)">&#8630; Undo</button>
+      <button id="redo" class="secondary" disabled title="Redo (Ctrl/Cmd+Shift+Z)">Redo &#8631;</button>
+      <span style="flex:1"></span>
+      <button id="fsDown" class="secondary" title="Smaller text" aria-label="Smaller text">A&minus;</button>
+      <span class="size" id="fsLabel"></span>
+      <button id="fsUp" class="secondary" title="Bigger text" aria-label="Bigger text">A+</button>
+    </div>
     <div id="editor" aria-label="OpenSCAD code"></div>
     <pre id="log" aria-live="polite"></pre>
   </div>
-  <div id="view"><div id="hint">Drag to turn, scroll to zoom, right-drag to pan. Z is up.</div></div>
+  <div id="view"><div class="zoom">
+      <button id="zin" class="secondary" title="Zoom in" aria-label="Zoom in">+</button>
+      <button id="zout" class="secondary" title="Zoom out" aria-label="Zoom out">&minus;</button>
+      <button id="zfit" class="secondary" title="Center and fit the model in view" aria-label="Fit to view">Fit</button>
+    </div>
+    <div id="hint">Drag to turn, scroll to zoom, right-drag to pan. Z is up.</div></div>
 </main>
 
 <script type="module">
@@ -91,22 +113,101 @@ difference() {
 }
 echo(str("holes: ", n));
 `;
-const KEY = "openscad:code";
+const PREFIX = "openscad:doc:", CURRENT = "openscad:current";
 const $ = (id) => document.getElementById(id);
 const logEl = $("log"), statusEl = $("status");
 
 function store(get, k, v) { try { return get ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch (e) { return null; } }
 
-// Starting code: a share link wins, then what was here last time, then the sample.
+// ---- drawings kept in this browser, by name ----
+function savedNames() {
+  const out = [];
+  try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith(PREFIX)) out.push(k.slice(PREFIX.length)); } } catch (e) {}
+  return out.sort((a, b) => a.localeCompare(b));
+}
+const nameEl = $("name");
+let currentName = "untitled";
+const cleanName = (n) => (n || "").replace(/\s+/g, " ").trim().slice(0, 60) || "untitled";
+function fillNames() {
+  $("names").replaceChildren(...savedNames().filter((n) => n !== currentName).map((n) => Object.assign(document.createElement("option"), { value: n })));
+}
+function freeName(base) {
+  let n = base, i = 2;
+  const have = new Set(savedNames());
+  while (have.has(n)) n = base + " " + i++;
+  return n;
+}
+function saveNow() { store(false, PREFIX + currentName, editor.get()); store(false, CURRENT, currentName); }
+
+// Starting point: a share link wins (kept as its own drawing), then the drawing used last
+// time, then an old unnamed save from before names existed, then the sample.
 let initial = null;
 {
   const m = location.hash.match(/[#&]code=([^&]+)/);
   if (m) initial = LZString.decompressFromEncodedURIComponent(m[1]);
 }
-const editor = createEditor($("editor"), initial || store(true, KEY) || SAMPLE, {
-  onChange: () => store(false, KEY, editor.get()),
+if (initial) currentName = freeName("shared drawing");
+else {
+  const last = store(true, CURRENT);
+  const legacy = store(true, "openscad:code");
+  if (last && store(true, PREFIX + last) !== null) { currentName = last; initial = store(true, PREFIX + last); }
+  else if (legacy) { currentName = "untitled"; initial = legacy; }
+  else initial = SAMPLE;
+}
+nameEl.value = currentName;
+const editor = createEditor($("editor"), initial, {
+  onChange: saveNow,
   onRun: () => render(),
+  onUpdate: (st) => { $("undo").disabled = !st.canUndo; $("redo").disabled = !st.canRedo; },
 });
+saveNow(); fillNames();
+$("undo").onclick = () => editor.undo();
+$("redo").onclick = () => editor.redo();
+
+// Renaming moves the drawing; typing a name that is already saved opens that one.
+nameEl.addEventListener("focus", fillNames);
+nameEl.addEventListener("change", () => {
+  const n = cleanName(nameEl.value);
+  nameEl.value = n;
+  if (n === currentName) return;
+  const existing = store(true, PREFIX + n);
+  if (existing !== null) {
+    saveNow();
+    currentName = n;
+    editor.set(existing, false);
+    store(false, CURRENT, n);
+    statusEl.textContent = `Opened "${n}"`;
+  } else {
+    try { localStorage.removeItem(PREFIX + currentName); } catch (e) {}
+    currentName = n;
+    saveNow();
+    statusEl.textContent = `Saved as "${n}"`;
+  }
+  fillNames();
+});
+nameEl.addEventListener("keydown", (e) => { if (e.key === "Enter") { nameEl.blur(); } });
+$("new").onclick = () => {
+  saveNow();
+  currentName = freeName("untitled");
+  nameEl.value = currentName;
+  editor.set("// New drawing\n", false);
+  saveNow(); fillNames();
+  statusEl.textContent = `New drawing "${currentName}"`;
+  editor.focus();
+};
+
+// ---- text size ----
+let fontSize = Number(store(true, "openscad:fontsize")) || 13;
+function applyFont() {
+  fontSize = Math.min(32, Math.max(8, fontSize));
+  $("editor").style.setProperty("--ed-size", fontSize + "px");
+  $("fsLabel").textContent = fontSize + "px";
+  store(false, "openscad:fontsize", String(fontSize));
+  editor.remeasure();
+}
+$("fsUp").onclick = () => { fontSize += fontSize >= 20 ? 2 : 1; applyFont(); };
+$("fsDown").onclick = () => { fontSize -= fontSize > 20 ? 2 : 1; applyFont(); };
+applyFont();
 
 // ---- viewer (Z up, like OpenSCAD) ----
 const view = $("view");
@@ -211,12 +312,27 @@ function rebuild(frame) {
   const r = Math.max(size.x, size.y, size.z, 1);
   grid.position.z = box.min.z;
   grid.scale.setScalar(Math.max(1, Math.ceil(r * 2 / 200)));
-  if (frame) {
-    controls.target.copy(ctr);
-    camera.position.copy(ctr).add(new THREE.Vector3(0.9, -1.3, 0.9).multiplyScalar(r * 1.6));
-    camera.near = r / 100; camera.far = r * 100; camera.updateProjectionMatrix();
-  }
+  if (frame) fitView();
 }
+// Bring the model into the middle of the view, filling it, seen from the usual angle.
+function fitView(keepAngle) {
+  if (!mesh) return;
+  const g = mesh.geometry; g.computeBoundingSphere();
+  const ctr = g.boundingSphere.center, r = Math.max(g.boundingSphere.radius, 0.5);
+  const dir = keepAngle ? camera.position.clone().sub(controls.target).normalize() : new THREE.Vector3(0.9, -1.3, 0.9).normalize();
+  const half = Math.atan(Math.tan(camera.fov * Math.PI / 360) * Math.min(1, camera.aspect));
+  const dist = r / Math.sin(half) * 1.3;
+  controls.target.copy(ctr);
+  camera.position.copy(ctr).add(dir.multiplyScalar(dist));
+  camera.near = r / 100; camera.far = dist + r * 100; camera.updateProjectionMatrix();
+}
+function zoomBy(f) {
+  const off = camera.position.clone().sub(controls.target).multiplyScalar(f);
+  camera.position.copy(controls.target).add(off);
+}
+$("zin").onclick = () => zoomBy(1 / 1.3);
+$("zout").onclick = () => zoomBy(1.3);
+$("zfit").onclick = () => fitView(true);
 
 function show(buffer) {
   if (baseGeom) baseGeom.dispose();
@@ -330,7 +446,7 @@ $("download").onclick = () => {
   }
   const a = document.createElement("a");
   a.href = URL.createObjectURL(new Blob([bytes], { type: "model/stl" }));
-  a.download = "model.stl";
+  a.download = currentName.replace(/[^\w .-]+/g, "_").trim().replace(/\s+/g, "-") + ".stl";
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 };

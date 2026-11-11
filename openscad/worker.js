@@ -3,7 +3,7 @@
 // because OpenSCAD's main() can only be called once per instance.
 import { createOpenSCAD } from "./engine/openscad.js";
 
-const NOISE = /cache|localization|Status:|Genus:|Vertices:|Facets:|Top level object|Simple:|Volumes:|Rendering Polygon|Rendering Polyhedron|Total rendering time/;
+const NOISE = /cache|localization|Status:|Genus:|Vertices:|Facets:|Top level object|Simple:|Volumes:|Rendering Polygon|Rendering Polyhedron|Total rendering time|Convex:|Simple:/;
 
 self.onmessage = async (e) => {
   const log = [];
