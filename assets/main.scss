@@ -2262,6 +2262,17 @@ table.checkoff.light-message td {
 }
 
 .movie-table-wrap { overflow-x: auto; margin: 1.2em 0; }
+// On a desktop-wide window the table may be wider than the 900px content
+// column (centered on the page, up to 1280px) so its nine columns fit. Below
+// 960px it keeps the normal width and scrolls sideways if it must.
+@media (min-width: 960px) {
+  .movie-table-wrap {
+    width: min(1280px, 96vw);
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
 .movie-table {
   width: 100%;
   border-collapse: collapse;
