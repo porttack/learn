@@ -1,0 +1,58 @@
+part1:
+  - q: "What forces the cat to leave the forest at the start of the movie?"
+    options: ["A hunter", "A huge flood", "A fire", "Another cat"]
+    answer: B
+  - q: "Which animal is already on the sailboat when the cat jumps aboard?"
+    options: ["A capybara", "A wolf", "A bear", "A parrot"]
+    answer: A
+  - q: "Which animal joins them next, carrying a basket of trinkets?"
+    options: ["A monkey", "A ring-tailed lemur", "A squirrel", "A duck"]
+    answer: B
+  - q: "What happens to the young secretarybird that begs its flock for mercy?"
+    options: ["It becomes the new leader", "It is hurt and left behind, and it joins the boat", "It flies away alone", "It is given a gift"]
+    answer: B
+  - q: "What does the cat learn from the capybara?"
+    options: ["To sing", "To swim and to fish", "To climb trees", "To sail"]
+    answer: B
+part2_title: "Think and Reflect"
+part2:
+  - label: "Facing Fear"
+    text: "The cat starts out alone and cannot swim, and it is scared more than once. Pick one scared moment. How can you tell the cat is afraid? What changes by the end, and what helped the cat change?"
+    lines: 5
+  - label: "Talking Without Words"
+    text: "No one in the film speaks. Pick ONE moment when the animals understood each other anyway. How did they do it (a movement, a sound, a look)?"
+    lines: 5
+  - label: "A Place on the Boat"
+    text: "The young secretarybird is hurt and left behind by its flock, and then the boat crew takes it in. Why do you think they let it join? What does it feel like to be included when you did not expect it?"
+    lines: 5
+  - label: "Working Together"
+    text: "The animals are very different, and they do not always get along. Pick one moment where they work together to solve a problem. What did each one bring to the job?"
+    lines: 5
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (the cat, the capybara, the lemur, the Labrador, the secretarybird, the whale, or another character)"
+    lines: 3
+teacher: |
+  Answer key: Part 1 follows the plot as summarized by Wikipedia and Common Sense Media; confirm against the film. The film has no dialogue, so students need to watch to answer.
+
+  Questions 1 to 3 are plot comprehension. Questions 4 and 5 ask students to read a social situation.
+
+  Teaching points by question:
+
+  - Facing Fear: the cat starts out alone, cannot swim and nearly drowns, then learns to swim and to fish with the capybara's help. Strong answers point to evidence (shaking, avoiding the water) and to help from the others.
+  - Talking Without Words: look for specific, observable details, like the lemur and capybara sharing food or the cat copying the capybara.
+  - A Place on the Boat: answers about belonging and kindness. No disclosure is needed.
+  - Working Together: look for one concrete episode, such as pulling the boat free of the tree or rescuing the dogs from the bell tower.
+
+  CASEL focus: "Facing Fear" is Self-Management (managing one's emotions) and Self-Awareness. "Talking Without Words" is Relationship Skills (communicating). "A Place on the Boat" is Social Awareness (empathy) and Relationship Skills. "Working Together" is Relationship Skills (teamwork).
+
+  Content note: Rated PG for peril and thematic elements. Common Sense Media lists it for ages 6 and up. The animals are in constant danger from the flood and from other animals; a stampede, a near drowning and a fight between two birds appear. One sequence may suggest an animal's death, and the film leaves it open to interpretation. Some parents say the peril can upset sensitive children. No language, no sex, no drug use. There is no dialogue, so students who read subtitles for other films will not need them here. Fine for grades 6 to 9.
+before: |
+  About 10 minutes. The film has no words, so the warm-ups are about telling a story and feeling something without speaking.
+
+  - **Charades (4 minutes):** One student at a time acts out a feeling (scared, proud, left out, excited) without speaking or making sounds. The class guesses. Ask: what did you look at to figure it out?
+  - **No words (2 minutes):** Ask: how could a movie tell a story with no dialogue? List the tools on the board (faces, movement, music, color, sound). Come back to the list after the film and see which ones it used.
+  - **Watch with no sound (2 minutes):** Play the two-minute trailer on this page with the volume off. Ask: what is the story? Who are the characters? How do they feel? Write guesses on the board and check them at the end.
+  - **Animal pairs (2 minutes):** Name two very different animals that could be friends and say what they would each bring to a journey. Take three ideas.
+  - **Wheel of Names (2 minutes):** paste in the class list and spin. "Name a fear lots of people have, and one thing that helps people with it." Do not ask anyone to share their own.
+
+  A note for sensitive viewers: some scenes show the animals in danger (a flood, a stampede, a near drowning). Tell the class ahead of time, and let anyone step out for a moment if they need to.

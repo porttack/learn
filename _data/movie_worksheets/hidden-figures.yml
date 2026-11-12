@@ -1,0 +1,61 @@
+part1:
+  - q: "Where do Katherine, Dorothy and Mary work, and what are their jobs called?"
+    options: ["A school, as teachers", "NASA's Langley center, as \"computers\" (people who do math by hand)", "A bank, as clerks", "A factory, as mechanics"]
+    answer: B
+  - q: "What is Katherine's new job when she joins the Space Task Group?"
+    options: ["She does the geometry and math that figure out the flight paths", "She flies the capsule", "She types reports", "She cleans the lab"]
+    answer: A
+  - q: "What does Mary do to be allowed to take the classes she needs to become an engineer?"
+    options: ["She quits NASA", "She asks a judge for permission to take classes at an all-white high school", "She takes the classes in secret", "She moves to another state"]
+    answer: B
+  - q: "What does Dorothy do when she finds out an IBM computer will replace the human computers?"
+    options: ["She quits", "She teaches herself and her team to program the machine", "She asks NASA to ban it", "She breaks it"]
+    answer: B
+  - q: "Before John Glenn's launch, what does Katherine do?"
+    options: ["She checks the computer's landing numbers by hand", "She builds the capsule", "She rewrites the countdown", "She flies a test plane"]
+    answer: A
+part2_title: "Think About the Story"
+part2:
+  - label: "Computers Before Computers"
+    text: "The women were called \"computers\" because they did the math by hand. What did that job involve? What happened to the job when the IBM machine arrived?"
+    lines: 5
+  - label: "Learning a New Machine"
+    text: "Dorothy learned programming on her own and taught her team before the machine took over. Why was that a smart move? What does it show about getting ready for change?"
+    lines: 5
+  - label: "Checking the Machine"
+    text: "Before the launch, the astronauts want a person to check the computer's numbers by hand. Why would anyone double-check a computer? When do you think we should trust a machine, and when should a person check it?"
+    lines: 5
+  - label: "Unfair Rules"
+    text: "Pick ONE unfair rule the women faced. Describe how a character responded to it (Mary's petition, Katherine's speech, or another). What can a person do when a rule is unfair?"
+    lines: 5
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Katherine, Dorothy, Mary, Al Harrison, Vivian Mitchell, Paul Stafford, Jim Johnson, or another character)"
+    lines: 3
+teacher: |
+  Answer key: Part 1 follows the plot as summarized by Wikipedia and Common Sense Media; confirm against the film.
+
+  Questions 1 to 3 are plot comprehension. Questions 4 and 5 ask students to follow a character's choice.
+
+  Teaching points by question:
+
+  - Computers Before Computers: the word "computer" meant a person. Look for answers that mention doing long calculations by hand, and that machines took over the routine work and people moved up to work the machines.
+  - Learning a New Machine: Dorothy sees a change coming and prepares. Strong answers mention learning ahead of time and helping others.
+  - Checking the Machine: a computer can be wrong, and a person with judgment can catch it. Look for answers that name a high-stakes case (a launch, a bank, a medical device).
+  - Unfair Rules: no single right answer. Look for specific actions (a petition, speaking up, finding an ally) and for honest reasons why it is hard.
+
+  CASEL focus: "Unfair Rules" is Social Awareness (recognizing unjust norms) and Relationship Skills (standing up for the rights of others). "Learning a New Machine" is Self-Management (the courage to take initiative).
+
+  History note: the film is based on a true story but dramatizes some scenes. Per Wikipedia, it combines timelines and characters, and several famous scenes did not happen as shown: the segregated coffeepot, Al Harrison smashing the restroom sign, and Harrison letting Katherine into Mission Control. Mary Jackson, not Katherine, had the restroom incident; Katherine often used white restrooms without complaint. The flight was planned for three orbits (the film says it was cut short), and the machine is called an IBM 7090 while the console shown is a 7094. Some critics also say the film leans on a "white savior" storyline. These are good discussion points: ask students what the film changes, and why a filmmaker might.
+
+  Content note: Rated PG for thematic elements and some language. Common Sense Media lists it for ages 10 and up and rates the discrimination "a lot." Segregation is shown realistically, including signs that say "colored," a few uses of the word "Negro," and mild language ("damn," "hell"). There is no graphic violence. Fine for grades 6 to 11 with some context first.
+before: |
+  About 15 minutes. The film starts at the moment when "computer" meant a person, so the warm-ups start there. The film is set in the segregated South, so the last warm-up sets the stage without asking anyone to share anything personal.
+
+  - **What is a computer? (3 minutes):** Ask students to define it. Take three answers. Then tell them that before the 1950s, a computer was a person who did calculations for a living. Ask what such a person would need to be good at.
+  - **Race the machine (4 minutes, pairs):** Each pair multiplies **347 x 29** by hand while a third person times them, then checks with a calculator. Ask: how long did that one take? How would you feel if a rocket launch depended on 500 of these? Where could mistakes slip in?
+  - **Who gets credit? (2 minutes):** Ask: can you name someone who did important work and rarely got credit? Take two or three ideas. The title of the film is about this idea.
+  - **Rules from history (3 minutes):** In the early 1960s, some places in the United States had separate bathrooms, libraries and schools for Black and white people. Ask: why do you think such rules existed, and how do rules like that get changed? Take two or three ideas. Do not ask anyone to share their own experiences.
+  - **Space race (2 minutes):** The Soviet Union put the first person in space in 1961, and the United States wanted to catch up. Ask: why might NASA need someone to double-check the computer's numbers before a launch?
+  - **Wheel of Names (2 minutes):** paste in the class list and spin. "Name something you got better at by practicing, and who helped you."
+
+  A note on tone: the film uses the real words and signs of the time. Tell the class in advance that you will hear a few of them, that the film is showing how unfair they were, and that the class is watching to understand.
