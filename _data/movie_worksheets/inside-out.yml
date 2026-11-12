@@ -1,0 +1,45 @@
+part1:
+  - q: "Why does Riley's life change at the start of the movie?"
+    options: ["She starts a new hockey team", "Her family moves from Minnesota to San Francisco", "Her parents get divorced", "She moves in with her grandparents"]
+    answer: B
+  - q: "What happens when Joy and Sadness are pulled out of headquarters with the core memories?"
+    options: ["Riley's personality islands start to fall apart", "Riley gets stronger", "Riley falls asleep", "Nothing changes"]
+    answer: A
+  - q: "Who does Joy meet in Riley's long-term memory who offers to help her get back?"
+    options: ["A dream guard", "Bing Bong, Riley's old imaginary friend", "Riley's mom", "Fear"]
+    answer: B
+  - q: "At the Memory Dump, what does Bing Bong do so that Joy can escape?"
+    options: ["He climbs out with her", "He gives up and stays behind so the wagon is lighter", "He calls for Sadness", "He pulls a lever"]
+    answer: B
+  - q: "At the end, what does Joy learn about Sadness?"
+    options: ["Sadness should stay out of headquarters", "Sadness helps Riley ask for comfort and connect with her parents", "Sadness is the same as Anger", "Sadness only makes things worse"]
+    answer: B
+part2_title: "Think and Reflect"
+part2:
+  - label: "Self-Awareness"
+    text: "In the movie, Joy tries to keep Riley happy all the time, and it does not work. Describe a time when someone told you to cheer up, or you tried to hide a feeling. What happened?"
+    lines: 4
+  - label: "Empathy"
+    text: "Sadness is the one who sits with Bing Bong after he loses his wagon, and it helps him feel better. Why does listening work better than telling someone to cheer up? What would you say to a friend who is sad?"
+    lines: 4
+  - label: "Responsible Decision-Making"
+    text: "Riley decides to run away, and then she comes back and tells her parents the truth. What helped her make that choice? What would you want a person to do first when they feel stuck?"
+    lines: 4
+  - label: "Relationship Skills"
+    text: "Riley's parents see she is struggling and they tell her they are sad too. How does sharing a hard feeling change a relationship? Give an example from the movie."
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Joy, Sadness, Anger, Fear, Disgust, Bing Bong, Riley, or another character)"
+    lines: 3
+teacher: |
+  Questions 1 to 3 are plot comprehension. Question 4 and 5 ask students to read an emotional situation.
+
+  CASEL focus by question:
+
+  - Self-Awareness: noticing and naming feelings, and the pressure to hide them
+  - Social Awareness: empathy (Sadness and Bing Bong)
+  - Responsible Decision-Making: Riley's choice to stop running away
+  - Relationship Skills: sharing a hard feeling with family
+  - Personal Connection: self-reflection
+
+  Content note: Rated PG. Bing Bong's sacrifice is sad, and the family move is a common worry for students. Fine for grades 6 to 9.

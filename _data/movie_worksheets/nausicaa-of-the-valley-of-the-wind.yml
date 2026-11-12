@@ -1,0 +1,45 @@
+part1:
+  - q: "What does Nausicaä do that most people in the Valley do not?"
+    options: ["She leads the army", "She explores the Toxic Jungle and studies it", "She builds weapons", "She leaves the Valley forever"]
+    answer: B
+  - q: "What secret does Nausicaä find under the Toxic Jungle?"
+    options: ["Treasure", "The jungle's plants are cleaning the poisoned soil, and the water and sand below are clean", "A hidden city", "A giant machine"]
+    answer: B
+  - q: "Why does the Tolmekian army want to burn the jungle?"
+    options: ["They see it as a threat that must be destroyed", "They want to farm it", "They want to protect the Ohmu", "They want to build a road"]
+    answer: A
+  - q: "Why do the Ohmu stampede toward the Valley?"
+    options: ["They are hungry", "A baby Ohmu is being used as bait", "A storm is coming", "They are chasing Nausicaä's glider"]
+    answer: B
+  - q: "How does the stampede end?"
+    options: ["The army wins", "Nausicaä stands in front of the Ohmu, and they heal her with golden tendrils", "The Valley is destroyed", "The Ohmu leave on their own"]
+    answer: B
+part2_title: "Think and Reflect"
+part2:
+  - label: "Social Awareness"
+    text: "Many people in the movie are afraid of the Ohmu and the jungle, but Nausicaä is curious. Why do people fear what they do not understand? What does she learn by looking closely?"
+    lines: 4
+  - label: "Responsible Decision-Making"
+    text: "The Tolmekian army wants to burn the jungle, and the Pejite use a baby Ohmu as bait. What are they each trying to solve? What would have been a better way to solve their problem?"
+    lines: 4
+  - label: "Self-Management"
+    text: "Nausicaä is angry when her father is killed, and she loses control for a moment. How does she calm herself afterward? What can you do when you are so angry you cannot think?"
+    lines: 4
+  - label: "Relationship Skills"
+    text: "Nausicaä tries to make peace, even with people who attacked her home. Why is that hard? Describe a way to stop a fight from getting bigger."
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Nausicaä, Lord Yupa, Asbel, Kushana, Mito, Teto the fox squirrel, the Ohmu, or another character)"
+    lines: 3
+teacher: |
+  Questions 1 to 3 are plot comprehension. Questions 4 and 5 ask students to read motive and consequences.
+
+  CASEL focus by question:
+
+  - Social Awareness: fear of the unknown, curiosity and perspective
+  - Responsible Decision-Making: violence as a solution to fear
+  - Self-Management: handling anger and grief
+  - Relationship Skills: choosing peace over revenge
+  - Personal Connection: self-reflection
+
+  Content note: Rated PG for violence. A parent figure is killed, there are battles and people die, and the stampede is intense. It is slower than most animated films and may be hard for younger students. Best for grades 7 to 9. Check which dub your streaming service offers; the 1985 "Warriors of the Wind" edit is a different cut and not this film.

@@ -1,0 +1,45 @@
+part1:
+  - q: "What happens to Mei when her emotions get too strong?"
+    options: ["She turns into a giant red panda", "She disappears", "She starts to cry", "She loses her voice"]
+    answer: A
+  - q: "What does Mei's mother do when she finds out?"
+    options: ["Shows her a ritual that can seal the panda away", "Ignores it", "Calls the school", "Tells Mei to keep it a secret from her friends"]
+    answer: A
+  - q: "What do Mei and her friends want to do despite her mother's rules?"
+    options: ["Go to a 4*Town concert", "Run a school election", "Move to a new city", "Visit a temple"]
+    answer: A
+  - q: "What does Mei learn about the panda at the concert?"
+    options: ["It is a curse", "It can be kept under control and used on purpose", "It only comes out at night", "It is her mother's"]
+    answer: B
+  - q: "What does Mei decide about the panda at the end?"
+    options: ["Keep it, because it is part of who she is", "Get rid of it", "Hide it forever", "Give it to her mother"]
+    answer: A
+part2_title: "Think and Reflect"
+part2:
+  - label: "Self-Awareness"
+    text: "Mei acts one way at home and another way with her friends. Why do people change depending on who is around? Which version of Mei seems most like the real Mei, and why?"
+    lines: 4
+  - label: "Self-Management"
+    text: "When Mei gets embarrassed or excited, the panda appears. What did she do to control it? Describe a strategy you use when your feelings are too big."
+    lines: 4
+  - label: "Social Awareness"
+    text: "Mei's mother wants to protect her, and she also embarrasses Mei. What does the movie show about why Ming acts the way she does?"
+    lines: 4
+  - label: "Relationship Skills"
+    text: "Mei and her mother both have to change for the family to work again. What does each one say or do to repair things? How can you start an honest talk with someone you love?"
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Mei, Ming, Miriam, Priya, Abby, Tyler, Mei's father, or another character)"
+    lines: 3
+teacher: |
+  Questions 1 to 3 are plot comprehension. Questions 4 and 5 ask students to read a family situation.
+
+  CASEL focus by question:
+
+  - Self-Awareness: identity in different settings
+  - Self-Management: strategies for strong emotions
+  - Social Awareness: a parent's perspective and family history
+  - Relationship Skills: repairing a relationship, honest talk
+  - Personal Connection: self-reflection
+
+  Content note: Rated PG. The panda is a comic stand-in for puberty, and there are references to periods, crushes and a boy band. It is aimed at older tweens, so some sixth graders may find it embarrassing and some will love it. Check that your class is comfortable with the topic. Best for grades 7 to 9, fine for most sixth graders.

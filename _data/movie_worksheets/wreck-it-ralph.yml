@@ -1,0 +1,45 @@
+part1:
+  - q: "What is Ralph's job in his game, Fix-It Felix Jr.?"
+    options: ["He is the hero", "He is the bad guy who wrecks the building", "He is the mayor", "He fixes the windows"]
+    answer: B
+  - q: "Why does Ralph leave his game?"
+    options: ["He wants a hero's medal so people will respect him", "He wants to play a different game", "He is fired", "He is chasing a thief"]
+    answer: A
+  - q: "Which game does Ralph enter first to win a medal?"
+    options: ["Sugar Rush", "Hero's Duty", "Fix-It Felix Jr.", "Tapper"]
+    answer: B
+  - q: "Why is Vanellope von Schweetz not allowed to race in Sugar Rush?"
+    options: ["She is too young", "She is a glitch, and the others say she is a mistake", "She cheated", "She is the villain"]
+    answer: B
+  - q: "What does Ralph say at the end about who he is?"
+    options: ["He will never be good, and that is not bad", "He wants to be Felix", "He will be the hero from now on", "He wants to leave the arcade"]
+    answer: A
+part2_title: "Think and Reflect"
+part2:
+  - label: "Self-Awareness"
+    text: "Ralph is told he is the bad guy because of his job. How do other people's labels affect how we see ourselves? Describe a label that someone has given you or someone you know."
+    lines: 4
+  - label: "Social Awareness"
+    text: "The Sugar Rush racers treat Vanellope badly because she glitches. Why do groups pick on someone who is different? What could the racers have done differently?"
+    lines: 4
+  - label: "Responsible Decision-Making"
+    text: "Ralph takes a medal that is not his and starts a chain of problems. What would you do in his place? How do you fix a mistake after it hurts someone else?"
+    lines: 4
+  - label: "Glitches"
+    text: "In a video game, a glitch is a bug in the code. Vanellope's glitch is a problem for the game but is also a gift for her. Describe a trait that people call a weakness but that could be a strength."
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Ralph, Felix, Vanellope, Sergeant Calhoun, King Candy, or another character)"
+    lines: 3
+teacher: |
+  Questions 1 to 3 are plot comprehension. Questions 4 and 5 read social situations.
+
+  CASEL focus by question:
+
+  - Self-Awareness: labels and identity
+  - Social Awareness: excluding a different person
+  - Responsible Decision-Making: owning and repairing a mistake
+  - Self-Awareness and Social Awareness: reframing a weakness (also a light CS tie: a glitch is a bug)
+  - Personal Connection: self-reflection
+
+  Content note: Rated PG for rude humor and cartoon action. The Hero's Duty game has some scary alien bugs, and there are a few mild jokes. Fine for grades 6 to 9.

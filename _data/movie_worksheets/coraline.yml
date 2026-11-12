@@ -1,0 +1,45 @@
+part1:
+  - q: "Why does Coraline go through the small door in the wall?"
+    options: ["She wants to find her cat", "She is bored and curious, and her parents are too busy to play", "Her mother tells her to", "Wybie dares her to"]
+    answer: B
+  - q: "What is different about the people in the Other World?"
+    options: ["They have button eyes", "They are much older", "They are invisible", "They cannot speak"]
+    answer: A
+  - q: "What does the Other Mother want Coraline to do if she wants to stay?"
+    options: ["Give her the key", "Sew buttons over her eyes", "Cook dinner every night", "Never leave her room"]
+    answer: B
+  - q: "What does Coraline find hidden inside the Other World that she needs to rescue?"
+    options: ["The souls of the ghost children and her parents", "A treasure map", "A new friend", "Her missing cat"]
+    answer: A
+  - q: "What does Coraline do with the key at the end of the movie?"
+    options: ["Hides it in her room", "Drops it down the old well, so the door can never be opened again", "Gives it to Wybie", "Destroys it with a hammer"]
+    answer: B
+part2_title: "Think and Reflect"
+part2:
+  - label: "Self-Awareness"
+    text: "Coraline's parents are too busy, so she feels ignored. Describe a time when you wanted attention from someone who was busy. What did you do with that feeling?"
+    lines: 4
+  - label: "Responsible Decision-Making"
+    text: "The Other World is full of things Coraline wants: good food, a garden, attention. Why is it a trap? How can you tell when something that looks perfect is not good for you?"
+    lines: 4
+  - label: "Self-Management"
+    text: "Coraline is scared, but she keeps going and makes a plan. Pick one moment and describe what she did to stay calm and keep thinking."
+    lines: 4
+  - label: "Relationship Skills"
+    text: "In the real world, Wybie, Mr. Bobinsky and the neighbors seem strange at first, and they end up helping her. Why do we judge people too quickly? What did Coraline learn about the real people around her?"
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Coraline, Wybie, the Other Mother, Mr. Bobinsky, Miss Spink and Miss Forcible, the black cat, or another character)"
+    lines: 3
+teacher: |
+  Questions 1 to 3 are plot comprehension. Questions 4 and 5 ask students to read a motive.
+
+  CASEL focus by question:
+
+  - Self-Awareness: feeling ignored and wanting attention
+  - Responsible Decision-Making: spotting a trap (the Other World is "perfect")
+  - Self-Management: staying brave and thinking under stress
+  - Social Awareness and Relationship Skills: first impressions of the neighbors
+  - Personal Connection: self-reflection
+
+  Content note: Rated PG for scary images and thematic elements. This is the scariest film in this set: button eyes, a villain who changes into a monster, ghost children, and a long chase. A student who is sensitive to scary movies may want another film. The Other Mother is a villain who pretends to love a child, which can also be a good talking point. Best for grades 7 to 9.

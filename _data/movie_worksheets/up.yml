@@ -1,0 +1,45 @@
+part1:
+  - q: "What adventure do Carl and Ellie dream about as kids and promise to take?"
+    options: ["Visiting the moon", "Going to Paradise Falls in South America", "Sailing around the world", "Opening a balloon shop"]
+    answer: B
+  - q: "How does Carl make his house fly?"
+    options: ["With a rocket engine", "By tying thousands of balloons to it", "With a helicopter", "With a wind machine"]
+    answer: B
+  - q: "Who is stuck on the porch when the house takes off?"
+    options: ["Russell, a young Wilderness Explorer", "Dug the dog", "Kevin the bird", "Charles Muntz"]
+    answer: A
+  - q: "What does Dug's special collar do?"
+    options: ["It lets him fly", "It lets him speak in a human voice", "It makes him invisible", "It shows his location"]
+    answer: B
+  - q: "At the end, what does Carl give up to save his friends?"
+    options: ["His house and the things inside it", "His glasses", "His cane", "His balloons only"]
+    answer: A
+part2_title: "Think and Reflect"
+part2:
+  - label: "Self-Awareness"
+    text: "Carl holds on tightly to the house because it reminds him of Ellie. Think of something you would not want to lose. Why is it so important to you?"
+    lines: 4
+  - label: "Empathy"
+    text: "Russell has no one to go on adventures with, and Carl does not want him around at first. What might Carl have missed about how Russell felt? How can you tell when someone is lonely?"
+    lines: 4
+  - label: "Responsible Decision-Making"
+    text: "Muntz spent his whole life chasing one goal and it made him do harmful things. Where did his choices go wrong? What would you tell someone who is willing to do anything to win?"
+    lines: 4
+  - label: "Relationship Skills"
+    text: "Ellie's scrapbook says: \"Thanks for the adventure. Now go have a new one!\" What does that mean? How can an old friendship or a loved one help you keep going?"
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Carl, Russell, Dug, Kevin, Ellie, Muntz, or another character)"
+    lines: 3
+teacher: |
+  Questions 1 to 3 are plot comprehension (use the order of the film). Question 4 and 5 read social situations.
+
+  CASEL focus by question:
+
+  - Self-Awareness: attachment, loss and what matters
+  - Social Awareness: noticing a lonely person
+  - Responsible Decision-Making: Muntz as a warning about obsession
+  - Relationship Skills: honoring a relationship and moving on
+  - Personal Connection: self-reflection
+
+  Content note: Rated PG. The opening montage includes Ellie's death and Carl's grief, which is hard for students who have lost someone. The dogs chase and threaten the main characters and Muntz is dangerous. Fine for grades 6 to 9, with a heads up about the opening.

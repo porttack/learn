@@ -8,8 +8,8 @@ layout: minimal
   <p class="movie-meta"><em>Directed by {{ page.director }} | {{ page.studio }} ({{ page.year }}) | Rated {{ page.rating }} | {{ page.runtime }} minutes</em></p>
   <ul class="movie-facts">
     <li><strong>Grades:</strong> {{ page.grades }}</li>
-    <li><strong>Common Sense Media:</strong> <a href="https://www.commonsensemedia.org/movie-reviews/{{ page.slug }}">parents say {{ page.csm_parents }}+, kids say {{ page.csm_kids }}+</a></li>
-    <li><strong>Rotten Tomatoes:</strong> {{ page.rt_critics }}% critics, {{ page.rt_audience }}% audience</li>
+    <li><strong>Common Sense Media:</strong> <a href="https://www.commonsensemedia.org/movie-reviews/{{ page.slug }}">{% if page.csm_parents %}parents say {{ page.csm_parents }}+, kids say {{ page.csm_kids }}+{% else %}read the review{% endif %}</a></li>
+    <li><strong>Rotten Tomatoes:</strong> {{ page.rt_critics }}% critics{% if page.rt_audience %}, {{ page.rt_audience }}% audience{% endif %}</li>
   </ul>
   {% if page.trailer and page.trailer != "" %}
   <div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/{{ page.trailer }}" title="{{ page.title }} trailer" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
