@@ -10,6 +10,7 @@ project_part: 3
 label: "Project 2.3"
 source: original
 subtitle: "The voltage you can already read gets something fun to control"
+organizer: /pico/project2-3-worksheet/
 slides: /pico/project2-3-intro-slides/
 ---
 
