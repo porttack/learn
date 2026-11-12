@@ -123,6 +123,60 @@ function catalogName(catalogData, code) {
   return name;
 }
 
+// Name of the group (e.g. CASEL's competency, "Self-Management") a code sits in.
+function catalogGroupName(catalogData, code) {
+  if (!catalogData || !catalogData.groups) return null;
+  var name = null;
+  catalogData.groups.forEach(function (g) {
+    (g.items || []).forEach(function (item) { if (item.code === code) name = g.name; });
+  });
+  return name;
+}
+
+// A small original diagram of CASEL's five competencies (a ring of five
+// wedges around a center, in the order CASEL's own wheel uses, not its
+// artwork), with the competencies a page's codes touch filled in. Dark fill:
+// at least one "partial" fit. Light fill: only "related" fits. Empty: none.
+// A list beside it names each competency and says how many codes, so the
+// diagram is never the only carrier of the information (print, color blind).
+var CASEL_WHEEL = [
+  { prefix: 'SA', name: 'Self-Awareness' },
+  { prefix: 'SM', name: 'Self-Management' },
+  { prefix: 'RDM', name: 'Responsible Decision-Making' },
+  { prefix: 'REL', name: 'Relationship Skills' },
+  { prefix: 'SOC', name: 'Social Awareness' }
+];
+function caselWheelHtml(items) {
+  var stats = {};
+  items.forEach(function (it) {
+    var pre = String(it.code).split('.')[0];
+    var st = stats[pre] || (stats[pre] = { n: 0, partial: false });
+    st.n += 1;
+    if (it.strength === 'partial') st.partial = true;
+  });
+  var cx = 80, cy = 80, r0 = 30, r1 = 74, gap = 0.05;
+  function pt(r, a) { return (cx + r * Math.sin(a)).toFixed(1) + ' ' + (cy - r * Math.cos(a)).toFixed(1); }
+  var wedges = '', list = '';
+  CASEL_WHEEL.forEach(function (c, i) {
+    var a0 = i * 2 * Math.PI / 5 + gap, a1 = (i + 1) * 2 * Math.PI / 5 - gap;
+    var st = stats[c.prefix];
+    var cls = st ? (st.partial ? 'casel-on' : 'casel-related') : 'casel-off';
+    var d = 'M' + pt(r1, a0) + ' A' + r1 + ' ' + r1 + ' 0 0 1 ' + pt(r1, a1) +
+            ' L' + pt(r0, a1) + ' A' + r0 + ' ' + r0 + ' 0 0 0 ' + pt(r0, a0) + ' Z';
+    var mid = (a0 + a1) / 2;
+    var tp = pt((r0 + r1) / 2 + 1, mid).split(' ');
+    wedges += '<path class="' + cls + '" d="' + d + '"/>' +
+      '<text x="' + tp[0] + '" y="' + (parseFloat(tp[1]) + 3.5).toFixed(1) + '" text-anchor="middle" class="casel-abbr' + (st && st.partial ? ' casel-abbr-on' : '') + '">' + c.prefix + '</text>';
+    list += '<li class="' + cls + '"><span class="casel-swatch"></span>' + escapeHtml(c.name) +
+      (st ? ' <span class="casel-count">(' + st.n + ')</span>' : '') + '</li>';
+  });
+  return '<div class="casel-wheel-wrap">' +
+    '<svg class="casel-wheel" viewBox="0 0 160 160" role="img" aria-label="CASEL competencies this page touches, filled in on a five part wheel">' +
+    wedges + '<circle cx="80" cy="80" r="26" class="casel-center"/><text x="80" y="84" text-anchor="middle" class="casel-center-text">SEL</text></svg>' +
+    '<div><ul class="casel-wheel-list">' + list + '</ul>' +
+    '<p class="casel-wheel-key"><span class="casel-swatch casel-on"></span> a worksheet question asks for it &nbsp; <span class="casel-swatch casel-related"></span> the film shows it</p></div></div>';
+}
+
 // Matches one carrier's coverage against an optional chapter/locator,
 // returning [{fw, items: [{code, note}]}] -- chapterFilter null means
 // whole-source mode (every code the carrier covers anywhere).
@@ -142,7 +196,7 @@ function matchCarrierGroups(data, chapterFilter) {
         // locator_notes (optional) says how *this* page covers the code,
         // when the shared note describes several pages at once.
         var own = (entry.locator_notes || {})[chapterFilter];
-        items.push({ code: code, note: own || entry.note });
+        items.push({ code: code, note: own || entry.note, strength: (entry.locator_strengths || {})[chapterFilter] });
       }
     });
     if (items.length) groups.push({ fw: fw, items: items });
@@ -196,12 +250,15 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
       result.groups.forEach(function (g, i) {
         var meta = STANDARDS_FRAMEWORKS[g.fw];
         var catalogData = result.catalogs[i];
-        var frameworkHtml = '<h3>' + escapeHtml(meta.name) + '</h3><ul>';
+        var frameworkHtml = '<h3>' + escapeHtml(meta.name) + '</h3>' +
+          (g.fw === 'casel' && section.hasAttribute('data-casel-wheel') ? caselWheelHtml(g.items) : '') + '<ul>';
         g.items.forEach(function (item) {
           var url = base + '/standards/' + meta.file + '#' + meta.prefix + '-' + encodeURIComponent(item.code);
           var label = catalogLabel(g.fw, catalogData, item.code);
           var name = catalogName(catalogData, item.code);
+          var competency = g.fw === 'casel' ? catalogGroupName(catalogData, item.code) : null;
           frameworkHtml += '<li><a href="' + url + '">' + escapeHtml(item.code) + '</a>' +
+            (competency ? ' ' + escapeHtml(competency) + ':' : '') +
             (name ? ' <strong>' + escapeHtml(name) + '</strong>' : '') +
             (label ? ' — <em>' + escapeHtml(label) + '</em>' : '') +
             (item.note ? '<p class="standards-note">' + escapeHtml(item.note) + '</p>' : '') +

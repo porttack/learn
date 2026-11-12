@@ -27,7 +27,7 @@ layout: minimal
     <p>{{ page.before_you_watch }}</p>
   </section>
   {% endif %}
-  {% include standards-alignment.html carrier="movies" locator=page.slug %}
+  {% include standards-alignment.html carrier="movies" locator=page.slug open=true wheel=true %}
   <section class="movie-key" id="teacher-notes">
     <h2>Answer key and teacher notes</h2>
     <ol>{% for q in ws.part1 %}<li>{% if q.answer != "" %}<strong>{{ q.answer }}</strong>{% else %}(to check){% endif %} {{ q.q }}</li>{% endfor %}</ol>

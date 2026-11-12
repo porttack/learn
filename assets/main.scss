@@ -1451,6 +1451,35 @@ figure.figure-small img {
     margin: 1em 0 0;
     font-style: italic;
   }
+
+  // Small CASEL wheel (standards-alignment.js, caselWheelHtml). Dark = a
+  // worksheet question asks for it, light = the film shows it. Borders and a
+  // count in the list carry the same information in black and white.
+  .casel-wheel-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    flex-wrap: wrap;
+    margin: 0.4em 0 0.8em;
+  }
+  .casel-wheel { width: 9.5em; height: 9.5em; flex: none; }
+  .casel-wheel path { stroke: #4a5a66; stroke-width: 1; }
+  .casel-wheel .casel-off { fill: #f3f4f5; }
+  .casel-wheel .casel-related { fill: #c9dcea; }
+  .casel-wheel .casel-on { fill: #2a6f97; }
+  .casel-wheel .casel-center { fill: #fff; stroke: #4a5a66; stroke-width: 1; }
+  .casel-wheel .casel-center-text { font-size: 9px; font-weight: 700; fill: #4a5a66; }
+  .casel-wheel .casel-abbr { font-size: 8px; font-weight: 700; fill: #4a5a66; }
+  .casel-wheel .casel-abbr-on { fill: #fff; }
+  ul.casel-wheel-list { list-style: none; padding: 0; margin: 0 0 0.4em; }
+  .casel-wheel-list li { margin: 0.15em 0; display: flex; align-items: center; gap: 0.5em; }
+  .casel-wheel-list li.casel-off { color: $grey-color; }
+  .casel-wheel-list li.casel-on { font-weight: 700; }
+  .casel-count { font-weight: 400; }
+  .casel-swatch { display: inline-block; width: 0.9em; height: 0.9em; border: 1px solid #4a5a66; background: #f3f4f5; flex: none; }
+  .casel-swatch.casel-on, .casel-wheel-list li.casel-on .casel-swatch { background: #2a6f97; }
+  .casel-swatch.casel-related, .casel-wheel-list li.casel-related .casel-swatch { background: #c9dcea; }
+  .casel-wheel-key { margin: 0; font-size: 0.9em; }
 }
 
 // The Computer Science / Digital Literacy / SEL chevron each framework
