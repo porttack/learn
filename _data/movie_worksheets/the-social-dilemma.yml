@@ -1,0 +1,61 @@
+part1:
+  - q: "According to the film, how do most social media companies make money?"
+    options: ["Charging users a monthly fee", "Selling advertisers access to users' attention", "Selling users' phones", "Selling their own products"]
+    answer: B
+  - q: "What three goals does the film say the platforms are trying to reach?"
+    options: ["Engagement, growth and advertising revenue", "Safety, privacy and fun", "Education, news and science", "Friendship, art and music"]
+    answer: A
+  - q: "In the family story, what does the mother try at dinner to cut down on phone use?"
+    options: ["She cancels the internet", "She locks the phones in a container", "She throws the phones away", "She calls the school"]
+    answer: B
+  - q: "What happens to Ben, the teenager, as the app keeps suggesting things to him?"
+    options: ["He loses interest in his phone", "The suggestions slowly show him more extreme content, which pulls him into a protest", "He wins a contest", "He becomes a computer engineer"]
+    answer: B
+  - q: "Which of these is a tip the experts give at the end?"
+    options: ["Turn off notifications and do not accept the autoplayed next video", "Buy a bigger phone", "Post more often", "Delete all your friends"]
+    answer: A
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "How a Recommendation Works"
+    text: "The film says apps choose what to show you next so you keep watching. Explain in your own words how that works. What information do you think the app uses to decide?"
+    lines: 5
+  - label: "Data and Privacy"
+    text: "One person in the film says, \"If you're not paying for the product, you are the product.\" What do you think that means? Name two things a platform might know about you and how it could use them."
+    lines: 5
+  - label: "Built on Purpose"
+    text: "Former employees say features like notifications, likes and autoplay were designed on purpose. Pick ONE feature. Explain how it works and why a designer might build it. Do you think designers have a responsibility for what it does to people?"
+    lines: 5
+  - label: "Your Choices"
+    text: "The film ends with tips for using social media differently. Pick two that you think would help a teenager and explain why. Would you add one of your own?"
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Ben, Isla, Cassandra, their mother, Tristan Harris, Jaron Lanier, or another character)"
+    lines: 3
+teacher: |
+  Answer key: Part 1 follows the film as summarized by Wikipedia and Common Sense Media; confirm against the film.
+
+  Questions 1 and 2 are the film's main claim. Questions 3 and 4 follow the fictional family. Question 5 is from the closing section.
+
+  Teaching points by question:
+
+  - How a Recommendation Works: a system that learns from what you watch, how long you watch, what you like and who else watched, and shows more of what keeps you. Strong answers name the data and the goal.
+  - Data and Privacy: the user's attention is what advertisers buy. Strong answers name specific data (what you watch, where you are, who you follow) and a use (showing ads or choosing posts).
+  - Built on Purpose: look for a specific feature and an honest reason (to keep people on the app). A good answer weighs the benefit to the company with the effect on users.
+  - Your Choices: this is observational, not personal. Do not ask students to share their own habits aloud.
+
+  Critical viewing: the film is a docudrama, and its fictional family scenes were widely criticized as heavy-handed. Critics also said it oversimplifies and leaves out scholars who study these questions. Facebook (now Meta) responded that the film gives a distorted view and scapegoats social media for complex social problems. Defenders say the dramatization makes the ideas easier to follow. Ask students: who made the film, who is interviewed, who is not, and what does the film want you to do? That is a good way to use the film as media literacy and not only as a warning.
+
+  CASEL focus: "Built on Purpose" is Social Awareness (the influence of organizations and systems on behavior). "Your Choices" is Self-Management and Responsible Decision-Making (reflecting on one's role in well-being).
+
+  Content note: Rated PG-13. Common Sense Media lists it for ages 13 and up. It has mild profanity, news footage of protests, riots and bombings, a fictional teen and his sister arrested at a protest, and interviewees discussing teen self-harm and suicide statistics. Some students may find the topic close to home. Remind the class that your counselor is available. Best for grades 8 to 11. Preview it.
+before: |
+  About 10 to 15 minutes. The film is about the technology in every student's pocket. The warm-ups get students thinking about their own opinions before they hear the experts, and nobody has to share personal habits.
+
+  - **Guess the number (2 minutes):** How many hours a day do you think the average American teenager spends on a phone? Write guesses on the board. Do not ask about anyone's own use. Check the real number at the end.
+  - **Free? (3 minutes):** If an app costs nothing, how does the company make money? Take guesses. Write them on the board. Come back to this at "Data and Privacy."
+  - **Recommendation game (3 minutes):** How does a video app decide what to show you next? List guesses. Ask which ones involve the app learning about you.
+  - **Fingers (2 minutes):** Hold up 1 to 5 fingers: how much do you think apps are designed to keep you using them? Take one or two volunteers from each end.
+  - **Who made it? (2 minutes):** The film is made by a company and shown on a company's service. Who might want you to hear this, and who might not? How can you tell if a documentary is fair? Write ideas on the board.
+  - **Wheel of Names (2 minutes):** paste in the class list and spin. "Name one thing that helps people focus on a task."
+
+  A note on content: the film includes statistics on teen self-harm and suicide. Mention that briefly beforehand, say that students can look away or step out, and remind them who they can talk to.

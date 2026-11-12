@@ -14,6 +14,8 @@ rt_critics: 93   # Rotten Tomatoes, from Wikipedia 2026-11-11 (check); audience 
 csm_parents: 9   # Common Sense Media age, checked 2026-11-11
 csm_kids: 10
 runtime: 127
+slides: /movies/grace-hopper-slides/
+slides_label: "Grace Hopper slides (a short history)"
 ---
 
 ## What happens

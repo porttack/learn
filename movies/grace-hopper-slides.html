@@ -1,0 +1,695 @@
+---
+title: "Grace Hopper slides"
+permalink: /movies/grace-hopper-slides/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Grace Hopper: Slides</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg">
+<style>
+  :root {
+    --accent: #2a7ae2;
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #57606a;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #e9edf1;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  #root { height: 100%; }
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .stage-outer {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+    position: relative;
+  }
+
+  /* Fixed-size design canvas, scaled to fit via a JS-computed transform --
+     lets every slide be authored at generous, fixed pixel sizes ("bigger
+     type") without hand-tuning responsive font sizes per breakpoint. */
+  .stage {
+    width: 1280px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.18);
+    padding: 80px 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+
+  .stage.ar-16-9 { height: 720px; }
+  .stage.ar-4-3 { height: 960px; }
+
+  .kicker {
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 18px;
+  }
+
+  .slide-title {
+    font-size: 64px;
+    line-height: 1.1;
+    margin: 0 0 40px;
+    font-weight: 700;
+  }
+
+  .slide-body {
+    font-size: 36px;
+    line-height: 1.5;
+  }
+
+  .slide-body ul {
+    margin: 0;
+    padding-left: 1.1em;
+  }
+
+  .slide-body li {
+    margin-bottom: 22px;
+  }
+
+  .slide-body li:last-child { margin-bottom: 0; }
+
+  .slide-image-row {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .slide-image-row img {
+    max-height: 260px;
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-image-row .slide-body {
+    flex: 1 1 auto;
+    font-size: 30px;
+  }
+
+  .slide-image-row .slide-body li {
+    margin-bottom: 16px;
+  }
+
+  .slide-body a, .slide-image-row .slide-body a {
+    color: var(--accent);
+  }
+
+  .slide-gallery-row {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    align-items: flex-start;
+  }
+
+  .slide-gallery-item {
+    flex: 1 1 0;
+    text-align: center;
+  }
+
+  .slide-gallery-item img {
+    max-width: 100%;
+    max-height: 220px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .slide-gallery-item .caption {
+    margin-top: 14px;
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .depth-nav {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 14px;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 3;
+  }
+
+  .depth-nav.depth-up {
+    bottom: auto;
+    top: 14px;
+  }
+
+  .depth-nav:hover {
+    background: rgba(0,0,0,0.75);
+  }
+
+  .title-slide {
+    text-align: left;
+    justify-content: center;
+  }
+
+  .title-slide .slide-title {
+    font-size: 76px;
+    margin-bottom: 16px;
+  }
+
+  .title-slide .slide-subtitle {
+    font-size: 34px;
+    color: var(--muted);
+  }
+
+  .safety-slide {
+    background: #fff7e6;
+  }
+
+  .safety-slide .kicker {
+    color: #b25e00;
+  }
+
+  .slide-counter-badge {
+    position: absolute;
+    bottom: 18px;
+    right: 24px;
+    font-size: 15px;
+    color: var(--muted);
+  }
+
+  /* --- Toolbar (not part of the scaled stage, so it stays a readable,
+     fixed size regardless of projector distance / zoom level) --- */
+  .toolbar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: #1b1f23;
+    color: #fff;
+    font-size: 14px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar button {
+    background: #333a42;
+    color: #fff;
+    border: 1px solid #4a545e;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .toolbar button:hover { background: #444e58; }
+  .toolbar button.active { background: var(--accent); border-color: var(--accent); }
+  .toolbar button:disabled { opacity: 0.4; cursor: default; }
+
+  .toolbar .spacer { flex: 1 1 auto; }
+  .toolbar .counter { min-width: 4.5em; text-align: center; }
+  .toolbar a.back-link { color: #9db8e8; text-decoration: none; font-size: 14px; }
+  .toolbar a.back-link:hover { text-decoration: underline; }
+
+  /* --- Speaker notes panel: docked below the stage, plain readable text,
+     hidden by default so a mirrored/projected display shows a clean deck. --- */
+  .notes-panel {
+    flex: 0 0 auto;
+    background: #f6f8fa;
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    max-height: 26vh;
+    overflow-y: auto;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .notes-panel h3 {
+    margin: 0 0 6px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+  }
+
+  .click-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 30%;
+    cursor: pointer;
+  }
+  .click-zone.left { left: 0; }
+  .click-zone.right { right: 0; }
+
+  /* --- Outline / print-notes view: a plain scrollable page listing every
+     slide with its full speaker notes, meant for printing ahead of class. --- */
+  .outline {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  .outline h1 { margin-bottom: 4px; }
+  .outline .outline-sub { color: var(--muted); margin-top: 0; }
+
+  .outline-slide {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    break-inside: avoid;
+  }
+
+  .outline-slide h2 {
+    margin: 0 0 8px;
+    font-size: 22px;
+  }
+
+  .outline-slide.outline-nested {
+    margin: 12px 0 12px 32px;
+    background: #f6f8fa;
+    border-style: dashed;
+  }
+
+  .outline-slide h3 {
+    margin: 0 0 6px;
+    font-size: 18px;
+    color: var(--muted);
+  }
+
+  .outline-slide .outline-bullets {
+    color: var(--muted);
+    font-size: 15px;
+    margin: 0 0 14px;
+  }
+
+  .outline-slide .outline-notes {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .outline-slide .outline-notes p:first-child { margin-top: 0; }
+
+  @media print {
+    .toolbar { display: none !important; }
+    .outline { height: auto; overflow: visible; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+
+<script type="text/babel" data-type="module">
+{% raw %}
+const { useState, useEffect, useRef, useCallback } = React;
+
+// Edit this array to change the deck. `bullets` is what students see on the
+// slide (keep it short, they're reading fast); `notes` is only ever shown in
+// the notes panel or the printable outline, so it can be a full paragraph.
+// A bullet can be a plain string, or { text, href } to render as a link.
+// A top-level slide can carry a `down` array of extra slides reachable with
+// the down arrow / "More" button -- optional detail (more pictures, a deeper
+// dive) that the fast path (left/right, space) skips right over.
+const SLIDES = [
+  {
+    kind: "title",
+    kicker: "Computing history",
+    title: "Grace Hopper",
+    subtitle: "The scientist who taught computers to read words",
+    notes: "About 10 minutes. Hidden Figures never mentions Grace Hopper, but Dorothy Vaughan's programming scenes make a natural bridge: a different woman, a different place (the US Navy and early business computers), the same decade of computing. Sources for every date and claim are listed in these notes. Where a popular story is only half true, the notes say so and one slide near the end names the myths."
+  },
+  {
+    kind: "bullets",
+    kicker: "Before the computers",
+    title: "A mathematician, then a sailor",
+    bullets: [
+      "Born in New York City, December 9, 1906",
+      "PhD in math from Yale, 1934, then taught math at Vassar",
+      "Joined the Navy at age 36, in 1943",
+      "Graduated first in her midshipman class, 1944"
+    ],
+    notes: "Facts from Wikipedia's biography of Hopper. She was turned down at first and needed an exemption to be commissioned (she was under the Navy's weight limit and had an important teaching job), then joined the Navy Reserve as part of the WAVES. Ask: why would someone with a PhD and a teaching job join the Navy in the middle of a war? Keep it short; the point is that she changed careers at 36."
+  },
+  {
+    kind: "bullets",
+    kicker: "Her first computer",
+    title: "The Harvard Mark I",
+    bullets: [
+      "1944: she is sent to work on a huge new machine",
+      "It filled a room and ran on electric switches",
+      "She helped write the instructions it followed",
+      "She wrote papers about how it worked"
+    ],
+    notes: "Hopper joined Howard Aiken's team on the Harvard Mark I in 1944 and worked with it until 1949, co-authoring three papers on it (Wikipedia). 'Electromechanical' is the accurate word: it used switches and relays, not tubes or chips. Point out that 'writing the instructions' is exactly what students do when they write a program. Note for Hidden Figures viewers: this is the same era as the human computers at NASA, only in the Navy and at Harvard."
+  },
+  {
+    kind: "bullets",
+    kicker: "The famous bug",
+    title: "A moth in the machine",
+    bullets: [
+      "1947: a moth is found stuck in a relay of the Harvard Mark II",
+      "The crew taped it into the logbook",
+      "Written beside it: \"First actual case of bug being found\"",
+      "The logbook page is in the Smithsonian"
+    ],
+    notes: "What is documented: in 1947 a moth was found in a relay of the Harvard Mark II, and the crew logged it as the first actual case of a bug being found. The log is held by the Smithsonian. What is NOT true: that Hopper invented the word 'bug.' Engineers used 'bug' for a machine fault long before, and Thomas Edison used it in 1878. The log entry is a joke about an old word. Hopper is credited with popularizing 'debugging,' not with inventing it. Good moment to ask: what is a bug in your own code, and how do you find one?"
+  },
+  {
+    kind: "bullets",
+    kicker: "The big idea",
+    title: "Write it in words",
+    bullets: [
+      "1952: she finishes a program called A-0",
+      "It pieced together ready-made code from short instructions",
+      "Her team went on to build FLOW-MATIC, with English-like words",
+      "Now programmers could write less and read more"
+    ],
+    notes: "A-0 (1952): Hopper called it a compiler. Computer historians note that in modern terms it was closer to a linker and loader, a piece of what we now call a compiler, so 'she wrote the first compiler' is an exaggeration even though she is often credited that way. FLOW-MATIC and MATH-MATIC were early compiler-based languages released by her department at the company that built UNIVAC. Connect to students: when you type print in Python, a program turns it into instructions the chip understands. She argued that this translation was the computer's job, not the programmer's."
+  },
+  {
+    kind: "bullets",
+    kicker: "A language for business",
+    title: "COBOL, 1959",
+    bullets: [
+      "A language that reads like English",
+      "Made for business and government computing",
+      "A committee built it, and Hopper advised it",
+      "Her FLOW-MATIC was one of its main ideas"
+    ],
+    notes: "Hopper was a technical consultant to the CODASYL committee that designed COBOL in 1959. COBOL extended her FLOW-MATIC work with ideas from IBM's COMTRAN, and many of her former employees served on the committee. She did NOT invent COBOL alone; calling her 'the mother of COBOL' is common but overstated. A fun fact for students: COBOL is still running in some banks and government systems today, which is why people still call her 'Grandma COBOL.' (Nickname from Wikipedia.)"
+  },
+  {
+    kind: "bullets",
+    kicker: "Making it real",
+    title: "A nanosecond is 11.8 inches",
+    bullets: [
+      "She handed out pieces of wire, each about 30 centimeters long",
+      "That is how far light travels in one billionth of a second",
+      "She used pepper grains for a picosecond",
+      "Her point: small and fast beats big and slow"
+    ],
+    notes: "The National Museum of American History in the Smithsonian holds a bundle of about a hundred of these wires, each about 30 cm (11.8 in). Per the museum, she started handing them out in the late 1960s to show that smaller components make faster computers, and her audiences were often admirals and generals who asked why satellite communication took so long. A caveat she made herself: signals move more slowly through actual wire than light does in a vacuum. Have students find a ruler and measure 11.8 inches. This is the best slide for showing why she was a great teacher."
+  },
+  {
+    kind: "bullets",
+    kicker: "Later years",
+    title: "Still in the Navy at 79",
+    bullets: [
+      "Retired in 1986 as a rear admiral, the oldest active officer in the Navy",
+      "Died January 1, 1992, age 85",
+      "The USS Hopper, a Navy ship, launched in 1996",
+      "Presidential Medal of Freedom, awarded after her death, 2016"
+    ],
+    notes: "Wikipedia: she retired in August 1986 at about 79 after more than 42 years of service. She had retired once before, in 1966, and was recalled. Her rank was commodore, renamed rear admiral (lower half) in 1985. Her honors include the National Medal of Technology (1991), the Defense Distinguished Service Medal (1986), and the Presidential Medal of Freedom, awarded after her death in November 2016 by President Obama. USS Hopper (DDG-70) was launched in 1996. Ask: what do you think it takes to keep learning for 40 years?"
+  },
+  {
+    kind: "bullets",
+    kicker: "Sorting fact from story",
+    title: "Three myths to skip",
+    bullets: [
+      "She did not invent the word \"bug\"",
+      "She did not invent COBOL by herself",
+      "A-0 is often called the first compiler, but it was closer to a linker",
+      "The real story is still great"
+    ],
+    notes: "A good media-literacy moment, and a good tie to Hidden Figures, which also changes some real events. Ask: why do you think these stories get exaggerated? What does a story gain and lose when a person is turned into a single big invention? A fourth claim you may see: that she was the first woman to earn a math PhD at Yale. Wikipedia notes another woman earned one before 1934, so skip that one as well."
+  },
+  {
+    kind: "bullets",
+    kicker: "Your turn",
+    title: "Think about it",
+    bullets: [
+      "What do you use today that she made possible?",
+      "Why does it help to write code that people can read?",
+      "How did she make a hard idea easy to see?"
+    ],
+    notes: "Give two or three minutes for talk in pairs, then take answers. Strong answers name higher-level languages like Python, compilers, and her use of a physical object (the wire) to explain a hard idea. If you have time, send students to a freely available lecture clip of Hopper's nanosecond explanation. Sources used for this deck: Wikipedia, 'Grace Hopper'; the National Museum of American History (Smithsonian) record for the 'Nanoseconds Associated with Grace Hopper' object. Check dates against those before presenting."
+  }
+];
+
+// A bullet is either a plain string, or { text, href } to render as a link
+// (used for pointing straight at the chapter or the Notes page).
+function renderBullets(bullets) {
+  return (
+    <ul>
+      {bullets.map((b, i) => (
+        <li key={i}>{typeof b === "string" ? b : <a href={b.href}>{b.text}</a>}</li>
+      ))}
+    </ul>
+  );
+}
+
+function Stage({ slide, aspect }) {
+  const arClass = aspect === "4:3" ? "ar-4-3" : "ar-16-9";
+  if (slide.kind === "title") {
+    return (
+      <div className={"stage title-slide " + arClass}>
+        {slide.kicker && <p className="kicker">{slide.kicker}</p>}
+        <h1 className="slide-title">{slide.title}</h1>
+        {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+      </div>
+    );
+  }
+  if (slide.kind === "image") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-image-row">
+          <img src={slide.image} alt="" />
+          <div className="slide-body">{renderBullets(slide.bullets)}</div>
+        </div>
+      </div>
+    );
+  }
+  if (slide.kind === "gallery") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-gallery-row">
+          {slide.images.map((im, i) => (
+            <div className="slide-gallery-item" key={i}>
+              <img src={im.src} alt="" />
+              <p className="caption">{im.caption}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  const extraClass = slide.kind === "safety" ? " safety-slide" : "";
+  return (
+    <div className={"stage " + arClass + extraClass}>
+      <p className="kicker">{slide.kicker}</p>
+      <h1 className="slide-title">{slide.title}</h1>
+      <div className="slide-body">{renderBullets(slide.bullets)}</div>
+    </div>
+  );
+}
+
+function ScaledStage({ slide, aspect }) {
+  const outerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const designW = 1280;
+  const designH = aspect === "4:3" ? 960 : 720;
+
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const recompute = () => {
+      const rect = el.getBoundingClientRect();
+      const s = Math.min((rect.width * 0.94) / designW, (rect.height * 0.94) / designH);
+      setScale(s > 0 ? s : 1);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => { ro.disconnect(); window.removeEventListener("resize", recompute); };
+  }, [designH]);
+
+  return (
+    <div className="stage-outer" ref={outerRef}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}>
+        <Stage slide={slide} aspect={aspect} />
+      </div>
+    </div>
+  );
+}
+
+function bulletsToText(bullets) {
+  return bullets.map(b => (typeof b === "string" ? b : b.text)).join(" / ");
+}
+
+function OutlineCard({ slide, heading, nested }) {
+  return (
+    <div className={"outline-slide" + (nested ? " outline-nested" : "")}>
+      {nested ? <h3>{heading}</h3> : <h2>{heading}</h2>}
+      {slide.bullets && <p className="outline-bullets">On slide: {bulletsToText(slide.bullets)}</p>}
+      {slide.images && <p className="outline-bullets">Photos: {slide.images.map(im => im.caption).join(" / ")}</p>}
+      <div className="outline-notes"><p>{slide.notes}</p></div>
+    </div>
+  );
+}
+
+function Outline() {
+  return (
+    <div className="outline">
+      <h1>Grace Hopper</h1>
+      <p className="outline-sub">Speaker notes outline. Print this before class if you'd rather have paper than toggle notes on screen. Indented cards are optional "down arrow" detail, skipped by the normal next/prev flow.</p>
+      {SLIDES.map((s, i) => (
+        <React.Fragment key={i}>
+          <OutlineCard slide={s} heading={`${i + 1}. ${s.title}`} />
+          {(s.down || []).map((d, j) => (
+            <OutlineCard slide={d} heading={`Extra: ${d.title}`} nested key={j} />
+          ))}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+// Deep-linking: ?slide=3 opens on that slide (1-indexed, to match the
+// on-screen counter), ?extra=1 additionally drops into that slide's Nth
+// "down" slide if it has any, ?outline=1 opens straight into the
+// speaker-notes outline -- handy for linking straight to the safety slide,
+// or handing a substitute teacher the notes view without them finding the
+// button.
+function initialStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const slideParam = parseInt(params.get("slide"), 10);
+  const index = Number.isInteger(slideParam) ? Math.min(Math.max(slideParam - 1, 0), SLIDES.length - 1) : 0;
+  const maxExtra = (SLIDES[index].down || []).length;
+  const extraParam = parseInt(params.get("extra"), 10);
+  const subIndex = Number.isInteger(extraParam) ? Math.min(Math.max(extraParam, 0), maxExtra) : 0;
+  const mode = params.get("outline") ? "outline" : "deck";
+  return { index, subIndex, mode };
+}
+
+function App() {
+  const initial = initialStateFromUrl();
+  const [index, setIndex] = useState(initial.index);
+  const [subIndex, setSubIndex] = useState(initial.subIndex);
+  const [showNotes, setShowNotes] = useState(false);
+  const [aspect, setAspect] = useState("16:9");
+  const [mode, setMode] = useState(initial.mode); // "deck" | "outline"
+
+  const topSlide = SLIDES[index];
+  const downSlides = topSlide.down || [];
+  const slide = subIndex === 0 ? topSlide : downSlides[subIndex - 1];
+
+  const next = useCallback(() => { setIndex(i => Math.min(i + 1, SLIDES.length - 1)); setSubIndex(0); }, []);
+  const prev = useCallback(() => { setIndex(i => Math.max(i - 1, 0)); setSubIndex(0); }, []);
+  const goDown = useCallback(() => setSubIndex(s => Math.min(s + 1, downSlides.length)), [downSlides.length]);
+  const goUp = useCallback(() => setSubIndex(s => Math.max(s - 1, 0)), []);
+
+  useEffect(() => {
+    function onKey(e) {
+      if (mode !== "deck") {
+        if (e.key === "Escape") setMode("deck");
+        return;
+      }
+      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); goDown(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); goUp(); }
+      else if (e.key === "n" || e.key === "N") setShowNotes(v => !v);
+      else if (e.key === "f" || e.key === "F") toggleFullscreen();
+      else if (e.key === "o" || e.key === "O") setMode("outline");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mode, next, prev, goDown, goUp]);
+
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+
+  if (mode === "outline") {
+    return (
+      <div className="app">
+        <div className="toolbar">
+          <a className="back-link" href="/movies/hidden-figures/">&larr; Hidden Figures</a>
+          <div className="spacer"></div>
+          <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
+          <button onClick={() => window.print()}>Print</button>
+        </div>
+        <Outline />
+      </div>
+    );
+  }
+
+  return (
+    <div className="app">
+      <div className="stage-outer" style={{ position: "relative" }}>
+        <ScaledStage slide={slide} aspect={aspect} />
+        <div className="click-zone left" onClick={prev} title="Previous slide"></div>
+        <div className="click-zone right" onClick={next} title="Next slide"></div>
+        {subIndex > 0 && (
+          <button className="depth-nav depth-up" onClick={goUp} title="Back to the main flow">&#9650; Back</button>
+        )}
+        {subIndex < downSlides.length && (
+          <button className="depth-nav depth-down" onClick={goDown} title="More about this slide">&#9660; More</button>
+        )}
+        <div className="slide-counter-badge">
+          {index + 1} / {SLIDES.length}
+          {subIndex > 0 && <span> &middot; extra {subIndex}/{downSlides.length}</span>}
+        </div>
+      </div>
+      {showNotes && (
+        <div className="notes-panel">
+          <h3>Speaker notes</h3>
+          <p>{slide.notes}</p>
+        </div>
+      )}
+      <div className="toolbar">
+        <a className="back-link" href="/movies/hidden-figures/">&larr; Hidden Figures</a>
+        <div className="spacer"></div>
+        <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
+        <span className="counter">{index + 1} / {SLIDES.length}</span>
+        <button onClick={next} disabled={index === SLIDES.length - 1}>Next &rarr;</button>
+        <button className={showNotes ? "active" : ""} onClick={() => setShowNotes(v => !v)}>Notes (N)</button>
+        <button onClick={() => setMode("outline")}>Print notes (O)</button>
+        <button onClick={() => setAspect(a => a === "16:9" ? "4:3" : "16:9")}>{aspect}</button>
+        <button onClick={toggleFullscreen}>Fullscreen (F)</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+{% endraw %}
+</script>
+</body>
+</html>

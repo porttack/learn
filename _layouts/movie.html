@@ -42,7 +42,8 @@ layout: minimal
   <p class="movie-actions">
     <button class="print-button" type="button" onclick="window.print()">Print these notes</button>
     <a class="print-button movie-key-link" href="?key=1#teacher-notes">Show answer key</a>
-    {% if page.watch_page %}<a class="print-button" href="{{ '/movies/' | append: page.slug | append: '-watch/' | relative_url }}">Watch the full video</a>
+    {% if page.slides %}<a class="print-button" href="{{ page.slides | relative_url }}">{{ page.slides_label | default: "Slides" }}</a>
+    {% endif %}    {% if page.watch_page %}<a class="print-button" href="{{ '/movies/' | append: page.slug | append: '-watch/' | relative_url }}">Watch the full video</a>
     {% endif %}<a class="print-button" href="{{ '/movies/' | append: page.slug | append: '-worksheet/' | relative_url }}">Printable worksheet</a>
   </p>
 </article>

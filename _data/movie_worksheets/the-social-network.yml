@@ -1,0 +1,59 @@
+part1:
+  - q: "What is Facemash, the site Mark builds in 2003?"
+    options: ["A site for sharing homework", "A site that lets visitors rate students' photos, taken from Harvard's online photo directories without asking", "A dating site he sells to the school", "A site for buying textbooks"]
+    answer: B
+  - q: "What happens to Mark because of Facemash?"
+    options: ["He is given a prize", "It crashes part of Harvard's network, and he is put on academic probation", "He is expelled at once", "Nothing happens"]
+    answer: B
+  - q: "Who gives Mark the first $1,000 to start thefacebook?"
+    options: ["Sean Parker", "Eduardo Saverin", "Cameron Winklevoss", "Larry Summers"]
+    answer: B
+  - q: "Which co-founder of Napster joins the company and pushes Mark to think bigger?"
+    options: ["Sean Parker", "Peter Thiel", "Divya Narendra", "Dustin Moskovitz"]
+    answer: A
+  - q: "What happens to Eduardo's share of the company?"
+    options: ["It grows", "A new investment shrinks his share to almost nothing, and he is removed as co-founder", "It stays the same", "He sells it to Mark's friends"]
+    answer: B
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Whose Photos?"
+    text: "Mark builds Facemash from photos he took from Harvard's online directories without asking the students. Why is using people's photos or data without permission a problem even when a programmer can get at them? What should a programmer ask before building something like this?"
+    lines: 5
+  - label: "Why It Grew"
+    text: "The site spread school by school, first Harvard, then other colleges. Why would a site like this become more useful as more people join? Why might starting at one school have helped?"
+    lines: 5
+  - label: "Credit and Fairness"
+    text: "Two groups say Mark took their ideas or cut them out. Pick one and explain whether you think it was fair. What would a fair deal have looked like, and what should the friends have agreed on first?"
+    lines: 5
+  - label: "Fact or Fiction"
+    text: "The film is based on a book and the real people say some parts are made up. How should you treat a movie that says it is \"based on a true story\"? Describe two ways you could check what really happened."
+    lines: 5
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Mark, Eduardo, Sean Parker, Erica, the Winklevoss twins, Divya, or another character)"
+    lines: 3
+teacher: |
+  Answer key: Part 1 follows the plot as summarized by Wikipedia and Common Sense Media; confirm against the film.
+
+  Questions 1 to 3 are plot comprehension. Questions 4 and 5 ask students to follow a reveal about money and control.
+
+  Teaching points by question:
+
+  - Whose Photos?: consent and privacy, and the difference between "can" and "should." Strong answers say a programmer should ask whether the people agreed and who could be hurt.
+  - Why It Grew: the network effect (a network is more valuable with more users) and why a closed start, one school at a time, helped. This is a good moment to connect to how apps grow.
+  - Credit and Fairness: no single right answer. Strong answers say agreements need to be written down, and that being legal and being fair are different things.
+  - Fact or Fiction: the film is a dramatization by writer Aaron Sorkin based on Ben Mezrich's book, "The Accidental Billionaires." The real Zuckerberg, Saverin, Sean Parker and Dustin Moskovitz have each criticized its accuracy. Strong answers say to check more than one source, to look at who has a reason to tell the story one way, and to separate events from motives.
+
+  CASEL focus: "Credit and Fairness" is Responsible Decision-Making (anticipating consequences). "Fact or Fiction" is Responsible Decision-Making (a reasoned judgment from information).
+
+  Content note: Rated PG-13. Common Sense Media lists it for ages 14 and up and rates the language and drinking "a lot": strong profanity including the f-word, heavy college drinking, pot and pills, a cocaine snort interrupted by police, passionate bathroom-stall hook-ups and women shown in underwear at parties. Some critics called the film misogynistic, and writer Aaron Sorkin answered that he was writing about a group of angry, misogynistic characters. Facemash, which rates students' looks, is shown. Best for grades 10 to 11. Preview it, and consider whether to skip or fast-forward a few scenes.
+before: |
+  About 10 to 15 minutes. The film is about the first years of a site students use every day. The warm-ups raise the questions it asks, without anyone having to share personal stories.
+
+  - **Who built it? (3 minutes):** Name a website or app everyone uses. Who do you think built it, how old were they, and how long did it take? Take guesses on the board, and check one at the end.
+  - **Photos and permission (3 minutes):** Imagine someone built a website with every student's school photo and let people vote on who looks best, without asking. Who is hurt? Who is not? What should the builder have done first? Take two or three ideas.
+  - **Whose idea? (3 minutes, pairs):** Two friends come up with an idea for an app. One builds it and the other does not. Who owns the idea? What should they have agreed on before they started? Each pair shares one thing to write down.
+  - **What does "based on a true story" mean? (2 minutes):** Ask: when a movie says this, how much is true? How could you check? Write ideas on the board. Come back at "Fact or Fiction."
+  - **Predict from the title (2 minutes):** Why might a movie about a website be called The Social Network? Take guesses.
+  - **Wheel of Names (2 minutes):** paste in the class list and spin. "Name something you made or built that you would want credit for."
+
+  A note on tone: this film has adult content. Tell students ahead of time what to expect (language, drinking and a few party scenes), and that you may skip a scene or two.
