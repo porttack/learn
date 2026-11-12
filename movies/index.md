@@ -27,7 +27,12 @@ Movies we watch in class. Each has a summary, a trailer, and a worksheet you can
 {% assign films = site.movies | sort: "title" %}
 {% for film in films %}
     <tr>
-      <td data-sort="{{ film.title }}"><a href="{{ film.url | relative_url }}"><strong>{{ film.title }}</strong></a><br><a href="{{ '/movies/' | append: film.slug | append: '-worksheet/' | relative_url }}">Worksheet</a>{% if film.watch_page %} &middot; <a href="{{ '/movies/' | append: film.slug | append: '-watch/' | relative_url }}">Watch</a>{% endif %}</td>
+      {%- assign sort_title = film.title -%}
+      {%- assign first4 = film.title | slice: 0, 4 -%}
+      {%- assign first2 = film.title | slice: 0, 2 -%}
+      {%- if first4 == "The " -%}{%- assign sort_title = film.title | slice: 4, 200 -%}
+      {%- elsif first2 == "A " -%}{%- assign sort_title = film.title | slice: 2, 200 -%}{%- endif -%}
+      <td data-sort="{{ sort_title }}"><a href="{{ film.url | relative_url }}"><strong>{{ film.title }}</strong></a><br><a href="{{ '/movies/' | append: film.slug | append: '-worksheet/' | relative_url }}">Worksheet</a>{% if film.watch_page %} &middot; <a href="{{ '/movies/' | append: film.slug | append: '-watch/' | relative_url }}">Watch</a>{% endif %}</td>
       <td>{{ film.grades }}</td>
       <td data-sort="{% case film.rating %}{% when 'G' %}1{% when 'PG' %}2{% when 'PG-13' %}3{% else %}4{% endcase %}">{{ film.rating }}</td>
       <td>{{ film.year }}</td>
