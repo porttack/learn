@@ -107,6 +107,22 @@ function catalogLabel(fw, catalogData, code) {
   return null;
 }
 
+// Short official-style name of a standard (e.g. CASEL's "Exhibiting
+// self-discipline and self-motivation"), shown in bold before the summary so
+// a reader sees what the code is at a glance. Only catalogs whose items carry
+// a `name` have one (the grouped shape); others return null and render as
+// before.
+function catalogName(catalogData, code) {
+  if (!catalogData || !catalogData.groups) return null;
+  var name = null;
+  catalogData.groups.forEach(function (g) {
+    (g.items || []).forEach(function (item) {
+      if (item.code === code && item.name) name = item.name;
+    });
+  });
+  return name;
+}
+
 // Matches one carrier's coverage against an optional chapter/locator,
 // returning [{fw, items: [{code, note}]}] -- chapterFilter null means
 // whole-source mode (every code the carrier covers anywhere).
@@ -184,7 +200,9 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
         g.items.forEach(function (item) {
           var url = base + '/standards/' + meta.file + '#' + meta.prefix + '-' + encodeURIComponent(item.code);
           var label = catalogLabel(g.fw, catalogData, item.code);
+          var name = catalogName(catalogData, item.code);
           frameworkHtml += '<li><a href="' + url + '">' + escapeHtml(item.code) + '</a>' +
+            (name ? ' <strong>' + escapeHtml(name) + '</strong>' : '') +
             (label ? ' — <em>' + escapeHtml(label) + '</em>' : '') +
             (item.note ? '<p class="standards-note">' + escapeHtml(item.note) + '</p>' : '') +
             '</li>';

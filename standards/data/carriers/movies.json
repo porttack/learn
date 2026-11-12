@@ -23,13 +23,19 @@
       "wreck-it-ralph": "Wreck-It Ralph",
       "turning-red": "Turning Red"
     },
-    "caveat": "Deliberately conservative. These are films with a worksheet, not instruction, so nothing is rated strong. 'Partial' means a worksheet question asks students to think about the competency; 'related' means the film shows it but no question asks about it. Mapped from each worksheet's reflection questions (Part 2) and the CASEL labels in each film's teacher notes; the students' answers were not checked. Only CASEL is mapped, plus one AP CSP code for Ron's Gone Wrong. Computer science films (Wild Robot, WALL-E, Big Hero 6, Spare Parts) have light entries because their worksheets ask about computing, not social-emotional skills.",
+    "caveat": "Deliberately conservative. These are films with a worksheet, not instruction, so nothing is rated strong. 'Partial' means a worksheet question asks students to think about the idea; 'related' means the film shows it but no question asks about it. Mapped from each worksheet's Part 2 questions and the CASEL labels in each film's teacher notes; students' answers were not checked. Frameworks: CASEL (all films), AP CSP, California CS, CSTA 2026 and CA CTE (the computing films), ISTE and UNESCO MIL (Ron's Gone Wrong only), and three Common Core speaking and listening codes (all films, related only). The SEL-only films (Inside Out, Inside Out 2, Totoro, Coraline, Up, Nausicaa, Wreck-It Ralph, Turning Red) have no CS codes except Wreck-It Ralph's one related note on bugs.",
     "alignment_log": [
       {
         "date": "2026-11-11",
         "by": "Claude Sonnet 5.5",
         "scope": "First pass: all 15 films against casel, plus apcsp 5.6 for Ron's Gone Wrong",
         "note": "Read each worksheet's Part 2 questions and matched them to this repo's CASEL catalog. No strong entries on purpose. Left out: CDE T-SEL, Common Core speaking and writing (the worksheets are writing prompts, but writing is not what the films are for), and the CS frameworks other than the one code above."
+      },
+      {
+        "date": "2026-11-11",
+        "by": "Claude Sonnet 5.5",
+        "scope": "Second pass: apcsp, castandards, csta2026, ca-ict-anchor, iste-digital-citizen, unesco-mil and ccss-ela added after the first pass looked only at CASEL",
+        "note": "Read the catalog paraphrases for each framework and matched them to the worksheets' Part 2 questions. Ron's Gone Wrong apcsp 5.6 raised from related to partial because a worksheet question asks about data collection. Left out: unesco-ai-cfs and aasl-engage (nothing in the worksheets asks about AI as a tool students use), CSTA 2017 (legacy), Common Core writing codes (the worksheets are writing prompts but the films are not there to teach writing), and csta2026 high school codes."
       }
     ]
   },
@@ -44,9 +50,14 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "wreck-it-ralph": "A worksheet question asks how labels from other people (Ralph is 'the bad guy') shape how we see ourselves.",
-          "turning-red": "A worksheet question asks why people act differently at home and with friends, and which Mei seems most real.",
-          "inside-out-2": "Riley's Sense of Self is rebuilt by Anxiety; the worksheet asks about accepting all parts of yourself, but not about identity directly."
+          "wreck-it-ralph": "Partial fit: A worksheet question asks how labels from other people (Ralph is 'the bad guy') shape how we see ourselves.",
+          "turning-red": "Partial fit: A worksheet question asks why people act differently at home and with friends, and which Mei seems most real.",
+          "inside-out-2": "Related: Riley's Sense of Self is rebuilt by Anxiety; the worksheet asks about accepting all parts of yourself, but not about identity directly."
+        },
+        "locator_strengths": {
+          "wreck-it-ralph": "partial",
+          "turning-red": "partial",
+          "inside-out-2": "related"
         }
       },
       "SA.2": {
@@ -56,7 +67,10 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "wreck-it-ralph": "The Glitches question asks for a trait people call a weakness that could be a strength."
+          "wreck-it-ralph": "Partial fit: The Glitches question asks for a trait people call a weakness that could be a strength."
+        },
+        "locator_strengths": {
+          "wreck-it-ralph": "partial"
         }
       },
       "SA.3": {
@@ -68,9 +82,14 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "inside-out": "The film is built around naming five emotions, and a worksheet question asks about hiding or being told to hide a feeling.",
-          "inside-out-2": "A worksheet question asks which new emotion the student relates to most right now.",
-          "coraline": "A worksheet question asks what the student does with the feeling of being ignored."
+          "inside-out": "Partial fit: The film is built around naming five emotions, and a worksheet question asks about hiding or being told to hide a feeling.",
+          "inside-out-2": "Partial fit: A worksheet question asks which new emotion the student relates to most right now.",
+          "coraline": "Partial fit: A worksheet question asks what the student does with the feeling of being ignored."
+        },
+        "locator_strengths": {
+          "inside-out": "partial",
+          "inside-out-2": "partial",
+          "coraline": "partial"
         }
       },
       "SA.5": {
@@ -81,8 +100,12 @@
         "strength": "related",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "inside-out-2": "Anxiety's planning shows how a feeling drives thoughts and actions; the worksheet asks about worry making things harder.",
-          "up": "Carl holding on to the house shows a feeling tied to a value; the worksheet asks about something the student would not want to lose."
+          "inside-out-2": "Related: Anxiety's planning shows how a feeling drives thoughts and actions; the worksheet asks about worry making things harder.",
+          "up": "Related: Carl holding on to the house shows a feeling tied to a value; the worksheet asks about something the student would not want to lose."
+        },
+        "locator_strengths": {
+          "inside-out-2": "related",
+          "up": "related"
         }
       },
       "SM.1": {
@@ -98,13 +121,22 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "my-neighbor-totoro": "A worksheet question asks why Satsuki acts like everything is fine, and when that helps or backfires.",
-          "turning-red": "A worksheet question asks what Mei does to control the panda and what strategy the student uses when feelings are big.",
-          "coraline": "A worksheet question asks how Coraline stays calm and keeps thinking while scared.",
-          "nausicaa-of-the-valley-of-the-wind": "A worksheet question asks how Nausicaä calms herself after anger and what the student does when too angry to think.",
-          "inside-out-2": "Anxiety is shown overwhelming Riley; the worksheet asks about worry rather than ways to handle it.",
-          "big-hero-6": "Hiro's choice between revenge and helping touches handling a strong feeling; the worksheet asks about the choice, not about managing anger.",
-          "up": "Carl's grief is shown; the worksheet asks about holding on, not about handling the feeling."
+          "my-neighbor-totoro": "Partial fit: A worksheet question asks why Satsuki acts like everything is fine, and when that helps or backfires.",
+          "turning-red": "Partial fit: A worksheet question asks what Mei does to control the panda and what strategy the student uses when feelings are big.",
+          "coraline": "Partial fit: A worksheet question asks how Coraline stays calm and keeps thinking while scared.",
+          "nausicaa-of-the-valley-of-the-wind": "Partial fit: A worksheet question asks how Nausicaä calms herself after anger and what the student does when too angry to think.",
+          "inside-out-2": "Related: Anxiety is shown overwhelming Riley; the worksheet asks about worry rather than ways to handle it.",
+          "big-hero-6": "Related: Hiro's choice between revenge and helping touches handling a strong feeling; the worksheet asks about the choice, not about managing anger.",
+          "up": "Related: Carl's grief is shown; the worksheet asks about holding on, not about handling the feeling."
+        },
+        "locator_strengths": {
+          "my-neighbor-totoro": "partial",
+          "turning-red": "partial",
+          "coraline": "partial",
+          "nausicaa-of-the-valley-of-the-wind": "partial",
+          "inside-out-2": "related",
+          "big-hero-6": "related",
+          "up": "related"
         }
       },
       "SM.2": {
@@ -114,7 +146,10 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "my-neighbor-totoro": "A worksheet question asks what the student does or could do when stress or fear makes it hard to keep going."
+          "my-neighbor-totoro": "Partial fit: A worksheet question asks what the student does or could do when stress or fear makes it hard to keep going."
+        },
+        "locator_strengths": {
+          "my-neighbor-totoro": "partial"
         }
       },
       "SM.3": {
@@ -125,8 +160,12 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "robots": "A worksheet question asks about a moment Rodney could have quit and what he did instead.",
-          "spare-parts": "The team keeps going against long odds; the worksheet asks about constraints and problem solving rather than perseverance."
+          "robots": "Partial fit: A worksheet question asks about a moment Rodney could have quit and what he did instead.",
+          "spare-parts": "Related: The team keeps going against long odds; the worksheet asks about constraints and problem solving rather than perseverance."
+        },
+        "locator_strengths": {
+          "robots": "partial",
+          "spare-parts": "related"
         }
       },
       "SOC.1": {
@@ -139,10 +178,16 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "coraline": "A worksheet question asks why we judge neighbors too quickly and what Coraline learned about the real people around her.",
-          "turning-red": "A worksheet question asks why Mei's mother acts the way she does.",
-          "nausicaa-of-the-valley-of-the-wind": "A worksheet question asks why people fear what they do not understand and what Nausicaä learns by looking closely.",
-          "the-wild-robot": "Roz learning the animals' view of the world is part of the story; no worksheet question asks about perspective."
+          "coraline": "Partial fit: A worksheet question asks why we judge neighbors too quickly and what Coraline learned about the real people around her.",
+          "turning-red": "Partial fit: A worksheet question asks why Mei's mother acts the way she does.",
+          "nausicaa-of-the-valley-of-the-wind": "Partial fit: A worksheet question asks why people fear what they do not understand and what Nausicaä learns by looking closely.",
+          "the-wild-robot": "Related: Roz learning the animals' view of the world is part of the story; no worksheet question asks about perspective."
+        },
+        "locator_strengths": {
+          "coraline": "partial",
+          "turning-red": "partial",
+          "nausicaa-of-the-valley-of-the-wind": "partial",
+          "the-wild-robot": "related"
         }
       },
       "SOC.2": {
@@ -154,9 +199,14 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "robots": "A worksheet question asks how the film shows old robots still matter.",
-          "spare-parts": "A worksheet question asks about the different strengths each team member brought.",
-          "the-imitation-game": "A worksheet question asks how outsiders such as Turing and Joan Clarke made breakthroughs."
+          "robots": "Partial fit: A worksheet question asks how the film shows old robots still matter.",
+          "spare-parts": "Partial fit: A worksheet question asks about the different strengths each team member brought.",
+          "the-imitation-game": "Partial fit: A worksheet question asks how outsiders such as Turing and Joan Clarke made breakthroughs."
+        },
+        "locator_strengths": {
+          "robots": "partial",
+          "spare-parts": "partial",
+          "the-imitation-game": "partial"
         }
       },
       "SOC.3": {
@@ -167,8 +217,12 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "inside-out": "A worksheet question uses Sadness sitting with Bing Bong to ask what helps a sad friend.",
-          "my-neighbor-totoro": "The sisters' kindness is shown throughout; the worksheet asks about helping neighbors, not empathy directly."
+          "inside-out": "Partial fit: A worksheet question uses Sadness sitting with Bing Bong to ask what helps a sad friend.",
+          "my-neighbor-totoro": "Related: The sisters' kindness is shown throughout; the worksheet asks about helping neighbors, not empathy directly."
+        },
+        "locator_strengths": {
+          "inside-out": "partial",
+          "my-neighbor-totoro": "related"
         }
       },
       "SOC.4": {
@@ -179,8 +233,12 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "up": "A worksheet question asks what Carl missed about how Russell felt and how to tell when someone is lonely.",
-          "wreck-it-ralph": "A worksheet question asks why the racers pick on Vanellope and what they could do differently."
+          "up": "Partial fit: A worksheet question asks what Carl missed about how Russell felt and how to tell when someone is lonely.",
+          "wreck-it-ralph": "Partial fit: A worksheet question asks why the racers pick on Vanellope and what they could do differently."
+        },
+        "locator_strengths": {
+          "up": "partial",
+          "wreck-it-ralph": "partial"
         }
       },
       "SOC.6": {
@@ -190,7 +248,10 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "the-imitation-game": "Worksheet questions on discrimination ask students to look at a social norm that was unjust."
+          "the-imitation-game": "Partial fit: Worksheet questions on discrimination ask students to look at a social norm that was unjust."
+        },
+        "locator_strengths": {
+          "the-imitation-game": "partial"
         }
       },
       "SOC.8": {
@@ -198,11 +259,15 @@
           "rons-gone-wrong",
           "robots"
         ],
-        "strength": "related",
+        "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "rons-gone-wrong": "The company's choices about data shape how kids behave; the worksheet asks about privacy rather than influence.",
-          "robots": "A worksheet question asks about ads that make you want something new."
+          "rons-gone-wrong": "Related: The company's choices about data shape how kids behave; the worksheet asks about privacy rather than influence.",
+          "robots": "Partial fit: A worksheet question asks about ads that make you want something new."
+        },
+        "locator_strengths": {
+          "rons-gone-wrong": "related",
+          "robots": "partial"
         }
       },
       "REL.2": {
@@ -215,10 +280,16 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "up": "A worksheet question asks how an old friendship or loved one can help you keep going.",
-          "inside-out-2": "A worksheet question asks about losing touch with friends or making new ones.",
-          "rons-gone-wrong": "The film contrasts a made-to-order friend with one learned over time; the worksheet asks which friend the student would rather have.",
-          "the-wild-robot": "Roz forms relationships with the island animals; the worksheet is about computer science."
+          "up": "Partial fit: A worksheet question asks how an old friendship or loved one can help you keep going.",
+          "inside-out-2": "Partial fit: A worksheet question asks about losing touch with friends or making new ones.",
+          "rons-gone-wrong": "Related: The film contrasts a made-to-order friend with one learned over time; the worksheet asks which friend the student would rather have.",
+          "the-wild-robot": "Related: Roz forms relationships with the island animals; the worksheet is about computer science."
+        },
+        "locator_strengths": {
+          "up": "partial",
+          "inside-out-2": "partial",
+          "rons-gone-wrong": "related",
+          "the-wild-robot": "related"
         }
       },
       "REL.4": {
@@ -228,7 +299,10 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "spare-parts": "A worksheet question asks why different strengths on a team matter."
+          "spare-parts": "Partial fit: A worksheet question asks why different strengths on a team matter."
+        },
+        "locator_strengths": {
+          "spare-parts": "partial"
         }
       },
       "REL.5": {
@@ -239,8 +313,12 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "turning-red": "A worksheet question asks how Mei and her mother repair things and how to start an honest talk.",
-          "nausicaa-of-the-valley-of-the-wind": "A worksheet question asks how to stop a fight from getting bigger."
+          "turning-red": "Partial fit: A worksheet question asks how Mei and her mother repair things and how to start an honest talk.",
+          "nausicaa-of-the-valley-of-the-wind": "Partial fit: A worksheet question asks how to stop a fight from getting bigger."
+        },
+        "locator_strengths": {
+          "turning-red": "partial",
+          "nausicaa-of-the-valley-of-the-wind": "partial"
         }
       },
       "REL.8": {
@@ -251,8 +329,12 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "inside-out": "A worksheet question asks how sharing a hard feeling with parents changes the relationship.",
-          "my-neighbor-totoro": "Granny and the neighbors help without being asked; the worksheet asks what makes a person someone others turn to."
+          "inside-out": "Partial fit: A worksheet question asks how sharing a hard feeling with parents changes the relationship.",
+          "my-neighbor-totoro": "Related: Granny and the neighbors help without being asked; the worksheet asks what makes a person someone others turn to."
+        },
+        "locator_strengths": {
+          "inside-out": "partial",
+          "my-neighbor-totoro": "related"
         }
       },
       "REL.9": {
@@ -263,8 +345,12 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "the-imitation-game": "A worksheet question asks about someone who stood up against discrimination, as Joan did for Alan.",
-          "wreck-it-ralph": "Ralph stands up for Vanellope; no worksheet question asks about it."
+          "the-imitation-game": "Partial fit: A worksheet question asks about someone who stood up against discrimination, as Joan did for Alan.",
+          "wreck-it-ralph": "Related: Ralph stands up for Vanellope; no worksheet question asks about it."
+        },
+        "locator_strengths": {
+          "the-imitation-game": "partial",
+          "wreck-it-ralph": "related"
         }
       },
       "RDM.1": {
@@ -274,7 +360,10 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "my-neighbor-totoro": "A worksheet question asks about meeting someone different with curiosity instead of fear."
+          "my-neighbor-totoro": "Partial fit: A worksheet question asks about meeting someone different with curiosity instead of fear."
+        },
+        "locator_strengths": {
+          "my-neighbor-totoro": "partial"
         }
       },
       "RDM.3": {
@@ -285,8 +374,12 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "spare-parts": "A worksheet question asks students to lay out how the team solved one technical problem.",
-          "nausicaa-of-the-valley-of-the-wind": "A worksheet question asks for a better way for the armies to solve their problems."
+          "spare-parts": "Partial fit: A worksheet question asks students to lay out how the team solved one technical problem.",
+          "nausicaa-of-the-valley-of-the-wind": "Partial fit: A worksheet question asks for a better way for the armies to solve their problems."
+        },
+        "locator_strengths": {
+          "spare-parts": "partial",
+          "nausicaa-of-the-valley-of-the-wind": "partial"
         }
       },
       "RDM.4": {
@@ -300,11 +393,18 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "inside-out": "A worksheet question asks what helped Riley choose to come back; consequences are not asked about directly.",
-          "coraline": "A worksheet question asks why the perfect-looking Other World is a trap.",
-          "up": "A worksheet question asks where Muntz's choices went wrong.",
-          "wreck-it-ralph": "A worksheet question asks what the student would do in Ralph's place and how to fix a mistake that hurt someone.",
-          "big-hero-6": "A worksheet question asks about Hiro's choice between revenge and helping."
+          "inside-out": "Partial fit: A worksheet question asks what helped Riley choose to come back; consequences are not asked about directly.",
+          "coraline": "Partial fit: A worksheet question asks why the perfect-looking Other World is a trap.",
+          "up": "Partial fit: A worksheet question asks where Muntz's choices went wrong.",
+          "wreck-it-ralph": "Partial fit: A worksheet question asks what the student would do in Ralph's place and how to fix a mistake that hurt someone.",
+          "big-hero-6": "Partial fit: A worksheet question asks about Hiro's choice between revenge and helping."
+        },
+        "locator_strengths": {
+          "inside-out": "partial",
+          "coraline": "partial",
+          "up": "partial",
+          "wreck-it-ralph": "partial",
+          "big-hero-6": "partial"
         }
       },
       "RDM.6": {
@@ -314,7 +414,10 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "robots": "A worksheet question asks students to name a need at school or in town and how a kid could help."
+          "robots": "Partial fit: A worksheet question asks students to name a need at school or in town and how a kid could help."
+        },
+        "locator_strengths": {
+          "robots": "partial"
         }
       },
       "RDM.7": {
@@ -326,21 +429,467 @@
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "rons-gone-wrong": "A worksheet question asks what could go wrong when companies collect data about users.",
-          "the-imitation-game": "A worksheet question asks how to balance security needs with the dangers of too much secret power.",
-          "wall-e": "The worksheet asks for problems and benefits of the Axiom's reliance on technology; the focus is computing, not community well-being."
+          "rons-gone-wrong": "Partial fit: A worksheet question asks what could go wrong when companies collect data about users.",
+          "the-imitation-game": "Partial fit: A worksheet question asks how to balance security needs with the dangers of too much secret power.",
+          "wall-e": "Related: The worksheet asks for problems and benefits of the Axiom's reliance on technology; the focus is computing, not community well-being."
+        },
+        "locator_strengths": {
+          "rons-gone-wrong": "partial",
+          "the-imitation-game": "partial",
+          "wall-e": "related"
         }
       }
     },
     "apcsp": {
+      "1.1": {
+        "locators": [
+          "spare-parts",
+          "the-imitation-game"
+        ],
+        "locator_notes": {
+          "spare-parts": "Partial fit: A worksheet question asks why different strengths matter on a real computing or engineering team.",
+          "the-imitation-game": "Related: Turing's codebreaking team and Joan Clarke's role show collaboration; the worksheet asks about outsiders, not teamwork."
+        },
+        "strength": "partial",
+        "note": "Teamwork on a computing project appears in the worksheets of the engineering films.",
+        "locator_strengths": {
+          "spare-parts": "partial",
+          "the-imitation-game": "related"
+        }
+      },
+      "1.3": {
+        "locators": [
+          "big-hero-6",
+          "spare-parts"
+        ],
+        "locator_notes": {
+          "big-hero-6": "Partial fit: A worksheet question asks students to describe the process Hiro uses across several versions of Baymax.",
+          "spare-parts": "Related: The team designs a robot under a tight budget; the worksheet asks about constraints rather than the design process."
+        },
+        "strength": "partial",
+        "note": "Designing and refining a build appears in the engineering films.",
+        "locator_strengths": {
+          "big-hero-6": "partial",
+          "spare-parts": "related"
+        }
+      },
+      "1.4": {
+        "locators": [
+          "wreck-it-ralph"
+        ],
+        "locator_notes": {
+          "wreck-it-ralph": "Related: Vanellope's glitch is a bug in her game's code; the worksheet uses it as a metaphor for strengths and does not ask about debugging."
+        },
+        "strength": "related",
+        "note": "A glitch is a bug.",
+        "locator_strengths": {
+          "wreck-it-ralph": "related"
+        }
+      },
+      "3.9": {
+        "locators": [
+          "the-wild-robot",
+          "wall-e",
+          "spare-parts"
+        ],
+        "locator_notes": {
+          "the-wild-robot": "Partial fit: A worksheet question asks students to write the steps Roz takes to solve one problem, like an algorithm.",
+          "wall-e": "Partial fit: A worksheet question asks students to write the steps WALL-E takes, like code instructions.",
+          "spare-parts": "Partial fit: A worksheet question asks for the step-by-step fix to one technical problem."
+        },
+        "strength": "partial",
+        "note": "Describing the steps of a solution like an algorithm.",
+        "locator_strengths": {
+          "the-wild-robot": "partial",
+          "wall-e": "partial",
+          "spare-parts": "partial"
+        }
+      },
+      "5.1": {
+        "locators": [
+          "wall-e",
+          "rons-gone-wrong"
+        ],
+        "locator_notes": {
+          "wall-e": "Partial fit: A worksheet question asks for two problems and two benefits of the Axiom's reliance on technology.",
+          "rons-gone-wrong": "Related: B-bots help and harm kids in the film; the worksheet focuses on privacy."
+        },
+        "strength": "partial",
+        "note": "The films show technology helping and harming people.",
+        "locator_strengths": {
+          "wall-e": "partial",
+          "rons-gone-wrong": "related"
+        }
+      },
+      "5.3": {
+        "locators": [
+          "rons-gone-wrong"
+        ],
+        "locator_notes": {
+          "rons-gone-wrong": "Related: B-bots push kids toward people like themselves (raised in the teacher discussion questions); the worksheet does not ask about bias."
+        },
+        "strength": "related",
+        "note": "A made-to-order system can steer people.",
+        "locator_strengths": {
+          "rons-gone-wrong": "related"
+        }
+      },
       "5.6": {
         "locators": [
           "rons-gone-wrong"
         ],
-        "strength": "related",
-        "note": "The film shows a company collecting personal data from kids and a worksheet question asks what could go wrong; it does not teach safe computing.",
         "locator_notes": {
-          "rons-gone-wrong": "The film shows a company collecting personal data from kids and a worksheet question asks what could go wrong; it does not teach safe computing."
+          "rons-gone-wrong": "Partial fit: A worksheet question asks what could go wrong when companies collect data about users."
+        },
+        "strength": "partial",
+        "note": "Personal data collected online carries risk.",
+        "locator_strengths": {
+          "rons-gone-wrong": "partial"
+        }
+      }
+    },
+    "castandards": {
+      "6-8.IC.20": {
+        "locators": [
+          "wall-e"
+        ],
+        "locator_notes": {
+          "wall-e": "Partial fit: A worksheet question weighs the problems and benefits of the Axiom's technology."
+        },
+        "strength": "partial",
+        "note": "Technologies reshape daily life with tradeoffs.",
+        "locator_strengths": {
+          "wall-e": "partial"
+        }
+      },
+      "6-8.IC.22": {
+        "locators": [
+          "spare-parts"
+        ],
+        "locator_notes": {
+          "spare-parts": "Partial fit: A worksheet question asks why different strengths matter on a real project team."
+        },
+        "strength": "partial",
+        "note": "Building a computing artifact is a team effort.",
+        "locator_strengths": {
+          "spare-parts": "partial"
+        }
+      },
+      "6-8.IC.24": {
+        "locators": [
+          "rons-gone-wrong"
+        ],
+        "locator_notes": {
+          "rons-gone-wrong": "Partial fit: A worksheet question asks about companies collecting personal data and what could go wrong."
+        },
+        "strength": "partial",
+        "note": "Public versus private information.",
+        "locator_strengths": {
+          "rons-gone-wrong": "partial"
+        }
+      },
+      "9-12.IC.29": {
+        "locators": [
+          "rons-gone-wrong"
+        ],
+        "locator_notes": {
+          "rons-gone-wrong": "Related: The B-bots collect data about their kids as they go; the worksheet asks about privacy in general."
+        },
+        "strength": "related",
+        "note": "Personal data is collected automatically.",
+        "locator_strengths": {
+          "rons-gone-wrong": "related"
+        }
+      },
+      "9-12.IC.30": {
+        "locators": [
+          "the-imitation-game"
+        ],
+        "locator_notes": {
+          "the-imitation-game": "Partial fit: A worksheet question asks how to balance wartime secrecy with the dangers of secret power over people."
+        },
+        "strength": "partial",
+        "note": "Privacy and security have to be weighed against each other.",
+        "locator_strengths": {
+          "the-imitation-game": "partial"
+        }
+      }
+    },
+    "csta2026": {
+      "MS-ALG-PS-02": {
+        "locators": [
+          "the-wild-robot",
+          "wall-e",
+          "spare-parts"
+        ],
+        "locator_notes": {
+          "the-wild-robot": "Partial fit: A worksheet question asks students to write out the steps of how Roz solves a problem.",
+          "wall-e": "Partial fit: A worksheet question asks students to write out the steps WALL-E takes.",
+          "spare-parts": "Partial fit: A worksheet question asks for the step-by-step fix to one technical problem."
+        },
+        "strength": "partial",
+        "note": "Describing the steps of a solution.",
+        "locator_strengths": {
+          "the-wild-robot": "partial",
+          "wall-e": "partial",
+          "spare-parts": "partial"
+        }
+      },
+      "MS-ALG-PS-04": {
+        "locators": [
+          "wall-e",
+          "the-wild-robot"
+        ],
+        "locator_notes": {
+          "wall-e": "Partial fit: A worksheet question asks the difference between AUTO following rules and WALL-E learning and choosing.",
+          "the-wild-robot": "Partial fit: A worksheet question asks how Roz starts from her programming and learns, compared with a streaming service."
+        },
+        "strength": "partial",
+        "note": "Rule-following machines versus ones that learn.",
+        "locator_strengths": {
+          "wall-e": "partial",
+          "the-wild-robot": "partial"
+        }
+      },
+      "MS-ALG-ML-06": {
+        "locators": [
+          "the-wild-robot",
+          "big-hero-6"
+        ],
+        "locator_notes": {
+          "the-wild-robot": "Partial fit: A worksheet question compares Roz's learning with a streaming service learning what you like.",
+          "big-hero-6": "Related: Baymax adapts from experience with Hiro; the worksheet asks about one scene, not about how a model learns."
+        },
+        "strength": "partial",
+        "note": "What a learning system takes in shapes what it does.",
+        "locator_strengths": {
+          "the-wild-robot": "partial",
+          "big-hero-6": "related"
+        }
+      },
+      "MS-DAT-IM-28": {
+        "locators": [
+          "rons-gone-wrong"
+        ],
+        "locator_notes": {
+          "rons-gone-wrong": "Partial fit: A worksheet question asks what could go wrong when companies collect data about users."
+        },
+        "strength": "partial",
+        "note": "Collecting personal data trades benefit against risk.",
+        "locator_strengths": {
+          "rons-gone-wrong": "partial"
+        }
+      },
+      "MS-SOC-HU-43": {
+        "locators": [
+          "rons-gone-wrong",
+          "big-hero-6"
+        ],
+        "locator_notes": {
+          "rons-gone-wrong": "Related: The company's choices about what B-bots do drive the story; the worksheet asks about privacy.",
+          "big-hero-6": "Related: Hiro decides what to build and why; the worksheet asks about that choice."
+        },
+        "strength": "related",
+        "note": "People's decisions sit behind a computing system.",
+        "locator_strengths": {
+          "rons-gone-wrong": "related",
+          "big-hero-6": "related"
+        }
+      },
+      "MS-SOC-HI-38": {
+        "locators": [
+          "the-imitation-game"
+        ],
+        "locator_notes": {
+          "the-imitation-game": "Related: Turing's work on codebreaking and early computers is shown; the worksheet asks about outsiders and discrimination."
+        },
+        "strength": "related",
+        "note": "People shaped computing's history.",
+        "locator_strengths": {
+          "the-imitation-game": "related"
+        }
+      },
+      "MS-SOC-ET-40": {
+        "locators": [
+          "the-wild-robot"
+        ],
+        "locator_notes": {
+          "the-wild-robot": "Partial fit: A worksheet question asks which of Roz's abilities real robots have today and which are science fiction."
+        },
+        "strength": "partial",
+        "note": "Is the technology real yet?",
+        "locator_strengths": {
+          "the-wild-robot": "partial"
+        }
+      },
+      "MS-SOC-CE-45": {
+        "locators": [
+          "wall-e",
+          "robots"
+        ],
+        "locator_notes": {
+          "wall-e": "Related: The Axiom's robots do all the work; the worksheet does not ask about jobs.",
+          "robots": "Related: Ratchet's push to scrap old robots touches work and replacement; the worksheet asks about value, not jobs."
+        },
+        "strength": "related",
+        "note": "Automation reshapes work.",
+        "locator_strengths": {
+          "wall-e": "related",
+          "robots": "related"
+        }
+      }
+    },
+    "ca-ict-anchor": {
+      "5.7": {
+        "locators": [
+          "big-hero-6"
+        ],
+        "locator_notes": {
+          "big-hero-6": "Partial fit: A worksheet question asks about Hiro's repeated versions of Baymax."
+        },
+        "strength": "partial",
+        "note": "Refining a solution on repeated passes.",
+        "locator_strengths": {
+          "big-hero-6": "partial"
+        }
+      },
+      "5.8": {
+        "locators": [
+          "the-wild-robot",
+          "wall-e"
+        ],
+        "locator_notes": {
+          "the-wild-robot": "Partial fit: A worksheet question asks for the steps of a problem solution, like an algorithm.",
+          "wall-e": "Partial fit: A worksheet question asks for the steps WALL-E takes, like code instructions."
+        },
+        "strength": "partial",
+        "note": "Algorithms as a tool for solving problems.",
+        "locator_strengths": {
+          "the-wild-robot": "partial",
+          "wall-e": "partial"
+        }
+      },
+      "9.2": {
+        "locators": [
+          "spare-parts"
+        ],
+        "locator_notes": {
+          "spare-parts": "Partial fit: A worksheet question asks why a mix of strengths matters on a team."
+        },
+        "strength": "partial",
+        "note": "Successful teams share recognizable traits.",
+        "locator_strengths": {
+          "spare-parts": "partial"
+        }
+      },
+      "9.6": {
+        "locators": [
+          "the-imitation-game"
+        ],
+        "locator_notes": {
+          "the-imitation-game": "Related: Turing and Clarke are treated as outsiders; the worksheet asks how outsiders drove innovation."
+        },
+        "strength": "related",
+        "note": "Respecting individual and cultural differences.",
+        "locator_strengths": {
+          "the-imitation-game": "related"
+        }
+      }
+    },
+    "iste-digital-citizen": {
+      "1.2.d": {
+        "locators": [
+          "rons-gone-wrong"
+        ],
+        "locator_notes": {
+          "rons-gone-wrong": "Partial fit: A worksheet question asks about data collection by apps and devices, not about the student's own settings."
+        },
+        "strength": "partial",
+        "note": "Protecting your privacy online.",
+        "locator_strengths": {
+          "rons-gone-wrong": "partial"
+        }
+      }
+    },
+    "unesco-mil": {
+      "14": {
+        "locators": [
+          "rons-gone-wrong"
+        ],
+        "locator_notes": {
+          "rons-gone-wrong": "Partial fit: A worksheet question asks about data collection by apps and devices."
+        },
+        "strength": "partial",
+        "note": "Privacy as a right.",
+        "locator_strengths": {
+          "rons-gone-wrong": "partial"
+        }
+      }
+    },
+    "ccss-ela": {
+      "SL.6.2": {
+        "locators": [
+          "inside-out-2",
+          "my-neighbor-totoro",
+          "wall-e",
+          "inside-out",
+          "turning-red",
+          "the-wild-robot",
+          "robots",
+          "wreck-it-ralph",
+          "up",
+          "big-hero-6",
+          "rons-gone-wrong"
+        ],
+        "locator_notes": {
+          "inside-out-2": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "my-neighbor-totoro": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "wall-e": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "inside-out": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "turning-red": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "the-wild-robot": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "robots": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "wreck-it-ralph": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "up": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "big-hero-6": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "rons-gone-wrong": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims."
+        },
+        "note": "Part 1 of the worksheet asks students to take information from a film while they watch.",
+        "strength": "related",
+        "locator_strengths": {
+          "inside-out-2": "related",
+          "my-neighbor-totoro": "related",
+          "wall-e": "related",
+          "inside-out": "related",
+          "turning-red": "related",
+          "the-wild-robot": "related",
+          "robots": "related",
+          "wreck-it-ralph": "related",
+          "up": "related",
+          "big-hero-6": "related",
+          "rons-gone-wrong": "related"
+        }
+      },
+      "SL.7.2": {
+        "locators": [
+          "spare-parts",
+          "coraline",
+          "nausicaa-of-the-valley-of-the-wind",
+          "the-imitation-game"
+        ],
+        "locator_notes": {
+          "spare-parts": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "coraline": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "nausicaa-of-the-valley-of-the-wind": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "the-imitation-game": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims."
+        },
+        "note": "Part 1 of the worksheet asks students to take information from a film while they watch.",
+        "strength": "related",
+        "locator_strengths": {
+          "spare-parts": "related",
+          "coraline": "related",
+          "nausicaa-of-the-valley-of-the-wind": "related",
+          "the-imitation-game": "related"
         }
       }
     }
