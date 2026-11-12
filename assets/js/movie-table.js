@@ -4,6 +4,15 @@
   if (!table) return;
   var body = table.tBodies[0];
   var heads = table.tHead.rows[0].cells;
+  function titleKey(r) {
+    var c = r.cells[0];
+    return (c.getAttribute("data-sort") || c.textContent).trim().toLowerCase();
+  }
+  // Start from A to Z by title so any later sort has a clean order to fall back on.
+  Array.prototype.slice.call(body.rows).sort(function (a, b) {
+    var x = titleKey(a), y = titleKey(b);
+    return x < y ? -1 : x > y ? 1 : 0;
+  }).forEach(function (r) { body.appendChild(r); });
   Array.prototype.forEach.call(heads, function (th, col) {
     if (th.hasAttribute("data-nosort")) return;
     var label = th.textContent;
@@ -27,7 +36,11 @@
       }
       rows.sort(function (a, b) {
         var x = key(a), y = key(b);
-        return (x < y ? -1 : x > y ? 1 : 0) * dir;
+        if (x !== y) return (x < y ? -1 : 1) * dir;
+        // Ties (same rating, same year, ...) always fall back to the title,
+        // A to Z, ignoring a leading "The " or "A " (the first cell's data-sort).
+        var tx = titleKey(a), ty = titleKey(b);
+        return tx < ty ? -1 : tx > ty ? 1 : 0;
       });
       rows.forEach(function (r) { body.appendChild(r); });
     });
