@@ -9,6 +9,8 @@ layout: minimal
   <ul class="movie-facts">
     <li><strong>Grades:</strong> {{ page.grades }}</li>
     <li><strong>Common Sense Media:</strong> <a href="https://www.commonsensemedia.org/movie-reviews/{{ page.slug }}">{% if page.csm_parents %}parents say {{ page.csm_parents }}+, kids say {{ page.csm_kids }}+{% else %}read the review{% endif %}</a></li>
+    <li><strong>CS strength:</strong> <span aria-hidden="true" class="cs-dots">{% for i in (1..5) %}{% if i <= page.cs %}&#9679;{% else %}&#9675;{% endif %}{% endfor %}</span> <span class="visually-hidden">{{ page.cs }} out of 5</span></li>
+    <li><strong>SEL strength:</strong> <span aria-hidden="true" class="cs-dots">{% for i in (1..5) %}{% if i <= page.sel %}&#9679;{% else %}&#9675;{% endif %}{% endfor %}</span> <span class="visually-hidden">{{ page.sel }} out of 5</span></li>
     <li><strong>Rotten Tomatoes:</strong> {{ page.rt_critics }}% critics{% if page.rt_audience %}, {{ page.rt_audience }}% audience{% endif %}</li>
   </ul>
   {% if page.trailer and page.trailer != "" %}

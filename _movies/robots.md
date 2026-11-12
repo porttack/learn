@@ -9,6 +9,7 @@ blurb: "A young inventor goes to Robot City to meet his hero and finds a company
 trailer: "hZ9K5HwN1tc"   # YouTube video id (the part after v=); an unofficial upload, no official one found
 grades: "6 to 9"
 cs: 3   # 1 to 5, how much the film connects to computer science
+sel: 4   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; author-judgment, see _standards/carriers/movies.json
 rt_critics: 62   # Rotten Tomatoes, checked 2026-11-10
 csm_parents: 6   # Common Sense Media age, checked 2026-11-10
 csm_kids: 7

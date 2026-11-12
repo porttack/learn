@@ -9,6 +9,7 @@ blurb: "A princess tries to stop two armies from burning a toxic jungle, because
 trailer: "zaskbIZtfxQ"   # YouTube video id (the part after v=); GKIDS Films channel (English trailer), embeddable per oEmbed 2026-11-11
 grades: "7 to 9"
 cs: 1   # 1 to 5, how much the film connects to computer science
+sel: 4   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; author-judgment, see _standards/carriers/movies.json
 rt_critics: 87   # Rotten Tomatoes, from a web search 2026-11-11 (check); audience score and Common Sense ages not yet added
 runtime: 117
 ---

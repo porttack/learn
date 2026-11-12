@@ -9,6 +9,7 @@ blurb: "Riley is a teenager and Anxiety has moved into headquarters. All your em
 trailer: "LEjhY15eCx0"   # YouTube video id (the part after v=)
 grades: "6 to 8"
 cs: 1   # 1 to 5, how much the film connects to computer science
+sel: 5   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; author-judgment, see _standards/carriers/movies.json
 rt_critics: 91   # Rotten Tomatoes, checked 2026-11-10
 csm_parents: 7   # Common Sense Media age, checked 2026-11-10
 csm_kids: 7

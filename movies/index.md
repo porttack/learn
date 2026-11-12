@@ -18,7 +18,8 @@ Movies we watch in class. Each has a summary, a trailer, and a worksheet you can
       <th data-type="number">Year</th>
       <th data-type="number">Minutes</th>
       <th data-nosort>Common Sense Media</th>
-      <th data-type="number">CS connection</th>
+      <th data-type="number">CS strength</th>
+      <th data-type="number">SEL strength</th>
       <th data-type="number">Rotten Tomatoes</th>
     </tr>
   </thead>
@@ -33,6 +34,7 @@ Movies we watch in class. Each has a summary, a trailer, and a worksheet you can
       <td>{{ film.runtime }}</td>
       <td><a href="{{ 'https://www.commonsensemedia.org/movie-reviews/' | append: film.slug }}">{% if film.csm_parents %}Parents {{ film.csm_parents }}+, kids {{ film.csm_kids }}+{% else %}Review{% endif %}</a></td>
       <td data-sort="{{ film.cs }}"><span aria-hidden="true" class="cs-dots">{% for i in (1..5) %}{% if i <= film.cs %}&#9679;{% else %}&#9675;{% endif %}{% endfor %}</span> <span class="visually-hidden">{{ film.cs }} out of 5</span></td>
+      <td data-sort="{{ film.sel }}"><span aria-hidden="true" class="cs-dots">{% for i in (1..5) %}{% if i <= film.sel %}&#9679;{% else %}&#9675;{% endif %}{% endfor %}</span> <span class="visually-hidden">{{ film.sel }} out of 5</span></td>
       <td data-sort="{{ film.rt_critics }}">{{ film.rt_critics }}% critics{% if film.rt_audience %}<br>{{ film.rt_audience }}% audience{% endif %}</td>
     </tr>
 {% endfor %}

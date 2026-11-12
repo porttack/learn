@@ -9,6 +9,7 @@ blurb: "Alan Turing builds a machine to break Enigma, then is treated terribly b
 trailer: "ESIzi1Lhl58"   # YouTube video id (the part after v=)
 grades: "9 to 11"
 cs: 5   # 1 to 5, how much the film connects to computer science
+sel: 4   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; author-judgment, see _standards/carriers/movies.json
 rt_critics: 89   # Rotten Tomatoes, checked 2026-11-10
 csm_parents: 12   # Common Sense Media age, checked 2026-11-10
 csm_kids: 12

@@ -9,6 +9,7 @@ blurb: "A true story: four students and a tiny budget take on MIT at an underwat
 trailer: "myjar5KoqZA"   # YouTube video id (the part after v=)
 grades: "8 to 11"
 cs: 5   # 1 to 5, how much the film connects to computer science
+sel: 3   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; author-judgment, see _standards/carriers/movies.json
 rt_critics: 58   # Rotten Tomatoes, checked 2026-11-10
 csm_parents: 10   # Common Sense Media age, checked 2026-11-10
 csm_kids: 10

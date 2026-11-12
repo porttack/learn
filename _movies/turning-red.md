@@ -9,6 +9,7 @@ blurb: "Thirteen-year-old Mei turns into a giant red panda whenever her emotions
 trailer: "XdKzUbAiswE"   # YouTube video id (the part after v=); Pixar channel, embeddable per oEmbed 2026-11-11
 grades: "6 to 9"
 cs: 1   # 1 to 5, how much the film connects to computer science
+sel: 5   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; author-judgment, see _standards/carriers/movies.json
 rt_critics: 95   # Rotten Tomatoes, from a web search 2026-11-11 (check); audience score and Common Sense ages not yet added
 runtime: 100
 ---

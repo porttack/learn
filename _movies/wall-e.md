@@ -9,6 +9,7 @@ blurb: "A lonely trash-compacting robot follows a probe named EVE into space. Wh
 trailer: "alIq_wG9FNk"   # YouTube video id (the part after v=)
 grades: "6 to 9"
 cs: 4   # 1 to 5, how much the film connects to computer science
+sel: 1   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; author-judgment, see _standards/carriers/movies.json
 rt_critics: 95   # Rotten Tomatoes, checked 2026-11-10
 csm_parents: 5   # Common Sense Media age, checked 2026-11-10
 csm_kids: 5

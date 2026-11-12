@@ -9,6 +9,7 @@ blurb: "A robotics prodigy and a gentle healthcare robot build, test and redesig
 trailer: "8IdMPpKMdcc"   # YouTube video id (the part after v=)
 grades: "6 to 9"
 cs: 4   # 1 to 5, how much the film connects to computer science
+sel: 2   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; author-judgment, see _standards/carriers/movies.json
 rt_critics: 90   # Rotten Tomatoes, checked 2026-11-10
 csm_parents: 6   # Common Sense Media age, checked 2026-11-10
 csm_kids: 7

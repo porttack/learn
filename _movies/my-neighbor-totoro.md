@@ -9,6 +9,7 @@ blurb: "Two sisters, a worried family and a gentle forest spirit. A calm movie a
 trailer: "HaLISMAGdOE"   # YouTube video id (the part after v=)
 grades: "6 to 8"
 cs: 1   # 1 to 5, how much the film connects to computer science
+sel: 4   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; author-judgment, see _standards/carriers/movies.json
 rt_critics: 94   # Rotten Tomatoes, checked 2026-11-10
 csm_parents: 4   # Common Sense Media age, checked 2026-11-10
 csm_kids: 4
