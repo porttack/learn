@@ -24,7 +24,8 @@
       "turning-red": "Turning Red",
       "sneakers": "Sneakers",
       "wargames": "WarGames",
-      "the-ai-doc-or-how-i-became-an-apocaloptimist": "The AI Doc: Or How I Became an Apocaloptimist"
+      "the-ai-doc-or-how-i-became-an-apocaloptimist": "The AI Doc: Or How I Became an Apocaloptimist",
+      "closest-thing-to-alien-technology": "The Closest Thing We Have to Alien Technology"
     },
     "caveat": "Deliberately conservative. These are films with a worksheet, not instruction, so nothing is rated strong. 'Partial' means a worksheet question asks students to think about the idea; 'related' means the film shows it but no question asks about it. Mapped from each worksheet's Part 2 questions and the CASEL labels in each film's teacher notes; students' answers were not checked. Frameworks: CASEL (all films), AP CSP, California CS, CSTA 2026 and CA CTE (the computing films), ISTE and UNESCO MIL (Ron's Gone Wrong only), and three Common Core speaking and listening codes (all films, related only). The SEL-only films (Inside Out, Inside Out 2, Totoro, Coraline, Up, Nausicaa, Wreck-It Ralph, Turning Red) have no CS codes except Wreck-It Ralph's one related note on bugs.",
     "alignment_log": [
@@ -45,6 +46,12 @@
         "by": "Claude Sonnet 5.5",
         "scope": "Third pass: Sneakers, WarGames and The AI Doc against casel, apcsp, castandards, csta2026, ca-ict-anchor, unesco-ai-cfs, unesco-mil and ccss-ela",
         "note": "Mapped from the new worksheets' Part 2 questions and the catalog paraphrases. The AI Doc's Part 1 questions 4 and 5 have no confirmed answers, so no standards claim rests on them."
+      },
+      {
+        "date": "2026-11-11",
+        "by": "Claude Sonnet 5.5",
+        "scope": "Fourth pass: the Veritasium ASML video against casel, ca-ict-anchor, csta2026, castandards and ccss-ela",
+        "note": "It is a hardware video, so the computing fits are few and mostly related. No programming or networking codes were claimed."
       }
     ]
   },
@@ -319,17 +326,20 @@
       "REL.4": {
         "locators": [
           "spare-parts",
-          "sneakers"
+          "sneakers",
+          "closest-thing-to-alien-technology"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
           "spare-parts": "Partial fit: A worksheet question asks why different strengths on a team matter.",
-          "sneakers": "Partial fit: A worksheet question asks why the team needs two members with different skills."
+          "sneakers": "Partial fit: A worksheet question asks why the team needs two members with different skills.",
+          "closest-thing-to-alien-technology": "Partial fit: A worksheet question asks why a project needed companies and governments in several countries."
         },
         "locator_strengths": {
           "spare-parts": "partial",
-          "sneakers": "partial"
+          "sneakers": "partial",
+          "closest-thing-to-alien-technology": "partial"
         }
       },
       "REL.5": {
@@ -402,17 +412,20 @@
       "RDM.3": {
         "locators": [
           "spare-parts",
-          "nausicaa-of-the-valley-of-the-wind"
+          "nausicaa-of-the-valley-of-the-wind",
+          "closest-thing-to-alien-technology"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
           "spare-parts": "Partial fit: A worksheet question asks students to lay out how the team solved one technical problem.",
-          "nausicaa-of-the-valley-of-the-wind": "Partial fit: A worksheet question asks for a better way for the armies to solve their problems."
+          "nausicaa-of-the-valley-of-the-wind": "Partial fit: A worksheet question asks for a better way for the armies to solve their problems.",
+          "closest-thing-to-alien-technology": "Related: The video shows engineers solving technical problems; the worksheet asks for the steps, not about solving social problems."
         },
         "locator_strengths": {
           "spare-parts": "partial",
-          "nausicaa-of-the-valley-of-the-wind": "partial"
+          "nausicaa-of-the-valley-of-the-wind": "partial",
+          "closest-thing-to-alien-technology": "related"
         }
       },
       "RDM.4": {
@@ -466,7 +479,8 @@
           "wall-e",
           "sneakers",
           "wargames",
-          "the-ai-doc-or-how-i-became-an-apocaloptimist"
+          "the-ai-doc-or-how-i-became-an-apocaloptimist",
+          "closest-thing-to-alien-technology"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
@@ -476,7 +490,8 @@
           "wall-e": "Related: The worksheet asks for problems and benefits of the Axiom's reliance on technology; the focus is computing, not community well-being.",
           "sneakers": "Partial fit: A worksheet question asks who should hold a tool that breaks almost any code and what the risks are.",
           "wargames": "Partial fit: A worksheet question asks about giving launch decisions to a computer.",
-          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks who should decide how fast powerful AI is released."
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks who should decide how fast powerful AI is released.",
+          "closest-thing-to-alien-technology": "Partial fit: A worksheet question asks about the risks of the world depending on one company for these machines."
         },
         "locator_strengths": {
           "rons-gone-wrong": "partial",
@@ -484,7 +499,8 @@
           "wall-e": "related",
           "sneakers": "partial",
           "wargames": "partial",
-          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial",
+          "closest-thing-to-alien-technology": "partial"
         }
       },
       "RDM.2": {
@@ -770,6 +786,19 @@
         },
         "note": "New technology reshapes structures.",
         "strength": "partial"
+      },
+      "6-8.CS.2": {
+        "locators": [
+          "closest-thing-to-alien-technology"
+        ],
+        "locator_notes": {
+          "closest-thing-to-alien-technology": "Related: The video shows tradeoffs in building chip machines; no worksheet question asks about them."
+        },
+        "locator_strengths": {
+          "closest-thing-to-alien-technology": "related"
+        },
+        "note": "Choosing hardware with tradeoffs.",
+        "strength": "related"
       }
     },
     "csta2026": {
@@ -867,15 +896,18 @@
       },
       "MS-SOC-HI-38": {
         "locators": [
-          "the-imitation-game"
+          "the-imitation-game",
+          "closest-thing-to-alien-technology"
         ],
         "locator_notes": {
-          "the-imitation-game": "Related: Turing's work on codebreaking and early computers is shown; the worksheet asks about outsiders and discrimination."
+          "the-imitation-game": "Related: Turing's work on codebreaking and early computers is shown; the worksheet asks about outsiders and discrimination.",
+          "closest-thing-to-alien-technology": "Partial fit: A worksheet question asks why one company could not build the machines alone and what the risks are of depending on one maker."
         },
-        "strength": "related",
+        "strength": "partial",
         "note": "People shaped computing's history.",
         "locator_strengths": {
-          "the-imitation-game": "related"
+          "the-imitation-game": "related",
+          "closest-thing-to-alien-technology": "partial"
         }
       },
       "MS-SOC-ET-40": {
@@ -1063,6 +1095,58 @@
         },
         "note": "Integrity and confidentiality.",
         "strength": "related"
+      },
+      "10.5": {
+        "locators": [
+          "closest-thing-to-alien-technology"
+        ],
+        "locator_notes": {
+          "closest-thing-to-alien-technology": "Related: The video is about the hardware inside computers; no worksheet question asks how hardware and software depend on each other."
+        },
+        "locator_strengths": {
+          "closest-thing-to-alien-technology": "related"
+        },
+        "note": "Hardware and software depend on each other.",
+        "strength": "related"
+      },
+      "10.7": {
+        "locators": [
+          "closest-thing-to-alien-technology"
+        ],
+        "locator_notes": {
+          "closest-thing-to-alien-technology": "Related: The video uses nanometers and picometers throughout; no worksheet question asks about the prefixes."
+        },
+        "locator_strengths": {
+          "closest-thing-to-alien-technology": "related"
+        },
+        "note": "Metric prefixes describe scale.",
+        "strength": "related"
+      },
+      "5.9": {
+        "locators": [
+          "closest-thing-to-alien-technology"
+        ],
+        "locator_notes": {
+          "closest-thing-to-alien-technology": "Partial fit: A worksheet question asks students to pick one of the engineers' problems and describe step by step how it was solved; the video solves light, mirrors and cleanliness as separate parts."
+        },
+        "locator_strengths": {
+          "closest-thing-to-alien-technology": "partial"
+        },
+        "note": "Breaking a big problem into smaller parts.",
+        "strength": "partial"
+      },
+      "9.5": {
+        "locators": [
+          "closest-thing-to-alien-technology"
+        ],
+        "locator_notes": {
+          "closest-thing-to-alien-technology": "Partial fit: A worksheet question asks why companies and governments in several countries were needed to build the machine."
+        },
+        "locator_strengths": {
+          "closest-thing-to-alien-technology": "partial"
+        },
+        "note": "A global outlook.",
+        "strength": "partial"
       }
     },
     "iste-digital-citizen": {
@@ -1173,7 +1257,8 @@
           "the-imitation-game",
           "sneakers",
           "wargames",
-          "the-ai-doc-or-how-i-became-an-apocaloptimist"
+          "the-ai-doc-or-how-i-became-an-apocaloptimist",
+          "closest-thing-to-alien-technology"
         ],
         "locator_notes": {
           "spare-parts": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
@@ -1182,7 +1267,8 @@
           "the-imitation-game": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
           "sneakers": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
           "wargames": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
-          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims."
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "closest-thing-to-alien-technology": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a video. Students are not asked to analyze its purpose or evaluate its claims."
         },
         "note": "Part 1 of the worksheet asks students to take information from a film while they watch.",
         "strength": "related",
@@ -1193,7 +1279,8 @@
           "the-imitation-game": "related",
           "sneakers": "related",
           "wargames": "related",
-          "the-ai-doc-or-how-i-became-an-apocaloptimist": "related"
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "related",
+          "closest-thing-to-alien-technology": "related"
         }
       }
     },

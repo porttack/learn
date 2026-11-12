@@ -1,0 +1,57 @@
+part1:
+  - q: "What is Moore's Law?"
+    options: ["Chips must be made in clean rooms", "The number of transistors on a chip roughly doubles about every two years", "Computers get cheaper every year", "Every chip must be made of silicon"]
+    answer: B
+  - q: "How are computer chips made?"
+    options: ["They are carved from one block by a robot", "They are built up in layers: coat a wafer with a light-sensitive material, shine light through a mask, then etch and add material", "They are poured like concrete", "They are cut from large circuit boards"]
+    answer: B
+  - q: "Why can the machine not use ordinary lenses with extreme ultraviolet (EUV) light?"
+    options: ["Lenses are too expensive", "Almost every material, including glass, absorbs EUV light, so mirrors in a vacuum are used instead", "The light is too bright", "Lenses are too heavy"]
+    answer: B
+  - q: "How does the machine make EUV light?"
+    options: ["It uses a normal light bulb", "A powerful laser hits tiny drops of tin about 50,000 times every second", "It heats up silicon chips", "It uses sunlight"]
+    answer: B
+  - q: "Which two companies built the machine's light system and mirrors together?"
+    options: ["Intel and Apple", "ASML (Dutch) and Zeiss (German)", "Google and Microsoft", "Samsung and Sony"]
+    answer: 
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Moore's Law"
+    text: "Chip makers kept making transistors smaller so more could fit on a chip. Why does it matter to you that chips keep getting smaller? Name one thing a phone or computer can do now that would not be possible with older chips."
+    lines: 5
+  - label: "Light and Mirrors"
+    text: "Explain in your own words why the engineers needed a new kind of light to make smaller chips, and why they had to use mirrors in a vacuum instead of lenses."
+    lines: 5
+  - label: "Problem Solving"
+    text: "Pick ONE problem the engineers faced (the dust, the tin leftovers, the shape of the droplet, the mirrors). Describe the problem and explain step by step how they solved it."
+    lines: 5
+  - label: "Teamwork Across Countries"
+    text: "Building the machine took companies and governments in several countries. Why do you think one company could not do it alone? What are the risks of the whole world depending on one company for these machines?"
+    lines: 5
+  - label: "Personal Connection"
+    text: "Which job in the video would you most like to try (laser engineer, optics scientist, chip designer, project manager, or another) and why?"
+    lines: 3
+teacher: |
+  Answer key: Questions 1 to 4 follow the video's explanation as described in its chapter list and published summaries (Moore's Law, the layer-by-layer chip process, EUV light and mirrors, tin droplets and a laser at about 50,000 a second). Question 5 is marked "(to check)": confirm against the video which companies are named as partners (a Dutch company and a German optics maker appear in published summaries). Preview the video before showing it.
+
+  Questions 1 to 3 follow the video in order; 4 and 5 are from the later sections.
+
+  Teaching points by question:
+
+  - Moore's Law: faster, smaller, cheaper devices. Good answers name a real example (phone cameras, AI, games).
+  - Light and Mirrors: shorter wavelength light prints smaller details; EUV is absorbed by almost everything, so the machine runs in a vacuum and uses ultra-smooth mirrors.
+  - Problem Solving: this is the engineering process: name the problem, test ideas, fix. Accept any problem if the steps are in order.
+  - Teamwork Across Countries: no right answer. Look for ideas about skill, cost and risk (supply chain).
+
+  CASEL focus: "Teamwork Across Countries" is Relationship Skills (teamwork) and Responsible Decision-Making (institutional impacts).
+
+  Format and content note: This is a 55-minute educational YouTube video, not a film. It is not rated. It has no violence, swearing or mature themes. Best for grades 8 to 11. The video includes a short sponsor message from its creator; check where it falls and skip it if you like. YouTube may also show its own ads in the player; the full video is on [its own watch page](/movies/closest-thing-to-alien-technology-watch/), and a chapter list there lets you jump to a section.
+before: |
+  About 10 to 15 minutes. The video is about how the chips inside every device are made. These warm-ups get students thinking about how small things get and who makes them, without giving away the answers.
+
+  - **How small is small? (3 minutes):** On the board, write: **a human hair is about 80,000 nanometers wide.** Ask: if a modern chip has parts about 10 nanometers wide, how many of those could fit across a hair? (About 8,000.) Let students call out guesses first.
+  - **Hands up (2 minutes):** Who has a phone? How old is it? Who thinks a phone from ten years ago could do what yours does now? What changed inside?
+  - **Moore's Law guess (3 minutes):** Write **Moore's Law** on the board. Ask what a law about computers could say. Take guesses. Do not give the answer; the video starts there.
+  - **Build a chip? (3 minutes, pairs):** If you had to make a very tiny pattern on a surface, what tool would you use? Light? A stencil? A stamp? Each pair shares one idea. The video uses light and a mask like a stencil.
+  - **Who makes the chips? (2 minutes):** Ask: where do you think the chips in your phone are made, and by whom? Take guesses. Revisit it at the end.
+  - **Wheel of Names (2 minutes):** paste in the class list and spin. "Name one thing you use every day that you could not make yourself."
