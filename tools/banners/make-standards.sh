@@ -9,5 +9,5 @@ TAG="${1:-Standards Alignments}"
 magick tools/banners/originals/standards.png \
   -virtual-pixel Mirror -set option:distort:viewport 1024x254+0+0 \
   -distort Affine '0,0 0,0 1,1 1,1' +repage \
-  -font Helvetica-Bold -pointsize 20 -fill '#1565c0' -undercolor white \
-  -gravity southeast -annotate +10+8 " $TAG " assets/img/standards/standards.png
+  -font Helvetica-Bold -pointsize 28 -fill '#1565c0' -undercolor white \
+  -gravity southeast -annotate +10+6 " $TAG " assets/img/standards/standards.png

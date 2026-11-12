@@ -2155,7 +2155,9 @@ table.checkoff.light-message td {
 // cropped to fit, so banners of slightly different sizes still line up).
 .banner-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  // About two thirds of the old tile size: 3 columns in the page's width,
+  // and 2 on a phone (below).
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 14px;
   margin: 1.2em 0 2em;
 }
@@ -2179,6 +2181,13 @@ table.checkoff.light-message td {
   &:focus-visible {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media (max-width: 600px) {
+  .banner-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
   }
 }
 

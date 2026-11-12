@@ -13,7 +13,7 @@
   <text x='290' y='108' font-family='Helvetica Neue, Helvetica, Arial, sans-serif' font-weight='800' font-size='76' fill='#1f3a5f'>STUDENT</text>
   <text x='290' y='194' font-family='Helvetica Neue, Helvetica, Arial, sans-serif' font-weight='800' font-size='76' fill='#1f3a5f'>MOVIES</text>
   <!-- popcorn -->
-  <g transform='translate(715 16)'>
+  <g transform='translate(715 2)'>
     <g fill='#fff6d6' stroke='#d9b955' stroke-width='3'>
       <circle cx='40' cy='62' r='26'/><circle cx='78' cy='44' r='28'/><circle cx='118' cy='56' r='27'/><circle cx='152' cy='72' r='22'/><circle cx='62' cy='82' r='22'/><circle cx='100' cy='78' r='24'/><circle cx='134' cy='88' r='20'/><circle cx='20' cy='86' r='16'/>
     </g>
@@ -22,5 +22,5 @@
     <path d='M14 96 L40 96 L48 218 L28 218 Z M72 96 L104 96 L104 218 L72 218 Z M136 96 L166 96 L152 218 L128 218 Z' fill='#b3261e' transform='translate(0 0)'/>
     <rect x='4' y='88' width='172' height='14' rx='6' fill='#b3261e'/>
   </g>
-  <text x='1010' y='244' text-anchor='end' font-family='Helvetica, Arial, sans-serif' font-weight='700' font-size='20' fill='#1f3a5f'>Great for subs</text>
+  <text x='1010' y='247' text-anchor='end' font-family='Helvetica, Arial, sans-serif' font-weight='700' font-size='28' fill='#1f3a5f'>Great for subs</text>
 </svg>

@@ -7,5 +7,5 @@ TAG="${1:-Great for subs}"
 magick -size 1024x254 xc:white \
   \( tools/banners/originals/unplugged.png -background white -flatten -resize 940x \) \
   -gravity center -composite \
-  -font Helvetica-Bold -pointsize 20 -fill '#1f3a5f' -gravity southeast \
-  -annotate +14+8 "$TAG" assets/img/unplugged/unplugged-banner.png
+  -font Helvetica-Bold -pointsize 28 -fill '#1f3a5f' -gravity southeast \
+  -annotate +14+6 "$TAG" assets/img/unplugged/unplugged-banner.png
