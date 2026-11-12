@@ -1,0 +1,57 @@
+part1:
+  - q: "Why does the filmmaker, Daniel Roher, start asking questions about AI?"
+    options: ["He is a computer programmer", "He is about to become a father and worries about the world his child will grow up in", "He was asked by the government", "He wants to sell a product"]
+    answer: B
+  - q: "What does the word \"apocaloptimist\" in the title mean?"
+    options: ["Someone who takes the worst-case risks seriously and still hopes things can turn out well", "Someone who thinks the world will end", "Someone who hates technology", "Someone who works for an AI company"]
+    answer: A
+  - q: "Which AI company leaders does the film interview?"
+    options: ["Sam Altman (OpenAI), Dario Amodei (Anthropic) and Demis Hassabis (Google DeepMind)", "Bill Gates and Steve Jobs", "Elon Musk and Mark Zuckerberg", "Only government officials"]
+    answer: A
+  - q: "Which of these does the film talk about?"
+    options: ["Deepfakes and the race to build more powerful AI", "Only robots in factories", "Only cheating on homework", "Only video games"]
+    answer: 
+  - q: "How does the film end?"
+    options: ["It says AI will definitely save us", "It says AI will definitely destroy us", "It says no one knows for sure, and the best chance of a good outcome is to talk honestly about both the benefits and the risks", "It says to stop using computers"]
+    answer: 
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Both Sides"
+    text: "Name one way AI could help people and one way it could cause harm. Which of these do you think is more likely over the next ten years? Explain your reasoning."
+    lines: 5
+  - label: "Who Decides?"
+    text: "Some AI company leaders in the film say they are racing each other, and they also say governments should have a say. Should a company decide alone how fast to release powerful AI? Who else should help decide, and why?"
+    lines: 5
+  - label: "Real or Fake?"
+    text: "The film talks about deepfakes (fake videos and voices that look and sound real). Describe two things you could do before you believe or share a video that seems shocking."
+    lines: 4
+  - label: "Handling Worry"
+    text: "Daniel Roher is worried and decides to act, not to look away. What does he do with his worry? What would you suggest to a person who feels worried about the future?"
+    lines: 5
+  - label: "Personal Connection"
+    text: "Which person in the film do you agree with most, or think you are most like, and why? (Roher, Altman, Amodei, Hassabis, someone else you remember)"
+    lines: 3
+teacher: |
+  Answer key: Questions 1 to 3 come from the film's published description and cast. Questions 4 and 5 are marked "(to check)": the film's own order and ending were taken from reviews, not from a scene-by-scene viewing, so check them when you preview it. Preview the film before showing it.
+
+  Teaching points by question:
+
+  - Both Sides: balanced answers name a specific benefit (medicine, learning, accessibility) and a specific harm (fakes, jobs, misuse). No right answer; look for reasons.
+  - Who Decides: an argued answer. Strong answers name more than one group (companies, governments, researchers, the public).
+  - Real or Fake: strong answers include checking the source, looking for the original, looking for other reports, and waiting before sharing.
+  - Handling Worry: observational. Do not ask students to share their own worries aloud.
+
+  CASEL focus: "Handling Worry" is Self-Management and Self-Awareness (naming and managing a strong feeling). "Real or Fake?" is Responsible Decision-Making (reasoned judgment). "Who Decides?" is Responsible Decision-Making (institutional impacts).
+
+  Media literacy talking points: Roher says Elon Musk and Mark Zuckerberg declined to be interviewed. Reviews are mixed. Some say it is a scary, useful introduction, and some say it tilts toward optimism and gives AI company leaders a lot of room. Ask students who they would want to hear from that is not in the film.
+
+  Content note: Rated PG-13. Common Sense Media recommends 13 and up. It has mild and bleeped profanity, frightening talk about AI causing human extinction, discussion of AI-linked suicide and self-harm, and images of people shopping for guns. No violence. Preview it and consider a short calm check-in afterward. Best for grades 9 to 11.
+before: |
+  About 10 to 15 minutes. The film is a documentary about AI. The warm-ups get students thinking about their own opinions before they hear the experts, and set up the question of who is speaking. Do not ask students to share worries that feel personal.
+
+  - **Show of fingers (2 minutes):** Hold up 1 to 5 fingers: how excited are you about AI? Now how worried? Take one or two volunteers from each end to say why.
+  - **Four corners (3 minutes):** AI will mostly help / mostly harm / both about equally / I don't know yet. Students stand in a corner, then one person in each explains. Ask them to remember their corner. You will ask whether the film changed it.
+  - **What does the title mean? (2 minutes):** Write **apocaloptimist** on the board. Break it into pieces: apocalypse and optimist. Ask what kind of person that could be.
+  - **Real or fake? (3 minutes):** Ask: have you seen a fake video, photo or voice? How could you tell? Take three answers. Write them on the board. Come back at "Real or Fake?"
+  - **Who is in the room? (2 minutes):** If you were making a film about AI, who would you want to interview? Who might not want to talk to you? Take guesses. Ask again at the end: who was in this film and who was not?
+  - **Wheel of Names (2 minutes):** paste in the class list and spin. "Name one thing you do with AI, or one thing you would not want AI to do."

@@ -1,0 +1,57 @@
+part1:
+  - q: "How does David end up connecting to a military computer?"
+    options: ["He is invited by the Air Force", "He dials phone numbers looking for a game company and finds a different system", "He is given a password by a teacher", "He builds a missile controller"]
+    answer: B
+  - q: "How does David figure out the password?"
+    options: ["He asks his teacher", "He researches Dr. Falken, an early AI scientist, and guesses the name of Falken's late son, Joshua", "He buys it", "He uses a program that tries every word"]
+    answer: B
+  - q: "What goes wrong when David plays \"Global Thermonuclear War\"?"
+    options: ["The game freezes", "The computer treats it as real, and NORAD's alert level goes up", "The game ends right away", "His own computer crashes"]
+    answer: B
+  - q: "After the FBI takes David to NORAD, what does he do to try to stop the computer?"
+    options: ["He gives up", "He escapes and, with Jennifer, finds Dr. Falken", "He calls the President", "He deletes the game"]
+    answer: B
+  - q: "What finally stops the computer from launching real missiles?"
+    options: ["A password", "It plays tic-tac-toe against itself and then runs every war scenario, and learns that nobody can win", "The power goes out", "A general turns it off"]
+    answer: B
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Passwords"
+    text: "David finds the password by learning about the person who built the system and guessing something personal. What made that a weak password? Describe two things you could do to make a strong one."
+    lines: 5
+  - label: "Permission"
+    text: "David thinks he is only playing a game, but he has connected to a real computer. Where was the line between a prank and a serious problem? What should he have done as soon as he realized what he had found?"
+    lines: 5
+  - label: "People in the Loop"
+    text: "At the start, the military decides to give launch decisions to a computer because some crew members would not turn their keys. What problem were they trying to fix? What went wrong? When should a person, not a computer, make the final decision?"
+    lines: 5
+  - label: "Learning by Trying"
+    text: "The computer learns by playing a game against itself over and over. Why can that be a good way for a computer to learn? How is it like the way you get better at a game or a skill?"
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (David, Jennifer, Dr. Falken, McKittrick, the computer (WOPR), or another character)"
+    lines: 3
+teacher: |
+  Answer key: Part 1 follows the plot as summarized by Wikipedia and Common Sense Media; confirm against the film.
+
+  Questions 1 to 3 are plot comprehension. Questions 4 and 5 ask students to follow a reveal. The ending teaches tic-tac-toe: when both sides play perfectly, nobody wins, and the computer applies that idea to nuclear war.
+
+  Teaching points by question:
+
+  - Passwords: weak because it can be guessed from public information. Strong answers mention length, not using personal facts, and a password manager or multifactor login.
+  - Permission: the line is crossed once he is connected to a system he does not have permission to use. A good answer says he should have disconnected and told someone as soon as he saw it was not a game.
+  - People in the Loop: the system was built to remove human hesitation. A human can refuse an order; a computer cannot. Look for answers that say people can use judgment and stop a mistake.
+  - Learning by Trying: reinforcement learning and trial and error; running many simulated games is cheaper and safer than the real thing.
+
+  CASEL focus: "Permission" is Responsible Decision-Making (anticipating the consequences of one's actions). "People in the Loop" is Responsible Decision-Making (institutional impacts).
+
+  Content note: Rated PG, made in 1983, so the PG rating is milder than the current PG-13. Common Sense Media lists it for ages 11 and up. It has frequent swearing and some strong words, intense suspense as missiles nearly launch, a gun held to a man's head, cigarette smoking, and a couple of teen kisses. The teen hero changes a grade and is not punished until later. Fine for grades 7 to 11, with a heads up about the language.
+before: |
+  About 10 to 15 minutes. The film is about a computer game that turns out to be real, and about a computer that learns. These warm-ups set up both without giving away the ending.
+
+  - **Tic-tac-toe (3 minutes, pairs):** Play two quick games on paper. Ask: Can you always win if you go first? Can you always at least tie? Take answers. Do not explain why. The film uses this idea at the end.
+  - **Hands up (2 minutes):** Who has played a video game against the computer and lost? Who has beaten a hard level by trying it many times? Take two volunteers. What did you learn each time?
+  - **1983 (3 minutes):** Ask: how would you connect two computers when there was no home internet, only a phone line and a modem? Take guesses. Explain briefly that people really did dial numbers to find other computers, and the film makes a joke of it.
+  - **Who decides? (3 minutes, vote with hands):** Should a computer be allowed to decide who gets a grade? Open the school gate? Launch an alarm in a real emergency? Where do you want a person to make the final decision, and why?
+  - **Password check (2 minutes):** Write three guesses on the board that a stranger might try for a famous person's password (a pet's name, a birthday). Ask why those are easy. Do not ask anyone for their real passwords.
+  - **Predict from the title (2 minutes):** What does WarGames mean? War, or games, or both? Write guesses on the board and check them at the end.

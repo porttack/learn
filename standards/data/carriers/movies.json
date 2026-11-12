@@ -21,7 +21,10 @@
       "up": "Up",
       "nausicaa-of-the-valley-of-the-wind": "Nausicaä of the Valley of the Wind",
       "wreck-it-ralph": "Wreck-It Ralph",
-      "turning-red": "Turning Red"
+      "turning-red": "Turning Red",
+      "sneakers": "Sneakers",
+      "wargames": "WarGames",
+      "the-ai-doc-or-how-i-became-an-apocaloptimist": "The AI Doc: Or How I Became an Apocaloptimist"
     },
     "caveat": "Deliberately conservative. These are films with a worksheet, not instruction, so nothing is rated strong. 'Partial' means a worksheet question asks students to think about the idea; 'related' means the film shows it but no question asks about it. Mapped from each worksheet's Part 2 questions and the CASEL labels in each film's teacher notes; students' answers were not checked. Frameworks: CASEL (all films), AP CSP, California CS, CSTA 2026 and CA CTE (the computing films), ISTE and UNESCO MIL (Ron's Gone Wrong only), and three Common Core speaking and listening codes (all films, related only). The SEL-only films (Inside Out, Inside Out 2, Totoro, Coraline, Up, Nausicaa, Wreck-It Ralph, Turning Red) have no CS codes except Wreck-It Ralph's one related note on bugs.",
     "alignment_log": [
@@ -36,6 +39,12 @@
         "by": "Claude Sonnet 5.5",
         "scope": "Second pass: apcsp, castandards, csta2026, ca-ict-anchor, iste-digital-citizen, unesco-mil and ccss-ela added after the first pass looked only at CASEL",
         "note": "Read the catalog paraphrases for each framework and matched them to the worksheets' Part 2 questions. Ron's Gone Wrong apcsp 5.6 raised from related to partial because a worksheet question asks about data collection. Left out: unesco-ai-cfs and aasl-engage (nothing in the worksheets asks about AI as a tool students use), CSTA 2017 (legacy), Common Core writing codes (the worksheets are writing prompts but the films are not there to teach writing), and csta2026 high school codes."
+      },
+      {
+        "date": "2026-11-11",
+        "by": "Claude Sonnet 5.5",
+        "scope": "Third pass: Sneakers, WarGames and The AI Doc against casel, apcsp, castandards, csta2026, ca-ict-anchor, unesco-ai-cfs, unesco-mil and ccss-ela",
+        "note": "Mapped from the new worksheets' Part 2 questions and the catalog paraphrases. The AI Doc's Part 1 questions 4 and 5 have no confirmed answers, so no standards claim rests on them."
       }
     ]
   },
@@ -77,19 +86,22 @@
         "locators": [
           "inside-out",
           "inside-out-2",
-          "coraline"
+          "coraline",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
           "inside-out": "Partial fit: The film is built around naming five emotions, and a worksheet question asks about hiding or being told to hide a feeling.",
           "inside-out-2": "Partial fit: A worksheet question asks which new emotion the student relates to most right now.",
-          "coraline": "Partial fit: A worksheet question asks what the student does with the feeling of being ignored."
+          "coraline": "Partial fit: A worksheet question asks what the student does with the feeling of being ignored.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks what Roher does with his worry."
         },
         "locator_strengths": {
           "inside-out": "partial",
           "inside-out-2": "partial",
-          "coraline": "partial"
+          "coraline": "partial",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
         }
       },
       "SA.5": {
@@ -116,7 +128,8 @@
           "nausicaa-of-the-valley-of-the-wind",
           "inside-out-2",
           "big-hero-6",
-          "up"
+          "up",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
@@ -127,7 +140,8 @@
           "nausicaa-of-the-valley-of-the-wind": "Partial fit: A worksheet question asks how Nausicaä calms herself after anger and what the student does when too angry to think.",
           "inside-out-2": "Related: Anxiety is shown overwhelming Riley; the worksheet asks about worry rather than ways to handle it.",
           "big-hero-6": "Related: Hiro's choice between revenge and helping touches handling a strong feeling; the worksheet asks about the choice, not about managing anger.",
-          "up": "Related: Carl's grief is shown; the worksheet asks about holding on, not about handling the feeling."
+          "up": "Related: Carl's grief is shown; the worksheet asks about holding on, not about handling the feeling.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks what Roher does with his worry and what to suggest to someone who feels worried."
         },
         "locator_strengths": {
           "my-neighbor-totoro": "partial",
@@ -136,7 +150,8 @@
           "nausicaa-of-the-valley-of-the-wind": "partial",
           "inside-out-2": "related",
           "big-hero-6": "related",
-          "up": "related"
+          "up": "related",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
         }
       },
       "SM.2": {
@@ -173,7 +188,8 @@
           "coraline",
           "turning-red",
           "nausicaa-of-the-valley-of-the-wind",
-          "the-wild-robot"
+          "the-wild-robot",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
@@ -181,32 +197,37 @@
           "coraline": "Partial fit: A worksheet question asks why we judge neighbors too quickly and what Coraline learned about the real people around her.",
           "turning-red": "Partial fit: A worksheet question asks why Mei's mother acts the way she does.",
           "nausicaa-of-the-valley-of-the-wind": "Partial fit: A worksheet question asks why people fear what they do not understand and what Nausicaä learns by looking closely.",
-          "the-wild-robot": "Related: Roz learning the animals' view of the world is part of the story; no worksheet question asks about perspective."
+          "the-wild-robot": "Related: Roz learning the animals' view of the world is part of the story; no worksheet question asks about perspective.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Related: The film puts hopeful and worried experts side by side; no worksheet question asks about perspective."
         },
         "locator_strengths": {
           "coraline": "partial",
           "turning-red": "partial",
           "nausicaa-of-the-valley-of-the-wind": "partial",
-          "the-wild-robot": "related"
+          "the-wild-robot": "related",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "related"
         }
       },
       "SOC.2": {
         "locators": [
           "robots",
           "spare-parts",
-          "the-imitation-game"
+          "the-imitation-game",
+          "sneakers"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
           "robots": "Partial fit: A worksheet question asks how the film shows old robots still matter.",
           "spare-parts": "Partial fit: A worksheet question asks about the different strengths each team member brought.",
-          "the-imitation-game": "Partial fit: A worksheet question asks how outsiders such as Turing and Joan Clarke made breakthroughs."
+          "the-imitation-game": "Partial fit: A worksheet question asks how outsiders such as Turing and Joan Clarke made breakthroughs.",
+          "sneakers": "Partial fit: A worksheet question asks why the team needs two members with different skills."
         },
         "locator_strengths": {
           "robots": "partial",
           "spare-parts": "partial",
-          "the-imitation-game": "partial"
+          "the-imitation-game": "partial",
+          "sneakers": "partial"
         }
       },
       "SOC.3": {
@@ -257,17 +278,20 @@
       "SOC.8": {
         "locators": [
           "rons-gone-wrong",
-          "robots"
+          "robots",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
           "rons-gone-wrong": "Related: The company's choices about data shape how kids behave; the worksheet asks about privacy rather than influence.",
-          "robots": "Partial fit: A worksheet question asks about ads that make you want something new."
+          "robots": "Partial fit: A worksheet question asks about ads that make you want something new.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Related: The film shows how companies and governments shape AI; the worksheet asks who should decide."
         },
         "locator_strengths": {
           "rons-gone-wrong": "related",
-          "robots": "partial"
+          "robots": "partial",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "related"
         }
       },
       "REL.2": {
@@ -294,15 +318,18 @@
       },
       "REL.4": {
         "locators": [
-          "spare-parts"
+          "spare-parts",
+          "sneakers"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "spare-parts": "Partial fit: A worksheet question asks why different strengths on a team matter."
+          "spare-parts": "Partial fit: A worksheet question asks why different strengths on a team matter.",
+          "sneakers": "Partial fit: A worksheet question asks why the team needs two members with different skills."
         },
         "locator_strengths": {
-          "spare-parts": "partial"
+          "spare-parts": "partial",
+          "sneakers": "partial"
         }
       },
       "REL.5": {
@@ -355,15 +382,21 @@
       },
       "RDM.1": {
         "locators": [
-          "my-neighbor-totoro"
+          "my-neighbor-totoro",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist",
+          "wargames"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
-          "my-neighbor-totoro": "Partial fit: A worksheet question asks about meeting someone different with curiosity instead of fear."
+          "my-neighbor-totoro": "Partial fit: A worksheet question asks about meeting someone different with curiosity instead of fear.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Related: The film hears from people who disagree; no worksheet question asks about open-mindedness.",
+          "wargames": "Related: David's curiosity starts the story; no worksheet question asks about it."
         },
         "locator_strengths": {
-          "my-neighbor-totoro": "partial"
+          "my-neighbor-totoro": "partial",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "related",
+          "wargames": "related"
         }
       },
       "RDM.3": {
@@ -388,7 +421,9 @@
           "coraline",
           "up",
           "wreck-it-ralph",
-          "big-hero-6"
+          "big-hero-6",
+          "wargames",
+          "sneakers"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
@@ -397,14 +432,18 @@
           "coraline": "Partial fit: A worksheet question asks why the perfect-looking Other World is a trap.",
           "up": "Partial fit: A worksheet question asks where Muntz's choices went wrong.",
           "wreck-it-ralph": "Partial fit: A worksheet question asks what the student would do in Ralph's place and how to fix a mistake that hurt someone.",
-          "big-hero-6": "Partial fit: A worksheet question asks about Hiro's choice between revenge and helping."
+          "big-hero-6": "Partial fit: A worksheet question asks about Hiro's choice between revenge and helping.",
+          "wargames": "Partial fit: A worksheet question asks where a prank became a serious problem and what David should have done.",
+          "sneakers": "Related: The film shows what happens when the box is used or not; the worksheet asks about the power, not the consequences."
         },
         "locator_strengths": {
           "inside-out": "partial",
           "coraline": "partial",
           "up": "partial",
           "wreck-it-ralph": "partial",
-          "big-hero-6": "partial"
+          "big-hero-6": "partial",
+          "wargames": "partial",
+          "sneakers": "related"
         }
       },
       "RDM.6": {
@@ -424,20 +463,55 @@
         "locators": [
           "rons-gone-wrong",
           "the-imitation-game",
-          "wall-e"
+          "wall-e",
+          "sneakers",
+          "wargames",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
         ],
         "strength": "partial",
         "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
         "locator_notes": {
           "rons-gone-wrong": "Partial fit: A worksheet question asks what could go wrong when companies collect data about users.",
           "the-imitation-game": "Partial fit: A worksheet question asks how to balance security needs with the dangers of too much secret power.",
-          "wall-e": "Related: The worksheet asks for problems and benefits of the Axiom's reliance on technology; the focus is computing, not community well-being."
+          "wall-e": "Related: The worksheet asks for problems and benefits of the Axiom's reliance on technology; the focus is computing, not community well-being.",
+          "sneakers": "Partial fit: A worksheet question asks who should hold a tool that breaks almost any code and what the risks are.",
+          "wargames": "Partial fit: A worksheet question asks about giving launch decisions to a computer.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks who should decide how fast powerful AI is released."
         },
         "locator_strengths": {
           "rons-gone-wrong": "partial",
           "the-imitation-game": "partial",
-          "wall-e": "related"
+          "wall-e": "related",
+          "sneakers": "partial",
+          "wargames": "partial",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
         }
+      },
+      "RDM.2": {
+        "locators": [
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
+        ],
+        "locator_notes": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks how to check a shocking video before believing or sharing it."
+        },
+        "locator_strengths": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
+        },
+        "note": "Reasoned judgment from information.",
+        "strength": "partial"
+      },
+      "SA.4": {
+        "locators": [
+          "sneakers"
+        ],
+        "locator_notes": {
+          "sneakers": "Related: Martin turns down both offers to use the box; no worksheet question asks about integrity."
+        },
+        "locator_strengths": {
+          "sneakers": "related"
+        },
+        "note": "Honesty and integrity.",
+        "strength": "related"
       }
     },
     "apcsp": {
@@ -508,17 +582,20 @@
       "5.1": {
         "locators": [
           "wall-e",
-          "rons-gone-wrong"
+          "rons-gone-wrong",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
         ],
         "locator_notes": {
           "wall-e": "Partial fit: A worksheet question asks for two problems and two benefits of the Axiom's reliance on technology.",
-          "rons-gone-wrong": "Related: B-bots help and harm kids in the film; the worksheet focuses on privacy."
+          "rons-gone-wrong": "Related: B-bots help and harm kids in the film; the worksheet focuses on privacy.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks for one way AI could help and one way it could cause harm."
         },
         "strength": "partial",
         "note": "The films show technology helping and harming people.",
         "locator_strengths": {
           "wall-e": "partial",
-          "rons-gone-wrong": "related"
+          "rons-gone-wrong": "related",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
         }
       },
       "5.3": {
@@ -536,30 +613,65 @@
       },
       "5.6": {
         "locators": [
-          "rons-gone-wrong"
+          "rons-gone-wrong",
+          "sneakers",
+          "wargames"
         ],
         "locator_notes": {
-          "rons-gone-wrong": "Partial fit: A worksheet question asks what could go wrong when companies collect data about users."
+          "rons-gone-wrong": "Partial fit: A worksheet question asks what could go wrong when companies collect data about users.",
+          "sneakers": "Partial fit: A worksheet question asks how people and companies defend against attacks, and the film turns on breaking encryption.",
+          "wargames": "Partial fit: A worksheet question asks what made David's guessed password weak and how to build a strong one."
         },
         "strength": "partial",
         "note": "Personal data collected online carries risk.",
         "locator_strengths": {
-          "rons-gone-wrong": "partial"
+          "rons-gone-wrong": "partial",
+          "sneakers": "partial",
+          "wargames": "partial"
         }
+      },
+      "5.5": {
+        "locators": [
+          "sneakers"
+        ],
+        "locator_notes": {
+          "sneakers": "Related: The film shows a team that works legally and a break-in that is not; the worksheet asks about the line."
+        },
+        "locator_strengths": {
+          "sneakers": "related"
+        },
+        "note": "Legal and ethical questions raised by computing.",
+        "strength": "related"
+      },
+      "3.16": {
+        "locators": [
+          "wargames"
+        ],
+        "locator_notes": {
+          "wargames": "Related: WOPR runs war scenarios as simulations; the worksheet asks about learning by trying, not about simulations."
+        },
+        "locator_strengths": {
+          "wargames": "related"
+        },
+        "note": "Simulation.",
+        "strength": "related"
       }
     },
     "castandards": {
       "6-8.IC.20": {
         "locators": [
-          "wall-e"
+          "wall-e",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
         ],
         "locator_notes": {
-          "wall-e": "Partial fit: A worksheet question weighs the problems and benefits of the Axiom's technology."
+          "wall-e": "Partial fit: A worksheet question weighs the problems and benefits of the Axiom's technology.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question weighs a benefit and a harm of AI."
         },
         "strength": "partial",
         "note": "Technologies reshape daily life with tradeoffs.",
         "locator_strengths": {
-          "wall-e": "partial"
+          "wall-e": "partial",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
         }
       },
       "6-8.IC.22": {
@@ -603,16 +715,61 @@
       },
       "9-12.IC.30": {
         "locators": [
-          "the-imitation-game"
+          "the-imitation-game",
+          "sneakers"
         ],
         "locator_notes": {
-          "the-imitation-game": "Partial fit: A worksheet question asks how to balance wartime secrecy with the dangers of secret power over people."
+          "the-imitation-game": "Partial fit: A worksheet question asks how to balance wartime secrecy with the dangers of secret power over people.",
+          "sneakers": "Partial fit: A worksheet question asks who should hold a tool that breaks almost any code, with risks on each side."
         },
         "strength": "partial",
         "note": "Privacy and security have to be weighed against each other.",
         "locator_strengths": {
-          "the-imitation-game": "partial"
+          "the-imitation-game": "partial",
+          "sneakers": "partial"
         }
+      },
+      "6-8.NI.5": {
+        "locators": [
+          "sneakers",
+          "wargames"
+        ],
+        "locator_notes": {
+          "sneakers": "Partial fit: A worksheet question asks how a person or company could defend against a trick used in the film.",
+          "wargames": "Related: David gets in by a weak password; the worksheet asks about the password and permission."
+        },
+        "locator_strengths": {
+          "sneakers": "partial",
+          "wargames": "related"
+        },
+        "note": "Network threats and countermeasures.",
+        "strength": "partial"
+      },
+      "6-8.NI.6": {
+        "locators": [
+          "sneakers"
+        ],
+        "locator_notes": {
+          "sneakers": "Related: The box defeats the codes that protect networks; no worksheet question asks how the protections work."
+        },
+        "locator_strengths": {
+          "sneakers": "related"
+        },
+        "note": "Layers of protection.",
+        "strength": "related"
+      },
+      "9-12.IC.26": {
+        "locators": [
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
+        ],
+        "locator_notes": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks who should help decide how fast powerful AI is released."
+        },
+        "locator_strengths": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
+        },
+        "note": "New technology reshapes structures.",
+        "strength": "partial"
       }
     },
     "csta2026": {
@@ -638,33 +795,39 @@
       "MS-ALG-PS-04": {
         "locators": [
           "wall-e",
-          "the-wild-robot"
+          "the-wild-robot",
+          "wargames"
         ],
         "locator_notes": {
           "wall-e": "Partial fit: A worksheet question asks the difference between AUTO following rules and WALL-E learning and choosing.",
-          "the-wild-robot": "Partial fit: A worksheet question asks how Roz starts from her programming and learns, compared with a streaming service."
+          "the-wild-robot": "Partial fit: A worksheet question asks how Roz starts from her programming and learns, compared with a streaming service.",
+          "wargames": "Partial fit: A worksheet question asks why a computer playing a game against itself is a way to learn."
         },
         "strength": "partial",
         "note": "Rule-following machines versus ones that learn.",
         "locator_strengths": {
           "wall-e": "partial",
-          "the-wild-robot": "partial"
+          "the-wild-robot": "partial",
+          "wargames": "partial"
         }
       },
       "MS-ALG-ML-06": {
         "locators": [
           "the-wild-robot",
-          "big-hero-6"
+          "big-hero-6",
+          "wargames"
         ],
         "locator_notes": {
           "the-wild-robot": "Partial fit: A worksheet question compares Roz's learning with a streaming service learning what you like.",
-          "big-hero-6": "Related: Baymax adapts from experience with Hiro; the worksheet asks about one scene, not about how a model learns."
+          "big-hero-6": "Related: Baymax adapts from experience with Hiro; the worksheet asks about one scene, not about how a model learns.",
+          "wargames": "Related: WOPR learns from the games it plays; the worksheet asks about learning by trying."
         },
         "strength": "partial",
         "note": "What a learning system takes in shapes what it does.",
         "locator_strengths": {
           "the-wild-robot": "partial",
-          "big-hero-6": "related"
+          "big-hero-6": "related",
+          "wargames": "related"
         }
       },
       "MS-DAT-IM-28": {
@@ -683,17 +846,23 @@
       "MS-SOC-HU-43": {
         "locators": [
           "rons-gone-wrong",
-          "big-hero-6"
+          "big-hero-6",
+          "wargames",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
         ],
         "locator_notes": {
           "rons-gone-wrong": "Related: The company's choices about what B-bots do drive the story; the worksheet asks about privacy.",
-          "big-hero-6": "Related: Hiro decides what to build and why; the worksheet asks about that choice."
+          "big-hero-6": "Related: Hiro decides what to build and why; the worksheet asks about that choice.",
+          "wargames": "Partial fit: A worksheet question asks why the military gave launch decisions to a computer and when a person should decide.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks who should decide how fast powerful AI is released."
         },
-        "strength": "related",
+        "strength": "partial",
         "note": "People's decisions sit behind a computing system.",
         "locator_strengths": {
           "rons-gone-wrong": "related",
-          "big-hero-6": "related"
+          "big-hero-6": "related",
+          "wargames": "partial",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
         }
       },
       "MS-SOC-HI-38": {
@@ -737,6 +906,61 @@
           "wall-e": "related",
           "robots": "related"
         }
+      },
+      "MS-SYS-SE-32": {
+        "locators": [
+          "wargames"
+        ],
+        "locator_notes": {
+          "wargames": "Related: David alters a grade and gets into a system; the worksheet asks about passwords and permission, not about these ideas."
+        },
+        "locator_strengths": {
+          "wargames": "related"
+        },
+        "note": "Confidentiality, integrity and availability.",
+        "strength": "related"
+      },
+      "MS-SYS-SE-33": {
+        "locators": [
+          "sneakers",
+          "wargames"
+        ],
+        "locator_notes": {
+          "sneakers": "Partial fit: A worksheet question asks how to defend against a trick that works on a person; the film shows several.",
+          "wargames": "Partial fit: A worksheet question asks what made the password weak and how to make a strong one."
+        },
+        "locator_strengths": {
+          "sneakers": "partial",
+          "wargames": "partial"
+        },
+        "note": "Social engineering and basic defenses.",
+        "strength": "partial"
+      },
+      "MS-ALG-IM-10": {
+        "locators": [
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
+        ],
+        "locator_notes": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Related: The film looks at the AI tools people already use; no worksheet question asks about a specific tool."
+        },
+        "locator_strengths": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "related"
+        },
+        "note": "Everyday tools carry ethical issues.",
+        "strength": "related"
+      },
+      "MS-SOC-ET-42": {
+        "locators": [
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
+        ],
+        "locator_notes": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks for one benefit and one harm of AI and which is more likely."
+        },
+        "locator_strengths": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
+        },
+        "note": "Does an emerging technology help or harm?",
+        "strength": "partial"
       }
     },
     "ca-ict-anchor": {
@@ -794,6 +1018,51 @@
         "locator_strengths": {
           "the-imitation-game": "related"
         }
+      },
+      "10.8": {
+        "locators": [
+          "sneakers",
+          "wargames"
+        ],
+        "locator_notes": {
+          "sneakers": "Partial fit: The film turns on permission and breaking encryption; worksheet questions ask about permission and who should hold a code-breaking tool.",
+          "wargames": "Related: David reaches a system he is not authorized to use; the worksheet asks about permission."
+        },
+        "locator_strengths": {
+          "sneakers": "partial",
+          "wargames": "related"
+        },
+        "note": "Authorization, access rights, encryption.",
+        "strength": "partial"
+      },
+      "8.8": {
+        "locators": [
+          "sneakers",
+          "wargames"
+        ],
+        "locator_notes": {
+          "sneakers": "Partial fit: A worksheet question asks what makes a test a job and not a crime.",
+          "wargames": "Partial fit: A worksheet question asks where a prank became a serious problem."
+        },
+        "locator_strengths": {
+          "sneakers": "partial",
+          "wargames": "partial"
+        },
+        "note": "Hacking and scams are legal and ethical problems.",
+        "strength": "partial"
+      },
+      "8.4": {
+        "locators": [
+          "sneakers"
+        ],
+        "locator_notes": {
+          "sneakers": "Related: Martin refuses to use the box for himself; no worksheet question asks about integrity."
+        },
+        "locator_strengths": {
+          "sneakers": "related"
+        },
+        "note": "Integrity and confidentiality.",
+        "strength": "related"
       }
     },
     "iste-digital-citizen": {
@@ -824,6 +1093,32 @@
         "locator_strengths": {
           "rons-gone-wrong": "partial"
         }
+      },
+      "5": {
+        "locators": [
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
+        ],
+        "locator_notes": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks what to do before believing or sharing a shocking video that may be a deepfake."
+        },
+        "locator_strengths": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
+        },
+        "note": "Judging whether a source is real.",
+        "strength": "partial"
+      },
+      "6": {
+        "locators": [
+          "sneakers"
+        ],
+        "locator_notes": {
+          "sneakers": "Related: The film shows phishing-style tricks used on people; the worksheet asks about defenses against one."
+        },
+        "locator_strengths": {
+          "sneakers": "related"
+        },
+        "note": "Protecting accounts and devices.",
+        "strength": "related"
       }
     },
     "ccss-ela": {
@@ -875,13 +1170,19 @@
           "spare-parts",
           "coraline",
           "nausicaa-of-the-valley-of-the-wind",
-          "the-imitation-game"
+          "the-imitation-game",
+          "sneakers",
+          "wargames",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
         ],
         "locator_notes": {
           "spare-parts": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
           "coraline": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
           "nausicaa-of-the-valley-of-the-wind": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
-          "the-imitation-game": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims."
+          "the-imitation-game": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "sneakers": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "wargames": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Related: Part 1 asks questions to answer while watching, a light version of taking information from a film. Students are not asked to analyze its purpose or evaluate its claims."
         },
         "note": "Part 1 of the worksheet asks students to take information from a film while they watch.",
         "strength": "related",
@@ -889,8 +1190,42 @@
           "spare-parts": "related",
           "coraline": "related",
           "nausicaa-of-the-valley-of-the-wind": "related",
-          "the-imitation-game": "related"
+          "the-imitation-game": "related",
+          "sneakers": "related",
+          "wargames": "related",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "related"
         }
+      }
+    },
+    "unesco-ai-cfs": {
+      "4.1.1": {
+        "locators": [
+          "wargames",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
+        ],
+        "locator_notes": {
+          "wargames": "Partial fit: A worksheet question asks when a person, not a computer, should make the final decision.",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Partial fit: A worksheet question asks who should have a say in how AI is built and released."
+        },
+        "locator_strengths": {
+          "wargames": "partial",
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "partial"
+        },
+        "note": "Human control of AI.",
+        "strength": "partial"
+      },
+      "4.3.1": {
+        "locators": [
+          "the-ai-doc-or-how-i-became-an-apocaloptimist"
+        ],
+        "locator_notes": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "Related: The film asks viewers to think about AI as citizens; the worksheet asks students for their view."
+        },
+        "locator_strengths": {
+          "the-ai-doc-or-how-i-became-an-apocaloptimist": "related"
+        },
+        "note": "Being a responsible citizen in an AI society.",
+        "strength": "related"
       }
     }
   }

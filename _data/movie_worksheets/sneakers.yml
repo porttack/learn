@@ -1,0 +1,59 @@
+part1:
+  - q: "In the 1969 opening, what do the two college friends do with a computer?"
+    options: ["Change their grades", "Secretly move money out of an account and give it to causes they support", "Sell secrets to another country", "Win a programming contest"]
+    answer: B
+  - q: "What is the job of Martin's team?"
+    options: ["Stealing for profit", "Being paid to break into places to show the owners their weak spots", "Working for the NSA", "Repairing computers"]
+    answer: B
+  - q: "What do the men who say they are NSA agents ask the team to steal?"
+    options: ["A bank's cash", "A black box that can break the codes protecting computer networks", "The president's laptop", "A satellite"]
+    answer: B
+  - q: "What does the team learn after the theft?"
+    options: ["The agents are real, and Cosmo died in 1969", "The agents are impostors, and Martin's old friend Cosmo faked his death and wants the box", "The box is empty", "The box is a toy"]
+    answer: B
+  - q: "At the end, how does Martin make sure the NSA cannot use the box?"
+    options: ["He throws it in the bay", "He removes its key part, so it no longer works", "He gives it to a newspaper", "He sells it"]
+    answer: B
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Testing Security"
+    text: "Martin's team is paid to break into places so the owners can fix the weak spots. What makes this a job and not a crime? Who has to give permission, and why does that matter?"
+    lines: 5
+  - label: "Attacks on People"
+    text: "Many of the team's best tricks work on people, not on computers (for example, pretending to be someone else or getting an access code from a person). Pick ONE trick from the movie and explain how a person or company could defend against it."
+    lines: 5
+  - label: "Who Holds the Power?"
+    text: "The black box could break almost any code. Martin says no to Cosmo and he does not let the NSA keep it. Who, if anyone, should have a tool like that? What are the risks of each choice?"
+    lines: 5
+  - label: "Teamwork"
+    text: "Each team member has a different skill (Crease, Mother, Carl, Whistler). Pick two. Explain why the team needs both of them to pull off a job."
+    lines: 4
+  - label: "Personal Connection"
+    text: "Which character in the movie do you think you are most like and why? (Martin, Crease, Mother, Carl, Whistler, Liz, Cosmo, or another character)"
+    lines: 3
+teacher: |
+  Answer key: Part 1 uses the plot as summarized by Wikipedia and Common Sense Media; confirm against the film, since the notes could not check scene by scene.
+
+  Questions 1 to 3 are plot comprehension. Questions 4 and 5 ask students to follow a reveal.
+
+  Teaching points by question:
+
+  - Testing Security: penetration testing, authorization and permission (the line between a test and a break-in). CS and ethics.
+  - Attacks on People: social engineering. Strong answers name a defense (check the identity, never give a code over the phone, a second approval).
+  - Who Holds the Power: encryption and the tension between privacy and security. No right answer; look for risks on both sides.
+  - Teamwork: different skills on a team.
+
+  CASEL focus: Teamwork asks for Social Awareness (recognizing strengths in others) and Relationship Skills (teamwork). "Who Holds the Power" is Responsible Decision-Making (evaluating impacts on the community and institutions).
+
+  Content note: Rated PG-13. Common Sense Media lists it for ages 13 and up. It has one strong expletive, a character who is knocked out and held captive, and bloodless violence. No sex, drinking or drugs. It is a 1992 film, so the technology looks old (modems, floppy disks, phone lines). That is a good thing to point out: the ideas have not changed. Best for grades 8 to 11.
+before: |
+  About 10 to 15 minutes. The film is about people who are paid to break into places so the owners can fix them. The warm-ups set up that idea and the one about who gets to hold powerful tools.
+
+  - **Hands up (2 minutes):** Who has gotten a fake text or email that said it was from a bank, a delivery company or a friend? What gave it away? Take two or three volunteers. Sets up "Attacks on People."
+  - **What would you do? (3 minutes):** A company says: "We will pay you to try to break into our building and our computer system, and we will not call the police." Who would take the job? What rules would you want written down first? (Write the rules on the board. "Permission in writing" should come up. Come back to it at question 1.)
+  - **Name the job (3 minutes):** Name a job where you break something on purpose so others can make it stronger. Examples: crash test dummies, building inspectors, fire drills, a teacher who gives a practice test. Ask how each one is different from just breaking things.
+  - **What does the title mean? (2 minutes):** Write **Sneakers** on the board. Ask what it could mean in a movie about computers. (Hint: not shoes. It is slang for people who sneak in to test security.)
+  - **Password check (3 minutes):** On the board, write three passwords: **123456**, **password**, **Tr0ub4dor&3**. Which is the hardest for a computer to guess, and which is easiest for a person to remember? Do not ask anyone for their real passwords.
+  - **Wheel of Names (2 minutes):** paste in the class list and spin. "Name something you took apart, tested or tried to break just to see how it worked."
+
+  A note on tone: the point is why testing security matters and where the line is. If someone asks how to break into a real account or system, say that is out of bounds for this class.
