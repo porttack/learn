@@ -1,0 +1,348 @@
+{
+  "meta": {
+    "title": "Student Movies",
+    "abbrev": "MOVIES",
+    "source": "movies",
+    "base_url": "https://learn.porttack.com",
+    "locator_kind": "movie",
+    "locator_url_template": "{base_url}/movies/{locator}/",
+    "locator_titles": {
+      "big-hero-6": "Big Hero 6",
+      "inside-out": "Inside Out",
+      "inside-out-2": "Inside Out 2",
+      "my-neighbor-totoro": "My Neighbor Totoro",
+      "robots": "Robots",
+      "rons-gone-wrong": "Ron's Gone Wrong",
+      "spare-parts": "Spare Parts",
+      "the-imitation-game": "The Imitation Game",
+      "the-wild-robot": "The Wild Robot",
+      "wall-e": "WALL-E",
+      "coraline": "Coraline",
+      "up": "Up",
+      "nausicaa-of-the-valley-of-the-wind": "Nausicaä of the Valley of the Wind",
+      "wreck-it-ralph": "Wreck-It Ralph",
+      "turning-red": "Turning Red"
+    },
+    "caveat": "Deliberately conservative. These are films with a worksheet, not instruction, so nothing is rated strong. 'Partial' means a worksheet question asks students to think about the competency; 'related' means the film shows it but no question asks about it. Mapped from each worksheet's reflection questions (Part 2) and the CASEL labels in each film's teacher notes; the students' answers were not checked. Only CASEL is mapped, plus one AP CSP code for Ron's Gone Wrong. Computer science films (Wild Robot, WALL-E, Big Hero 6, Spare Parts) have light entries because their worksheets ask about computing, not social-emotional skills.",
+    "alignment_log": [
+      {
+        "date": "2026-11-11",
+        "by": "Claude Sonnet 5.5",
+        "scope": "First pass: all 15 films against casel, plus apcsp 5.6 for Ron's Gone Wrong",
+        "note": "Read each worksheet's Part 2 questions and matched them to this repo's CASEL catalog. No strong entries on purpose. Left out: CDE T-SEL, Common Core speaking and writing (the worksheets are writing prompts, but writing is not what the films are for), and the CS frameworks other than the one code above."
+      }
+    ]
+  },
+  "coverage": {
+    "casel": {
+      "SA.1": {
+        "locators": [
+          "wreck-it-ralph",
+          "turning-red",
+          "inside-out-2"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "wreck-it-ralph": "A worksheet question asks how labels from other people (Ralph is 'the bad guy') shape how we see ourselves.",
+          "turning-red": "A worksheet question asks why people act differently at home and with friends, and which Mei seems most real.",
+          "inside-out-2": "Riley's Sense of Self is rebuilt by Anxiety; the worksheet asks about accepting all parts of yourself, but not about identity directly."
+        }
+      },
+      "SA.2": {
+        "locators": [
+          "wreck-it-ralph"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "wreck-it-ralph": "The Glitches question asks for a trait people call a weakness that could be a strength."
+        }
+      },
+      "SA.3": {
+        "locators": [
+          "inside-out",
+          "inside-out-2",
+          "coraline"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "inside-out": "The film is built around naming five emotions, and a worksheet question asks about hiding or being told to hide a feeling.",
+          "inside-out-2": "A worksheet question asks which new emotion the student relates to most right now.",
+          "coraline": "A worksheet question asks what the student does with the feeling of being ignored."
+        }
+      },
+      "SA.5": {
+        "locators": [
+          "inside-out-2",
+          "up"
+        ],
+        "strength": "related",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "inside-out-2": "Anxiety's planning shows how a feeling drives thoughts and actions; the worksheet asks about worry making things harder.",
+          "up": "Carl holding on to the house shows a feeling tied to a value; the worksheet asks about something the student would not want to lose."
+        }
+      },
+      "SM.1": {
+        "locators": [
+          "my-neighbor-totoro",
+          "turning-red",
+          "coraline",
+          "nausicaa-of-the-valley-of-the-wind",
+          "inside-out-2",
+          "big-hero-6",
+          "up"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "my-neighbor-totoro": "A worksheet question asks why Satsuki acts like everything is fine, and when that helps or backfires.",
+          "turning-red": "A worksheet question asks what Mei does to control the panda and what strategy the student uses when feelings are big.",
+          "coraline": "A worksheet question asks how Coraline stays calm and keeps thinking while scared.",
+          "nausicaa-of-the-valley-of-the-wind": "A worksheet question asks how Nausicaä calms herself after anger and what the student does when too angry to think.",
+          "inside-out-2": "Anxiety is shown overwhelming Riley; the worksheet asks about worry rather than ways to handle it.",
+          "big-hero-6": "Hiro's choice between revenge and helping touches handling a strong feeling; the worksheet asks about the choice, not about managing anger.",
+          "up": "Carl's grief is shown; the worksheet asks about holding on, not about handling the feeling."
+        }
+      },
+      "SM.2": {
+        "locators": [
+          "my-neighbor-totoro"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "my-neighbor-totoro": "A worksheet question asks what the student does or could do when stress or fear makes it hard to keep going."
+        }
+      },
+      "SM.3": {
+        "locators": [
+          "robots",
+          "spare-parts"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "robots": "A worksheet question asks about a moment Rodney could have quit and what he did instead.",
+          "spare-parts": "The team keeps going against long odds; the worksheet asks about constraints and problem solving rather than perseverance."
+        }
+      },
+      "SOC.1": {
+        "locators": [
+          "coraline",
+          "turning-red",
+          "nausicaa-of-the-valley-of-the-wind",
+          "the-wild-robot"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "coraline": "A worksheet question asks why we judge neighbors too quickly and what Coraline learned about the real people around her.",
+          "turning-red": "A worksheet question asks why Mei's mother acts the way she does.",
+          "nausicaa-of-the-valley-of-the-wind": "A worksheet question asks why people fear what they do not understand and what Nausicaä learns by looking closely.",
+          "the-wild-robot": "Roz learning the animals' view of the world is part of the story; no worksheet question asks about perspective."
+        }
+      },
+      "SOC.2": {
+        "locators": [
+          "robots",
+          "spare-parts",
+          "the-imitation-game"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "robots": "A worksheet question asks how the film shows old robots still matter.",
+          "spare-parts": "A worksheet question asks about the different strengths each team member brought.",
+          "the-imitation-game": "A worksheet question asks how outsiders such as Turing and Joan Clarke made breakthroughs."
+        }
+      },
+      "SOC.3": {
+        "locators": [
+          "inside-out",
+          "my-neighbor-totoro"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "inside-out": "A worksheet question uses Sadness sitting with Bing Bong to ask what helps a sad friend.",
+          "my-neighbor-totoro": "The sisters' kindness is shown throughout; the worksheet asks about helping neighbors, not empathy directly."
+        }
+      },
+      "SOC.4": {
+        "locators": [
+          "up",
+          "wreck-it-ralph"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "up": "A worksheet question asks what Carl missed about how Russell felt and how to tell when someone is lonely.",
+          "wreck-it-ralph": "A worksheet question asks why the racers pick on Vanellope and what they could do differently."
+        }
+      },
+      "SOC.6": {
+        "locators": [
+          "the-imitation-game"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "the-imitation-game": "Worksheet questions on discrimination ask students to look at a social norm that was unjust."
+        }
+      },
+      "SOC.8": {
+        "locators": [
+          "rons-gone-wrong",
+          "robots"
+        ],
+        "strength": "related",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "rons-gone-wrong": "The company's choices about data shape how kids behave; the worksheet asks about privacy rather than influence.",
+          "robots": "A worksheet question asks about ads that make you want something new."
+        }
+      },
+      "REL.2": {
+        "locators": [
+          "up",
+          "inside-out-2",
+          "rons-gone-wrong",
+          "the-wild-robot"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "up": "A worksheet question asks how an old friendship or loved one can help you keep going.",
+          "inside-out-2": "A worksheet question asks about losing touch with friends or making new ones.",
+          "rons-gone-wrong": "The film contrasts a made-to-order friend with one learned over time; the worksheet asks which friend the student would rather have.",
+          "the-wild-robot": "Roz forms relationships with the island animals; the worksheet is about computer science."
+        }
+      },
+      "REL.4": {
+        "locators": [
+          "spare-parts"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "spare-parts": "A worksheet question asks why different strengths on a team matter."
+        }
+      },
+      "REL.5": {
+        "locators": [
+          "turning-red",
+          "nausicaa-of-the-valley-of-the-wind"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "turning-red": "A worksheet question asks how Mei and her mother repair things and how to start an honest talk.",
+          "nausicaa-of-the-valley-of-the-wind": "A worksheet question asks how to stop a fight from getting bigger."
+        }
+      },
+      "REL.8": {
+        "locators": [
+          "inside-out",
+          "my-neighbor-totoro"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "inside-out": "A worksheet question asks how sharing a hard feeling with parents changes the relationship.",
+          "my-neighbor-totoro": "Granny and the neighbors help without being asked; the worksheet asks what makes a person someone others turn to."
+        }
+      },
+      "REL.9": {
+        "locators": [
+          "the-imitation-game",
+          "wreck-it-ralph"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "the-imitation-game": "A worksheet question asks about someone who stood up against discrimination, as Joan did for Alan.",
+          "wreck-it-ralph": "Ralph stands up for Vanellope; no worksheet question asks about it."
+        }
+      },
+      "RDM.1": {
+        "locators": [
+          "my-neighbor-totoro"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "my-neighbor-totoro": "A worksheet question asks about meeting someone different with curiosity instead of fear."
+        }
+      },
+      "RDM.3": {
+        "locators": [
+          "spare-parts",
+          "nausicaa-of-the-valley-of-the-wind"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "spare-parts": "A worksheet question asks students to lay out how the team solved one technical problem.",
+          "nausicaa-of-the-valley-of-the-wind": "A worksheet question asks for a better way for the armies to solve their problems."
+        }
+      },
+      "RDM.4": {
+        "locators": [
+          "inside-out",
+          "coraline",
+          "up",
+          "wreck-it-ralph",
+          "big-hero-6"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "inside-out": "A worksheet question asks what helped Riley choose to come back; consequences are not asked about directly.",
+          "coraline": "A worksheet question asks why the perfect-looking Other World is a trap.",
+          "up": "A worksheet question asks where Muntz's choices went wrong.",
+          "wreck-it-ralph": "A worksheet question asks what the student would do in Ralph's place and how to fix a mistake that hurt someone.",
+          "big-hero-6": "A worksheet question asks about Hiro's choice between revenge and helping."
+        }
+      },
+      "RDM.6": {
+        "locators": [
+          "robots"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "robots": "A worksheet question asks students to name a need at school or in town and how a kid could help."
+        }
+      },
+      "RDM.7": {
+        "locators": [
+          "rons-gone-wrong",
+          "the-imitation-game",
+          "wall-e"
+        ],
+        "strength": "partial",
+        "note": "Reflection questions and story moments in these films connect to this competency; none of the films teaches it as an activity.",
+        "locator_notes": {
+          "rons-gone-wrong": "A worksheet question asks what could go wrong when companies collect data about users.",
+          "the-imitation-game": "A worksheet question asks how to balance security needs with the dangers of too much secret power.",
+          "wall-e": "The worksheet asks for problems and benefits of the Axiom's reliance on technology; the focus is computing, not community well-being."
+        }
+      }
+    },
+    "apcsp": {
+      "5.6": {
+        "locators": [
+          "rons-gone-wrong"
+        ],
+        "strength": "related",
+        "note": "The film shows a company collecting personal data from kids and a worksheet question asks what could go wrong; it does not teach safe computing.",
+        "locator_notes": {
+          "rons-gone-wrong": "The film shows a company collecting personal data from kids and a worksheet question asks what could go wrong; it does not teach safe computing."
+        }
+      }
+    }
+  }
+}

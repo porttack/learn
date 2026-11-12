@@ -92,6 +92,7 @@ HUES = [
     ("#1b8a5a", "#2aa36e"),  # 25 emerald (socratic_seminar_kit)
     ("#7a2e8a", "#9d4bb5"),  # 26 purple (bootstrap_algebra)
     ("#c25e00", "#e08a2e"),  # 27 burnt orange (turtlelessons; not run through validate_palette.js)
+    ("#51697f", "#8aa2b8"),  # 28 slate (movies; not run through validate_palette.js)
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -274,6 +275,7 @@ SOURCE_ORDER = [
     "socratic_seminar_kit",
     "bootstrap_algebra",
     "turtlelessons",
+    "movies",
 ]
 
 

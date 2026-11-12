@@ -23,6 +23,8 @@
 {% unless pathway_meta %}{% assign pathway_meta = site.data.pathways | where: "id", page.pathway | first %}{% endunless %}
 {% if page.standards_locator %}{% assign std_locator = page.standards_locator %}{% elsif pathway_meta.standards_locator == "slug" %}{% assign std_locator = page.slug %}{% else %}{% assign std_locator = page.chapter %}{% endif %}
 {% assign std_carrier = page.standards_carrier | default: pathway_meta.standards_carrier %}
+{% comment %} A layout with no pathway (the movie page) passes carrier= and locator=. {% endcomment %}
+{% if include.carrier %}{% assign std_carrier = include.carrier %}{% assign std_locator = include.locator %}{% endif %}
 {% if std_locator and std_carrier %}
 {% if page.standards_open %}
 <section class="standards-alignment standards-alignment-open" data-chapter="{{ std_locator }}" data-carrier-slug="{{ std_carrier }}" data-carrier-url="{{ '/standards/data/carriers/' | relative_url }}{{ std_carrier }}.json" hidden>

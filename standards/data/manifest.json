@@ -232,6 +232,14 @@
    "abbrev": "TURTLE",
    "hue_light": "#c25e00",
    "hue_dark": "#e08a2e"
+  },
+  {
+   "slug": "movies",
+   "file": "movies.json",
+   "title": "Student Movies",
+   "abbrev": "MOVIES",
+   "hue_light": "#51697f",
+   "hue_dark": "#8aa2b8"
   }
  ],
  "crosswalks": [
