@@ -69,6 +69,23 @@ Turn in whatever you have 10 minutes before the end of class, even if you are no
 
 Press the PDF button in TurtleLab and attach the PDF to this assignment.
 
+### Assignment: Shapes from one rule
+
+Make one drawing in TurtleLab, then save a PDF.
+
+- Work through Step 2: [https://{{ site.print_host }}/turtle-lessons/step-2-say-it-once/](https://{{ site.print_host }}/turtle-lessons/step-2-say-it-once/)
+- Use only repeat, forward, right and set color.
+- Draw three regular shapes, such as a hexagon, an octagon and a shape with 12 sides. Each one is a repeat, and each is a different color.
+- Draw one rhombus: two forward blocks of the same length and two right blocks, inside a repeat of 2.
+- Every shape must close up.
+- Add a sticky note with your name.
+
+Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
+
+Press the PDF button in TurtleLab and attach the PDF to this assignment.
+
+Answers: hexagon 60, octagon 45, 12 sides 30. A rhombus has two turns that add to 180 (60 then 120, or 120 then 60). Two different forward lengths make a parallelogram, not a rhombus. There is no rubric; ask if you want one.
+
 ### Assignment: Practice PDF, Choose a path
 
 Work through Steps 2, 3 and 4, then save a practice PDF.

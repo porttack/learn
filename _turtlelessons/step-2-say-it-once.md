@@ -77,24 +77,41 @@ Press Run, type a number, and press Enter. Press Run again to be asked again.
 
 1. Type 3, then 5, then 8. What shapes do you get?
 2. Type 40, then 100. What does the shape look like, and why?
+3. Type 2. What does the turtle draw, and why?
 
 <details markdown="1">
 <summary>Check your answers</summary>
 
 1. A triangle, a pentagon and an octagon.
 2. Nearly a circle. With 40 sides each turn is only 9 degrees, and with 100 sides it is 3.6, so the corners are too small to see. A circle is what you get when the number of sides keeps growing.
+3. A single line, out and back. The turn is 180, so the turtle turns around and walks back the way it came.
 </details>
+
+## Two turns in one loop
+
+So far the `repeat` held one `forward` and one `right`. It can hold more. Put in `forward 100`, `right 90`, `forward 50`, `right 90` and repeat it 2 times. What shape is it?
+
+Each trip through the loop turns 90 + 90 = 180, so two trips turn 360, and the shape closes.
+
+A rhombus has four sides of the same length, but its corners are not square, so its two turns are different. Pick two turns that add up to 180, put the same number in both `forward` blocks, and run it.
+
+<details markdown="1">
+<summary>Check your answers</summary>
+
+The first program is a rectangle. For the rhombus, 60 and 120 work (120 and 60 work too). If the two `forward` numbers are different you get a parallelogram, not a rhombus.
+</details>
+
+## Make your picture
+
+Now put it all in one drawing. Open a fresh TurtleLab with **Open full size** under any frame, and build:
+
+- Three regular shapes, such as a hexagon, an octagon and a shape with 12 sides. Use a `repeat` for each one and work out its turn with 360 ÷ sides.
+- A different color for each shape (`set color`, before the shape).
+- One rhombus, from the section above.
+- Every shape must close up.
+
+Use only `repeat`, `forward`, `right` and `set color`. Add a sticky note with your name.
 
 ## Save your work
 
-To keep a copy of your blocks and your drawing, use the **PDF** button on the toolbar. A frame does not have one, so use **Open full size** under a frame, make your changes there, and press the **PDF** button.
-
-## Done early?
-
-**Two sides.** Type 2 in the last frame. What does the turtle draw, and why?
-
-<details markdown="1">
-<summary>Check your answer</summary>
-
-A single line, out and back. The turn is 180, so the turtle turns around and walks back the way it came.
-</details>
+To keep a copy of your blocks and your drawing, press the **PDF** button on the toolbar. A frame does not have one, so build in a tab of your own.
