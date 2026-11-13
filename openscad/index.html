@@ -10,6 +10,7 @@ permalink: /openscad/
 <title>OpenSCAD in the Browser</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="/assets/img/openscad/favicon.svg">
+<link rel="manifest" href="/openscad/manifest.webmanifest">
 <style>
   :root { --accent:#2a7ae2; --ink:#1b1f23; --paper:#fff; --muted:#57606a; --border:#d0d7de; --err:#d1242f; --warn:#7a5b00; }
   * { box-sizing: border-box; }
@@ -118,6 +119,7 @@ permalink: /openscad/
       <button id="ghOpen">Open from GitHub&hellip;</button>
       <hr>
       <button id="dlscad">Download .scad</button>
+      <button id="saveFile" title="Write this drawing back to the .scad file it was opened from (Ctrl or Cmd and S). Only for files opened from Finder or your computer by the installed app.">Save to the file</button>
       <button id="download" disabled>Download STL</button>
       <button id="ghSave">Save to GitHub&hellip;</button>
       <hr>
@@ -266,6 +268,7 @@ function savedNames() {
 }
 const nameEl = $("name");
 let currentName = "untitled";
+const fileHandles = new Map();   // drawing name -> the file on disk it was opened from (kept in memory only)
 const cleanName = (n) => (n || "").replace(/\s+/g, " ").trim().slice(0, 60) || "untitled";
 function fillNames() {
   $("names").replaceChildren(...savedNames().filter((n) => n !== currentName).map((n) => Object.assign(document.createElement("option"), { value: n })));
@@ -340,6 +343,7 @@ nameEl.addEventListener("change", () => {
     const t = store(true, TIME + currentName);
     const src = store(true, SRC + currentName), base = store(true, BASE + currentName);
     removeDoc(currentName);
+    if (fileHandles.has(currentName)) { fileHandles.set(n, fileHandles.get(currentName)); fileHandles.delete(currentName); }
     currentName = n;
     saveNow(false);
     if (t) store(false, TIME + n, t);
@@ -1141,6 +1145,43 @@ $("file").onchange = async (e) => {
   editor.set(await f.text());
   e.target.value = "";
 };
+// When the page is installed as an app, Finder can open a .scad file in it: Chrome hands the file
+// to launchQueue, and it opens as its own drawing (Save to the file writes it back).
+if ("launchQueue" in window) {
+  launchQueue.setConsumer(async (params) => {
+    for (const h of params.files || []) {
+      try {
+        const f = await h.getFile();
+        saveNow();
+        currentName = freeName(cleanName(f.name.replace(/\.scad$/i, "")) || "untitled");
+        fileHandles.set(currentName, h);
+        nameEl.value = currentName;
+        editor.set(await f.text(), false);
+        saveNow(); fillNames();
+        statusEl.textContent = `Opened "${f.name}"`;
+      } catch (e) { statusEl.textContent = "Could not open that file"; }
+    }
+  });
+}
+// Writes the drawing back to the file it was opened from. Chrome asks permission the first time.
+async function saveToFile() {
+  const h = fileHandles.get(currentName);
+  if (!h) { statusEl.textContent = "This drawing was not opened from a file. Use Download or Save to GitHub."; return; }
+  try {
+    if ((await h.queryPermission({ mode: "readwrite" })) !== "granted" && (await h.requestPermission({ mode: "readwrite" })) !== "granted") {
+      statusEl.textContent = "Not saved: permission to change the file was not given"; return;
+    }
+    const w = await h.createWritable();
+    await w.write(editor.get());
+    await w.close();
+    saveNow();
+    statusEl.textContent = `Saved to ${h.name}`;
+  } catch (e) { statusEl.textContent = "Could not save to the file"; }
+}
+$("saveFile").onclick = saveToFile;
+document.addEventListener("keydown", (e) => {
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === "s" && fileHandles.has(currentName)) { e.preventDefault(); saveToFile(); }
+});
 async function copyLink(url) {
   history.replaceState(null, "", url);
   try { await navigator.clipboard.writeText(url); statusEl.textContent = "Link copied"; }

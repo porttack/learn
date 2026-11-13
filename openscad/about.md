@@ -27,6 +27,7 @@ nothing to install and no account to make.
 - **Write and run code.** Colors for the parts of the language, automatic
   indenting, and suggestions as you type (try typing `cyl`). Press Ctrl or
   Cmd and Enter to render.
+- **Open and save `.scad` files from your computer.** In Chrome you can install this page as an app (the menu, Cast, save and share, Install page as app). Then Finder's Open With lists it for `.scad` files, and **File, Save to the file** (Ctrl or Cmd and S) writes your changes back to that file.
 - **Keep many drawings.** Give a drawing a name and it is saved in this browser
   as you type. **File, My drawings** lists all of them, and you can back them
   up to a file and restore them later.

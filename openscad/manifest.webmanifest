@@ -1,0 +1,20 @@
+{
+  "name": "OpenSCAD in the Browser",
+  "short_name": "OpenSCAD",
+  "id": "/openscad/",
+  "start_url": "/openscad/",
+  "scope": "/openscad/",
+  "display": "standalone",
+  "background_color": "#e9edf1",
+  "theme_color": "#ffffff",
+  "icons": [
+    { "src": "/assets/img/openscad/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ],
+  "file_handlers": [
+    {
+      "action": "/openscad/",
+      "name": "OpenSCAD file",
+      "accept": { "text/plain": [".scad"], "application/x-openscad": [".scad"] }
+    }
+  ]
+}
