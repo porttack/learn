@@ -1,6 +1,6 @@
 <!--
   Animated potentiometer voltage divider (Project 2.2). Self-contained: no
-  network requests, nothing stored. Drag the slider (or press Sweep) and the
+  network requests, nothing stored. Drag the wiper, turn the knob, or use the slider (or press Sweep) and the
   wiper slides along the resistor, splitting it into R_top and R_bottom. The
   readouts show Ohm's law at work: one current, V = I x R_bottom.
   Include it once per page.
@@ -8,6 +8,9 @@
 <style>
   .potdiv { border: 1px solid #c9ced4; border-radius: 8px; padding: 12px; margin: 1.2em 0; max-width: 640px; }
   .potdiv svg { width: 100%; height: auto; display: block; }
+  .potdiv #pd-grab { cursor: grab; touch-action: none; }
+  .potdiv #pd-grab.dragging, .potdiv #pd-turn.dragging { cursor: grabbing; }
+  .potdiv #pd-turn { cursor: grab; touch-action: none; }
   .potdiv svg text { fill: currentColor; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 14px; }
   .potdiv .pd-mono { font-family: "Courier New", Courier, monospace; }
   .potdiv .pd-controls { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 8px 0; }
@@ -34,6 +37,14 @@
       <rect x="380" y="60" width="36" height="200" stroke-width="2"/>
       <circle cx="512" cy="160" r="44" stroke-width="2"/>
       <line id="pd-pointer" x1="512" y1="160" x2="512" y2="122" stroke-width="4"/>
+    </g>
+    <g id="pd-grab">
+      <line id="pd-hit" x1="112" x2="330" stroke="transparent" stroke-width="36"/>
+      <circle id="pd-knobdot" cx="214" r="8" fill="#2a7ae2" stroke="currentColor" stroke-width="2"/>
+    </g>
+    <g id="pd-turn">
+      <circle cx="512" cy="160" r="52" fill="transparent"/>
+      <circle id="pd-tip" r="7" fill="#2a7ae2" stroke="currentColor" stroke-width="2"/>
     </g>
     <rect id="pd-fill" x="381" width="34" fill="#2a7ae2" opacity="0.75"/>
     <text x="100" y="24" text-anchor="middle">3V3</text>
@@ -92,6 +103,8 @@
     $("pd-bot").setAttribute("d", zig(wy, BOT));
     $("pd-wiper").setAttribute("y1", wy); $("pd-wiper").setAttribute("y2", wy);
     $("pd-wlabel").setAttribute("y", wy + 5);
+    $("pd-hit").setAttribute("y1", wy); $("pd-hit").setAttribute("y2", wy);
+    $("pd-knobdot").setAttribute("cy", wy);
     var rtopEl = $("pd-rtop"), rbotEl = $("pd-rbot");
     rtopEl.textContent = (wy - TOP > 22) ? "R_top " + fmt(rtop, 1) + "k" : "";
     rtopEl.setAttribute("y", (TOP + wy) / 2 + 5);
@@ -103,6 +116,8 @@
     var ang = -135 + 270 * t, rad = ang * Math.PI / 180;
     $("pd-pointer").setAttribute("x2", 512 + 38 * Math.sin(rad));
     $("pd-pointer").setAttribute("y2", 160 - 38 * Math.cos(rad));
+    $("pd-tip").setAttribute("cx", 512 + 38 * Math.sin(rad));
+    $("pd-tip").setAttribute("cy", 160 - 38 * Math.cos(rad));
     $("pd-o-top").textContent = fmt(rtop, 2) + " k";
     $("pd-o-bot").textContent = fmt(rb, 2) + " k";
     $("pd-o-i").textContent = fmt(i, 2) + " mA";
@@ -122,6 +137,42 @@
   });
   slider.addEventListener("input", function () { stop(); draw(); });
   total.addEventListener("change", draw);
+
+  // Drag the wiper itself: map the pointer's height to the slider.
+  var grab = $("pd-grab"), svg = grab.ownerSVGElement, dragging = false;
+  function moveTo(e) {
+    var pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    var y = pt.matrixTransform(svg.getScreenCTM().inverse()).y;
+    var t = Math.max(0, Math.min(1, (BOT - y) / SPAN));
+    slider.value = Math.round(t * 100); draw();
+  }
+  grab.addEventListener("pointerdown", function (e) {
+    dragging = true; stop(); grab.classList.add("dragging");
+    grab.setPointerCapture(e.pointerId); moveTo(e); e.preventDefault();
+  });
+  grab.addEventListener("pointermove", function (e) { if (dragging) moveTo(e); });
+  function endDrag() { dragging = false; grab.classList.remove("dragging"); }
+  grab.addEventListener("pointerup", endDrag);
+  grab.addEventListener("pointercancel", endDrag);
+
+  // Turn the knob: the pointer's angle around the dial sets the position.
+  // The dial sweeps -135 to +135 degrees; the gap at the bottom is the stop.
+  var turn = $("pd-turn"), turning = false;
+  function turnTo(e) {
+    var pt = svg.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+    var p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    var a = Math.atan2(p.x - 512, 160 - p.y) * 180 / Math.PI;   // 0 = straight up, clockwise positive
+    a = Math.max(-135, Math.min(135, a));
+    slider.value = Math.round((a + 135) / 270 * 100); draw();
+  }
+  turn.addEventListener("pointerdown", function (e) {
+    turning = true; stop(); turn.classList.add("dragging");
+    turn.setPointerCapture(e.pointerId); turnTo(e); e.preventDefault();
+  });
+  turn.addEventListener("pointermove", function (e) { if (turning) turnTo(e); });
+  function endTurn() { turning = false; turn.classList.remove("dragging"); }
+  turn.addEventListener("pointerup", endTurn);
+  turn.addEventListener("pointercancel", endTurn);
   draw();
 })();
 </script>

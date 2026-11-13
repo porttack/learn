@@ -387,7 +387,7 @@ const SLIDES = [
     "kind": "pot",
     "kicker": "Try it",
     "title": "Drag the Knob",
-    "notes": "Drag the slider or press Sweep and ask what the wiper voltage will be before each stop. Point at R_bottom over R_total: at the middle it is half, so half of 3.3V. Then switch Pot from 10k to 1k. The current jumps to ten times as big but the wiper voltage does not move, because only the fraction matters. The same animation is in the lesson page. Note: arrow keys move the slider while it has focus; click the slide background to give the arrow keys back to the deck."
+    "notes": "Drag the wiper, turn the knob, or use the slider (or press Sweep) and ask what the wiper voltage will be before each stop. Point at R_bottom over R_total: at the middle it is half, so half of 3.3V. Then switch Pot from 10k to 1k. The current jumps to ten times as big but the wiper voltage does not move, because only the fraction matters. The same animation is in the lesson page. Note: arrow keys move the slider while it has focus; click the slide background to give the arrow keys back to the deck."
   },
   {
     "kind": "bullets",
@@ -582,6 +582,30 @@ function PotDemo() {
   const [rtotal, setRtotal] = useState(10);
   const [sweeping, setSweeping] = useState(false);
   const dirRef = useRef(1);
+  const svgRef = useRef(null);
+  const dragRef = useRef(null);   // "wiper" or "knob" while a drag is going
+  const svgPoint = e => {
+    const svg = svgRef.current, pt = svg.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    return pt.matrixTransform(svg.getScreenCTM().inverse());
+  };
+  const dragTo = e => {
+    const p = svgPoint(e);
+    if (dragRef.current === "wiper") {
+      setPos(Math.round(Math.max(0, Math.min(1, (260 - p.y) / 200)) * 100));
+    } else if (dragRef.current === "knob") {
+      // 0 = straight up, clockwise positive; the dial sweeps -135 to +135
+      const a = Math.max(-135, Math.min(135, Math.atan2(p.x - 512, 160 - p.y) * 180 / Math.PI));
+      setPos(Math.round((a + 135) / 270 * 100));
+    }
+  };
+  const grabProps = kind => ({
+    onPointerDown: e => { dragRef.current = kind; setSweeping(false); e.currentTarget.setPointerCapture(e.pointerId); dragTo(e); e.preventDefault(); },
+    onPointerMove: e => { if (dragRef.current === kind) dragTo(e); },
+    onPointerUp: () => { dragRef.current = null; },
+    onPointerCancel: () => { dragRef.current = null; },
+    style: { cursor: "grab", touchAction: "none" }
+  });
   useEffect(() => {
     if (!sweeping) return;
     const id = setInterval(() => {
@@ -611,7 +635,7 @@ function PotDemo() {
   const rad = (-135 + 270 * t) * Math.PI / 180;
   return (
     <div className="pot-demo">
-      <svg viewBox="-100 0 660 320" role="img" aria-label="A potentiometer drawn as a resistor with a sliding wiper that splits it into R top and R bottom">
+      <svg ref={svgRef} viewBox="-100 0 660 320" role="img" aria-label="A potentiometer drawn as a resistor with a sliding wiper that splits it into R top and R bottom">
         <defs>
           <marker id="pot-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
             <path d="M0,0 L10,5 L0,10 z" fill="currentColor" />
@@ -626,6 +650,14 @@ function PotDemo() {
           <rect x="380" y="60" width="36" height="200" />
           <circle cx="512" cy="160" r="44" />
           <line x1="512" y1="160" x2={512 + 38 * Math.sin(rad)} y2={160 - 38 * Math.cos(rad)} strokeWidth="4" />
+        </g>
+        <g {...grabProps("wiper")}>
+          <line x1="112" y1={wy} x2="330" y2={wy} stroke="transparent" strokeWidth="36" />
+          <circle cx="214" cy={wy} r="8" fill="#2a7ae2" stroke="currentColor" strokeWidth="2" />
+        </g>
+        <g {...grabProps("knob")}>
+          <circle cx="512" cy="160" r="52" fill="transparent" />
+          <circle cx={512 + 38 * Math.sin(rad)} cy={160 - 38 * Math.cos(rad)} r="7" fill="#2a7ae2" stroke="currentColor" strokeWidth="2" />
         </g>
         <rect x="381" y={BOT - SPAN * t} width="34" height={SPAN * t} fill="#2a7ae2" opacity="0.75" />
         <text x="100" y="24" textAnchor="middle">3V3</text>
