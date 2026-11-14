@@ -86,6 +86,22 @@ Press the PDF button in TurtleLab and attach the PDF to this assignment.
 
 Answers: hexagon 60, octagon 45, 12 sides 30. A rhombus has two turns that add to 180 (60 then 120, or 120 then 60). Two different forward lengths make a parallelogram, not a rhombus. There is no rubric; ask if you want one.
 
+### Assignment: Random confetti
+
+Make a confetti picture in TurtleLab, then save a PDF.
+
+- Work through Step 3: [https://{{ site.print_host }}/turtle-lessons/step-3-let-chance-draw/](https://{{ site.print_host }}/turtle-lessons/step-3-let-chance-draw/)
+- Build in a fresh TurtleLab tab, not a sample tab. A sample tab does not save your work.
+- Use a repeat to draw at least 80 dots spread over the whole paper.
+- Every dot has a random color and a random size, with some small and some big.
+- Add a sticky note with your name.
+
+Turn in whatever you have 10 minutes before the end of class, even if you are not finished.
+
+Press the PDF button in TurtleLab and attach the PDF to this assignment.
+
+Answers: set xy needs random -350 350 for x and random -280 280 for y; set color needs random 0 255 in all three slots; set pen size needs a random block, such as random 5 40. There is no rubric; ask if you want one.
+
 ### Assignment: Practice PDF, Choose a path
 
 Work through Steps 2, 3 and 4, then save a practice PDF.

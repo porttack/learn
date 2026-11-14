@@ -64,14 +64,16 @@ Two things are wrong, and you can fix both.
 
 When your confetti works, run it twice. Do the two runs match? Why or why not?
 
+## Make your picture
+
+Now make your own. Open a fresh TurtleLab with **Open full size** under any frame, and build a confetti picture with:
+
+- At least 80 dots, from a `repeat`, spread over the whole paper.
+- A random color for every dot.
+- A random size for every dot: plug a `random` block into `set pen size`. Choose numbers that give some small dots and some big ones.
+
+Use only `repeat`, `random`, `pen up`, `pen down`, `set xy`, `set color`, `set pen size` and `forward`. Add a sticky note with your name.
+
 ## Save your work
 
-A frame does not have a **PDF** button. Use **Open full size** under the frame, make your changes there, and press the **PDF** button to keep a copy of your blocks and your drawing.
-
-## Done early?
-
-**Different sizes.** Plug a `random` block into `set pen size` so every dot is a different size.
-
-**Your own x.** Change the x numbers too, so the dots stay in the left half, or in a ring of your own.
-
-**From a blank page.** Start from a fresh TurtleLab tab and build the confetti without the start. The blocks you need are `repeat`, `pen up`, `set xy` with a `random` block in each slot, `pen down`, `set color`, `set pen size` and `forward`.
+To keep a copy of your blocks and your drawing, press the **PDF** button on the toolbar. A frame does not have one, so build in a tab of your own.
