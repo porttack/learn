@@ -8,8 +8,8 @@ permalink: /404.html
 // so hand the rest of the address to the OpenSCAD app, which opens that GitHub file (or lists the
 // repository's files) and puts the tidy address back in the address bar.
 (function () {
-  var m = location.pathname.match(/^\/openscad\/(.+)$/);
-  if (m) location.replace("/openscad/#/" + m[1].replace(/\/+$/, ""));
+  var m = location.pathname.match(/^\/(openscad|stl)\/(.+)$/);
+  if (m) location.replace("/" + m[1] + "/" + location.search + "#/" + m[2].replace(/\/+$/, ""));
 })();
 </script>
 
