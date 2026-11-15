@@ -9,6 +9,8 @@ permalink: /openscad/
 <meta charset="utf-8">
 <title>OpenSCAD in the Browser</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The page can be opened at /openscad/owner/repo/branch/path.scad (see 404.html), so every relative address must start from /openscad/. -->
+<base href="/openscad/">
 <link rel="icon" type="image/svg+xml" href="/assets/img/openscad/favicon.svg">
 <link rel="manifest" href="/openscad/manifest.webmanifest">
 <style>
@@ -64,6 +66,11 @@ permalink: /openscad/
   .fld { display:flex; flex-direction:column; gap:4px; font-size:13px; color:var(--muted); }
   .fld input { font:15px system-ui, sans-serif; padding:7px 9px; border:1px solid var(--border); border-radius:6px; color:var(--ink); }
   .hint { font-size:12.5px; color:var(--muted); } .hint a { color:var(--accent); }
+  #histList { overflow:auto; border:1px solid var(--border); border-radius:6px; min-height:60px; }
+  #histList .row { display:grid; grid-template-columns: 1fr auto; gap:2px 10px; padding:7px 10px; border-bottom:1px solid #eef0f3; }
+  #histList .row b { font-weight:600; } #histList .meta { color:var(--muted); font-size:12.5px; }
+  #histList .acts { grid-row:1 / span 2; grid-column:2; display:flex; gap:6px; align-items:center; }
+  #histList .acts button { font-size:12.5px; padding:3px 7px; } #histList .note { padding:6px 10px; color:var(--muted); font-size:12.5px; }
   #ghList { max-height:240px; overflow:auto; border:1px solid var(--border); border-radius:6px; }
   #ghList button { display:block; width:100%; text-align:left; background:none; border:0; border-bottom:1px solid #eef0f3; color:var(--ink); padding:6px 10px; font:13px ui-monospace, Menlo, Consolas, monospace; cursor:pointer; }
   #ghList button:hover { background:#e8f0fc; } #ghList .note { padding:6px 10px; color:var(--muted); font-size:12.5px; }
@@ -122,9 +129,12 @@ permalink: /openscad/
       <button id="saveFile" title="Write this drawing back to the .scad file it was opened from (Ctrl or Cmd and S). Only for files opened from Finder or your computer by the installed app.">Save to the file</button>
       <button id="download" disabled>Download STL</button>
       <button id="ghSave">Save to GitHub&hellip;</button>
+      <button id="ghHist" title="The commits that changed this drawing's GitHub file, with dates and notes">History on GitHub&hellip;</button>
       <hr>
       <button id="share" title="A link with this exact code. If it came from GitHub, the link also says which file.">Copy share link</button>
       <button id="shareGh" title="A link that opens the file as it is on GitHub right now">Copy link to the GitHub file</button>
+      <hr>
+      <button id="toPython" title="Turn this drawing into Python code and open it in Python in 3D Studio, in a new tab. Python 3D has fewer features, so parts it cannot do are left as NOTE comments.">Open in Python 3D Studio&hellip;</button>
       <hr>
       <button id="exOverhang" title="A small model made to show what Show overhangs does">Example: overhang test</button>
     </div>
@@ -176,10 +186,10 @@ permalink: /openscad/
   <label class="fld">Personal access token (only for a private repository)
     <input id="ghOpenToken" type="password" spellcheck="false" autocomplete="off" placeholder="leave empty for a public repository">
   </label>
-  <div class="hint">Paste the address of a file (it opens at once) or of a repository or folder (you can type just <b>owner/repo</b>) (you get a list of its .scad files to pick from). A file opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. It is sent only to GitHub. This page keeps it in memory while it stays open, so you do not retype it, and never writes it to disk.</div>
+  <div class="hint">Paste the address of a file (it opens at once) or of a repository or folder (you can type just <b>owner/repo</b>) (you get a list of its .scad files to pick from). A file opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. It is sent only to GitHub. Once it works, this browser remembers it for that one repository so you are not asked again (<b>Forget saved token</b> removes it).</div>
   <div id="ghOpenMsg" class="ghmsg" role="status"></div>
   <div id="ghList" hidden></div>
-  <div class="dlgfoot"><span></span><button id="ghOpenGo">Open</button></div>
+  <div class="dlgfoot"><button id="ghForgetOpen" class="secondary" type="button">Forget saved token</button><button id="ghOpenGo">Open</button></div>
 </dialog>
 <dialog id="ghSaveDlg" aria-labelledby="ghSaveTitle">
   <div class="dlghead"><h2 id="ghSaveTitle">Save to GitHub</h2><span></span><button class="secondary" data-close aria-label="Close">Close</button></div>
@@ -192,10 +202,16 @@ permalink: /openscad/
   <label class="fld">Personal access token
     <input id="ghSaveToken" type="password" spellcheck="false" autocomplete="off" placeholder="github_pat_...">
   </label>
-  <div class="hint">The token is sent only to GitHub. This page keeps it in memory while it stays open, so you do not retype it, and never writes it to disk: reload or close the page and it is forgotten. Make one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub, Settings, Fine-grained tokens</a> with access to just this repository and <b>Contents: Read and write</b>, and let it expire soon.</div>
+  <div class="hint">The token is sent only to GitHub. Once it works, this browser remembers it for that one repository so you are not asked again (<b>Forget saved token</b> removes it). Make one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub, Settings, Fine-grained tokens</a> with access to just this repository and <b>Contents: Read and write</b>, and let it expire soon.</div>
   <label id="ghForceRow" class="hint" hidden><input id="ghForce" type="checkbox"> Replace the newer version on GitHub anyway</label>
   <div id="ghSaveOut" class="ghmsg" role="status"></div>
-  <div class="dlgfoot"><span></span><button id="ghSaveGo">Save to GitHub</button></div>
+  <div class="dlgfoot"><button id="ghForgetSave" class="secondary" type="button">Forget saved token</button><button id="ghSaveGo">Save to GitHub</button></div>
+</dialog>
+<dialog id="ghHistDlg" aria-labelledby="ghHistTitle">
+  <div class="dlghead"><h2 id="ghHistTitle">History on GitHub</h2><span id="ghHistFile"></span><button class="secondary" data-close aria-label="Close">Close</button></div>
+  <div id="ghHistMsg" class="ghmsg" role="status"></div>
+  <div id="histList"></div>
+  <div class="hint">The newest changes come first. <b>Open this version</b> loads it as a separate new drawing, so nothing you have is replaced and it is not tied to GitHub.</div>
 </dialog>
 <dialog id="drawersDlg" aria-labelledby="drawersTitle">
   <div class="dlghead"><h2 id="drawersTitle">My drawings</h2><span id="drawersCount"></span><button id="drawersClose" class="secondary" aria-label="Close">Close</button></div>
@@ -241,6 +257,7 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
 import LZString from "lz-string";
 import { createEditor } from "./editor.js";
+import { scadToPython } from "./scad2py.js";
 
 const SAMPLE = `// A washer with a bolt hole circle. Edit it and press Render.
 $fn = 64;
@@ -292,6 +309,7 @@ function openDrawing(n) {
   if (text === null) return false;
   if (n !== currentName) saveNow();
   currentName = n;
+  window.clearRoute && window.clearRoute();
   nameEl.value = n;
   editor.set(text, false);
   store(false, CURRENT, n);
@@ -356,6 +374,7 @@ nameEl.addEventListener("change", () => {
 nameEl.addEventListener("keydown", (e) => { if (e.key === "Enter") { nameEl.blur(); } });
 $("new").onclick = () => {
   saveNow();
+  window.clearRoute && window.clearRoute();
   currentName = freeName("untitled");
   nameEl.value = currentName;
   editor.set("// New drawing\n", false);
@@ -419,6 +438,24 @@ $("exOverhang").onclick = () => {
   render();
 };
 $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".scad", "text/plain");
+
+// Convert to Python and open Python in 3D Studio (same site). A short program travels in the
+// address (the Studio's own ?code= link); a long one waits in this browser's storage for the
+// Studio to pick up once, because addresses have a length limit (some servers refuse more than about 2000 characters).
+$("toPython").onclick = () => {
+  let result;
+  try { result = scadToPython(editor.get(), { name: fileBase(currentName) }); }
+  catch (err) { statusEl.textContent = "Could not convert: " + err.message; alert("This drawing could not be converted to Python.\n\n" + err.message); return; }
+  const encoded = LZString.compressToEncodedURIComponent(result.code);
+  let url = "/python3d/studio/?code=" + encoded;
+  if (url.length > 1800) {   // some servers (Jekyll's WEBrick) refuse addresses over about 2000 characters
+    try { localStorage.setItem("python3d:handoff", result.code); url = "/python3d/studio/?from=openscad"; }
+    catch (e) { alert("This drawing is too long to hand over. Try a smaller part."); return; }
+  }
+  window.open(url, "_blank");
+  const n = result.warnings.length;
+  statusEl.textContent = n ? `Opened in Python 3D Studio. ${n} thing${n === 1 ? "" : "s"} could not be converted (see the NOTE lines in the code).` : "Opened in Python 3D Studio.";
+};
 
 // ---- the list of every drawing kept in this browser ----
 {
@@ -531,10 +568,18 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
       return [...new Uint8Array(await crypto.subtle.digest("SHA-1", all))].map((b) => b.toString(16).padStart(2, "0")).join("");
     } catch (e) { return null; }
   }
+  // A token is kept in this browser's local storage, one per site and owner/repo, once GitHub has accepted it.
+  const tokenKey = (o, r) => `openscad:ghtoken:${o}/${r}`.toLowerCase();
+  const savedToken = (o, r) => store(true, tokenKey(o, r)) || "";
+  const rememberToken = (o, r, t) => { if (t) store(false, tokenKey(o, r), t); };
+  const forgetToken = (o, r) => { try { localStorage.removeItem(tokenKey(o, r)); } catch (e) {} };
+  const repoOf = (link) => parseGitHub(link) || parseRepo(link);
+
   async function openFromGitHub(link, msgEl, token) {
     const g = parseGitHub(link);
     if (!g) { say(msgEl, "That does not look like a link to a file or a repository on GitHub. A file looks like https://github.com/you/repo/blob/main/part.scad", "err"); return false; }
     say(msgEl, "Opening...");
+    token = token || savedToken(g.owner, g.repo);
     let text, baseSha = null;
     try {
       // With a token the file is read through GitHub's API (works for private repositories);
@@ -550,16 +595,21 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
           : `GitHub answered ${r.status}.`, "err");
         return false;
       }
+      if (token) rememberToken(g.owner, g.repo, token);
       const buf = await r.arrayBuffer();
       text = new TextDecoder().decode(buf);
       baseSha = await gitBlobSha(buf);
     } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); return false; }
     if (text.length > 1500000) { say(msgEl, "That file is too big to open here.", "err"); return false; }
+    // Already opened from this file, and GitHub still has the same version? Go back to that copy (it may hold unsaved edits).
+    const same = baseSha && savedNames().find((n) => store(true, SRC + n) === blobUrl(g) && store(true, BASE + n) === baseSha);
+    if (same) { openDrawing(same); setRoute(g); statusEl.textContent = `Opened your copy of ${g.path} (GitHub has not changed)`; return true; }
     saveNow();
     currentName = freeName(g.path.split("/").pop().replace(/\.scad$/i, "") || "from github");
     nameEl.value = currentName;
     editor.set(text, false);
     saveNow();
+    setRoute(g);
     store(false, SRC + currentName, blobUrl(g));
     if (baseSha) store(false, BASE + currentName, baseSha);
     fillNames();
@@ -580,6 +630,7 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
   // Lists every .scad file in the repository (one request for the whole tree).
   async function listScad(rp, token, msgEl, listEl) {
     const headers = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+    token = token || savedToken(rp.owner, rp.repo);
     if (token) headers.Authorization = "Bearer " + token;
     const fail = (r) => { say(msgEl, r.status === 401 ? "GitHub did not accept that token. Check that you copied all of it and that it has not expired."
       : r.status === 404 ? "GitHub cannot find that repository. Check the link. If it is private, paste a token below."
@@ -595,6 +646,7 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
       }
       const r = await fetch(`https://api.github.com/repos/${rp.owner}/${rp.repo}/git/trees/${encodeURIComponent(ref)}?recursive=1`, { headers });
       if (!r.ok) return fail(r);
+      if (token) rememberToken(rp.owner, rp.repo, token);
       const data = await r.json();
       const prefix = rp.dir ? rp.dir.replace(/\/$/, "") + "/" : "";
       const files = (data.tree || []).filter((t) => t.type === "blob" && /\.scad$/i.test(t.path) && t.path.startsWith(prefix))
@@ -630,7 +682,7 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
     d.addEventListener("close", () => d.querySelectorAll('input[type="password"]').forEach((i) => { i.value = ""; }));
     d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
   }
-  $("ghOpen").onclick = () => { $("ghOpenUrl").value = store(true, LAST_OPEN) || ""; $("ghOpenToken").value = openToken; $("ghList").hidden = true; say($("ghOpenMsg"), ""); ghOpenDlg.showModal(); $("ghOpenUrl").focus(); };
+  $("ghOpen").onclick = () => { $("ghOpenUrl").value = store(true, LAST_OPEN) || ""; $("ghOpenToken").value = openToken; fillOpenToken(); $("ghList").hidden = true; say($("ghOpenMsg"), ""); ghOpenDlg.showModal(); $("ghOpenUrl").focus(); };
   const goOpen = async () => {
     const tokenEl = $("ghOpenToken"), link = $("ghOpenUrl").value, listEl = $("ghList");
     if (!parseGitHub(link) && parseRepo(link)) {
@@ -644,6 +696,20 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
   $("ghOpenGo").onclick = goOpen;
   $("ghOpenUrl").addEventListener("keydown", (e) => { if (e.key === "Enter") goOpen(); });
   $("ghOpenToken").addEventListener("keydown", (e) => { if (e.key === "Enter") goOpen(); });
+  // Typing a repository fills in the token this browser already holds for it; Forget removes it.
+  const wireTokenField = (urlEl, tokenEl, forgetBtn, msgEl) => {
+    const fill = () => { const r = repoOf(urlEl.value); if (r && !tokenEl.value) tokenEl.value = savedToken(r.owner, r.repo); };
+    urlEl.addEventListener("change", fill);
+    forgetBtn.onclick = () => {
+      const r = repoOf(urlEl.value);
+      if (!r) return say(msgEl, "Type the repository first, then I can forget its token.", "err");
+      forgetToken(r.owner, r.repo); tokenEl.value = ""; if (tokenEl === $("ghOpenToken")) openToken = ""; else saveToken = "";
+      say(msgEl, `Forgot the saved token for ${r.owner}/${r.repo}.`);
+    };
+    return fill;
+  };
+  const fillOpenToken = wireTokenField($("ghOpenUrl"), $("ghOpenToken"), $("ghForgetOpen"), $("ghOpenMsg"));
+  const fillSaveToken = wireTokenField($("ghSaveUrl"), $("ghSaveToken"), $("ghForgetSave"), $("ghSaveOut"));
 
   // Saving uses GitHub's contents API. It needs the file's current "sha" when the file already exists.
   const b64 = (str) => { let bin = ""; new TextEncoder().encode(str).forEach((b) => { bin += String.fromCharCode(b); }); return btoa(bin); };
@@ -651,17 +717,20 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
     $("ghSaveUrl").value = store(true, SRC + currentName) || store(true, LAST_SAVE) || "";
     $("ghSaveMsg").value = `Update ${fileBase(currentName)}.scad`;
     $("ghSaveToken").value = saveToken;
+    fillSaveToken();
     $("ghForce").checked = false; $("ghForceRow").hidden = true;
     say($("ghSaveOut"), "");
     ghSaveDlg.showModal();
     ($("ghSaveUrl").value ? $("ghSaveToken") : $("ghSaveUrl")).focus();
   };
   const goSave = async () => {
-    const out = $("ghSaveOut"), tokenEl = $("ghSaveToken"), token = tokenEl.value.trim();
+    const out = $("ghSaveOut"), tokenEl = $("ghSaveToken");
+    let token = tokenEl.value.trim();
     const g = parseGitHub($("ghSaveUrl").value);
     if (!g) return say(out, "Paste the GitHub link of the file to save to, like https://github.com/you/repo/blob/main/part.scad (it can be a new file name).", "err");
     if (!/\.scad$/i.test(g.path)) return say(out, "The file name should end in .scad", "err");
-    if (!token) return say(out, "Paste your personal access token.", "err");
+    if (!token && g) { token = savedToken(g.owner, g.repo); tokenEl.value = token; }
+    if (!token) return say(out, "Paste your personal access token. (Saving to GitHub always needs one. This browser will remember it for this repository.)", "err");
     const api = `https://api.github.com/repos/${g.owner}/${g.repo}/contents/${encPath(g.path)}`;
     const headers = { Authorization: "Bearer " + token, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
     $("ghSaveGo").disabled = true; say(out, "Saving...");
@@ -685,7 +754,7 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
         store(false, SRC + currentName, blobUrl(g));
         if (data.content && data.content.sha) store(false, BASE + currentName, data.content.sha);
         store(false, LAST_SAVE, blobUrl(g));
-        saveToken = token;
+        saveToken = token; rememberToken(g.owner, g.repo, token); setRoute(g);
         out.className = "ghmsg ok"; out.textContent = (sha ? "Updated " : "Created ") + g.path + ". ";
         const a = Object.assign(document.createElement("a"), { href: data.content && data.content.html_url || blobUrl(g), target: "_blank", rel: "noopener", textContent: "View it on GitHub" });
         out.append(a);
@@ -701,6 +770,58 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
   $("ghSaveGo").onclick = goSave;
   $("ghSaveToken").addEventListener("keydown", (e) => { if (e.key === "Enter") goSave(); });
 
+  // ---- History: the commits that changed this drawing's GitHub file ----
+  const ghHistDlg = $("ghHistDlg");
+  ghHistDlg.querySelector("[data-close]").onclick = () => ghHistDlg.close();
+  ghHistDlg.addEventListener("click", (e) => { if (e.target === ghHistDlg) ghHistDlg.close(); });
+  $("ghHist").onclick = async () => {
+    const msgEl = $("ghHistMsg"), list = $("histList");
+    const g = parseGitHub(store(true, SRC + currentName) || "");
+    list.replaceChildren();
+    if (!g) { say(msgEl, "This drawing is not tied to a GitHub file yet. Open one from GitHub, or use Save to GitHub first."); $("ghHistFile").textContent = ""; ghHistDlg.showModal(); return; }
+    $("ghHistFile").textContent = `${g.owner}/${g.repo}/${g.path} (${g.ref})`;
+    say(msgEl, "Looking..."); ghHistDlg.showModal();
+    const token = savedToken(g.owner, g.repo);
+    const headers = { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" };
+    if (token) headers.Authorization = "Bearer " + token;
+    try {
+      const r = await fetch(`https://api.github.com/repos/${g.owner}/${g.repo}/commits?sha=${encodeURIComponent(g.ref)}&path=${encodeURIComponent(g.path)}&per_page=50`, { headers });
+      if (!r.ok) return say(msgEl, r.status === 404 ? "GitHub cannot find that file's history. If the repository is private, open or save a file from it first so this browser has a token."
+        : r.status === 403 ? "GitHub is limiting requests from this computer for now. Wait a while, or save a token by opening a file from this repository."
+        : `GitHub answered ${r.status}.`, "err");
+      const commits = await r.json();
+      if (!commits.length) return say(msgEl, "No commits found for this file (it may not be saved on this branch yet).");
+      say(msgEl, `${commits.length}${commits.length === 50 ? " most recent" : ""} commit${commits.length === 1 ? "" : "s"} that changed ${g.path}.`);
+      for (const c of commits) {
+        const when = new Date(c.commit.author.date), lines = c.commit.message.split("\n"), who = c.commit.author.name || (c.author && c.author.login) || "";
+        const row = document.createElement("div"); row.className = "row";
+        const title = Object.assign(document.createElement("b"), { textContent: lines[0] || "(no note)", title: c.commit.message });
+        const meta = Object.assign(document.createElement("div"), { className: "meta", textContent: `${when.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })} ${when.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} · ${who} · ${c.sha.slice(0, 7)}` });
+        const acts = document.createElement("div"); acts.className = "acts";
+        const open = Object.assign(document.createElement("button"), { className: "secondary", textContent: "Open this version" });
+        open.onclick = async () => {
+          open.disabled = true;
+          try {
+            const f = await fetch(`https://api.github.com/repos/${g.owner}/${g.repo}/contents/${encPath(g.path)}?ref=${c.sha}`, { headers: { ...headers, Accept: "application/vnd.github.raw+json" } });
+            if (!f.ok) return say(msgEl, f.status === 404 ? "That version has no copy of the file (it was added or removed in that commit)." : `GitHub answered ${f.status}.`, "err");
+            const text = await f.text();
+            saveNow();
+            window.clearRoute && window.clearRoute();
+            currentName = freeName(`${g.path.split("/").pop().replace(/\.scad$/i, "")} (${c.sha.slice(0, 7)})`);
+            nameEl.value = currentName; editor.set(text, false); saveNow(); fillNames();
+            statusEl.textContent = `Opened the ${when.toLocaleDateString()} version as "${currentName}"`;
+            ghHistDlg.close();
+          } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); }
+          finally { open.disabled = false; }
+        };
+        const view = Object.assign(document.createElement("a"), { href: c.html_url, target: "_blank", rel: "noopener", textContent: "On GitHub" });
+        acts.append(open, view);
+        row.append(title, meta, acts);
+        list.append(row);
+      }
+    } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); }
+  };
+
   // A link like /openscad/#gh=<github file link> opens that file.
   const gh = location.hash.match(/[#&]gh=([^&]+)/);
   if (gh) {
@@ -713,6 +834,52 @@ $("dlscad").onclick = () => saveText(editor.get(), fileBase(currentName) + ".sca
       ghOpenDlg.showModal();
     });
   }
+
+  // /openscad/owner/repo[/branch][/folder/file.scad]  (404.html passes it here as #/owner/repo/...)
+  //   a .scad file at the end: open it (no branch means main)
+  //   no .scad at the end: a list of the repository's .scad files to pick from
+  // The branch is the first thing after the repository. A branch name with a slash in it will not work here,
+  // and a file in a folder of the main branch has its first folder tried as a branch first, then as a folder.
+  const route = (() => {
+    if (/[#&](code|gh)=/.test(location.hash)) return null;
+    const raw = location.hash.startsWith("#/") ? location.hash.slice(2)
+      : location.pathname.startsWith("/openscad/") ? location.pathname.slice("/openscad/".length) : "";
+    const parts = raw.split("?")[0].split("/").filter(Boolean).map((x) => { try { return decodeURIComponent(x); } catch (e) { return x; } });
+    return parts.length >= 2 ? { owner: parts[0], repo: parts[1].replace(/\.git$/, ""), rest: parts.slice(2) } : null;
+  })();
+  if (route) {
+    const { owner, repo, rest } = route;
+    const needsToken = (msg) => { say($("ghOpenMsg"), msg, "err"); ghOpenDlg.showModal(); $("ghOpenToken").focus(); };
+    (async () => {
+      if (/\.scad$/i.test(rest[rest.length - 1] || "")) {
+        const tries = [{ ref: "main", path: rest.join("/") }];
+        if (rest.length >= 2) tries.unshift({ ref: rest[0], path: rest.slice(1).join("/") });
+        const msg = document.createElement("div");
+        let first = "";
+        for (const t of tries) {
+          if (await openFromGitHub(blobUrl({ owner, repo, ...t }), msg)) return;
+          first = first || msg.textContent;
+        }
+        $("ghOpenUrl").value = `${owner}/${repo}`; $("ghOpenToken").value = "";
+        needsToken(first);
+      } else {
+        const tries = rest.length ? [{ ref: rest[0], dir: rest.slice(1).join("/") }, { ref: null, dir: rest.join("/") }] : [{ ref: null, dir: "" }];
+        $("ghOpenToken").value = ""; ghOpenDlg.showModal();
+        for (const t of tries) {
+          $("ghOpenUrl").value = `https://github.com/${owner}/${repo}` + (t.ref ? `/tree/${encodeURIComponent(t.ref)}` + (t.dir ? "/" + encPath(t.dir) : "") : t.dir ? `/tree/HEAD/${encPath(t.dir)}` : "");
+          fillOpenToken();
+          if (await listScad({ owner, repo, ref: t.ref, dir: t.dir }, "", $("ghOpenMsg"), $("ghList"))) return;
+        }
+        $("ghOpenToken").focus();
+      }
+    })();
+  }
+  // Keep the address in step with the file, so reloading or sharing the address opens the same file.
+  function setRoute(g) {
+    if (g.ref.includes("/")) return;
+    try { history.replaceState(null, "", "/openscad/" + [g.owner, g.repo, g.ref].map(encodeURIComponent).join("/") + "/" + encPath(g.path)); } catch (e) {}
+  }
+  window.clearRoute = () => { if (location.pathname !== "/openscad/" || location.hash) try { history.replaceState(null, "", "/openscad/"); } catch (e) {} };
 }
 
 // ---- text size ----
@@ -1191,14 +1358,14 @@ async function copyLink(url) {
 // file, so whoever opens it can save changes back to it with their own token.
 $("share").onclick = () => {
   const src = store(true, SRC + currentName), base = store(true, BASE + currentName);
-  copyLink(location.origin + location.pathname + "#code=" + LZString.compressToEncodedURIComponent(editor.get())
+  copyLink(location.origin + "/openscad/#code=" + LZString.compressToEncodedURIComponent(editor.get())
     + (src ? "&src=" + encodeURIComponent(src) + (base ? "&base=" + base : "") : ""));
 };
 // Shares the file as it is on GitHub right now (not this drawing's unsaved edits).
 $("shareGh").onclick = () => {
   const src = store(true, SRC + currentName);
   if (!src) { statusEl.textContent = "This drawing is not tied to a GitHub file yet. Use Save to GitHub first."; return; }
-  copyLink(location.origin + location.pathname + "#gh=" + encodeURIComponent(src));
+  copyLink(location.origin + "/openscad/#gh=" + encodeURIComponent(src));
 };
 
 spawn();

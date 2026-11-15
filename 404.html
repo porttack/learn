@@ -1,0 +1,17 @@
+---
+layout: default
+title: "Page not found"
+permalink: /404.html
+---
+<script>
+// /openscad/owner/repo/branch/file.scad is not a real file. GitHub Pages serves this page for it,
+// so hand the rest of the address to the OpenSCAD app, which opens that GitHub file (or lists the
+// repository's files) and puts the tidy address back in the address bar.
+(function () {
+  var m = location.pathname.match(/^\/openscad\/(.+)$/);
+  if (m) location.replace("/openscad/#/" + m[1].replace(/\/+$/, ""));
+})();
+</script>
+
+<h1>Page not found</h1>
+<p>There is nothing at this address. Try the <a href="{{ '/' | relative_url }}">home page</a>.</p>

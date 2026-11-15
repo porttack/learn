@@ -37,11 +37,24 @@ nothing to install and no account to make.
   drawing in a repository with a note about the change. If you changed a file
   that someone else also changed, it stops and tells you instead of erasing
   their work.
+- **Open a GitHub file by its address.** Go to `/openscad/owner/repo/branch/folder/part.scad` to open
+  that file (leave out the branch and it is `main`). Go to `/openscad/owner/repo` (or add a
+  branch and folder) to get a list of the repository's `.scad` files to pick from. If the
+  repository is private you are asked for a token once.
+- **See the history.** **File, History on GitHub** lists the commits that changed the
+  drawing's GitHub file, newest first, with the date, who made it and the note. **Open this
+  version** loads an old one as a separate new drawing, and **On GitHub** shows what changed.
 - **Share a link.** **File, Copy share link** makes a link with your exact code. If
   the drawing came from a GitHub file, the link remembers that file, so the person
   you send it to can change the code and save it back with their own token.
   **Copy link to the GitHub file** makes a link that opens the file as it is on
   GitHub right now.
+- **Move a drawing to Python.** **File, Open in Python 3D Studio** turns the drawing into
+  Python code and opens it in [Python in 3D Studio](/python3d/studio/) in a new tab. Python 3D
+  has fewer features than OpenSCAD, so it converts what it can (shapes, moving, turning,
+  colors, combining and cutting, extruding, variables, loops, modules) and leaves a `# NOTE:`
+  comment where it could not, for example `mirror`, `hull` and `minkowski`. Read the result
+  over; it is a starting point.
 - **Look at the model.** Turn it, zoom, fit it to the window, look from below,
   show scale numbers on the axes, and show its size and center.
 - **Check it for printing.** **Print, Show overhangs** paints in red the faces
@@ -107,12 +120,15 @@ finished model, they are not part of OpenSCAD.
 - Your code and drawings are never sent to a server. They live in this
   browser's local storage, on this computer, and are gone if the site's data is
   cleared. Use **File, My drawings, Back up all** for anything you care about.
-- GitHub is only contacted when you use Open from GitHub or Save to GitHub. Saving
-  needs a personal access token that you paste once per visit, and so does opening a
-  file from a private repository (a public one needs no token). It is sent only to
-  GitHub. The page keeps it in memory while it stays open, so you do not have to
-  retype it, and never writes it to disk: reload or close the page and it is gone. Make the token for
+- GitHub is only contacted when you use Open from GitHub, Save to GitHub, or an address like
+  `/openscad/owner/repo/branch/part.scad`. Saving needs a personal access token, and so does
+  opening a file from a private repository (a public one needs no token). The token is sent only
+  to GitHub. Once GitHub accepts it, this browser's local storage remembers it for that one
+  `owner/repo` on this site, so you are not asked again. **Forget saved token** in the Open and
+  Save dialogs removes it, and so does clearing the site's data. Anyone who can use this browser
+  profile can use the token, so do not save one on a shared computer. Make the token for
   one repository only, with permission to write contents, and let it expire soon.
+
 - The page does load two small code libraries (three.js and lz-string) from a
   public library host, the same way the Python in 3D pages do. That host can see
   that a page asked for them, as any host would, but it never receives your
