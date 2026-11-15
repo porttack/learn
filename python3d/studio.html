@@ -1453,6 +1453,17 @@ if (sharedCode) {
   }
 }
 
+// OpenSCAD tool's "Open in Python 3D Studio" (same site): a program too long for an address
+// waits in localStorage under one key; take it once and remove it.
+if (!sharedCode && new URLSearchParams(location.search).get("from") === "openscad") {
+  try {
+    const handed = localStorage.getItem("python3d:handoff");
+    if (handed) { codeEl.value = handed; localStorage.removeItem("python3d:handoff"); }
+  } catch (e) {
+    // storage blocked -- fall back to the default starter code.
+  }
+}
+
 // Pyodide runs in a Web Worker, not the main thread -- a runaway while/for
 // loop in student code blocks whatever thread it's running on, and if that
 // were the main thread, the whole page (including the Stop button itself)
@@ -1753,7 +1764,18 @@ function buildLeafGeometry(node) {
     // missing wall. Closing the loop explicitly here (unless a student's
     // own profile already ends where it started) fixes every sweep,
     // partial or full, not just the partial-sweep cap case below.
-    const rawPoints = node.profile.points.map(([r, h]) => [Math.max(0, r), h]);
+    let rawPoints = node.profile.points.map(([r, h]) => [Math.max(0, r), h]);
+    // The sweep only comes out right-side-out if the profile runs counter-clockwise in
+    // (radius, height). A profile written the other way round (OpenSCAD does not care which
+    // way you list the corners) became an inside-out solid, and cutting with it, like a
+    // groove for an O-ring, silently did the wrong thing (confirmed by measuring volumes
+    // in three-bvh-csg: -22150 for the clockwise sweep, +22150 reversed). So turn it round.
+    let area2 = 0;
+    for (let i = 0; i < rawPoints.length; i++) {
+      const [r1, h1] = rawPoints[i], [r2, h2] = rawPoints[(i + 1) % rawPoints.length];
+      area2 += r1 * h2 - r2 * h1;
+    }
+    if (area2 < 0) rawPoints = rawPoints.slice().reverse();
     const first = rawPoints[0], last = rawPoints[rawPoints.length - 1];
     const isClosed = first && last && first[0] === last[0] && first[1] === last[1];
     const closedPoints = isClosed ? rawPoints : [...rawPoints, first];
