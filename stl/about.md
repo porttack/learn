@@ -15,13 +15,13 @@ add new ones, without installing anything.
 
 ## Just look at a file
 
-Drag a `.stl`, `.3mf` or `.scad` file from your computer onto the page, or press **Preview a file**. It opens at once, with
+Drag a `.stl`, `.3mf`, `.scad` or `.svg` file from your computer onto the page, or press **Preview a file**. It opens at once, with
 everything below (measuring, overhangs, rendering a `.scad`), and it is not sent anywhere. Drop several files and they
 are listed under **On your computer**. If a repository is open, **Upload to GitHub** on a file you dropped adds it there.
 
 ## Addresses
 
-- `/stl/owner/repo` lists the repository's `.stl`, `.3mf` and `.scad` files.
+- `/stl/owner/repo` lists the repository's `.stl`, `.3mf`, `.scad` and `.svg` files.
 - `/stl/owner/repo/branch` lists them for one branch. Without a branch, you get the repository's main branch.
 - `/stl/owner/repo/branch/folder/part.stl` opens that file. Leave out the branch and it is `main`.
 
@@ -30,8 +30,9 @@ Share the address from the address bar: whoever opens it sees the same file.
 ## What you can do
 
 - **Preview** an STL or 3MF file: turn it with the mouse, zoom, see its size in millimeters and its triangle count, and switch on a wireframe.
-- **Render a `.scad` file.** Clicking one runs the real OpenSCAD in your browser and shows the model, with **Show code** to read the code and **Download STL** for the result. A file that uses `include` or `use` of other files cannot render here, because only that one file is loaded. **Open in OpenSCAD** lets you edit it and save it back at [OpenSCAD in the Browser](/openscad/).
-- **Upload** `.stl`, `.3mf` and `.scad` files (up to 50 MB each) with the Upload button or by dragging them onto the page. Pick the folder and write a short note about the change. A file with the same name is replaced, and GitHub keeps the old version in the repository's history.
+- **Render a `.scad` file.** Clicking one runs the real OpenSCAD in your browser and shows the model, with **Show code** to read the code and **Download STL** for the result. If it uses `include`, `use`, `import("x.stl")` or `surface`, the page fetches those files from the same folder of the same repository (at the same version, if you are looking at an older one), and the bar says how many it used. For a file you dropped in, the other files dropped with it are used, whatever their type (an `.stl`, `.svg`, `.png` or `.dat` it reads). Files it asks for but that are not there are listed. **Open in OpenSCAD** lets you edit it and save it back at [OpenSCAD in the Browser](/openscad/).
+- **Upload** `.stl`, `.3mf`, `.scad` and `.svg` files (up to 50 MB each) with the Upload button or by dragging them onto the page. Pick the folder and write a short note about the change. A file with the same name is replaced, and GitHub keeps the old version in the repository's history.
+- **Preview an SVG drawing.** `.svg` files are listed with the others and shown as a picture, with the size the file states in millimeters (96 pixels to the inch when it gives no unit). Set a **Height** and press **Extrude to 3D** and OpenSCAD turns the drawing into a solid (`linear_extrude`), which you can measure, check for overhangs and download as an STL. OpenSCAD ignores an SVG's colors, so every shape counts, filled or not. A `.scad` file can use an SVG the same way as any other file it reads: `import("logo.svg")`.
 - **Measure it.** The panel at the bottom left gives the width (X), depth (Y) and height (Z, up). Switch between millimeters, centimeters and inches, and the page remembers your choice. An STL file has no units, so its numbers are taken as millimeters. A 3MF file says what unit it uses, and it is converted.
 - **Check for overhangs.** Tick **Show overhangs steeper than 45&deg;** (top left; you can change the angle) to color in red the faces that point down too steeply and would need support when printed. Faces lying flat on the bed are not counted, and the panel says how much of the surface is red. Look from below to see them.
 - **Find your way around.** The left panel starts in **Folders** mode: it shows the folders that hold 3D files, then the files in the folder you are in, with a path at the top you can click to go back up. **All files** lists every file in the repository at once. Typing in the search box looks through every folder, in either mode. The address follows you into folders, so you can share one.
@@ -47,7 +48,7 @@ on in this browser (it is remembered), and a **GitHub | Google Drive** switch ap
 it off again. Nobody sees it unless they do this, and it cannot sign in until the setup below is done.
 
 Press **Google Drive** above the file list, then **Sign in with Google** (use your school account). Then press **My Drive** or **Shared with me**,
-or paste the link of a Drive folder. You see the folders and the `.stl`, `.3mf` and `.scad` files in them, one folder at a time,
+or paste the link of a Drive folder. You see the folders and the `.stl`, `.3mf`, `.scad` and `.svg` files in them, one folder at a time,
 with a path at the top to click back up. Everything else works the same as for GitHub: measuring, overhangs, rendering a `.scad`,
 **Upload** (a file with the same name is replaced) and **History** (the earlier versions Drive kept). The address
 `/stl/gdrive/FOLDERID` opens a folder after you sign in.

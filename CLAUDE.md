@@ -230,13 +230,13 @@ the home card's id, and a tiny `jslogo/` folder remains only to forward old link
 ### 3D Files (`stl/`)
 
 A static page at `/stl/` (plain file with front matter, like `openscad/`, no collection): browse a GitHub repo or, behind `?gdrive=1`, a
-Google Drive folder, and preview `.stl`, `.3mf` and `.scad` files (three.js; a `.scad` is rendered by the OpenSCAD worker at
+Google Drive folder, and preview `.stl`, `.3mf`, `.scad` and `.svg` files (an SVG is a picture with an Extrude to 3D button that runs `linear_extrude(import())` in the OpenSCAD worker; three.js; a `.scad` is rendered by the OpenSCAD worker at
 `/openscad/worker.js`). Dropped local files preview without uploading. Size panel (mm, cm, in), overhang highlight, axes with
 numbers, X Y Z arrows, zoom and Fit, GitHub commit history and Drive revisions, upload to either. Addresses `/stl/owner/repo[/branch][/path]`
 and `/stl/gdrive/FOLDERID` work through the root `404.html`, which redirects `/stl/...` and `/openscad/...` to `#/...` and keeps the
 query. GitHub tokens are stored under the same localStorage key as the OpenSCAD page (`openscad:ghtoken:owner/repo`). **Google Drive is off
 by default and unfinished until the teacher makes an OAuth Client ID** (`GOOGLE_CLIENT_ID` in `stl/index.html`; steps in `stl/about.md`).
-Home card after OpenSCAD (banner source `tools/banners/stl.svg`, PNG made with `rsvg-convert -w 1024 -h 254`); not in the site menu.
+A `.scad` that includes, uses or imports other files gets them from the same repo folder (or the other dropped files): `assets/js/scad-deps.js` (shared by `/openscad/` and `/stl/`) finds the names and fetches them, and `openscad/worker.js` lays them out in its virtual file system as in the repo. Home card after OpenSCAD (banner source `tools/banners/stl.svg`, PNG made with `rsvg-convert -w 1024 -h 254`); not in the site menu.
 
 ### Student Movies (`_movies/`, `movies/`, `_data/movie_worksheets/`)
 

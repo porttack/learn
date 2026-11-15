@@ -54,6 +54,9 @@ permalink: /stl/
   #sizepanel { bottom:10px; } #sizepanel table { border-collapse:collapse; font:12.5px/1.5 ui-monospace, Menlo, Consolas, monospace; }
   #sizepanel td { padding:0 0 0 12px; text-align:right; } #sizepanel td:first-child { padding:0; text-align:left; font-family:system-ui, sans-serif; color:var(--muted); }
   #sizepanel select { font:inherit; padding:0 2px; } #sizepanel .hd { font-weight:600; margin-bottom:2px; } #sizenote { color:var(--muted); max-width:240px; margin-top:3px; }
+  #svgView { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; padding:24px; background:repeating-conic-gradient(#f2f4f7 0 25%, #fff 0 50%) 0 0/20px 20px; }
+  #svgView img { max-width:100%; max-height:100%; background:#fff; box-shadow:0 1px 6px rgba(0,0,0,.2); } #svgView[hidden] { display:none; }
+  #bar input[type=number] { width:4.2em; font:inherit; padding:1px 4px; }
   #empty[hidden] { display:none; }
   #empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--muted); padding:20px; pointer-events:none; }
   #drop { position:absolute; inset:8px; border:3px dashed var(--accent); border-radius:12px; background:rgba(42,122,226,.12); display:none; align-items:center; justify-content:center; font-size:20px; color:var(--accent); z-index:5; pointer-events:none; }
@@ -127,21 +130,22 @@ permalink: /stl/
     </div>
     <div class="row" id="modeRow" hidden><button id="mFolders" class="secondary">Folders</button><button id="mAll" class="secondary">All files</button></div>
     <input id="filter" type="search" placeholder="Search all files by name or folder" aria-label="Search files" hidden>
-    <div id="files" class="flist"><div class="note">Type a repository above to see its .stl, .3mf and .scad files.</div></div>
+    <div id="files" class="flist"><div class="note">Type a repository above to see its .stl, .3mf, .scad and .svg files.</div></div>
     <div class="row">
       <button id="localBtn" class="secondary" title="Look at a file from this computer without saving it anywhere">Preview a file&hellip;</button>
       <button id="upBtn" disabled>Upload files&hellip;</button>
       <button id="forget" class="secondary" hidden title="Remove the token this browser saved for this repository">Forget token</button>
     </div>
-    <input id="pick" type="file" accept=".stl,.3mf,.scad" multiple hidden>
-    <input id="localPick" type="file" accept=".stl,.3mf,.scad" multiple hidden>
-    <div class="hint"><b>Drag a .stl, .3mf or .scad file onto the page to preview it.</b> Nothing is uploaded unless you press Upload.</div>
+    <input id="pick" type="file" accept=".stl,.3mf,.scad,.svg" multiple hidden>
+    <input id="localPick" type="file" accept=".stl,.3mf,.scad,.svg,.dat,.png" multiple hidden>
+    <div class="hint"><b>Drag a .stl, .3mf, .scad or .svg file onto the page to preview it.</b> Nothing is uploaded unless you press Upload.</div>
   </aside>
   <div class="stage">
     <div id="bar"><span id="barName">Nothing open</span></div>
     <div id="view">
-      <div id="empty">Pick a file on the left, or drag a .stl, .3mf or .scad file here to preview it.</div>
+      <div id="empty">Pick a file on the left, or drag a .stl, .3mf, .scad or .svg file here to preview it.</div>
       <pre id="scad" hidden></pre>
+      <div id="svgView" hidden><img id="svgImg" alt="The SVG drawing"></div>
       <div class="zoom" id="zoom" hidden>
         <button id="zin" class="secondary" title="Zoom in" aria-label="Zoom in">+</button>
         <button id="zout" class="secondary" title="Zoom out" aria-label="Zoom out">&minus;</button>
@@ -160,7 +164,7 @@ permalink: /stl/
         <div id="sizenote"></div>
       </div>
     </div>
-    <div id="drop">Drop .stl, .3mf or .scad files to preview them</div>
+    <div id="drop">Drop .stl, .3mf, .scad or .svg files to preview them</div>
   </div>
 </main>
 
@@ -206,9 +210,10 @@ import { STLLoader } from "three/addons/loaders/STLLoader.js";
 import { ThreeMFLoader } from "three/addons/loaders/3MFLoader.js";
 import { unzipSync, strFromU8 } from "three/addons/libs/fflate.module.js";
 import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
+import { findRefs, collectFiles, fetchGitHubFile } from "/assets/js/scad-deps.js";
 
 const $ = (id) => document.getElementById(id);
-const EXT = /\.(stl|3mf|scad)$/i, MAX_UPLOAD = 50 * 1024 * 1024;
+const EXT = /\.(stl|3mf|scad|svg)$/i, MAX_UPLOAD = 50 * 1024 * 1024;
 const encPath = (p) => p.split("/").map(encodeURIComponent).join("/");
 const store = (get, k, v) => { try { return get ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch (e) { return null; } };
 const say = (el, text, kind) => { el.className = "ghmsg" + (kind ? " " + kind : ""); el.textContent = text; };
@@ -473,6 +478,19 @@ $("ovhAngle").onchange = () => applyOverhang();
 function countTris(obj) { let n = 0; obj.traverse((o) => { if (o.geometry) { const g = o.geometry; n += (g.index ? g.index.count : g.attributes.position.count) / 3; } }); return Math.round(n); }
 function applyWire() { if (model) model.traverse((o) => { if (o.material) [].concat(o.material).forEach((m) => { m.wireframe = wire; }); }); draw(); }
 const mat = () => new THREE.MeshStandardMaterial({ color: 0xf2b134, roughness: 0.55, metalness: 0.05 });
+// What an SVG file says about its size, in millimeters (96 pixels to the inch when it gives no unit).
+function svgSizeMm(text) {
+  try {
+    const el = new DOMParser().parseFromString(text, "image/svg+xml").documentElement;
+    if (!el || el.nodeName.toLowerCase() !== "svg") return null;
+    const per = { px: 25.4 / 96, pt: 25.4 / 72, pc: 25.4 / 6, mm: 1, cm: 10, in: 25.4, "": 25.4 / 96 };
+    const len = (v) => { const m = String(v || "").trim().match(/^([0-9.]+)\s*([a-z%]*)$/i); return m && per[m[2].toLowerCase()] !== undefined ? parseFloat(m[1]) * per[m[2].toLowerCase()] : null; };
+    let w = len(el.getAttribute("width")), h = len(el.getAttribute("height"));
+    const vb = (el.getAttribute("viewBox") || "").trim().split(/[\s,]+/).map(Number);
+    if ((w == null || h == null) && vb.length === 4 && vb.every(Number.isFinite)) { w = w == null ? vb[2] * per.px : w; h = h == null ? vb[3] * per.px : h; }
+    return w && h ? { w, h } : null;
+  } catch (e) { return null; }
+}
 // A 3MF file says what its numbers mean (default millimeter); the loader reads that but does not apply it.
 const MM_PER = { micron: 0.001, millimeter: 1, centimeter: 10, inch: 25.4, foot: 304.8, meter: 1000 };
 function threeMfUnit(buf) {
@@ -583,7 +601,7 @@ function renderFolder(box) {
     box.append(b);
   }
   for (const x of here) box.append(fileButton(x, false));
-  if (!dirs.size && !here.length) note(box, ctx.files.length ? "No 3D files in this folder." : "No .stl, .3mf or .scad files here yet. Use Upload to add some.");
+  if (!dirs.size && !here.length) note(box, ctx.files.length ? "No 3D files in this folder." : "No .stl, .3mf, .scad or .svg files here yet. Use Upload to add some.");
 }
 function renderFiles(filterText) {
   const box = $("files"), f = $("filter");
@@ -594,7 +612,7 @@ function renderFiles(filterText) {
   box.replaceChildren();
   if (mode === "folders" && !q) { renderFolder(box); return; }   // typing in the search box looks through every folder
   const rows = ctx.files.filter((x) => !q || x.path.toLowerCase().includes(q));
-  if (!rows.length) { note(box, ctx.files.length ? "No file matches the search." : "No .stl, .3mf or .scad files here yet. Use Upload to add some."); return; }
+  if (!rows.length) { note(box, ctx.files.length ? "No file matches the search." : "No .stl, .3mf, .scad or .svg files here yet. Use Upload to add some."); return; }
   for (const x of rows.slice(0, 500)) box.append(fileButton(x, true));
   if (rows.length > 500) note(box, `Showing the first 500 of ${rows.length}. Use the search box.`);
 }
@@ -624,19 +642,47 @@ function showFile(path, buf, o = {}) {
   current = { path, buf, sha, local: !!local, driveId: drive ? drive.id : null };
   $("empty").hidden = true;
   stopRender();
-  $("scad").hidden = true;
+  $("scad").hidden = true; $("svgView").hidden = true;
   const bar = $("bar"); bar.replaceChildren(Object.assign(document.createElement("b"), { textContent: path.split("/").pop() }));
   if (sha || o.old) bar.append(Object.assign(document.createElement("span"), { textContent: o.old || `(older version ${sha.slice(0, 7)}, ${when})`, style: "color:#7a5b00;font-weight:600" }));
   if (local) bar.append(Object.assign(document.createElement("span"), { textContent: "(from your computer)", style: "color:#7a5b00;font-weight:600" }));
   const add = (el) => bar.append(el), span = (t) => Object.assign(document.createElement("span"), { textContent: t });
+  // Where the files a .scad reads (import, include, use) come from: the same GitHub folder (and version),
+  // the other files dropped with it, or the same Drive folder.
+  let fetchFile;
+  if (local) fetchFile = async (p) => { const l = (o.siblings || []).find((x) => x.name === p.split("/").pop()); return l ? l.file.arrayBuffer() : null; };
+  else if (drive) fetchFile = async (p) => { const it = dctx && dctx.items.find((x) => !x.folder && x.name === p.split("/").pop()); return it ? (await gfetch(`${API}/files/${it.id}?alt=media&supportsAllDrives=true`)).arrayBuffer() : null; };
+  else fetchFile = (p) => fetchGitHubFile({ owner, repo, ref, path: p, token: getTok(owner, repo) });
   try {
-    if (ext === "scad") {
+    if (ext === "svg") {
+      clearModel(); draw();
+      if (svgUrl) URL.revokeObjectURL(svgUrl);
+      svgUrl = URL.createObjectURL(new Blob([buf], { type: "image/svg+xml" }));   // shown as a picture: any script inside the file does not run
+      $("svgImg").src = svgUrl; $("svgView").hidden = false;
+      const mm = svgSizeMm(new TextDecoder().decode(buf));
+      add(span(mm ? `about ${Number(mm.w.toFixed(1))} x ${Number(mm.h.toFixed(1))} mm` : "size not stated"));
+      add(span(human(buf.byteLength)));
+      const holder = span(""), h = Object.assign(document.createElement("input"), { type: "number", min: "0.1", step: "0.5", value: store(true, "stl:svgh") || "3", title: "Height in millimeters" });
+      const go = Object.assign(document.createElement("button"), { textContent: "Extrude to 3D" });
+      go.title = "Turn the drawing into a solid with OpenSCAD: linear_extrude of this SVG";
+      go.onclick = () => {
+        const hv = Math.max(0.1, Number(h.value) || 3); store(false, "stl:svgh", String(hv));
+        const name = path.split("/").pop().replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+        const info = span(""), slot = span(""), tg = document.createElement("button"), back = Object.assign(document.createElement("button"), { className: "secondary", textContent: "Show the drawing" });
+        back.onclick = () => showFile(path, buf, o);
+        $("svgView").hidden = true;
+        holder.replaceChildren(info, slot, back);
+        renderScad(`linear_extrude(height = ${hv}) import("${name}");`, path + ".scad", info, tg, slot, (p) => (p === path ? buf : fetchFile(p)));
+      };
+      holder.append(span("Height "), h, span(" mm "), go);
+      add(holder);
+    } else if (ext === "scad") {
       clearModel(); draw();
       const code = new TextDecoder().decode(buf);
       $("scad").textContent = code;
       const info = span("Rendering..."), slot = span(""), tg = Object.assign(document.createElement("button"), { className: "secondary", textContent: "Show code", disabled: true });
       add(info); add(tg); add(slot);
-      renderScad(code, path, info, tg, slot);
+      renderScad(code, path, info, tg, slot, fetchFile);
       if (!local && !drive) add(Object.assign(document.createElement("a"), { className: "btn", href: `/openscad/${[owner, repo, ref].map(encodeURIComponent).join("/")}/${encPath(path)}`, textContent: sha ? "Open this version in OpenSCAD" : "Open in OpenSCAD" }));
     } else {
       let obj, note = "STL files have no units, so the numbers are taken as millimeters.";
@@ -692,7 +738,7 @@ function showFile(path, buf, o = {}) {
 }
 
 // ---- files from this computer (dragged in, or picked): previewed here, never sent anywhere ----
-let local = [];
+let local = [], localAll = [], svgUrl = null;   // localAll: every file dropped, including data files (.dat, .png) a .scad reads
 function renderLocal() {
   const box = $("localBox"), list = $("localList");
   box.hidden = !local.length; $("localUp").hidden = !(canUpload() && local.length); $("localUp").textContent = source === "drive" ? "Upload to Drive..." : "Upload to GitHub...";
@@ -707,12 +753,13 @@ function renderLocal() {
 }
 async function previewLocal(l) {
   status(`Reading ${l.name}...`);
-  try { showFile(l.name, await l.file.arrayBuffer(), { local: true, file: l.file }); }
+  try { showFile(l.name, await l.file.arrayBuffer(), { local: true, file: l.file, siblings: localAll }); }
   catch (e) { status("Could not read that file."); }
 }
 function takeFiles(files) {
   const ok = [...files].filter((f) => EXT.test(f.name));
-  if (!ok.length) { status("Only .stl, .3mf and .scad files can be previewed."); say($("repoMsg"), "Only .stl, .3mf and .scad files can be previewed here.", "err"); return; }
+  if (!ok.length) { status("Only .stl, .3mf, .scad and .svg files can be previewed."); say($("repoMsg"), "Only .stl, .3mf, .scad and .svg files can be previewed here.", "err"); return; }
+  localAll = [...files].map((f) => ({ name: f.name, file: f }));
   local = ok.map((f) => ({ name: f.name, size: f.size, file: f }));
   renderLocal(); previewLocal(local[0]);
 }
@@ -724,11 +771,12 @@ $("localUp").onclick = () => startUpload(local.map((l) => l.file));
 // ---- .scad files are rendered by the real OpenSCAD engine from the OpenSCAD page (same site) ----
 let scadWorker = null, job = 0;
 function stopRender() { if (scadWorker) { scadWorker.terminate(); scadWorker = null; } job++; }
-function renderScad(code, path, info, tg, slot) {
+function renderScad(code, path, info, tg, slot, fetchFile) {
   stopRender();
   const my = job, pre = $("scad"), empty = $("empty");
   let done = false;
-  const showCode = (on, head) => { pre.textContent = (head ? head + "\n\n---- the code ----\n" : "") + code; pre.hidden = !on; tg.textContent = on ? "Show model" : "Show code"; };
+  let missing = [], used = 0;
+  const showCode = (on, head) => { pre.textContent = (head ? head + (missing.length ? `\n\nCould not find: ${missing.join(", ")}` : "") + "\n\n---- the code ----\n" : "") + code; pre.hidden = !on; tg.textContent = on ? "Show model" : "Show code"; };
   const fail = (text) => { if (done) return; done = true; stopRender(); empty.hidden = true; info.textContent = "Could not render this file"; showCode(true, text); tg.disabled = true; };
   empty.hidden = false; empty.textContent = "Rendering with OpenSCAD...";
   tg.onclick = () => showCode(pre.hidden);
@@ -743,13 +791,23 @@ function renderScad(code, path, info, tg, slot) {
     if (!e.data.ok) { done = false; return fail((e.data.log || []).join("\n") || "OpenSCAD made no model from this file."); }
     empty.hidden = true;
     const { tris } = setModel(meshFromStl(e.data.stl), "OpenSCAD works in millimeters.");
-    info.textContent = `${tris.toLocaleString()} triangles (rendered by OpenSCAD)`;
+    info.textContent = `${tris.toLocaleString()} triangles (rendered by OpenSCAD${used ? `, using ${used} other file${used === 1 ? "" : "s"}` : ""})` + (missing.length ? `. Could not find: ${missing.join(", ")}` : "");
     tg.disabled = false; showCode(false);
     const dl = Object.assign(document.createElement("button"), { className: "secondary", textContent: "Download STL" });
-    dl.onclick = () => { const u = URL.createObjectURL(new Blob([e.data.stl])); Object.assign(document.createElement("a"), { href: u, download: path.split("/").pop().replace(/\.scad$/i, "") + ".stl" }).click(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
+    dl.onclick = () => { const u = URL.createObjectURL(new Blob([e.data.stl])); Object.assign(document.createElement("a"), { href: u, download: path.split("/").pop().replace(/(\.svg)?\.scad$/i, "") + ".stl" }).click(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
     slot.append(dl);
   };
-  w.postMessage({ code });
+  (async () => {
+    let extra = {};
+    if (fetchFile && findRefs(code).length) {
+      info.textContent = "Fetching the files it uses...";
+      const res = await collectFiles({ mainPath: path, code, fetchFile });
+      if (job !== my) return;
+      missing = res.missing; used = res.count; extra = { files: res.files, main: "/" + path };
+      info.textContent = "Rendering...";
+    }
+    w.postMessage({ code, ...extra });
+  })();
 }
 
 // ---- history: the commits that changed one file ----
@@ -798,7 +856,7 @@ function startUpload(files) {
   if (!canUpload()) { say($("repoMsg"), source === "drive" ? "Open one of your Google Drive folders first, then upload." : "Open a repository first, then upload.", "err"); return; }
   const ok = [...files].filter((f) => EXT.test(f.name));
   const skipped = files.length - ok.length;
-  if (!ok.length) { say($("repoMsg"), "Only .stl, .3mf and .scad files can be uploaded here.", "err"); return; }
+  if (!ok.length) { say($("repoMsg"), "Only .stl, .3mf, .scad and .svg files can be uploaded here.", "err"); return; }
   pending = ok;
   const dr = source === "drive";
   $("upDir").closest("label").hidden = dr;
@@ -1058,7 +1116,7 @@ function setSource(src) {
   $("forget").hidden = src !== "github" || !(ctx && getTok(ctx.owner, ctx.repo));
   $("upBtn").disabled = !canUpload();
   $("driveSign").hidden = gOk();
-  if (src === "github") { if (ctx) { renderFiles(); dmsg(`${ctx.files.length} file${ctx.files.length === 1 ? "" : "s"} on branch ${ctx.ref}.`); } else { $("files").replaceChildren(); note($("files"), "Type a repository above to see its .stl, .3mf and .scad files."); $("filter").hidden = true; $("modeRow").hidden = true; dmsg(""); } }
+  if (src === "github") { if (ctx) { renderFiles(); dmsg(`${ctx.files.length} file${ctx.files.length === 1 ? "" : "s"} on branch ${ctx.ref}.`); } else { $("files").replaceChildren(); note($("files"), "Type a repository above to see its .stl, .3mf, .scad and .svg files."); $("filter").hidden = true; $("modeRow").hidden = true; dmsg(""); } }
   else { renderDrive(); dmsg(dctx ? "" : "Sign in, then paste a folder link or press My Drive."); }
   renderLocal();
 }
