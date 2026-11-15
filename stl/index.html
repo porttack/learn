@@ -1,0 +1,1089 @@
+---
+title: "3D Files"
+permalink: /stl/
+---
+{% raw %}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>3D Files</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- The page is also opened at /stl/owner/repo/branch/path (see 404.html), so relative addresses start from /stl/. -->
+<base href="/stl/">
+<link rel="icon" type="image/svg+xml" href="/assets/img/stl/favicon.svg">
+<style>
+  :root { --accent:#2a7ae2; --ink:#1b1f23; --paper:#fff; --muted:#57606a; --border:#d0d7de; --err:#d1242f; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; overflow:hidden; background:#e9edf1; color:var(--ink); font:15px/1.4 system-ui, sans-serif; }
+  body { display:flex; flex-direction:column; height:100vh; height:100dvh; }
+  header { flex:none; display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:8px 12px; background:var(--paper); border-bottom:1px solid var(--border); }
+  header h1 { font-size:15px; margin:0 6px 0 0; white-space:nowrap; } header a { color:var(--accent); }
+  [hidden] { display:none !important; }
+  button, .btn { font:inherit; padding:5px 9px; border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:6px; cursor:pointer; text-decoration:none; display:inline-block; }
+  button.secondary, .btn.secondary { background:var(--paper); color:var(--accent); }
+  button:disabled { opacity:.45; cursor:default; }
+  #status { color:var(--muted); margin-left:auto; }
+  main { flex:1; min-height:0; display:grid; grid-template-columns: 330px 1fr; }
+  aside { display:flex; flex-direction:column; gap:8px; padding:10px; background:var(--paper); border-right:1px solid var(--border); min-height:0; }
+  .row { display:flex; gap:6px; } .row input { flex:1; min-width:0; }
+  input[type=text], input[type=password], input[type=search] { font:15px system-ui, sans-serif; padding:7px 9px; border:1px solid var(--border); border-radius:6px; color:var(--ink); background:#fff; }
+  .flist { flex:1; min-height:0; overflow:auto; border:1px solid var(--border); border-radius:6px; }
+  .flist button { display:flex; gap:6px; align-items:baseline; width:100%; text-align:left; background:none; border:0; border-bottom:1px solid #eef0f3; border-radius:0; color:var(--ink); padding:6px 8px; font:13px ui-monospace, Menlo, Consolas, monospace; }
+  .flist button:hover { background:#e8f0fc; } .flist button.on { background:#d6e6fb; }
+  .flist .nm { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:0 1 auto; min-width:0; }
+  .flist .dir { color:var(--muted); flex:1 1 0; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; }
+  .flist .tag, .flist .sz { flex:none; } .flist .tag.d { background:#fff1cc; border-color:#e6c76a; }
+  #srcRow button { flex:1; } #srcRow button.on { background:var(--accent); color:#fff; }
+  #modeRow button { flex:1; } #modeRow button.on { background:var(--accent); color:#fff; }
+  .flist .crumbs { display:flex; flex-wrap:wrap; align-items:center; gap:0; padding:5px 6px; border-bottom:1px solid #eef0f3; background:#f6f8fa; position:sticky; top:0; }
+  .flist .crumbs button { width:auto; display:inline; border:0; padding:1px 4px; color:var(--accent); font:12.5px system-ui, sans-serif; } .flist .crumbs span { color:var(--muted); }
+  .flist .dir { color:var(--muted); } .flist .sz { margin-left:auto; color:var(--muted); font-size:12px; white-space:nowrap; }
+  .flist .tag { font-size:10.5px; border:1px solid var(--border); border-radius:4px; padding:0 4px; color:var(--muted); }
+  .note { color:var(--muted); font-size:12.5px; padding:8px; }
+  .stage { position:relative; min-width:0; min-height:0; display:flex; flex-direction:column; }
+  #bar { flex:none; display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:8px 12px; background:var(--paper); border-bottom:1px solid var(--border); font-size:13px; color:var(--muted); }
+  #bar b { color:var(--ink); font-size:14px; } #bar .sp { flex:1; }
+  #view { flex:1; min-height:0; position:relative; } #view canvas { display:block; width:100%; height:100%; }
+  #scad { position:absolute; inset:0; overflow:auto; margin:0; padding:12px 16px; background:#fff; font:13px/1.45 ui-monospace, Menlo, Consolas, monospace; white-space:pre; tab-size:2; }
+  .zoom { position:absolute; right:10px; top:10px; z-index:3; display:flex; flex-direction:column; gap:6px; }
+  .zoom button { background:var(--paper); color:var(--accent); box-shadow:0 1px 3px rgba(0,0,0,.15); padding:2px 9px; min-width:34px; }
+  #ovpanel, #sizepanel { position:absolute; left:10px; z-index:3; background:rgba(255,255,255,.93); border:1px solid var(--border); border-radius:6px; padding:6px 10px; font-size:12.5px; }
+  #ovpanel { top:10px; max-width:min(330px, 70%); } #ovpanel input[type=number] { width:3.4em; font:inherit; padding:1px 3px; }
+  #ovInfo { color:var(--muted); margin-top:3px; } #ovInfo i { display:inline-block; width:11px; height:11px; background:#e5383b; border-radius:2px; margin-right:6px; vertical-align:-1px; }
+  #sizepanel { bottom:10px; } #sizepanel table { border-collapse:collapse; font:12.5px/1.5 ui-monospace, Menlo, Consolas, monospace; }
+  #sizepanel td { padding:0 0 0 12px; text-align:right; } #sizepanel td:first-child { padding:0; text-align:left; font-family:system-ui, sans-serif; color:var(--muted); }
+  #sizepanel select { font:inherit; padding:0 2px; } #sizepanel .hd { font-weight:600; margin-bottom:2px; } #sizenote { color:var(--muted); max-width:240px; margin-top:3px; }
+  #empty[hidden] { display:none; }
+  #empty { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; color:var(--muted); padding:20px; pointer-events:none; }
+  #drop { position:absolute; inset:8px; border:3px dashed var(--accent); border-radius:12px; background:rgba(42,122,226,.12); display:none; align-items:center; justify-content:center; font-size:20px; color:var(--accent); z-index:5; pointer-events:none; }
+  body.dragging #drop { display:flex; }
+  .site-menu { position:relative; flex:none; z-index:40; }
+  .site-menu-trigger { position:absolute; opacity:0; pointer-events:none; }
+  .site-menu-icon { position:relative; z-index:2; display:block; font-size:1.4em; line-height:1; padding:.2em .4em; border-radius:6px; color:var(--ink); cursor:pointer; user-select:none; }
+  .site-menu-icon:hover { background:#eef0f3; }
+  .site-menu-backdrop { display:none; position:fixed; inset:0; z-index:1; cursor:default; }
+  .site-menu-trigger:checked ~ .site-menu-backdrop { display:block; }
+  .site-menu-panel { display:none; position:absolute; top:100%; right:0; margin-top:.3em; min-width:8em; z-index:2; background:var(--paper); border:1px solid var(--border); border-radius:6px; box-shadow:0 4px 14px rgba(0,0,0,.18); max-height:calc(100vh - 4rem); overflow-y:auto; }
+  .site-menu-trigger:checked ~ .site-menu-panel { display:block; }
+  .site-menu-panel a { display:flex; align-items:center; gap:.6em; padding:.5em 1em; color:var(--ink); text-decoration:none; white-space:nowrap; }
+  .site-menu-panel a:hover { background:#eef0f3; }
+  .site-menu-item-icon { width:1.1em; height:1.1em; flex:0 0 auto; display:inline-block; object-fit:contain; }
+  .site-menu-trigger:focus-visible ~ .site-menu-icon { outline:2px solid var(--accent); }
+  .ghmsg { min-height:1.3em; font-size:13px; } .ghmsg.err { color:var(--err); } .ghmsg.ok { color:#1a7f37; }
+  dialog { border:1px solid var(--border); border-radius:10px; padding:14px 16px; width:min(620px, 94vw); max-height:86vh; color:var(--ink); background:var(--paper); }
+  dialog::backdrop { background:rgba(20,24,29,.45); } dialog[open] { display:flex; flex-direction:column; gap:10px; }
+  dialog h2 { font-size:18px; margin:0; } .fld { display:flex; flex-direction:column; gap:4px; font-size:13px; color:var(--muted); }
+  .hint { font-size:12.5px; color:var(--muted); } .hint a { color:var(--accent); }
+  #upList { overflow:auto; max-height:200px; border:1px solid var(--border); border-radius:6px; }
+  #upList div { display:flex; gap:8px; padding:5px 8px; border-bottom:1px solid #eef0f3; font-size:13px; } #upList .s { margin-left:auto; color:var(--muted); }
+  #upList .bad .s { color:var(--err); } #upList .good .s { color:#1a7f37; }
+  #histList { overflow:auto; border:1px solid var(--border); border-radius:6px; min-height:60px; }
+  #histList .hrow { display:grid; grid-template-columns: 1fr auto; gap:2px 10px; padding:7px 10px; border-bottom:1px solid #eef0f3; }
+  #histList .hrow b { font-weight:600; } #histList .meta { color:var(--muted); font-size:12.5px; }
+  #histList .acts { grid-row:1 / span 2; grid-column:2; display:flex; gap:6px; align-items:center; } #histList .acts button, #histList .acts a { font-size:12.5px; padding:3px 7px; }
+  .foot { display:flex; gap:8px; justify-content:flex-end; align-items:center; }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; grid-template-rows: 40% 1fr; } aside { border-right:0; border-bottom:1px solid var(--border); } }
+  #localBox { border:1px solid var(--border); border-radius:6px; padding:6px; background:#f6f8fa; } #localBox .hd { display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted); margin-bottom:4px; } #localBox .hd b { color:var(--ink); } #localBox .hd .sp { flex:1; }
+  #localList { flex:none; max-height:120px; background:#fff; } #localBox button.small { font-size:12px; padding:2px 7px; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<header>
+  <h1>3D Files</h1>
+  <a href="/openscad/">OpenSCAD</a>
+  <a href="/stl/about/">About</a>
+  <span id="status" role="status">Ready</span>
+  {% endraw %}{%- include site-menu.html -%}{% raw %}
+</header>
+<main>
+  <aside>
+    <div class="row" id="srcRow"><button id="srcGh" class="secondary">GitHub</button><button id="srcDr" class="secondary">Google Drive</button></div>
+    <div class="row" id="ghPanel">
+      <input id="repo" type="text" spellcheck="false" autocomplete="off" placeholder="owner/repo   or   owner/repo/branch" aria-label="GitHub repository">
+      <button id="go">Open</button>
+    </div>
+    <div id="drivePanel" hidden>
+      <div class="row"><input id="driveIn" type="text" spellcheck="false" autocomplete="off" placeholder="Paste a Google Drive folder link" aria-label="Google Drive folder link"><button id="driveGo">Open</button></div>
+      <div class="row"><button id="driveMy" class="secondary">My Drive</button><button id="driveShared" class="secondary">Shared with me</button></div>
+      <div class="row"><button id="driveSign">Sign in with Google</button></div>
+      <div id="driveSetup" class="hint" hidden>
+        Google Drive needs a one-time setup: an OAuth Client ID (see <a href="/stl/about/#google-drive-setup-for-the-teacher">About</a>). Paste it here to try it on this computer.
+        <div class="row" style="margin-top:4px"><input id="gclient" type="text" spellcheck="false" autocomplete="off" placeholder="1234-abc.apps.googleusercontent.com"><button id="gclientSave">Save</button></div>
+      </div>
+    </div>
+    <div id="repoMsg" class="ghmsg" role="status"></div>
+    <div id="localBox" hidden>
+      <div class="hd"><b>On your computer</b><span class="sp"></span><button id="localUp" class="small" hidden title="Add these files to the open repository or folder">Upload&hellip;</button><button id="localClear" class="small secondary">Clear</button></div>
+      <div id="localList" class="flist"></div>
+    </div>
+    <div class="row" id="modeRow" hidden><button id="mFolders" class="secondary">Folders</button><button id="mAll" class="secondary">All files</button></div>
+    <input id="filter" type="search" placeholder="Search all files by name or folder" aria-label="Search files" hidden>
+    <div id="files" class="flist"><div class="note">Type a repository above to see its .stl, .3mf and .scad files.</div></div>
+    <div class="row">
+      <button id="localBtn" class="secondary" title="Look at a file from this computer without saving it anywhere">Preview a file&hellip;</button>
+      <button id="upBtn" disabled>Upload files&hellip;</button>
+      <button id="forget" class="secondary" hidden title="Remove the token this browser saved for this repository">Forget token</button>
+    </div>
+    <input id="pick" type="file" accept=".stl,.3mf,.scad" multiple hidden>
+    <input id="localPick" type="file" accept=".stl,.3mf,.scad" multiple hidden>
+    <div class="hint"><b>Drag a .stl, .3mf or .scad file onto the page to preview it.</b> Nothing is uploaded unless you press Upload.</div>
+  </aside>
+  <div class="stage">
+    <div id="bar"><span id="barName">Nothing open</span></div>
+    <div id="view">
+      <div id="empty">Pick a file on the left, or drag a .stl, .3mf or .scad file here to preview it.</div>
+      <pre id="scad" hidden></pre>
+      <div class="zoom" id="zoom" hidden>
+        <button id="zin" class="secondary" title="Zoom in" aria-label="Zoom in">+</button>
+        <button id="zout" class="secondary" title="Zoom out" aria-label="Zoom out">&minus;</button>
+        <button id="zfit" class="secondary" title="Center the model and fit it in view" aria-label="Fit to view">Fit</button>
+        <button id="zunder" class="secondary" title="Look from below (where overhangs are)" aria-label="View from below">Under</button>
+      </div>
+      <div id="ovpanel" hidden>
+        <label><input id="ovh" type="checkbox"> Show overhangs steeper than <input id="ovhAngle" type="number" min="1" max="89" value="45" aria-label="Overhang angle in degrees">&deg;</label>
+        <div id="ovInfo">Turn on to see which faces need support when printed.</div>
+        <label style="display:block;margin-top:3px"><input id="axes" type="checkbox"> Show numbers on the axes</label>
+        <label style="display:block"><input id="gizmo" type="checkbox"> Show X Y Z arrows</label>
+      </div>
+      <div id="sizepanel" hidden>
+        <div class="hd">Size in <select id="unit" aria-label="Units"><option value="mm">mm</option><option value="cm">cm</option><option value="in">inches</option></select></div>
+        <table><tr><td>Width (X)</td><td id="szx"></td></tr><tr><td>Depth (Y)</td><td id="szy"></td></tr><tr><td>Height (Z)</td><td id="szz"></td></tr></table>
+        <div id="sizenote"></div>
+      </div>
+    </div>
+    <div id="drop">Drop .stl, .3mf or .scad files to preview them</div>
+  </div>
+</main>
+
+<dialog id="tokDlg" aria-labelledby="tokTitle">
+  <form method="dialog" style="display:contents">
+    <h2 id="tokTitle">GitHub token needed</h2>
+    <div id="tokMsg" class="ghmsg"></div>
+    <label class="fld">Personal access token
+      <input id="tokIn" type="password" spellcheck="false" autocomplete="off" placeholder="github_pat_...">
+    </label>
+    <div class="hint">Make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just this repository with <b>Contents: Read and write</b> (Read-only is enough to look). It is sent only to GitHub. Once it works, this browser remembers it for this one repository, and shares it with the OpenSCAD page. <b>Forget token</b> removes it.</div>
+    <div class="foot"><button value="cancel" class="secondary">Cancel</button><button value="ok" id="tokOk">Use token</button></div>
+  </form>
+</dialog>
+
+<dialog id="histDlg" aria-labelledby="histTitle">
+  <h2 id="histTitle">History on GitHub</h2>
+  <div id="histFile" class="hint"></div>
+  <div id="histMsg" class="ghmsg" role="status"></div>
+  <div id="histList"></div>
+  <div class="hint">Newest first. <b>Preview</b> shows that version here without changing anything in the repository.</div>
+  <div class="foot"><button id="histClose" class="secondary">Close</button></div>
+</dialog>
+
+<dialog id="upDlg" aria-labelledby="upTitle">
+  <h2 id="upTitle">Upload to GitHub</h2>
+  <div id="upWhere" class="hint"></div>
+  <div id="upList"></div>
+  <label class="fld">Folder in the repository (empty for the top level)
+    <input id="upDir" type="text" spellcheck="false" autocomplete="off" placeholder="models/robot">
+  </label>
+  <label class="fld">Note about this change
+    <input id="upMsg" type="text" autocomplete="off">
+  </label>
+  <div id="upOut" class="ghmsg" role="status"></div>
+  <div class="foot"><button id="upCancel" class="secondary">Close</button><button id="upGo">Upload</button></div>
+</dialog>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { STLLoader } from "three/addons/loaders/STLLoader.js";
+import { ThreeMFLoader } from "three/addons/loaders/3MFLoader.js";
+import { unzipSync, strFromU8 } from "three/addons/libs/fflate.module.js";
+import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
+
+const $ = (id) => document.getElementById(id);
+const EXT = /\.(stl|3mf|scad)$/i, MAX_UPLOAD = 50 * 1024 * 1024;
+const encPath = (p) => p.split("/").map(encodeURIComponent).join("/");
+const store = (get, k, v) => { try { return get ? localStorage.getItem(k) : localStorage.setItem(k, v); } catch (e) { return null; } };
+const say = (el, text, kind) => { el.className = "ghmsg" + (kind ? " " + kind : ""); el.textContent = text; };
+const status = (t) => { $("status").textContent = t; };
+const human = (n) => n >= 1048576 ? (n / 1048576).toFixed(1) + " MB" : n >= 1024 ? Math.round(n / 1024) + " KB" : n + " B";
+
+// ---- tokens: the same keys the OpenSCAD page uses, so one sign-in covers both ----
+const tokenKey = (o, r) => `openscad:ghtoken:${o}/${r}`.toLowerCase();
+const getTok = (o, r) => store(true, tokenKey(o, r)) || "";
+const setTok = (o, r, t) => { if (t) store(false, tokenKey(o, r), t); };
+const delTok = (o, r) => { try { localStorage.removeItem(tokenKey(o, r)); } catch (e) {} };
+class Need extends Error {}   // GitHub wants a (better) token
+
+function askToken(msg) {
+  return new Promise((resolve) => {
+    const d = $("tokDlg");
+    say($("tokMsg"), msg, "err"); $("tokIn").value = "";
+    d.addEventListener("close", () => { const ok = d.returnValue === "ok"; const t = $("tokIn").value.trim(); $("tokIn").value = ""; resolve(ok ? t : ""); }, { once: true });
+    d.returnValue = ""; d.showModal(); $("tokIn").focus();
+  });
+}
+async function api(path, token, headers) {
+  return fetch("https://api.github.com" + path, { headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", ...(token ? { Authorization: "Bearer " + token } : {}), ...(headers || {}) } });
+}
+function check(r, token, writing) {
+  if (r.ok) return r;
+  if (r.status === 401) throw new Need("GitHub did not accept that token. Check that you copied all of it and that it has not expired.");
+  if (r.status === 403) throw new Need(writing ? "That token is not allowed to write to this repository. It needs access to the repository and Contents: Read and write."
+    : "GitHub refused (it may be limiting requests from this computer, or the token has no access). Paste a token.");
+  if (r.status === 404) throw new Need(token ? "GitHub cannot find that, or the token has no access to this repository."
+    : "GitHub cannot find that. If the repository is private, paste a token.");
+  throw new Error(`GitHub answered ${r.status}.`);
+}
+// Runs fn(token). If GitHub wants a token, asks for one and tries again; a token that works is kept.
+async function authed(o, r, fn, opts = {}) {
+  let t = getTok(o, r);
+  for (let i = 0; i < 3; i++) {
+    try {
+      if (opts.needToken && !t) throw new Need("Uploading to GitHub always needs a token.");
+      const v = await fn(t);
+      if (t) setTok(o, r, t);
+      return v;
+    } catch (e) {
+      if (!(e instanceof Need)) throw e;
+      if (i === 2) throw e;
+      t = await askToken(e.message);
+      if (!t) throw new Error("Cancelled.");
+    }
+  }
+}
+
+// ---- viewer (Z up, like OpenSCAD) ----
+const view = $("view");
+let renderer = null;
+try { renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(devicePixelRatio); view.appendChild(renderer.domElement); }
+catch (e) { $("empty").textContent = "This browser cannot draw 3D, but Download and Upload still work."; }
+THREE.Object3D.DEFAULT_UP.set(0, 0, 1);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0xdfe5ec);
+const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100000); camera.up.set(0, 0, 1);
+const controls = new OrbitControls(camera, renderer ? renderer.domElement : view);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8899aa, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(1, -1.5, 2); scene.add(sun, sun.target);
+let grid = null, axesGroup = null, model = null, wire = false;
+const labelSprites = [], labelCache = new Map();
+// Small X Y Z arrows in the corner that turn with the view (as on the OpenSCAD page).
+const gizmoScene = new THREE.Scene();
+const gizmoCam = new THREE.OrthographicCamera(-2.05, 2.05, 2.05, -2.05, 0.1, 30);
+for (const [name, dir, col] of [["X", [1, 0, 0], 0xc62828], ["Y", [0, 1, 0], 0x2e7d32], ["Z", [0, 0, 1], 0x1565c0]]) {
+  const d = new THREE.Vector3(...dir);
+  gizmoScene.add(new THREE.ArrowHelper(d, new THREE.Vector3(), 1.25, col, 0.38, 0.2));
+  const cv = document.createElement("canvas"); cv.width = 64; cv.height = 64;
+  const x = cv.getContext("2d"); x.font = "400 38px system-ui, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+  x.fillStyle = "#" + col.toString(16).padStart(6, "0"); x.fillText(name, 32, 34);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(cv), depthTest: false, transparent: true }));
+  sp.position.copy(d.multiplyScalar(1.55)); sp.scale.set(0.6, 0.6, 1);
+  gizmoScene.add(sp);
+}
+$("gizmo").checked = store(true, "stl:gizmo") !== "0";
+$("axes").checked = store(true, "stl:axes") !== "0";
+$("axes").onchange = () => { store(false, "stl:axes", $("axes").checked ? "1" : "0"); if (axesGroup) axesGroup.visible = $("axes").checked; draw(); };
+if (renderer) renderer.autoClear = false;
+function draw() {
+  if (!renderer) return;
+  const w = view.clientWidth, h = view.clientHeight;
+  for (const sp of labelSprites) { const k = camera.position.distanceTo(sp.position) * 0.034; sp.scale.set(k * (sp.userData.big ? 2.3 : 1.7), k * 0.9, 1); }
+  renderer.setScissorTest(false); renderer.setViewport(0, 0, w, h); renderer.clear();
+  renderer.render(scene, camera);
+  if ($("gizmo").checked) {
+    const S = Math.min(150, Math.floor(Math.min(w, h) / 3));
+    gizmoCam.position.copy(camera.position).sub(controls.target).normalize().multiplyScalar(8);
+    gizmoCam.up.copy(camera.up); gizmoCam.lookAt(0, 0, 0);
+    renderer.clearDepth(); renderer.setScissorTest(true);
+    renderer.setViewport(w - S - 10, 10, S, S); renderer.setScissor(w - S - 10, 10, S, S);
+    renderer.render(gizmoScene, gizmoCam);
+    renderer.setScissorTest(false);
+  }
+}
+$("gizmo").onchange = () => { store(false, "stl:gizmo", $("gizmo").checked ? "1" : "0"); draw(); };
+controls.addEventListener("change", draw);
+function resize() {
+  if (!renderer) return;
+  const w = view.clientWidth, h = view.clientHeight;
+  if (w && h) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); draw(); }
+}
+new ResizeObserver(resize).observe(view);
+
+function clearModel() {
+  if (model) { model.traverse((o) => { if (o.geometry) o.geometry.dispose(); }); scene.remove(model); model = null; }
+  if (grid) { scene.remove(grid); grid.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) { if (o.material.map && !labelCache.has(o.material.map.userData.key)) o.material.map.dispose(); o.material.dispose(); } }); grid = null; }
+  labelSprites.length = 0;
+  lastBox = null; $("sizepanel").hidden = true; $("ovpanel").hidden = true; $("zoom").hidden = true;
+}
+function setModel(obj, note) {
+  clearModel();
+  model = obj; scene.add(obj);
+  const box = new THREE.Box3().setFromObject(obj), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  const big = Math.max(size.x, size.y, size.z, 1);
+  const dist = big * 2.4;
+  camera.position.set(c.x + dist * 0.6, c.y - dist * 0.8, c.z + dist * 0.55);
+  camera.near = dist / 1000; camera.far = dist * 100; camera.updateProjectionMatrix();
+  controls.target.copy(c); controls.update();
+  lastBox = box; unitNote = note || "";
+  applyWire(); updateSize(); resize(); draw();
+  return { size, tris: countTris(obj) };
+}
+let lastBox = null, unitNote = "";
+function labelTexture(text, color) {
+  const key = text + color;
+  if (labelCache.has(key)) return labelCache.get(key);
+  const cv = document.createElement("canvas"); cv.width = 128; cv.height = 64;
+  const x = cv.getContext("2d"); x.font = "300 30px system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif"; x.textAlign = "center"; x.textBaseline = "middle";
+  x.fillStyle = color; x.fillText(text, 64, 32);
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace; tex.userData.key = key;
+  labelCache.set(key, tex);
+  return tex;
+}
+function niceStep(range) {
+  const raw = range / 7, pow = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / pow;
+  return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * pow;
+}
+// A plain floor grid, and the X, Y and Z axes through the origin with a few numbered ticks
+// (about seven an axis, at 1, 2, 5, 10 ... of the chosen unit), as on the OpenSCAD page.
+function buildGrid() {
+  if (grid) { scene.remove(grid); grid.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }); grid = null; }
+  labelSprites.length = 0;
+  if (!lastBox) return;
+  const u = unit(), f = PER_MM[u], b = lastBox, sz = b.getSize(new THREE.Vector3());
+  const span = Math.max(sz.x, sz.y, sz.z, 1), stepU = niceStep(span * f), step = stepU / f, z = b.min.z, tick = span * 0.012;
+  grid = new THREE.Group();
+  // floor grid, lines at the same spacing, just around the model
+  const gx0 = Math.floor(b.min.x / step) * step - step, gx1 = Math.ceil(b.max.x / step) * step + step;
+  const gy0 = Math.floor(b.min.y / step) * step - step, gy1 = Math.ceil(b.max.y / step) * step + step;
+  const pts = [];
+  for (let x = gx0; x <= gx1 + step / 1000; x += step) pts.push(new THREE.Vector3(x, gy0, z), new THREE.Vector3(x, gy1, z));
+  for (let y = gy0; y <= gy1 + step / 1000; y += step) pts.push(new THREE.Vector3(gx0, y, z), new THREE.Vector3(gx1, y, z));
+  grid.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xc9d1da })));
+  // the axes
+  const colors = { x: "#c62828", y: "#2e7d32", z: "#1565c0" };
+  const ext = { x: [Math.min(0, b.min.x), Math.max(0, b.max.x)], y: [Math.min(0, b.min.y), Math.max(0, b.max.y)], z: [Math.min(0, b.min.z), Math.max(0, b.max.z)] };
+  const dec = stepU >= 1 ? 0 : Math.min(4, Math.ceil(-Math.log10(stepU)));
+  const axg = new THREE.Group(); axg.visible = $("axes").checked; axesGroup = axg; grid.add(axg);
+  for (const ax of ["x", "y", "z"]) {
+    const [lo, hi] = ext[ax];
+    const first = lo < 0 ? (Math.ceil(lo / step - 1e-9) - 1) * step : 0, last = (Math.floor(hi / step + 1e-9) + 1) * step;   // always one mark past the model
+    const at = (t) => ax === "x" ? new THREE.Vector3(t, 0, 0) : ax === "y" ? new THREE.Vector3(0, t, 0) : new THREE.Vector3(0, 0, t);
+    const off = ax === "x" ? new THREE.Vector3(0, tick, 0) : new THREE.Vector3(tick, 0, 0);
+    const mat = new THREE.LineBasicMaterial({ color: new THREE.Color(colors[ax]), depthTest: false });
+    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([at(first), at(last + step * 0.35)]), mat); line.renderOrder = 5; axg.add(line);
+    const tp = [];
+    for (let t = first; t <= last + 1e-9; t += step) tp.push(at(t), at(t).add(off));
+    const ticks = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(tp), mat); ticks.renderOrder = 5; axg.add(ticks);
+    const sprite = (text, pos, cx, cy, big) => {
+      const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: labelTexture(text, colors[ax]), depthTest: false, transparent: true }));
+      sp.position.copy(pos); sp.center.set(cx, cy); sp.renderOrder = 6; sp.userData.big = big; axg.add(sp); labelSprites.push(sp);
+    };
+    for (let t = first; t <= last + 1e-9; t += step) sprite((Math.abs(t) < step / 1000 ? 0 : t * f).toFixed(dec), at(t), ax === "z" ? 1.15 : 0.5, ax === "z" ? 0.5 : 1.2);
+    sprite(`${ax.toUpperCase()} (${UNIT_NAME[u]})`, at(last + step * 0.6), 0.5, 0.5, true);
+  }
+  scene.add(grid);
+}
+// ---- zoom, fit, and looking from below ----
+function fitView(keepAngle, dirOverride) {
+  if (!model) return;
+  const sph = new THREE.Box3().setFromObject(model).getBoundingSphere(new THREE.Sphere()), r = Math.max(sph.radius, 0.5);
+  const dir = dirOverride ? dirOverride.clone().normalize() : keepAngle ? camera.position.clone().sub(controls.target).normalize() : new THREE.Vector3(0.9, -1.3, 0.9).normalize();
+  const half = Math.atan(Math.tan(camera.fov * Math.PI / 360) * Math.min(1, camera.aspect));
+  const dist = r / Math.sin(half) * 1.3;
+  controls.target.copy(sph.center);
+  camera.position.copy(sph.center).add(dir.multiplyScalar(dist));
+  camera.near = r / 100; camera.far = dist + r * 100; camera.updateProjectionMatrix();
+  controls.update(); draw();
+}
+function zoomBy(k) { const off = camera.position.clone().sub(controls.target).multiplyScalar(k); camera.position.copy(controls.target).add(off); controls.update(); draw(); }
+$("zin").onclick = () => zoomBy(1 / 1.3);
+$("zout").onclick = () => zoomBy(1.3);
+$("zfit").onclick = () => fitView(true);
+$("zunder").onclick = () => fitView(false, new THREE.Vector3(0.25, -0.35, -1));
+// ---- size panel: the model is measured in millimeters (a file with no units is taken as mm) ----
+const PER_MM = { mm: 1, cm: 0.1, in: 1 / 25.4 }, UNIT_NAME = { mm: "mm", cm: "cm", in: "in" }, DIGITS = { mm: 2, cm: 3, in: 3 };
+$("unit").value = store(true, "stl:unit") || "mm"; if (!PER_MM[$("unit").value]) $("unit").value = "mm";
+const unit = () => $("unit").value;
+const numTxt = (v, u) => String(Number((Math.abs(v) < 5e-5 ? 0 : v).toFixed(DIGITS[u]))) + " " + UNIT_NAME[u];
+function updateSize() {
+  const el = $("sizepanel"); el.hidden = !lastBox;
+  if (!lastBox) return;
+  const sz = lastBox.getSize(new THREE.Vector3()), u = unit(), f = PER_MM[u];
+  $("szx").textContent = numTxt(sz.x * f, u); $("szy").textContent = numTxt(sz.y * f, u); $("szz").textContent = numTxt(sz.z * f, u);
+  $("sizenote").textContent = unitNote;
+  buildGrid();
+  applyOverhang(true);
+}
+$("unit").onchange = () => { store(false, "stl:unit", unit()); updateSize(); };
+
+// ---- overhangs: faces that point down more steeply than the angle need support when printed ----
+const RED = new THREE.Color(0xe5383b), YELLOW = new THREE.Color(0xf2b134), SLACK = 0.01;   // SLACK: a face exactly at the limit (a 45 degree ramp) is not flagged
+const limitDeg = () => Math.min(89, Math.max(1, Number($("ovhAngle").value) || 45));
+function applyOverhang(infoOnly) {
+  const panel = $("ovpanel"); panel.hidden = !model; $("zoom").hidden = !model;
+  if (!model) return;
+  const on = $("ovh").checked, deg = limitDeg(), info = $("ovInfo");
+  if (!on) {
+    info.textContent = "Turn on to see which faces need support when printed.";
+    if (!infoOnly) model.traverse((o) => {
+      if (!o.isMesh) return;
+      [].concat(o.material).forEach((m) => { const k = m.userData.orig; if (k) { m.vertexColors = k.vc; m.color.copy(k.color); m.needsUpdate = true; } });
+      const oc = o.geometry.userData.origColor; if (oc) o.geometry.setAttribute("color", oc); else if (o.geometry.userData.madeColor) o.geometry.deleteAttribute("color");
+    });
+    draw(); return;
+  }
+  model.updateMatrixWorld(true);
+  const lo = new THREE.Box3().setFromObject(model).min.z, lim = -(Math.sin(deg * Math.PI / 180) + SLACK);
+  let over = 0, total = 0;
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), n = new THREE.Vector3(), e1 = new THREE.Vector3(), e2 = new THREE.Vector3();
+  model.traverse((o) => {
+    if (!o.isMesh) return;
+    let g = o.geometry;
+    if (g.index) { const old = g; g = old.toNonIndexed(); g.userData = { ...old.userData }; o.geometry = g; old.dispose(); }   // one color per triangle needs its own corners
+    if (g.attributes.color && !g.userData.origColor) g.userData.origColor = g.attributes.color; else if (!g.attributes.color) g.userData.madeColor = true;
+    const pos = g.attributes.position, tris = pos.count / 3, col = new Float32Array(pos.count * 3);
+    for (let t = 0; t < tris; t++) {
+      a.fromBufferAttribute(pos, 3 * t).applyMatrix4(o.matrixWorld); b.fromBufferAttribute(pos, 3 * t + 1).applyMatrix4(o.matrixWorld); c.fromBufferAttribute(pos, 3 * t + 2).applyMatrix4(o.matrixWorld);
+      n.crossVectors(e1.subVectors(b, a), e2.subVectors(c, a));
+      const area = n.length() / 2; if (area > 0) n.normalize();
+      total += area;
+      const bad = Math.max(a.z, b.z, c.z) > lo + 0.01 && n.z < lim;   // not just sitting on the bed
+      if (bad) over += area;
+      const k = bad ? RED : YELLOW;
+      for (let v = 0; v < 3; v++) { col[(3 * t + v) * 3] = k.r; col[(3 * t + v) * 3 + 1] = k.g; col[(3 * t + v) * 3 + 2] = k.b; }
+    }
+    g.setAttribute("color", new THREE.BufferAttribute(col, 3));
+    [].concat(o.material).forEach((m) => { if (!m.userData.orig) m.userData.orig = { vc: m.vertexColors, color: m.color.clone() }; m.vertexColors = true; m.color.set(0xffffff); m.needsUpdate = true; });
+  });
+  const u = unit(), f2 = PER_MM[u] ** 2, pct = total ? over / total * 100 : 0;
+  info.replaceChildren();
+  if (over < 1e-9) info.textContent = `No face is steeper than ${deg}\u00b0: nothing needs support.`;
+  else { info.append(document.createElement("i"), `Red: ${pct.toFixed(1)}% of the surface (${Number((over * f2).toFixed({ mm: 0, cm: 2, in: 3 }[u]))} ${UNIT_NAME[u]}\u00b2) needs support.`); }
+  draw();
+}
+$("ovh").onchange = () => applyOverhang();
+$("ovhAngle").onchange = () => applyOverhang();
+
+function countTris(obj) { let n = 0; obj.traverse((o) => { if (o.geometry) { const g = o.geometry; n += (g.index ? g.index.count : g.attributes.position.count) / 3; } }); return Math.round(n); }
+function applyWire() { if (model) model.traverse((o) => { if (o.material) [].concat(o.material).forEach((m) => { m.wireframe = wire; }); }); draw(); }
+const mat = () => new THREE.MeshStandardMaterial({ color: 0xf2b134, roughness: 0.55, metalness: 0.05 });
+// A 3MF file says what its numbers mean (default millimeter); the loader reads that but does not apply it.
+const MM_PER = { micron: 0.001, millimeter: 1, centimeter: 10, inch: 25.4, foot: 304.8, meter: 1000 };
+function threeMfUnit(buf) {
+  try {
+    const files = unzipSync(new Uint8Array(buf), { filter: (f) => /\.model$/i.test(f.name) });
+    for (const name of Object.keys(files)) {
+      const m = strFromU8(files[name]).match(/<model\b[^>]*\bunit\s*=\s*["']([a-z]+)["']/i);
+      if (m && MM_PER[m[1].toLowerCase()]) return { k: MM_PER[m[1].toLowerCase()], name: m[1].toLowerCase() };
+    }
+  } catch (e) {}
+  return { k: 1, name: "millimeter" };
+}
+function meshFromStl(buf) {
+  let g = new STLLoader().parse(buf);
+  g = toCreasedNormals(g, 0.6);
+  return new THREE.Mesh(g, mat());
+}
+
+// ---- the repository ----
+let ctx = null;      // { owner, repo, ref, files: [{path, size}], branch info }
+let current = null;  // { path, buf, text }
+let objectUrl = null;
+
+function parseInput(text) {
+  let t = (text || "").trim().replace(/^https?:\/\//i, "").replace(/^(www\.)?github\.com\//i, "").replace(/^\/+/, "");
+  const p = t.split("?")[0].split("#")[0].split("/").filter(Boolean).map((x) => { try { return decodeURIComponent(x); } catch (e) { return x; } });
+  if (p.length < 2) return null;
+  const rest = p.slice(2);
+  if ((rest[0] === "tree" || rest[0] === "blob") && rest.length > 1) rest.shift();
+  return { owner: p[0], repo: p[1].replace(/\.git$/, ""), rest };
+}
+const blobUrl = (c, path) => `https://github.com/${c.owner}/${c.repo}/blob/${encodeURIComponent(c.ref)}/${encPath(path)}`;
+
+async function fetchTree(owner, repo, ref, token) {
+  const r = await api(`/repos/${owner}/${repo}/git/trees/${encodeURIComponent(ref)}?recursive=1`, token);
+  if (r.status === 404) return null;   // no such branch (the repository itself was already checked)
+  check(r, token);
+  return r.json();
+}
+// Opens a repository: the first branch guess that exists wins. Returns { path } if the address named a file.
+async function openRepo(owner, repo, rest) {
+  say($("repoMsg"), "Looking...");
+  const info = await authed(owner, repo, async (t) => (await check(await api(`/repos/${owner}/${repo}`, t), t)).json());
+  const dflt = info.default_branch, token = getTok(owner, repo);
+  const wantFile = EXT.test(rest[rest.length - 1] || "");
+  const tries = [];
+  if (wantFile) {
+    if (rest.length >= 2) tries.push({ ref: rest[0], path: rest.slice(1).join("/") });
+    tries.push({ ref: "main", path: rest.join("/") });
+    if (dflt !== "main") tries.push({ ref: dflt, path: rest.join("/") });
+  } else if (rest.length) { tries.push({ ref: rest[0], dir: rest.slice(1).join("/") }, { ref: dflt, dir: rest.join("/") }); }
+  else tries.push({ ref: dflt, dir: "" });
+  for (const t of tries) {
+    const data = await fetchTree(owner, repo, t.ref, token || "");
+    if (!data) continue;
+    const files = (data.tree || []).filter((x) => x.type === "blob" && EXT.test(x.path)).map((x) => ({ path: x.path, size: x.size || 0 })).sort((a, b) => a.path.localeCompare(b.path));
+    if (wantFile && !files.some((f) => f.path === t.path)) continue;
+    ctx = { owner, repo, ref: t.ref, files, dflt, truncated: !!data.truncated };
+    $("repo").value = `${owner}/${repo}/${t.ref}`;
+    store(false, "stl:last", $("repo").value);
+    ctx.dir = t.dir ? t.dir.replace(/\/$/, "") : "";
+    renderFiles(mode === "all" && ctx.dir ? ctx.dir + "/" : "");
+    $("upBtn").disabled = false; $("forget").hidden = !getTok(owner, repo);
+    say($("repoMsg"), `${files.length} file${files.length === 1 ? "" : "s"} on branch ${t.ref}.` + (ctx.truncated ? " GitHub says this repository is too big to list completely." : ""));
+    if (!wantFile) setRoute(ctx.dir);
+    return t;
+  }
+  throw new Error(wantFile ? "That file is not in this repository." : "That branch is not in this repository.");
+}
+function setRoute(path) {
+  if (!ctx || ctx.ref.includes("/")) return;
+  try { history.replaceState(null, "", `/stl/${[ctx.owner, ctx.repo, ctx.ref].map(encodeURIComponent).join("/")}` + (path ? "/" + encPath(path) : "")); } catch (e) {}
+}
+
+let mode = store(true, "stl:mode") === "all" ? "all" : "folders";
+const note = (box, t) => box.append(Object.assign(document.createElement("div"), { className: "note", textContent: t }));
+function fileButton(x, withDir) {
+  const b = document.createElement("button"), i = x.path.lastIndexOf("/");
+  b.className = current && !current.local && current.path === x.path ? "on" : "";
+  const ext = x.path.slice(x.path.lastIndexOf(".") + 1).toLowerCase();
+  b.append(Object.assign(document.createElement("span"), { className: "tag", textContent: ext }));
+  b.append(Object.assign(document.createElement("span"), { className: "nm", textContent: x.path.slice(i + 1) }));
+  if (withDir) b.append(Object.assign(document.createElement("span"), { className: "dir", textContent: i >= 0 ? x.path.slice(0, i) : "" }));
+  b.append(Object.assign(document.createElement("span"), { className: "sz", textContent: human(x.size) }));
+  b.title = x.path;
+  b.onclick = () => openFile(x.path);
+  return b;
+}
+// One folder at a time: the folders that hold 3D files, then the files in this folder.
+function renderFolder(box) {
+  const dir = ctx.dir || "", pre = dir ? dir + "/" : "", parts = dir ? dir.split("/") : [];
+  const go = (d) => { ctx.dir = d; setRoute(d); renderFiles(); };
+  const crumbs = document.createElement("div"); crumbs.className = "crumbs";
+  const mk = (label, d) => { const b = Object.assign(document.createElement("button"), { textContent: label, title: d || "top of the repository" }); b.onclick = () => go(d); return b; };
+  crumbs.append(mk(ctx.repo, ""));
+  parts.forEach((p, i) => crumbs.append(Object.assign(document.createElement("span"), { textContent: "/" }), mk(p, parts.slice(0, i + 1).join("/"))));
+  box.append(crumbs);
+  const dirs = new Map(), here = [];
+  for (const x of ctx.files) {
+    if (!x.path.startsWith(pre)) continue;
+    const rest = x.path.slice(pre.length), k = rest.indexOf("/");
+    if (k < 0) here.push(x); else dirs.set(rest.slice(0, k), (dirs.get(rest.slice(0, k)) || 0) + 1);
+  }
+  for (const [name, n] of [...dirs].sort((a, b) => a[0].localeCompare(b[0]))) {
+    const b = document.createElement("button");
+    b.append(Object.assign(document.createElement("span"), { className: "tag d", textContent: "folder" }), Object.assign(document.createElement("span"), { className: "nm", textContent: name + "/" }), Object.assign(document.createElement("span"), { className: "dir", textContent: "" }), Object.assign(document.createElement("span"), { className: "sz", textContent: `${n} file${n === 1 ? "" : "s"}` }));
+    b.onclick = () => go(pre + name);
+    box.append(b);
+  }
+  for (const x of here) box.append(fileButton(x, false));
+  if (!dirs.size && !here.length) note(box, ctx.files.length ? "No 3D files in this folder." : "No .stl, .3mf or .scad files here yet. Use Upload to add some.");
+}
+function renderFiles(filterText) {
+  const box = $("files"), f = $("filter");
+  f.hidden = false; $("modeRow").hidden = false;
+  if (filterText !== undefined) f.value = filterText;
+  $("mFolders").classList.toggle("on", mode === "folders"); $("mAll").classList.toggle("on", mode === "all");
+  const q = f.value.trim().toLowerCase();
+  box.replaceChildren();
+  if (mode === "folders" && !q) { renderFolder(box); return; }   // typing in the search box looks through every folder
+  const rows = ctx.files.filter((x) => !q || x.path.toLowerCase().includes(q));
+  if (!rows.length) { note(box, ctx.files.length ? "No file matches the search." : "No .stl, .3mf or .scad files here yet. Use Upload to add some."); return; }
+  for (const x of rows.slice(0, 500)) box.append(fileButton(x, true));
+  if (rows.length > 500) note(box, `Showing the first 500 of ${rows.length}. Use the search box.`);
+}
+$("mFolders").onclick = () => { mode = "folders"; store(false, "stl:mode", mode); if (ctx) renderFiles(""); };
+$("mAll").onclick = () => { mode = "all"; store(false, "stl:mode", mode); if (ctx) renderFiles(""); };
+$("filter").addEventListener("input", () => renderFiles());
+
+async function openFile(path, sha, when) {
+  if (!ctx) return;
+  const { owner, repo } = ctx, ref = sha || ctx.ref;
+  status(`Opening ${path}...`);
+  let buf;
+  try {
+    buf = await authed(owner, repo, async (t) => {
+      const r = t ? await api(`/repos/${owner}/${repo}/contents/${encPath(path)}?ref=${encodeURIComponent(ref)}`, t, { Accept: "application/vnd.github.raw+json" })
+                  : await fetch(`https://raw.githubusercontent.com/${owner}/${repo}/${encodeURIComponent(ref)}/${encPath(path)}`);
+      check(r, t);
+      return r.arrayBuffer();
+    });
+  } catch (e) { status(e.message); say($("repoMsg"), e.message, "err"); return; }
+  showFile(path, buf, { sha, when });
+}
+// Shows a file's bytes: from GitHub, or (local) from this computer, which is never sent anywhere.
+function showFile(path, buf, o = {}) {
+  const { sha, when, local, file, drive } = o, ref = sha || (ctx && ctx.ref), owner = ctx && ctx.owner, repo = ctx && ctx.repo;
+  const ext = path.slice(path.lastIndexOf(".") + 1).toLowerCase();
+  current = { path, buf, sha, local: !!local, driveId: drive ? drive.id : null };
+  $("empty").hidden = true;
+  stopRender();
+  $("scad").hidden = true;
+  const bar = $("bar"); bar.replaceChildren(Object.assign(document.createElement("b"), { textContent: path.split("/").pop() }));
+  if (sha || o.old) bar.append(Object.assign(document.createElement("span"), { textContent: o.old || `(older version ${sha.slice(0, 7)}, ${when})`, style: "color:#7a5b00;font-weight:600" }));
+  if (local) bar.append(Object.assign(document.createElement("span"), { textContent: "(from your computer)", style: "color:#7a5b00;font-weight:600" }));
+  const add = (el) => bar.append(el), span = (t) => Object.assign(document.createElement("span"), { textContent: t });
+  try {
+    if (ext === "scad") {
+      clearModel(); draw();
+      const code = new TextDecoder().decode(buf);
+      $("scad").textContent = code;
+      const info = span("Rendering..."), slot = span(""), tg = Object.assign(document.createElement("button"), { className: "secondary", textContent: "Show code", disabled: true });
+      add(info); add(tg); add(slot);
+      renderScad(code, path, info, tg, slot);
+      if (!local && !drive) add(Object.assign(document.createElement("a"), { className: "btn", href: `/openscad/${[owner, repo, ref].map(encodeURIComponent).join("/")}/${encPath(path)}`, textContent: sha ? "Open this version in OpenSCAD" : "Open in OpenSCAD" }));
+    } else {
+      let obj, note = "STL files have no units, so the numbers are taken as millimeters.";
+      if (ext === "stl") obj = meshFromStl(buf);
+      else {
+        obj = new ThreeMFLoader().parse(buf);
+        const u = threeMfUnit(buf);
+        obj.scale.multiplyScalar(u.k); obj.updateMatrixWorld(true);
+        note = u.name === "millimeter" ? "This 3MF file is in millimeters." : `This 3MF file is in ${u.name}s, converted here.`;
+      }
+      const { tris } = setModel(obj, note);
+      add(span(`${tris.toLocaleString()} triangles`));
+      add(span(human(buf.byteLength)));
+      const lab = document.createElement("label"), cb = Object.assign(document.createElement("input"), { type: "checkbox", checked: wire });
+      cb.onchange = () => { wire = cb.checked; applyWire(); };
+      lab.append(cb, " Wireframe"); add(lab);
+    }
+  } catch (e) {
+    $("scad").hidden = false; clearModel(); draw();
+    $("scad").textContent = "This file could not be previewed: " + e.message;
+  }
+  bar.append(Object.assign(document.createElement("span"), { className: "sp" }));
+  const dl = Object.assign(document.createElement("button"), { className: "secondary", textContent: ext === "scad" ? "Download .scad" : "Download" });
+  dl.onclick = () => {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = URL.createObjectURL(new Blob([buf]));
+    const a = Object.assign(document.createElement("a"), { href: objectUrl, download: path.split("/").pop() }); a.click();
+  };
+  add(dl);
+  if (local) {
+    if (canUpload()) { const up = Object.assign(document.createElement("button"), { textContent: source === "drive" ? "Upload to Drive..." : "Upload to GitHub..." }); up.onclick = () => startUpload([file]); add(up); }
+    status(`Previewing ${path} from your computer`);
+    renderLocal();
+    return;
+  }
+  if (drive) {
+    add(Object.assign(document.createElement("a"), { className: "btn secondary", href: `https://drive.google.com/file/d/${drive.id}/view`, target: "_blank", rel: "noopener", textContent: "In Drive" }));
+    const hd = Object.assign(document.createElement("button"), { className: "secondary", textContent: "History" });
+    hd.onclick = () => showDriveHistory(drive);
+    add(hd);
+    status(`Opened ${path} from Google Drive` + (o.old ? " (older version)" : ""));
+    renderDrive();
+    return;
+  }
+  add(Object.assign(document.createElement("a"), { className: "btn secondary", href: blobUrl({ ...ctx, ref }, path), target: "_blank", rel: "noopener", textContent: "On GitHub" }));
+  const hb = Object.assign(document.createElement("button"), { className: "secondary", textContent: "History" });
+  hb.onclick = () => showHistory(path);
+  add(hb);
+  status(`Opened ${path}` + (sha ? ` (version ${sha.slice(0, 7)})` : ""));
+  if (!sha) setRoute(path);
+  ctx.dir = path.includes("/") ? path.slice(0, path.lastIndexOf("/")) : "";
+  renderLocal(); renderFiles();
+}
+
+// ---- files from this computer (dragged in, or picked): previewed here, never sent anywhere ----
+let local = [];
+function renderLocal() {
+  const box = $("localBox"), list = $("localList");
+  box.hidden = !local.length; $("localUp").hidden = !(canUpload() && local.length); $("localUp").textContent = source === "drive" ? "Upload to Drive..." : "Upload to GitHub...";
+  list.replaceChildren();
+  for (const l of local) {
+    const b = document.createElement("button"), ext = l.name.slice(l.name.lastIndexOf(".") + 1).toLowerCase();
+    b.className = current && current.local && current.path === l.name ? "on" : "";
+    b.append(Object.assign(document.createElement("span"), { className: "tag", textContent: ext }), Object.assign(document.createElement("span"), { className: "nm", textContent: l.name }), Object.assign(document.createElement("span"), { className: "sz", textContent: human(l.size) }));
+    b.onclick = () => previewLocal(l);
+    list.append(b);
+  }
+}
+async function previewLocal(l) {
+  status(`Reading ${l.name}...`);
+  try { showFile(l.name, await l.file.arrayBuffer(), { local: true, file: l.file }); }
+  catch (e) { status("Could not read that file."); }
+}
+function takeFiles(files) {
+  const ok = [...files].filter((f) => EXT.test(f.name));
+  if (!ok.length) { status("Only .stl, .3mf and .scad files can be previewed."); say($("repoMsg"), "Only .stl, .3mf and .scad files can be previewed here.", "err"); return; }
+  local = ok.map((f) => ({ name: f.name, size: f.size, file: f }));
+  renderLocal(); previewLocal(local[0]);
+}
+$("localBtn").onclick = () => $("localPick").click();
+$("localPick").onchange = (e) => { if (e.target.files.length) takeFiles(e.target.files); e.target.value = ""; };
+$("localClear").onclick = () => { local = []; renderLocal(); };
+$("localUp").onclick = () => startUpload(local.map((l) => l.file));
+
+// ---- .scad files are rendered by the real OpenSCAD engine from the OpenSCAD page (same site) ----
+let scadWorker = null, job = 0;
+function stopRender() { if (scadWorker) { scadWorker.terminate(); scadWorker = null; } job++; }
+function renderScad(code, path, info, tg, slot) {
+  stopRender();
+  const my = job, pre = $("scad"), empty = $("empty");
+  let done = false;
+  const showCode = (on, head) => { pre.textContent = (head ? head + "\n\n---- the code ----\n" : "") + code; pre.hidden = !on; tg.textContent = on ? "Show model" : "Show code"; };
+  const fail = (text) => { if (done) return; done = true; stopRender(); empty.hidden = true; info.textContent = "Could not render this file"; showCode(true, text); tg.disabled = true; };
+  empty.hidden = false; empty.textContent = "Rendering with OpenSCAD...";
+  tg.onclick = () => showCode(pre.hidden);
+  let w;
+  try { w = scadWorker = new Worker("/openscad/worker.js", { type: "module" }); } catch (e) { return fail("This browser could not start the OpenSCAD engine."); }
+  const timer = setTimeout(() => { if (job === my) fail("Rendering took more than a minute and was stopped. Open the file in OpenSCAD to work on it."); }, 60000);
+  w.onerror = () => { clearTimeout(timer); if (job === my) fail("The OpenSCAD engine failed to load."); };
+  w.onmessage = (e) => {
+    clearTimeout(timer);
+    if (job !== my) return;
+    w.terminate(); scadWorker = null; done = true;
+    if (!e.data.ok) { done = false; return fail((e.data.log || []).join("\n") || "OpenSCAD made no model from this file."); }
+    empty.hidden = true;
+    const { tris } = setModel(meshFromStl(e.data.stl), "OpenSCAD works in millimeters.");
+    info.textContent = `${tris.toLocaleString()} triangles (rendered by OpenSCAD)`;
+    tg.disabled = false; showCode(false);
+    const dl = Object.assign(document.createElement("button"), { className: "secondary", textContent: "Download STL" });
+    dl.onclick = () => { const u = URL.createObjectURL(new Blob([e.data.stl])); Object.assign(document.createElement("a"), { href: u, download: path.split("/").pop().replace(/\.scad$/i, "") + ".stl" }).click(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
+    slot.append(dl);
+  };
+  w.postMessage({ code });
+}
+
+// ---- history: the commits that changed one file ----
+$("histClose").onclick = () => $("histDlg").close();
+async function showHistory(path) {
+  const { owner, repo, ref } = ctx, msgEl = $("histMsg"), list = $("histList");
+  list.replaceChildren(); $("histFile").textContent = `${owner}/${repo}/${path} (${ref})`;
+  say(msgEl, "Looking..."); $("histDlg").showModal();
+  try {
+    const commits = await authed(owner, repo, async (t) => (await check(await api(`/repos/${owner}/${repo}/commits?sha=${encodeURIComponent(ref)}&path=${encodeURIComponent(path)}&per_page=50`, t), t)).json());
+    if (!commits.length) return say(msgEl, "No commits found for this file.");
+    say(msgEl, `${commits.length}${commits.length === 50 ? " most recent" : ""} commit${commits.length === 1 ? "" : "s"} that changed this file.`);
+    for (const c of commits) {
+      const when = new Date(c.commit.author.date), lines = c.commit.message.split("\n"), who = c.commit.author.name || (c.author && c.author.login) || "";
+      const day = when.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+      const row = document.createElement("div"); row.className = "hrow";
+      const acts = document.createElement("div"); acts.className = "acts";
+      const pv = Object.assign(document.createElement("button"), { className: "secondary", textContent: "Preview" });
+      pv.onclick = () => { $("histDlg").close(); openFile(path, c.sha, day); };
+      acts.append(pv, Object.assign(document.createElement("a"), { className: "btn secondary", href: c.html_url, target: "_blank", rel: "noopener", textContent: "On GitHub" }));
+      row.append(Object.assign(document.createElement("b"), { textContent: lines[0] || "(no note)", title: c.commit.message }),
+        Object.assign(document.createElement("div"), { className: "meta", textContent: `${day} ${when.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} \u00b7 ${who} \u00b7 ${c.sha.slice(0, 7)}` }), acts);
+      list.append(row);
+    }
+  } catch (e) { say(msgEl, e.message, "err"); }
+}
+
+// ---- repository box, token ----
+async function goRepo(text, quiet) {
+  const p = parseInput(text);
+  if (!p) return say($("repoMsg"), "Type a repository like owner/repo, optionally followed by /branch and a file.", "err");
+  try {
+    const t = await openRepo(p.owner, p.repo, p.rest);
+    if (t.path) await openFile(t.path);
+  } catch (e) { say($("repoMsg"), e.message, "err"); status(e.message); }
+}
+$("go").onclick = () => goRepo($("repo").value);
+$("repo").addEventListener("keydown", (e) => { if (e.key === "Enter") goRepo($("repo").value); });
+$("forget").onclick = () => { if (!ctx) return; delTok(ctx.owner, ctx.repo); $("forget").hidden = true; say($("repoMsg"), `Forgot the saved token for ${ctx.owner}/${ctx.repo}.`); };
+
+// ---- upload ----
+let pending = [];
+const cleanFile = (n) => n.replace(/[^\w .()+-]+/g, "_").trim();
+const b64 = (f) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.slice(r.result.indexOf(",") + 1)); r.onerror = rej; r.readAsDataURL(f); });
+function startUpload(files) {
+  if (!canUpload()) { say($("repoMsg"), source === "drive" ? "Open one of your Google Drive folders first, then upload." : "Open a repository first, then upload.", "err"); return; }
+  const ok = [...files].filter((f) => EXT.test(f.name));
+  const skipped = files.length - ok.length;
+  if (!ok.length) { say($("repoMsg"), "Only .stl, .3mf and .scad files can be uploaded here.", "err"); return; }
+  pending = ok;
+  const dr = source === "drive";
+  $("upDir").closest("label").hidden = dr;
+  const dir = dr ? "" : current && current.path.includes("/") ? current.path.slice(0, current.path.lastIndexOf("/")) : (store(true, `stl:dir:${ctx.owner}/${ctx.repo}`) || "");
+  $("upDir").value = dir;
+  $("upMsg").value = ok.length === 1 ? `Add ${cleanFile(ok[0].name)}` : `Add ${ok.length} 3D files`;
+  $("upMsg").closest("label").hidden = dr;
+  $("upWhere").textContent = (dr ? `Into the Google Drive folder "${dctx.name}".` : `Into ${ctx.owner}/${ctx.repo}, branch ${ctx.ref}.`) + (skipped ? ` ${skipped} file${skipped === 1 ? " was" : "s were"} left out because of the file type.` : "");
+  const list = $("upList"); list.replaceChildren();
+  ok.forEach((f, i) => {
+    const row = document.createElement("div"); row.id = "up" + i;
+    const exists = dr ? dctx.items.some((x) => x.name === cleanFile(f.name)) : ctx.files.some((x) => x.path.split("/").pop() === cleanFile(f.name));
+    row.append(cleanFile(f.name), Object.assign(document.createElement("span"), { className: "s", textContent: f.size > MAX_UPLOAD ? "too big (over 50 MB)" : human(f.size) + (exists ? " (a file with this name exists)" : "") }));
+    if (f.size > MAX_UPLOAD) row.className = "bad";
+    list.append(row);
+  });
+  say($("upOut"), ""); $("upGo").disabled = false;
+  $("upDlg").showModal();
+}
+$("upBtn").onclick = () => $("pick").click();
+$("pick").onchange = (e) => { if (e.target.files.length) startUpload(e.target.files); e.target.value = ""; };
+$("upCancel").onclick = () => $("upDlg").close();
+$("upGo").onclick = async () => {
+  if (source === "drive") return driveUpload();
+  const dir = $("upDir").value.trim().replace(/^\/+|\/+$/g, ""), msg = $("upMsg").value.trim() || "Add 3D files";
+  const { owner, repo, ref } = ctx;
+  $("upGo").disabled = true; let done = 0, last = null;
+  for (let i = 0; i < pending.length; i++) {
+    const f = pending[i], row = $("up" + i), s = row.querySelector(".s"), name = cleanFile(f.name), path = (dir ? dir + "/" : "") + name;
+    if (f.size > MAX_UPLOAD) continue;
+    s.textContent = "Uploading..."; row.className = "";
+    try {
+      const content = await b64(f);
+      const res = await authed(owner, repo, async (t) => {
+        const api2 = `/repos/${owner}/${repo}/contents/${encPath(path)}`;
+        let sha;
+        const cur = await api(`${api2}?ref=${encodeURIComponent(ref)}`, t);
+        if (cur.ok) { const j = await cur.json(); sha = j.sha; } else if (cur.status !== 404) check(cur, t);
+        const body = { message: msg, content, branch: ref }; if (sha) body.sha = sha;
+        const put = await fetch("https://api.github.com" + api2, { method: "PUT", headers: { Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", Authorization: "Bearer " + t, "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        if (put.status === 409 || put.status === 422) throw new Error("The file changed on GitHub meanwhile, or the branch is protected.");
+        check(put, t, true);
+        return { replaced: !!sha };
+      }, { needToken: true });
+      s.textContent = res.replaced ? "Replaced" : "Added"; row.className = "good"; done++; last = path;
+    } catch (e) { s.textContent = e.message; row.className = "bad"; }
+  }
+  $("upGo").disabled = false;
+  if (done) {
+    store(false, `stl:dir:${owner}/${repo}`, dir);
+    say($("upOut"), `${done} file${done === 1 ? "" : "s"} uploaded.`, "ok");
+    try { await openRepo(owner, repo, [ref]); renderFiles(); $("forget").hidden = !getTok(owner, repo); if (last) { $("upDlg").close(); await openFile(last); } } catch (e) {}
+  } else say($("upOut"), "Nothing was uploaded.", "err");
+};
+// dropping files anywhere
+let dragDepth = 0;
+addEventListener("dragenter", (e) => { if (e.dataTransfer && [...e.dataTransfer.types].includes("Files")) { dragDepth++; document.body.classList.add("dragging"); } });
+addEventListener("dragleave", () => { dragDepth = Math.max(0, dragDepth - 1); if (!dragDepth) document.body.classList.remove("dragging"); });
+addEventListener("dragover", (e) => e.preventDefault());
+addEventListener("drop", (e) => { e.preventDefault(); dragDepth = 0; document.body.classList.remove("dragging"); if (e.dataTransfer.files.length) takeFiles(e.dataTransfer.files); });
+
+// ---- Google Drive (sign in with Google, then browse, preview and upload) ----
+const GOOGLE_CLIENT_ID = "";   // the OAuth Client ID goes here (it is public, not a secret). See stl/about.md.
+const clientId = () => GOOGLE_CLIENT_ID || store(true, "stl:gclient") || "";
+const API = "https://www.googleapis.com/drive/v3", FOLDER = "application/vnd.google-apps.folder", SHORTCUT = "application/vnd.google-apps.shortcut";
+// Google Drive is off unless the address has ?gdrive=1 (remembered in this browser; ?gdrive=0 turns it off again).
+const DRIVE_ON = (() => {
+  const v = new URLSearchParams(location.search).get("gdrive");
+  if (v === "1" || v === "0") store(false, "stl:gdrive", v);
+  return store(true, "stl:gdrive") === "1";
+})();
+$("srcRow").hidden = !DRIVE_ON;
+let source = DRIVE_ON && store(true, "stl:source") === "drive" ? "drive" : "github";
+let dctx = null;        // { id, name, stack: [{id, name}], items: [] }
+let gTok = null, gExp = 0, gisPromise = null, afterSignIn = null;
+class GAuth extends Error {}
+const gOk = () => gTok && Date.now() < gExp - 30000;
+const dmsg = (t, k) => say($("repoMsg"), t, k);
+const canUpload = () => source === "drive" ? !!(dctx && dctx.id !== "sharedWithMe") : !!ctx;
+function loadGis() {
+  return gisPromise || (gisPromise = new Promise((res, rej) => {
+    const el = document.createElement("script"); el.src = "https://accounts.google.com/gsi/client";
+    el.onload = res; el.onerror = () => { gisPromise = null; rej(new Error("Could not load Google sign-in. Are you online?")); };
+    document.head.append(el);
+  }));
+}
+function showSetup() { $("driveSetup").hidden = false; }
+async function signIn() {
+  if (!clientId()) { showSetup(); throw new Error("Google Drive is not set up yet."); }
+  await loadGis();
+  return new Promise((res, rej) => {
+    google.accounts.oauth2.initTokenClient({
+      client_id: clientId(), scope: "https://www.googleapis.com/auth/drive",
+      callback: (r) => { if (r.error) return rej(new Error(r.error === "access_denied" ? "Sign-in was cancelled, or this account is not allowed to use the app." : (r.error_description || r.error))); gTok = r.access_token; gExp = Date.now() + (+r.expires_in || 3600) * 1000; res(gTok); },
+      error_callback: (e) => rej(new Error(e && e.type === "popup_closed" ? "Sign-in was cancelled." : "Could not open the Google sign-in window. Allow pop-ups for this site and try again.")),
+    }).requestAccessToken({ prompt: "" });
+  });
+}
+async function gfetch(url, opts = {}) {
+  if (!gOk()) { $("driveSign").hidden = false; throw new GAuth("Sign in with Google first (the button on the left)."); }
+  const r = await fetch(url, { ...opts, headers: { ...(opts.headers || {}), Authorization: "Bearer " + gTok } });
+  if (r.status === 401) { gTok = null; $("driveSign").hidden = false; throw new GAuth("Your Google sign-in ran out. Press Sign in with Google again."); }
+  if (r.status === 403) { let m = ""; try { m = (await r.clone().json()).error.message; } catch (e) {} throw new Error(/not been used|disabled/i.test(m) ? "The Drive API is not turned on for this app's Google Cloud project." : "Google refused" + (m ? ": " + m : ".")); }
+  if (r.status === 404) throw new Error("Google Drive cannot find that, or your account has no access to it.");
+  if (!r.ok) throw new Error(`Google answered ${r.status}.`);
+  return r;
+}
+// Runs fn; a sign-in problem is shown with the button, and fn is run again after signing in.
+async function driveTry(fn) {
+  try { return await fn(); }
+  catch (e) { if (e instanceof GAuth) afterSignIn = fn; dmsg(e.message, "err"); status(e.message); }
+}
+$("driveSign").onclick = async () => {
+  try {
+    await signIn(); $("driveSign").hidden = true; dmsg("");
+    try { status("Signed in as " + (await (await gfetch(`${API}/about?fields=user(emailAddress)`)).json()).user.emailAddress); } catch (e) {}
+    const f = afterSignIn; afterSignIn = null;
+    if (f) await f(); else if (dctx) await driveTry(() => openFolder(dctx.id, dctx.name, dctx.stack));
+  } catch (e) { dmsg(e.message, "err"); }
+};
+$("gclientSave").onclick = () => { const v = $("gclient").value.trim(); if (v) { store(false, "stl:gclient", v); $("driveSetup").hidden = true; dmsg("Saved. Press Sign in with Google."); } };
+
+async function driveList(id) {
+  const q = id === "sharedWithMe" ? "sharedWithMe=true and trashed=false" : `'${id}' in parents and trashed=false`;
+  const out = []; let page = "";
+  do {
+    const r = await gfetch(`${API}/files?q=${encodeURIComponent(q)}&fields=nextPageToken,files(id,name,mimeType,size,modifiedTime,shortcutDetails)&pageSize=1000&orderBy=folder,name&supportsAllDrives=true&includeItemsFromAllDrives=true${page ? "&pageToken=" + page : ""}`);
+    const j = await r.json(); page = j.nextPageToken || "";
+    for (const f of j.files || []) {
+      if (f.mimeType === SHORTCUT && f.shortcutDetails) { f.id = f.shortcutDetails.targetId; f.mimeType = f.shortcutDetails.targetMimeType; }
+      if (f.mimeType === FOLDER) out.push({ id: f.id, name: f.name, folder: true });
+      else if (EXT.test(f.name)) out.push({ id: f.id, name: f.name, size: +f.size || 0 });
+    }
+  } while (page);
+  out.sort((a, b) => (b.folder ? 1 : 0) - (a.folder ? 1 : 0) || a.name.localeCompare(b.name));
+  return out;
+}
+async function openFolder(id, name, stack) {
+  dmsg("Looking...");
+  const items = await driveList(id);
+  dctx = { id, name, stack: stack || [{ id, name }], items };
+  $("upBtn").disabled = !canUpload();
+  const nf = items.filter((x) => x.folder).length, nfile = items.length - nf;
+  dmsg(`${nf} folder${nf === 1 ? "" : "s"} and ${nfile} 3D file${nfile === 1 ? "" : "s"} in ${name}.`);
+  setRouteDrive(id);
+  renderLocal(); renderDrive();
+}
+function setRouteDrive(folderId, fileId) { try { history.replaceState(null, "", `/stl/gdrive/${encodeURIComponent(folderId)}` + (fileId ? "/" + encodeURIComponent(fileId) : "")); } catch (e) {} }
+function renderDrive() {
+  const box = $("files"); $("filter").hidden = true; $("modeRow").hidden = true;
+  box.replaceChildren();
+  if (!dctx) { note(box, "Paste a Google Drive folder link, or press My Drive."); return; }
+  const crumbs = document.createElement("div"); crumbs.className = "crumbs";
+  dctx.stack.forEach((c, i) => {
+    if (i) crumbs.append(Object.assign(document.createElement("span"), { textContent: "/" }));
+    const b = Object.assign(document.createElement("button"), { textContent: c.name });
+    b.onclick = () => driveTry(() => openFolder(c.id, c.name, dctx.stack.slice(0, i + 1)));
+    crumbs.append(b);
+  });
+  box.append(crumbs);
+  for (const it of dctx.items) {
+    const b = document.createElement("button");
+    if (it.folder) {
+      b.append(Object.assign(document.createElement("span"), { className: "tag d", textContent: "folder" }), Object.assign(document.createElement("span"), { className: "nm", textContent: it.name + "/" }));
+      b.onclick = () => driveTry(() => openFolder(it.id, it.name, [...dctx.stack, { id: it.id, name: it.name }]));
+    } else {
+      b.className = current && current.driveId === it.id ? "on" : "";
+      b.append(Object.assign(document.createElement("span"), { className: "tag", textContent: it.name.slice(it.name.lastIndexOf(".") + 1).toLowerCase() }), Object.assign(document.createElement("span"), { className: "nm", textContent: it.name }), Object.assign(document.createElement("span"), { className: "sz", textContent: human(it.size) }));
+      b.onclick = () => driveTry(() => openDriveFile(it));
+    }
+    box.append(b);
+  }
+  if (!dctx.items.length) note(box, "No folders or 3D files here.");
+}
+async function openDriveFile(it) {
+  status(`Opening ${it.name}...`);
+  const buf = await (await gfetch(`${API}/files/${it.id}?alt=media&supportsAllDrives=true`)).arrayBuffer();
+  showFile(it.name, buf, { drive: { id: it.id, name: it.name } });
+  if (dctx) setRouteDrive(dctx.id, it.id);
+}
+// A Drive link (folder or file) or a bare id.
+async function openDriveInput(text, fileId) {
+  const t = (text || "").trim();
+  let id = (t.match(/\/folders\/([\w-]{10,})/) || [])[1], file = fileId || (t.match(/\/file\/d\/([\w-]{10,})/) || [])[1];
+  if (!id && !file) { id = (t.match(/[?&]id=([\w-]{10,})/) || [])[1] || (/^[\w-]{20,}$/.test(t) ? t : ""); }
+  if (!id && !file) { dmsg("Paste the link of a Google Drive folder (or a file).", "err"); return; }
+  dmsg("Looking...");
+  const meta = async (x) => (await gfetch(`${API}/files/${x}?fields=id,name,mimeType,parents&supportsAllDrives=true`)).json();
+  if (id) { const m = await meta(id); if (m.mimeType !== FOLDER) { file = id; id = ""; } else { await openFolder(m.id, m.name, [{ id: m.id, name: m.name }]); if (file) await openDriveFile({ id: file, name: (await meta(file)).name }); return; } }
+  const fm = await meta(file);
+  if (fm.parents && fm.parents[0]) { const pm = await meta(fm.parents[0]); await openFolder(pm.id, pm.name, [{ id: pm.id, name: pm.name }]); }
+  await openDriveFile({ id: fm.id, name: fm.name });
+}
+$("driveGo").onclick = () => { const v = $("driveIn").value; driveTry(() => openDriveInput(v)); };
+$("driveIn").addEventListener("keydown", (e) => { if (e.key === "Enter") $("driveGo").click(); });
+$("driveMy").onclick = () => driveTry(() => openFolder("root", "My Drive"));
+$("driveShared").onclick = () => driveTry(() => openFolder("sharedWithMe", "Shared with me"));
+
+async function driveUpload() {
+  const out = $("upOut"); $("upGo").disabled = true; let done = 0, last = null;
+  for (let i = 0; i < pending.length; i++) {
+    const f = pending[i], row = $("up" + i), s = row.querySelector(".s"), name = cleanFile(f.name);
+    if (f.size > MAX_UPLOAD) continue;
+    s.textContent = "Uploading..."; row.className = "";
+    try {
+      const q = `name='${name.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}' and '${dctx.id}' in parents and trashed=false`;
+      const ex = ((await (await gfetch(`${API}/files?q=${encodeURIComponent(q)}&fields=files(id)&supportsAllDrives=true&includeItemsFromAllDrives=true`)).json()).files || [])[0];
+      let res;
+      if (ex) res = await gfetch(`https://www.googleapis.com/upload/drive/v3/files/${ex.id}?uploadType=media&supportsAllDrives=true&fields=id`, { method: "PATCH", headers: { "Content-Type": "application/octet-stream" }, body: f });
+      else {
+        const b = "stl" + Math.random().toString(36).slice(2);
+        const body = new Blob([`--${b}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name, parents: [dctx.id] })}\r\n--${b}\r\nContent-Type: application/octet-stream\r\n\r\n`, f, `\r\n--${b}--`]);
+        res = await gfetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&supportsAllDrives=true&fields=id", { method: "POST", headers: { "Content-Type": `multipart/related; boundary=${b}` }, body });
+      }
+      last = { id: (await res.json()).id, name }; s.textContent = ex ? "Replaced" : "Added"; row.className = "good"; done++;
+    } catch (e) { s.textContent = e.message; row.className = "bad"; if (e instanceof GAuth) { afterSignIn = null; break; } }
+  }
+  $("upGo").disabled = false;
+  if (done) {
+    say(out, `${done} file${done === 1 ? "" : "s"} uploaded.`, "ok");
+    try { dctx.items = await driveList(dctx.id); renderDrive(); if (last) { $("upDlg").close(); await openDriveFile(last); } } catch (e) {}
+  } else say(out, "Nothing was uploaded.", "err");
+}
+// Drive keeps earlier versions of a file for a while (some are removed after 30 days unless kept).
+async function showDriveHistory(d) {
+  const msgEl = $("histMsg"), list = $("histList");
+  list.replaceChildren(); $("histFile").textContent = `Google Drive: ${d.name}`;
+  say(msgEl, "Looking..."); $("histDlg").showModal();
+  try {
+    const revs = ((await (await gfetch(`${API}/files/${d.id}/revisions?fields=revisions(id,modifiedTime,lastModifyingUser(displayName),size)&pageSize=200`)).json()).revisions || []).reverse();
+    if (!revs.length) return say(msgEl, "Drive has no earlier versions of this file.");
+    say(msgEl, `${revs.length} version${revs.length === 1 ? "" : "s"} that Drive kept.`);
+    for (const rv of revs) {
+      const when = new Date(rv.modifiedTime), day = when.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+      const row = document.createElement("div"); row.className = "hrow";
+      const acts = document.createElement("div"); acts.className = "acts";
+      const pv = Object.assign(document.createElement("button"), { className: "secondary", textContent: "Preview" });
+      pv.onclick = async () => {
+        try {
+          const buf = await (await gfetch(`${API}/files/${d.id}/revisions/${rv.id}?alt=media`)).arrayBuffer();
+          $("histDlg").close(); showFile(d.name, buf, { drive: d, old: `(older version, ${day})` });
+        } catch (e) { say(msgEl, e.message, "err"); }
+      };
+      acts.append(pv);
+      row.append(Object.assign(document.createElement("b"), { textContent: day + " " + when.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) }),
+        Object.assign(document.createElement("div"), { className: "meta", textContent: `${(rv.lastModifyingUser && rv.lastModifyingUser.displayName) || ""}${rv.size ? " · " + human(+rv.size) : ""}` }), acts);
+      list.append(row);
+    }
+  } catch (e) { say(msgEl, e.message, "err"); }
+}
+
+// ---- GitHub or Google Drive ----
+function setSource(src) {
+  source = src; store(false, "stl:source", src);
+  $("ghPanel").hidden = src !== "github"; $("drivePanel").hidden = src !== "drive";
+  $("srcGh").classList.toggle("on", src === "github"); $("srcDr").classList.toggle("on", src === "drive");
+  $("forget").hidden = src !== "github" || !(ctx && getTok(ctx.owner, ctx.repo));
+  $("upBtn").disabled = !canUpload();
+  $("driveSign").hidden = gOk();
+  if (src === "github") { if (ctx) { renderFiles(); dmsg(`${ctx.files.length} file${ctx.files.length === 1 ? "" : "s"} on branch ${ctx.ref}.`); } else { $("files").replaceChildren(); note($("files"), "Type a repository above to see its .stl, .3mf and .scad files."); $("filter").hidden = true; $("modeRow").hidden = true; dmsg(""); } }
+  else { renderDrive(); dmsg(dctx ? "" : "Sign in, then paste a folder link or press My Drive."); }
+  renderLocal();
+}
+$("srcGh").onclick = () => setSource("github");
+$("srcDr").onclick = () => setSource("drive");
+
+// ---- start: /stl/owner/repo[/branch][/path] (404.html passes it as #/owner/repo/...) ----
+{
+  const raw = location.hash.startsWith("#/") ? location.hash.slice(2) : location.pathname.startsWith("/stl/") ? location.pathname.slice(5) : "";
+  const parts = raw.split("?")[0].split("/").filter(Boolean);
+  if (parts[0] === "gdrive" && !DRIVE_ON) {
+    $("repo").value = store(true, "stl:last") || ""; setSource("github");
+    dmsg("Google Drive is turned off. Add ?gdrive=1 to the address to try it.", "err");
+  } else if (parts[0] === "gdrive" && parts[1]) {
+    setSource("drive");
+    afterSignIn = () => openDriveInput(decodeURIComponent(parts[1]), parts[2] ? decodeURIComponent(parts[2]) : "");
+    dmsg("Press Sign in with Google to open this Drive folder.");
+  } else {
+    const p = parseInput(raw);
+    if (p) { setSource("github"); $("repo").value = raw.split("?")[0]; goRepo(raw); }
+    else { $("repo").value = store(true, "stl:last") || ""; setSource(source); }
+  }
+}
+resize();
+</script>
+</body>
+</html>
+{% endraw %}
