@@ -41,6 +41,12 @@ nothing to install and no account to make.
   that file (leave out the branch and it is `main`). Go to `/openscad/owner/repo` (or add a
   branch and folder) to get a list of the repository's `.scad` files to pick from. If the
   repository is private you are asked for a token once.
+- **Use other files.** A drawing opened from GitHub can `include <parts.scad>`, `use <lib/gear.scad>`, `import("bracket.stl")`,
+  `import("logo.svg")` (a 2D drawing, which you can `linear_extrude` or `rotate_extrude`) and `surface("map.png")` (a PNG picture or a `.dat` table of heights). When you press Render, the page fetches those files from the same folder of the same repository
+  (and from `../` and subfolders), and the engine finds them as it would on a computer. This works for `.scad`, `.stl`, `.3mf`, `.svg` and other
+  files OpenSCAD can import. OpenSCAD ignores an SVG's colors: every shape in it counts, filled or not. Names built in code, like `import(str(name, ".stl"))`, are not found, and neither are OpenSCAD's own
+  libraries (MCAD, BOSL). A drawing that did not come from GitHub cannot find other files, and the messages under the code say so.
+  The files are remembered for a minute, so a repeat render does not fetch them again.
 - **See the history.** **File, History on GitHub** lists the commits that changed the
   drawing's GitHub file, newest first, with the date, who made it and the note. **Open this
   version** loads an old one as a separate new drawing, and **On GitHub** shows what changed.

@@ -258,6 +258,7 @@ import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
 import LZString from "lz-string";
 import { createEditor } from "./editor.js";
 import { scadToPython } from "./scad2py.js";
+import { findRefs, collectFiles, fetchGitHubFile } from "/assets/js/scad-deps.js";
 
 const SAMPLE = `// A washer with a bolt hole circle. Edit it and press Render.
 $fn = 64;
@@ -285,6 +286,7 @@ function savedNames() {
 }
 const nameEl = $("name");
 let currentName = "untitled";
+let ghTools = {};   // the GitHub helpers further down, shared with render()
 const fileHandles = new Map();   // drawing name -> the file on disk it was opened from (kept in memory only)
 const cleanName = (n) => (n || "").replace(/\s+/g, " ").trim().slice(0, 60) || "untitled";
 function fillNames() {
@@ -822,6 +824,8 @@ $("toPython").onclick = () => {
     } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); }
   };
 
+  ghTools = { parseGitHub, savedToken };
+
   // A link like /openscad/#gh=<github file link> opens that file.
   const gh = location.hash.match(/[#&]gh=([^&]+)/);
   if (gh) {
@@ -1274,18 +1278,43 @@ function onResult(e) {
     if (!(log || []).length) addLog("ERROR: OpenSCAD made no model. Is there a shape at the top level of your code?");
   }
 }
-function render() {
+let renderJob = 0;
+// The other files a drawing opened from GitHub reads (import, include, use) are fetched from the same
+// repository folder and handed to OpenSCAD. A drawing that did not come from GitHub cannot find any.
+async function gatherDeps(code) {
+  const refs = findRefs(code);
+  if (!refs.length) return null;
+  const src = store(true, SRC + currentName), g = src && ghTools.parseGitHub(src);
+  if (!g) {
+    addLog(`NOTE: this drawing uses other files (${refs.slice(0, 3).join(", ")}${refs.length > 3 ? ", ..." : ""}), but it was not opened from GitHub, so they cannot be found. Open it with File, Open from GitHub to use them.`);
+    return null;
+  }
+  statusEl.textContent = "Fetching the files this drawing uses...";
+  const token = ghTools.savedToken(g.owner, g.repo);
+  const res = await collectFiles({ mainPath: g.path, code, fetchFile: (p) => fetchGitHubFile({ owner: g.owner, repo: g.repo, ref: g.ref, path: p, token }) });
+  for (const m of res.missing) addLog(`NOTE: could not get "${m}" from ${g.owner}/${g.repo} (${g.ref}).`);
+  return { files: res.files, main: "/" + g.path };
+}
+async function render() {
   if (running) return;
   running = true;
+  const job = ++renderJob;
   logEl.textContent = "";
   $("render").disabled = true;
   $("stop").disabled = false;
   statusEl.textContent = "Rendering...";
   t0 = performance.now();
-  worker.postMessage({ code: editor.get() });
+  const code = editor.get();
+  let deps = null;
+  try { deps = await gatherDeps(code); } catch (e) { deps = null; }
+  if (job !== renderJob) return;   // Stop was pressed meanwhile
+  statusEl.textContent = "Rendering...";
+  t0 = performance.now();
+  worker.postMessage({ code, ...(deps || {}) });
 }
 $("render").onclick = render;
 $("stop").onclick = () => {
+  renderJob++;
   worker.terminate(); spawn(); finish();
   statusEl.textContent = "Stopped";
   addLog("Stopped.");

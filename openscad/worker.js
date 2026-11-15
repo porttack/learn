@@ -27,6 +27,11 @@ function installFonts(inst, fonts) {
   inst.ENV.FONTCONFIG_PATH = "/fonts";
 }
 
+function mkdirp(FS, dir) {
+  let cur = "";
+  for (const seg of dir.split("/").filter(Boolean)) { cur += "/" + seg; try { FS.mkdir(cur); } catch (err) { /* already there */ } }
+}
+
 self.onmessage = async (e) => {
   const log = [];
   const keep = (s) => { if (!NOISE.test(s)) log.push(s); };
@@ -37,10 +42,14 @@ self.onmessage = async (e) => {
       try { installFonts(inst, await loadFonts()); }
       catch (err) { fontData = null; log.push("WARNING: text() fonts could not be loaded (" + (err && err.message ? err.message : err) + ")."); }
     }
-    inst.FS.writeFile("/input.scad", e.data.code);
+    // Files the script reads (import, include, use) arrive as { "/folder/name": bytes }, laid out as in the repository.
+    const main = e.data.main || "/input.scad";
+    for (const [p, bytes] of Object.entries(e.data.files || {})) { mkdirp(inst.FS, p.slice(0, p.lastIndexOf("/"))); inst.FS.writeFile(p, bytes); }
+    mkdirp(inst.FS, main.slice(0, main.lastIndexOf("/")));
+    inst.FS.writeFile(main, e.data.code);
     let rc = 1;
     try {
-      rc = inst.callMain(["/input.scad", "--backend=manifold", "--export-format=binstl", "-o", "/out.stl"]);
+      rc = inst.callMain([main, "--backend=manifold", "--export-format=binstl", "-o", "/out.stl"]);
     } catch (err) {
       log.push("ERROR: " + (err && err.message ? err.message : err));
     }
