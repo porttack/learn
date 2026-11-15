@@ -227,6 +227,17 @@ the home card's id, and a tiny `jslogo/` folder remains only to forward old link
 - It has a home page card in `_data/pathways.yml` and entries in `LICENSE`, `license.md` and `privacy.md`. It is not in the site menu (the menu is copied into several
   pages and pinned by a test); add it there if you want it.
 
+### 3D Files (`stl/`)
+
+A static page at `/stl/` (plain file with front matter, like `openscad/`, no collection): browse a GitHub repo or, behind `?gdrive=1`, a
+Google Drive folder, and preview `.stl`, `.3mf` and `.scad` files (three.js; a `.scad` is rendered by the OpenSCAD worker at
+`/openscad/worker.js`). Dropped local files preview without uploading. Size panel (mm, cm, in), overhang highlight, axes with
+numbers, X Y Z arrows, zoom and Fit, GitHub commit history and Drive revisions, upload to either. Addresses `/stl/owner/repo[/branch][/path]`
+and `/stl/gdrive/FOLDERID` work through the root `404.html`, which redirects `/stl/...` and `/openscad/...` to `#/...` and keeps the
+query. GitHub tokens are stored under the same localStorage key as the OpenSCAD page (`openscad:ghtoken:owner/repo`). **Google Drive is off
+by default and unfinished until the teacher makes an OAuth Client ID** (`GOOGLE_CLIENT_ID` in `stl/index.html`; steps in `stl/about.md`).
+Home card after OpenSCAD (banner source `tools/banners/stl.svg`, PNG made with `rsvg-convert -w 1024 -h 254`); not in the site menu.
+
 ### Student Movies (`_movies/`, `movies/`, `_data/movie_worksheets/`)
 
 Movie suggestions and companion worksheets for substitute days (grades 6 to 11, mostly 6th). The goal is **character

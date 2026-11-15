@@ -169,6 +169,18 @@
     drawings are saved by name in this browser and nothing you type goes to
     another website.
 
+- id: stl
+  banner: /assets/img/stl/banner.png
+  banner_alt: "3D Files: a yellow L-shaped bracket on a numbered grid next to a list of STL, 3MF and SCAD files"
+  title: "3D Files"
+  url: /stl/
+  blurb: >-
+    Keep your 3D files in a GitHub repository and look at them in your
+    browser: drag in an STL, 3MF or OpenSCAD file, turn it around, measure it
+    in millimeters or inches, check which parts overhang for printing, and
+    upload new files or see earlier versions. Nothing goes anywhere except the
+    repository you choose.
+
 - id: jslogo
   banner: /assets/img/jslogo/banner.png
   banner_alt: "Logo: a real Logo interpreter in your browser, drawing tilted squares with a turtle"
