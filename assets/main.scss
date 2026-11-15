@@ -1874,6 +1874,28 @@ table.checkoff {
   margin: 1em 0;
 }
 
+// Two programs side by side (the if/else sheet), so a short page can hold more
+// practice. One column on a narrow screen.
+.if-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.5em;
+
+  @media (max-width: 40em) {
+    grid-template-columns: 1fr;
+  }
+
+  pre {
+    margin: 0.4em 0;
+  }
+
+  @media print {
+    p { margin: 0 0 0.3em; }
+    pre { font-size: 0.75em; line-height: 1.3; margin: 0.2em 0; padding: 0.25em 0.6em; }
+    p.fill-line { height: 1.3em; }
+  }
+}
+
 // Extra line-height so an inline .fill-line sitting mid-sentence has room to
 // write on, instead of crowding the line of text above it.
 .fill-line-paragraph {

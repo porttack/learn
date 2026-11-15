@@ -1,0 +1,104 @@
+# Data for _unplugged/if-else.md. Every program here is run with real Python 3
+# by tools/check_if_else.mjs, which proves each printed answer, each written
+# solution (against its test values) and that each broken program really is
+# broken. Never edit an answer without re-running the checker.
+example:
+  code: |
+    temperature = 55
+    if temperature < 60:
+        print("Wear a jacket.")
+    else:
+        print("No jacket needed.")
+  answer: ["Wear a jacket."]
+
+partA:
+  - code: |
+      score = 70
+      if score > 70:
+          print("Pass")
+      else:
+          print("Try again")
+    answer: ["Try again"]
+    note: "70 is not greater than 70. Only 71 and up would pass."
+  - code: |
+      color = "red"
+      if color == "blue":
+          print("Cool color")
+      else:
+          print("Warm color")
+    answer: ["Warm color"]
+  - code: |
+      lives = 3
+      if lives == 0:
+          print("Game over")
+      print("Thanks for playing")
+    answer: ["Thanks for playing"]
+    note: "The condition is False and there is no else, so the indented line is skipped. The last line is not indented, so it runs no matter what."
+  - code: |
+      coins = 8
+      coins = coins + 5
+      if coins >= 10:
+          print("Buy the hat")
+      else:
+          print("Keep saving")
+    answer: ["Buy the hat"]
+    note: "coins is 13 by the time the if runs."
+
+example_b:
+  say: "A variable named <code>speed</code> holds a number. If it is more than 60, print <code>Too fast</code>. Otherwise print <code>OK</code>."
+  solution: |
+    if speed > 60:
+        print("Too fast")
+    else:
+        print("OK")
+  tests:
+    - { given: "speed = 75", expect: ["Too fast"] }
+    - { given: "speed = 60", expect: ["OK"] }
+
+partB:
+  - say: "A variable named <code>grade</code> holds a number. If it is 60 or more, print <code>Pass</code>. Otherwise print <code>Fail</code>."
+    lines: 3
+    solution: |
+      if grade >= 60:
+          print("Pass")
+      else:
+          print("Fail")
+    tests:
+      - { given: "grade = 60", expect: ["Pass"] }
+      - { given: "grade = 59", expect: ["Fail"] }
+      - { given: "grade = 100", expect: ["Pass"] }
+  - say: "A variable named <code>pet</code> holds a word. If it is <code>\"dog\"</code>, print <code>Take it for a walk</code>. Otherwise print <code>Fill the bowl</code>."
+    lines: 3
+    solution: |
+      if pet == "dog":
+          print("Take it for a walk")
+      else:
+          print("Fill the bowl")
+    tests:
+      - { given: 'pet = "dog"', expect: ["Take it for a walk"] }
+      - { given: 'pet = "cat"', expect: ["Fill the bowl"] }
+  - say: "A variable named <code>points</code> holds a number. If it is exactly 100, print <code>Perfect!</code>. Then, no matter what, print <code>Done</code> on its own line. This one has no <code>else</code>."
+    lines: 3
+    solution: |
+      if points == 100:
+          print("Perfect!")
+      print("Done")
+    tests:
+      - { given: "points = 100", expect: ["Perfect!", "Done"] }
+      - { given: "points = 80", expect: ["Done"] }
+
+partC:
+  - broken: |
+      if hunger > 5
+          print("Snack time")
+    fixed: |
+      if hunger > 5:
+          print("Snack time")
+    why: "An if line must end with a colon."
+  - broken: |
+      if level = 3:
+          print("Boss fight")
+    fixed: |
+      if level == 3:
+          print("Boss fight")
+    why: "One = stores a value. Two == asks whether two things are equal."
