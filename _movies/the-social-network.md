@@ -13,7 +13,7 @@ sel: 3   # 1 to 5, how much the film and worksheet touch CASEL (SEL) skills; aut
 rt_critics: 96   # Rotten Tomatoes, from Wikipedia 2026-11-12 (check); audience score not yet added
 csm_parents: 14   # Common Sense Media age, checked 2026-11-12
 csm_kids: 13
-runtime: 120
+runtime: 115
 ---
 
 ## What happens

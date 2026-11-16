@@ -14,7 +14,7 @@ rt_critics: 58   # Rotten Tomatoes, checked 2026-11-10
 csm_parents: 10   # Common Sense Media age, checked 2026-11-10
 csm_kids: 10
 rt_audience: 82
-runtime: 88
+runtime: 114
 ---
 
 ## What happens
