@@ -6,6 +6,8 @@ studio: "Universal Pictures"
 year: 1992
 rating: "PG-13"
 blurb: "A team of security testers is hired to steal a mysterious black box, and finds that someone from the leader's past is behind it. A clever, mostly bloodless thriller about hacking, trust and who should hold the power."
+image: https://img.youtube.com/vi/7ucflHg8738/hqdefault.jpg
+description: "A team of security testers is hired to steal a mysterious black box, and finds that someone from the leader's past is behind it. A clever, mostly bloodless thriller about hacking, trust and who should hold the power."
 trailer: "7ucflHg8738"   # YouTube video id (the part after v=); official studio channel, embeddable per oEmbed 2026-11-11
 grades: "8 to 11"
 cs: 4   # 1 to 5, how much the film connects to computer science

@@ -6,6 +6,8 @@ studio: "Columbia Pictures"
 year: 2010
 rating: "PG-13"
 blurb: "A Harvard student builds a website in his dorm room. Within a few years it has hundreds of millions of users, two lawsuits, and one very lonely founder."
+image: https://img.youtube.com/vi/lB95KLmpLR4/maxresdefault.jpg
+description: "A Harvard student builds a website in his dorm room. Within a few years it has hundreds of millions of users, two lawsuits, and one very lonely founder."
 trailer: "lB95KLmpLR4"   # YouTube video id (the part after v=); official channel, embeddable per oEmbed 2026-11-12
 grades: "10 to 11"
 cs: 3   # 1 to 5, how much the film connects to computer science

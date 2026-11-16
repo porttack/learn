@@ -6,6 +6,8 @@ studio: "Blue Sky Studios"
 year: 2005
 rating: "PG"
 blurb: "A young inventor goes to Robot City to meet his hero and finds a company that would rather sell upgrades than fix old robots."
+image: https://img.youtube.com/vi/hZ9K5HwN1tc/hqdefault.jpg
+description: "A young inventor goes to Robot City to meet his hero and finds a company that would rather sell upgrades than fix old robots."
 trailer: "hZ9K5HwN1tc"   # YouTube video id (the part after v=); an unofficial upload, no official one found
 grades: "6 to 9"
 cs: 3   # 1 to 5, how much the film connects to computer science

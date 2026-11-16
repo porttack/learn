@@ -6,6 +6,8 @@ studio: "Laika"
 year: 2009
 rating: "PG"
 blurb: "Coraline finds a secret door to a world that seems better than her own. It is not. A spooky, beautiful film about what you really want."
+image: https://img.youtube.com/vi/XyUwEO7xelY/hqdefault.jpg
+description: "Coraline finds a secret door to a world that seems better than her own. It is not. A spooky, beautiful film about what you really want."
 trailer: "XyUwEO7xelY"   # YouTube video id (the part after v=); CoralineTheMovie (Focus Features) channel, embeddable per oEmbed 2026-11-11
 grades: "7 to 9"
 cs: 1   # 1 to 5, how much the film connects to computer science

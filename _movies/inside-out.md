@@ -6,6 +6,8 @@ studio: "Pixar"
 year: 2015
 rating: "PG"
 blurb: "Five emotions run eleven-year-old Riley's mind. When Joy and Sadness get lost, Riley learns why every feeling matters."
+image: https://img.youtube.com/vi/seMwpP0yeu4/maxresdefault.jpg
+description: "Five emotions run eleven-year-old Riley's mind. When Joy and Sadness get lost, Riley learns why every feeling matters."
 trailer: "seMwpP0yeu4"   # YouTube video id (the part after v=); Rotten Tomatoes Trailers upload, embeddable per oEmbed 2026-11-11
 grades: "6 to 8"
 cs: 1   # 1 to 5, how much the film connects to computer science

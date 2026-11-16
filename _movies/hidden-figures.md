@@ -6,6 +6,8 @@ studio: "20th Century Fox"
 year: 2016
 rating: "PG"
 blurb: "Three brilliant Black women do the math that sends American astronauts to space, while the rules around them say they cannot even use the same bathroom."
+image: https://img.youtube.com/vi/5wfrDhgUMGI/maxresdefault.jpg
+description: "Three brilliant Black women do the math that sends American astronauts to space, while the rules around them say they cannot even use the same bathroom."
 trailer: "5wfrDhgUMGI"   # YouTube video id (the part after v=); official channel, embeddable per oEmbed 2026-11-11
 grades: "6 to 11"
 cs: 3   # 1 to 5, how much the film connects to computer science

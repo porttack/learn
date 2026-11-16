@@ -6,6 +6,8 @@ studio: "Walt Disney Animation Studios"
 year: 2012
 rating: "PG"
 blurb: "Ralph is the bad guy in an arcade game and he is tired of it. He sets out to win a medal and prove he can be a hero."
+image: https://img.youtube.com/vi/vf4r5q8-aWo/maxresdefault.jpg
+description: "Ralph is the bad guy in an arcade game and he is tired of it. He sets out to win a medal and prove he can be a hero."
 trailer: "vf4r5q8-aWo"   # YouTube video id (the part after v=); Rotten Tomatoes Trailers upload, embeddable per oEmbed 2026-11-11
 grades: "6 to 9"
 cs: 3   # 1 to 5, how much the film connects to computer science

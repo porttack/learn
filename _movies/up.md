@@ -6,6 +6,8 @@ studio: "Pixar"
 year: 2009
 rating: "PG"
 blurb: "A lonely old man ties thousands of balloons to his house and flies to South America, with an eager young Wilderness Explorer stuck along for the ride."
+image: https://img.youtube.com/vi/ORFWdXl_zJ4/hqdefault.jpg
+description: "A lonely old man ties thousands of balloons to his house and flies to South America, with an eager young Wilderness Explorer stuck along for the ride."
 trailer: "ORFWdXl_zJ4"   # YouTube video id (the part after v=); Disney UK channel, embeddable per oEmbed 2026-11-11
 grades: "6 to 9"
 cs: 1   # 1 to 5, how much the film connects to computer science

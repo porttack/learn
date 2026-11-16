@@ -6,6 +6,8 @@ studio: "DreamWorks Animation"
 year: 2024
 rating: "PG"
 blurb: "A shipwrecked robot has to learn the language of a wild island and, somehow, becomes part of a family."
+image: https://img.youtube.com/vi/67vbA5ZJdKQ/maxresdefault.jpg
+description: "A shipwrecked robot has to learn the language of a wild island and, somehow, becomes part of a family."
 trailer: "67vbA5ZJdKQ"   # YouTube video id (the part after v=)
 grades: "6 to 9"
 cs: 4   # 1 to 5, how much the film connects to computer science

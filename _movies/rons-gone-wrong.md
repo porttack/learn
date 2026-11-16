@@ -6,6 +6,8 @@ studio: "Locksmith Animation / 20th Century Studios"
 year: 2021
 rating: "PG"
 blurb: "Barney's friend-robot is broken, and that turns out to be the best thing about him. A film about data, privacy and real friendship."
+image: https://img.youtube.com/vi/fCqGfjBSk0I/maxresdefault.jpg
+description: "Barney's friend-robot is broken, and that turns out to be the best thing about him. A film about data, privacy and real friendship."
 trailer: "fCqGfjBSk0I"   # YouTube video id (the part after v=)
 grades: "6 to 9"
 cs: 4   # 1 to 5, how much the film connects to computer science

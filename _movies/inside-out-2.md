@@ -6,6 +6,8 @@ studio: "Pixar"
 year: 2024
 rating: "PG"
 blurb: "Riley is a teenager and Anxiety has moved into headquarters. All your emotions, even the uncomfortable ones, belong to you."
+image: https://img.youtube.com/vi/LEjhY15eCx0/maxresdefault.jpg
+description: "Riley is a teenager and Anxiety has moved into headquarters. All your emotions, even the uncomfortable ones, belong to you."
 trailer: "LEjhY15eCx0"   # YouTube video id (the part after v=)
 grades: "6 to 8"
 cs: 1   # 1 to 5, how much the film connects to computer science

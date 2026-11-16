@@ -6,6 +6,8 @@ studio: "Studio Ghibli"
 year: 1984
 rating: "PG"
 blurb: "A princess tries to stop two armies from burning a toxic jungle, because she has seen what the jungle is really for."
+image: https://img.youtube.com/vi/zaskbIZtfxQ/maxresdefault.jpg
+description: "A princess tries to stop two armies from burning a toxic jungle, because she has seen what the jungle is really for."
 trailer: "zaskbIZtfxQ"   # YouTube video id (the part after v=); GKIDS Films channel (English trailer), embeddable per oEmbed 2026-11-11
 grades: "7 to 9"
 cs: 1   # 1 to 5, how much the film connects to computer science

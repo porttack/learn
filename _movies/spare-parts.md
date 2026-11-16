@@ -6,6 +6,8 @@ studio: "Pantelion Films"
 year: 2015
 rating: "PG-13"
 blurb: "A true story: four students and a tiny budget take on MIT at an underwater robotics competition."
+image: https://img.youtube.com/vi/myjar5KoqZA/maxresdefault.jpg
+description: "A true story: four students and a tiny budget take on MIT at an underwater robotics competition."
 trailer: "myjar5KoqZA"   # YouTube video id (the part after v=)
 grades: "8 to 11"
 cs: 5   # 1 to 5, how much the film connects to computer science

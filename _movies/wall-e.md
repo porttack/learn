@@ -6,6 +6,8 @@ studio: "Pixar"
 year: 2008
 rating: "G"
 blurb: "A lonely trash-compacting robot follows a probe named EVE into space. What is the difference between following orders and caring?"
+image: https://img.youtube.com/vi/alIq_wG9FNk/hqdefault.jpg
+description: "A lonely trash-compacting robot follows a probe named EVE into space. What is the difference between following orders and caring?"
 trailer: "alIq_wG9FNk"   # YouTube video id (the part after v=)
 grades: "6 to 9"
 cs: 4   # 1 to 5, how much the film connects to computer science

@@ -6,6 +6,8 @@ studio: "Studio Ghibli"
 year: 1988
 rating: "G"
 blurb: "Two sisters, a worried family and a gentle forest spirit. A calm movie about kindness, curiosity and being brave."
+image: https://img.youtube.com/vi/HaLISMAGdOE/maxresdefault.jpg
+description: "Two sisters, a worried family and a gentle forest spirit. A calm movie about kindness, curiosity and being brave."
 trailer: "HaLISMAGdOE"   # YouTube video id (the part after v=)
 grades: "6 to 8"
 cs: 1   # 1 to 5, how much the film connects to computer science

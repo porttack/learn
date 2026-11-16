@@ -6,6 +6,8 @@ studio: "MGM/United Artists"
 year: 1983
 rating: "PG"
 blurb: "A Seattle teenager thinks he is playing a computer game, but he has connected to a military computer that cannot tell the difference between a game and a real war."
+image: https://img.youtube.com/vi/TQUsLAAZuhU/maxresdefault.jpg
+description: "A Seattle teenager thinks he is playing a computer game, but he has connected to a military computer that cannot tell the difference between a game and a real war."
 trailer: "TQUsLAAZuhU"   # YouTube video id (the part after v=); official studio channel, embeddable per oEmbed 2026-11-11
 grades: "7 to 11"
 cs: 5   # 1 to 5, how much the film connects to computer science

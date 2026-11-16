@@ -6,6 +6,8 @@ studio: "The Weinstein Company"
 year: 2014
 rating: "PG-13"
 blurb: "Alan Turing builds a machine to break Enigma, then is treated terribly by the country he helped save. For older students."
+image: https://img.youtube.com/vi/ESIzi1Lhl58/maxresdefault.jpg
+description: "Alan Turing builds a machine to break Enigma, then is treated terribly by the country he helped save. For older students."
 trailer: "ESIzi1Lhl58"   # YouTube video id (the part after v=)
 grades: "9 to 11"
 cs: 5   # 1 to 5, how much the film connects to computer science

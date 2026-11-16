@@ -6,6 +6,8 @@ studio: "Pixar"
 year: 2022
 rating: "PG"
 blurb: "Thirteen-year-old Mei turns into a giant red panda whenever her emotions run high. Her family expects her to hide it. She is not sure she wants to."
+image: https://img.youtube.com/vi/XdKzUbAiswE/maxresdefault.jpg
+description: "Thirteen-year-old Mei turns into a giant red panda whenever her emotions run high. Her family expects her to hide it. She is not sure she wants to."
 trailer: "XdKzUbAiswE"   # YouTube video id (the part after v=); Pixar channel, embeddable per oEmbed 2026-11-11
 grades: "6 to 9"
 cs: 1   # 1 to 5, how much the film connects to computer science

@@ -6,6 +6,8 @@ studio: "Walt Disney Animation Studios"
 year: 2014
 rating: "PG"
 blurb: "A robotics prodigy and a gentle healthcare robot build, test and redesign. What will Hiro do with his talent?"
+image: https://img.youtube.com/vi/8IdMPpKMdcc/maxresdefault.jpg
+description: "A robotics prodigy and a gentle healthcare robot build, test and redesign. What will Hiro do with his talent?"
 trailer: "8IdMPpKMdcc"   # YouTube video id (the part after v=)
 grades: "6 to 9"
 cs: 4   # 1 to 5, how much the film connects to computer science

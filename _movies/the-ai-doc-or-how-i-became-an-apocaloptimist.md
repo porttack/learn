@@ -6,6 +6,8 @@ studio: "Focus Features"
 year: 2026
 rating: "PG-13"
 blurb: "A filmmaker about to become a father asks the people building AI how worried he should be, and what would make things turn out well."
+image: https://img.youtube.com/vi/xkPbV3IRe4Y/maxresdefault.jpg
+description: "A filmmaker about to become a father asks the people building AI how worried he should be, and what would make things turn out well."
 trailer: "xkPbV3IRe4Y"   # YouTube video id (the part after v=); official studio channel, embeddable per oEmbed 2026-11-11
 grades: "9 to 11"
 cs: 4   # 1 to 5, how much the film connects to computer science

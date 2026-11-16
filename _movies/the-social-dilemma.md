@@ -6,6 +6,8 @@ studio: "Exposure Labs / Netflix"
 year: 2020
 rating: "PG-13"
 blurb: "Former engineers and executives from the biggest tech companies explain how social media is designed to hold your attention, and what it is doing to us."
+image: https://img.youtube.com/vi/uaaC57tcci0/maxresdefault.jpg
+description: "Former engineers and executives from the biggest tech companies explain how social media is designed to hold your attention, and what it is doing to us."
 trailer: "uaaC57tcci0"   # YouTube video id (the part after v=); official channel, embeddable per oEmbed 2026-11-12
 grades: "8 to 11"
 cs: 3   # 1 to 5, how much the film connects to computer science
