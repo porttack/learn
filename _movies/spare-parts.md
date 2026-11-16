@@ -25,4 +25,4 @@ Based on a true story. Four students at a high school in Phoenix, most of them u
 
 ## Why we watch it
 
-This is the story of the MATE ROV competition, the same kind of competition our robotics class enters. Students see what engineering with a small budget looks like, why a team needs people with different strengths, and why creativity can beat money. Note the PG-13 rating: it includes some themes about immigration and family struggles.
+This is the story of the MATE ROV competition, the same competition our robotics teams enter. Students see what engineering with a small budget looks like, why a team needs people with different strengths, and why creativity can beat money.
