@@ -1108,6 +1108,18 @@ export class Workspace {
     input.focus();
     input.select();
 
+    // What the block held before typing, so Escape can put it back.
+    const original = entry.owner.block.args[entry.index];
+
+    // The number counts as soon as it is typed, even before Enter: a student who types a
+    // number and taps Run (or a stack) straight away gets that number. Nothing is redrawn
+    // here (the box would move under the cursor); finish() does the redraw and the undo step.
+    input.addEventListener('input', () => {
+      const text = input.value.trim();
+      const number = Number(text);
+      if (text !== '' && Number.isFinite(number)) entry.owner.block.args[entry.index] = number;
+    });
+
     let finished = false;
     const finish = (keep) => {
       if (finished) return;
@@ -1119,6 +1131,9 @@ export class Workspace {
         entry.owner.block.args[entry.index] = number;
         this.render();
         this.onChange();
+      } else {
+        entry.owner.block.args[entry.index] = original;
+        if (!keep) this.render();
       }
     };
     input.addEventListener('keydown', (event) => {
