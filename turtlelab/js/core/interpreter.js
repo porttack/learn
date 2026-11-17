@@ -168,10 +168,12 @@ const COMMANDS = {
   setfont: (t, args, ctx, block) => t.setFont(block.font),
   setcurve: (t, [degrees]) => t.setCurve(degrees),
   // 1 is slow and 4 is instant. Like a color, a number off the end is
-  // pulled back to the nearest speed, and 2.6 counts as 3.
+  // pulled back to the nearest speed, and 2.6 counts as 3. A negative number
+  // is its absolute value, and the page is told it was negative (`messy`),
+  // because the turtle poops all the way through such a run.
   speed: (t, [number], ctx) => {
-    const pick = Math.min(SPEED_NAMES.length, Math.max(1, Math.round(number)));
-    ctx.setSpeed(SPEED_NAMES[pick - 1]);
+    const pick = Math.min(SPEED_NAMES.length, Math.max(1, Math.round(Math.abs(number))));
+    ctx.setSpeed(SPEED_NAMES[pick - 1], { messy: number < 0 });
   },
 };
 

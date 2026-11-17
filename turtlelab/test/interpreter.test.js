@@ -544,7 +544,13 @@ test('a speed block picks slow, medium, fast or instant for 1, 2, 3 and 4', () =
 });
 
 test('a speed off the ends is pulled back to the nearest one, and a fraction is rounded', () => {
-  assert.deepEqual(speedsAsked([block('speed', 0), block('speed', -7), block('speed', 99), block('speed', 2.6), block('speed', 2.4)]), ['slow', 'slow', 'instant', 'fast', 'medium']);
+  assert.deepEqual(speedsAsked([block('speed', 0), block('speed', 7), block('speed', 99), block('speed', 2.6), block('speed', 2.4)]), ['slow', 'instant', 'instant', 'fast', 'medium']);
+});
+
+test('a negative speed is its absolute value, and the page is told it was negative (the turtle poops)', () => {
+  const asked = [];
+  runWith([block('speed', -2), block('speed', -7), block('speed', 3)], { setSpeed: (name, how) => asked.push([name, how?.messy]) });
+  assert.deepEqual(asked, [['medium', true], ['instant', true], ['fast', false]]);
 });
 
 test('the speed can come from a calculation or a box, and it takes one step like any block', () => {

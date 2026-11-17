@@ -354,7 +354,7 @@ export const BLOCKS = {
     kind: 'command',
     label: 'speed',
     args: [{ default: 1 }],
-    help: 'Sets how fast the program runs from here on, so you can watch it draw. 1 is slow, 2 is medium, 3 is fast and 4 is instant. Every time you press Run it starts at 3.',
+    help: 'Sets how fast the program runs from here on, so you can watch it draw. 1 is slow, 2 is medium, 3 is fast and 4 is instant. Every time you press Run it starts at 3. A negative number works like its positive one, but the turtle poops the whole time.',
   },
   stop: {
     palette: 'flow',

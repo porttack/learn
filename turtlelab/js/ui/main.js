@@ -133,12 +133,27 @@ const turtle = new Turtle({ onOp: (op) => view.applyOp(op) });
 // fresh boxes at 0. The readout shows them, but only when the project has a
 // box block in it, so it stays out of the way until it matters.
 /** A fresh set of boxes, the blocks the student made, and a way for a speed block to reach the scheduler. */
+// A negative speed makes the turtle poop all the way through the run (a poop every POOP_EVERY_MS), until a speed that is not negative, or the run ends.
+const POOP_EVERY_MS = 300;
+let poopTimer = null;
+function setPooping(on) {
+  if (!on || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+    clearInterval(poopTimer);
+    poopTimer = null;
+    return;
+  }
+  if (poopTimer === null) {
+    view.dropPoop();
+    poopTimer = setInterval(() => view.dropPoop(), POOP_EVERY_MS);
+  }
+}
 const newContext = (definitions = new Map()) =>
   createContext({
     turtle,
     print,
     definitions,
-    setSpeed: (name) => {
+    setSpeed: (name, { messy = false } = {}) => {
+      setPooping(messy && !hurry);
       if (!hurry) scheduler.speed = name; // (a run for the PDF stays at instant, whatever the program's speed blocks say)
     },
   });
@@ -256,6 +271,7 @@ const scheduler = new Scheduler({
     if (ms >= YAWN_AFTER_MS) view.setYawning(true);
   },
   onStart: () => {
+    setPooping(false);
     runSteps = 0;
     turtle.resetWalked();
     scoreBadge.setRun(null); // the last run is over: efficiency waits for this one
@@ -285,6 +301,7 @@ const scheduler = new Scheduler({
     }
   },
   onFinish: (result) => {
+    setPooping(false);
     listeningHandlers = null;
     idle?.poke(); // a run is activity: the quiet minute starts from when it ends
     runButton.disabled = false;
