@@ -68,6 +68,44 @@ nothing to install and no account to make.
   millimeters that is. **Auto-orient** tries the faces of the model as its
   bottom and keeps the way up that needs the least support.
 
+## Make a GitHub token for one repository {#github-token}
+
+You only need a token to open a file from a **private** repository, or to save changes back to
+any repository. A public repository opens without one. If someone sent you a link here and the page
+asked for a token, follow these steps. It takes about two minutes, and you only do it once per repository.
+
+1. Sign in to GitHub, then open
+   [Settings, Developer settings, Fine-grained tokens](https://github.com/settings/personal-access-tokens/new)
+   (a direct link to the "new token" form).
+2. **Token name:** anything you will recognize, for example `openscad`.
+3. **Expiration:** pick a short one, such as 7 or 30 days. When it expires, make a new one.
+4. **Resource owner:** choose the person or organization that owns the repository. (If the repository
+   belongs to an organization and it is not listed, ask the owner to allow tokens, or to make the token for you.)
+5. **Repository access:** choose **Only select repositories**, then pick the one repository you need.
+   Do not choose All repositories.
+6. Open **Permissions**, then **Repository permissions**, and find **Contents**.
+   - To only **open** files, set it to **Read-only**.
+   - To also **save** changes, set it to **Read and write**.
+   (GitHub adds **Metadata: Read-only** by itself. That is fine.)
+7. Press **Generate token**, then **copy the token** now. It starts with `github_pat_` and GitHub shows
+   it only once.
+8. Back in OpenSCAD, paste it into the **Personal access token** box and press **Open** (or **Save to GitHub**).
+
+What to expect:
+
+- The token is sent only to GitHub. Once GitHub accepts it, this browser remembers it for that one
+  repository, so you are not asked again. **Forget saved token** in the dialog removes it.
+- Do not save a token on a shared computer, and never post it in a chat, an email or a file. If you
+  think it leaked, delete it in GitHub's token list and make a new one.
+- "GitHub did not accept that token" means part of it was not copied, or it has expired.
+  "Cannot find that file" usually means the token was made for a different repository, or it has no
+  Contents permission.
+
+**Sharing a file that needs a token:** send the link
+`https://learn.porttack.com/openscad/owner/repo/branch/folder/part.scad` (with the real names). It opens
+the file at once, and asks for a token only if the repository is private. In your message, point to
+this section: `https://learn.porttack.com/openscad/about/#github-token`
+
 ## Why OpenSCAD matters
 
 Most 3D design programs are about dragging shapes with a mouse. OpenSCAD is
