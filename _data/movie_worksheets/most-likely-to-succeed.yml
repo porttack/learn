@@ -1,0 +1,46 @@
+part1:
+  - q: "How does High Tech High mostly judge what students have learned?"
+    options: ["Multiple choice tests", "Projects the students make and show to an audience", "Memorizing textbook chapters", "Homework packets"]
+    answer: B
+  - q: "What city is High Tech High in?"
+    options: ["Phoenix, Arizona", "San Diego, California", "Boston, Massachusetts", "Austin, Texas"]
+    answer: B
+  - q: "Early in the film, why does the narrator say most schools are set up the way they are?"
+    options: ["Because students learn best that way", "Because the design goes back more than a hundred years", "Because the government banned projects", "Because teachers voted for it"]
+    answer: ""
+  - q: "When a student team struggles with its project, what do the teachers usually do?"
+    options: ["Give the answer right away", "Cancel the project", "Ask questions and let the team work it out, stepping in only sometimes", "Give the team a lower grade"]
+    answer: ""
+  - q: "What happens at the end of a big project?"
+    options: ["Students take a final exam", "Students present their work at an exhibition for an audience", "Students throw their work away", "Students get a day off with no work"]
+    answer: ""
+part2_title: "Think Like a Computer Scientist"
+part2:
+  - label: "Learning and Machines"
+    text: "The film argues that computers can now do many jobs that used to need people who had memorized facts. Which skills do you think a computer cannot easily copy? Why would those skills matter more in the future?"
+    lines: 5
+  - label: "Project Teams"
+    text: "Choose ONE team or student in the film who struggles with a project. Describe the problem they run into and what they do to fix it. Is it like debugging a program? How?"
+    fields:
+      - { label: "The problem:" }
+      - { label: "What they did about it:", lines: 4 }
+  - label: "Failing and Redoing"
+    text: "In the film, students often have to redo work or change their plan. Why might that teach more than getting it right the first time? How does it compare with how you handle a program that does not work?"
+    lines: 4
+  - label: "Both Sides"
+    text: "The film is made by people who believe schools should change. What does it show that supports their view? What might a person who disagrees say, or what does the film leave out?"
+    lines: 5
+  - label: "Personal Connection"
+    text: "Which student or teacher in the movie do you think you are most like and why? Think about how you work on a team and what you do when something gets hard."
+    lines: 4
+teacher: |
+  DRAFT: written without watching the film. Answer keys left blank on questions 3 to 5 and every Part 1 answer should be checked against the film before this goes to students.
+
+  Questions 1 and 2 are from the school's basic description (project-based, San Diego). Questions 3 to 5 need the film: confirm the history point, the teachers' approach and the exhibition scene, and swap in names of the students and teachers for the Personal Connection question.
+
+  Part 2 teaching points:
+
+  - **Learning and Machines:** the film's main argument. Good answers name creativity, working with people, asking good questions and solving problems with no known answer.
+  - **Project Teams:** any real struggle works. Look for a specific moment and a specific fix.
+  - **Failing and Redoing:** ties to debugging and to engineering design in our robotics program.
+  - **Both Sides:** this is a one-sided film. Accept answers like small sample (one school), no test scores shown, or a charter school with its own advantages.
