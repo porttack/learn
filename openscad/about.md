@@ -75,15 +75,17 @@ any repository. A public repository opens without one. If someone sent you a lin
 asked for a token, follow these steps. It takes about two minutes, and you only do it once per repository.
 
 1. Sign in to GitHub, then open
-   [Settings, Developer settings, Fine-grained tokens](https://github.com/settings/personal-access-tokens/new)
-   (a direct link to the "new token" form).
+   [this "new token" form](https://github.com/settings/personal-access-tokens/new?name=openscad&expires_in=365&contents=read).
+   It already has the name `openscad`, a one year expiry and **Contents: Read-only** filled in.
+   (To also save changes, use [this one](https://github.com/settings/personal-access-tokens/new?name=openscad&expires_in=365&contents=write) instead.
+   If you know the owner, add `&target_name=owner` to the address.)
 2. **Token name:** anything you will recognize, for example `openscad`.
-3. **Expiration:** pick a short one, such as 7 or 30 days. When it expires, make a new one.
+3. **Expiration:** one year (already set). When it expires, make a new one.
 4. **Resource owner:** choose the person or organization that owns the repository. (If the repository
    belongs to an organization and it is not listed, ask the owner to allow tokens, or to make the token for you.)
 5. **Repository access:** choose **Only select repositories**, then pick the one repository you need.
    Do not choose All repositories.
-6. Open **Permissions**, then **Repository permissions**, and find **Contents**.
+6. Check **Permissions**, then **Repository permissions**, and find **Contents**.
    - To only **open** files, set it to **Read-only**.
    - To also **save** changes, set it to **Read and write**.
    (GitHub adds **Metadata: Read-only** by itself. That is fine.)
@@ -171,7 +173,7 @@ finished model, they are not part of OpenSCAD.
   `owner/repo` on this site, so you are not asked again. **Forget saved token** in the Open and
   Save dialogs removes it, and so does clearing the site's data. Anyone who can use this browser
   profile can use the token, so do not save one on a shared computer. Make the token for
-  one repository only, with permission to write contents, and let it expire soon.
+  one repository only, with permission to write contents, and a one year expiry.
 
 - The page does load two small code libraries (three.js and lz-string) from a
   public library host, the same way the Python in 3D pages do. That host can see

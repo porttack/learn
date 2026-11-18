@@ -186,7 +186,7 @@ permalink: /openscad/
   <label class="fld">Personal access token (only for a private repository)
     <input id="ghOpenToken" type="password" spellcheck="false" autocomplete="off" placeholder="leave empty for a public repository">
   </label>
-  <div class="hint">Paste the address of a file (it opens at once) or of a repository or folder (you can type just <b>owner/repo</b>) (you get a list of its .scad files to pick from). A file opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">fine-grained token</a> for just that repository with <b>Contents: Read-only</b>. <a href="/openscad/about/#github-token" target="_blank" rel="noopener">How to make one</a>. It is sent only to GitHub. Once it works, this browser remembers it for that one repository so you are not asked again (<b>Forget saved token</b> removes it).</div>
+  <div class="hint">Paste the address of a file (it opens at once) or of a repository or folder (you can type just <b>owner/repo</b>) (you get a list of its .scad files to pick from). A file opens as a new drawing here; your other drawings are not touched. For a private repository, make a <a id="ghOpenTokLink" href="https://github.com/settings/personal-access-tokens/new?name=openscad&amp;expires_in=365&amp;contents=read" target="_blank" rel="noopener">fine-grained token</a> (the link fills in a one year expiry and <b>Contents: Read-only</b>; you pick the repository). <a href="/openscad/about/#github-token" target="_blank" rel="noopener">How to make one</a>. It is sent only to GitHub. Once it works, this browser remembers it for that one repository so you are not asked again (<b>Forget saved token</b> removes it).</div>
   <div id="ghOpenMsg" class="ghmsg" role="status"></div>
   <div id="ghList" hidden></div>
   <div class="dlgfoot"><button id="ghForgetOpen" class="secondary" type="button">Forget saved token</button><button id="ghOpenGo">Open</button></div>
@@ -202,7 +202,7 @@ permalink: /openscad/
   <label class="fld">Personal access token
     <input id="ghSaveToken" type="password" spellcheck="false" autocomplete="off" placeholder="github_pat_...">
   </label>
-  <div class="hint">The token is sent only to GitHub. Once it works, this browser remembers it for that one repository so you are not asked again (<b>Forget saved token</b> removes it). <a href="/openscad/about/#github-token" target="_blank" rel="noopener">Step by step: how to make a token</a>. Or make one at <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub, Settings, Fine-grained tokens</a> with access to just this repository and <b>Contents: Read and write</b>, and let it expire soon.</div>
+  <div class="hint">The token is sent only to GitHub. Once it works, this browser remembers it for that one repository so you are not asked again (<b>Forget saved token</b> removes it). <a href="/openscad/about/#github-token" target="_blank" rel="noopener">Step by step: how to make a token</a>. Or make one at <a href="https://github.com/settings/personal-access-tokens/new?name=openscad&amp;expires_in=365&amp;contents=write" target="_blank" rel="noopener">GitHub, Settings, Fine-grained tokens</a> with access to just this repository and <b>Contents: Read and write</b>, and a one year expiry (the link fills those in).</div>
   <label id="ghForceRow" class="hint" hidden><input id="ghForce" type="checkbox"> Replace the newer version on GitHub anyway</label>
   <div id="ghSaveOut" class="ghmsg" role="status"></div>
   <div class="dlgfoot"><button id="ghForgetSave" class="secondary" type="button">Forget saved token</button><button id="ghSaveGo">Save to GitHub</button></div>
@@ -853,7 +853,7 @@ $("toPython").onclick = () => {
   })();
   if (route) {
     const { owner, repo, rest } = route;
-    const needsToken = (msg) => { say($("ghOpenMsg"), msg, "err"); ghOpenDlg.showModal(); $("ghOpenToken").focus(); };
+    const needsToken = (msg) => { $("ghOpenTokLink").href = `https://github.com/settings/personal-access-tokens/new?name=openscad&expires_in=365&contents=read&target_name=${encodeURIComponent(owner)}`; say($("ghOpenMsg"), msg, "err"); ghOpenDlg.showModal(); $("ghOpenToken").focus(); };
     (async () => {
       if (/\.scad$/i.test(rest[rest.length - 1] || "")) {
         const tries = [{ ref: "main", path: rest.join("/") }];
