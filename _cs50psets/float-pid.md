@@ -8,11 +8,12 @@ subtitle: "Build a PID controller, tune it to hold a float at 2.0 meters even wh
 
 ## Background
 
-In [Profiling Float](/cs50-psets/float-profile/) you wrote a float that
-decided how fast it wanted to go and nudged itself toward that speed.
-That works in a perfect pool. This problem is the same float in a
-pool that is not perfect, and the 2027 MATE Floats! task asks for
-the same job: hold the top of the float at **2.0 meters, plus or minus
+In [Profiling Float](/cs50-psets/float-profile/) you judged three
+simulated floats, and the floats' own program was a simple one that
+stops pushing when it gets close to its target. That works in a
+forgiving pool. This problem gives the float a better brain, and a
+pool that is not perfect, for the same job the 2027 MATE Floats! task
+asks for: hold the top of the float at **2.0 meters, plus or minus
 0.33 meters, for 30 seconds in a row**.
 
 Three things go wrong in a real float:
@@ -336,6 +337,7 @@ Submit early, then keep improving.
 - **Tune by robot.** Write a loop that tries many `(kp, ki, kd)` and
   keeps the combination with the longest shortest hold. Is the best
   answer one you would trust in a real pool?
-- **Mix it into the profile.** Use a PID as the thing that decides the
-  action in `step` from Profiling Float, with the target changing as the
-  float goes from 2.0 to 4.0 to the surface.
+- **Mix it into the profile.** In Profiling Float, the float's `decide`
+  stops pushing near its target. Replace that rule with a PID, with the
+  target changing as the float goes from the hold depth to the deep
+  depth and up to the surface.
