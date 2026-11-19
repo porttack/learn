@@ -3,10 +3,29 @@ title: "Profiling Float"
 order: 13
 chapter: 8
 source: original
-subtitle: "Be the judge for a profiling float: write the code that decides whether a float held its depth, caught every reading and stayed off the bottom, then score four simulated floats."
+slides_link: /cs50-psets/float-profile-slides/
+subtitle: "Steer a profiling float and judge its data: did it hold its depth for 30 seconds, and did it touch the bottom?"
 ---
 
 <style>
+/* The MATE logo floats in the header, right of the title and left of the menu button. */
+.page-content .wrapper { position: relative; }
+.mate-logo { position: absolute; top: 8px; right: 60px; line-height: 0; z-index: 1; }
+.mate-logo img { display: block; height: 72px; width: auto; }
+.mate-note { margin: 0.2em 0 1em; font-size: 0.8em; color: #57606a; }
+a.slides-cta { display: flex; align-items: center; gap: 1em; max-width: 36em; margin: 1em auto 1.4em; padding: 0.8em 1.2em; background: #0b5cad; color: #fff; border-radius: 10px; text-decoration: none; box-shadow: 0 2px 8px rgba(11,92,173,0.35); }
+a.slides-cta:hover, a.slides-cta:focus-visible { background: #084a8c; color: #fff; text-decoration: none; }
+a.slides-cta:visited { color: #fff; }
+.page-content a.slides-cta, .page-content a.slides-cta * { text-decoration: none !important; }
+.page-content a.slides-cta:hover strong { text-decoration: underline !important; }
+.slides-cta-play { flex: 0 0 auto; width: 2.6em; height: 2.6em; border-radius: 50%; background: #fff; color: #0b5cad; display: flex; align-items: center; justify-content: center; font-size: 1.1em; padding-left: 0.15em; }
+.slides-cta strong { font-size: 1.2em; }
+.slides-cta small { display: block; margin-top: 0.15em; font-size: 0.85em; opacity: 0.95; line-height: 1.35; }
+@media print { a.slides-cta { display: none; } }
+@media (max-width: 640px) {
+  .mate-logo { position: static; text-align: center; margin: 0 0 0.6em; }
+  .mate-logo img { margin: 0 auto; height: 64px; }
+}
 .float-hero { display: flex; flex-wrap: wrap; gap: 1em; align-items: flex-end; justify-content: center; margin: 1em 0; }
 .float-hero figure { margin: 0; flex: 0 1 auto; }
 .float-hero img { display: block; max-width: 100%; height: auto; border-radius: 4px; }
@@ -34,6 +53,11 @@ subtitle: "Be the judge for a profiling float: write the code that decides wheth
 @media print { .float-explorer { display: none; } .float-explorer-print { display: block; } }
 </style>
 
+<a class="mate-logo" href="https://materovcompetition.org" title="MATE ROV Competition"><img src="{{ '/assets/img/cs50psets/mate-rov-monterey-bay.png' | relative_url }}" alt="MATE ROV Competition, Monterey Bay logo"></a>
+<a class="slides-cta" href="{{ '/cs50-psets/float-profile-slides/' | relative_url }}"><span class="slides-cta-play" aria-hidden="true">&#9654;</span><span><strong>Open the slides</strong><small>15 slides: videos that play by themselves, a map of 4,000 real floats, the Atlantic compared with the Pacific, and the three simulated floats running on their own.</small></span></a>
+
+<p class="mate-note">This problem is based on the 2027 MATE Floats! task. Logo: MATE ROV Competition, Monterey Bay, used under the permission in the <a href="https://materovcompetition.org/marketing-kit">MATE ROV Competition Marketing Kit</a>.</p>
+
 <div class="float-hero">
   <figure class="fh-photo">
     <img src="{{ '/assets/img/cs50psets/argo-float-aranda.jpg' | relative_url }}" alt="A yellow Argo profiling float standing upright in a wooden frame on a ship's green deck, next to a coil of orange rope">
@@ -44,8 +68,6 @@ subtitle: "Be the judge for a profiling float: write the code that decides wheth
     <figcaption>A cutaway of an Argo float. The antenna is at the top. Near the bottom, a pump moves oil in and out of a rubber bladder: that is the buoyancy engine. (Public domain, via <a href="https://commons.wikimedia.org/wiki/File:Argo_Cutaway.png">Wikimedia Commons</a>.)</figcaption>
   </figure>
 </div>
-
-<p style="text-align:center; font-size:0.9em;"><a href="{{ '/cs50-psets/float-profile-slides/' | relative_url }}">Slides for this problem</a>: videos, a map of the floats, and the three simulated floats running by themselves.</p>
 
 ## What real floats bring back
 

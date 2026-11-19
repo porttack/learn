@@ -51,7 +51,13 @@ permalink: /cs50-psets/float-profile-slides/
   }
   .stage.ar-16-9 { height: 720px; }
   .stage.ar-4-3 { height: 960px; }
-  .stage.tight { padding: 36px 64px; justify-content: flex-start; }
+  .stage.tight { padding: 36px 64px; justify-content: flex-start; position: relative; }
+  .restart-btn {
+    position: absolute; top: 44px; right: 64px; z-index: 2;
+    font: inherit; font-size: 20px; font-weight: 600; padding: 8px 20px;
+    border: 2px solid var(--accent); border-radius: 24px; background: #fff; color: var(--accent); cursor: pointer;
+  }
+  .restart-btn:hover, .restart-btn:focus-visible { background: var(--accent); color: #fff; }
   .stage.tight .kicker { font-size: 22px; margin-bottom: 6px; }
   .stage.tight .slide-title { font-size: 48px; margin-bottom: 14px; }
   .stage.dark { background: #0b1620; color: #fff; }
@@ -100,7 +106,10 @@ permalink: /cs50-psets/float-profile-slides/
   }
   .depth-nav.depth-up { bottom: auto; top: 14px; }
   .depth-nav:hover { background: rgba(0,0,0,0.75); }
-  .title-slide { text-align: left; justify-content: center; }
+  .title-slide { text-align: left; justify-content: center; position: relative; }
+  .title-logo { position: absolute; right: 64px; bottom: 40px; width: 320px; text-align: center; }
+  .title-logo img { width: 100%; height: auto; display: block; }
+  .title-logo p { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
   .title-slide .slide-title { font-size: 76px; margin-bottom: 16px; }
   .title-slide .slide-subtitle { font-size: 34px; color: var(--muted); }
   .title-slide .slide-link { font-size: 30px; margin-top: 26px; }
@@ -168,7 +177,8 @@ const SLIDES = [
     kicker: "Profiling Float",
     title: "Robots that watch the ocean",
     subtitle: "Then you write the brain, and the judge, for one",
-    notes: "About 25 minutes with the videos. The first half is the story of why floats exist and what they measure. The second half is the problem. If you are short on time, skip the 'More' slides and the second video. Videos autoplay muted: click the video if you want sound. If your school network blocks YouTube, skip to the map slide and tell the story from the notes."
+    logo: "/assets/img/cs50psets/mate-rov-monterey-bay.png",
+    notes: "The logo is the MATE ROV Competition, Monterey Bay Regional logo, used under the permission in the MATE ROV Competition Marketing Kit (materovcompetition.org/marketing-kit). About 25 minutes with the videos. The first half is the story of why floats exist and what they measure. The second half is the problem. If you are short on time, skip the 'More' slides and the second video. Videos autoplay muted: click the video if you want sound. If your school network blocks YouTube, skip to the map slide and tell the story from the notes."
   },
   {
     kind: "video",
@@ -295,8 +305,8 @@ const SLIDES = [
   {
     kind: "sim",
     kicker: "Watch",
-    title: "Three simulated floats",
-    notes: "This loops by itself: Steady, Heavy, Jittery. Narrate the first loop. Steady holds and stays off the floor: score 5. Heavy holds but sinks into the floor line: score 0. Jittery's float is fine but its sensor is noisy, so the packets wobble out of the band and the hold fails: score 0. The point to make: the judge cannot see the float, only the packets. Ask: 'Which one would you trust?'"
+    title: "Three floats, one pool",
+    notes: "All three simulated floats run at the same time and loop by themselves. Top left is Steady: it holds its depth and stays off the floor, score 5. Top right is Heavy: it holds, but its dive carries it through the red floor line, score 0. Bottom left is Jittery: the float is fine, but its sensor is noisy, so the packets wobble out of the band and the hold fails, score 0. Each one shows its verdict when it finishes. When the last float is back on top, the fourth panel fills in with the two graphs the MATE task asks a team to make: temperature against depth and light against depth, built from Steady's packets. The pool's temperature and light numbers are made up, because the simulator only knows depths, and the panel says so. Ask: 'The judge cannot see the float, only the packets. Which one would you trust?' The Restart button in the top right (or the R key) starts all three floats over, for anyone who wants to watch Heavy hit the floor again."
   },
   {
     kind: "code",
@@ -577,72 +587,130 @@ function CompareCanvas() {
   return useCanvas(1088, 540, draw);
 }
 
-// ---------- the three simulated floats, looping by themselves ----------
-const SIM_NOTES = {
-  Steady: "holds its depth and stays off the floor",
-  Heavy: "holds, but sinks into the floor",
-  Jittery: "the float is fine, the sensor is noisy"
-};
+// ---------- the three simulated floats, all at once, plus the graphs a team would make ----------
+const POOL_M = 3.96, FLOAT_LEN = 0.6, HOLD_M = 1.0, BAND_M = 0.33, FLOOR_M = POOL_M - FLOAT_LEN;
+
+// The simulator only knows depths, so the pool's temperature and light are a made-up model:
+// warm and bright at the top, cooler and darker deeper down.
+function tempAt(z) { return 22.0 + 4.0 * Math.exp(-z / 1.0); }      // degrees C
+function lightAt(z) { return 3.0 * Math.exp(-0.9 * z); }            // sensor volts
+
+// One quadrant: a small pool and a depth graph for one float. `s` is how many simulated seconds have passed.
+function drawMiniSim(ctx, d, x0, y0, qw, qh, s) {
+  const n = d.log.length;
+  const i = Math.max(0, Math.min(n - 1, Math.floor(Math.min(s, n)) - 1));
+  const done = s >= n;
+  ctx.textAlign = "start";
+  ctx.fillStyle = "#111"; ctx.font = "bold 24px sans-serif"; ctx.fillText(d.name, x0 + 10, y0 + 28);
+  if (done) {
+    ctx.textAlign = "right"; ctx.font = "bold 17px sans-serif";
+    ctx.fillStyle = d.score > 0 ? "#2f7a3a" : "#b53a0a";
+    ctx.fillText("Hold " + (d.hold ? "yes" : "no") + "   Floor " + (d.bottom ? "touched" : "off") + "   Score " + d.score, x0 + qw - 12, y0 + 28);
+    ctx.textAlign = "start";
+  }
+  // the pool
+  const PX = x0 + 10, PW = 74, top = y0 + 44, bot = y0 + qh - 10, span = bot - top, minD = -0.3, maxD = POOL_M + 0.1;
+  const PY = (m) => top + (m - minD) / (maxD - minD) * span;
+  ctx.fillStyle = "#cfe6f5"; ctx.fillRect(PX, PY(0), PW, PY(POOL_M) - PY(0));
+  ctx.fillStyle = "#9a8f7e"; ctx.fillRect(PX, PY(POOL_M), PW, bot - PY(POOL_M) + 4);
+  ctx.strokeStyle = "#2b6a9b"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(PX, PY(0)); ctx.lineTo(PX + PW, PY(0)); ctx.stroke();
+  ctx.fillStyle = "rgba(80,190,100,0.32)"; ctx.fillRect(PX, PY(HOLD_M - BAND_M), PW, PY(HOLD_M + BAND_M) - PY(HOLD_M - BAND_M));
+  ctx.strokeStyle = "#c92a2a"; ctx.setLineDash([5, 3]); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(PX, PY(FLOOR_M)); ctx.lineTo(PX + PW, PY(FLOOR_M)); ctx.stroke(); ctx.setLineDash([]);
+  const depth = d.true[i], touching = depth >= FLOOR_M - 1e-9;
+  const fw = 20, fx = PX + PW * 0.55, y0f = PY(depth), y1f = PY(depth + FLOAT_LEN);
+  ctx.fillStyle = touching ? "#e03131" : "#f2c200"; ctx.strokeStyle = "#333"; ctx.lineWidth = 1.5;
+  ctx.fillRect(fx - fw / 2, y0f, fw, y1f - y0f); ctx.strokeRect(fx - fw / 2, y0f, fw, y1f - y0f);
+  // the graph of packets
+  const gx = x0 + 124, gR = x0 + qw - 14, gw = gR - gx, gy = top, gh = span - 24, GX = (sec) => gx + sec / n * gw, GY = (m) => gy + m / 3.6 * gh;
+  ctx.fillStyle = "rgba(80,190,100,0.28)"; ctx.fillRect(gx, GY(HOLD_M - BAND_M), gw, GY(HOLD_M + BAND_M) - GY(HOLD_M - BAND_M));
+  ctx.strokeStyle = "#e6e6e6"; ctx.fillStyle = "#444"; ctx.font = "15px sans-serif"; ctx.lineWidth = 1; ctx.textAlign = "right";
+  for (let m = 0; m <= 3; m += 1) { ctx.beginPath(); ctx.moveTo(gx, GY(m)); ctx.lineTo(gx + gw, GY(m)); ctx.stroke(); ctx.fillText(String(m), gx - 6, GY(m) + 5); }
+  ctx.textAlign = "center"; ctx.fillStyle = "#555"; ctx.fillText("time", gx + gw / 2, gy + gh + 20); ctx.textAlign = "start";
+  ctx.strokeStyle = "#c92a2a"; ctx.setLineDash([5, 3]); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(gx, GY(FLOOR_M)); ctx.lineTo(gx + gw, GY(FLOOR_M)); ctx.stroke(); ctx.setLineDash([]);
+  if (done && d.hold) { ctx.fillStyle = "rgba(255,200,0,0.35)"; ctx.fillRect(GX(d.hold[0]), gy, GX(d.hold[1]) - GX(d.hold[0]), gh); }
+  if (d.settings.noise > 0) {
+    ctx.strokeStyle = "#9aa0a6"; ctx.lineWidth = 2; ctx.beginPath();
+    for (let k = 0; k <= i; k++) { if (k === 0) ctx.moveTo(GX(k + 1), GY(d.true[k])); else ctx.lineTo(GX(k + 1), GY(d.true[k])); }
+    ctx.stroke();
+  }
+  ctx.strokeStyle = "#0b5cad"; ctx.lineWidth = 2.5; ctx.beginPath();
+  for (let k = 0; k <= i; k++) { const px = GX(d.log[k][0]), py = GY(d.log[k][1]); if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
+  ctx.stroke();
+}
+
+// One small graph for the fourth quadrant: a measurement against depth, from a float's packets at the five reading depths.
+function drawReviewGraph(ctx, d, valueAt, xmin, xmax, x0, y0, w, h, label, color) {
+  const L = 34, R = 8, T = 6, B = 40, pw = w - L - R, ph = h - T - B, maxD = 2.3;
+  const X = (v) => x0 + L + (v - xmin) / (xmax - xmin) * pw, Y = (m) => y0 + T + m / maxD * ph;
+  ctx.strokeStyle = "#e6e6e6"; ctx.fillStyle = "#444"; ctx.font = "14px sans-serif"; ctx.lineWidth = 1; ctx.textAlign = "right";
+  for (let m = 0; m <= 2; m += 1) { ctx.beginPath(); ctx.moveTo(x0 + L, Y(m)); ctx.lineTo(x0 + L + pw, Y(m)); ctx.stroke(); ctx.fillText(String(m), x0 + L - 5, Y(m) + 5); }
+  ctx.textAlign = "center";
+  ctx.fillText(xmin.toFixed(xmax > 10 ? 0 : 0), x0 + L, y0 + h - 22); ctx.fillText(xmax.toFixed(0), x0 + L + pw, y0 + h - 22);
+  ctx.fillStyle = "#222"; ctx.font = "bold 15px sans-serif"; ctx.fillText(label, x0 + L + pw / 2, y0 + h - 5);
+  ctx.textAlign = "start";
+  const pts = [];
+  d.rungs.forEach((p) => { if (!p) return; const truth = d.true[Math.max(0, Math.min(d.true.length - 1, p[0] - 1))]; pts.push([valueAt(truth), p[1]]); });
+  pts.sort((a, b) => a[1] - b[1]);
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2.5; ctx.beginPath();
+  pts.forEach((p, i) => { if (i === 0) ctx.moveTo(X(p[0]), Y(p[1])); else ctx.lineTo(X(p[0]), Y(p[1])); });
+  ctx.stroke();
+  pts.forEach((p) => { ctx.beginPath(); ctx.arc(X(p[0]), Y(p[1]), 4, 0, Math.PI * 2); ctx.fill(); });
+}
+
+// The fourth quadrant: a placeholder until every float is back on top, then the two graphs the MATE task asks for.
+function drawReviewQuadrant(ctx, d, x0, y0, qw, qh, a) {
+  ctx.textAlign = "start";
+  if (a <= 0) {
+    ctx.strokeStyle = "#c3cad2"; ctx.setLineDash([8, 6]); ctx.lineWidth = 2;
+    ctx.strokeRect(x0 + 14, y0 + 14, qw - 28, qh - 28); ctx.setLineDash([]);
+    ctx.fillStyle = "#6b7782"; ctx.font = "bold 22px sans-serif"; ctx.fillText("Review the play", x0 + 34, y0 + 60);
+    ctx.font = "19px sans-serif";
+    wrapText(ctx, "When the floats are back on top, the team graphs temperature and light against depth.", x0 + 34, y0 + 96, qw - 68, 28);
+    return;
+  }
+  ctx.globalAlpha = a;
+  ctx.fillStyle = "#111"; ctx.font = "bold 20px sans-serif"; ctx.fillText("Review the play: what the team graphs", x0 + 12, y0 + 28);
+  const gw = (qw - 36) / 2, gh = qh - 82;
+  drawReviewGraph(ctx, d, tempAt, 22, 26, x0 + 8, y0 + 44, gw, gh, "temperature (°C)", "#c2410c");
+  drawReviewGraph(ctx, d, lightAt, 0, 3, x0 + 22 + gw, y0 + 44, gw, gh, "light (volts)", "#1d4ed8");
+  ctx.fillStyle = "#777"; ctx.font = "14px sans-serif";
+  ctx.fillText("depth (m) down the side. From " + d.name + "'s packets. Made-up pool numbers.", x0 + 12, y0 + qh - 6);
+  ctx.globalAlpha = 1;
+}
+
 function SimCanvas() {
   const draw = useCallback((ctx, t, w, h) => {
-    const S = window.FLOAT_SIM, POOL = 3.96, LEN = 0.6, HOLD = 1.0, BAND = 0.33, FLOOR = POOL - LEN;
-    const PLAY = 11, HOLDT = 4, per = PLAY + HOLDT;
-    const idx = Math.floor(t / per) % S.length, tau = t % per, d = S[idx];
-    const p = Math.min(1, tau / PLAY), n = d.log.length;
-    const i = Math.max(0, Math.min(n - 1, Math.floor(p * n) - 1));
-    const done = p >= 1;
+    const S = window.FLOAT_SIM, SPEED = 9, SHOW = 8;
+    const maxN = Math.max.apply(null, S.map((d) => d.log.length));
+    const runT = maxN / SPEED, period = runT + SHOW + 1.5;
+    const T = t % period, s = Math.min(T * SPEED, maxN + 5);
+    const QW = w / 2, QH = h / 2;
     ctx.clearRect(0, 0, w, h);
-    // title line
-    ctx.fillStyle = "#111"; ctx.font = "bold 30px sans-serif"; ctx.fillText(d.name, 12, 30);
-    ctx.font = "24px sans-serif"; ctx.fillStyle = "#555"; ctx.fillText(SIM_NOTES[d.name] || "", 12 + ctx.measureText(d.name).width * 1.15 + 18, 30);
-    // pool, left
-    const PW = 200, top = 56, bot = h - 8, span = bot - top, minD = -0.35, maxD = POOL + 0.15;
-    const Y = (m) => top + (m - minD) / (maxD - minD) * span;
-    ctx.fillStyle = "#cfe6f5"; ctx.fillRect(0, Y(0), PW, Y(POOL) - Y(0));
-    ctx.fillStyle = "#9a8f7e"; ctx.fillRect(0, Y(POOL), PW, bot - Y(POOL) + 6);
-    ctx.strokeStyle = "#2b6a9b"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(PW, Y(0)); ctx.stroke();
-    ctx.fillStyle = "rgba(80,190,100,0.30)"; ctx.fillRect(0, Y(HOLD - BAND), PW, Y(HOLD + BAND) - Y(HOLD - BAND));
-    ctx.fillStyle = "#2f7a3a"; ctx.font = "16px sans-serif"; ctx.fillText("hold band", PW - 74, Y(HOLD - BAND) + 16);
-    ctx.strokeStyle = "#c92a2a"; ctx.setLineDash([6, 4]); ctx.lineWidth = 1.6;
-    ctx.beginPath(); ctx.moveTo(0, Y(FLOOR)); ctx.lineTo(PW, Y(FLOOR)); ctx.stroke(); ctx.setLineDash([]);
-    const depth = d.true[i], touching = depth >= FLOOR - 1e-9;
-    const fx = PW * 0.58, fw = 28, y0 = Y(depth), y1 = Y(depth + LEN);
-    ctx.fillStyle = touching ? "#e03131" : "#f2c200"; ctx.strokeStyle = "#333"; ctx.lineWidth = 1.5;
-    ctx.fillRect(fx - fw / 2, y0, fw, y1 - y0); ctx.strokeRect(fx - fw / 2, y0, fw, y1 - y0);
-    ctx.beginPath(); ctx.moveTo(fx, y0); ctx.lineTo(fx, y0 - 10); ctx.stroke();
-    ctx.fillStyle = "#222"; ctx.font = "bold 16px sans-serif"; ctx.fillText(depth.toFixed(2) + " m", fx + fw / 2 + 6, y0 + 14);
-    if (touching) { ctx.fillStyle = "#c92a2a"; ctx.fillText("touching the floor!", 6, Y(POOL) - 8); }
-    // graph, right: the packets
-    const gx = PW + 70, gR = 14, gw = w - gx - gR, gy = 56, gh = h - 56 - 40, maxT = n, maxD2 = 3.6;
-    const GX = (s) => gx + s / maxT * gw, GY = (m) => gy + m / maxD2 * gh;
-    ctx.fillStyle = "rgba(80,190,100,0.28)"; ctx.fillRect(gx, GY(HOLD - BAND), gw, GY(HOLD + BAND) - GY(HOLD - BAND));
-    ctx.strokeStyle = "#e6e6e6"; ctx.fillStyle = "#444"; ctx.font = "17px sans-serif"; ctx.lineWidth = 1; ctx.textAlign = "right";
-    for (let m = 0; m <= 3.5; m += 0.5) { ctx.beginPath(); ctx.moveTo(gx, GY(m)); ctx.lineTo(gx + gw, GY(m)); ctx.stroke(); ctx.fillText(m.toFixed(1), gx - 8, GY(m) + 6); }
-    ctx.textAlign = "center";
-    for (let s = 0; s <= maxT; s += 20) { ctx.beginPath(); ctx.moveTo(GX(s), gy); ctx.lineTo(GX(s), gy + gh); ctx.stroke(); ctx.fillText(String(s), GX(s), gy + gh + 20); }
-    ctx.fillStyle = "#222"; ctx.font = "bold 17px sans-serif"; ctx.fillText("Time (seconds)", gx + gw / 2, h - 4);
-    ctx.save(); ctx.translate(gx - 48, gy + gh / 2); ctx.rotate(-Math.PI / 2); ctx.fillText("Depth of the packets (m)", 0, 0); ctx.restore();
-    ctx.textAlign = "start";
-    ctx.strokeStyle = "#c92a2a"; ctx.setLineDash([6, 4]); ctx.lineWidth = 1.6;
-    ctx.beginPath(); ctx.moveTo(gx, GY(FLOOR)); ctx.lineTo(gx + gw, GY(FLOOR)); ctx.stroke(); ctx.setLineDash([]);
-    if (done && d.hold) { ctx.fillStyle = "rgba(255,200,0,0.35)"; ctx.fillRect(GX(d.hold[0]), gy, GX(d.hold[1]) - GX(d.hold[0]), gh); }
-    if (d.settings.noise > 0) {
-      ctx.strokeStyle = "#9aa0a6"; ctx.lineWidth = 2; ctx.beginPath();
-      for (let k = 0; k <= i; k++) { if (k === 0) ctx.moveTo(GX(k + 1), GY(d.true[k])); else ctx.lineTo(GX(k + 1), GY(d.true[k])); }
-      ctx.stroke();
-    }
-    ctx.strokeStyle = "#0b5cad"; ctx.lineWidth = 2.5; ctx.beginPath();
-    for (let k = 0; k <= i; k++) { const px = GX(d.log[k][0]), py = GY(d.log[k][1]); if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
-    ctx.stroke();
-    if (done) {   // the judge's verdict, on the title line
-      const verdict = "Hold: " + (d.hold ? "yes (+5)" : "FAILED (0)") + "     Floor: " + (d.bottom ? "touched (-5)" : "stayed off (0)") + "     Score: " + d.score;
-      ctx.font = "bold 24px sans-serif"; ctx.textAlign = "right";
-      ctx.fillStyle = d.score > 0 ? "#2f7a3a" : "#b53a0a";
-      ctx.fillText(verdict, w - 12, 30);
-      ctx.textAlign = "start";
-    }
+    S.forEach((d, k) => drawMiniSim(ctx, d, (k % 2) * QW, Math.floor(k / 2) * QH, QW, QH, s));
+    drawReviewQuadrant(ctx, S[0], QW, QH, QW, QH, T >= runT ? Math.min(1, (T - runT) / 0.8) : 0);
+    ctx.strokeStyle = "#dde1e6"; ctx.lineWidth = 1; ctx.beginPath();
+    ctx.moveTo(QW, 0); ctx.lineTo(QW, h); ctx.moveTo(0, QH); ctx.lineTo(w, QH); ctx.stroke();
   }, []);
-  return useCanvas(1088, 470, draw);
+  return useCanvas(1088, 540, draw);
+}
+
+// The simulation slide: a Restart button (and the R key) starts all the floats over.
+function SimSlide() {
+  const [run, setRun] = useState(0);
+  const restart = useCallback(() => setRun((r) => r + 1), []);
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "r" || e.key === "R") restart(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [restart]);
+  return (
+    <React.Fragment>
+      <button className="restart-btn" onClick={restart} title="Start the floats over (R)">&#8635; Restart</button>
+      <SimCanvas key={run} />
+    </React.Fragment>
+  );
 }
 
 // ---------- slide renderer ----------
@@ -654,6 +722,12 @@ function Stage({ slide, aspect }) {
         {slide.kicker && <p className="kicker">{slide.kicker}</p>}
         <h1 className="slide-title">{slide.title}</h1>
         {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+        {slide.logo && (
+          <div className="title-logo">
+            <img src={slide.logo} alt="MATE ROV Competition, Monterey Bay logo" />
+            <p>Used under the MATE ROV Competition Marketing Kit</p>
+          </div>
+        )}
         {slide.link && <p className="slide-link"><a href={slide.link.href}>{slide.link.text}</a></p>}
       </div>
     );
@@ -675,7 +749,7 @@ function Stage({ slide, aspect }) {
     );
   }
   if (["cycle", "map", "growth", "compare", "sim"].includes(slide.kind)) {
-    const Comp = { cycle: CycleCanvas, map: MapCanvas, growth: GrowthCanvas, compare: CompareCanvas, sim: SimCanvas }[slide.kind];
+    const Comp = { cycle: CycleCanvas, map: MapCanvas, growth: GrowthCanvas, compare: CompareCanvas, sim: SimSlide }[slide.kind];
     return (
       <div className={"stage tight " + arClass}>
         <p className="kicker">{slide.kicker}</p>

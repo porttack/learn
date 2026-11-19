@@ -32,6 +32,7 @@ the same job and are what we use in class.
 {% for lesson in lessons %}
   <li>
     <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
+    {% if lesson.slides_link %}<a class="lesson-companion-link" href="{{ lesson.slides_link | relative_url }}">Slides</a>{% endif %}
     {% if lesson.subtitle %}<p class="lesson-subtitle">{{ lesson.subtitle }}</p>{% endif %}
   </li>
 {% endfor %}
