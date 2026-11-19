@@ -1,0 +1,890 @@
+---
+title: "Profiling Float Slides"
+permalink: /cs50-psets/float-profile-slides/
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Profiling Float: Slides</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/cs50psets/favicon.svg">
+<style>
+  :root {
+    --accent: #0b5cad;
+    --ink: #1b1f23;
+    --paper: #ffffff;
+    --muted: #57606a;
+    --border: #d0d7de;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #e9edf1;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  #root { height: 100%; }
+  .app { display: flex; flex-direction: column; height: 100%; }
+  .stage-outer {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-height: 0;
+    position: relative;
+  }
+  /* Fixed-size design canvas, scaled to fit with a JS-computed transform, so every
+     slide is authored at generous pixel sizes (big type) without per-breakpoint tuning. */
+  .stage {
+    width: 1280px;
+    background: var(--paper);
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.18);
+    padding: 80px 96px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 0 0 auto;
+  }
+  .stage.ar-16-9 { height: 720px; }
+  .stage.ar-4-3 { height: 960px; }
+  .stage.tight { padding: 36px 64px; justify-content: flex-start; }
+  .stage.tight .kicker { font-size: 22px; margin-bottom: 6px; }
+  .stage.tight .slide-title { font-size: 48px; margin-bottom: 14px; }
+  .stage.dark { background: #0b1620; color: #fff; }
+  .stage.dark .kicker { color: #7fc4ff; }
+  .kicker {
+    font-size: 28px;
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin: 0 0 18px;
+  }
+  .slide-title { font-size: 64px; line-height: 1.1; margin: 0 0 40px; font-weight: 700; }
+  .slide-body { font-size: 36px; line-height: 1.5; }
+  .slide-body ul { margin: 0; padding-left: 1.1em; }
+  .slide-body li { margin-bottom: 22px; }
+  .slide-body li:last-child { margin-bottom: 0; }
+  .slide-body a { color: var(--accent); }
+  .slide-image-row { display: flex; gap: 40px; align-items: center; margin-top: 10px; }
+  .slide-image-row img { max-height: 400px; max-width: 360px; border-radius: 8px; border: 1px solid var(--border); }
+  .slide-image-row .slide-body { flex: 1 1 auto; font-size: 32px; }
+  .slide-image-row .slide-body li { margin-bottom: 16px; }
+  .slide-gallery-row { display: flex; gap: 30px; margin-top: 10px; align-items: flex-start; justify-content: center; }
+  .slide-gallery-item { flex: 0 1 auto; text-align: center; }
+  .slide-gallery-item img { max-width: 100%; max-height: 380px; border-radius: 8px; border: 1px solid var(--border); background: #fff; }
+  .slide-gallery-item .caption { margin-top: 12px; font-size: 22px; line-height: 1.3; max-width: 420px; }
+  .video-wrap { display: flex; flex-direction: column; align-items: center; }
+  .video-wrap iframe { width: 853px; height: 480px; border: 0; border-radius: 8px; background: #000; }
+  .video-wrap .caption { margin-top: 10px; font-size: 20px; color: #b8c7d6; text-align: center; }
+  .code-block {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 27px;
+    line-height: 1.7;
+    background: #f6f8fa;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 26px 32px;
+    white-space: pre;
+    overflow: hidden;
+  }
+  .code-note { font-size: 26px; color: var(--muted); margin-top: 22px; }
+  .depth-nav {
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 14px;
+    background: rgba(0,0,0,0.55); color: #fff; border: none; border-radius: 20px;
+    padding: 8px 18px; font-size: 14px; cursor: pointer; z-index: 3;
+  }
+  .depth-nav.depth-up { bottom: auto; top: 14px; }
+  .depth-nav:hover { background: rgba(0,0,0,0.75); }
+  .title-slide { text-align: left; justify-content: center; }
+  .title-slide .slide-title { font-size: 76px; margin-bottom: 16px; }
+  .title-slide .slide-subtitle { font-size: 34px; color: var(--muted); }
+  .title-slide .slide-link { font-size: 30px; margin-top: 26px; }
+  .title-slide .slide-link a { color: var(--accent); }
+  .slide-counter-badge { position: absolute; bottom: 18px; right: 24px; font-size: 15px; color: var(--muted); }
+  .toolbar {
+    flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 10px 16px;
+    background: #1b1f23; color: #fff; font-size: 14px; flex-wrap: wrap;
+  }
+  .toolbar button {
+    background: #333a42; color: #fff; border: 1px solid #4a545e; border-radius: 6px;
+    padding: 6px 12px; font-size: 14px; cursor: pointer;
+  }
+  .toolbar button:hover { background: #444e58; }
+  .toolbar button.active { background: var(--accent); border-color: var(--accent); }
+  .toolbar button:disabled { opacity: 0.4; cursor: default; }
+  .toolbar .spacer { flex: 1 1 auto; }
+  .toolbar .counter { min-width: 4.5em; text-align: center; }
+  .toolbar a.back-link { color: #9db8e8; text-decoration: none; font-size: 14px; }
+  .toolbar a.back-link:hover { text-decoration: underline; }
+  .notes-panel {
+    flex: 0 0 auto; background: #f6f8fa; border-top: 1px solid var(--border);
+    padding: 16px 24px; max-height: 26vh; overflow-y: auto; font-size: 17px; line-height: 1.5;
+  }
+  .notes-panel h3 { margin: 0 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  /* Side click zones only on slides without a video, so the video player stays clickable. */
+  .click-zone { position: absolute; top: 0; bottom: 0; width: 8%; cursor: pointer; }
+  .click-zone.left { left: 0; }
+  .click-zone.right { right: 0; }
+  .outline { max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; overflow-y: auto; height: 100%; }
+  .outline h1 { margin-bottom: 4px; }
+  .outline .outline-sub { color: var(--muted); margin-top: 0; }
+  .outline-slide { border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin: 20px 0; break-inside: avoid; }
+  .outline-slide h2 { margin: 0 0 8px; font-size: 22px; }
+  .outline-slide.outline-nested { margin: 12px 0 12px 32px; background: #f6f8fa; border-style: dashed; }
+  .outline-slide h3 { margin: 0 0 6px; font-size: 18px; color: var(--muted); }
+  .outline-slide .outline-bullets { color: var(--muted); font-size: 15px; margin: 0 0 14px; }
+  .outline-slide .outline-notes { font-size: 16px; line-height: 1.5; }
+  .outline-slide .outline-notes p:first-child { margin-top: 0; }
+  @media print { .toolbar { display: none !important; } .outline { height: auto; overflow: visible; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="/assets/js/cs50psets/float-data.js"></script>
+<script src="/assets/js/cs50psets/float-sim-data.js"></script>
+<script crossorigin src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/@babel/standalone@7.25.6/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+{% raw %}
+const { useState, useEffect, useRef, useCallback } = React;
+
+// Real Argo counts, one ten day window every six months, November 1997 to November 2026
+// (from Argovis). Each pair is [floats reporting, of those with chemistry and biology sensors].
+const GROWTH = {"dates":["1997-11","1998-05","1998-11","1999-05","1999-11","2000-05","2000-11","2001-05","2001-11","2002-05","2002-11","2003-05","2003-11","2004-05","2004-11","2005-05","2005-11","2006-05","2006-11","2007-05","2007-11","2008-05","2008-11","2009-05","2009-11","2010-05","2010-11","2011-05","2011-11","2012-05","2012-11","2013-05","2013-11","2014-05","2014-11","2015-05","2015-11","2016-05","2016-11","2017-05","2017-11","2018-05","2018-11","2019-05","2019-11","2020-05","2020-11","2021-05","2021-11","2022-05","2022-11","2023-05","2023-11","2024-05","2024-11","2025-05","2025-11","2026-05","2026-11"],"counts":[[15,0],[14,0],[22,0],[22,0],[38,0],[66,0],[90,0],[151,0],[277,0],[389,0],[513,0],[725,1],[853,6],[1062,6],[1259,18],[1562,20],[1853,52],[2048,63],[2318,104],[2417,113],[2557,138],[2740,192],[2867,197],[2963,209],[2769,196],[2834,199],[2851,217],[3017,216],[3245,217],[3326,198],[3460,216],[3390,241],[3469,239],[3540,286],[3534,299],[3742,320],[3852,313],[3837,330],[3840,313],[3895,309],[3871,317],[3759,311],[3876,340],[3659,344],[3869,346],[3929,368],[3821,338],[3883,392],[3834,413],[3930,449],[3789,466],[3828,511],[3839,562],[3840,591],[3893,677],[4181,775],[4170,834],[4247,928],[4052,867]]};
+
+// Edit this array to change the deck. `bullets` is what students read on the slide;
+// `notes` shows only in the notes panel or the printable outline.
+// A top-level slide can carry a `down` array of extra slides (down arrow or "More").
+// Videos load only when their slide is on screen, so each one starts when you arrive.
+const SLIDES = [
+  {
+    kind: "title",
+    kicker: "Profiling Float",
+    title: "Robots that watch the ocean",
+    subtitle: "Then you write the brain, and the judge, for one",
+    notes: "About 25 minutes with the videos. The first half is the story of why floats exist and what they measure. The second half is the problem. If you are short on time, skip the 'More' slides and the second video. Videos autoplay muted: click the video if you want sound. If your school network blocks YouTube, skip to the map slide and tell the story from the notes."
+  },
+  {
+    kind: "video",
+    dark: true,
+    kicker: "Start here",
+    title: "The ocean never stops moving",
+    videoId: "JQaEKk569Ew",
+    caption: "NASA's Perpetual Ocean: a computer model of surface currents, built from real measurements. Muted. Click the video for sound.",
+    notes: "Let it play for a few seconds without talking. Then ask: 'This is a model. How would you check it against the real ocean?' Take two or three answers. The point to land: models need measurements, and the ocean is huge. Credit: NASA/Goddard Space Flight Center Scientific Visualization Studio, using ECCO2 model output."
+  },
+  {
+    kind: "bullets",
+    kicker: "The problem",
+    title: "How do you measure something this big?",
+    bullets: [
+      "Oceans cover about 70 percent of Earth",
+      "A research ship measures one place, one time",
+      "Ships are expensive to run, and storms stop them",
+      "So scientists sent robots"
+    ],
+    notes: "Ask first: 'How would you measure the temperature of the whole ocean?' Let them say thermometers on boats. Then the turn: robots that go by themselves, stay for years, and talk to a satellite. Do not explain how yet. The next slide does."
+  },
+  {
+    kind: "image",
+    kicker: "Meet the Argo float",
+    title: "A robot with no propeller",
+    image: "/assets/img/cs50psets/argo-float-aranda.jpg",
+    bullets: [
+      "About 2 meters long",
+      "No thrusters. It changes its volume with oil in a rubber bladder",
+      "More volume: it rises. Less: it sinks",
+      "Nobody steers it"
+    ],
+    notes: "The photo is a real float on a research ship before it goes over the side (Antti Leppanen, CC BY 4.0, via Wikimedia Commons). The key idea to plant: the float cannot swim. It only changes how heavy it is for its size. That is the same buoyancy engine idea in the MATE rules, and it is why overshooting a depth is a real problem for the code they will write.",
+    down: [
+      {
+        kind: "gallery",
+        kicker: "Inside",
+        title: "Where the buoyancy engine is",
+        images: [
+          { src: "/assets/img/cs50psets/argo-cutaway.png", caption: "A cutaway: antenna at the top. Near the bottom, a pump moves oil in and out of a rubber bladder." }
+        ],
+        notes: "Public domain cutaway from Wikimedia Commons. Point at the pump and the bladder near the bottom. The MATE float must be under 60 cm, so a team's version is much smaller than this one."
+      }
+    ]
+  },
+  {
+    kind: "cycle",
+    kicker: "One trip",
+    title: "Every 10 days, the same dive",
+    notes: "Watch the animation loop once while you narrate: sink to about 1,000 meters and drift with the current for most of the ten days, dive to 2,000, then rise slowly while measuring temperature and salinity at every depth, then at the surface send the data to a satellite and start again. Nobody is in the loop. This diagram is not to scale in time. Ask: 'What is the float measuring on the way UP, and why not on the way down?' (Answer to offer: the rise is slow and steady, so the readings are clean.)"
+  },
+  {
+    kind: "map",
+    kicker: "Where are they?",
+    title: "About 4,000 floats, right now",
+    notes: "Each dot is one real float, where it last reported between 1 and 10 November 2026. No coastlines are drawn: the floats draw the oceans for us. Ask them to find the Atlantic, the Pacific, the Mediterranean, and the empty patches. Teal dots have chemistry and biology sensors. Data: Argo, via Argovis."
+  },
+  {
+    kind: "growth",
+    kicker: "Growth",
+    title: "From 15 floats to about 4,000",
+    notes: "Real counts, from November 1997 to November 2026. Floats that reported in a ten day window, every six months. The total grows fast until about 2015 and then levels off, because old floats are replaced as they die. The teal line, floats with chemistry and biology sensors, keeps climbing: 313 in 2015, 867 now. Early counts run a little low because a float that reports less often than every ten days can be missed in a window."
+  },
+  {
+    kind: "video",
+    dark: true,
+    kicker: "Floats get new senses",
+    title: "Chemistry and biology floats",
+    videoId: "lXzwQOFJZ1w",
+    caption: "A global array of robotic floats (GO-BGC). Muted. Click the video for sound.",
+    notes: "These floats add oxygen, nitrate, chlorophyll and more. GO-BGC is the project the 2027 MATE Floats task is based on. If you only have time for one video after the opening, this is the one. Let it play a short while, then move on.",
+    down: [
+      {
+        kind: "video",
+        dark: true,
+        kicker: "A fun detail",
+        title: "A float that avoids icebergs",
+        videoId: "yYC2OPiu1Gw",
+        caption: "How a SOCCOM float detects ice. Muted. Click the video for sound.",
+        notes: "Short animation. Good for a curious class: a float rising under sea ice can hit the ice, so it checks the temperature on the way up and stays down when it senses ice above."
+      },
+      {
+        kind: "video",
+        dark: true,
+        kicker: "The Southern Ocean",
+        title: "SOCCOM: a fleet around Antarctica",
+        videoId: "30XfCTb6ja0",
+        caption: "SOCCOM brings a fleet of robotic floats to the Southern Ocean. Muted. Click the video for sound.",
+        notes: "SOCCOM put chemistry and biology floats around Antarctica, where ships rarely go. Only play this if there is time and interest."
+      }
+    ]
+  },
+  {
+    kind: "compare",
+    kicker: "Two oceans",
+    title: "Same trip. Very different water.",
+    notes: "This cycles by itself through temperature, salinity, oxygen and nitrate for two real floats: one in the North Atlantic, one in the North Pacific. Let it run a full loop, then ask: 'What differs? What is the same?' The big one is deep oxygen: the deep Atlantic has a lot, the deep North Pacific very little. Deep Atlantic water was at the surface relatively recently. Deep North Pacific water has been below for a very long time, using its oxygen up while nutrients such as nitrate pile up. Stress that this is one float each, so it is an example, not a proof. Ask how they would check whether it is typical (more floats)."
+  },
+  {
+    kind: "bullets",
+    kicker: "Zoom in",
+    title: "The competition: MATE Floats!",
+    bullets: [
+      "Student teams build a float under 60 cm long",
+      "Sink to the hold depth. Stay within 0.33 m for 30 seconds in a row",
+      "Sink to the deep depth, then rise taking a reading every 0.5 m",
+      "Send the data. Then graph it"
+    ],
+    notes: "This is the 2027 MATE ROV Competition float task. Depths depend on the pool. Ours is 13 feet, about 3.96 meters, so the numbers on the next slides are a hold depth of 1.0 m and a deep depth of 2.0 m. The world championship pool is deeper (hold 2.0 m, deep 4.0 m). Make clear that the real float's control program is the team's own engineering work. Today's problem does a smaller, different thing."
+  },
+  {
+    kind: "bullets",
+    kicker: "Today's problem",
+    title: "Nobody watches underwater. The judge reads the data.",
+    bullets: [
+      "A float sends packets: [seconds, depth]",
+      "The judge looks only at the log of packets",
+      "Held 30 seconds in the band: +5",
+      "Touched the bottom: -5"
+    ],
+    notes: "This is the framing for the problem: they write the float's brain (decide) and the judge (touched_bottom, in_band, held). The real scoresheet has more lines, including the readings on the way up, which this problem does not judge. A packet is a small list of two numbers. The float sends one per second in this problem."
+  },
+  {
+    kind: "sim",
+    kicker: "Watch",
+    title: "Three simulated floats",
+    notes: "This loops by itself: Steady, Heavy, Jittery. Narrate the first loop. Steady holds and stays off the floor: score 5. Heavy holds but sinks into the floor line: score 0. Jittery's float is fine but its sensor is noisy, so the packets wobble out of the band and the hold fails: score 0. The point to make: the judge cannot see the float, only the packets. Ask: 'Which one would you trust?'"
+  },
+  {
+    kind: "code",
+    kicker: "Your job",
+    title: "Four functions",
+    code: "def decide(depth, speed, target):  # steer the float\ndef touched_bottom(log):           # hit the floor?\ndef in_band(depth):                # inside the hold band?\ndef held(log):                     # 30 packets in a row?",
+    codeNote: "decide is mostly given. The simulator is provided too.",
+    notes: "These are the four functions. decide has its first branch filled in. in_band is a one-line question about one number. touched_bottom is a loop with an early return. held is the new idea: counting packets in a row, and starting over after a miss. The simulator that runs the three floats is provided: they paste it in after their four functions."
+  },
+  {
+    kind: "bullets",
+    kicker: "Plan",
+    title: "Work in pairs",
+    bullets: [
+      { text: "Open the problem page", href: "/cs50-psets/float-profile/" },
+      "Finish decide, paste the simulator, run it, and watch the dive",
+      "Then touched_bottom, in_band, and held",
+      "check50 then submit50"
+    ],
+    notes: "Pairs decide who types first and swap after each function. The hints on the page include a code skeleton for held, so nobody should be stuck for long. Remind them check50 tests the four functions even before the simulator is pasted in, and that one last check runs the whole program.",
+    down: [
+      {
+        kind: "bullets",
+        kicker: "Extra credit",
+        title: "A smarter decide",
+        bullets: [
+          "Heavy sinks into the floor. Make it score 5",
+          "Do not change the numbers in FLOATS",
+          "Use speed. Why might it matter?",
+          "Honor code: your own thinking"
+        ],
+        notes: "Optional, on the honor code, and not checked by check50. A decide that looks at speed as well as depth can lift Heavy to 5 without changing the float's hardware. Do not hint further than the question on the slide."
+      }
+    ]
+  },
+  {
+    kind: "title",
+    title: "Questions?",
+    subtitle: "Open the problem page and start with decide.",
+    link: { text: "learn.porttack.com/cs50-psets/float-profile", href: "/cs50-psets/float-profile/" },
+    notes: "Open the floor briefly, then pairs start."
+  }
+];
+
+// ---------- helpers ----------
+function renderBullets(bullets) {
+  return (
+    <ul>
+      {bullets.map((b, i) => (
+        <li key={i}>{typeof b === "string" ? b : <a href={b.href}>{b.text}</a>}</li>
+      ))}
+    </ul>
+  );
+}
+
+const DPR = 2;   // draw at twice the design size so scaled-up slides stay sharp
+function useCanvas(w, h, draw) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const c = ref.current;
+    c.width = w * DPR; c.height = h * DPR;
+    const ctx = c.getContext("2d");
+    ctx.scale(DPR, DPR);
+    let raf, t0 = null;
+    const loop = (ts) => {
+      if (t0 === null) t0 = ts;
+      draw(ctx, (ts - t0) / 1000, w, h);
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+  return <canvas ref={ref} style={{ width: w + "px", height: h + "px", display: "block" }} />;
+}
+
+function wrapText(ctx, text, x, y, maxW, lineH) {
+  const words = text.split(" ");
+  let line = "", yy = y;
+  words.forEach((wd) => {
+    const test = line ? line + " " + wd : wd;
+    if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line, x, yy); line = wd; yy += lineH; }
+    else line = test;
+  });
+  if (line) ctx.fillText(line, x, yy);
+  return yy + lineH;
+}
+
+// ---------- the Argo trip, animated ----------
+function CycleCanvas() {
+  const draw = useCallback((ctx, t, w, h) => {
+    const L = 90, R = 250, T = 30, B = 40, pw = w - L - R, ph = h - T - B;
+    const X = (f) => L + f * pw;
+    const Y = (m) => T + m / 2000 * ph;
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#e4eef6"; ctx.fillRect(L, T, pw, ph);
+    ctx.strokeStyle = "#b9cfe2"; ctx.lineWidth = 1; ctx.fillStyle = "#334"; ctx.font = "20px sans-serif";
+    ctx.textAlign = "right";
+    [0, 1000, 2000].forEach((m) => {
+      ctx.beginPath(); ctx.moveTo(L, Y(m)); ctx.lineTo(L + pw, Y(m)); ctx.stroke();
+      ctx.fillText(m === 0 ? "surface" : m.toLocaleString("en-US") + " m", L - 10, Y(m) + 7);
+    });
+    ctx.textAlign = "start";
+    // the path: [fraction of the 10 days, depth]
+    const pts = [[0, 0], [0.06, 1000], [0.80, 1000], [0.86, 2000], [0.97, 0], [1, 0]];
+    ctx.strokeStyle = "#9aa7b4"; ctx.lineWidth = 3; ctx.beginPath();
+    pts.forEach((p, i) => { if (i === 0) ctx.moveTo(X(p[0]), Y(p[1])); else ctx.lineTo(X(p[0]), Y(p[1])); });
+    ctx.stroke();
+    const period = 14, f = (t % period) / period;
+    let pos = [0, 0], seg = 0;
+    for (let i = 0; i < pts.length - 1; i++) {
+      if (f >= pts[i][0] && f <= pts[i + 1][0]) {
+        const k = (f - pts[i][0]) / (pts[i + 1][0] - pts[i][0]);
+        pos = [f, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * k]; seg = i; break;
+      }
+    }
+    ctx.strokeStyle = seg === 3 || seg === 4 ? "#d9480f" : "#0b5cad"; ctx.lineWidth = 5; ctx.beginPath();
+    for (let i = 0; i <= seg; i++) {
+      const a = pts[i], b = i === seg ? pos : pts[i + 1];
+      if (i === 0) ctx.moveTo(X(a[0]), Y(a[1]));
+      ctx.lineTo(X(b[0]), Y(b[1]));
+    }
+    ctx.stroke();
+    // labels, each next to the part of the path it describes
+    ctx.fillStyle = "#222"; ctx.font = "bold 22px sans-serif";
+    ctx.textAlign = "start";
+    ctx.fillText("sink to 1,000 m", X(0.075), Y(480));
+    ctx.textAlign = "center";
+    ctx.fillText("drift with the current, about 9 days", X(0.43), Y(1000) - 16);
+    ctx.textAlign = "right";
+    ctx.fillText("dive to 2,000 m", X(0.835), Y(1620));
+    ctx.textAlign = "start";
+    ctx.fillStyle = "#b53a0a";
+    ctx.fillText("rise slowly,", X(0.97) + 16, Y(900));
+    ctx.fillText("measuring at", X(0.97) + 16, Y(900) + 28);
+    ctx.fillText("every depth", X(0.97) + 16, Y(900) + 56);
+    ctx.fillStyle = "#222";
+    ctx.fillText("at the top: send", X(1.0) + 16, Y(0) + 24);
+    ctx.fillText("data to a satellite", X(1.0) + 16, Y(0) + 52);
+    ctx.fillStyle = "#f2c200"; ctx.strokeStyle = "#333"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(X(pos[0]), Y(pos[1]), 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#555"; ctx.font = "20px sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("one trip, about 10 days (not to scale)", L + pw / 2, h - 8);
+    ctx.textAlign = "start";
+  }, []);
+  return useCanvas(1088, 430, draw);
+}
+
+// ---------- the real map ----------
+function MapCanvas() {
+  const order = useRef(null);
+  const draw = useCallback((ctx, t, w, h) => {
+    const D = window.FLOAT_DATA;
+    const floats = D.snapshot.floats, n = floats.length;
+    if (!order.current) {
+      order.current = floats.map((_, i) => i);
+      let s = 7;
+      for (let i = n - 1; i > 0; i--) { s = (s * 1103515245 + 12345) & 0x7fffffff; const j = s % (i + 1); const tmp = order.current[i]; order.current[i] = order.current[j]; order.current[j] = tmp; }
+    }
+    const MW = 840, mh = 420, ox = Math.round((w - MW) / 2);
+    const proj = (lon, lat) => [ox + (lon + 180) / 360 * MW, (85 - lat) / 165 * mh];
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = "#e4eef6"; ctx.fillRect(ox, 0, MW, mh);
+    ctx.strokeStyle = "rgba(60,90,120,0.18)"; ctx.lineWidth = 1;
+    for (let lon = -150; lon <= 150; lon += 30) { const p = proj(lon, 0); ctx.beginPath(); ctx.moveTo(p[0], 0); ctx.lineTo(p[0], mh); ctx.stroke(); }
+    for (let lat = -60; lat <= 60; lat += 30) { const p = proj(0, lat); ctx.beginPath(); ctx.moveTo(ox, p[1]); ctx.lineTo(ox + MW, p[1]); ctx.stroke(); }
+    const reveal = Math.min(1, t / 3.5);
+    const shown = Math.floor(reveal * n);
+    for (let k = 0; k < shown; k++) {
+      const f = floats[order.current[k]], p = proj(f[0], f[1]);
+      ctx.fillStyle = f[2] ? "rgba(0,150,140,0.95)" : "rgba(40,58,78,0.75)";
+      ctx.fillRect(p[0] - 1.4, p[1] - 1.4, 2.8, 2.8);
+    }
+    ctx.fillStyle = "#111"; ctx.font = "bold 30px sans-serif";
+    ctx.fillText(shown.toLocaleString("en-US") + " floats", ox, mh + 38);
+    ctx.font = "21px sans-serif"; ctx.fillStyle = "#444";
+    ctx.fillText("One dot per float, where it last reported, 1 to 10 November 2026.", ox, mh + 72);
+    ctx.fillText("Teal dots also carry chemistry and biology sensors.", ox, mh + 100);
+  }, []);
+  return useCanvas(1088, 540, draw);
+}
+
+// ---------- real growth, drawn in ----------
+function GrowthCanvas() {
+  const draw = useCallback((ctx, t, w, h) => {
+    const L = 76, R = 150, T = 20, B = 46, pw = w - L - R, ph = h - T - B;
+    const N = GROWTH.dates.length, max = 5000;
+    const X = (k) => L + k / (N - 1) * pw, Y = (v) => T + ph - v / max * ph;
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = "#e3e6ea"; ctx.fillStyle = "#444"; ctx.font = "20px sans-serif"; ctx.lineWidth = 1; ctx.textAlign = "right";
+    for (let v = 0; v <= max; v += 1000) { ctx.beginPath(); ctx.moveTo(L, Y(v)); ctx.lineTo(L + pw, Y(v)); ctx.stroke(); ctx.fillText(v.toLocaleString("en-US"), L - 8, Y(v) + 7); }
+    ctx.textAlign = "center";
+    GROWTH.dates.forEach((d, k) => { const yr = parseInt(d.slice(0, 4), 10); if (d.slice(5) === "11" && yr % 5 === 0) ctx.fillText(String(yr), X(k), h - 14); });
+    ctx.textAlign = "start";
+    const prog = Math.min(1, t / 6), upto = prog * (N - 1);
+    [[0, "#34495e", "all floats"], [1, "#00968c", "chemistry and biology"]].forEach((ln) => {
+      ctx.strokeStyle = ln[1]; ctx.lineWidth = 4; ctx.beginPath();
+      for (let k = 0; k <= Math.floor(upto); k++) { const v = GROWTH.counts[k][ln[0]]; if (k === 0) ctx.moveTo(X(k), Y(v)); else ctx.lineTo(X(k), Y(v)); }
+      const k0 = Math.floor(upto), fr = upto - k0;
+      if (k0 < N - 1) { const v = GROWTH.counts[k0][ln[0]] + (GROWTH.counts[k0 + 1][ln[0]] - GROWTH.counts[k0][ln[0]]) * fr; ctx.lineTo(X(upto), Y(v)); }
+      ctx.stroke();
+      const idx = Math.min(N - 1, Math.round(upto)), val = GROWTH.counts[idx][ln[0]];
+      ctx.fillStyle = ln[1]; ctx.font = "bold 24px sans-serif";
+      ctx.fillText(val.toLocaleString("en-US"), X(upto) + 10, Y(val) + 8);
+      ctx.font = "20px sans-serif"; ctx.fillText(ln[2], L + 12, ln[0] === 0 ? T + 24 : T + 52);
+    });
+    const idx = Math.min(N - 1, Math.round(upto)), d = GROWTH.dates[idx];
+    ctx.fillStyle = "#111"; ctx.font = "bold 28px sans-serif";
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    ctx.fillText(months[parseInt(d.slice(5), 10) - 1] + " " + d.slice(0, 4), L + 12, T + 96);
+  }, []);
+  return useCanvas(1088, 470, draw);
+}
+
+// ---------- two oceans, two real floats, cycling through what they measured ----------
+const VARS = [
+  { key: "temperature", label: "Temperature", unit: "°C", at: 1500, atLabel: "At 1,500 m",
+    text: "Both are warm on top and cold below. The Atlantic stays warmer at depth." },
+  { key: "salinity", label: "Salinity", unit: "psu", at: 10, atLabel: "Near the surface",
+    text: "The Atlantic is the saltiest major ocean, and it shows near the top." },
+  { key: "doxy", label: "Oxygen", unit: "µmol/kg", at: 1500, atLabel: "At 1,500 m",
+    text: "Deep Atlantic water was at the surface recently, so it is rich in oxygen. Deep North Pacific water has been below a very long time and used it up." },
+  { key: "nitrate", label: "Nitrate", unit: "µmol/kg", at: 1500, atLabel: "At 1,500 m",
+    text: "Nutrients pile up in old water, so the deep Pacific has far more nitrate." }
+];
+function nearest(series, z) {
+  let best = null, bd = Infinity;
+  (series || []).forEach((p) => { const d = Math.abs(p[0] - z); if (d < bd) { bd = d; best = p; } });
+  return best;
+}
+function CompareCanvas() {
+  const draw = useCallback((ctx, t, w, h) => {
+    const P = window.FLOAT_DATA.profiles;
+    const A = P[2], B = P[1];                       // North Atlantic, North Pacific
+    const period = 8, k = Math.floor(t / period) % VARS.length, v = VARS[k];
+    const fade = Math.min(1, (t % period) / 0.6);
+    const L = 74, T = 20, B_ = 52, cw = 560, ph = h - T - B_;
+    const sa = A.s[v.key] || [], sb = B.s[v.key] || [];
+    let lo = Infinity, hi = -Infinity;
+    sa.concat(sb).forEach((p) => { if (p[1] < lo) lo = p[1]; if (p[1] > hi) hi = p[1]; });
+    const pad = (hi - lo) * 0.06; lo -= pad; hi += pad;
+    if (v.key === "doxy" || v.key === "nitrate") lo = Math.max(0, lo);
+    const X = (val) => L + (val - lo) / (hi - lo) * (cw - L - 10), Y = (z) => T + z / 2000 * ph;
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = "#e3e6ea"; ctx.fillStyle = "#444"; ctx.font = "19px sans-serif"; ctx.lineWidth = 1; ctx.textAlign = "right";
+    for (let z = 0; z <= 2000; z += 500) { ctx.beginPath(); ctx.moveTo(L, Y(z)); ctx.lineTo(cw - 10, Y(z)); ctx.stroke(); ctx.fillText(z === 0 ? "surface" : z.toLocaleString("en-US") + " m", L - 8, Y(z) + 6); }
+    ctx.textAlign = "center";
+    const step = (hi - lo) / 4;
+    for (let i = 0; i <= 4; i++) { const val = lo + i * step; ctx.fillText(val.toFixed(Math.abs(hi) < 10 ? 1 : 0), X(val), h - 26); }
+    ctx.font = "bold 20px sans-serif"; ctx.fillStyle = "#222";
+    ctx.fillText(v.label + " (" + v.unit + ")", L + (cw - L) / 2, h - 4);
+    ctx.textAlign = "start";
+    ctx.globalAlpha = fade;
+    [[sa, "#B3447F"], [sb, "#009E73"]].forEach((pair) => {
+      ctx.strokeStyle = pair[1]; ctx.fillStyle = pair[1]; ctx.lineWidth = 4; ctx.beginPath();
+      pair[0].forEach((p, i) => { if (i === 0) ctx.moveTo(X(p[1]), Y(p[0])); else ctx.lineTo(X(p[1]), Y(p[0])); });
+      ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    // the right-hand panel
+    const x0 = cw + 40, pw2 = w - x0 - 6;
+    ctx.fillStyle = "#B3447F"; ctx.fillRect(x0, T + 6, 22, 22);
+    ctx.fillStyle = "#222"; ctx.font = "bold 26px sans-serif"; ctx.fillText("North Atlantic", x0 + 32, T + 26);
+    ctx.fillStyle = "#009E73"; ctx.fillRect(x0, T + 44, 22, 22);
+    ctx.fillStyle = "#222"; ctx.fillText("North Pacific", x0 + 32, T + 64);
+    ctx.globalAlpha = fade;
+    ctx.fillStyle = "#111"; ctx.font = "bold 30px sans-serif"; ctx.fillText(v.label, x0, T + 120);
+    const pa = nearest(sa, v.at), pb = nearest(sb, v.at);
+    ctx.font = "24px sans-serif"; ctx.fillStyle = "#555"; ctx.fillText(v.atLabel + ":", x0, T + 160);
+    const fmtv = (p) => (p ? (Math.abs(p[1]) >= 100 ? p[1].toFixed(0) : p[1].toFixed(1)) + " " + v.unit : "no reading");
+    ctx.fillStyle = "#B3447F"; ctx.font = "bold 28px sans-serif"; ctx.fillText("Atlantic  " + fmtv(pa), x0, T + 200);
+    ctx.fillStyle = "#009E73"; ctx.fillText("Pacific   " + fmtv(pb), x0, T + 238);
+    ctx.fillStyle = "#222"; ctx.font = "24px sans-serif";
+    wrapText(ctx, v.text, x0, T + 284, pw2, 32);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "#777"; ctx.font = "17px sans-serif";
+    wrapText(ctx, "One real float each (" + A.date + " Atlantic, " + B.date + " Pacific). An example, not a proof.", x0, h - 56, pw2, 22);
+  }, []);
+  return useCanvas(1088, 540, draw);
+}
+
+// ---------- the three simulated floats, looping by themselves ----------
+const SIM_NOTES = {
+  Steady: "holds its depth and stays off the floor",
+  Heavy: "holds, but sinks into the floor",
+  Jittery: "the float is fine, the sensor is noisy"
+};
+function SimCanvas() {
+  const draw = useCallback((ctx, t, w, h) => {
+    const S = window.FLOAT_SIM, POOL = 3.96, LEN = 0.6, HOLD = 1.0, BAND = 0.33, FLOOR = POOL - LEN;
+    const PLAY = 11, HOLDT = 4, per = PLAY + HOLDT;
+    const idx = Math.floor(t / per) % S.length, tau = t % per, d = S[idx];
+    const p = Math.min(1, tau / PLAY), n = d.log.length;
+    const i = Math.max(0, Math.min(n - 1, Math.floor(p * n) - 1));
+    const done = p >= 1;
+    ctx.clearRect(0, 0, w, h);
+    // title line
+    ctx.fillStyle = "#111"; ctx.font = "bold 30px sans-serif"; ctx.fillText(d.name, 12, 30);
+    ctx.font = "24px sans-serif"; ctx.fillStyle = "#555"; ctx.fillText(SIM_NOTES[d.name] || "", 12 + ctx.measureText(d.name).width * 1.15 + 18, 30);
+    // pool, left
+    const PW = 200, top = 56, bot = h - 8, span = bot - top, minD = -0.35, maxD = POOL + 0.15;
+    const Y = (m) => top + (m - minD) / (maxD - minD) * span;
+    ctx.fillStyle = "#cfe6f5"; ctx.fillRect(0, Y(0), PW, Y(POOL) - Y(0));
+    ctx.fillStyle = "#9a8f7e"; ctx.fillRect(0, Y(POOL), PW, bot - Y(POOL) + 6);
+    ctx.strokeStyle = "#2b6a9b"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, Y(0)); ctx.lineTo(PW, Y(0)); ctx.stroke();
+    ctx.fillStyle = "rgba(80,190,100,0.30)"; ctx.fillRect(0, Y(HOLD - BAND), PW, Y(HOLD + BAND) - Y(HOLD - BAND));
+    ctx.fillStyle = "#2f7a3a"; ctx.font = "16px sans-serif"; ctx.fillText("hold band", PW - 74, Y(HOLD - BAND) + 16);
+    ctx.strokeStyle = "#c92a2a"; ctx.setLineDash([6, 4]); ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(0, Y(FLOOR)); ctx.lineTo(PW, Y(FLOOR)); ctx.stroke(); ctx.setLineDash([]);
+    const depth = d.true[i], touching = depth >= FLOOR - 1e-9;
+    const fx = PW * 0.58, fw = 28, y0 = Y(depth), y1 = Y(depth + LEN);
+    ctx.fillStyle = touching ? "#e03131" : "#f2c200"; ctx.strokeStyle = "#333"; ctx.lineWidth = 1.5;
+    ctx.fillRect(fx - fw / 2, y0, fw, y1 - y0); ctx.strokeRect(fx - fw / 2, y0, fw, y1 - y0);
+    ctx.beginPath(); ctx.moveTo(fx, y0); ctx.lineTo(fx, y0 - 10); ctx.stroke();
+    ctx.fillStyle = "#222"; ctx.font = "bold 16px sans-serif"; ctx.fillText(depth.toFixed(2) + " m", fx + fw / 2 + 6, y0 + 14);
+    if (touching) { ctx.fillStyle = "#c92a2a"; ctx.fillText("touching the floor!", 6, Y(POOL) - 8); }
+    // graph, right: the packets
+    const gx = PW + 70, gR = 14, gw = w - gx - gR, gy = 56, gh = h - 56 - 40, maxT = n, maxD2 = 3.6;
+    const GX = (s) => gx + s / maxT * gw, GY = (m) => gy + m / maxD2 * gh;
+    ctx.fillStyle = "rgba(80,190,100,0.28)"; ctx.fillRect(gx, GY(HOLD - BAND), gw, GY(HOLD + BAND) - GY(HOLD - BAND));
+    ctx.strokeStyle = "#e6e6e6"; ctx.fillStyle = "#444"; ctx.font = "17px sans-serif"; ctx.lineWidth = 1; ctx.textAlign = "right";
+    for (let m = 0; m <= 3.5; m += 0.5) { ctx.beginPath(); ctx.moveTo(gx, GY(m)); ctx.lineTo(gx + gw, GY(m)); ctx.stroke(); ctx.fillText(m.toFixed(1), gx - 8, GY(m) + 6); }
+    ctx.textAlign = "center";
+    for (let s = 0; s <= maxT; s += 20) { ctx.beginPath(); ctx.moveTo(GX(s), gy); ctx.lineTo(GX(s), gy + gh); ctx.stroke(); ctx.fillText(String(s), GX(s), gy + gh + 20); }
+    ctx.fillStyle = "#222"; ctx.font = "bold 17px sans-serif"; ctx.fillText("Time (seconds)", gx + gw / 2, h - 4);
+    ctx.save(); ctx.translate(gx - 48, gy + gh / 2); ctx.rotate(-Math.PI / 2); ctx.fillText("Depth of the packets (m)", 0, 0); ctx.restore();
+    ctx.textAlign = "start";
+    ctx.strokeStyle = "#c92a2a"; ctx.setLineDash([6, 4]); ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(gx, GY(FLOOR)); ctx.lineTo(gx + gw, GY(FLOOR)); ctx.stroke(); ctx.setLineDash([]);
+    if (done && d.hold) { ctx.fillStyle = "rgba(255,200,0,0.35)"; ctx.fillRect(GX(d.hold[0]), gy, GX(d.hold[1]) - GX(d.hold[0]), gh); }
+    if (d.settings.noise > 0) {
+      ctx.strokeStyle = "#9aa0a6"; ctx.lineWidth = 2; ctx.beginPath();
+      for (let k = 0; k <= i; k++) { if (k === 0) ctx.moveTo(GX(k + 1), GY(d.true[k])); else ctx.lineTo(GX(k + 1), GY(d.true[k])); }
+      ctx.stroke();
+    }
+    ctx.strokeStyle = "#0b5cad"; ctx.lineWidth = 2.5; ctx.beginPath();
+    for (let k = 0; k <= i; k++) { const px = GX(d.log[k][0]), py = GY(d.log[k][1]); if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py); }
+    ctx.stroke();
+    if (done) {   // the judge's verdict, on the title line
+      const verdict = "Hold: " + (d.hold ? "yes (+5)" : "FAILED (0)") + "     Floor: " + (d.bottom ? "touched (-5)" : "stayed off (0)") + "     Score: " + d.score;
+      ctx.font = "bold 24px sans-serif"; ctx.textAlign = "right";
+      ctx.fillStyle = d.score > 0 ? "#2f7a3a" : "#b53a0a";
+      ctx.fillText(verdict, w - 12, 30);
+      ctx.textAlign = "start";
+    }
+  }, []);
+  return useCanvas(1088, 470, draw);
+}
+
+// ---------- slide renderer ----------
+function Stage({ slide, aspect }) {
+  const arClass = aspect === "4:3" ? "ar-4-3" : "ar-16-9";
+  if (slide.kind === "title") {
+    return (
+      <div className={"stage title-slide " + arClass}>
+        {slide.kicker && <p className="kicker">{slide.kicker}</p>}
+        <h1 className="slide-title">{slide.title}</h1>
+        {slide.subtitle && <p className="slide-subtitle">{slide.subtitle}</p>}
+        {slide.link && <p className="slide-link"><a href={slide.link.href}>{slide.link.text}</a></p>}
+      </div>
+    );
+  }
+  if (slide.kind === "video") {
+    const src = "https://www.youtube-nocookie.com/embed/" + slide.videoId +
+      "?autoplay=1&mute=1&playsinline=1&rel=0&modestbranding=1&loop=1&playlist=" + slide.videoId;
+    return (
+      <div className={"stage tight dark " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="video-wrap">
+          <iframe key={slide.videoId} src={src} title={slide.title}
+                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"></iframe>
+          <p className="caption">{slide.caption}</p>
+        </div>
+      </div>
+    );
+  }
+  if (["cycle", "map", "growth", "compare", "sim"].includes(slide.kind)) {
+    const Comp = { cycle: CycleCanvas, map: MapCanvas, growth: GrowthCanvas, compare: CompareCanvas, sim: SimCanvas }[slide.kind];
+    return (
+      <div className={"stage tight " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <Comp key={slide.title} />
+      </div>
+    );
+  }
+  if (slide.kind === "code") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="code-block">{slide.code}</div>
+        {slide.codeNote && <p className="code-note">{slide.codeNote}</p>}
+      </div>
+    );
+  }
+  if (slide.kind === "image") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-image-row">
+          <img src={slide.image} alt="" />
+          <div className="slide-body">{renderBullets(slide.bullets)}</div>
+        </div>
+      </div>
+    );
+  }
+  if (slide.kind === "gallery") {
+    return (
+      <div className={"stage " + arClass}>
+        <p className="kicker">{slide.kicker}</p>
+        <h1 className="slide-title">{slide.title}</h1>
+        <div className="slide-gallery-row">
+          {slide.images.map((im, i) => (
+            <div className="slide-gallery-item" key={i}>
+              <img src={im.src} alt="" />
+              <p className="caption">{im.caption}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className={"stage " + arClass}>
+      <p className="kicker">{slide.kicker}</p>
+      <h1 className="slide-title">{slide.title}</h1>
+      <div className="slide-body">{renderBullets(slide.bullets)}</div>
+    </div>
+  );
+}
+
+function ScaledStage({ slide, aspect }) {
+  const outerRef = useRef(null);
+  const [scale, setScale] = useState(1);
+  const designW = 1280;
+  const designH = aspect === "4:3" ? 960 : 720;
+  useEffect(() => {
+    const el = outerRef.current;
+    if (!el) return;
+    const recompute = () => {
+      const rect = el.getBoundingClientRect();
+      const s = Math.min((rect.width * 0.94) / designW, (rect.height * 0.94) / designH);
+      setScale(s > 0 ? s : 1);
+    };
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => { ro.disconnect(); window.removeEventListener("resize", recompute); };
+  }, [designH]);
+  return (
+    <div className="stage-outer" ref={outerRef}>
+      <div style={{ transform: `scale(${scale})`, transformOrigin: "center center" }}>
+        <Stage slide={slide} aspect={aspect} />
+      </div>
+    </div>
+  );
+}
+
+function bulletsToText(bullets) { return bullets.map(b => (typeof b === "string" ? b : b.text)).join(" / "); }
+function OutlineCard({ slide, heading, nested }) {
+  return (
+    <div className={"outline-slide" + (nested ? " outline-nested" : "")}>
+      {nested ? <h3>{heading}</h3> : <h2>{heading}</h2>}
+      {slide.bullets && <p className="outline-bullets">On slide: {bulletsToText(slide.bullets)}</p>}
+      {slide.videoId && <p className="outline-bullets">Video: youtube.com/watch?v={slide.videoId}</p>}
+      {slide.images && <p className="outline-bullets">Picture: {slide.images.map(im => im.caption).join(" / ")}</p>}
+      <div className="outline-notes"><p>{slide.notes}</p></div>
+    </div>
+  );
+}
+function Outline() {
+  return (
+    <div className="outline">
+      <h1>Profiling Float: slides</h1>
+      <p className="outline-sub">Speaker notes outline. Print this before class if you would rather have paper. Indented cards are optional "down arrow" slides.</p>
+      {SLIDES.map((s, i) => (
+        <React.Fragment key={i}>
+          <OutlineCard slide={s} heading={`${i + 1}. ${s.title}`} />
+          {(s.down || []).map((d, j) => (
+            <OutlineCard slide={d} heading={`Extra: ${d.title}`} nested key={j} />
+          ))}
+        </React.Fragment>
+      ))}
+    </div>
+  );
+}
+
+function initialStateFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const slideParam = parseInt(params.get("slide"), 10);
+  const index = Number.isInteger(slideParam) ? Math.min(Math.max(slideParam - 1, 0), SLIDES.length - 1) : 0;
+  const maxExtra = (SLIDES[index].down || []).length;
+  const extraParam = parseInt(params.get("extra"), 10);
+  const subIndex = Number.isInteger(extraParam) ? Math.min(Math.max(extraParam, 0), maxExtra) : 0;
+  const mode = params.get("outline") ? "outline" : "deck";
+  return { index, subIndex, mode };
+}
+
+function App() {
+  const initial = initialStateFromUrl();
+  const [index, setIndex] = useState(initial.index);
+  const [subIndex, setSubIndex] = useState(initial.subIndex);
+  const [showNotes, setShowNotes] = useState(false);
+  const [aspect, setAspect] = useState("16:9");
+  const [mode, setMode] = useState(initial.mode);
+  const topSlide = SLIDES[index];
+  const downSlides = topSlide.down || [];
+  const slide = subIndex === 0 ? topSlide : downSlides[subIndex - 1];
+  const next = useCallback(() => { setIndex(i => Math.min(i + 1, SLIDES.length - 1)); setSubIndex(0); }, []);
+  const prev = useCallback(() => { setIndex(i => Math.max(i - 1, 0)); setSubIndex(0); }, []);
+  const goDown = useCallback(() => setSubIndex(s => Math.min(s + 1, downSlides.length)), [downSlides.length]);
+  const goUp = useCallback(() => setSubIndex(s => Math.max(s - 1, 0)), []);
+  useEffect(() => {
+    function onKey(e) {
+      if (mode !== "deck") { if (e.key === "Escape") setMode("deck"); return; }
+      if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); next(); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); goDown(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); goUp(); }
+      else if (e.key === "n" || e.key === "N") setShowNotes(v => !v);
+      else if (e.key === "f" || e.key === "F") toggleFullscreen();
+      else if (e.key === "o" || e.key === "O") setMode("outline");
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mode, next, prev, goDown, goUp]);
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+    else document.exitFullscreen();
+  }
+  if (mode === "outline") {
+    return (
+      <div className="app">
+        <div className="toolbar">
+          <a className="back-link" href="/cs50-psets/float-profile/">&larr; Profiling Float</a>
+          <div className="spacer"></div>
+          <button onClick={() => setMode("deck")}>Back to slides (Esc)</button>
+          <button onClick={() => window.print()}>Print</button>
+        </div>
+        <Outline />
+      </div>
+    );
+  }
+  const hasVideo = slide.kind === "video";
+  return (
+    <div className="app">
+      <div className="stage-outer" style={{ position: "relative" }}>
+        <ScaledStage slide={slide} aspect={aspect} />
+        <div className="click-zone left" onClick={prev} title="Previous slide"></div>
+        <div className="click-zone right" onClick={next} title="Next slide"></div>
+        {subIndex > 0 && (
+          <button className="depth-nav depth-up" onClick={goUp} title="Back to the main flow">&#9650; Back</button>
+        )}
+        {subIndex < downSlides.length && (
+          <button className="depth-nav depth-down" onClick={goDown} title="More about this slide">&#9660; More</button>
+        )}
+        <div className="slide-counter-badge">
+          {index + 1} / {SLIDES.length}
+          {subIndex > 0 && <span> &middot; extra {subIndex}/{downSlides.length}</span>}
+        </div>
+      </div>
+      {showNotes && (
+        <div className="notes-panel">
+          <h3>Speaker notes</h3>
+          <p>{slide.notes}</p>
+        </div>
+      )}
+      <div className="toolbar">
+        <a className="back-link" href="/cs50-psets/float-profile/">&larr; Profiling Float</a>
+        <div className="spacer"></div>
+        <button onClick={prev} disabled={index === 0}>&larr; Prev</button>
+        <span className="counter">{index + 1} / {SLIDES.length}</span>
+        <button onClick={next} disabled={index === SLIDES.length - 1}>Next &rarr;</button>
+        <button className={showNotes ? "active" : ""} onClick={() => setShowNotes(v => !v)}>Notes (N)</button>
+        <button onClick={() => setMode("outline")}>Print notes (O)</button>
+        <button onClick={() => setAspect(a => a === "16:9" ? "4:3" : "16:9")}>{aspect}</button>
+        <button onClick={toggleFullscreen}>Fullscreen (F)</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+{% endraw %}
+</script>
+</body>
+</html>
