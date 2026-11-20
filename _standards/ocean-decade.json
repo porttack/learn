@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "source": "UN Decade of Ocean Science for Sustainable Development (2021 to 2030): the ten Ocean Decade Challenges and seven Outcomes",
+    "url": "https://oceandecade.org/challenges/",
+    "year": "2021 to 2030",
+    "extracted": "2026-11-20",
+    "scope_note": "The ten Challenges for collective impact and the seven Decade Outcomes (the ocean we want by 2030), read from the Ocean Decade's own Challenges page. The MATE ROV Competition tags every mission task with these Challenges, so this catalog is the target of MATE's own tagging (see the mate_missions carrier). The Challenges may change over the Decade, as the page says. MATE sometimes words a Challenge more briefly; those wordings are recorded as mate_wording.",
+    "codes_note": "OD.1 to OD.10 follow the Challenges' own numbers; OC.1 to OC.7 number the Outcomes in the order the page lists them.",
+    "license_note": "The Challenge titles are the Ocean Decade's own; every description is a paraphrase written for this project."
+  },
+  "groups": [
+    {
+      "code": "OD",
+      "name": "The ten Ocean Decade Challenges",
+      "items": [
+        {
+          "code": "OD.1",
+          "name": "Understand and beat marine pollution",
+          "paraphrase": "Find and map where pollution on land and at sea comes from, learn what it does to people and ocean life, and develop ways to remove it or reduce it."
+        },
+        {
+          "code": "OD.2",
+          "name": "Protect and restore ecosystems and biodiversity",
+          "paraphrase": "Understand how several pressures at once affect ocean ecosystems, and develop ways to monitor, protect, manage and restore ecosystems and their biodiversity as conditions change."
+        },
+        {
+          "code": "OD.3",
+          "name": "Sustainably nourish the global population",
+          "paraphrase": "Build knowledge and solutions so the ocean can feed the world's growing population in a sustainable way as conditions change."
+        },
+        {
+          "code": "OD.4",
+          "name": "Develop a sustainable, resilient and equitable ocean economy",
+          "paraphrase": "Build knowledge, innovation and partnerships for an ocean economy that is fair, resilient and sustainable as conditions change.",
+          "mate_wording": "MATE writes: Develop a sustainable and equitable ocean economy."
+        },
+        {
+          "code": "OD.5",
+          "name": "Unlock ocean-based solutions to climate change",
+          "paraphrase": "Understand the link between ocean and climate, and develop knowledge and solutions to reduce climate change, adapt to it and build resilience, everywhere."
+        },
+        {
+          "code": "OD.6",
+          "name": "Increase community resilience to ocean and coastal risks",
+          "paraphrase": "Improve early warning for every kind of ocean and coastal hazard, and prepare communities to withstand them."
+        },
+        {
+          "code": "OD.7",
+          "name": "Sustainably expand the Global Ocean Observing System",
+          "paraphrase": "Keep a lasting ocean observing system working across all ocean basins that delivers accessible, timely and useful data to everyone who needs it.",
+          "mate_wording": "MATE writes: Expand the Global Ocean Observing System."
+        },
+        {
+          "code": "OD.8",
+          "name": "Create a digital representation of the ocean",
+          "paraphrase": "Work across groups to build a complete, open digital picture of the ocean, including a dynamic ocean map, for exploring past, present and future conditions."
+        },
+        {
+          "code": "OD.9",
+          "name": "Skills, knowledge, technology and participation for all",
+          "paraphrase": "Build skills and share knowledge, data and technology fairly, so everyone involved in ocean science can take part.",
+          "mate_wording": "MATE writes: Skills, knowledge, and technology for all."
+        },
+        {
+          "code": "OD.10",
+          "name": "Restore society's relationship with the ocean",
+          "paraphrase": "Strengthen people's connection to the ocean so that people in every sector have the motivation, ability and opportunity to decide and act in ways that keep the ocean healthy.",
+          "mate_wording": "In the 2026 overarching list MATE labels a tag number 10 with the wording of Challenge 9."
+        }
+      ]
+    },
+    {
+      "code": "OC",
+      "name": "The seven Decade Outcomes: the ocean we want by 2030",
+      "items": [
+        {
+          "code": "OC.1",
+          "name": "A clean ocean",
+          "paraphrase": "One of the seven outcomes the Ocean Decade names as the ocean we want by 2030."
+        },
+        {
+          "code": "OC.2",
+          "name": "A healthy ocean",
+          "paraphrase": "One of the seven outcomes the Ocean Decade names as the ocean we want by 2030."
+        },
+        {
+          "code": "OC.3",
+          "name": "A productive ocean",
+          "paraphrase": "One of the seven outcomes the Ocean Decade names as the ocean we want by 2030."
+        },
+        {
+          "code": "OC.4",
+          "name": "A predicted ocean",
+          "paraphrase": "One of the seven outcomes the Ocean Decade names as the ocean we want by 2030."
+        },
+        {
+          "code": "OC.5",
+          "name": "A safe ocean",
+          "paraphrase": "One of the seven outcomes the Ocean Decade names as the ocean we want by 2030."
+        },
+        {
+          "code": "OC.6",
+          "name": "An accessible ocean",
+          "paraphrase": "One of the seven outcomes the Ocean Decade names as the ocean we want by 2030."
+        },
+        {
+          "code": "OC.7",
+          "name": "An inspiring ocean",
+          "paraphrase": "One of the seven outcomes the Ocean Decade names as the ocean we want by 2030."
+        }
+      ]
+    }
+  ]
+}

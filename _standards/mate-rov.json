@@ -1,206 +1,434 @@
 {
   "meta": {
-    "source": "MATE ROV Competition: skills a team needs, compiled from the competition manuals",
+    "source": "MATE ROV Competition: what the competition builds in students, inferred from the manuals",
     "url": "https://materovcompetition.org/",
-    "year": "not tied to a year; compiled from the 2026 Scout class manual and the 2027 MATE Floats! task description for the Ranger and Pioneer classes",
+    "year": "not tied to a year; read from the 2024 to 2026 manuals",
     "extracted": "2026-11-20",
-    "scope_note": "This is a cross-reference catalog, not a standard. MATE publishes no standards of its own, so each entry is this project's reading of what the competition manuals require and score, written so a teacher can see what has to be taught. Each entry cites the manual's own spec codes where it has them. Built from the Scout manual and the Floats task description; Ranger, Navigator and Pioneer manuals have not been read yet, so limits that differ by class (current, onboard power, cameras, fluid power) are described for Scout and tagged 'Scout' where the Scout rule is the specific one. Mission tasks change every year, so no yearly mission task is cataloged except the vertical profiling float, which keeps coming back. Points are Scout points out of 400.",
-    "codes_note": "Codes are this project's own: an area (SAFE, ELEC, MECH, FLUID, CTRL, FLOAT, COMM, TEAM) and a number. They are not MATE's. MATE's own spec codes (ELEC-004S and so on) appear in each entry's text, and the 'S' on the end marks a Scout rule.",
-    "license_note": "The competition manuals are (c) MATE ROV Competition under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 license, so nothing here copies their text: every entry is a paraphrase written for this project, with the spec codes cited as identifiers only. Check the current manual for the real limits before building anything."
+    "scope_note": "This is a cross-reference catalog, not a standard. MATE publishes no standards of its own, so each entry is this project's inference of what the competition requires, scores and explains, written so a teacher can see what has to be taught and where. It was built from the 2024 Ranger, 2025 Scout, Navigator and Ranger and 2026 Scout manuals and the 2027 Floats description. Scope: Scout, Navigator and Ranger. Point totals, electrical limits, depths and timings change by year and class, so none is recorded as a competency; class differences are noted under each entry and compared in mate-classes.json. MATE's own list of 18 skills is mate-skills.json and each competency names the ones it develops.",
+    "codes_note": "Codes are this project's: ENG (engineering practice), PRO (professional and team skills) and UND (ocean and environmental understanding), with a number. They are not MATE's.",
+    "license_note": "The competition manuals are (c) MATE ROV Competition under a Creative Commons Attribution NonCommercial NoDerivatives license, so nothing here copies their text; every entry is a paraphrase written for this project, with manual section names given as references only.",
+    "stated_aims": [
+      {
+        "title": "Skills for the workforce",
+        "text": "The Overview opens by saying the competition develops technical talent and the skills employers want most: critical thinking, creativity, collaboration, time management and leadership, with data analytics, AI, machine learning and video marketing named alongside.",
+        "where": "Overview, every manual from 2024 to 2026"
+      },
+      {
+        "title": "Eighteen named skills",
+        "text": "Icons throughout the manual mark the 18 Evaluate-Compete skills, nine employability and nine ROV-specific, that each requirement helps develop.",
+        "where": "Overview icons, every manual"
+      },
+      {
+        "title": "Think like an entrepreneur",
+        "text": "Teams are asked to act as a start-up company with named roles (chief executive, finance, regulatory affairs, research and development, systems engineering, testing, operations, fundraising and marketing, and an ESG analyst), and to build business acumen, make financial decisions from data, critique design solutions, and reflect on their own strengths and weaknesses.",
+        "where": "Overview, every manual"
+      },
+      {
+        "title": "The ocean we want",
+        "text": "Each year frames the work with the UN Ocean Decade, with phrases such as moving from the ocean we have to the ocean we want, the client being us, and doing good for good, and tags every mission task with Ocean Decade challenges.",
+        "where": "Overview and Request for Proposals, every manual"
+      },
+      {
+        "title": "Real science each year",
+        "text": "Every Context & Need teaches real ocean science and why it matters: ocean observing and cables (2024), Great Lakes acidification, invasive species, offshore energy and shipwreck heritage (2025), the cryosphere, cold-water corals, eDNA, whale entanglement, iceberg risk, hybrid energy and floats that avoid ice (2026).",
+        "where": "Context & Need, each year"
+      },
+      {
+        "title": "Engineering reasoning",
+        "text": "Judges want technical storytelling: evaluating alternatives, a work breakdown, constraints, a power budget, how sensors are calibrated, where code runs and how data flows, troubleshooting that is written down, and a project notebook.",
+        "where": "Tips for effective written and oral communication, 2025 Ranger and 2026 Scout"
+      },
+      {
+        "title": "Industry practice",
+        "text": "Higher classes add practices from industry: a jobsite safety analysis with steps, hazards and safeguards in order of preference (Ranger), and scoring of teamwork, project management, problem solving and system design during the run (Navigator and Ranger).",
+        "where": "Safety sections and scoring overview, 2025 Navigator and Ranger"
+      },
+      {
+        "title": "Responsible use of AI",
+        "text": "AI is welcome as a tool but not a crutch: describe how it was used, and do not use it to write the documentation or presentation.",
+        "where": "Notes on the use of AI, 2026 Scout"
+      },
+      {
+        "title": "The same kinds of task, every year",
+        "text": "Tasks change yearly but come in families: recover objects, install or replace equipment, survey and measure, sample and analyze, and a separate device, the profiling float, which appears every year from 2024 to 2027 and gets harder.",
+        "where": "Product demonstration, every manual"
+      },
+      {
+        "title": "What judges reward",
+        "text": "Scoring rubrics rate each item from missing to exceeds, award extra for novelty, depth of understanding and analysis, effectiveness and quality of implementation, and deduct for relying on outside help or purchased parts.",
+        "where": "MATE scoring rubric for technical documentation and engineering presentation"
+      }
+    ]
   },
   "groups": [
     {
-      "code": "SAFE",
-      "name": "Safety and inspection",
+      "code": "ENG",
+      "name": "Engineering practice",
       "items": [
         {
-          "code": "SAFE.1",
-          "name": "Pass the safety inspection",
-          "paraphrase": "Before the vehicle (or the float) goes in the water for practice or a run, an inspector checks it against a rubric. A company gets up to three tries, and failing the third means no underwater tasks, though the engineering and communication scores are still open. Worth 10 of 400 points, and the first thing every other rule serves. (Scout manual 2.0 and 2.1.)"
+          "code": "ENG.1",
+          "name": "Turn a request for proposals into criteria and constraints",
+          "paraphrase": "Read the mission request and the rules closely enough to say what the vehicle must do and what limits it, then decide what to build for the points available.",
+          "evidence": [
+            "Context & Need and Request for Proposals (every manual)",
+            "Scoring overview (every manual)"
+          ],
+          "skills": [
+            "GEN.7",
+            "GEN.3"
+          ]
         },
         {
-          "code": "SAFE.2",
-          "name": "Draw the system interconnection diagram (SID)",
-          "paraphrase": "A one page electrical diagram, hand drawn or made in CAD, that separates the surface systems from the vehicle and shows the main fuse with a standard fuse symbol and its amperage. It must be the company's own, not a copy of a kit's. A float gets its own. Without it the vehicle does not pass. (Scout manual 2.1.1, DOC-001.)"
+          "code": "ENG.2",
+          "name": "Compare design alternatives and justify the choice",
+          "paraphrase": "Come up with more than one way to solve a problem, compare them against the criteria, and explain why one was chosen, including whether to build or buy.",
+          "evidence": [
+            "Tips for effective written and oral communication: evaluate competing alternatives, build versus buy (2025 Ranger, 2026 Scout)",
+            "Engineering presentation (every manual)"
+          ],
+          "skills": [
+            "GEN.7",
+            "GEN.2",
+            "ROV.3"
+          ]
+        },
+        {
+          "code": "ENG.3",
+          "name": "Budget power and protect against overcurrent",
+          "paraphrase": "Measure what the motors and tools draw, size the protection to the real load, and stay inside the class's electrical limits.",
+          "evidence": [
+            "Electrical specification sections, including fuse and current limits (every class)",
+            "Tips: how you arrived at your power budget"
+          ],
+          "skills": [
+            "ROV.4",
+            "ROV.6"
+          ],
+          "class_note": "Current, voltage and fluid pressure limits are set per class and change; check the current manual."
+        },
+        {
+          "code": "ENG.4",
+          "name": "Build reliable electrical and mechanical systems",
+          "paraphrase": "Wire neatly, relieve strain where cables enter the vehicle and the control box, seal every connection against water, guard the propellers, and build a vehicle the crew can carry and launch by hand.",
+          "evidence": [
+            "Safety and specification sections on wiring, strain relief, waterproofing and propellers (every class)",
+            "Safety inspectors' stated emphasis on workmanship (2026 Scout)"
+          ],
+          "skills": [
+            "ROV.2",
+            "ROV.3",
+            "ROV.6"
+          ],
+          "by_class": {
+            "navigator": "Hydraulic and pneumatic power is allowed within pressure limits, with its own diagram."
+          }
+        },
+        {
+          "code": "ENG.5",
+          "name": "Design for the real environment and test under realistic conditions",
+          "paraphrase": "Design for the conditions the vehicle will actually meet (conductive water, buoyancy and trim, interference, venue limits) and test there, because something that works at home may not work at the event.",
+          "evidence": [
+            "Design and safety considerations (every manual)",
+            "Tips: what choices would matter in a less controlled environment"
+          ],
+          "skills": [
+            "ROV.1",
+            "GEN.7"
+          ]
+        },
+        {
+          "code": "ENG.6",
+          "name": "Control and operate a vehicle",
+          "paraphrase": "Build a control system and pilot interface that turns what the pilot does into thruster and tool motion through the tether, with cameras and sensors as the class requires, and understand where the code runs and how data flows.",
+          "evidence": [
+            "Control systems and command, control and communications specification sections",
+            "Tips: where code executes and the flow of data"
+          ],
+          "skills": [
+            "ROV.4",
+            "ROV.5",
+            "ROV.2"
+          ],
+          "by_class": {
+            "navigator": "Cameras are required to pilot, surface equipment may use AC power, and lasers are allowed with safety rules.",
+            "ranger": "Cameras are required to pilot."
+          }
+        },
+        {
+          "code": "ENG.7",
+          "name": "Sense, measure and calibrate",
+          "paraphrase": "Choose sensors for the job, compare their readings against a trusted reference, and handle units and accuracy so the numbers can be believed.",
+          "evidence": [
+            "Tips: how do you calibrate your sensors",
+            "Floats task: a benchmark temperature to compare against (2027)"
+          ],
+          "skills": [
+            "ROV.5",
+            "GEN.8"
+          ]
+        },
+        {
+          "code": "ENG.8",
+          "name": "Design and run a non-ROV device that works on its own",
+          "paraphrase": "Build a second device, the profiling float, that goes down and comes back up independently of the ROV, gathers sensor data, and is run by hand or programmed to run itself.",
+          "evidence": [
+            "Floats task in every class, every year from 2024 to 2027",
+            "Non-ROV device rules and design document"
+          ],
+          "skills": [
+            "ROV.1",
+            "ROV.4",
+            "ROV.5"
+          ],
+          "class_note": "Demand rises by year: temperature only and propellers allowed in 2025, depth holding, a buoyancy engine bonus and transmitted data in 2027."
+        },
+        {
+          "code": "ENG.9",
+          "name": "Collect, transmit, analyze and graph data",
+          "paraphrase": "Gather measurements, get them from the device to a person, find what they say, and show it in a graph that answers a question.",
+          "evidence": [
+            "Floats task graphing requirement (2024 to 2027)",
+            "Sample, survey and data-analysis tasks in 2025 and 2026",
+            "Tips: the flow and format of data"
+          ],
+          "skills": [
+            "ROV.5",
+            "GEN.7"
+          ]
+        },
+        {
+          "code": "ENG.10",
+          "name": "Do underwater work with purpose-built tools",
+          "paraphrase": "Design and test the tools and techniques to recover objects, install or replace equipment, repair, release and survey, since the mission tasks are built from these every year.",
+          "evidence": [
+            "Product demonstration tasks every year, 2024 to 2026"
+          ],
+          "skills": [
+            "ROV.5",
+            "GEN.2"
+          ]
+        },
+        {
+          "code": "ENG.11",
+          "name": "Test, troubleshoot and keep a record of what you learned",
+          "paraphrase": "Test as you build, track down the real cause of a problem, and write down what happened, especially anything that takes a long time to solve.",
+          "evidence": [
+            "Tips: record any problem that takes more than 20 minutes; project notebook"
+          ],
+          "skills": [
+            "GEN.5",
+            "GEN.7"
+          ]
         }
       ]
     },
     {
-      "code": "ELEC",
-      "name": "Electrical",
+      "code": "PRO",
+      "name": "Professional and team skills",
       "items": [
         {
-          "code": "ELEC.1",
-          "name": "Size the fuse and keep to the current limit",
-          "paraphrase": "One blade fuse (ATO or mini, with the standard color codes) goes on the positive line within 30 centimeters of the power connector. The class sets the ceiling (15 amps in Scout), so a team has to add up what its motors and tools can draw and pick a real fuse. One spare is allowed during a run. (Scout manual ELEC-004S, ELEC-005S.)"
+          "code": "PRO.1",
+          "name": "Run the team as a company",
+          "paraphrase": "Organize the team as a start-up with named roles, shared responsibility and a deck crew that works together.",
+          "evidence": [
+            "Overview: think of yourselves as entrepreneurs, company roles (every manual)"
+          ],
+          "skills": [
+            "GEN.9",
+            "ROV.7"
+          ]
         },
         {
-          "code": "ELEC.2",
-          "name": "Connect to power the way the rules say",
-          "paraphrase": "All power comes through one point from the competition supply (nominal 12 volts, never stepped up inside the vehicle), joined with red and black Anderson Powerpoles that are attached to each other. Scout vehicles carry no onboard power, and a vehicle cut off from the surface must stop within 5 seconds. (Scout manual ELEC-001S, 002S, 003S, 006S, 009S, 010S.)"
+          "code": "PRO.2",
+          "name": "Manage the project",
+          "paraphrase": "Break the work into tasks, plan the schedule and budget, and meet the deadlines.",
+          "evidence": [
+            "Tips: work breakdown structure; key deadlines",
+            "Organizational and operational effectiveness (Navigator, Ranger)"
+          ],
+          "skills": [
+            "ROV.7",
+            "GEN.3"
+          ],
+          "by_class": {
+            "navigator": "Organizational and operational effectiveness is scored, including project management.",
+            "ranger": "Organizational and operational effectiveness is scored, including project management."
+          }
         },
         {
-          "code": "ELEC.3",
-          "name": "Wire neatly and relieve the strain",
-          "paraphrase": "The control box is tidy, with nothing loose, and wires get abrasion protection and real strain relief where they enter the box and the vehicle, at both ends of the tether. Tape, glue and zip ties do not count. The vehicle should survive being lifted by its tether. Inspectors have called this out as an emphasis. (Scout manual ELEC-011S, ELEC-012S.)"
+          "code": "PRO.3",
+          "name": "Communicate technical work in writing and in person",
+          "paraphrase": "Tell the story of how the design was reasoned and tested in a spec sheet, technical documentation and an engineering presentation with questions, so a reader or judge new to it can follow.",
+          "evidence": [
+            "Engineering and Communication: spec sheet, technical documentation, engineering presentation (every manual)",
+            "Tips: technical storytelling"
+          ],
+          "skills": [
+            "ROV.8",
+            "GEN.1"
+          ],
+          "by_class": {
+            "navigator": "The presentation is longer (15 minutes in the 2025 manual).",
+            "ranger": "The presentation is longer (the Scout manual describes Ranger as 15 minutes)."
+          }
         },
         {
-          "code": "ELEC.4",
-          "name": "Waterproof every connection",
-          "paraphrase": "Everything electrical that goes in the water is sealed with something like silicone RTV, hot melt, epoxy, self-vulcanizing tape or a housing. Electrical tape alone is not a seal, and motors that are not waterproofed are not allowed. The water is treated as conductive. (Scout manual ELEC-008S, OPER-002.)"
+          "code": "PRO.4",
+          "name": "Communicate with a non-technical audience",
+          "paraphrase": "Present technical information so people outside the field understand it and care, in a display and in conversation with the public and the media.",
+          "evidence": [
+            "Marketing display (every class)"
+          ],
+          "skills": [
+            "GEN.1",
+            "ROV.8"
+          ]
         },
         {
-          "code": "ELEC.5",
-          "name": "Power a float from the surface",
-          "paraphrase": "A float (a non-ROV device) that uses electricity is powered from the surface down its tether, at up to 12 volts and 5 amps, through its own 5 amp fuse and attached Powerpoles. No cameras are allowed on it. (Scout manual ELEC-NRD-001 to 004.)"
+          "code": "PRO.5",
+          "name": "Think like an entrepreneur",
+          "paraphrase": "Use business sense: know your clients and products, make financial decisions from data, and take environmental, social and governance factors into account.",
+          "evidence": [
+            "Overview: the entrepreneurial skill set, business acumen, ESG (every manual)"
+          ],
+          "skills": [
+            "GEN.3",
+            "ROV.9"
+          ]
+        },
+        {
+          "code": "PRO.6",
+          "name": "Work safely and manage hazards as industry does",
+          "paraphrase": "Treat safety as the first rule: pass inspection, document the electrical system, wear protection, and think through hazards step by step before working.",
+          "evidence": [
+            "Safety inspection and system interconnection diagram (every class)",
+            "Jobsite Safety and Environment Analysis and safety pre-inspection (Ranger)"
+          ],
+          "skills": [
+            "ROV.6"
+          ],
+          "by_class": {
+            "ranger": "A jobsite safety analysis (job steps, hazards, safeguards in order of preference, named responsibility) is required and scored, with pre-inspection documents and a company safety review."
+          }
+        },
+        {
+          "code": "PRO.7",
+          "name": "Know and follow the rules and standards",
+          "paraphrase": "Read every rule and ruling, ask questions in the proper form, and use the field's standard symbols and terms.",
+          "evidence": [
+            "General and competition rules; the regulatory affairs role (every manual)"
+          ],
+          "skills": [
+            "GEN.8"
+          ]
+        },
+        {
+          "code": "PRO.8",
+          "name": "Use AI as a tool, not a crutch, and say how",
+          "paraphrase": "Use AI to speed up work or fill gaps without letting it replace understanding, describe how it was used, and never use it to write the documentation or presentation.",
+          "evidence": [
+            "Notes on the use of AI (2026 Scout manual)"
+          ],
+          "skills": [
+            "GEN.6",
+            "GEN.4"
+          ],
+          "class_note": "Stated in the 2026 Scout manual; not in the 2024 or 2025 manuals read."
+        },
+        {
+          "code": "PRO.9",
+          "name": "Give back to the community",
+          "paraphrase": "Mentor newer teams, support local schools and share the work with the community and the media, and report the measurable difference it made.",
+          "evidence": [
+            "Corporate responsibility (every class)"
+          ],
+          "skills": [
+            "ROV.9",
+            "GEN.9"
+          ]
         }
       ]
     },
     {
-      "code": "MECH",
-      "name": "Mechanical",
+      "code": "UND",
+      "name": "Ocean and environmental understanding",
       "items": [
         {
-          "code": "MECH.1",
-          "name": "Size the tether and vehicle for the venue",
-          "paraphrase": "The vehicle must work in a pool up to 4 meters deep and reach tasks up to 6 meters from the poolside, and the power supply can sit up to 2 meters from the station, so the tether has to be long enough and its voltage drop has to be tolerable. (Scout manual MECH-001S, ELEC-007S.)"
+          "code": "UND.1",
+          "name": "Ocean observing and data",
+          "paraphrase": "Understand how floats, buoys, observatories, cables and maps collect the data that shows how the ocean is changing, and why that data should be open.",
+          "evidence": [
+            "Context & Need: ocean observing, buoys, cables, floats (every year)",
+            "Ocean Decade tags 7 and 8"
+          ],
+          "skills": [
+            "ROV.9",
+            "GEN.8"
+          ]
         },
         {
-          "code": "MECH.2",
-          "name": "Launch and recover by hand",
-          "paraphrase": "The crew has to carry the whole vehicle, put it in the water and take it out by hand. No lifts or levers. (Scout manual MECH-002S.)"
+          "code": "UND.2",
+          "name": "Ecosystems, biodiversity and invasive species",
+          "paraphrase": "Understand coral and other ecosystems, why biodiversity matters, how invasive species are found and removed, and how eDNA reveals who lives in the water.",
+          "evidence": [
+            "Context & Need: corals, eDNA, invasive carp and crabs, species near solar arrays",
+            "Ocean Decade tag 2"
+          ],
+          "skills": [
+            "ROV.9",
+            "GEN.8"
+          ]
         },
         {
-          "code": "MECH.3",
-          "name": "Guard the propellers",
-          "paraphrase": "Propellers are enclosed in the frame or shrouded. A vehicle with exposed propellers does not pass. (Scout manual MECH-003S.)"
-        }
-      ]
-    },
-    {
-      "code": "FLUID",
-      "name": "Fluid power",
-      "items": [
-        {
-          "code": "FLUID.1",
-          "name": "Use fluid power within the rules",
-          "level": "Scout",
-          "paraphrase": "A vehicle that uses hydraulics or pneumatics needs a diagram. In Scout only manual pumps (hand or foot) may push fluid down the tether, the fluid is water or air, there are no pressure accumulators, and pressure inside a container never exceeds the pool's, so air containers must be vented. (Scout manual FLUID-001S to 003S.)"
-        }
-      ]
-    },
-    {
-      "code": "CTRL",
-      "name": "Control and cameras",
-      "items": [
-        {
-          "code": "CTRL.1",
-          "name": "Build a control system a pilot can drive",
-          "paraphrase": "A surface control system (a control box, joystick or laptop) turns what the pilot does into signals for the thrusters and tools through the tether, and it is judged on workmanship. MATE sets no software requirement, so how it works is the company's design. (Scout manual 3.7.)"
+          "code": "UND.3",
+          "name": "Climate and ocean change",
+          "paraphrase": "Understand ocean warming, acidification, sea level and ice, and how carbon and heat move between the air and the ocean.",
+          "evidence": [
+            "Context & Need: acidification, warming, the cryosphere",
+            "Ocean Decade tag 5"
+          ],
+          "skills": [
+            "ROV.9",
+            "GEN.8"
+          ]
         },
         {
-          "code": "CTRL.2",
-          "name": "Use cameras and monitors within the rules",
-          "level": "Scout optional",
-          "paraphrase": "Cameras are not required in Scout. If used, a company is limited to one monitor that it supplies, and every camera and the monitor run from the competition's 12 volt supply. No lasers in Scout. Regionals may not allow cameras at all. (Scout manual CAM-001S, CAM-002, 3.9.)"
-        }
-      ]
-    },
-    {
-      "code": "FLOAT",
-      "name": "The vertical profiling float",
-      "items": [
-        {
-          "code": "FLOAT.1",
-          "name": "Change depth with a buoyancy engine",
-          "paraphrase": "A float that moves fluid in and out to change its own density earns more points than one that uses another mechanism, and motors turning propellers do not count as a buoyancy engine. The task has appeared in the Scout and the Ranger and Pioneer manuals, with depths set by the venue. (Floats task description.)"
+          "code": "UND.4",
+          "name": "Ocean energy and the sustainable ocean economy",
+          "paraphrase": "Understand offshore wind, solar and hybrid energy, what they cost and gain, how structures are kept from corroding, and how an ocean economy can be fair and sustainable.",
+          "evidence": [
+            "Context & Need: offshore wind and solar, hybrid energy, corrosion",
+            "Ocean Decade tag 4"
+          ],
+          "skills": [
+            "ROV.9",
+            "GEN.8"
+          ]
         },
         {
-          "code": "FLOAT.2",
-          "name": "Hold a depth",
-          "paraphrase": "The top of the float must stay within 0.33 meters of the target depth for 30 seconds, then continue the profile. If the depth sensor is not at the top, the program has to allow for the offset. (Floats task description.)"
+          "code": "UND.5",
+          "name": "People, heritage and risk",
+          "paraphrase": "Understand how ocean change affects people and what they value, such as shipwreck heritage, iceberg risk to platforms, whale entanglement in fishing gear and coastal resilience.",
+          "evidence": [
+            "Context & Need: shipwreck heritage, icebergs, whale entanglement",
+            "Ocean Decade tags 2 and 6"
+          ],
+          "skills": [
+            "ROV.9",
+            "GEN.8"
+          ]
         },
         {
-          "code": "FLOAT.3",
-          "name": "Send the defined data packet",
-          "paraphrase": "Each packet carries the company number, a time, pressure or depth, temperature and light, in stated units (kilopascals or meters, degrees Celsius, any light unit), all tied to one time. MATE says what the data is. The company designs how it is sent and the receiver that shows it, knowing other companies transmit at the same time. (Floats task description.)"
-        },
-        {
-          "code": "FLOAT.4",
-          "name": "Take readings on the way up",
-          "paraphrase": "On the ascent the float records depth, temperature and light at fixed steps (every 0.5 meters) all the way to the surface, within the allowed error, without touching the pool bottom, which costs points. (Floats task description.)"
-        },
-        {
-          "code": "FLOAT.5",
-          "name": "Graph the data",
-          "paraphrase": "Turn the float's data into a temperature versus depth graph and a light versus depth graph, with depth running down the page as it does in the water. If the float did not work, the company graphs data MATE provides, so the skill is worth points either way. (Floats task description.)"
-        },
-        {
-          "code": "FLOAT.6",
-          "name": "Document the float",
-          "paraphrase": "A non-ROV device document, sent ahead, describes the design and operation, the battery design, the fuse size and how the float talks to the company's receiver, and shows that no safety rule is broken. At some regionals it is optional. (Floats task description, DOC-004.)"
-        }
-      ]
-    },
-    {
-      "code": "COMM",
-      "name": "Engineering and communication",
-      "items": [
-        {
-          "code": "COMM.1",
-          "name": "Write the company spec sheet",
-          "paraphrase": "One page with the company's details and the vehicle's: name, cost including donated items, size and weight, student hours, safety and special features, and photos. Up to 20 points, called an easy 20 for following the format. (Scout manual 5.1.)"
-        },
-        {
-          "code": "COMM.2",
-          "name": "Write the technical documentation",
-          "paraphrase": "A reference for judges and future team members covering the technical and safety aspects of the vehicle, the reasons behind design decisions, and a critical look at testing and troubleshooting, organized so graphics and data add to the text. Up to 50 points from each judge. (Scout manual 5.2.)"
-        },
-        {
-          "code": "COMM.3",
-          "name": "Give the engineering presentation",
-          "paraphrase": "A 5 to 10 minute technical brief delivered with the vehicle, no slides, followed by questions to the whole company. Every member must be ready to speak, and mentors may not take part. Judges look for critical thinking, creativity, engineering reasoning including build versus buy, and each person's own contribution. Up to 50 points. (Scout manual 5.3.)"
-        },
-        {
-          "code": "COMM.4",
-          "name": "Make the marketing display",
-          "paraphrase": "A display that presents technical information so a non-technical audience understands and cares. Up to 50 points. (Scout manual 5.4.)"
-        },
-        {
-          "code": "COMM.5",
-          "name": "Show corporate responsibility",
-          "paraphrase": "Mentoring newer teams, supporting local schools, presenting to community groups and engaging the media, scored on how many events, how continuous they are, and the measurable impact on the people reached. Up to 20 points. (Scout manual 5.5.)"
-        }
-      ]
-    },
-    {
-      "code": "TEAM",
-      "name": "Running the company",
-      "items": [
-        {
-          "code": "TEAM.1",
-          "name": "Organize the team as a company",
-          "paraphrase": "The competition asks teams to act as a start-up with named roles: a CEO, a CFO who watches the budget, someone for government and regulatory affairs who reads the rules, research and development, systems engineering, testing, operations, fundraising and marketing, and an ESG (environmental, social, governance) analyst. One person can hold more than one role. (Scout manual, Think of yourselves as entrepreneurs.)"
-        },
-        {
-          "code": "TEAM.2",
-          "name": "Know the rules and ask in the right form",
-          "paraphrase": "Every company is responsible for reading and obeying the whole manual and every posted ruling. Questions go to the competition forum, naming the spec code and the class, and values in the manual are thresholds unless the text says otherwise. Regional events may change requirements. (Scout manual 1.0.)"
-        },
-        {
-          "code": "TEAM.3",
-          "name": "Run the deck crew and do the work yourselves",
-          "paraphrase": "A product demonstration team of three or four company members operates the vehicle on the pool deck. All work and maintenance during operations is done by students, never by mentors or advisors. (Scout manual OPER-005, OPER-006.)"
-        },
-        {
-          "code": "TEAM.4",
-          "name": "Plan from the request for proposals",
-          "paraphrase": "The mission arrives as a context and need and a request for proposals. The team reads it, decides what to build and which points to chase out of a 400 point total (200 for the product demonstration plus a time bonus, 190 for engineering and communication, 10 for safety), and manages time and budget to get there. (Scout manual Part 1 and the scoring overview.)"
-        },
-        {
-          "code": "TEAM.5",
-          "name": "Fly the product demonstration",
-          "paraphrase": "The demonstration is one timed run, in general a 3 minute set-up, a 10 minute performance and a 2 minute take-down. A company may bring the vehicle to the surface to adjust or troubleshoot mid-run. The tasks change every year and by class, so what stays the same is driving precisely, working as a deck crew, and adapting. Up to 200 points plus a time bonus. (Scout manual Part 1.)"
+          "code": "UND.6",
+          "name": "Weigh environmental, social and governance factors in a decision",
+          "paraphrase": "Weigh environmental, social and governance factors together when choosing what to build or do, with the question of how to move from the ocean we have to the ocean we want.",
+          "evidence": [
+            "Overview: ESG, 'good for good', the ocean we have and the ocean we want; the 'client is us' (every manual)"
+          ],
+          "skills": [
+            "ROV.9",
+            "GEN.7"
+          ]
         }
       ]
     }

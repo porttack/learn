@@ -24,6 +24,10 @@ python3 "$ROOT/tools/build_alignment.py" --catalog "$ROOT/_standards" --carriers
 
 cp "$TMP"/*.html "$ROOT/standards/"
 
+# The MATE start page lives in its own folder (/standards/mate/).
+mkdir -p "$ROOT/standards/mate"
+cp "$TMP/mate/index.html" "$ROOT/standards/mate/index.html"
+
 {
   echo "---"
   echo "layout: minimal"

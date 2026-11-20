@@ -1,0 +1,91 @@
+{
+  "meta": {
+    "source": "MATE ROV Competition classes in scope: Scout, Navigator and Ranger",
+    "url": "https://materovcompetition.org/",
+    "year": "not tied to a year; limits read from the 2025 and 2026 manuals",
+    "extracted": "2026-11-20",
+    "scope_note": "Only the three classes the program teaches. Pioneer and Explorer, the college classes, are not covered. Class here is skill and experience level, not grade band: all three overlap in grades. The ladder compares what the manuals read (2025 Scout, Navigator and Ranger; 2026 Scout) require; limits and timings are from those years and change, so check the current manual.",
+    "codes_note": "Codes SCOUT, NAVIGATOR and RANGER are this project's labels.",
+    "license_note": "Paraphrased from MATE's class pages and manuals, which are (c) MATE under a Creative Commons NonCommercial NoDerivatives license; nothing is copied.",
+    "ladder_note": "Scout is a subset: Navigator and Ranger add to it.",
+    "ladder_columns": [
+      "",
+      "Scout",
+      "Navigator",
+      "Ranger"
+    ],
+    "ladder": [
+      [
+        "Cameras",
+        "Optional",
+        "Required to pilot",
+        "Required to pilot"
+      ],
+      [
+        "Surface power",
+        "12 volt supply only",
+        "Adds 115 volt AC for surface equipment",
+        "Same as Navigator"
+      ],
+      [
+        "Fluid power",
+        "Manual pumps, water or air",
+        "Hydraulic and pneumatic within pressure limits",
+        "Same family as Navigator (not read in full)"
+      ],
+      [
+        "Lasers",
+        "Not allowed",
+        "Allowed with safety rules",
+        "Allowed with safety rules"
+      ],
+      [
+        "Organizational and operational effectiveness",
+        "Not scored",
+        "Scored",
+        "Scored"
+      ],
+      [
+        "Safety documentation",
+        "Inspection and system diagram",
+        "Inspection and system diagram",
+        "Adds a jobsite safety analysis, pre-inspection documents and a company safety review"
+      ],
+      [
+        "Engineering presentation",
+        "5 to 10 minutes",
+        "15 minutes",
+        "15 minutes"
+      ],
+      [
+        "Product demonstration timing",
+        "3, 10 and 2 minutes (2026)",
+        "5 and 15 minutes (2025)",
+        "5, 15 and 5 minutes (2025)"
+      ]
+    ]
+  },
+  "groups": [
+    {
+      "code": "CLASS",
+      "name": "Classes in scope",
+      "items": [
+        {
+          "code": "SCOUT",
+          "name": "Scout",
+          "paraphrase": "The starting class, for teams new to robotics, recommended for elementary, middle and beginning high schools and open to grades K to 12, with elementary teams needing their regional coordinator's approval."
+        },
+        {
+          "code": "NAVIGATOR",
+          "name": "Navigator",
+          "paraphrase": "The next step, recommended for middle schools with robotics experience, high schools new to robotics and advanced elementary schools, open to grades 5 to 12."
+        },
+        {
+          "code": "RANGER",
+          "name": "Ranger",
+          "paraphrase": "For middle and high school teams with robotics experience and a good grasp of robotic systems and electricity, open to grades 5 to 12, with teams taking part in a regional event."
+        }
+      ]
+    }
+  ]
+}

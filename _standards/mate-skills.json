@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "source": "Evaluate-Compete outcomes (SERC at Carleton College), the 18 skills the MATE ROV Competition marks with icons",
+    "url": "https://serc.carleton.edu/evaluateur/ecompete/using_ecompete/outcomes.html",
+    "year": "page revised November 2024",
+    "extracted": "2026-11-20",
+    "scope_note": "All 18 outcome categories: nine general (employability) and nine specific to the MATE ROV Competition. The MATE manuals show them as icons in their Overview and say the icons mark which competition requirements help develop each skill. This catalog uses Evaluate-Compete's own names; where the manual's icon label differs the label is recorded as icon_label. Evaluate-Compete also lists a few components under each outcome; those are not indexed here.",
+    "codes_note": "Codes are this project's: GEN.1 to GEN.9 and ROV.1 to ROV.9, in the order Evaluate-Compete lists them. They are not MATE's or Evaluate-Compete's.",
+    "license_note": "The skill names are quoted as labels; every description is a paraphrase written for this project, not the page's text."
+  },
+  "groups": [
+    {
+      "code": "GEN",
+      "name": "Employability skills (Evaluate-Compete general outcomes)",
+      "items": [
+        {
+          "code": "GEN.1",
+          "name": "Communication",
+          "paraphrase": "Explains the engineering process and the design to a broad audience, uses images, diagrams and data well, and writes clearly."
+        },
+        {
+          "code": "GEN.2",
+          "name": "Creativity",
+          "paraphrase": "Looks at a problem from several angles, connects ideas and applies knowledge in new ways."
+        },
+        {
+          "code": "GEN.3",
+          "name": "Entrepreneurship",
+          "paraphrase": "Builds a product or service that meets customer needs, understands operations and budgets, and manages a project."
+        },
+        {
+          "code": "GEN.4",
+          "name": "Autonomy",
+          "paraphrase": "Works independently, knows when to ask for help, takes criticism well, and tries again after failing."
+        },
+        {
+          "code": "GEN.5",
+          "name": "Ability to Deal with Obstacles",
+          "paraphrase": "Keeps going after setbacks, stays flexible and improvises a fix for a design or equipment problem.",
+          "icon_label": "Obstacles"
+        },
+        {
+          "code": "GEN.6",
+          "name": "Intellectual Development",
+          "paraphrase": "Sees that problems are more complex than they first look, accepts that more than one design can be acceptable, and knows the limits of what they know."
+        },
+        {
+          "code": "GEN.7",
+          "name": "Critical Thinking and Problem Solving",
+          "paraphrase": "Stays open-minded but skeptical about solutions, looks for root causes and compares alternative designs or ways of operating.",
+          "icon_label": "Critical Thinking/Problem Solving"
+        },
+        {
+          "code": "GEN.8",
+          "name": "Project Knowledge and Skills",
+          "paraphrase": "Understands the engineering and science behind the vehicle and its operation, and has the skills to do the work.",
+          "icon_label": "Content Knowledge"
+        },
+        {
+          "code": "GEN.9",
+          "name": "Teamwork/Collaboration",
+          "paraphrase": "Treats others with respect, works well in a team and shares knowledge within and across teams."
+        }
+      ]
+    },
+    {
+      "code": "ROV",
+      "name": "ROV-specific skills (MATE ROV Evaluate-Compete outcomes)",
+      "items": [
+        {
+          "code": "ROV.1",
+          "name": "Vehicle Design, Buoyancy, Propulsion",
+          "paraphrase": "Applies buoyancy and ballast principles, the properties of water and the physics of propulsion to the vehicle's design."
+        },
+        {
+          "code": "ROV.2",
+          "name": "Systems Design",
+          "paraphrase": "Understands the engineering principles behind the vehicle's systems and applies them to designing those systems.",
+          "icon_label": "System Design"
+        },
+        {
+          "code": "ROV.3",
+          "name": "Structure",
+          "paraphrase": "Can explain the trade-offs and reasoning behind the vehicle's cost, size and weight."
+        },
+        {
+          "code": "ROV.4",
+          "name": "Control/Electrical",
+          "paraphrase": "Applies electrical concepts to the control and electrical systems and integrates software and electronics into vehicle control."
+        },
+        {
+          "code": "ROV.5",
+          "name": "Sensors/Payload/Tools",
+          "paraphrase": "Can identify and evaluate sensors and tooling, cameras included, against the mission's needs, and applies programming to control and sensing."
+        },
+        {
+          "code": "ROV.6",
+          "name": "Safety",
+          "paraphrase": "Understands safety principles and applies them to people, equipment and operations."
+        },
+        {
+          "code": "ROV.7",
+          "name": "Project Management",
+          "paraphrase": "Organizes the team as a company with defined roles, plans the deliverables, tracks a budget, and manages tasks and time."
+        },
+        {
+          "code": "ROV.8",
+          "name": "Technical Presentation",
+          "paraphrase": "Produces detailed documentation, presents it to support the design, builds a display that explains the design, and can explain its strengths and weaknesses."
+        },
+        {
+          "code": "ROV.9",
+          "name": "Technology and Society",
+          "paraphrase": "Connects the theme and mission tasks to real-world problems and is aware of environmental, social and governance factors in business decisions."
+        }
+      ]
+    }
+  ]
+}

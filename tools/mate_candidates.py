@@ -48,6 +48,7 @@ def main():
         d = load(f)
         carriers[d["meta"]["source"]] = d
     mate = carriers.pop("mate_rov")
+    carriers.pop("mate_missions", None)  # MATE's own task tags, not content
 
     # standard -> list of (source, locator, strength) from every other carrier
     by_std = defaultdict(list)

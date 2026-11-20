@@ -151,7 +151,7 @@
   // simulating, testing and tuning a float is engineering design practice.
   var SCI_EXPLAINER_HTML =
     '<p>NGSS (the Next Generation Science Standards, 2013) isn’t a CS framework either. This group exists because the ' +
-    'ocean-robotics work (the MATE ROV float task and the Profiling Float ' +
+    'ocean-robotics work (the competition float task and the Profiling Float ' +
     'problems built on it) is engineering design: stating criteria, testing ' +
     'against a simulation, and judging data. Only the Engineering Design ' +
     'expectations and two ocean-and-climate ones are indexed; see the ' +
@@ -160,25 +160,6 @@
     'Concepts. It is here because San Lorenzo Valley USD’s LCAP makes ' +
     'Environmental Literacy one of its three priorities and counts the grade ' +
     'levels and courses with a unit tied to them.</p>';
-
-  // Explainer shown inside the MATE cross-reference group (added 2026-11-20).
-  // Unlike every group above, this is not a published framework: it is a
-  // catalog this project compiled from MATE's competition manuals so a teacher
-  // can see what a team needs taught, and where in this site it is taught.
-  var MATE_EXPLAINER_HTML =
-    '<p>This is not a standard. MATE publishes none, so this is a ' +
-    'cross-reference catalog, compiled here from the competition manuals, of ' +
-    'what a team has to be able to do (safety, electrical work, the vertical ' +
-    'profiling float, documentation and presentation, running the team as a ' +
-    'company). It is not tied to a year, and it was built from the Scout ' +
-    'manual and the Floats task description, so limits that differ by class ' +
-    'are described for Scout.</p>' +
-    '<p>Each competency lists the standards it draws on, below. A strength ' +
-    'there says how fully that standard describes what the competency asks, ' +
-    'not how well any lesson here teaches it. Lessons are linked to a ' +
-    'competency only after a person has checked that it really addresses it.</p>' +
-    '<p><a href="mate-rov-cross-reference.html"><strong>Read the cross-reference one competency at a time</strong></a>, ' +
-    'with every standard, its wording and the reason all open on one page.</p>';
 
   // Small CASEL wheel, shown at the top of CASEL's own panel (so it's only
   // in the DOM/visible when that panel's <details> is open, same mechanism
@@ -429,7 +410,7 @@
   // renders no cross-reference, same as an unmapped carrier renders "Unassigned".
   var crosswalkIndex = {}; // "<framework> <code>" -> [{framework, code, strength, note}, ...]
   var catalogEntryByCode = {}; // framework -> code -> catalog standard entry (for the compare-text expansion)
-  var FRAMEWORK_LABELS = { castandards: 'CA', csta2017: 'CSTA 2017', casel: 'CASEL', 'cde-tsel': 'T-SEL', 'mate-rov': 'MATE', apcsp: 'AP CSP', csta2026: 'CSTA 2026', 'ca-ict-anchor': 'CA CTE', ngss: 'NGSS', 'ca-epc': 'EP&Cs' };
+  var FRAMEWORK_LABELS = { castandards: 'CA', csta2017: 'CSTA 2017', casel: 'CASEL', 'cde-tsel': 'T-SEL', apcsp: 'AP CSP', csta2026: 'CSTA 2026', 'ca-ict-anchor': 'CA CTE', ngss: 'NGSS', 'ca-epc': 'EP&Cs' };
 
   function frameworkLabel(framework) {
     return FRAMEWORK_LABELS[framework] || framework;
@@ -886,8 +867,7 @@
       reportGroupedSection(catalogs['ccss-ela'], covered('ccss-ela'), meta, 'ela', 'Common Core ELA (Speaking, Listening & Writing)', 'ccss-ela-standards-reference.html'),
       reportGroupedSection(catalogs['ccss-math'], covered('ccss-math'), meta, 'math', 'Common Core Math', 'ccss-math-standards-reference.html'),
       reportGroupedSection(catalogs.ngss, covered('ngss'), meta, 'sci', 'NGSS 2013', 'ngss-standards-reference.html'),
-      reportGroupedSection(catalogs['ca-epc'], covered('ca-epc'), meta, 'sci', 'California Environmental Principles and Concepts (EP&Cs)', 'ca-epc-standards-reference.html'),
-      reportGroupedSection(catalogs['mate-rov'], covered('mate-rov'), meta, 'mate', 'MATE ROV Competition Cross-Reference', 'mate-rov-standards-reference.html')
+      reportGroupedSection(catalogs['ca-epc'], covered('ca-epc'), meta, 'sci', 'California Environmental Principles and Concepts (EP&Cs)', 'ca-epc-standards-reference.html')
     ].join('\n');
   }
 
@@ -927,16 +907,6 @@
         scopeNote.className = 'report-scope-note';
         scopeNote.innerHTML = 'Showing only <strong>' + esc(locatorTitle) + '</strong>. <a href="?report=' + encodeURIComponent(slug) + '&view=' + encodeURIComponent(view) + '">View all of ' + esc(sourceTitle) + '</a>';
         actionsRow.appendChild(scopeNote);
-      }
-      // A source can name a page that shows its links one entry at a time, with
-      // nothing collapsed (the MATE cross-reference), since this report is
-      // organized by standard.
-      if (carrierMeta.detail_page) {
-        var detailLink = document.createElement('a');
-        detailLink.className = 'view-toggle-btn';
-        detailLink.href = carrierMeta.detail_page;
-        detailLink.textContent = 'Read this by competency';
-        actionsRow.appendChild(detailLink);
       }
       var printBtn = document.createElement('button');
       printBtn.type = 'button';
@@ -1515,7 +1485,7 @@
           });
         } else if (Array.isArray(catalogs[fw].topics)) {
           // AP CSP: topics[] with a code, title and paraphrase. Needed for
-          // the MATE cross-references to show the topic's own text.
+          // a crosswalk can show the topic's own text.
           catalogs[fw].topics.forEach(function (t) { byCode[t.code] = t; });
         } else if (catalogs[fw].anchor_standards) {
           // CA CTE ICT: anchor groups and Pathway C groups, each with items[].
@@ -1711,20 +1681,7 @@
         sciPanels.map(panelHtml).join('\n') +
         '</details></div>';
 
-      // Added 2026-11-20. A rule above it, because everything above is a
-      // published framework and this is a cross-reference compiled here.
-      var matePanels = [
-        ['MATE ROV Competition Cross-Reference', renderGroupedPanel(catalogs['mate-rov'], 'mate-rov'), 'mate', 'mate-rov-standards-reference.html', 'cross-reference, not a standard'],
-      ];
-      var mateGroupHtml =
-        '<div class="cov-panel" data-panel-category="mate"><details open>' +
-        '<summary><h2>MATE ROV Competition</h2></summary>' +
-        '<div class="cov-group-explainer">' + MATE_EXPLAINER_HTML + '</div>' +
-        groupActionsHtml() +
-        matePanels.map(panelHtml).join('\n') +
-        '</details></div>';
-
-      document.getElementById('panels').innerHTML = csGroupHtml + '\n' + litGroupHtml + '\n' + selGroupHtml + '\n' + elaGroupHtml + '\n' + mathGroupHtml + '\n' + sciGroupHtml + '\n<hr>\n' + mateGroupHtml;
+      document.getElementById('panels').innerHTML = csGroupHtml + '\n' + litGroupHtml + '\n' + selGroupHtml + '\n' + elaGroupHtml + '\n' + mathGroupHtml + '\n' + sciGroupHtml;
       // Without this, a click on the link bubbles up to <summary> and also
       // toggles the panel open/closed -- the same fix already applied to the
       // sidebar's source-title links, needed here for the same reason.

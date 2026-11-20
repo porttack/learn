@@ -4,7 +4,7 @@
     "url": "https://www.nextgenscience.org/",
     "year": 2013,
     "extracted": "2026-11-19",
-    "scope_note": "Only the performance expectations this program's ocean-robotics material can honestly touch, not all of NGSS: the eight Engineering Design expectations (MS-ETS1-1 to 4 and HS-ETS1-1 to 4) that MATE ROV work and the CS50 float problems practice, plus two Earth and space science expectations (MS-ESS2-6, HS-ESS2-4) about ocean heat and climate that the Argo float background in Profiling Float touches. Not indexed: the Physical Science expectations on forces, energy, waves and circuits, and the Life Science and Earth science expectations about ocean ecosystems, which the ROV lesson cards would need if they are ever aligned; add them then. The three NGSS dimensions behind each expectation (science and engineering practices, disciplinary core ideas, crosscutting concepts) are not indexed separately.",
+    "scope_note": "Only the performance expectations this program's ocean-robotics material can honestly touch, not all of NGSS: the eight Engineering Design expectations (MS-ETS1-1 to 4 and HS-ETS1-1 to 4) that MATE ROV work and the CS50 float problems practice, plus two Earth and space science expectations (MS-ESS2-6, HS-ESS2-4) about ocean heat and climate that the Argo float background in Profiling Float touches. Not indexed: the Physical Science expectations on forces, energy, waves and circuits, and the Life Science and Earth science expectations about ocean ecosystems, which the ROV lesson cards would need if they are ever aligned; add them then. The three NGSS dimensions behind each expectation (science and engineering practices, disciplinary core ideas, crosscutting concepts) are not indexed separately. Added 2026-11-20 for ocean and environmental cross-references: five expectations on human impacts, ecosystems, carbon cycling and energy resources (MS-ESS3-3, MS-LS2-5, HS-LS2-7, HS-ESS2-6, HS-ESS3-2), each read on nextgenscience.org and paraphrased.",
     "codes_note": "Codes are NGSS's own performance expectation codes (grade band, topic, number), used as published. NGSS does not name its expectations; the items here have no `name`, only a paraphrase. Groups are this project's own, by grade band and topic.",
     "license_note": "NGSS is (c) 2013 Achieve, Inc. on behalf of the twenty-six states and partners that collaborated on the NGSS; NextGenScience says its resources are generally under a Creative Commons Attribution license with some exceptions, and invites teachers and nonprofits to adapt parts of the standards, while the printed volumes carry a National Academies Press all-rights-reserved notice. The licensing across those documents is mixed, so every paraphrase here is written for this project, never the performance expectations' own text, matching this repo's policy for every other catalog. NGSS and Next Generation Science Standards are registered trademarks of Achieve, which was not involved in the production of this index and does not endorse it."
   },
@@ -71,6 +71,36 @@
           "code": "HS-ESS2-4",
           "name": null,
           "paraphrase": "Use a model to describe how changes in the flow of energy into and out of Earth's systems (the ocean among them) can change the climate."
+        }
+      ]
+    },
+    {
+      "name": "Human Impacts, Ecosystems and Earth Systems (selected, ocean-relevant)",
+      "items": [
+        {
+          "code": "MS-ESS3-3",
+          "name": null,
+          "paraphrase": "Use scientific principles to design a way of monitoring a human impact on the environment, and a way of reducing it, for example in water use, land use or pollution."
+        },
+        {
+          "code": "MS-LS2-5",
+          "name": null,
+          "paraphrase": "Judge competing designs for protecting biodiversity and the services ecosystems provide (clean water, recycled nutrients, less erosion), weighing scientific, economic and social limits."
+        },
+        {
+          "code": "HS-LS2-7",
+          "name": null,
+          "paraphrase": "Design, test and improve a solution that reduces how human activities, such as building, damming rivers or spreading invasive species, affect the environment and biodiversity."
+        },
+        {
+          "code": "HS-ESS2-6",
+          "name": null,
+          "paraphrase": "Build a quantitative model of how carbon cycles among the ocean, the air, rock and soil, and living things."
+        },
+        {
+          "code": "HS-ESS3-2",
+          "name": null,
+          "paraphrase": "Evaluate competing designs for developing and using energy and mineral resources by their costs and benefits, favoring conservation, recycling and reuse where possible and limiting harm where not."
         }
       ]
     }

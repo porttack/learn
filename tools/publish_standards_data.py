@@ -20,8 +20,13 @@ from pathlib import Path
 CATALOG_FILES = [
     "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
     "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
-    "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math", "ngss", "ca-epc", "mate-rov",
+    "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math", "ngss", "ca-epc",
 ]
+
+# Published to data/catalog/ so a lesson page's standards widget can read them, but not listed in
+# the manifest, so the main /standards/ map does not show them. The MATE material has its own
+# page (/standards/mate/), built by tools/build_alignment.py.
+EXTRA_CATALOG_FILES = ["mate-rov"]
 
 # Pairs of catalogs with a hand-built crosswalk file (see _standards/README.md).
 # "between" names the two frameworks in the order the crosswalk file's own row
@@ -93,7 +98,6 @@ HUES = [
     ("#7a2e8a", "#9d4bb5"),  # 26 purple (bootstrap_algebra)
     ("#c25e00", "#e08a2e"),  # 27 burnt orange (turtlelessons; not run through validate_palette.js)
     ("#51697f", "#8aa2b8"),  # 28 slate (movies; not run through validate_palette.js)
-    ("#9a7b4f", "#c4a574"),  # 29 sand (mate_rov; not run through validate_palette.js, run it against slot 28 before relying on this pair)
 ]
 
 # Slot 14 (gold) added 2026-08-30 alongside hour_of_data. Only the new adjacent
@@ -277,7 +281,6 @@ SOURCE_ORDER = [
     "bootstrap_algebra",
     "turtlelessons",
     "movies",
-    "mate_rov",
 ]
 
 
@@ -295,34 +298,11 @@ def main():
     (out / "carriers").mkdir(parents=True, exist_ok=True)
     (out / "crosswalk").mkdir(parents=True, exist_ok=True)
 
-    for name in CATALOG_FILES:
+    for name in CATALOG_FILES + EXTRA_CATALOG_FILES:
         shutil.copy(catalog_dir / f"{name}.json", out / "catalog" / f"{name}.json")
 
     for crosswalk in CROSSWALKS:
         shutil.copy(catalog_dir / f"crosswalk-{crosswalk['file']}", out / "crosswalk" / crosswalk["file"])
-
-    # The MATE carrier doubles as a crosswalk: each competency lists the standards
-    # it draws on, and /standards/ shows those as cross-references between the
-    # competency and each standard, the way California's standards show their CSTA
-    # counterparts. Generated here from the carrier's by_locator rows (one file per
-    # framework pair) so the carrier stays the only place anyone edits.
-    crosswalks = list(CROSSWALKS)
-    mate_path = carriers_dir / "mate-rov.json"
-    if mate_path.exists():
-        mate = json.loads(mate_path.read_text())
-        for fw, codes in mate.get("coverage", {}).items():
-            rows = []
-            for std, entry in sorted(codes.items()):
-                for loc, row in sorted(entry.get("by_locator", {}).items()):
-                    rows.append({"mate-rov": loc, fw: std, "strength": row["strength"], "note": row["note"]})
-            if not rows:
-                continue
-            fname = f"mate-rov-{fw}.json"
-            (out / "crosswalk" / fname).write_text(json.dumps({
-                "meta": {"built": "generated at publish time",
-                         "method": "Generated from _standards/carriers/mate-rov.json (by_locator): each row is one MATE competency and one standard it draws on, with that competency's own strength and reason."},
-                "crosswalk": rows}, indent=1) + "\n")
-            crosswalks.append({"between": ["mate-rov", fw], "file": fname})
 
     manifest_sources = []
     for slot, source in enumerate(SOURCE_ORDER, start=1):
@@ -344,11 +324,11 @@ def main():
             }
         )
 
-    manifest = {"catalog": CATALOG_FILES, "sources": manifest_sources, "crosswalks": crosswalks}
+    manifest = {"catalog": CATALOG_FILES, "sources": manifest_sources, "crosswalks": CROSSWALKS}
     (out / "manifest.json").write_text(json.dumps(manifest, indent=1) + "\n")
     print(
         f"Published {len(CATALOG_FILES)} catalog file(s), {len(manifest_sources)} carrier file(s), "
-        f"and {len(crosswalks)} crosswalk file(s) to {out}/"
+        f"and {len(CROSSWALKS)} crosswalk file(s) to {out}/"
     )
 
 

@@ -1,0 +1,110 @@
+{
+  "meta": {
+    "title": "MATE ROV mission tasks and their Ocean Decade tags",
+    "abbrev": "MTAG",
+    "source": "mate_missions",
+    "base_url": "https://materovcompetition.org",
+    "locator_kind": "task",
+    "locator_url_template": null,
+    "locator_titles": {
+      "2024-1": "2024 Task 1: OOI Coastal Pioneer Array",
+      "2024-2": "2024 Task 2: SMART Cables for Ocean Observing",
+      "2024-3": "2024 Task 3: From the Red Sea to Tennessee",
+      "2024-4": "2024 Task 4: MATE Floats",
+      "2025-1": "2025 Task 1: Shipwrecks, Spotter Buoys, and Flying Fish",
+      "2025-2": "2025 Task 2: Marine Renewable Energy",
+      "2025-3": "2025 Task 3: MATE Floats",
+      "2026-1": "2026 Task 1: Seabed 2030, A Kaleidoscope of Corals in Cold Water",
+      "2026-2": "2026 Task 2: SmartAtlantic Alliance",
+      "2026-3": "2026 Task 3: Wind-Powered Offshore Oil Platform",
+      "2026-4": "2026 Task 4: MATE Floats Under the Ice",
+      "2026-0": "2026 overarching tags"
+    },
+    "caveat": "These are MATE's own statements, read from the 2024 Ranger, 2025 Ranger and Navigator and 2026 Scout manuals (the 2025 and 2026 Scout lists match the others where tasks overlap). Nothing here is inferred. Tasks the manuals tag with Challenges appear once per year and class; Challenges 1 and 3 are never tagged in these three years.",
+    "alignment_log": [
+      {
+        "date": "2026-11-20",
+        "by": "Claude Sonnet 5.5",
+        "scope": "2024 to 2026 mission tasks against the ten Ocean Decade Challenges",
+        "note": "Copied from the Ocean Decade tag lists in the manuals; the 2026 overarching tag list is recorded as MATE wrote it."
+      }
+    ]
+  },
+  "coverage": {
+    "ocean-decade": {
+      "OD.2": {
+        "locators": [
+          "2024-3",
+          "2025-1",
+          "2025-2",
+          "2026-1",
+          "2026-2"
+        ],
+        "strength": "strong",
+        "note": "Tagged by MATE for: 2024 Task 3: From the Red Sea to Tennessee; 2025 Task 1: Shipwrecks, Spotter Buoys, and Flying Fish; 2025 Task 2: Marine Renewable Energy; 2026 Task 1: Seabed 2030, A Kaleidoscope of Corals in Cold Water; 2026 Task 2: SmartAtlantic Alliance."
+      },
+      "OD.4": {
+        "locators": [
+          "2025-2",
+          "2026-3"
+        ],
+        "strength": "strong",
+        "note": "Tagged by MATE for: 2025 Task 2: Marine Renewable Energy; 2026 Task 3: Wind-Powered Offshore Oil Platform."
+      },
+      "OD.5": {
+        "locators": [
+          "2024-4",
+          "2025-3",
+          "2026-3",
+          "2026-4"
+        ],
+        "strength": "strong",
+        "note": "Tagged by MATE for: 2024 Task 4: MATE Floats; 2025 Task 3: MATE Floats; 2026 Task 3: Wind-Powered Offshore Oil Platform; 2026 Task 4: MATE Floats Under the Ice."
+      },
+      "OD.6": {
+        "locators": [
+          "2026-3"
+        ],
+        "strength": "strong",
+        "note": "Tagged by MATE for: 2026 Task 3: Wind-Powered Offshore Oil Platform."
+      },
+      "OD.7": {
+        "locators": [
+          "2024-1",
+          "2024-2",
+          "2025-1",
+          "2025-3",
+          "2026-2",
+          "2026-3",
+          "2026-4"
+        ],
+        "strength": "strong",
+        "note": "Tagged by MATE for: 2024 Task 1: OOI Coastal Pioneer Array; 2024 Task 2: SMART Cables for Ocean Observing; 2025 Task 1: Shipwrecks, Spotter Buoys, and Flying Fish; 2025 Task 3: MATE Floats; 2026 Task 2: SmartAtlantic Alliance; 2026 Task 3: Wind-Powered Offshore Oil Platform; 2026 Task 4: MATE Floats Under the Ice."
+      },
+      "OD.8": {
+        "locators": [
+          "2025-1",
+          "2025-3",
+          "2026-1",
+          "2026-4"
+        ],
+        "strength": "strong",
+        "note": "Tagged by MATE for: 2025 Task 1: Shipwrecks, Spotter Buoys, and Flying Fish; 2025 Task 3: MATE Floats; 2026 Task 1: Seabed 2030, A Kaleidoscope of Corals in Cold Water; 2026 Task 4: MATE Floats Under the Ice."
+      },
+      "OD.9": {
+        "locators": [
+          "2026-0"
+        ],
+        "strength": "strong",
+        "note": "Tagged by MATE for: 2026 overarching tags. The 2026 overarching tag is worded 'Skills, knowledge, and technology for all'."
+      },
+      "OD.10": {
+        "locators": [
+          "2026-0"
+        ],
+        "strength": "strong",
+        "note": "In the 2026 overarching list MATE labels a tag number 10 with the wording of Challenge 9, so this may repeat Challenge 9 and not tag Challenge 10. Tagged for: 2026 overarching tags."
+      }
+    }
+  }
+}

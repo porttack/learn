@@ -71,6 +71,12 @@
         "by": "Claude Sonnet 5.5",
         "scope": "Profiling Float and Profiling Float: PID (locators 13 and 14) against the new mate-rov catalog, entered by hand",
         "note": "These four are direct links I checked against what each problem asks the student to write, not links inferred through shared standards. Not claimed: FLOAT.1 (no buoyancy engine is built), FLOAT.6 (no float design document), and anything in SAFE, ELEC or COMM."
+      },
+      {
+        "date": "2026-11-20",
+        "by": "Claude Sonnet 5.5",
+        "scope": "Profiling Float and Profiling Float: PID against the rebuilt MATE catalog (Stage 3)",
+        "note": "The four earlier hand-made FLOAT links collapse to one, ENG.8 (partial), as decided in the MATE taxonomy plan. Nothing else in SAFE, ELEC or COMM was claimed and the old codes no longer exist."
       }
     ]
   },
@@ -509,34 +515,13 @@
       }
     },
     "mate-rov": {
-      "FLOAT.2": {
+      "ENG.8": {
         "locators": [
           13,
           14
         ],
         "strength": "partial",
-        "note": "Profiling Float: PID has the student build the controller that holds the top of a float at 2.0 meters, within 0.33 meters, for 30 seconds in a row, tested in nine simulated pools with a bias, noise and a slow motor. Profiling Float has the student judge whether a float held. Partial because it is a simulated float: no buoyancy hardware, no real sensor, and no allowing for a sensor that is not at the top of the float (only a Going Further item in Profiling Float)."
-      },
-      "FLOAT.3": {
-        "locators": [
-          13
-        ],
-        "strength": "related",
-        "note": "Profiling Float: the student reads and judges a log of packets, but each packet has only a time and a depth. The company number, temperature, light and units of the real defined packet are not part of what the student writes, and nothing is transmitted."
-      },
-      "FLOAT.4": {
-        "locators": [
-          13
-        ],
-        "strength": "related",
-        "note": "Profiling Float: reading the packets for the five depths on the way up is the extra credit item (rungs), not the main problem."
-      },
-      "FLOAT.5": {
-        "locators": [
-          13
-        ],
-        "strength": "related",
-        "note": "Profiling Float: the student reads real temperature against depth graphs from Argo floats in the explorer but does not make a graph."
+        "note": "Profiling Float: PID has the student build the controller that holds a simulated float at its target depth for a required time in many simulated pools, and Profiling Float has the student judge whether a float held. Partial because the float is simulated: no buoyancy hardware, no real sensor, and the student does not build the device. It does not claim ENG.9: the student does not collect, transmit or graph data."
       }
     }
   }

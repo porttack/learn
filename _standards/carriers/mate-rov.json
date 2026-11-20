@@ -6,604 +6,411 @@
     "base_url": "https://materovcompetition.org",
     "locator_kind": "none",
     "locator_url_template": null,
-    "detail_page": "mate-rov-cross-reference.html",
     "locator_titles": {
-      "SAFE.1": "Pass the safety inspection",
-      "SAFE.2": "Draw the system interconnection diagram (SID)",
-      "ELEC.1": "Size the fuse and keep to the current limit",
-      "ELEC.2": "Connect to power the way the rules say",
-      "ELEC.3": "Wire neatly and relieve the strain",
-      "ELEC.4": "Waterproof every connection",
-      "ELEC.5": "Power a float from the surface",
-      "MECH.1": "Size the tether and vehicle for the venue",
-      "MECH.2": "Launch and recover by hand",
-      "MECH.3": "Guard the propellers",
-      "FLUID.1": "Use fluid power within the rules",
-      "CTRL.1": "Build a control system a pilot can drive",
-      "CTRL.2": "Use cameras and monitors within the rules",
-      "FLOAT.1": "Change depth with a buoyancy engine",
-      "FLOAT.2": "Hold a depth",
-      "FLOAT.3": "Send the defined data packet",
-      "FLOAT.4": "Take readings on the way up",
-      "FLOAT.5": "Graph the data",
-      "FLOAT.6": "Document the float",
-      "COMM.1": "Write the company spec sheet",
-      "COMM.2": "Write the technical documentation",
-      "COMM.3": "Give the engineering presentation",
-      "COMM.4": "Make the marketing display",
-      "COMM.5": "Show corporate responsibility",
-      "TEAM.1": "Organize the team as a company",
-      "TEAM.2": "Know the rules and ask in the right form",
-      "TEAM.3": "Run the deck crew and do the work yourselves",
-      "TEAM.4": "Plan from the request for proposals",
-      "TEAM.5": "Fly the product demonstration"
+      "ENG.1": "Turn a request for proposals into criteria and constraints",
+      "ENG.2": "Compare design alternatives and justify the choice",
+      "ENG.3": "Budget power and protect against overcurrent",
+      "ENG.4": "Build reliable electrical and mechanical systems",
+      "ENG.5": "Design for the real environment and test under realistic conditions",
+      "ENG.6": "Control and operate a vehicle",
+      "ENG.7": "Sense, measure and calibrate",
+      "ENG.8": "Design and run a non-ROV device that works on its own",
+      "ENG.9": "Collect, transmit, analyze and graph data",
+      "ENG.10": "Do underwater work with purpose-built tools",
+      "ENG.11": "Test, troubleshoot and keep a record of what you learned",
+      "PRO.1": "Run the team as a company",
+      "PRO.2": "Manage the project",
+      "PRO.3": "Communicate technical work in writing and in person",
+      "PRO.4": "Communicate with a non-technical audience",
+      "PRO.5": "Think like an entrepreneur",
+      "PRO.6": "Work safely and manage hazards as industry does",
+      "PRO.7": "Know and follow the rules and standards",
+      "PRO.8": "Use AI as a tool, not a crutch, and say how",
+      "PRO.9": "Give back to the community",
+      "UND.1": "Ocean observing and data",
+      "UND.2": "Ecosystems, biodiversity and invasive species",
+      "UND.3": "Climate and ocean change",
+      "UND.4": "Ocean energy and the sustainable ocean economy",
+      "UND.5": "People, heritage and risk",
+      "UND.6": "Weigh environmental, social and governance factors in a decision"
     },
-    "caveat": "This carrier runs the other way from most (and lists its own 29 competencies under mate-rov so the source reads 29 of 29): the content is the MATE competency catalog (mate-rov.json) and the standards are what each competency draws on. A strength here is how fully that standard describes what the competency asks of a team, not how well anything we teach covers it. Where one standard is cited by several competencies the entry's own strength is the weakest among them and its note gives each competency's reason; by_locator keeps each competency's own strength and reason, and the publish script turns those into the cross-references /standards/ shows between a competency and each standard (tools/publish_standards_data.py). All of it is this project's own reading of the Scout manual and the Floats task description, unproofread.",
+    "caveat": "This carrier runs the other way from most: its content is the MATE competency catalog (mate-rov.json) and the standards are what each competency draws on. A strength is how fully that standard describes what the competency asks of a team, not how well anything we teach covers it. Where one standard is cited by several competencies the entry's own strength is the weakest among them, and by_locator keeps each competency's own strength and reason. Applied rule: one to three core standards per competency, no 'related'. All of it is this project's own reading of the manuals, adopted from drafts you did not review line by line; the Stage 4 audit is where it gets a real review.",
     "alignment_log": [
       {
         "date": "2026-11-20",
         "by": "Claude Sonnet 5.5",
-        "scope": "First pass: 29 competencies against apcsp, castandards, csta2026, ca-ict-anchor, ngss, ca-epc and casel",
-        "note": "Written from the 2026 Scout manual and the 2027 Floats! task description. Kept to one to four standards per competency, and left cameras and lasers (CTRL.2) with none because no standard in these catalogs fits. Ranger, Navigator and Pioneer manuals not read."
+        "scope": "Stage 3 build: 26 competencies against apcsp, castandards, csta2026, ca-ict-anchor, ccss-ela, ngss, ca-epc and casel",
+        "note": "Transcribed from the decision tables in _program-notes-public/mate-taxonomy-plan.md, made in plan mode. Evaluate-Compete skills are a field on each competency (skills), not a carrier, because no strengths were decided for them. No judgments were added in the build."
       }
     ]
   },
   "coverage": {
+    "ngss": {
+      "HS-ESS2-6": {
+        "locators": [
+          "UND.3"
+        ],
+        "strength": "partial",
+        "note": "UND.3: Modeling how carbon cycles through the ocean, air and living things, the basis of ocean acidification.",
+        "by_locator": {
+          "UND.3": {
+            "strength": "partial",
+            "note": "Modeling how carbon cycles through the ocean, air and living things, the basis of ocean acidification."
+          }
+        }
+      },
+      "HS-ESS3-2": {
+        "locators": [
+          "UND.4"
+        ],
+        "strength": "partial",
+        "note": "UND.4: Evaluating competing designs for developing energy resources by their costs and benefits.",
+        "by_locator": {
+          "UND.4": {
+            "strength": "partial",
+            "note": "Evaluating competing designs for developing energy resources by their costs and benefits."
+          }
+        }
+      },
+      "HS-ETS1-1": {
+        "locators": [
+          "ENG.1"
+        ],
+        "strength": "strong",
+        "note": "ENG.1: The request for proposals turns a large real-world need into specific requirements.",
+        "by_locator": {
+          "ENG.1": {
+            "strength": "strong",
+            "note": "The request for proposals turns a large real-world need into specific requirements."
+          }
+        }
+      },
+      "HS-ETS1-3": {
+        "locators": [
+          "ENG.2"
+        ],
+        "strength": "strong",
+        "note": "ENG.2: Judging a design on prioritized criteria and trade-offs such as cost, safety and reliability.",
+        "by_locator": {
+          "ENG.2": {
+            "strength": "strong",
+            "note": "Judging a design on prioritized criteria and trade-offs such as cost, safety and reliability."
+          }
+        }
+      },
+      "HS-LS2-7": {
+        "locators": [
+          "UND.2"
+        ],
+        "strength": "partial",
+        "note": "UND.2: Designing and improving a solution that reduces human impact on biodiversity, such as invasive species.",
+        "by_locator": {
+          "UND.2": {
+            "strength": "partial",
+            "note": "Designing and improving a solution that reduces human impact on biodiversity, such as invasive species."
+          }
+        }
+      },
+      "MS-ESS3-3": {
+        "locators": [
+          "UND.1"
+        ],
+        "strength": "partial",
+        "note": "UND.1: Designing a way to monitor a human impact on the environment is what ocean observing is for.",
+        "by_locator": {
+          "UND.1": {
+            "strength": "partial",
+            "note": "Designing a way to monitor a human impact on the environment is what ocean observing is for."
+          }
+        }
+      },
+      "MS-ETS1-1": {
+        "locators": [
+          "ENG.1",
+          "ENG.3"
+        ],
+        "strength": "partial",
+        "note": "ENG.1: Stating criteria and constraints precisely enough to test a design against them is the expectation itself. ENG.3: A current limit and a fuse are constraints the whole design has to fit inside.",
+        "by_locator": {
+          "ENG.1": {
+            "strength": "strong",
+            "note": "Stating criteria and constraints precisely enough to test a design against them is the expectation itself."
+          },
+          "ENG.3": {
+            "strength": "partial",
+            "note": "A current limit and a fuse are constraints the whole design has to fit inside."
+          }
+        }
+      },
+      "MS-ETS1-2": {
+        "locators": [
+          "ENG.2"
+        ],
+        "strength": "strong",
+        "note": "ENG.2: Comparing design alternatives against criteria and constraints is the expectation itself.",
+        "by_locator": {
+          "ENG.2": {
+            "strength": "strong",
+            "note": "Comparing design alternatives against criteria and constraints is the expectation itself."
+          }
+        }
+      },
+      "MS-ETS1-4": {
+        "locators": [
+          "ENG.5",
+          "ENG.10"
+        ],
+        "strength": "partial",
+        "note": "ENG.5: Testing a design under realistic conditions and using the results to improve it. ENG.10: Building and testing a tool for a mission task and improving it from the results.",
+        "by_locator": {
+          "ENG.5": {
+            "strength": "partial",
+            "note": "Testing a design under realistic conditions and using the results to improve it."
+          },
+          "ENG.10": {
+            "strength": "partial",
+            "note": "Building and testing a tool for a mission task and improving it from the results."
+          }
+        }
+      },
+      "MS-LS2-5": {
+        "locators": [
+          "UND.2"
+        ],
+        "strength": "partial",
+        "note": "UND.2: Evaluating competing designs for protecting biodiversity and ecosystem services.",
+        "by_locator": {
+          "UND.2": {
+            "strength": "partial",
+            "note": "Evaluating competing designs for protecting biodiversity and ecosystem services."
+          }
+        }
+      }
+    },
     "ca-ict-anchor": {
       "10.1": {
         "locators": [
-          "SAFE.2"
+          "PRO.7"
         ],
         "strength": "partial",
-        "note": "SAFE.2: Reading and using the field's own terminology and symbols (ANSI, NEMA or IEC).",
+        "note": "PRO.7: Using the field's own terminology and symbols.",
         "by_locator": {
-          "SAFE.2": {
+          "PRO.7": {
             "strength": "partial",
-            "note": "Reading and using the field's own terminology and symbols (ANSI, NEMA or IEC)."
+            "note": "Using the field's own terminology and symbols."
           }
         }
       },
       "10.2": {
         "locators": [
-          "SAFE.1",
-          "TEAM.2"
+          "PRO.7"
         ],
-        "strength": "related",
-        "note": "SAFE.1: Following the rules and regulations of a technical field, here the competition's own rules. TEAM.2: A technical field has its own rules, regulations and expectations to follow.",
+        "strength": "strong",
+        "note": "PRO.7: A technical field has its own rules and expectations to follow.",
         "by_locator": {
-          "SAFE.1": {
-            "strength": "related",
-            "note": "Following the rules and regulations of a technical field, here the competition's own rules."
-          },
-          "TEAM.2": {
-            "strength": "partial",
-            "note": "A technical field has its own rules, regulations and expectations to follow."
+          "PRO.7": {
+            "strength": "strong",
+            "note": "A technical field has its own rules and expectations to follow."
           }
         }
       },
-      "2.4": {
+      "11.3": {
         "locators": [
-          "COMM.1"
+          "PRO.5"
+        ],
+        "strength": "strong",
+        "note": "PRO.5: Entrepreneurship and new ventures as real options.",
+        "by_locator": {
+          "PRO.5": {
+            "strength": "strong",
+            "note": "Entrepreneurship and new ventures as real options."
+          }
+        }
+      },
+      "11.4": {
+        "locators": [
+          "PRO.5"
         ],
         "strength": "partial",
-        "note": "COMM.1: Clean writing and formatting, and following a specified format.",
+        "note": "PRO.5: Entrepreneurial practices applied in the ICT sector.",
         "by_locator": {
-          "COMM.1": {
+          "PRO.5": {
             "strength": "partial",
-            "note": "Clean writing and formatting, and following a specified format."
+            "note": "Entrepreneurial practices applied in the ICT sector."
           }
         }
       },
       "2.5": {
         "locators": [
-          "COMM.3",
-          "COMM.4"
+          "PRO.4"
         ],
-        "strength": "partial",
-        "note": "COMM.3: Adapting what you say to the audience in front of you. COMM.4: The same information has to reach a different audience in a different form.",
+        "strength": "strong",
+        "note": "PRO.4: The same information has to reach a different audience in a different form.",
         "by_locator": {
-          "COMM.3": {
-            "strength": "partial",
-            "note": "Adapting what you say to the audience in front of you."
-          },
-          "COMM.4": {
+          "PRO.4": {
             "strength": "strong",
             "note": "The same information has to reach a different audience in a different form."
           }
         }
       },
-      "2.7": {
+      "6.2": {
         "locators": [
-          "COMM.1",
-          "COMM.2"
-        ],
-        "strength": "related",
-        "note": "COMM.1: Writing clearly for readers outside your group. COMM.2: Writing clearly for people outside your group.",
-        "by_locator": {
-          "COMM.1": {
-            "strength": "related",
-            "note": "Writing clearly for readers outside your group."
-          },
-          "COMM.2": {
-            "strength": "related",
-            "note": "Writing clearly for people outside your group."
-          }
-        }
-      },
-      "2.8": {
-        "locators": [
-          "COMM.4"
-        ],
-        "strength": "related",
-        "note": "COMM.4: Serving someone starts with understanding what they need.",
-        "by_locator": {
-          "COMM.4": {
-            "strength": "related",
-            "note": "Serving someone starts with understanding what they need."
-          }
-        }
-      },
-      "5.7": {
-        "locators": [
-          "TEAM.5"
+          "PRO.6"
         ],
         "strength": "partial",
-        "note": "TEAM.5: Some problems are solved by working through them repeatedly and refining the approach.",
+        "note": "PRO.6: Workplace policies and regulations state what employers and employees each owe.",
         "by_locator": {
-          "TEAM.5": {
+          "PRO.6": {
             "strength": "partial",
-            "note": "Some problems are solved by working through them repeatedly and refining the approach."
-          }
-        }
-      },
-      "6.4": {
-        "locators": [
-          "MECH.2"
-        ],
-        "strength": "related",
-        "note": "MECH.2: Lifting and moving equipment safely protects the person doing it.",
-        "by_locator": {
-          "MECH.2": {
-            "strength": "related",
-            "note": "Lifting and moving equipment safely protects the person doing it."
+            "note": "Workplace policies and regulations state what employers and employees each owe."
           }
         }
       },
       "6.6": {
         "locators": [
-          "SAFE.1"
+          "PRO.6"
         ],
-        "strength": "partial",
-        "note": "SAFE.1: A safe workplace is something you actively keep up, and the inspection is the competition's version of that.",
+        "strength": "strong",
+        "note": "PRO.6: A safe workplace has to be actively maintained.",
         "by_locator": {
-          "SAFE.1": {
-            "strength": "partial",
-            "note": "A safe workplace is something you actively keep up, and the inspection is the competition's version of that."
+          "PRO.6": {
+            "strength": "strong",
+            "note": "A safe workplace has to be actively maintained."
           }
         }
       },
       "7.4": {
         "locators": [
-          "TEAM.4"
+          "PRO.2"
         ],
-        "strength": "related",
-        "note": "TEAM.4: Managing time is what lets responsibilities get met.",
+        "strength": "partial",
+        "note": "PRO.2: Managing time is what lets responsibilities get met.",
         "by_locator": {
-          "TEAM.4": {
-            "strength": "related",
+          "PRO.2": {
+            "strength": "partial",
             "note": "Managing time is what lets responsibilities get met."
           }
         }
       },
       "7.5": {
         "locators": [
-          "ELEC.3"
+          "ENG.4"
         ],
         "strength": "strong",
-        "note": "ELEC.3: High quality work applies to how something is built and finished, not only whether it works.",
+        "note": "ENG.4: Quality of workmanship, not only whether it works, is judged.",
         "by_locator": {
-          "ELEC.3": {
+          "ENG.4": {
             "strength": "strong",
-            "note": "High quality work applies to how something is built and finished, not only whether it works."
-          }
-        }
-      },
-      "9.2": {
-        "locators": [
-          "TEAM.3"
-        ],
-        "strength": "related",
-        "note": "TEAM.3: Successful teams share leadership, cooperation and sound decision making.",
-        "by_locator": {
-          "TEAM.3": {
-            "strength": "related",
-            "note": "Successful teams share leadership, cooperation and sound decision making."
+            "note": "Quality of workmanship, not only whether it works, is judged."
           }
         }
       },
       "9.3": {
         "locators": [
-          "COMM.5"
+          "PRO.9"
         ],
-        "strength": "partial",
-        "note": "COMM.5: Teamwork, leadership and citizenship in school and community.",
+        "strength": "strong",
+        "note": "PRO.9: Teamwork, leadership and citizenship in school and community.",
         "by_locator": {
-          "COMM.5": {
-            "strength": "partial",
+          "PRO.9": {
+            "strength": "strong",
             "note": "Teamwork, leadership and citizenship in school and community."
-          }
-        }
-      },
-      "C1.4": {
-        "locators": [
-          "TEAM.1"
-        ],
-        "strength": "partial",
-        "note": "TEAM.1: Working on a team means working within a defined scope and boundaries.",
-        "by_locator": {
-          "TEAM.1": {
-            "strength": "partial",
-            "note": "Working on a team means working within a defined scope and boundaries."
           }
         }
       },
       "C2.4": {
         "locators": [
-          "TEAM.4"
-        ],
-        "strength": "strong",
-        "note": "TEAM.4: Understanding a customer's needs is its own analytical step.",
-        "by_locator": {
-          "TEAM.4": {
-            "strength": "strong",
-            "note": "Understanding a customer's needs is its own analytical step."
-          }
-        }
-      },
-      "C2.5": {
-        "locators": [
-          "FLOAT.6",
-          "TEAM.4"
-        ],
-        "strength": "related",
-        "note": "FLOAT.6: Requirements and the solution both need to be written down. TEAM.4: Requirements and possible solutions both get worked out and written down.",
-        "by_locator": {
-          "FLOAT.6": {
-            "strength": "related",
-            "note": "Requirements and the solution both need to be written down."
-          },
-          "TEAM.4": {
-            "strength": "partial",
-            "note": "Requirements and possible solutions both get worked out and written down."
-          }
-        }
-      },
-      "C4.11": {
-        "locators": [
-          "COMM.2",
-          "FLOAT.6",
-          "SAFE.2"
-        ],
-        "strength": "related",
-        "note": "SAFE.2: A diagram is documentation for a reader other than the person who built it. FLOAT.6: Documentation written for someone other than the builder. COMM.2: Documentation for readers other than the builder.",
-        "by_locator": {
-          "COMM.2": {
-            "strength": "strong",
-            "note": "Documentation for readers other than the builder."
-          },
-          "FLOAT.6": {
-            "strength": "partial",
-            "note": "Documentation written for someone other than the builder."
-          },
-          "SAFE.2": {
-            "strength": "related",
-            "note": "A diagram is documentation for a reader other than the person who built it."
-          }
-        }
-      },
-      "C4.2": {
-        "locators": [
-          "FLOAT.3"
-        ],
-        "strength": "related",
-        "note": "FLOAT.3: Two programs, the float's and the receiver's, have to agree on a protocol.",
-        "by_locator": {
-          "FLOAT.3": {
-            "strength": "related",
-            "note": "Two programs, the float's and the receiver's, have to agree on a protocol."
-          }
-        }
-      },
-      "C4.7": {
-        "locators": [
-          "FLOAT.3"
+          "ENG.1"
         ],
         "strength": "partial",
-        "note": "FLOAT.3: Records of values organized so a program can read them.",
+        "note": "ENG.1: Reading what the client actually asks for is the analysis step of design.",
         "by_locator": {
-          "FLOAT.3": {
+          "ENG.1": {
             "strength": "partial",
-            "note": "Records of values organized so a program can read them."
+            "note": "Reading what the client actually asks for is the analysis step of design."
+          }
+        }
+      },
+      "C5.6": {
+        "locators": [
+          "ENG.11"
+        ],
+        "strength": "strong",
+        "note": "ENG.11: Debugging is part of quality assurance.",
+        "by_locator": {
+          "ENG.11": {
+            "strength": "strong",
+            "note": "Debugging is part of quality assurance."
           }
         }
       },
       "C9.2": {
         "locators": [
-          "ELEC.3",
-          "ELEC.4"
+          "ENG.4"
         ],
         "strength": "partial",
-        "note": "ELEC.3: Assembling hardware takes the right tools and testing. ELEC.4: Assembling hardware takes the right tools and testing, here a seal that survives a season.",
+        "note": "ENG.4: Assembling hardware takes the right tools and testing.",
         "by_locator": {
-          "ELEC.3": {
+          "ENG.4": {
             "strength": "partial",
             "note": "Assembling hardware takes the right tools and testing."
-          },
-          "ELEC.4": {
-            "strength": "partial",
-            "note": "Assembling hardware takes the right tools and testing, here a seal that survives a season."
           }
         }
       },
       "C9.3": {
         "locators": [
-          "CTRL.1"
+          "ENG.6"
         ],
         "strength": "partial",
-        "note": "CTRL.1: Hardware that captures input, processes it and acts on it.",
+        "note": "ENG.6: Hardware that captures input, processes it and acts on it, as a control system does.",
         "by_locator": {
-          "CTRL.1": {
+          "ENG.6": {
             "strength": "partial",
-            "note": "Hardware that captures input, processes it and acts on it."
+            "note": "Hardware that captures input, processes it and acts on it, as a control system does."
           }
         }
       },
       "C9.5": {
         "locators": [
-          "CTRL.1",
-          "FLOAT.2"
+          "ENG.6",
+          "ENG.8"
         ],
         "strength": "partial",
-        "note": "CTRL.1: A microcontroller or computer programmed to run a device or a robot. FLOAT.2: A microcontroller programmed to run a device.",
+        "note": "ENG.6: A computer or microcontroller programmed to run a device or a robot. ENG.8: A microcontroller programmed to run a device.",
         "by_locator": {
-          "CTRL.1": {
+          "ENG.6": {
             "strength": "partial",
-            "note": "A microcontroller or computer programmed to run a device or a robot."
+            "note": "A computer or microcontroller programmed to run a device or a robot."
           },
-          "FLOAT.2": {
+          "ENG.8": {
             "strength": "partial",
             "note": "A microcontroller programmed to run a device."
           }
         }
       }
     },
-    "ngss": {
-      "HS-ETS1-1": {
-        "locators": [
-          "TEAM.4"
-        ],
-        "strength": "partial",
-        "note": "TEAM.4: Turning a large real-world challenge into specific requirements.",
-        "by_locator": {
-          "TEAM.4": {
-            "strength": "partial",
-            "note": "Turning a large real-world challenge into specific requirements."
-          }
-        }
-      },
-      "HS-ETS1-3": {
-        "locators": [
-          "COMM.3",
-          "ELEC.1",
-          "MECH.3",
-          "SAFE.1"
-        ],
-        "strength": "related",
-        "note": "SAFE.1: Safety is the criterion that outranks the others when trade-offs are judged. ELEC.1: Choosing a fuse trades protection against nuisance trips. MECH.3: A safety criterion that has to be met before anything else is traded. COMM.3: Explaining why one design was chosen over another, with the trade-offs.",
-        "by_locator": {
-          "COMM.3": {
-            "strength": "related",
-            "note": "Explaining why one design was chosen over another, with the trade-offs."
-          },
-          "ELEC.1": {
-            "strength": "related",
-            "note": "Choosing a fuse trades protection against nuisance trips."
-          },
-          "MECH.3": {
-            "strength": "partial",
-            "note": "A safety criterion that has to be met before anything else is traded."
-          },
-          "SAFE.1": {
-            "strength": "related",
-            "note": "Safety is the criterion that outranks the others when trade-offs are judged."
-          }
-        }
-      },
-      "HS-ETS1-4": {
-        "locators": [
-          "FLOAT.2"
-        ],
-        "strength": "related",
-        "note": "FLOAT.2: A computer simulation is a natural way to test a controller before the pool.",
-        "by_locator": {
-          "FLOAT.2": {
-            "strength": "related",
-            "note": "A computer simulation is a natural way to test a controller before the pool."
-          }
-        }
-      },
-      "MS-ETS1-1": {
-        "locators": [
-          "ELEC.1",
-          "ELEC.2",
-          "ELEC.4",
-          "ELEC.5",
-          "FLUID.1",
-          "MECH.1",
-          "TEAM.4"
-        ],
-        "strength": "related",
-        "note": "ELEC.1: A hard limit on current is a constraint the design has to be built around and tested against. ELEC.2: Voltage, source and shutdown time are criteria and constraints to design inside. ELEC.4: A conductive, wet operating environment is a constraint on every connection. ELEC.5: The float's power limits are constraints on its design. MECH.1: The venue's dimensions are constraints that set the design. FLUID.1: The rules are constraints on what a design may do. TEAM.4: Spelling out the criteria and constraints a solution is tested against.",
-        "by_locator": {
-          "ELEC.1": {
-            "strength": "partial",
-            "note": "A hard limit on current is a constraint the design has to be built around and tested against."
-          },
-          "ELEC.2": {
-            "strength": "partial",
-            "note": "Voltage, source and shutdown time are criteria and constraints to design inside."
-          },
-          "ELEC.4": {
-            "strength": "related",
-            "note": "A conductive, wet operating environment is a constraint on every connection."
-          },
-          "ELEC.5": {
-            "strength": "partial",
-            "note": "The float's power limits are constraints on its design."
-          },
-          "FLUID.1": {
-            "strength": "related",
-            "note": "The rules are constraints on what a design may do."
-          },
-          "MECH.1": {
-            "strength": "partial",
-            "note": "The venue's dimensions are constraints that set the design."
-          },
-          "TEAM.4": {
-            "strength": "partial",
-            "note": "Spelling out the criteria and constraints a solution is tested against."
-          }
-        }
-      },
-      "MS-ETS1-2": {
-        "locators": [
-          "FLOAT.1"
-        ],
-        "strength": "partial",
-        "note": "FLOAT.1: The scoring asks a team to compare two ways of solving the same problem against stated criteria.",
-        "by_locator": {
-          "FLOAT.1": {
-            "strength": "partial",
-            "note": "The scoring asks a team to compare two ways of solving the same problem against stated criteria."
-          }
-        }
-      },
-      "MS-ETS1-3": {
-        "locators": [
-          "COMM.2"
-        ],
-        "strength": "partial",
-        "note": "COMM.2: Analyzing test data to see what each design does well or badly.",
-        "by_locator": {
-          "COMM.2": {
-            "strength": "partial",
-            "note": "Analyzing test data to see what each design does well or badly."
-          }
-        }
-      },
-      "MS-ETS1-4": {
-        "locators": [
-          "TEAM.5"
-        ],
-        "strength": "partial",
-        "note": "TEAM.5: Practice runs are iterative testing, and each run's data improves the next.",
-        "by_locator": {
-          "TEAM.5": {
-            "strength": "partial",
-            "note": "Practice runs are iterative testing, and each run's data improves the next."
-          }
-        }
-      }
-    },
-    "csta2026": {
-      "HS-DAT-DC-22": {
-        "locators": [
-          "FLOAT.3"
-        ],
-        "strength": "partial",
-        "note": "FLOAT.3: A data dictionary that names each field, its type and the values it may hold, which is what the packet definition is.",
-        "by_locator": {
-          "FLOAT.3": {
-            "strength": "partial",
-            "note": "A data dictionary that names each field, its type and the values it may hold, which is what the packet definition is."
-          }
-        }
-      },
-      "HS-DAT-DC-24": {
-        "locators": [
-          "FLOAT.4"
-        ],
-        "strength": "related",
-        "note": "FLOAT.4: Checking that readings are the right type and fall in a sensible range.",
-        "by_locator": {
-          "FLOAT.4": {
-            "strength": "related",
-            "note": "Checking that readings are the right type and fall in a sensible range."
-          }
-        }
-      },
-      "HS-DAT-DI-25": {
-        "locators": [
-          "FLOAT.5"
-        ],
-        "strength": "strong",
-        "note": "FLOAT.5: Turning a dataset into a chart to answer a question.",
-        "by_locator": {
-          "FLOAT.5": {
-            "strength": "strong",
-            "note": "Turning a dataset into a chart to answer a question."
-          }
-        }
-      },
-      "HS-PRO-PD-15": {
-        "locators": [
-          "TEAM.1"
-        ],
-        "strength": "strong",
-        "note": "TEAM.1: Team programming goes better with assigned roles and a shared design document.",
-        "by_locator": {
-          "TEAM.1": {
-            "strength": "strong",
-            "note": "Team programming goes better with assigned roles and a shared design document."
-          }
-        }
-      },
-      "HS-SYS-NT-34": {
-        "locators": [
-          "SAFE.2"
-        ],
-        "strength": "related",
-        "note": "SAFE.2: A diagram that shows both the physical parts and how they connect, as a network diagram does.",
-        "by_locator": {
-          "SAFE.2": {
-            "strength": "related",
-            "note": "A diagram that shows both the physical parts and how they connect, as a network diagram does."
-          }
-        }
-      }
-    },
     "castandards": {
-      "9-12.AP.15": {
+      "9-12.AP.20": {
         "locators": [
-          "CTRL.1"
+          "ENG.5"
         ],
-        "strength": "related",
-        "note": "CTRL.1: A program that responds to events, such as a joystick moving, instead of running start to finish.",
+        "strength": "partial",
+        "note": "ENG.5: The same cycle of testing and fixing applies to the vehicle's software, aimed at more than correctness.",
         "by_locator": {
-          "CTRL.1": {
-            "strength": "related",
-            "note": "A program that responds to events, such as a joystick moving, instead of running start to finish."
+          "ENG.5": {
+            "strength": "partial",
+            "note": "The same cycle of testing and fixing applies to the vehicle's software, aimed at more than correctness."
           }
         }
       },
       "9-12.AP.21": {
         "locators": [
-          "TEAM.1"
+          "PRO.1"
         ],
         "strength": "strong",
-        "note": "TEAM.1: Building as a team with defined roles and shared tools is different work from working alone.",
+        "note": "PRO.1: Building as a team with defined roles and shared tools is different work from working alone.",
         "by_locator": {
-          "TEAM.1": {
+          "PRO.1": {
             "strength": "strong",
             "note": "Building as a team with defined roles and shared tools is different work from working alone."
           }
@@ -611,27 +418,120 @@
       },
       "9-12.AP.22": {
         "locators": [
-          "COMM.2"
+          "PRO.3"
         ],
         "strength": "strong",
-        "note": "COMM.2: Writing design decisions down is what makes the process readable to anyone later.",
+        "note": "PRO.3: Writing design decisions down makes the process readable to anyone later.",
         "by_locator": {
-          "COMM.2": {
+          "PRO.3": {
             "strength": "strong",
-            "note": "Writing design decisions down is what makes the process readable to anyone later."
+            "note": "Writing design decisions down makes the process readable to anyone later."
+          }
+        }
+      },
+      "9-12.CS.3": {
+        "locators": [
+          "ENG.11"
+        ],
+        "strength": "strong",
+        "note": "ENG.11: Troubleshooting a complex problem means researching, testing and drawing on past experience.",
+        "by_locator": {
+          "ENG.11": {
+            "strength": "strong",
+            "note": "Troubleshooting a complex problem means researching, testing and drawing on past experience."
           }
         }
       },
       "9-12.DA.10": {
         "locators": [
-          "FLOAT.5"
+          "ENG.9"
         ],
         "strength": "partial",
-        "note": "FLOAT.5: How a visualization is built shapes what a reader takes from it, for example which way depth runs.",
+        "note": "ENG.9: How a visualization is built shapes what a reader takes from it, for example which way depth runs.",
         "by_locator": {
-          "FLOAT.5": {
+          "ENG.9": {
             "strength": "partial",
             "note": "How a visualization is built shapes what a reader takes from it, for example which way depth runs."
+          }
+        }
+      }
+    },
+    "csta2026": {
+      "HS-ALG-PS-05": {
+        "locators": [
+          "PRO.8"
+        ],
+        "strength": "partial",
+        "note": "PRO.8: Content from an AI tool deserves a critical look for accuracy and harm.",
+        "by_locator": {
+          "PRO.8": {
+            "strength": "partial",
+            "note": "Content from an AI tool deserves a critical look for accuracy and harm."
+          }
+        }
+      },
+      "HS-DAT-DC-24": {
+        "locators": [
+          "ENG.7"
+        ],
+        "strength": "partial",
+        "note": "ENG.7: Checking that readings are the right type and in a sensible range is part of trusting a sensor.",
+        "by_locator": {
+          "ENG.7": {
+            "strength": "partial",
+            "note": "Checking that readings are the right type and in a sensible range is part of trusting a sensor."
+          }
+        }
+      },
+      "HS-DAT-DI-25": {
+        "locators": [
+          "ENG.9"
+        ],
+        "strength": "strong",
+        "note": "ENG.9: Turning a dataset into a chart to answer a question.",
+        "by_locator": {
+          "ENG.9": {
+            "strength": "strong",
+            "note": "Turning a dataset into a chart to answer a question."
+          }
+        }
+      },
+      "HS-PRO-PD-15": {
+        "locators": [
+          "PRO.1"
+        ],
+        "strength": "strong",
+        "note": "PRO.1: Team work goes better with assigned roles and a shared design document.",
+        "by_locator": {
+          "PRO.1": {
+            "strength": "strong",
+            "note": "Team work goes better with assigned roles and a shared design document."
+          }
+        }
+      },
+      "HS-PRO-RD-18": {
+        "locators": [
+          "PRO.8"
+        ],
+        "strength": "partial",
+        "note": "PRO.8: AI-produced code still has to be tested against what it was meant to do.",
+        "by_locator": {
+          "PRO.8": {
+            "strength": "partial",
+            "note": "AI-produced code still has to be tested against what it was meant to do."
+          }
+        }
+      },
+      "HS-SOC-ET-41": {
+        "locators": [
+          "UND.6"
+        ],
+        "strength": "partial",
+        "note": "UND.6: Weighing a technology's benefits against its costs, which fall unevenly.",
+        "by_locator": {
+          "UND.6": {
+            "strength": "partial",
+            "note": "Weighing a technology's benefits against its costs, which fall unevenly."
           }
         }
       }
@@ -639,336 +539,235 @@
     "apcsp": {
       "2.3": {
         "locators": [
-          "FLOAT.4",
-          "FLOAT.5"
+          "ENG.9"
         ],
-        "strength": "related",
-        "note": "FLOAT.4: Raw readings become information only once a program organizes them. FLOAT.5: Finding the pattern in a data set.",
+        "strength": "partial",
+        "note": "ENG.9: Raw readings become information once a program finds the pattern in them.",
         "by_locator": {
-          "FLOAT.4": {
-            "strength": "related",
-            "note": "Raw readings become information only once a program organizes them."
-          },
-          "FLOAT.5": {
+          "ENG.9": {
             "strength": "partial",
-            "note": "Finding the pattern in a data set."
+            "note": "Raw readings become information once a program finds the pattern in them."
           }
         }
       },
       "3.6": {
         "locators": [
-          "FLOAT.2"
+          "ENG.8"
         ],
         "strength": "partial",
-        "note": "FLOAT.2: The float's decision at each moment is a conditional on its depth.",
+        "note": "ENG.8: A device that decides what to do next from what it senses is a conditional.",
         "by_locator": {
-          "FLOAT.2": {
+          "ENG.8": {
             "strength": "partial",
-            "note": "The float's decision at each moment is a conditional on its depth."
-          }
-        }
-      },
-      "3.8": {
-        "locators": [
-          "FLOAT.2",
-          "FLOAT.4"
-        ],
-        "strength": "related",
-        "note": "FLOAT.2: The decision repeats every reading until the hold is done. FLOAT.4: Repeating the same measurement at every step of an ascent.",
-        "by_locator": {
-          "FLOAT.2": {
-            "strength": "related",
-            "note": "The decision repeats every reading until the hold is done."
-          },
-          "FLOAT.4": {
-            "strength": "partial",
-            "note": "Repeating the same measurement at every step of an ascent."
+            "note": "A device that decides what to do next from what it senses is a conditional."
           }
         }
       }
     },
     "casel": {
-      "RDM.6": {
+      "RDM.4": {
         "locators": [
-          "COMM.5"
+          "UND.6"
         ],
         "strength": "partial",
-        "note": "COMM.5: Reflecting on your own part in the well-being of the community.",
+        "note": "UND.6: Anticipating and evaluating the consequences of actions.",
         "by_locator": {
-          "COMM.5": {
+          "UND.6": {
+            "strength": "partial",
+            "note": "Anticipating and evaluating the consequences of actions."
+          }
+        }
+      },
+      "RDM.6": {
+        "locators": [
+          "PRO.9"
+        ],
+        "strength": "partial",
+        "note": "PRO.9: Reflecting on your own part in the well-being of the community.",
+        "by_locator": {
+          "PRO.9": {
             "strength": "partial",
             "note": "Reflecting on your own part in the well-being of the community."
           }
         }
       },
-      "REL.1": {
-        "locators": [
-          "COMM.3",
-          "COMM.4"
-        ],
-        "strength": "related",
-        "note": "COMM.3: Communicating effectively, including answering questions on the spot. COMM.4: Communicating effectively with people who are not like you.",
-        "by_locator": {
-          "COMM.3": {
-            "strength": "partial",
-            "note": "Communicating effectively, including answering questions on the spot."
-          },
-          "COMM.4": {
-            "strength": "related",
-            "note": "Communicating effectively with people who are not like you."
-          }
-        }
-      },
       "REL.4": {
         "locators": [
-          "TEAM.1",
-          "TEAM.3"
+          "PRO.1"
         ],
-        "strength": "partial",
-        "note": "TEAM.1: Practicing teamwork and collaboration. TEAM.3: Practicing teamwork and collaboration under time pressure.",
+        "strength": "strong",
+        "note": "PRO.1: Practicing teamwork and collaboration.",
         "by_locator": {
-          "TEAM.1": {
+          "PRO.1": {
             "strength": "strong",
             "note": "Practicing teamwork and collaboration."
-          },
-          "TEAM.3": {
-            "strength": "partial",
-            "note": "Practicing teamwork and collaboration under time pressure."
           }
         }
       },
-      "REL.7": {
+      "SM.5": {
         "locators": [
-          "TEAM.1"
+          "PRO.2"
         ],
-        "strength": "related",
-        "note": "TEAM.1: Showing leadership in groups.",
+        "strength": "strong",
+        "note": "PRO.2: Using planning and organizational skills.",
         "by_locator": {
-          "TEAM.1": {
-            "strength": "related",
-            "note": "Showing leadership in groups."
+          "PRO.2": {
+            "strength": "strong",
+            "note": "Using planning and organizational skills."
+          }
+        }
+      }
+    },
+    "ccss-ela": {
+      "SL.8.4": {
+        "locators": [
+          "PRO.3"
+        ],
+        "strength": "strong",
+        "note": "PRO.3: Presenting findings clearly with evidence is the engineering presentation.",
+        "by_locator": {
+          "PRO.3": {
+            "strength": "strong",
+            "note": "Presenting findings clearly with evidence is the engineering presentation."
+          }
+        }
+      },
+      "SL.8.5": {
+        "locators": [
+          "PRO.4"
+        ],
+        "strength": "partial",
+        "note": "PRO.4: Visual displays strengthen a presentation, as a marketing display does.",
+        "by_locator": {
+          "PRO.4": {
+            "strength": "partial",
+            "note": "Visual displays strengthen a presentation, as a marketing display does."
+          }
+        }
+      },
+      "SL.9-10.4": {
+        "locators": [
+          "PRO.3"
+        ],
+        "strength": "strong",
+        "note": "PRO.3: The same, with tighter organization for the audience.",
+        "by_locator": {
+          "PRO.3": {
+            "strength": "strong",
+            "note": "The same, with tighter organization for the audience."
+          }
+        }
+      },
+      "SL.9-10.5": {
+        "locators": [
+          "PRO.4"
+        ],
+        "strength": "partial",
+        "note": "PRO.4: The same, using digital media strategically.",
+        "by_locator": {
+          "PRO.4": {
+            "strength": "partial",
+            "note": "The same, using digital media strategically."
+          }
+        }
+      },
+      "W.8.2": {
+        "locators": [
+          "PRO.3"
+        ],
+        "strength": "strong",
+        "note": "PRO.3: Writing an informative text that explains a design clearly is the technical documentation.",
+        "by_locator": {
+          "PRO.3": {
+            "strength": "strong",
+            "note": "Writing an informative text that explains a design clearly is the technical documentation."
+          }
+        }
+      },
+      "W.9-10.2": {
+        "locators": [
+          "PRO.3"
+        ],
+        "strength": "strong",
+        "note": "PRO.3: The same, with more complex ideas and organization.",
+        "by_locator": {
+          "PRO.3": {
+            "strength": "strong",
+            "note": "The same, with more complex ideas and organization."
           }
         }
       }
     },
     "ca-epc": {
-      "V.A": {
+      "I.B": {
         "locators": [
-          "TEAM.1"
+          "UND.2"
         ],
-        "strength": "related",
-        "note": "TEAM.1: The ESG role weighs environmental, social and governance factors in a decision.",
+        "strength": "partial",
+        "note": "UND.2: Ecosystem services, such as habitat and clean water, are essential to people.",
         "by_locator": {
-          "TEAM.1": {
-            "strength": "related",
-            "note": "The ESG role weighs environmental, social and governance factors in a decision."
+          "UND.2": {
+            "strength": "partial",
+            "note": "Ecosystem services, such as habitat and clean water, are essential to people."
           }
         }
-      }
-    },
-    "mate-rov": {
-      "SAFE.1": {
-        "locators": [
-          "SAFE.1"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
       },
-      "SAFE.2": {
+      "II.B": {
         "locators": [
-          "SAFE.2"
+          "UND.4"
         ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
+        "strength": "partial",
+        "note": "UND.4: How resources are extracted, harvested and used shapes natural systems.",
+        "by_locator": {
+          "UND.4": {
+            "strength": "partial",
+            "note": "How resources are extracted, harvested and used shapes natural systems."
+          }
+        }
       },
-      "ELEC.1": {
+      "III.C": {
         "locators": [
-          "ELEC.1"
+          "UND.3"
         ],
         "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
+        "note": "UND.3: Human practices can change natural cycles, here the carbon and heat budgets.",
+        "by_locator": {
+          "UND.3": {
+            "strength": "strong",
+            "note": "Human practices can change natural cycles, here the carbon and heat budgets."
+          }
+        }
       },
-      "ELEC.2": {
+      "IV.B": {
         "locators": [
-          "ELEC.2"
+          "UND.3"
         ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
+        "strength": "partial",
+        "note": "UND.3: By-products such as carbon dioxide enter natural systems and are hard to keep out.",
+        "by_locator": {
+          "UND.3": {
+            "strength": "partial",
+            "note": "By-products such as carbon dioxide enter natural systems and are hard to keep out."
+          }
+        }
       },
-      "ELEC.3": {
+      "V.A": {
         "locators": [
-          "ELEC.3"
+          "UND.5",
+          "UND.6"
         ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "ELEC.4": {
-        "locators": [
-          "ELEC.4"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "ELEC.5": {
-        "locators": [
-          "ELEC.5"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "MECH.1": {
-        "locators": [
-          "MECH.1"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "MECH.2": {
-        "locators": [
-          "MECH.2"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "MECH.3": {
-        "locators": [
-          "MECH.3"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "FLUID.1": {
-        "locators": [
-          "FLUID.1"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "CTRL.1": {
-        "locators": [
-          "CTRL.1"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "CTRL.2": {
-        "locators": [
-          "CTRL.2"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "FLOAT.1": {
-        "locators": [
-          "FLOAT.1"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "FLOAT.2": {
-        "locators": [
-          "FLOAT.2"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "FLOAT.3": {
-        "locators": [
-          "FLOAT.3"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "FLOAT.4": {
-        "locators": [
-          "FLOAT.4"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "FLOAT.5": {
-        "locators": [
-          "FLOAT.5"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "FLOAT.6": {
-        "locators": [
-          "FLOAT.6"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "COMM.1": {
-        "locators": [
-          "COMM.1"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "COMM.2": {
-        "locators": [
-          "COMM.2"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "COMM.3": {
-        "locators": [
-          "COMM.3"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "COMM.4": {
-        "locators": [
-          "COMM.4"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "COMM.5": {
-        "locators": [
-          "COMM.5"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "TEAM.1": {
-        "locators": [
-          "TEAM.1"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "TEAM.2": {
-        "locators": [
-          "TEAM.2"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "TEAM.3": {
-        "locators": [
-          "TEAM.3"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "TEAM.4": {
-        "locators": [
-          "TEAM.4"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
-      },
-      "TEAM.5": {
-        "locators": [
-          "TEAM.5"
-        ],
-        "strength": "strong",
-        "note": "This competency is an entry in the MATE catalog itself, so the MATE source lists each one as covered."
+        "strength": "partial",
+        "note": "UND.5: A range of factors, here heritage, safety and livelihoods, goes into decisions about natural systems. UND.6: Weighing a spectrum of factors in decisions about natural resources is the concept itself.",
+        "by_locator": {
+          "UND.5": {
+            "strength": "partial",
+            "note": "A range of factors, here heritage, safety and livelihoods, goes into decisions about natural systems."
+          },
+          "UND.6": {
+            "strength": "strong",
+            "note": "Weighing a spectrum of factors in decisions about natural resources is the concept itself."
+          }
+        }
       }
     }
   }

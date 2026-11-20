@@ -973,7 +973,6 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
         "via-character": [i["code"] for grp in catalogs["via-character"]["groups"] for i in grp["items"]],
         "ngss": [i["code"] for grp in catalogs["ngss"]["groups"] for i in grp["items"]],
         "ca-epc": [i["code"] for grp in catalogs["ca-epc"]["groups"] for i in grp["items"]],
-        "mate-rov": [i["code"] for grp in catalogs["mate-rov"]["groups"] for i in grp["items"]],
     }
     for fw, codes in fw_entries.items():
         carried = sum(1 for c in codes if covs[fw].get(c))
@@ -986,6 +985,8 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
         title = carrier_files[source]["meta"].get("title", source)
         lines.append(f"### {title} {{#{source}}}")
         for fw, entries in carrier_files[source].get("coverage", {}).items():
+            if fw not in fw_entries:
+                continue  # a framework this report does not track (e.g. the MATE codes on /standards/mate/)
             codes = sorted(entries)
             if codes:
                 lines.append(f"- **{fw}:** {', '.join(codes)}")
@@ -1001,20 +1002,30 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
     return "\n".join(lines)
 
 
-# ---------- MATE cross-reference page: one competency at a time, everything open ----------
+# ---------- MATE start page: /standards/mate/ ----------
+#
+# MATE's material (the competencies, MATE's own 18 skills, the Ocean Decade
+# challenges and the class ladder) lives on its own page, not on the main
+# /standards/ pages. The main pages are built from carrier files that leave
+# these two sources out (MATE_SOURCES), so nothing MATE appears there.
+
+MATE_SOURCES = {"mate_rov", "mate_missions"}
 
 # framework -> (label, its reference page, that page's anchor prefix). Order is the
-# order standards are listed under each competency: CS first, then science, then SEL.
+# order standards are listed under each competency: CS first, then English and
+# science, then SEL. The page sits at /standards/mate/, hence the "../".
 MATE_FRAMEWORKS = {
-    "apcsp": ("AP CSP", "apcsp-standards-reference.html", "T"),
-    "csta2026": ("CSTA 2026", "csta2026-standards-reference.html", "T"),
-    "castandards": ("California CS", "ca-cs-standards-reference.html", "S"),
-    "ca-ict-anchor": ("CA CTE (ICT)", "ca-ict-anchor-standards-reference.html", "T"),
-    "ngss": ("NGSS 2013", "ngss-standards-reference.html", "T"),
-    "ca-epc": ("California EP&Cs", "ca-epc-standards-reference.html", "T"),
-    "casel": ("CASEL", "casel-standards-reference.html", "T"),
+    "apcsp": ("AP CSP", "../apcsp-standards-reference.html", "T"),
+    "csta2026": ("CSTA 2026", "../csta2026-standards-reference.html", "T"),
+    "castandards": ("California CS", "../ca-cs-standards-reference.html", "S"),
+    "ca-ict-anchor": ("CA CTE (ICT)", "../ca-ict-anchor-standards-reference.html", "T"),
+    "ccss-ela": ("Common Core ELA", "../ccss-ela-standards-reference.html", "T"),
+    "ngss": ("NGSS 2013", "../ngss-standards-reference.html", "T"),
+    "ca-epc": ("California EP&Cs", "../ca-epc-standards-reference.html", "T"),
+    "casel": ("CASEL", "../casel-standards-reference.html", "T"),
 }
 MATE_STRENGTH_ORDER = {"strong": 0, "partial": 1, "related": 2}
+MATE_CLASS_LABELS = [("navigator", "Navigator"), ("ranger", "Ranger")]
 
 MATE_PAGE_CSS = """<style>
 .xref-intro { max-width: 46rem; }
@@ -1028,10 +1039,18 @@ MATE_PAGE_CSS = """<style>
 .xref-where { margin: .6rem 0 0 1.1rem; font-size: .88rem; }
 .xref-where.none { color: var(--muted); }
 .strength { font-size: .78rem; color: var(--muted); }
+.chip { display: inline-block; font-size: .78rem; padding: 0 .45rem; margin: 0 .2rem .2rem 0; border: 1px solid var(--border); border-radius: 999px; background: var(--ek-bg); }
+.aim { margin: .7rem 0; }
+.aim h4 { margin: 0; font-size: 1rem; }
+.aim p { margin: .15rem 0; }
+.aim .where { font-size: .82rem; color: var(--muted); }
+.ladder { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: .9rem; }
+.ladder th, .ladder td { text-align: left; padding: .4rem .5rem; border: 1px solid var(--border); vertical-align: top; }
+.ladder th { background: var(--ek-bg); }
 @media print {
   .toc, #search, .page-toggles { display: none !important; }
   .layout { display: block !important; }
-  .lo { break-inside: avoid; }
+  .lo, .aim { break-inside: avoid; }
   .xref-list li { break-inside: avoid; }
 }
 </style>"""
@@ -1061,25 +1080,32 @@ def mate_standard_text(catalogs, fw, code):
     return None, ""
 
 
-def render_mate_crossref(catalogs, carrier_files):
-    catalog = catalogs["mate-rov"]
+def render_mate_page(catalogs, carrier_files):
+    comp_cat = catalogs["mate-rov"]
+    skills_cat = catalogs["mate-skills"]
+    od_cat = catalogs["ocean-decade"]
+    cls_cat = catalogs["mate-classes"]
     mate = carrier_files["mate_rov"]
-    # Lessons that name a MATE competency directly (a person checked them), never the
-    # MATE carrier itself, which only lists its own competencies.
-    others = {k: v for k, v in carrier_files.items() if k != "mate_rov"}
+    missions = carrier_files["mate_missions"]
+    # Lessons that name a MATE competency directly (a person checked them): every
+    # carrier except the two MATE ones.
+    others = {k: v for k, v in carrier_files.items() if k not in MATE_SOURCES}
     direct = Coverage(others, "mate-rov", scoped=False)
 
     draws = {}  # competency -> framework -> [(code, strength, why)]
     for fw, codes in mate["coverage"].items():
-        if fw == "mate-rov":
-            continue
         for std, entry in codes.items():
             for loc, row in entry.get("by_locator", {}).items():
                 draws.setdefault(loc, {}).setdefault(fw, []).append((std, row["strength"], row["note"]))
 
+    skill_name = {i["code"]: i["name"] for g in skills_cat["groups"] for i in g["items"]}
+    comps = [(g, i) for g in comp_cat["groups"] for i in g["items"]]
+    skill_users = {}
+    for _, i in comps:
+        for s in i.get("skills", []):
+            skill_users.setdefault(s, []).append(i["code"])
+
     def lessons(code, with_note):
-        """Lessons that name this competency directly: a short clause per source, and,
-        for the full entry, the reason that lesson counts (its own note)."""
         parts = []
         for source, entry in direct.get(code):
             clause = direct._carrier_clause(source, entry, with_title=True)
@@ -1088,44 +1114,66 @@ def render_mate_crossref(catalogs, carrier_files):
             parts.append(clause)
         return "<br>".join(parts) if with_note else "; ".join(parts)
 
-    comps = [(g, i) for g in catalog["groups"] for i in g["items"]]
+    def skill_chips(codes):
+        return "".join(f'<a class="chip" href="#T-{c}">{c} {esc(skill_name[c])}</a>' for c in codes)
+
     linked = sum(1 for _, i in comps if direct.get(i["code"]))
     n_links = sum(len(rows) for d in draws.values() for rows in d.values())
 
-    summary = ['<table class="xref-summary"><thead><tr><th>Competency</th><th>Standards it draws on</th><th>Taught on this site</th></tr></thead><tbody>']
+    body = [MATE_PAGE_CSS,
+            '<div class="xref-intro"><p>This page is for a teacher who wants to know what the MATE ROV Competition is trying to '
+            "build in students, which standards that work draws on, and where on this site it is taught. It covers the Scout, "
+            "Navigator and Ranger classes. It is a cross-reference compiled here from MATE's manuals, <strong>not a standard</strong> "
+            "and not tied to one year; MATE publishes no standards of its own.</p>"
+            f"<p><strong>{linked} of {len(comps)}</strong> competencies are linked to a lesson here so far, and {n_links} standards "
+            "links are listed. A strength says how well the <em>standard</em> matches the competency, not how well any lesson teaches it.</p></div>"]
+
+    # --- 1. what MATE says it builds ---
+    body.append('<h2 id="aims">What MATE says it builds</h2><div class="topic">')
+    for a in comp_cat["meta"].get("stated_aims", []):
+        body.append(f'<div class="aim lo"><h4>{esc(a["title"])}</h4><p>{esc(a["text"])}</p><p class="where">{esc(a["where"])}</p></div>')
+    body.append("</div>")
+
+    # --- 2. MATE's 18 skills ---
+    body.append('<h2 id="skills">MATE\'s own 18 skills</h2>'
+                '<p class="xref-intro">MATE marks the competition requirements with these skills (the icons in each manual\'s Overview), '
+                "taken from Evaluate-Compete. Under each is the list of competencies below that develop it.</p>")
+    for g in skills_cat["groups"]:
+        body.append(f'<div class="topic"><h3><span class="code-badge">{g["code"]}</span> {esc(g["name"])}</h3>')
+        for i in g["items"]:
+            icon = f' <span class="weight">(icon: {esc(i["icon_label"])})</span>' if i.get("icon_label") else ""
+            users = "".join(f'<a class="chip" href="#T-{u}">{u}</a>' for u in skill_users.get(i["code"], []))
+            body.append(f'<div class="lo" id="T-{i["code"]}"><h4><span class="code-badge">{i["code"]}</span> {esc(i["name"])}{icon}</h4>'
+                        f'<p class="paraphrase">{esc(i["paraphrase"])}</p>'
+                        f'<div class="xref-where">{"Developed by: " + users if users else "<span class=none>No competency lists it.</span>"}</div></div>')
+        body.append("</div>")
+
+    # --- 3. competencies ---
+    body.append('<h2 id="competencies">Competencies</h2>')
+    summary = ['<table class="xref-summary"><thead><tr><th>Competency</th><th>Standards</th><th>Taught on this site</th></tr></thead><tbody>']
     for g, i in comps:
         cnt = sum(len(r) for r in draws.get(i["code"], {}).values())
         where = lessons(i["code"], False)
-        summary.append(
-            f'<tr><td><a href="#T-{i["code"]}"><span class="code-badge">{i["code"]}</span></a> {esc(i["name"])}</td>'
-            f'<td>{cnt if cnt else "<span class=none>none</span>"}</td>'
-            f'<td>{where if where else "<span class=none>not yet linked</span>"}</td></tr>'
-        )
+        summary.append(f'<tr><td><a href="#T-{i["code"]}"><span class="code-badge">{i["code"]}</span></a> {esc(i["name"])}</td>'
+                       f'<td>{cnt}</td><td>{where if where else "<span class=none>not yet linked</span>"}</td></tr>')
     summary.append("</tbody></table>")
-
-    body = [MATE_PAGE_CSS,
-            '<div class="xref-intro"><p>Each competency below is something a MATE team has to be able to do. Under it are '
-            "the standards it draws on, with each standard's wording, how fully that standard describes the competency "
-            "(<strong>strong</strong>, <strong>partial</strong> or <strong>related</strong>), and why. Under that is where this "
-            "site teaches it, if a person has checked a lesson against it.</p>"
-            f"<p><strong>{linked} of {len(comps)}</strong> competencies are linked to a lesson here so far, and "
-            f"{n_links} standards links are listed. A strength says how well the <em>standard</em> matches the competency, not "
-            "how well any lesson teaches it.</p></div>",
-            "<h2>At a glance</h2>", "\n".join(summary)]
-    toc = ["<ul>"]
-    for gi, g in enumerate(catalog["groups"]):
-        toc.append(f'<li class="topic-link"><a href="#grp-{g["code"]}">{g["code"]} {esc(g["name"])}</a></li>')
-        out = [f'<div class="topic" id="grp-{g["code"]}"><h3><a class="anchor-link" href="#grp-{g["code"]}">#</a>'
-               f'<span class="code-badge">{g["code"]}</span> {esc(g["name"])}</h3>']
+    body.append("\n".join(summary))
+    for g in comp_cat["groups"]:
+        out = [f'<div class="topic" id="grp-{g["code"]}"><h3><span class="code-badge">{g["code"]}</span> {esc(g["name"])}</h3>']
         for i in g["items"]:
             code = i["code"]
-            level = f' <span class="weight">({esc(i["level"])})</span>' if i.get("level") else ""
             out.append(f'<div class="lo" id="T-{code}"><h4><a class="anchor-link" href="#T-{code}">#</a>'
-                       f'<span class="code-badge">{code}</span> {esc(i["name"])}{level}</h4>')
+                       f'<span class="code-badge">{code}</span> {esc(i["name"])}</h4>')
             out.append(f'<p class="paraphrase">{esc(i["paraphrase"])}</p>')
+            out.append(f'<div class="item-meta">Where MATE shows it: {esc("; ".join(i.get("evidence", [])))}</div>')
+            if i.get("skills"):
+                out.append(f'<div class="xref-where">MATE skills it develops: {skill_chips(i["skills"])}</div>')
+            for key, label in MATE_CLASS_LABELS:
+                if i.get("by_class", {}).get(key):
+                    out.append(f'<div class="xref-where"><strong>{label} adds:</strong> {esc(i["by_class"][key])}</div>')
+            if i.get("class_note"):
+                out.append(f'<div class="xref-where">{esc(i["class_note"])}</div>')
             by_fw = draws.get(code, {})
-            if not by_fw:
-                out.append('<div class="item-meta">No standards in the catalogs fit this competency.</div>')
             for fw, (label, ref, prefix) in MATE_FRAMEWORKS.items():
                 rows = sorted(by_fw.get(fw, []), key=lambda r: (MATE_STRENGTH_ORDER[r[1]], r[0]))
                 if not rows:
@@ -1134,11 +1182,9 @@ def render_mate_crossref(catalogs, carrier_files):
                 for std, strength, why in rows:
                     title, para = mate_standard_text(catalogs, fw, std)
                     name = f" <strong>{esc(title)}</strong>" if title else ""
-                    out.append(
-                        f'<li><a class="code-badge" href="{ref}#{prefix}-{esc(std)}">{esc(std)}</a>{name} '
-                        f'<span class="strength">({strength})</span> {esc(para)}'
-                        f'<div class="item-note">Why: {esc(why)}</div></li>'
-                    )
+                    out.append(f'<li><a class="code-badge" href="{ref}#{prefix}-{esc(std)}">{esc(std)}</a>{name} '
+                               f'<span class="strength">({strength})</span> {esc(para)}'
+                               f'<div class="item-note">Why: {esc(why)}</div></li>')
                 out.append("</ul>")
             where = lessons(code, True)
             if where:
@@ -1148,11 +1194,55 @@ def render_mate_crossref(catalogs, carrier_files):
             out.append("</div>")
         out.append("</div>")
         body.extend(out)
+
+    # --- 4. Ocean Decade ---
+    task_titles = missions["meta"].get("locator_titles", {})
+    od_cov = missions["coverage"].get("ocean-decade", {})
+    body.append('<h2 id="ocean">The Ocean Decade</h2>'
+                '<p class="xref-intro">Every year MATE tags each mission task with the challenges of the UN Decade of Ocean Science for '
+                "Sustainable Development. These are MATE's own tags, copied from the manuals, not our inference. Below, each challenge "
+                "with the mission tasks that carry it.</p>")
+    never = [c["code"] for g in od_cat["groups"][:1] for c in g["items"] if c["code"] not in od_cov]
+    for g in od_cat["groups"]:
+        body.append(f'<div class="topic"><h3><span class="code-badge">{g["code"]}</span> {esc(g["name"])}</h3>')
+        for i in g["items"]:
+            tasks = [task_titles.get(k, k) for k in od_cov.get(i["code"], {}).get("locators", [])]
+            extra = ""
+            if g["code"] == "OD":
+                extra = ('<div class="xref-where">MATE tags it for: ' + esc("; ".join(tasks)) + "</div>") if tasks else \
+                        '<div class="xref-where none">Not tagged by MATE in the manuals read.</div>'
+                if i.get("mate_wording"):
+                    extra += f'<div class="item-meta">{esc(i["mate_wording"])}</div>'
+            body.append(f'<div class="lo" id="T-{i["code"]}"><h4><span class="code-badge">{i["code"]}</span> {esc(i["name"])}</h4>'
+                        f'<p class="paraphrase">{esc(i["paraphrase"])}</p>{extra}</div>')
+        body.append("</div>")
+    if never:
+        body.append(f'<p class="xref-intro">Challenges MATE did not tag in the manuals read: {", ".join(never)}.</p>')
+
+    # --- 5. classes ---
+    meta = cls_cat["meta"]
+    body.append('<h2 id="classes">The classes</h2>'
+                f'<p class="xref-intro">{esc(meta.get("scope_note", ""))}</p><div class="topic">')
+    for i in cls_cat["groups"][0]["items"]:
+        body.append(f'<div class="lo" id="T-{i["code"]}"><h4><span class="code-badge">{i["code"]}</span> {esc(i["name"])}</h4>'
+                    f'<p class="paraphrase">{esc(i["paraphrase"])}</p></div>')
+    body.append("</div>")
+    cols = meta.get("ladder_columns", [])
+    body.append('<table class="ladder"><thead><tr>' + "".join(f"<th>{esc(c)}</th>" for c in cols) + "</tr></thead><tbody>")
+    for row in meta.get("ladder", []):
+        body.append("<tr><th>" + esc(row[0]) + "</th>" + "".join(f"<td>{esc(c)}</td>" for c in row[1:]) + "</tr>")
+    body.append("</tbody></table>")
+
+    toc = ["<ul>"]
+    for anchor, label in [("aims", "What MATE says it builds"), ("skills", "MATE's own 18 skills"), ("competencies", "Competencies")]:
+        toc.append(f'<li class="topic-link"><a href="#{anchor}">{esc(label)}</a></li>')
+    for g in comp_cat["groups"]:
+        toc.append(f'<li class="topic-link" style="margin-left:.8rem"><a href="#grp-{g["code"]}">{esc(g["name"])}</a></li>')
+    for anchor, label in [("ocean", "The Ocean Decade"), ("classes", "The classes")]:
+        toc.append(f'<li class="topic-link"><a href="#{anchor}">{esc(label)}</a></li>')
     toc.append("</ul>")
-    provenance = grouped_provenance(catalog["meta"], None) + (
-        ' <strong>See also.</strong> <a href="mate-rov-standards-reference.html">The competency list</a> and '
-        '<a href="/standards/?report=mate_rov">the same links by standard</a>.')
-    return page("MATE ROV Competition: Cross-Reference by Competency", "\n".join(toc), "\n".join(body), provenance)
+    provenance = grouped_provenance(comp_cat["meta"], None)
+    return page("MATE ROV Competition: What It Builds", "\n".join(toc), "\n".join(body), provenance)
 
 
 def main():
@@ -1170,12 +1260,14 @@ def main():
     catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in [
         "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
         "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
-        "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math", "ngss", "ca-epc", "mate-rov",
+        "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math", "ngss", "ca-epc", "mate-rov", "mate-skills", "ocean-decade", "mate-classes",
     ]}
     sources = set(args.source) if args.source else None
     carrier_files = load_carrier_files(args.carriers, sources)
 
-    covs = {fw: Coverage(carrier_files, fw, scoped=bool(sources)) for fw in catalogs}
+    # MATE has its own page (render_mate_page); its two carriers stay out of every main page.
+    main_carriers = {k: v for k, v in carrier_files.items() if k not in MATE_SOURCES}
+    covs = {fw: Coverage(main_carriers, fw, scoped=bool(sources)) for fw in catalogs}
 
     (out / "apcsp-standards-reference.html").write_text(render_apcsp(catalogs["apcsp"], covs["apcsp"], args.scope_label))
     (out / "ca-cs-standards-reference.html").write_text(render_castandards(catalogs["castandards"], covs["castandards"], args.scope_label))
@@ -1254,24 +1346,12 @@ def main():
         render_grouped("California Environmental Principles and Concepts (EP&Cs) Reference", catalogs["ca-epc"], covs["ca-epc"], args.scope_label, provenance)
     )
 
-    # The MATE catalog is a cross-reference compiled by this project, not a standard
-    # (see its scope_note), so its see-also says what it is for.
-    mate_see_also = (
-        ' <strong>See also.</strong> <a href="/standards/">The full standards map</a>: each competency here '
-        "lists the standards it draws on, and other content can be linked to it from there. "
-        '<a href="mate-rov-cross-reference.html">Read it one competency at a time</a>.'
-    )
-    provenance = grouped_provenance(catalogs["mate-rov"]["meta"], args.scope_label) + mate_see_also
-    # The MATE source lists its own competencies as covered (so its report reads 29 of 29),
-    # which would put a line on every item here saying MATE covers itself; leave it out.
-    mate_cov = Coverage({k: v for k, v in carrier_files.items() if k != "mate_rov"}, "mate-rov", scoped=bool(sources))
-    (out / "mate-rov-standards-reference.html").write_text(
-        render_grouped("MATE ROV Competition Cross-Reference", catalogs["mate-rov"], mate_cov, args.scope_label, provenance)
-    )
-    if "mate_rov" in carrier_files:
-        (out / "mate-rov-cross-reference.html").write_text(render_mate_crossref(catalogs, carrier_files))
+    # The MATE material gets its own start page at /standards/mate/ (see render_mate_page).
+    if "mate_rov" in carrier_files and "mate_missions" in carrier_files:
+        (out / "mate").mkdir(exist_ok=True)
+        (out / "mate" / "index.html").write_text(render_mate_page(catalogs, carrier_files))
 
-    (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))
+    (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, main_carriers, args.scope_label))
 
     html_count = len(list(out.glob("*-standards-reference.html")))
     print(f"Wrote {html_count + 1} files to {out}/ from {len(carrier_files)} carrier source(s): {sorted(carrier_files)}")
