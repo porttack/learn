@@ -1037,7 +1037,8 @@ MATE_PAGES = [
     ("", "Start: skills and competencies", "MATE ROV Competition: What It Builds"),
     ("aims", "What MATE says it builds", "What MATE Says It Builds"),
     ("competencies", "Competencies, as an outline", "What MATE Builds: the Competencies"),
-    ("standards-map", "Standards map", "MATE ROV Competencies and the Standards They Draw On"),
+    ("standards-map", "Standards competency map", "MATE ROV Competencies and the Standards They Draw On"),
+    ("standards-skill-map", "Standards skill map", "MATE ROV Skills and the Standards Behind Them"),
     ("rollup", "Skill by skill", "MATE ROV Skill by Skill"),
     ("skills-match", "Skills and Ocean 10 chart", "MATE Skills, Employer Skills and the Ocean Decade"),
     ("ocean-decade", "The Ocean Decade", "MATE ROV and the UN Ocean Decade"),
@@ -1444,7 +1445,7 @@ def render_mate_competencies(ctx):
             'Open an item for what it means, where MATE shows it, the MATE skills it develops, and the standards it draws on, each with how fully it '
             f'fits and why. <strong>{linked} of {len(comps)}</strong> are linked to a lesson here so far, and {n_links} standards links are listed. '
             'A strength says how well the <em>standard</em> matches the item, not how well any lesson teaches it. '
-            f'For a shorter view see the <a href="{mate_url("standards-map")}">standards map</a>.</p></div>',
+            f'For a shorter view see the <a href="{mate_url("standards-map")}">standards competency map</a> or the <a href="{mate_url("standards-skill-map")}">standards skill map</a>.</p></div>',
             '<p class="comp-tools"><button type="button" data-mate-action="open-all">Open all</button>'
             '<button type="button" data-mate-action="close-all">Close all</button></p>']
     for gi, g in enumerate(ctx["comp_cat"]["groups"], start=1):
@@ -1509,6 +1510,39 @@ def render_mate_standards_map(ctx):
         body.append("</tbody></table></div>")
     toc = "<ul>" + "".join(f'<li class="topic-link"><a href="#grp-{g["code"]}">{esc(g["name"])}</a></li>' for g in ctx["comp_cat"]["groups"]) + "</ul>"
     return mate_wrap(ctx, "standards-map", "\n".join(body), toc_extra=toc)
+
+
+def render_mate_standards_skill_map(ctx):
+    shorts = ctx["shorts"]
+    body = ['<div class="xref-intro"><p>One row per part of each MATE skill, with the standards that part draws on, through the competencies that build it, and a line on what '
+            'each standard says. Strength is the best match among those competencies. A part no competency builds says so. '
+            f'For the standards competency by competency, see the <a href="{mate_url("standards-map")}">standards competency map</a>; '
+            f'for everything about a skill see <a href="{mate_url("rollup")}">skill by skill</a>.</p></div>']
+    for g in ctx["skills_cat"]["groups"]:
+        body.append(f'<div class="topic" id="grp-{g["code"]}"><h3>{esc(g["name"])}</h3>'
+                    '<table class="smap"><thead><tr><th>Skill part</th><th>Standards it draws on</th></tr></thead><tbody>')
+        for sk in g["items"]:
+            body.append(f'<tr class="skill-head"><th colspan="2" id="skill-{sk["code"]}"><span class="code-badge">{sk["code"]}</span> {esc(sk["name"])}</th></tr>')
+            for c in sk.get("components", []):
+                built = [ctx["comp_by_code"][k] for k in ctx["sub_users"].get(c["code"], [])]
+                best = {}
+                for k in built:
+                    for fw, rows in ctx["draws"].get(k["code"], {}).items():
+                        for std, strength, why in rows:
+                            key = (fw, std)
+                            if key not in best or MATE_STRENGTH_ORDER[strength] < MATE_STRENGTH_ORDER[best[key]]:
+                                best[key] = strength
+                lis = []
+                for fw, (label, ref, prefix) in MATE_FRAMEWORKS.items():
+                    rows = sorted(((key[1], v) for key, v in best.items() if key[0] == fw), key=lambda r: (MATE_STRENGTH_ORDER[r[1]], r[0]))
+                    for strength, summary, stds in mate_merge(rows, shorts, fw):
+                        lis.append(f'<li><span class="fw">{esc(label)}</span>{mate_code_links(fw, stds)} <span class="strength">({strength})</span> {esc(summary)}</li>')
+                cell = f'<ul>{"".join(lis)}</ul>' if lis else f'<span class="legend-note">{UNBUILT}</span>'
+                body.append(f'<tr class="lo"><td class="name" id="sub-{c["code"]}">{mate_sub_chip(ctx, c["code"])}<div>' + " ".join(mate_comp_chip(k) for k in built)
+                            + f'</div></td><td>{cell}</td></tr>')
+        body.append("</tbody></table></div>")
+    toc = "<ul>" + "".join(f'<li class="topic-link"><a href="#grp-{g["code"]}">{esc(g["name"])}</a></li>' for g in ctx["skills_cat"]["groups"]) + "</ul>"
+    return mate_wrap(ctx, "standards-skill-map", "\n".join(body), toc_extra=toc)
 
 
 def render_mate_rollup(ctx):
@@ -1715,7 +1749,7 @@ def render_mate_manual_map(ctx):
 
 
 MATE_RENDERERS = {"": render_mate_start, "aims": render_mate_aims, "competencies": render_mate_competencies,
-                  "standards-map": render_mate_standards_map, "rollup": render_mate_rollup,
+                  "standards-map": render_mate_standards_map, "standards-skill-map": render_mate_standards_skill_map, "rollup": render_mate_rollup,
                   "skills-match": render_mate_skills_match, "ocean-decade": render_mate_ocean, "classes": render_mate_classes, "manual-map": render_mate_manual_map}
 
 
