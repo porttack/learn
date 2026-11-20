@@ -1807,11 +1807,10 @@ def mate_overview_intro(ctx):
            'The World Economic Forum publishes the <em>Future of Jobs Report</em>. Its 2025 edition is a global survey of more than a thousand employers. '
            'They name the ten skills they call most essential in 2025 and the ten growing fastest toward 2030. It shows what employers say they need, '
            'not what any course teaches.</span></span>')
-    return ('<div class="mate-top"><div class="xref-intro"><p>Employers (surveyed by the ' + wef + ') and the UN Ocean Decade say which skills people need. The MATE ROV competition builds many of them. '
-            'This site breaks those skills into the competencies a team practices, ties each one to the education standards it draws on, and then to '
-            'the lessons and curriculum that teach it.</p><p>Every layer maps both ways, so you can start from a skill and find what teaches it, '
-            'or start from a lesson and see which skills and standards it builds. Click a layer to open it, or use the chart below to see how the skills '
-            'employers name line up with the skills MATE builds.</p></div>' + mate_hierarchy_svg(ctx) + '</div>')
+    return ('<div class="mate-top"><div class="xref-intro"><p>Employers (surveyed by the ' + wef + ') name the skills they need, and the challenges of the '
+            '<a href="https://oceandecade.org/challenges/" target="_blank" rel="noopener">UN Ocean Decade</a> imply the skills needed to meet them. '
+            'This site breaks the skills MATE builds into the competencies a team practices, ties each one to the education standards it draws on, '
+            'and then to the lessons and curriculum that teach it.</p></div>' + mate_hierarchy_svg(ctx) + '</div>')
 
 
 def render_mate_curriculum(ctx):
