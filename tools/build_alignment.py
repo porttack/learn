@@ -1385,7 +1385,7 @@ def mate_sub_bubble(ctx, sub, group):
     code = sub["code"]
     comps = [ctx["comp_by_code"][c] for c in ctx["sub_users"].get(code, [])]
     lessons = mate_sub_lessons(ctx, code, comps)
-    tip = [f'<div class="tt-code">{esc(code)} &middot; part of {esc(ctx["skill_by_code"][mate_parent(code)]["name"])}</div>',
+    tip = [f'<div class="tt-code">{esc(code)} {esc(sub["short"])}</div>',
            f'<div class="tt-paraphrase">{esc(sub["text"])}.</div>']
     if comps:
         tip.append(mate_comp_groups(ctx, comps, "Competencies that build it:"))
