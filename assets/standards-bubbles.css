@@ -1,0 +1,61 @@
+/* The bubble look from /standards/ (copied from the rules in standards/index.html, not shared with it),
+   used by the MATE pages. Variables (--bg, --fg, --muted, --border, --accent, --code-bg) come from the page. */
+.cov-group { margin: 1.3rem 0; }
+.cov-group-title { font-size: .95rem; font-weight: 600; margin: 0 0 .15rem; }
+.cov-group-sub { font-size: .84rem; color: var(--muted); margin: 0 0 .5rem; max-width: 46rem; }
+.cov-grid { display: flex; flex-wrap: wrap; gap: .5rem; align-items: flex-start; }
+.cov-badge { position: relative; display: inline-flex; flex-direction: column; align-items: stretch; }
+.cov-badge-btn {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78em;
+  padding: .4em .6em; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--code-bg); color: var(--fg); cursor: pointer; white-space: nowrap; line-height: 1.2;
+}
+.cov-badge-btn:hover, .cov-badge-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.cov-badge.has-coverage .cov-badge-btn { background: color-mix(in oklch, var(--muted) 22%, var(--bg)); }
+.cov-badge[data-tinted] .cov-badge-btn {
+  border-color: hsl(var(--group-hue) 55% 55% / .5); box-shadow: 0 0 0 1px hsl(var(--group-hue) 55% 55% / .22);
+}
+@media (prefers-color-scheme: dark) {
+  .cov-badge[data-tinted] .cov-badge-btn {
+    border-color: hsl(var(--group-hue) 55% 68% / .55); box-shadow: 0 0 0 1px hsl(var(--group-hue) 55% 68% / .28);
+  }
+}
+:root[data-theme="dark"] .cov-badge[data-tinted] .cov-badge-btn {
+  border-color: hsl(var(--group-hue) 55% 68% / .55); box-shadow: 0 0 0 1px hsl(var(--group-hue) 55% 68% / .28);
+}
+:root[data-theme="light"] .cov-badge[data-tinted] .cov-badge-btn {
+  border-color: hsl(var(--group-hue) 55% 55% / .5); box-shadow: 0 0 0 1px hsl(var(--group-hue) 55% 55% / .22);
+}
+.cov-bars { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.cov-bar {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .6rem; font-weight: 600;
+  line-height: 1.7; letter-spacing: .01em; white-space: nowrap; padding: 0 .4em; border-left: 3px solid;
+  border-radius: 2px; background: var(--code-bg); color: var(--fg); text-align: left;
+}
+.cov-bar[data-strength="partial"] { opacity: .72; border-left-style: dashed; }
+.cov-tooltip {
+  display: none; position: absolute; top: 100%; left: 0; z-index: 10; margin-top: .35rem;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: .7rem .9rem; box-shadow: 0 6px 20px rgba(0,0,0,.18); width: max-content;
+  max-width: 330px; font-size: .82rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.cov-badge.is-open .cov-tooltip { display: block; }
+.cov-badge.is-open { z-index: 11; }
+.cov-tooltip .tt-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent); }
+.cov-tooltip .tt-paraphrase { margin: .4em 0; color: var(--fg); }
+.cov-tooltip .tt-line { margin: .3em 0; color: var(--muted); }
+.cov-tooltip .tt-line a { color: var(--accent); }
+.cov-tooltip .tt-source { margin: .3em 0 0; color: var(--muted); }
+.tt-crosswalk { margin: .5em 0; }
+.tt-xref-toggle {
+  display: block; width: 100%; text-align: left; background: none; border: none; padding: .15em 0;
+  color: var(--muted); font: inherit; font-size: .92em; cursor: pointer;
+}
+.tt-xref-toggle:hover, .tt-xref-toggle:focus-visible { color: var(--fg); }
+.tt-xref-chevron { display: inline-block; width: 1em; }
+.tt-xref-strength { color: var(--muted); }
+.tt-xref-detail { margin: .2em 0 .5em 1.1em; padding: .3em .6em; border-left: 2px solid var(--border); font-size: .95em; }
+.tt-xref-detail[hidden] { display: none; }
+.tt-xref-detail .tt-xref-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent); }
+.tt-xref-detail .tt-xref-text { margin: .25em 0; color: var(--fg); }
+.tt-xref-detail .tt-xref-note { color: var(--muted); font-style: italic; }

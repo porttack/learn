@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "note": "One-line summaries of the standards the MATE cross-reference cites, written for the compact standards map and the roll-up. Paraphrases written for this project, not the standards' own text. Grade bands of the ELA standards share a line."
+  },
+  "summaries": {
+    "ngss": {
+      "MS-ETS1-1": "State what a design must do and what limits it.",
+      "HS-ETS1-1": "Turn a big real-world need into specific requirements.",
+      "MS-ETS1-2": "Compare design options against criteria and limits.",
+      "HS-ETS1-3": "Judge a design on priorities and trade-offs such as cost and safety.",
+      "MS-ETS1-4": "Build a model or test, then improve the design from the data.",
+      "MS-ESS3-3": "Design a way to monitor and reduce a human impact.",
+      "MS-LS2-5": "Weigh designs that protect biodiversity and ecosystem services.",
+      "HS-LS2-7": "Design and improve a way to reduce human harm to ecosystems.",
+      "HS-ESS2-6": "Model how carbon cycles through ocean, air, rock and life.",
+      "HS-ESS3-2": "Compare energy and mineral resource designs by costs and benefits."
+    },
+    "ca-ict-anchor": {
+      "C2.4": "Understand what the client needs before designing.",
+      "7.5": "Quality counts in how work is built and presented.",
+      "C9.2": "Assemble hardware with the right tools and testing.",
+      "C9.5": "Program a microcontroller to run a device or robot.",
+      "C9.3": "Hardware takes input, processes it and acts.",
+      "C5.6": "Debugging is part of quality assurance.",
+      "7.4": "Manage time so responsibilities get met.",
+      "2.5": "Fit the message and medium to each audience.",
+      "11.3": "Entrepreneurship and new ventures are real options.",
+      "11.4": "Entrepreneurial practice applies in ICT.",
+      "6.6": "A safe workplace must be actively maintained.",
+      "6.2": "Workplace rules state what employers and workers owe.",
+      "10.2": "Technical fields have rules and expectations to follow.",
+      "10.1": "Use the field's own terms and symbols.",
+      "9.3": "Teamwork, leadership and citizenship in school and community."
+    },
+    "castandards": {
+      "9-12.AP.20": "Improve programs by repeated testing and fixing.",
+      "9-12.DA.10": "How data is visualized shapes what readers take from it.",
+      "9-12.CS.3": "Troubleshoot complex problems by researching and testing.",
+      "9-12.AP.21": "Team projects need defined roles and shared tools.",
+      "9-12.AP.22": "Write design decisions down so others can follow them."
+    },
+    "csta2026": {
+      "HS-DAT-DC-24": "Check that data has the right type and range.",
+      "HS-DAT-DI-25": "Turn data into a chart that answers a question.",
+      "HS-PRO-PD-15": "Team programming needs roles, a design document and tracking.",
+      "HS-ALG-PS-05": "Check AI output for accuracy, bias and harm.",
+      "HS-PRO-RD-18": "Test AI-written code against what it should do.",
+      "HS-SOC-ET-41": "Weigh a new technology's benefits against its costs."
+    },
+    "apcsp": {
+      "3.6": "Choose between paths with an if statement.",
+      "2.3": "Turn raw data into information by finding patterns."
+    },
+    "ccss-ela": {
+      "W.8.2": "Write clear informative texts that explain ideas.",
+      "W.9-10.2": "Write clear informative texts that explain ideas.",
+      "SL.8.4": "Present findings clearly, with evidence.",
+      "SL.9-10.4": "Present findings clearly, with evidence.",
+      "SL.8.5": "Use visuals and media to strengthen a presentation.",
+      "SL.9-10.5": "Use visuals and media to strengthen a presentation."
+    },
+    "casel": {
+      "REL.4": "Practice teamwork and collaboration.",
+      "SM.5": "Use planning and organizational skills.",
+      "RDM.6": "Reflect on your role in your community's well-being.",
+      "RDM.4": "Think through the consequences of actions."
+    },
+    "ca-epc": {
+      "I.B": "Ecosystem services, like clean water, are essential to people.",
+      "III.C": "Human practices can change natural cycles.",
+      "IV.B": "By-products enter natural systems and are hard to contain.",
+      "II.B": "How resources are harvested and used shapes natural systems.",
+      "V.A": "Many factors go into decisions about natural resources."
+    }
+  }
+}

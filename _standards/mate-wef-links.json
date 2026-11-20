@@ -1,0 +1,226 @@
+{
+  "meta": {
+    "note": "Mapping of the 13 employer skills in the World Economic Forum's Future of Jobs 2025 report (the ten most essential today, and the ten growing fastest by 2030, 13 in all) to MATE's 18 Evaluate-Compete skills. strong means the MATE skill is that employer skill; partial means a real piece of it. The same links are written into the porttack.com skills widget (assets/skills-widget-data.js, view 'mate'); tools/check_mate_wef_sync.mjs fails if the two disagree. Skills with no line: ROV.3 Structure and ROV.6 Safety are on neither WEF list.",
+    "source": "World Economic Forum, Future of Jobs Report 2025 (Figs. 3.3 and 3.4)"
+  },
+  "wef_skills": [
+    {
+      "index": 0,
+      "name": "Analytical thinking",
+      "rank_2025": 1,
+      "rank_2030": 9,
+      "why": "Critical thinking is skeptical, looks for root causes and compares alternatives; intellectual development sees that problems are complex."
+    },
+    {
+      "index": 1,
+      "name": "Resilience, flexibility & agility",
+      "rank_2025": 2,
+      "rank_2030": 5,
+      "why": "Dealing with obstacles keeps going, stays flexible and improvises; autonomy tries again after failing."
+    },
+    {
+      "index": 2,
+      "name": "Leadership & social influence",
+      "rank_2025": 3,
+      "rank_2030": 7,
+      "why": "Project management organizes the team as a company with roles. Evaluate-Compete has no leadership outcome, so there is no strong line."
+    },
+    {
+      "index": 3,
+      "name": "Creative thinking",
+      "rank_2025": 4,
+      "rank_2030": 4,
+      "why": "Creativity."
+    },
+    {
+      "index": 4,
+      "name": "Motivation & self-awareness",
+      "rank_2025": 5,
+      "rank_2030": null,
+      "why": "Autonomy takes criticism and risks failure; intellectual development knows the limits of what you know."
+    },
+    {
+      "index": 5,
+      "name": "Technological literacy",
+      "rank_2025": 6,
+      "rank_2030": 3,
+      "why": "Control and electrical, systems design and sensors and tools are applied technology; vehicle design is the physical part."
+    },
+    {
+      "index": 6,
+      "name": "Empathy & active listening",
+      "rank_2025": 7,
+      "rank_2030": null,
+      "why": "Teamwork respects others and shares knowledge; communication explains to a broad audience."
+    },
+    {
+      "index": 7,
+      "name": "Curiosity & lifelong learning",
+      "rank_2025": 8,
+      "rank_2030": 6,
+      "why": "Intellectual development and project knowledge."
+    },
+    {
+      "index": 8,
+      "name": "Talent management",
+      "rank_2025": 9,
+      "rank_2030": 8,
+      "why": "Roles, deliverables and shared knowledge in a team."
+    },
+    {
+      "index": 9,
+      "name": "Service orientation & customer service",
+      "rank_2025": 10,
+      "rank_2030": null,
+      "why": "Entrepreneurship builds for customer needs; the display speaks to non-technical people."
+    },
+    {
+      "index": 10,
+      "name": "AI & big data",
+      "rank_2025": null,
+      "rank_2030": 1,
+      "why": "A gap, as in the CTE view: no MATE skill names AI or data; the nearest is sensors and the programming that controls them."
+    },
+    {
+      "index": 11,
+      "name": "Networks & cybersecurity",
+      "rank_2025": null,
+      "rank_2030": 2,
+      "why": "The tether network and control software; no MATE skill names security."
+    },
+    {
+      "index": 12,
+      "name": "Environmental stewardship",
+      "rank_2025": null,
+      "rank_2030": 10,
+      "why": "Technology and society connects the theme to real problems and to environmental, social and governance factors."
+    }
+  ],
+  "links": [
+    {
+      "s": 0,
+      "a": "GEN.7",
+      "w": "strong"
+    },
+    {
+      "s": 0,
+      "a": "GEN.6",
+      "w": "partial"
+    },
+    {
+      "s": 1,
+      "a": "GEN.5",
+      "w": "strong"
+    },
+    {
+      "s": 1,
+      "a": "GEN.4",
+      "w": "partial"
+    },
+    {
+      "s": 2,
+      "a": "ROV.7",
+      "w": "partial"
+    },
+    {
+      "s": 2,
+      "a": "GEN.9",
+      "w": "partial"
+    },
+    {
+      "s": 3,
+      "a": "GEN.2",
+      "w": "strong"
+    },
+    {
+      "s": 4,
+      "a": "GEN.4",
+      "w": "partial"
+    },
+    {
+      "s": 4,
+      "a": "GEN.6",
+      "w": "partial"
+    },
+    {
+      "s": 5,
+      "a": "ROV.4",
+      "w": "strong"
+    },
+    {
+      "s": 5,
+      "a": "ROV.2",
+      "w": "strong"
+    },
+    {
+      "s": 5,
+      "a": "ROV.5",
+      "w": "strong"
+    },
+    {
+      "s": 5,
+      "a": "ROV.1",
+      "w": "partial"
+    },
+    {
+      "s": 5,
+      "a": "GEN.8",
+      "w": "partial"
+    },
+    {
+      "s": 6,
+      "a": "GEN.9",
+      "w": "partial"
+    },
+    {
+      "s": 6,
+      "a": "GEN.1",
+      "w": "partial"
+    },
+    {
+      "s": 7,
+      "a": "GEN.6",
+      "w": "strong"
+    },
+    {
+      "s": 7,
+      "a": "GEN.8",
+      "w": "partial"
+    },
+    {
+      "s": 8,
+      "a": "ROV.7",
+      "w": "partial"
+    },
+    {
+      "s": 8,
+      "a": "GEN.9",
+      "w": "partial"
+    },
+    {
+      "s": 9,
+      "a": "GEN.3",
+      "w": "strong"
+    },
+    {
+      "s": 9,
+      "a": "ROV.8",
+      "w": "partial"
+    },
+    {
+      "s": 10,
+      "a": "ROV.5",
+      "w": "partial"
+    },
+    {
+      "s": 11,
+      "a": "ROV.4",
+      "w": "partial"
+    },
+    {
+      "s": 12,
+      "a": "ROV.9",
+      "w": "strong"
+    }
+  ]
+}

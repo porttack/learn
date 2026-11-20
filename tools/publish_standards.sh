@@ -24,9 +24,10 @@ python3 "$ROOT/tools/build_alignment.py" --catalog "$ROOT/_standards" --carriers
 
 cp "$TMP"/*.html "$ROOT/standards/"
 
-# The MATE start page lives in its own folder (/standards/mate/).
-mkdir -p "$ROOT/standards/mate"
-cp "$TMP/mate/index.html" "$ROOT/standards/mate/index.html"
+# The MATE pages live in their own folder (/standards/mate/ and its sub-pages). Replace it whole so a
+# page that was dropped does not linger.
+rm -rf "$ROOT/standards/mate"
+cp -R "$TMP/mate" "$ROOT/standards/mate"
 
 {
   echo "---"

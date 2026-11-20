@@ -180,7 +180,12 @@
             "ROV.4",
             "ROV.5"
           ],
-          "class_note": "Demand rises by year: temperature only and propellers allowed in 2025, depth holding, a buoyancy engine bonus and transmitted data in 2027."
+          "class_note": "Demand rises by year: temperature only and propellers allowed in 2025, depth holding, a buoyancy engine bonus and transmitted data in 2027.",
+          "ocean_decade": [
+            5,
+            7,
+            8
+          ]
         },
         {
           "code": "ENG.9",
@@ -364,6 +369,10 @@
           "skills": [
             "ROV.9",
             "GEN.8"
+          ],
+          "ocean_decade": [
+            7,
+            8
           ]
         },
         {
@@ -377,6 +386,9 @@
           "skills": [
             "ROV.9",
             "GEN.8"
+          ],
+          "ocean_decade": [
+            2
           ]
         },
         {
@@ -390,6 +402,9 @@
           "skills": [
             "ROV.9",
             "GEN.8"
+          ],
+          "ocean_decade": [
+            5
           ]
         },
         {
@@ -403,6 +418,10 @@
           "skills": [
             "ROV.9",
             "GEN.8"
+          ],
+          "ocean_decade": [
+            4,
+            5
           ]
         },
         {
@@ -416,6 +435,10 @@
           "skills": [
             "ROV.9",
             "GEN.8"
+          ],
+          "ocean_decade": [
+            2,
+            6
           ]
         },
         {

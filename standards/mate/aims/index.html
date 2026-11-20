@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What MATE Says It Builds</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
+}
+.page-toggle-label input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2; max-height: calc(100vh - 4rem); overflow-y: auto;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/turtlelab/"><img src="/turtlelab/images/favicon.svg" class="site-menu-item-icon" alt="">TurtleLab</a>
+<a href="/turtle-lessons/"><img src="/assets/img/turtlelessons/favicon.svg" class="site-menu-item-icon" alt="">TurtleLab Lessons</a>
+<a href="/python3d/studio/"><img src="/assets/img/python3d/studio-favicon.svg" class="site-menu-item-icon" alt="">Python in 3D Studio</a>
+<a href="/python3d/"><img src="/assets/img/python3d/lessons-favicon.svg" class="site-menu-item-icon" alt="">Python in 3D Lessons</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
+<a href="/picoprojects/"><img src="/assets/img/pico/projects-favicon.svg" class="site-menu-item-icon" alt="">Pi Pico Projects</a>
+<a href="/electronics101/"><img src="/assets/img/electronics101/favicon.svg" class="site-menu-item-icon" alt="">Electronics 101</a>
+<a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
+<a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/movies/"><img src="/assets/img/movies/favicon.svg" class="site-menu-item-icon" alt="">Student Movies</a>
+<a href="/rovrobotics/"><img src="/assets/img/rovrobotics/favicon.svg" class="site-menu-item-icon" alt="">ROV Robotics</a>
+<a href="/openscad/"><img src="/assets/img/openscad/favicon.svg" class="site-menu-item-icon" alt="">OpenSCAD</a>
+<a href="/logo/"><img src="/assets/img/jslogo/favicon.svg" class="site-menu-item-icon" alt="">Logo</a>
+<a href="/ap-csp-reference/"><img src="/assets/img/ap-csp-reference/favicon.svg" class="site-menu-item-icon" alt="">AP CSP Reference</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+<a href="/about/"><span class="site-menu-item-icon" aria-hidden="true"></span>About this site</a>
+<a href="/license/"><span class="site-menu-item-icon" aria-hidden="true"></span>Licensing</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<p class="legend-note"><strong>MATE ROV</strong></p><ul class="mate-nav"><li><a href="/standards/mate/">Start: skills and competencies</a></li><li><a class="here" href="/standards/mate/aims/">What MATE says it builds</a></li><li><a href="/standards/mate/competencies/">Competencies in full</a></li><li><a href="/standards/mate/standards-map/">Standards map</a></li><li><a href="/standards/mate/rollup/">Skill by skill</a></li><li><a href="/standards/mate/skills-match/">Employer skills chart</a></li><li><a href="/standards/mate/ocean-decade/">The Ocean Decade</a></li><li><a href="/standards/mate/classes/">The classes</a></li></ul>
+</nav>
+<main>
+<h1>What MATE Says It Builds</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of <em>MATE ROV Competition: what the competition builds in students, inferred from the manuals</em> (not tied to a year; read from the 2024 to 2026 manuals). <strong>Scope.</strong> This is a cross-reference catalog, not a standard. MATE publishes no standards of its own, so each entry is this project's inference of what the competition requires, scores and explains, written so a teacher can see what has to be taught and where. It was built from the 2024 Ranger, 2025 Scout, Navigator and Ranger and 2026 Scout manuals and the 2027 Floats description. Scope: Scout, Navigator and Ranger. Point totals, electrical limits, depths and timings change by year and class, so none is recorded as a competency; class differences are noted under each entry and compared in mate-classes.json. MATE's own list of 18 skills is mate-skills.json and each competency names the ones it develops. <strong>Codes.</strong> Codes are this project's: ENG (engineering practice), PRO (professional and team skills) and UND (ocean and environmental understanding), with a number. They are not MATE's. <strong>What this is not.</strong> The competition manuals are (c) MATE ROV Competition under a Creative Commons Attribution NonCommercial NoDerivatives license, so nothing here copies their text; every entry is a paraphrase written for this project, with manual section names given as references only.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+
+<style>
+.xref-intro { max-width: 46rem; }
+.xref-summary { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: .9rem; }
+.xref-summary th, .xref-summary td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.xref-summary th { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+.xref-summary .none { color: var(--muted); }
+.xref-fw { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: .9rem 0 .2rem 1.1rem; }
+.xref-list { list-style: none; margin: 0; padding: 0; }
+.xref-list li { margin: .3rem 0 .3rem 1.1rem; padding: .35rem .6rem; background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px; font-size: .9rem; }
+.xref-where { margin: .6rem 0 0 1.1rem; font-size: .88rem; }
+.xref-where.none { color: var(--muted); }
+.strength { font-size: .78rem; color: var(--muted); }
+.chip { display: inline-block; font-size: .78rem; padding: 0 .45rem; margin: 0 .2rem .2rem 0; border: 1px solid var(--border); border-radius: 999px; background: var(--ek-bg); }
+.aim { margin: .7rem 0; }
+.aim h4 { margin: 0; font-size: 1rem; }
+.aim p { margin: .15rem 0; }
+.aim .where { font-size: .82rem; color: var(--muted); }
+.ladder { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: .9rem; }
+.ladder th, .ladder td { text-align: left; padding: .4rem .5rem; border: 1px solid var(--border); vertical-align: top; }
+.ladder th { background: var(--ek-bg); }
+.mate-nav { margin: 0 0 1rem; padding: 0; list-style: none; }
+.mate-nav li { margin: .15rem 0; }
+.mate-nav .here { font-weight: 700; }
+.mate-nav-top { display: flex; flex-wrap: wrap; gap: .3rem .9rem; margin: 0 0 1rem; font-size: .88rem; }
+.mate-nav-top .here { font-weight: 700; }
+.smap { width: 100%; border-collapse: collapse; margin: .5rem 0 2rem; font-size: .9rem; }
+.smap th, .smap td { text-align: left; padding: .45rem .6rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.smap th { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+.smap td.name { width: 24%; }
+.smap ul { list-style: none; margin: 0; padding: 0; }
+.smap li { margin: .15rem 0; }
+.smap .fw { display: inline-block; min-width: 7.2em; color: var(--muted); font-size: .78rem; }
+.legend-note { font-size: .84rem; color: var(--muted); max-width: 46rem; }
+.wef-card { background: #ffffff; color: #1b2a3a; border: 1px solid #d0d7de; border-radius: 10px; padding: 1rem; margin: 1rem 0; }
+.skill-section { margin: 1.6rem 0; padding-top: .6rem; border-top: 1px solid var(--border); }
+.skill-section h3 { margin: 0 0 .3rem; }
+.skill-section h4 { margin: .9rem 0 .2rem; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.skill-section ul { margin: .2rem 0; padding-left: 1.2rem; }
+.jump { font-size: .85rem; line-height: 1.9; }
+@media print {
+  .toc, #search, .page-toggles, .mate-nav-top { display: none !important; }
+  .layout { display: block !important; }
+  .lo, .aim, .skill-section { break-inside: avoid; }
+  .xref-list li, .smap tr { break-inside: avoid; }
+  .cov-tooltip { display: none !important; }
+}
+</style><link rel="stylesheet" href="/assets/standards-bubbles.css"><div class="mate-nav-top"><a href="/standards/mate/">Start: skills and competencies</a><a class="here" href="/standards/mate/aims/">What MATE says it builds</a><a href="/standards/mate/competencies/">Competencies in full</a><a href="/standards/mate/standards-map/">Standards map</a><a href="/standards/mate/rollup/">Skill by skill</a><a href="/standards/mate/skills-match/">Employer skills chart</a><a href="/standards/mate/ocean-decade/">The Ocean Decade</a><a href="/standards/mate/classes/">The classes</a></div><div class="topic">
+<div class="aim lo"><h4>Skills for the workforce</h4><p>The Overview opens by saying the competition develops technical talent and the skills employers want most: critical thinking, creativity, collaboration, time management and leadership, with data analytics, AI, machine learning and video marketing named alongside.</p><p class="where">Overview, every manual from 2024 to 2026</p></div>
+<div class="aim lo"><h4>Eighteen named skills</h4><p>Icons throughout the manual mark the 18 Evaluate-Compete skills, nine employability and nine ROV-specific, that each requirement helps develop.</p><p class="where">Overview icons, every manual</p></div>
+<div class="aim lo"><h4>Think like an entrepreneur</h4><p>Teams are asked to act as a start-up company with named roles (chief executive, finance, regulatory affairs, research and development, systems engineering, testing, operations, fundraising and marketing, and an ESG analyst), and to build business acumen, make financial decisions from data, critique design solutions, and reflect on their own strengths and weaknesses.</p><p class="where">Overview, every manual</p></div>
+<div class="aim lo"><h4>The ocean we want</h4><p>Each year frames the work with the UN Ocean Decade, with phrases such as moving from the ocean we have to the ocean we want, the client being us, and doing good for good, and tags every mission task with Ocean Decade challenges.</p><p class="where">Overview and Request for Proposals, every manual</p></div>
+<div class="aim lo"><h4>Real science each year</h4><p>Every Context &amp; Need teaches real ocean science and why it matters: ocean observing and cables (2024), Great Lakes acidification, invasive species, offshore energy and shipwreck heritage (2025), the cryosphere, cold-water corals, eDNA, whale entanglement, iceberg risk, hybrid energy and floats that avoid ice (2026).</p><p class="where">Context &amp; Need, each year</p></div>
+<div class="aim lo"><h4>Engineering reasoning</h4><p>Judges want technical storytelling: evaluating alternatives, a work breakdown, constraints, a power budget, how sensors are calibrated, where code runs and how data flows, troubleshooting that is written down, and a project notebook.</p><p class="where">Tips for effective written and oral communication, 2025 Ranger and 2026 Scout</p></div>
+<div class="aim lo"><h4>Industry practice</h4><p>Higher classes add practices from industry: a jobsite safety analysis with steps, hazards and safeguards in order of preference (Ranger), and scoring of teamwork, project management, problem solving and system design during the run (Navigator and Ranger).</p><p class="where">Safety sections and scoring overview, 2025 Navigator and Ranger</p></div>
+<div class="aim lo"><h4>Responsible use of AI</h4><p>AI is welcome as a tool but not a crutch: describe how it was used, and do not use it to write the documentation or presentation.</p><p class="where">Notes on the use of AI, 2026 Scout</p></div>
+<div class="aim lo"><h4>The same kinds of task, every year</h4><p>Tasks change yearly but come in families: recover objects, install or replace equipment, survey and measure, sample and analyze, and a separate device, the profiling float, which appears every year from 2024 to 2027 and gets harder.</p><p class="where">Product demonstration, every manual</p></div>
+<div class="aim lo"><h4>What judges reward</h4><p>Scoring rubrics rate each item from missing to exceeds, award extra for novelty, depth of understanding and analysis, effectiveness and quality of implementation, and deduct for relying on outside help or purchased parts.</p><p class="where">MATE scoring rubric for technical documentation and engineering presentation</p></div>
+</div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
