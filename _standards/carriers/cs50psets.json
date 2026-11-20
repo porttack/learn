@@ -16,7 +16,9 @@
       "8": "/cs50-psets/battery/",
       "9": "/cs50-psets/lineup-less/",
       "10": "/cs50-psets/lineup-more/",
-      "11": "/cs50-psets/inheritance/"
+      "11": "/cs50-psets/inheritance/",
+      "13": "/cs50-psets/float-profile/",
+      "14": "/cs50-psets/float-pid/"
     },
     "locator_titles": {
       "1": "Mario (less comfortable)",
@@ -28,7 +30,9 @@
       "8": "Battery Gauge",
       "9": "Lineup (less comfortable)",
       "10": "Lineup (more comfortable)",
-      "11": "Inheritance"
+      "11": "Inheritance",
+      "13": "Profiling Float",
+      "14": "Profiling Float: PID"
     },
     "caveat": "This is this repo's own _cs50psets pathway (a mix of CS50 AP-adapted and originally written problem sets), not Harvard's CS50 AP curriculum itself -- that's the separate cs50ap/cs50ap-extended carriers. Locators are this pathway's own order numbers (1-11), not CS50's own pset numbering. locator_slugs is still needed even though every page uses the collection's plain /cs50-psets/:name/ permalink, since a pset's filename slug (e.g. 'mario-less') isn't a predictable function of its locator number the way a zero-padded chapter number would be.",
     "alignment_log": [
@@ -43,6 +47,24 @@
         "by": "Claude Sonnet 5",
         "scope": "Second pass, extending coverage to the four psets added since the first pass (Battery Gauge, Lineup less/more comfortable, Inheritance) against all four frameworks",
         "note": "Battery Gauge has no citable apcsp or csta2026 code: AP CSP's pseudocode has no try/except construct, and the closest csta2026 hits are cybersecurity-hygiene standards (input validation as one item in a script-safety or defense-in-depth list) too far from Battery's actual point to cite honestly. Its only new citation is an extension to the existing C4.9 entry. Lineup (less comfortable) similarly has thin coverage outside apcsp 3.10 (partial) and ca-ict-anchor C4.10 (not cited, see that entry's note) -- no catalog here names the queue/FIFO abstraction directly, only generic list operations or (in csta2026's S1-SWD-DD-01) library-provided structures its own scope note excludes hand-implemented internals from. Lineup (more comfortable) and Inheritance both had strong, direct hits across three of the four frameworks."
+      },
+      {
+        "date": "2026-11-19",
+        "by": "Claude Sonnet 5.5",
+        "scope": "New ngss catalog, applied to the two Profiling Float problems only (locators 13 and 14, added to this carrier in this pass); nothing else in this carrier was re-checked against NGSS",
+        "note": "Read both problems' full text, including the Argo background, the specification parts and Going Further. Only the Engineering Design and two ocean-and-climate expectations are indexed. The two float problems are not yet carried against apcsp, castandards, csta2026 or ca-ict-anchor. Their front matter said chapter: 8, the Battery Gauge locator, so their pages had been showing Battery Gauge's standards; changed to 13 and 14 in this pass."
+      },
+      {
+        "date": "2026-11-19",
+        "by": "Claude Sonnet 5.5",
+        "scope": "The two Profiling Float problems (locators 13 and 14) against apcsp, castandards, csta2026 and ca-ict-anchor, in the same pass as their NGSS entries",
+        "note": "Read both problems' starter code and specification. Where a code was already carried by an earlier pset, this pass added the locator and one sentence to the note, so a code keeps the strength it already had; entries were extended only where the float problem is at least that strong. Not carried on purpose: AP CSP 3.1 and 3.9, AP CSP 3.15 and CSTA HS-ALG-PS-04 (the noise in the simulators is random, but the student never uses randomness), and California 9-12.DA.11 (a model checked against real observations: the floats are never compared with a real pool)."
+      },
+      {
+        "date": "2026-11-20",
+        "by": "Claude Sonnet 5.5",
+        "scope": "New ca-epc catalog (California Environmental Principles and Concepts), applied to Profiling Float (locator 13) only",
+        "note": "Why this framework: SLVUSD's 2026-27 LCAP Goal 3 is Environmental Literacy, grounded in the CDE Blueprint for Environmental Literacy, and its metric 3.2 counts the grade levels and courses with at least one thematic unit tied to the EP&Cs. Only the Argo background touches it, so both codes are related. Profiling Float: PID has nothing for the EP&Cs. Nothing in the ROV cards was looked at."
       }
     ]
   },
@@ -57,10 +79,11 @@
       },
       "3.3": {
         "locators": [
-          7
+          7,
+          14
         ],
         "strength": "strong",
-        "note": "Readability: turning the Coleman-Liau formula into code is this in its most direct form."
+        "note": "Readability: turning the Coleman-Liau formula into code is this in its most direct form. Profiling Float: PID: the controller is the formula kp * error + ki * total + kd * slope, with the slope worked out as a change divided by the seconds that passed."
       },
       "3.4": {
         "locators": [
@@ -74,17 +97,20 @@
       "3.5": {
         "locators": [
           3,
-          4
+          4,
+          13
         ],
         "strength": "strong",
-        "note": "Palindromes tests a word against its own reverse in one Boolean expression; Square tests whether a cell sits on the border the same way -- a Boolean expression doing work a nested conditional would do more verbosely."
+        "note": "Palindromes tests a word against its own reverse in one Boolean expression; Square tests whether a cell sits on the border the same way -- a Boolean expression doing work a nested conditional would do more verbosely. Profiling Float: in_band is one comparison chain that returns True or False, and held and touched_bottom decide on it."
       },
       "3.6": {
         "locators": [
-          1
+          1,
+          13,
+          14
         ],
         "strength": "strong",
-        "note": "Mario (less comfortable): the re-prompt loop until a valid height is entered."
+        "note": "Mario (less comfortable): the re-prompt loop until a valid height is entered. Profiling Float: decide picks SINK, RISE or IDLE with a three-way conditional. Profiling Float: PID: update clamps its output with conditionals, and the windup fix is a condition on the signs of the error and the output."
       },
       "3.7": {
         "locators": [
@@ -98,10 +124,11 @@
           1,
           4,
           5,
-          7
+          7,
+          13
         ],
         "strength": "strong",
-        "note": "Mario's pyramid, Square's grid, Caesar's letter shift, and Readability's character scan are all iteration doing the actual work of the problem, not incidental to it."
+        "note": "Mario's pyramid, Square's grid, Caesar's letter shift, and Readability's character scan are all iteration doing the actual work of the problem, not incidental to it. Profiling Float: touched_bottom and held walk the whole log, and held keeps a running count that restarts when a packet falls outside the band."
       },
       "3.9": {
         "locators": [
@@ -116,10 +143,12 @@
           2,
           4,
           5,
-          7
+          7,
+          13,
+          14
         ],
         "strength": "strong",
-        "note": "Pathfinder's optional helper function ('To Get Full Credit') is the thinnest instance -- headers only there. Square and Readability require a real helper function per sub-task; Caesar's shift-as-argument is the same decomposition idea applied to a command-line parameter."
+        "note": "Pathfinder's optional helper function ('To Get Full Credit') is the thinnest instance -- headers only there. Square and Readability require a real helper function per sub-task; Caesar's shift-as-argument is the same decomposition idea applied to a command-line parameter. Profiling Float: four short functions with parameters and docstrings, each doctested. Profiling Float: PID: the student fills in one method of a class from its docstring."
       },
       "5.6": {
         "locators": [
@@ -130,10 +159,11 @@
       },
       "3.10": {
         "locators": [
-          9
+          9,
+          13
         ],
         "strength": "partial",
-        "note": "Lineup (less comfortable): enqueue/dequeue are built directly from the core list operations this standard names (append at the end, remove at a given index), applied with a specific FIFO discipline. The standard itself is about list operations in general, not the queue abstraction, so this is real but partial overlap."
+        "note": "Lineup (less comfortable): enqueue/dequeue are built directly from the core list operations this standard names (append at the end, remove at a given index), applied with a specific FIFO discipline. The standard itself is about list operations in general, not the queue abstraction, so this is real but partial overlap. Profiling Float: the log is a list of two-number packets read by index, and the judging functions step through it. Plain list reading, not list operations, so the strength stays partial."
       },
       "3.15": {
         "locators": [
@@ -144,10 +174,12 @@
       },
       "3.16": {
         "locators": [
-          11
+          11,
+          13,
+          14
         ],
         "strength": "strong",
-        "note": "Inheritance builds a simulated family tree standing in for a real genetic process, trading biological realism (three alleles, uniform random inheritance, no linkage or dominance) for a repeatable, codeable model -- and EK AAP-3.F.8 (a simulation using a random number generator to mimic real-world unpredictability) is exactly create_family's mechanism."
+        "note": "Inheritance builds a simulated family tree standing in for a real genetic process, trading biological realism (three alleles, uniform random inheritance, no linkage or dominance) for a repeatable, codeable model -- and EK AAP-3.F.8 (a simulation using a random number generator to mimic real-world unpredictability) is exactly create_family's mechanism. Profiling Float: the student works with three simulated floats, one fine and two flawed, and reads what each does. Profiling Float: PID: the simulator adds a constant bias, sensor noise and a slow motor, and the student tunes a controller by running it. In both the student uses a simulation as a stand-in for a pool and the pages say what it leaves out; the student does not write the simulator."
       },
       "3.17": {
         "locators": [
@@ -155,6 +187,20 @@
         ],
         "strength": "strong",
         "note": "Lineup (more comfortable)'s whole point is this standard almost exactly: list.pop(0) and deque.popleft() solve the same problem at different speeds as the queue grows, discussed entirely in plain-language terms (shifting elements vs. not), matching this topic's own exclusion of formal Big-O analysis."
+      },
+      "1.4": {
+        "locators": [
+          14
+        ],
+        "strength": "strong",
+        "note": "Profiling Float: PID: the windup bug is found by testing (the float is thrown through the hold depth), explained, and fixed. The student then comments the fix out to see the failure come back and writes down what happens."
+      },
+      "2.3": {
+        "locators": [
+          13
+        ],
+        "strength": "strong",
+        "note": "Profiling Float: held reads a log of depth readings and gets a yes or no out of it, and the Argo explorer has the student compare temperature against depth for real floats in different oceans, including data that is not smooth."
       }
     },
     "castandards": {
@@ -163,18 +209,21 @@
           1,
           3,
           4,
-          7
+          7,
+          13
         ],
         "strength": "strong",
-        "note": "Mario, Palindromes, Square, and Readability all turn on a deliberate control-structure choice (loop vs. conditional vs. helper function) made concrete in each solution."
+        "note": "Mario, Palindromes, Square, and Readability all turn on a deliberate control-structure choice (loop vs. conditional vs. helper function) made concrete in each solution. Profiling Float: decide is a conditional, held is a loop with a counter, and the student has to pick which to use for each part."
       },
       "9-12.AP.16": {
         "locators": [
           4,
-          7
+          7,
+          13,
+          14
         ],
         "strength": "strong",
-        "note": "Square and Readability both require breaking the problem into named, reusable functions rather than one long script."
+        "note": "Square and Readability both require breaking the problem into named, reusable functions rather than one long script. Profiling Float: the judge is split into four named functions that each answer one question. Profiling Float: PID: the controller is one class with one method to complete. In both the split is given, and the student writes the pieces."
       },
       "9-12.DA.8": {
         "locators": [
@@ -211,6 +260,20 @@
         ],
         "strength": "strong",
         "note": "Inheritance's create_family is exactly this: a base case (generations == 1, no parents) and a recursive case (build both parents first, then choose alleles from them), and the Hints section explicitly walks through why the parents have to be built before this person's alleles can be chosen. Same CA 9-12 Specialty (non-core) tier as the two entries above."
+      },
+      "9-12.AP.13": {
+        "locators": [
+          13
+        ],
+        "strength": "strong",
+        "note": "Profiling Float: a log is a list of packets, each a list of two numbers, in place of a pile of separate variables."
+      },
+      "9-12.AP.20": {
+        "locators": [
+          14
+        ],
+        "strength": "strong",
+        "note": "Profiling Float: PID: tune, run the nine-pool check, read the result, change a gain and run it again; then find and fix the windup bug. The aim goes past working to holding the depth in every pool."
       }
     },
     "csta2026": {
@@ -225,10 +288,12 @@
           8,
           9,
           10,
-          11
+          11,
+          13,
+          14
         ],
         "strength": "strong",
-        "note": "Every pset in this pathway is, at bottom, an algorithmic problem broken into steps and translated into code -- this is the one standard all ten currently share."
+        "note": "Every pset in this pathway is, at bottom, an algorithmic problem broken into steps and translated into code -- this is the one standard all ten currently share. Both Profiling Float problems turn a plain-language rule (hold 30 seconds in a row; keep the output within a limit) into steps."
       },
       "HS-DAT-DC-24": {
         "locators": [
@@ -240,10 +305,12 @@
       "HS-PRO-PD-12": {
         "locators": [
           4,
-          7
+          7,
+          13,
+          14
         ],
         "strength": "strong",
-        "note": "Square and Readability both require decomposing the problem into a helper function per sub-task rather than inlining everything."
+        "note": "Square and Readability both require decomposing the problem into a helper function per sub-task rather than inlining everything. Profiling Float: a function per question the judge asks. Profiling Float: PID: a PID object that remembers its own gains, running total and last error."
       },
       "HS-SYS-SE-33": {
         "locators": [
@@ -272,6 +339,28 @@
         ],
         "strength": "strong",
         "note": "Inheritance's Usage section says outright that a student's own output won't match the example run, since alleles are chosen randomly every time -- the exact distinction this standard names, explained in plain terms with no probability calculation required."
+      },
+      "HS-PRO-TR-20": {
+        "locators": [
+          14
+        ],
+        "strength": "strong",
+        "note": "Profiling Float: PID: the check results change the program: the gains move after each run, and the windup bug found by the test is fixed in update."
+      },
+      "HS-DAT-DI-26": {
+        "locators": [
+          13,
+          14
+        ],
+        "strength": "related",
+        "note": "Profiling Float: the explorer says the data is not the final cleaned-up version and why the curves wiggle. Profiling Float: PID: Going Further asks whether the best tuning in a simulated pool is one to trust in a real one. Neither asks the student to find a chart that misleads, so this is adjacent."
+      },
+      "HS-PRO-RD-17": {
+        "locators": [
+          14
+        ],
+        "strength": "related",
+        "note": "Profiling Float: PID: the student is told to read the given simulator, where each of the three real-world problems is one line, before tuning against it."
       }
     },
     "ca-ict-anchor": {
@@ -298,17 +387,21 @@
           5,
           7,
           8,
-          11
+          11,
+          13,
+          14
         ],
         "strength": "strong",
-        "note": "Mario, Palindromes, Square, Caesar, and Readability all lean on the same programming toolkit (loops, conditionals, functions with parameters) this standard names. Battery Gauge adds the toolkit's \"ways to recover from errors\" clause (its try/except retry loop), not demonstrated by any of the first six psets; Inheritance adds \"a function that calls itself\" (create_family and print_family are both recursive)."
+        "note": "Mario, Palindromes, Square, Caesar, and Readability all lean on the same programming toolkit (loops, conditionals, functions with parameters) this standard names. Battery Gauge adds the toolkit's \"ways to recover from errors\" clause (its try/except retry loop), not demonstrated by any of the first six psets; Inheritance adds \"a function that calls itself\" (create_family and print_family are both recursive). Profiling Float: conditionals, a loop with a counter, and functions with parameters. Profiling Float: PID: a class with state (total, last) that a method reads and updates on every call."
       },
       "C5.4": {
         "locators": [
-          4
+          4,
+          13,
+          14
         ],
         "strength": "strong",
-        "note": "Square: running check50 against a solution makes testing a distinct, visible step rather than an afterthought."
+        "note": "Square: running check50 against a solution makes testing a distinct, visible step rather than an afterthought. Both Profiling Float problems have the student run doctests and add at least one example of their own, so testing is a separate step. Profiling Float: PID: the nine-pool check is a second, bigger test."
       },
       "C4.10": {
         "locators": [
@@ -316,6 +409,97 @@
         ],
         "strength": "strong",
         "note": "Lineup (more comfortable)'s central point is exactly this trade-off: a queue built on deque instead of a plain list. Lineup (less comfortable) introduces the queue itself but doesn't compare it against an alternative implementation, so it isn't cited here."
+      },
+      "C5.6": {
+        "locators": [
+          14
+        ],
+        "strength": "strong",
+        "note": "Profiling Float: PID: the windup bug is a debugging task in the middle of a tuning task: reproduce it, understand it, fix it, and confirm the fix."
+      },
+      "C4.8": {
+        "locators": [
+          14
+        ],
+        "strength": "partial",
+        "note": "Profiling Float: PID: a PID class with properties (kp, ki, kd, limit, total, last) and a method, which the starter code explains (class, self). The student completes one method and does not design a class or use inheritance, so this is partial."
+      }
+    },
+    "ngss": {
+      "MS-ETS1-1": {
+        "locators": [
+          13
+        ],
+        "strength": "partial",
+        "note": "Profiling Float: the criteria come from the competition task (stay within 0.33 m of the hold depth for 30 seconds in a row, do not touch the bottom), so the student does not define them. The student does turn them into precise, testable rules, in_band and held, which is the testable-criteria half of this expectation."
+      },
+      "MS-ETS1-3": {
+        "locators": [
+          13
+        ],
+        "strength": "strong",
+        "note": "Profiling Float: the student reads the data packets of three simulated floats, one fine and two flawed, and decides which meets the criteria and why the others fail. That is the analyze-test-data half of this expectation. The combine-the-best-features half is only touched by the Going Further 'Fix the floats' item."
+      },
+      "MS-ETS1-4": {
+        "locators": [
+          13,
+          14
+        ],
+        "strength": "partial",
+        "note": "Both problems run a student's program against a simulated pool and use the results to improve it. Profiling Float: the simulator is given, and the iteration is light (steer, check the three floats). Profiling Float: PID: the iteration is the point (tune kp, ki, kd and write down what each change did; fix the windup bug found by testing), which would be strong on its own. The student uses a model here but does not build one."
+      },
+      "HS-ETS1-4": {
+        "locators": [
+          13,
+          14
+        ],
+        "strength": "partial",
+        "note": "A computer simulation of a float in a pool is the test bench for both problems. Profiling Float: PID is closest: its simulator adds a constant bias, sensor noise and a slow motor, and a controller passes only if it holds in all nine pools, so it is tested across a range of conditions. The simulator is given, not built, and it models one float, not a system with many interacting criteria."
+      },
+      "HS-ETS1-3": {
+        "locators": [
+          13,
+          14
+        ],
+        "strength": "related",
+        "note": "Both judge a design against stated pass criteria (hold 30 seconds, stay off the bottom, score +5 and -5), and Going Further asks whether the best tuning is one to trust in a real pool. The criteria are not prioritized against each other and no cost, safety or environmental trade-off is asked for, so this is adjacent only."
+      },
+      "HS-ETS1-2": {
+        "locators": [
+          13
+        ],
+        "strength": "related",
+        "note": "Profiling Float is split for the student into four small functions (steer, touched the bottom, in the band, held) that together judge a float. The splitting is given, not something the student works out."
+      },
+      "MS-ESS2-6": {
+        "locators": [
+          13
+        ],
+        "strength": "related",
+        "note": "Profiling Float's Argo background and explorer let students compare temperature against depth for floats in different oceans. No model of circulation or regional climate is asked for; this is context only."
+      },
+      "HS-ESS2-4": {
+        "locators": [
+          13
+        ],
+        "strength": "related",
+        "note": "The background says the ocean takes up most of the extra heat from global warming and that floats are how it is watched. Context only: nothing asks the student to model energy flow or climate."
+      }
+    },
+    "ca-epc": {
+      "III.C": {
+        "locators": [
+          13
+        ],
+        "strength": "related",
+        "note": "Profiling Float: the Argo background says the ocean takes up most of the extra heat from global warming and about a quarter of the carbon dioxide people release, and that floats are how scientists watch it happen. It is a background paragraph and the explorer graphs real profiles; no question asks the student to explain how a human practice changes a natural cycle."
+      },
+      "IV.B": {
+        "locators": [
+          13
+        ],
+        "strength": "related",
+        "note": "Profiling Float: the same paragraph is an example of a by-product (carbon dioxide, heat) entering a natural system, and the explorer shows what the floats measure. Context only, so adjacent, not taught."
       }
     }
   }

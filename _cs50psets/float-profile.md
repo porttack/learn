@@ -1,7 +1,7 @@
 ---
 title: "Profiling Float"
 order: 13
-chapter: 8
+chapter: 13
 source: original
 series: mate
 slides_link: /cs50-psets/float-profile-slides/

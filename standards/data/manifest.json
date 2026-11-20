@@ -14,7 +14,9 @@
   "ruler",
   "via-character",
   "ccss-ela",
-  "ccss-math"
+  "ccss-math",
+  "ngss",
+  "ca-epc"
  ],
  "sources": [
   {

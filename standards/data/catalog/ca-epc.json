@@ -1,0 +1,118 @@
+{
+  "meta": {
+    "source": "California Environmental Principles and Concepts (EP&Cs), California Department of Education / Education and the Environment Initiative",
+    "url": "https://www.cde.ca.gov/ci/sc/ee/",
+    "year": "adoption year not verified; the CDE page was last reviewed October 2024",
+    "extracted": "2026-11-20",
+    "scope_note": "All five principles and all fifteen concepts as the CDE page and the EEI page (californiaeei.org/epc/) list them; the two agree. Nothing was left out. Not indexed: the EEI's K-12 curriculum units and its learning continuum, and any grade-level expectations. Why it is here: San Lorenzo Valley USD's 2026-27 LCAP makes Environmental Literacy one of three priorities (Goal 3), says the goal grew out of the CDE's Blueprint for Environmental Literacy, and counts the grade levels and courses with at least one thematic unit tied to the EP&Cs (metric 3.2). So an alignment here is the thing that metric asks about.",
+    "codes_note": "The principles are numbered I to V and the concepts are lettered under them (I.A, II.D), as the CDE and EEI pages number them. The group names are the principles' own titles, quoted. The concepts have no titles of their own, so items have no `name`, only a paraphrase.",
+    "license_note": "These are California state education materials and the principle titles are quoted, but every concept paraphrase here is written for this project, never the published wording, matching this repo's policy for every other catalog. The pages do not mention SB 720 (2018), which a secondary source says added climate change and environmental justice to the EP&Cs, and they list no concept for either, so neither is indexed; check the legislative text before relying on that."
+  },
+  "groups": [
+    {
+      "code": "I",
+      "name": "People Depend on Natural Systems",
+      "items": [
+        {
+          "code": "I.A",
+          "name": null,
+          "paraphrase": "The things people take from natural systems, such as food, water, fuel and materials, are essential to human life and also underpin economies and cultures."
+        },
+        {
+          "code": "I.B",
+          "name": null,
+          "paraphrase": "The services natural systems perform for free, such as cleaning water and air or pollinating crops, are essential to people in the same way."
+        },
+        {
+          "code": "I.C",
+          "name": null,
+          "paraphrase": "How much, how good and how dependable those goods and services are depends directly on how healthy the natural system is."
+        }
+      ]
+    },
+    {
+      "code": "II",
+      "name": "People Influence Natural Systems",
+      "items": [
+        {
+          "code": "II.A",
+          "name": null,
+          "paraphrase": "A growing population and the rate at which people consume change natural systems."
+        },
+        {
+          "code": "II.B",
+          "name": null,
+          "paraphrase": "The ways people extract, harvest, transport and use resources shape the natural systems those resources come from."
+        },
+        {
+          "code": "II.C",
+          "name": null,
+          "paraphrase": "Building and running human communities changes the natural systems around them."
+        },
+        {
+          "code": "II.D",
+          "name": null,
+          "paraphrase": "Laws, economic arrangements and political systems that govern the use of natural systems directly influence what happens to them."
+        }
+      ]
+    },
+    {
+      "code": "III",
+      "name": "Natural Systems Change in Ways that People Benefit From and Can Influence",
+      "items": [
+        {
+          "code": "III.A",
+          "name": null,
+          "paraphrase": "Natural systems run through cycles and processes that they need in order to function."
+        },
+        {
+          "code": "III.B",
+          "name": null,
+          "paraphrase": "Human practices depend on those cycles and benefit from them."
+        },
+        {
+          "code": "III.C",
+          "name": null,
+          "paraphrase": "Human practices can also change those cycles."
+        }
+      ]
+    },
+    {
+      "code": "IV",
+      "name": "There are no Permanent or Impermeable Boundaries that Prevent Matter from Flowing Between Systems",
+      "items": [
+        {
+          "code": "IV.A",
+          "name": null,
+          "paraphrase": "What a human activity does to the environment follows from the resources it uses and the by-products it produces."
+        },
+        {
+          "code": "IV.B",
+          "name": null,
+          "paraphrase": "By-products are hard to keep out of natural systems, and once there they can help, do nothing, or harm."
+        },
+        {
+          "code": "IV.C",
+          "name": null,
+          "paraphrase": "How well a natural system can absorb a change depends on the kind of system and on the scope, scale and length of the activity."
+        }
+      ]
+    },
+    {
+      "code": "V",
+      "name": "Decisions Affecting Resources and Natural Systems are Complex and Involve Many Factors",
+      "items": [
+        {
+          "code": "V.A",
+          "name": null,
+          "paraphrase": "A wide range of factors goes into decisions about natural resources, and which factors are weighed changes what is decided."
+        },
+        {
+          "code": "V.B",
+          "name": null,
+          "paraphrase": "How decisions get made, and how social, economic, political and environmental factors are weighed in them, has changed over time."
+        }
+      ]
+    }
+  ]
+}

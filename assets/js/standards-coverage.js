@@ -141,6 +141,26 @@
     '2-page course overview, not lesson-level materials -- see that carrier’s ' +
     'own caveat before treating any single code here as settled.</p>';
 
+  // Explainer shown inside the "Science and Environmental Literacy" group (NGSS
+  // added 2026-11-19; California's EP&Cs added 2026-11-20 because SLVUSD's
+  // 2026-27 LCAP makes Environmental Literacy Goal 3 and counts courses with a
+  // unit tied to the EP&Cs, the teacher's
+  // wish to align the MATE ROV and float work with NGSS; first carried by the
+  // two Profiling Float problems in cs50psets). Same honest framing as
+  // ELA/Math above: this is a CS program, and the group exists because
+  // simulating, testing and tuning a float is engineering design practice.
+  var SCI_EXPLAINER_HTML =
+    '<p>NGSS (the Next Generation Science Standards, 2013) isn’t a CS framework either. This group exists because the ' +
+    'ocean-robotics work (the MATE ROV float task and the Profiling Float ' +
+    'problems built on it) is engineering design: stating criteria, testing ' +
+    'against a simulation, and judging data. Only the Engineering Design ' +
+    'expectations and two ocean-and-climate ones are indexed; see the ' +
+    'catalog’s own scope note for what is left out.</p>' +
+    '<p>The second panel is California’s Environmental Principles and ' +
+    'Concepts. It is here because San Lorenzo Valley USD’s LCAP makes ' +
+    'Environmental Literacy one of its three priorities and counts the grade ' +
+    'levels and courses with a unit tied to them.</p>';
+
   // Small CASEL wheel, shown at the top of CASEL's own panel (so it's only
   // in the DOM/visible when that panel's <details> is open, same mechanism
   // as every other panel -- no extra show/hide JS needed). Wedge paths and
@@ -845,7 +865,9 @@
       reportGroupedSection(catalogs.ruler, covered('ruler'), meta, 'sel', 'RULER Approach', 'ruler-standards-reference.html'),
       reportGroupedSection(catalogs['via-character'], covered('via-character'), meta, 'sel', 'VIA Character Strengths', 'via-character-standards-reference.html'),
       reportGroupedSection(catalogs['ccss-ela'], covered('ccss-ela'), meta, 'ela', 'Common Core ELA (Speaking, Listening & Writing)', 'ccss-ela-standards-reference.html'),
-      reportGroupedSection(catalogs['ccss-math'], covered('ccss-math'), meta, 'math', 'Common Core Math', 'ccss-math-standards-reference.html')
+      reportGroupedSection(catalogs['ccss-math'], covered('ccss-math'), meta, 'math', 'Common Core Math', 'ccss-math-standards-reference.html'),
+      reportGroupedSection(catalogs.ngss, covered('ngss'), meta, 'sci', 'NGSS 2013', 'ngss-standards-reference.html'),
+      reportGroupedSection(catalogs['ca-epc'], covered('ca-epc'), meta, 'sci', 'California Environmental Principles and Concepts (EP&Cs)', 'ca-epc-standards-reference.html')
     ].join('\n');
   }
 
@@ -1636,7 +1658,21 @@
         mathPanels.map(panelHtml).join('\n') +
         '</details></div>';
 
-      document.getElementById('panels').innerHTML = csGroupHtml + '\n' + litGroupHtml + '\n' + selGroupHtml + '\n' + elaGroupHtml + '\n' + mathGroupHtml;
+      // Added 2026-11-19, same nesting as ela/math: one framework, orthogonal
+      // to this program's actual subject.
+      var sciPanels = [
+        ['NGSS 2013', renderGroupedPanel(catalogs.ngss, 'ngss'), 'sci', 'ngss-standards-reference.html', 'adopted by California'],
+        ['California Environmental Principles and Concepts (EP&Cs)', renderGroupedPanel(catalogs['ca-epc'], 'ca-epc'), 'sci', 'ca-epc-standards-reference.html', 'California state principles'],
+      ];
+      var sciGroupHtml =
+        '<div class="cov-panel" data-panel-category="sci"><details open>' +
+        '<summary><h2>Science and Environmental Literacy</h2></summary>' +
+        '<div class="cov-group-explainer">' + SCI_EXPLAINER_HTML + '</div>' +
+        groupActionsHtml() +
+        sciPanels.map(panelHtml).join('\n') +
+        '</details></div>';
+
+      document.getElementById('panels').innerHTML = csGroupHtml + '\n' + litGroupHtml + '\n' + selGroupHtml + '\n' + elaGroupHtml + '\n' + mathGroupHtml + '\n' + sciGroupHtml;
       // Without this, a click on the link bubbles up to <summary> and also
       // toggles the panel open/closed -- the same fix already applied to the
       // sidebar's source-title links, needed here for the same reason.

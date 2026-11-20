@@ -45,7 +45,9 @@ var STANDARDS_FRAMEWORKS = {
   'cde-tsel': { file: 'cde-tsel-standards-reference.html', prefix: 'T', name: 'California Transformative SEL (T-SEL)', catalog: 'cde-tsel', category: 'sel' },
   ruler: { file: 'ruler-standards-reference.html', prefix: 'T', name: 'RULER Approach', catalog: 'ruler', category: 'sel' },
   'via-character': { file: 'via-character-standards-reference.html', prefix: 'T', name: 'VIA Character Strengths', catalog: 'via-character', category: 'sel' },
-  'ccss-ela': { file: 'ccss-ela-standards-reference.html', prefix: 'T', name: 'Common Core ELA (Speaking, Listening & Writing)', catalog: 'ccss-ela', category: 'ela' }
+  'ccss-ela': { file: 'ccss-ela-standards-reference.html', prefix: 'T', name: 'Common Core ELA (Speaking, Listening & Writing)', catalog: 'ccss-ela', category: 'ela' },
+  ngss: { file: 'ngss-standards-reference.html', prefix: 'T', name: 'NGSS 2013 (Next Generation Science Standards)', catalog: 'ngss', category: 'sci' },
+  'ca-epc': { file: 'ca-epc-standards-reference.html', prefix: 'T', name: 'California Environmental Principles and Concepts (EP&Cs)', catalog: 'ca-epc', category: 'sci' }
 };
 
 // Fixed display order, local to this per-lesson widget (the main /standards/
@@ -57,7 +59,8 @@ var STANDARDS_CATEGORIES = [
   { id: 'cs', name: 'Computer Science' },
   { id: 'lit', name: 'Digital Literacy' },
   { id: 'sel', name: 'SEL' },
-  { id: 'ela', name: 'English Language Arts' }
+  { id: 'ela', name: 'English Language Arts' },
+  { id: 'sci', name: 'Science and Environmental Literacy' }
 ];
 
 function escapeHtml(s) {

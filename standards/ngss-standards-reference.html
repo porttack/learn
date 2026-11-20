@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Next Generation Science Standards (NGSS 2013) Reference</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
+}
+.page-toggle-label input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2; max-height: calc(100vh - 4rem); overflow-y: auto;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/turtlelab/"><img src="/turtlelab/images/favicon.svg" class="site-menu-item-icon" alt="">TurtleLab</a>
+<a href="/turtle-lessons/"><img src="/assets/img/turtlelessons/favicon.svg" class="site-menu-item-icon" alt="">TurtleLab Lessons</a>
+<a href="/python3d/studio/"><img src="/assets/img/python3d/studio-favicon.svg" class="site-menu-item-icon" alt="">Python in 3D Studio</a>
+<a href="/python3d/"><img src="/assets/img/python3d/lessons-favicon.svg" class="site-menu-item-icon" alt="">Python in 3D Lessons</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
+<a href="/picoprojects/"><img src="/assets/img/pico/projects-favicon.svg" class="site-menu-item-icon" alt="">Pi Pico Projects</a>
+<a href="/electronics101/"><img src="/assets/img/electronics101/favicon.svg" class="site-menu-item-icon" alt="">Electronics 101</a>
+<a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
+<a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/movies/"><img src="/assets/img/movies/favicon.svg" class="site-menu-item-icon" alt="">Student Movies</a>
+<a href="/rovrobotics/"><img src="/assets/img/rovrobotics/favicon.svg" class="site-menu-item-icon" alt="">ROV Robotics</a>
+<a href="/openscad/"><img src="/assets/img/openscad/favicon.svg" class="site-menu-item-icon" alt="">OpenSCAD</a>
+<a href="/logo/"><img src="/assets/img/jslogo/favicon.svg" class="site-menu-item-icon" alt="">Logo</a>
+<a href="/ap-csp-reference/"><img src="/assets/img/ap-csp-reference/favicon.svg" class="site-menu-item-icon" alt="">AP CSP Reference</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+<a href="/about/"><span class="site-menu-item-icon" aria-hidden="true"></span>About this site</a>
+<a href="/license/"><span class="site-menu-item-icon" aria-hidden="true"></span>Licensing</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<ul>
+<li class="topic-link"><a href="#grp-group-0">Middle School: Engineering Design (MS-ETS1)</a></li>
+<li class="topic-link"><a href="#grp-group-1">High School: Engineering Design (HS-ETS1)</a></li>
+<li class="topic-link"><a href="#grp-group-2">Earth and Space Science: Ocean, Heat and Climate</a></li>
+</ul>
+</nav>
+<main>
+<h1>Next Generation Science Standards (NGSS 2013) Reference</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of <em>Next Generation Science Standards (NGSS Lead States, 2013), performance expectations</em> (2013). <strong>Scope.</strong> Only the performance expectations this program's ocean-robotics material can honestly touch, not all of NGSS: the eight Engineering Design expectations (MS-ETS1-1 to 4 and HS-ETS1-1 to 4) that MATE ROV work and the CS50 float problems practice, plus two Earth and space science expectations (MS-ESS2-6, HS-ESS2-4) about ocean heat and climate that the Argo float background in Profiling Float touches. Not indexed: the Physical Science expectations on forces, energy, waves and circuits, and the Life Science and Earth science expectations about ocean ecosystems, which the ROV lesson cards would need if they are ever aligned; add them then. The three NGSS dimensions behind each expectation (science and engineering practices, disciplinary core ideas, crosscutting concepts) are not indexed separately. <strong>Codes.</strong> Codes are NGSS's own performance expectation codes (grade band, topic, number), used as published. NGSS does not name its expectations; the items here have no `name`, only a paraphrase. Groups are this project's own, by grade band and topic. <strong>What this is not.</strong> NGSS is (c) 2013 Achieve, Inc. on behalf of the twenty-six states and partners that collaborated on the NGSS; NextGenScience says its resources are generally under a Creative Commons Attribution license with some exceptions, and invites teachers and nonprofits to adapt parts of the standards, while the printed volumes carry a National Academies Press all-rights-reserved notice. The licensing across those documents is mixed, so every paraphrase here is written for this project, never the performance expectations' own text, matching this repo's policy for every other catalog. NGSS and Next Generation Science Standards are registered trademarks of Achieve, which was not involved in the production of this index and does not endorse it. <strong>See also.</strong> <a href="/standards/">The full standards map</a> for the CS and SEL/character frameworks this sits alongside.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+<div class="page-toggles"><label class="page-toggle-label"><input type="checkbox" class="page-toggle" data-hide-class="hide-carriers" checked> Show which curricula cover each item</label></div>
+<div class="topic" id="grp-group-0">
+<h3><a class="anchor-link" href="#grp-group-0">#</a>Middle School: Engineering Design (MS-ETS1)</h3>
+<ul class="ek-list">
+<li id="T-MS-ETS1-1"><a class="anchor-link" href="#T-MS-ETS1-1">#</a><span class="code-badge">MS-ETS1-1</span> Spell out what a design problem has to achieve and what limits it (the criteria and constraints) in words precise enough that a solution can be tested against them, thinking about the people affected and the natural world.<div class="item-meta"><ul class="meta-list"><li><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(partial)</span><div class="meta-note">Profiling Float: the criteria come from the competition task (stay within 0.33 m of the hold depth for 30 seconds in a row, do not touch the bottom), so the student does not define them. The student does turn them into precise, testable rules, in_band and held, which is the testable-criteria half of this expectation.</div></li></ul></div></li>
+<li id="T-MS-ETS1-2"><a class="anchor-link" href="#T-MS-ETS1-2">#</a><span class="code-badge">MS-ETS1-2</span> Compare several possible solutions to the same problem in a systematic way, judging how well each one meets the criteria and constraints.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-MS-ETS1-3"><a class="anchor-link" href="#T-MS-ETS1-3">#</a><span class="code-badge">MS-ETS1-3</span> Read the data from tests of several solutions to see what each one does well or badly, and use that to pull the best features of each into a better design.<div class="item-meta"><ul class="meta-list"><li><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a><div class="meta-note">Profiling Float: the student reads the data packets of three simulated floats, one fine and two flawed, and decides which meets the criteria and why the others fail. That is the analyze-test-data half of this expectation. The combine-the-best-features half is only touched by the Going Further 'Fix the floats' item.</div></li></ul></div></li>
+<li id="T-MS-ETS1-4"><a class="anchor-link" href="#T-MS-ETS1-4">#</a><span class="code-badge">MS-ETS1-4</span> Build and use a model of a proposed object, tool or process, and use the data from testing the model to improve the design again and again.<div class="item-meta"><ul class="meta-list"><li><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a>, <a href="https://learn.porttack.com/cs50-psets/float-pid/">Unit 14 (Profiling Float: PID)</a> <span class="meta-strength">(partial)</span><div class="meta-note">Both problems run a student's program against a simulated pool and use the results to improve it. Profiling Float: the simulator is given, and the iteration is light (steer, check the three floats). Profiling Float: PID: the iteration is the point (tune kp, ki, kd and write down what each change did; fix the windup bug found by testing), which would be strong on its own. The student uses a model here but does not build one.</div></li></ul></div></li>
+</ul></div>
+<div class="topic" id="grp-group-1">
+<h3><a class="anchor-link" href="#grp-group-1">#</a>High School: Engineering Design (HS-ETS1)</h3>
+<ul class="ek-list">
+<li id="T-HS-ETS1-1"><a class="anchor-link" href="#T-HS-ETS1-1">#</a><span class="code-badge">HS-ETS1-1</span> Take a large real-world challenge and turn it into specific requirements, both qualitative and quantitative, that take the needs of the people involved and the wider effects into account.<div class="item-meta"><p class="meta">Unassigned</p></div></li>
+<li id="T-HS-ETS1-2"><a class="anchor-link" href="#T-HS-ETS1-2">#</a><span class="code-badge">HS-ETS1-2</span> Break a complex problem into smaller, more manageable problems that each can be solved with engineering.<div class="item-meta"><ul class="meta-list"><li><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(related)</span><div class="meta-note">Profiling Float is split for the student into four small functions (steer, touched the bottom, in the band, held) that together judge a float. The splitting is given, not something the student works out.</div></li></ul></div></li>
+<li id="T-HS-ETS1-3"><a class="anchor-link" href="#T-HS-ETS1-3">#</a><span class="code-badge">HS-ETS1-3</span> Judge a solution against prioritized criteria and the trade-offs among them (cost, safety, reliability, looks), including its social, cultural and environmental effects.<div class="item-meta"><ul class="meta-list"><li><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a>, <a href="https://learn.porttack.com/cs50-psets/float-pid/">Unit 14 (Profiling Float: PID)</a> <span class="meta-strength">(related)</span><div class="meta-note">Both judge a design against stated pass criteria (hold 30 seconds, stay off the bottom, score +5 and -5), and Going Further asks whether the best tuning is one to trust in a real pool. The criteria are not prioritized against each other and no cost, safety or environmental trade-off is asked for, so this is adjacent only.</div></li></ul></div></li>
+<li id="T-HS-ETS1-4"><a class="anchor-link" href="#T-HS-ETS1-4">#</a><span class="code-badge">HS-ETS1-4</span> Use a computer simulation to see how a proposed solution behaves across the range of conditions it could face, as a way to test and refine it.<div class="item-meta"><ul class="meta-list"><li><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a>, <a href="https://learn.porttack.com/cs50-psets/float-pid/">Unit 14 (Profiling Float: PID)</a> <span class="meta-strength">(partial)</span><div class="meta-note">A computer simulation of a float in a pool is the test bench for both problems. Profiling Float: PID is closest: its simulator adds a constant bias, sensor noise and a slow motor, and a controller passes only if it holds in all nine pools, so it is tested across a range of conditions. The simulator is given, not built, and it models one float, not a system with many interacting criteria.</div></li></ul></div></li>
+</ul></div>
+<div class="topic" id="grp-group-2">
+<h3><a class="anchor-link" href="#grp-group-2">#</a>Earth and Space Science: Ocean, Heat and Climate</h3>
+<ul class="ek-list">
+<li id="T-MS-ESS2-6"><a class="anchor-link" href="#T-MS-ESS2-6">#</a><span class="code-badge">MS-ESS2-6</span> Use a model of how the Sun heats the Earth unevenly, and how the Earth spins, to explain the patterns of air and ocean circulation that give different regions their climates.<div class="item-meta"><ul class="meta-list"><li><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(related)</span><div class="meta-note">Profiling Float's Argo background and explorer let students compare temperature against depth for floats in different oceans. No model of circulation or regional climate is asked for; this is context only.</div></li></ul></div></li>
+<li id="T-HS-ESS2-4"><a class="anchor-link" href="#T-HS-ESS2-4">#</a><span class="code-badge">HS-ESS2-4</span> Use a model to describe how changes in the flow of energy into and out of Earth's systems (the ocean among them) can change the climate.<div class="item-meta"><ul class="meta-list"><li><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(related)</span><div class="meta-note">The background says the ocean takes up most of the extra heat from global warming and that floats are how it is watched. Context only: nothing asks the student to model energy flow or climate.</div></li></ul></div></li>
+</ul></div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
+</body>
+</html>

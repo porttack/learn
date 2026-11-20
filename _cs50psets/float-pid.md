@@ -1,7 +1,7 @@
 ---
 title: "Profiling Float: PID"
 order: 14
-chapter: 8
+chapter: 14
 source: original
 series: mate
 subtitle: "Build a PID controller, tune it to hold a float at 2.0 meters even when the float is a little too heavy and the sensor is noisy, and fix the bug that makes an integral term dangerous."

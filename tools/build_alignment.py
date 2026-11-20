@@ -971,6 +971,8 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
         "cde-tsel": [i["code"] for grp in catalogs["cde-tsel"]["groups"] for i in grp["items"]],
         "ruler": [i["code"] for grp in catalogs["ruler"]["groups"] for i in grp["items"]],
         "via-character": [i["code"] for grp in catalogs["via-character"]["groups"] for i in grp["items"]],
+        "ngss": [i["code"] for grp in catalogs["ngss"]["groups"] for i in grp["items"]],
+        "ca-epc": [i["code"] for grp in catalogs["ca-epc"]["groups"] for i in grp["items"]],
     }
     for fw, codes in fw_entries.items():
         carried = sum(1 for c in codes if covs[fw].get(c))
@@ -1013,7 +1015,7 @@ def main():
     catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in [
         "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
         "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
-        "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math",
+        "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math", "ngss", "ca-epc",
     ]}
     sources = set(args.source) if args.source else None
     carrier_files = load_carrier_files(args.carriers, sources)
@@ -1077,6 +1079,24 @@ def main():
     provenance = grouped_provenance(catalogs["ccss-math"]["meta"], args.scope_label) + ccss_math_see_also
     (out / "ccss-math-standards-reference.html").write_text(
         render_grouped("Common Core Math Standards Reference", catalogs["ccss-math"], covs["ccss-math"], args.scope_label, provenance)
+    )
+
+    # NGSS (engineering design plus two ocean/climate expectations) is a science
+    # framework, orthogonal to the CS frameworks, like Common Core Math above.
+    ngss_see_also = (
+        ' <strong>See also.</strong> <a href="/standards/">The full standards map</a> for the '
+        "CS and SEL/character frameworks this sits alongside."
+    )
+    provenance = grouped_provenance(catalogs["ngss"]["meta"], args.scope_label) + ngss_see_also
+    (out / "ngss-standards-reference.html").write_text(
+        render_grouped("Next Generation Science Standards (NGSS 2013) Reference", catalogs["ngss"], covs["ngss"], args.scope_label, provenance)
+    )
+
+    # California's Environmental Principles and Concepts: environmental literacy,
+    # which SLVUSD's LCAP makes one of its three priorities. Same see-also as NGSS.
+    provenance = grouped_provenance(catalogs["ca-epc"]["meta"], args.scope_label) + ngss_see_also
+    (out / "ca-epc-standards-reference.html").write_text(
+        render_grouped("California Environmental Principles and Concepts (EP&Cs) Reference", catalogs["ca-epc"], covs["ca-epc"], args.scope_label, provenance)
     )
 
     (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))
