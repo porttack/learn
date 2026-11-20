@@ -110,3 +110,4 @@
 .tt-cat { font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: .5em 0 .1em; }
 /* Manual parts: a tab, rounded on top, square at the bottom, like the tab of a manual page. */
 .cov-badge.part .cov-badge-btn { font-family: inherit; font-size: .88rem; white-space: normal; text-align: left; max-width: 17rem; line-height: 1.25; border-radius: .9em .9em .15em .15em; border-bottom-width: 3px; }
+.comp-chip .cat { font-weight: 600; margin-right: .15em; }

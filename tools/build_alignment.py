@@ -1027,6 +1027,7 @@ MATE_FRAMEWORKS = {
 MATE_STRENGTH_ORDER = {"strong": 0, "partial": 1, "related": 2}
 MATE_CLASS_LABELS = [("navigator", "Navigator"), ("ranger", "Ranger")]
 MATE_AREA_HUE = {"ENG": 225, "PRO": 285, "UND": 185}  # competency bubbles: blue, violet, teal, kept clear of the skills' orange and green
+MATE_AREA_LABEL = {}  # competency area key (ENG) -> short label shown on chips ("Engineering"), from the catalog group's `short`
 MATE_NUM = {}  # competency key -> outline number such as "1.4", filled by mate_context
 # MATE colors its icons orange for the employability skills and green for the ROV-specific ones.
 MATE_GROUP_HUE = {"EMP": 28, "ROV": 150}
@@ -1176,6 +1177,9 @@ def mate_context(catalogs, carrier_files, extras):
     ctx["skill_users"] = users
     ctx["sub_users"] = sub_users
     MATE_NUM.clear()
+    MATE_AREA_LABEL.clear()
+    for g in comp_cat["groups"]:
+        MATE_AREA_LABEL[g["code"]] = g.get("short", g["name"])
     for gi, g in enumerate(comp_cat["groups"], start=1):
         for ii, i in enumerate(g["items"], start=1):
             MATE_NUM[i["code"]] = f"{gi}.{ii}"
@@ -1272,20 +1276,17 @@ def mate_comp_link(code, name):
 
 
 def mate_comp_chip(comp):
-    """A competency as a short leaf-shaped chip (outline number and very short phrase) that links to its outline row."""
-    return (f'<a class="comp-chip" style="--group-hue:{MATE_AREA_HUE[comp["code"].split(".")[0]]}deg" href="{mate_url("competencies")}#T-{comp["code"]}">'
-            f'<span class="code">{MATE_NUM[comp["code"]]}</span> {esc(comp["short"])}</a>')
+    """A competency as a short wavy chip, its category and a very short phrase (Engineering: Data and graphs), linking to its outline row."""
+    return (f'<a class="comp-chip" style="--group-hue:{MATE_AREA_HUE[comp["code"].split(".")[0]]}deg" href="{mate_url("competencies")}#T-{comp["code"]}" title="{MATE_NUM[comp["code"]]} {esc(comp["name"])}">'
+            f'<span class="cat">{esc(MATE_AREA_LABEL[comp["code"].split(".")[0]])}:</span> {esc(comp["short"])}</a>')
 
 
 def mate_comp_groups(ctx, comps, title):
-    """Competency chips under their category (the area's name), in catalog order, for a dropdown."""
+    """A dropdown's competency list: one chip per line, each carrying its category, in catalog order."""
     codes = {c["code"] for c in comps}
-    out = [f'<div class="tt-line"><strong>{title}</strong></div>']
-    for g in ctx["comp_cat"]["groups"]:
-        mine = [i for i in g["items"] if i["code"] in codes]
-        if mine:
-            out.append(f'<div class="tt-cat">{esc(g["name"])}</div><ul class="tt-list">' + "".join(f"<li>{mate_comp_chip(i)}</li>" for i in mine) + "</ul>")
-    return "".join(out)
+    mine = [i for _, i in ctx["comps"] if i["code"] in codes]
+    return (f'<div class="tt-line"><strong>{title}</strong></div><ul class="tt-list">'
+            + "".join(f"<li>{mate_comp_chip(i)}</li>" for i in mine) + "</ul>")
 
 
 def mate_comp_bubble(ctx, comp):
