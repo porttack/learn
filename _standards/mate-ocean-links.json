@@ -1,0 +1,308 @@
+{
+  "meta": {
+    "note": "Two mappings used by the Ocean 10 views of the employer-skills chart (the skills widget on porttack.com, copied to /standards/mate/skills-match/). Neither the Ocean Decade nor Evaluate-Compete links these lists, so every line is this project's reading. wef30_ocean: the ten WEF skills growing fastest to 2030 (s is the index 0 to 12 in mate-wef-links.json) to the ten Ocean Decade challenges; solid (strong) where the challenge is mainly that skill, dashed (partial) where the skill is a real piece of it. ocean_mate: the ten challenges to MATE's 18 skills; solid (strong) only where MATE's own task tags reach the skill through a competency (a competency with that challenge in ocean_decade lists the skill), dashed (partial) where it is this project's reading from the two descriptions alone. tools/check_mate_data.py enforces that rule. tools/build_skills_widget_data.py writes these into the widget data file.",
+    "review_status": "drafts adopted for the build; the Stage C audit reviews them"
+  },
+  "wef30_ocean": [
+    {
+      "s": 0,
+      "a": "OD.2",
+      "w": "partial",
+      "why": "Challenges that begin with understand: stressors on ecosystems, sources of pollution, the ocean-climate link."
+    },
+    {
+      "s": 0,
+      "a": "OD.1",
+      "w": "partial",
+      "why": "Challenges that begin with understand: stressors on ecosystems, sources of pollution, the ocean-climate link."
+    },
+    {
+      "s": 0,
+      "a": "OD.5",
+      "w": "partial",
+      "why": "Challenges that begin with understand: stressors on ecosystems, sources of pollution, the ocean-climate link."
+    },
+    {
+      "s": 1,
+      "a": "OD.6",
+      "w": "strong",
+      "why": "Community resilience; adapting to climate; a resilient ocean economy."
+    },
+    {
+      "s": 1,
+      "a": "OD.5",
+      "w": "partial",
+      "why": "Community resilience; adapting to climate; a resilient ocean economy."
+    },
+    {
+      "s": 1,
+      "a": "OD.4",
+      "w": "partial",
+      "why": "Community resilience; adapting to climate; a resilient ocean economy."
+    },
+    {
+      "s": 2,
+      "a": "OD.10",
+      "w": "partial",
+      "why": "Moving people and sectors to act; multi-sector partnerships."
+    },
+    {
+      "s": 2,
+      "a": "OD.4",
+      "w": "partial",
+      "why": "Moving people and sectors to act; multi-sector partnerships."
+    },
+    {
+      "s": 3,
+      "a": "OD.4",
+      "w": "partial",
+      "why": "Both challenges call for innovation and new solutions."
+    },
+    {
+      "s": 3,
+      "a": "OD.3",
+      "w": "partial",
+      "why": "Both challenges call for innovation and new solutions."
+    },
+    {
+      "s": 5,
+      "a": "OD.9",
+      "w": "strong",
+      "why": "Equitable access to technology and skills; using a digital ocean takes it."
+    },
+    {
+      "s": 5,
+      "a": "OD.8",
+      "w": "partial",
+      "why": "Equitable access to technology and skills; using a digital ocean takes it."
+    },
+    {
+      "s": 7,
+      "a": "OD.9",
+      "w": "strong",
+      "why": "Capacity development and knowledge for all; people's motivation and ability to understand the ocean."
+    },
+    {
+      "s": 7,
+      "a": "OD.10",
+      "w": "partial",
+      "why": "Capacity development and knowledge for all; people's motivation and ability to understand the ocean."
+    },
+    {
+      "s": 8,
+      "a": "OD.9",
+      "w": "partial",
+      "why": "Building capacity across stakeholders."
+    },
+    {
+      "s": 10,
+      "a": "OD.8",
+      "w": "strong",
+      "why": "A dynamic, open digital ocean needs data science and AI; the observing system delivers data to users."
+    },
+    {
+      "s": 10,
+      "a": "OD.7",
+      "w": "partial",
+      "why": "A dynamic, open digital ocean needs data science and AI; the observing system delivers data to users."
+    },
+    {
+      "s": 11,
+      "a": "OD.7",
+      "w": "partial",
+      "why": "Delivering and sharing ocean data openly depends on networks; no challenge names security."
+    },
+    {
+      "s": 11,
+      "a": "OD.8",
+      "w": "partial",
+      "why": "Delivering and sharing ocean data openly depends on networks; no challenge names security."
+    },
+    {
+      "s": 12,
+      "a": "OD.2",
+      "w": "strong",
+      "why": "Protecting and restoring ecosystems, removing pollution, people acting for a healthy ocean; climate solutions."
+    },
+    {
+      "s": 12,
+      "a": "OD.1",
+      "w": "strong",
+      "why": "Protecting and restoring ecosystems, removing pollution, people acting for a healthy ocean; climate solutions."
+    },
+    {
+      "s": 12,
+      "a": "OD.10",
+      "w": "strong",
+      "why": "Protecting and restoring ecosystems, removing pollution, people acting for a healthy ocean; climate solutions."
+    },
+    {
+      "s": 12,
+      "a": "OD.5",
+      "w": "partial",
+      "why": "Protecting and restoring ecosystems, removing pollution, people acting for a healthy ocean; climate solutions."
+    }
+  ],
+  "ocean_mate": [
+    {
+      "o": "OD.1",
+      "a": "ROV.9",
+      "w": "partial"
+    },
+    {
+      "o": "OD.1",
+      "a": "ROV.5",
+      "w": "partial"
+    },
+    {
+      "o": "OD.2",
+      "a": "ROV.9",
+      "w": "strong"
+    },
+    {
+      "o": "OD.2",
+      "a": "GEN.8",
+      "w": "strong"
+    },
+    {
+      "o": "OD.3",
+      "a": "ROV.9",
+      "w": "partial"
+    },
+    {
+      "o": "OD.4",
+      "a": "ROV.9",
+      "w": "strong"
+    },
+    {
+      "o": "OD.4",
+      "a": "GEN.8",
+      "w": "strong"
+    },
+    {
+      "o": "OD.4",
+      "a": "GEN.3",
+      "w": "partial"
+    },
+    {
+      "o": "OD.5",
+      "a": "ROV.9",
+      "w": "strong"
+    },
+    {
+      "o": "OD.5",
+      "a": "GEN.8",
+      "w": "strong"
+    },
+    {
+      "o": "OD.5",
+      "a": "ROV.1",
+      "w": "strong"
+    },
+    {
+      "o": "OD.5",
+      "a": "ROV.4",
+      "w": "strong"
+    },
+    {
+      "o": "OD.5",
+      "a": "ROV.5",
+      "w": "strong"
+    },
+    {
+      "o": "OD.6",
+      "a": "ROV.9",
+      "w": "strong"
+    },
+    {
+      "o": "OD.6",
+      "a": "GEN.8",
+      "w": "strong"
+    },
+    {
+      "o": "OD.6",
+      "a": "ROV.6",
+      "w": "partial"
+    },
+    {
+      "o": "OD.7",
+      "a": "ROV.9",
+      "w": "strong"
+    },
+    {
+      "o": "OD.7",
+      "a": "GEN.8",
+      "w": "strong"
+    },
+    {
+      "o": "OD.7",
+      "a": "ROV.1",
+      "w": "strong"
+    },
+    {
+      "o": "OD.7",
+      "a": "ROV.4",
+      "w": "strong"
+    },
+    {
+      "o": "OD.7",
+      "a": "ROV.5",
+      "w": "strong"
+    },
+    {
+      "o": "OD.8",
+      "a": "ROV.9",
+      "w": "strong"
+    },
+    {
+      "o": "OD.8",
+      "a": "GEN.8",
+      "w": "strong"
+    },
+    {
+      "o": "OD.8",
+      "a": "ROV.1",
+      "w": "strong"
+    },
+    {
+      "o": "OD.8",
+      "a": "ROV.4",
+      "w": "strong"
+    },
+    {
+      "o": "OD.8",
+      "a": "ROV.5",
+      "w": "strong"
+    },
+    {
+      "o": "OD.9",
+      "a": "GEN.8",
+      "w": "partial"
+    },
+    {
+      "o": "OD.9",
+      "a": "GEN.9",
+      "w": "partial"
+    },
+    {
+      "o": "OD.9",
+      "a": "GEN.1",
+      "w": "partial"
+    },
+    {
+      "o": "OD.10",
+      "a": "ROV.9",
+      "w": "partial"
+    },
+    {
+      "o": "OD.10",
+      "a": "GEN.1",
+      "w": "partial"
+    },
+    {
+      "o": "OD.10",
+      "a": "ROV.8",
+      "w": "partial"
+    }
+  ]
+}

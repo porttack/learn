@@ -27,6 +27,97 @@
 
 **Where this is saved:** the working copy is `/Users/ebrown/.claude/plans/radiant-greeting-salamander.md` (outside the repo); a copy is kept in the repo at `_program-notes-public/mate-taxonomy-plan.md` (saved 2026-11-20, not yet committed). Execution of Stage 3 has not started; it begins when you say so.
 
+## PHASE 3 (2026-11-20, after Phase 2 was built and committed as b48f3a6): eight views in the skills chart
+
+### What you asked for
+"For js, I want most essential 2025, most essential 2030, 2025 MATE Matchup, 2030 MATE Matchup, Ocean 10, Ocean 10 MATE Matchup, 2030 Ocean 10 Matchup, Ocean 10 to 2030 Matchup."
+
+### Decided by you in this phase
+19. **"Ocean 10" is a bar chart of equal-length bars, 1 to 10** (no ranking implied).
+20. **The last two views are the same links read from opposite sides**: "2030 Ocean 10 match-up" has the ten 2030 employer skills on the left and the Ocean 10 on the right; "Ocean 10 to 2030 match-up" has the Ocean 10 on the left and the 2030 skills on the right.
+Carried over: the post on porttack.com keeps its four tabs and gets the new views as hidden ones (reachable by `#anchor` only); this site's chart page shows all eight as tabs.
+
+### The eight views
+| # | View key | Tab label (this site) | Left column | Right column / bars |
+|---|---|---|---|---|
+| 1 | `now` (exists) | Most essential 2025 | | WEF top ten of 2025, bars |
+| 2 | `growing` (exists) | Growing fastest 2030 | | WEF top ten growing fastest to 2030, bars |
+| 3 | `mate25` | 2025 MATE match-up | the ten 2025 skills | MATE's 18 skills |
+| 4 | `mate30` | 2030 MATE match-up | the ten 2030 skills | MATE's 18 skills |
+| 5 | `ocean` | Ocean 10 | | the ten challenges, equal bars, numbered 1 to 10 |
+| 6 | `ocean-mate` | Ocean 10 MATE match-up | the Ocean 10 | MATE's 18 skills |
+| 7 | `wef30-ocean` | 2030 Ocean 10 match-up | the ten 2030 skills | the Ocean 10 |
+| 8 | `ocean-wef30` | Ocean 10 to 2030 match-up | the Ocean 10 | the ten 2030 skills |
+**One label to confirm:** WEF's 2030 list is the skills **growing fastest**, not "most essential" (that is the 2025 list), so view 2 stays labeled "Growing fastest 2030". Say if you want your wording instead.
+The union "MATE match-up" from Phase 2 (13 skills) is replaced by views 3 and 4; views 3 and 4 are subsets of the same 25 links.
+
+### Why this needs an engine change (porttack.com `assets/skills-widget.js`)
+Today every match view puts the same 13 employer skills on the left (`this.SKILLS`), links are `{s: index into SKILLS, a: anchor id}`, and the left chip colors, the detail wording ("Matched employer skills") and the column title are fixed. Needed, all additive so existing views behave exactly as now:
+1. A match view may carry **`left`** (its own list of `{name, cls}`) and **`leftTitle`**; links' `s` then index that list. Default stays `this.SKILLS`. (Touches `buildMatch`, `drawMatchLines`, `anchorMatches`.)
+2. A match view may carry **`leftNoun`** ("employer skills", "Ocean Decade challenges", "MATE skills") for the detail panel's "Matched ...:" and "No ... points here" text (`showDetail`).
+3. A bar row may carry **`w`** (explicit width, for equal bars) and **`valText`** (text in the value column) (`buildBars`).
+4. A new color class **`ocean`** (bars, dots, lines, tags; a blue) in the injected CSS and `LINE_COLORS`.
+5. Views 3 and 4 are built **at load time** from the single authored link list: `left` = the ten skills in rank order, links remapped. No second copy of the 25 links.
+Regression check: before and after, the four existing match views and two bar views must render identical row counts, line counts and captions.
+
+### Decision table 2: WEF 2030 skills to the Ocean 10 (draft, for your review; views 7 and 8)
+Rule: a line only where the Challenge's own description (read from the Ocean Decade page) calls for that skill. Solid = the challenge is mainly that skill; dashed = a real piece of it. OD codes follow the challenge numbers.
+| 2030 skill (rank) | Ocean 10 challenges (strength) | Why |
+|---|---|---|
+| AI and big data (1) | OD.8 (strong); OD.7 (partial) | A dynamic, open digital ocean needs data science and AI; the observing system delivers data to users |
+| Networks and cybersecurity (2) | OD.7 (partial); OD.8 (partial) | Delivering and sharing ocean data openly depends on networks; no challenge names security |
+| Technological literacy (3) | OD.9 (strong); OD.8 (partial) | Equitable access to technology and skills; using a digital ocean takes it |
+| Creative thinking (4) | OD.4 (partial); OD.3 (partial) | Both call for innovation and new solutions |
+| Resilience, flexibility and agility (5) | OD.6 (strong); OD.5 (partial); OD.4 (partial) | Community resilience; adapting to climate; a resilient ocean economy |
+| Curiosity and lifelong learning (6) | OD.9 (strong); OD.10 (partial) | Capacity development and knowledge for all; people's motivation and capability to understand the ocean |
+| Leadership and social influence (7) | OD.10 (partial); OD.4 (partial) | Moving people and sectors to act; multi-sector partnerships |
+| Talent management (8) | OD.9 (partial) | Building capacity across stakeholders |
+| Analytical thinking (9) | OD.2 (partial); OD.1 (partial); OD.5 (partial) | Challenges that begin with "understand": stressors on ecosystems, sources of pollution, the ocean-climate link |
+| Environmental stewardship (10) | OD.2 (strong); OD.1 (strong); OD.10 (strong); OD.5 (partial) | Protecting and restoring ecosystems, removing pollution, people acting for a healthy ocean; climate solutions |
+Every challenge gets at least one line (OD.3 only a dashed one).
+
+### Decision table 3: Ocean 10 to MATE's 18 skills (draft, for your review; view 6)
+MATE tags mission **tasks** with challenges, not skills, so there is no direct MATE statement. Rule: **solid** = MATE's own tags reach the skill through a competency (a competency tagged with that challenge, in `mate-rov.json` `ocean_decade`, lists the skill); **dashed** = this project's reading from the Ocean Decade and Evaluate-Compete descriptions only.
+| Challenge | Solid (through MATE's tags) | Dashed (our reading) |
+|---|---|---|
+| OD.1 Understand and beat marine pollution | none (never tagged) | ROV.9, ROV.5 (monitoring and measuring) |
+| OD.2 Protect and restore ecosystems and biodiversity | ROV.9, GEN.8 | none |
+| OD.3 Sustainably nourish the global population | none (never tagged) | ROV.9 |
+| OD.4 Sustainable, resilient and equitable ocean economy | ROV.9, GEN.8 | GEN.3 (business and customer needs) |
+| OD.5 Ocean-based solutions to climate change | ROV.9, GEN.8, ROV.1, ROV.4, ROV.5 | none |
+| OD.6 Community resilience to ocean and coastal risks | ROV.9, GEN.8 | ROV.6 (safety and hazards) |
+| OD.7 Sustainably expand the Global Ocean Observing System | ROV.9, GEN.8, ROV.1, ROV.4, ROV.5 | none |
+| OD.8 Digital representation of the ocean | ROV.9, GEN.8, ROV.1, ROV.4, ROV.5 | none |
+| OD.9 Skills, knowledge, technology and participation for all | none (MATE tags the whole competition 9 overall, not a competency) | GEN.8, GEN.9, GEN.1 |
+| OD.10 Restore society's relationship with the ocean | none (never tagged except the overall label) | ROV.9, GEN.1, ROV.8 |
+Reading note for the caption: ROV.9 (Technology and Society) and GEN.8 (Project Knowledge and Skills) carry most solid lines because every "understanding" competency lists them; ROV.1, ROV.4 and ROV.5 come in through the float, which MATE tags 5 every year and 7 and 8 from 2025. MATE skills with no Ocean 10 line: GEN.2, GEN.4, GEN.5, GEN.6, GEN.7, ROV.2, ROV.3, ROV.7.
+
+### The Ocean 10 bars (view 5)
+Ten equal-width bars, numbered 1 to 10 (the UN's numbers), the challenge name as the label, colored `ocean`. The value column says how many of MATE's 11 mission tasks (2024 to 2026) tag it: OD.1 none, OD.2 5, OD.3 none, OD.4 2, OD.5 4, OD.6 1, OD.7 7, OD.8 4, OD.9 none, OD.10 none. (That is MATE's own tagging, counted; it is shown as text, not as bar length. Say if you would rather leave it blank.)
+
+### Data authoring: one source in learn, generated into porttack.com
+- New **`_standards/mate-ocean-links.json`**: `wef30_ocean` links (table 2), `ocean_mate` links (table 3), the ten challenges' names and MATE tag counts. Tables 2 and 3 above are its content.
+- New **`tools/build_skills_widget_data.py`**: writes everything MATE and Ocean into the porttack.com data file between `// BEGIN MATE AND OCEAN VIEWS (generated by learn.porttack.com/tools/build_skills_widget_data.py)` and `// END ...` markers (replacing Phase 2's hand-inserted block), from `mate-wef-links.json`, `mate-ocean-links.json`, `mate-skills.json`, `mate-rov.json` and `ocean-decade.json`. Re-runnable.
+- Extend **`tools/check_mate_wef_sync.mjs`**: for each of views 3 to 8 recompute the expected links, left list and anchors from the learn JSON and compare with the widget data; check the ocean bars' names and counts.
+
+### Build (Stage B, execute; Sonnet)
+1. **porttack.com** (`/Users/ebrown/src/porttack.com`): engine edits 1 to 5 in `assets/skills-widget.js`; replace the Phase 2 block in `assets/skills-widget-data.js` with the generated block and add the new `MATCH_VIEWS` entries, bar view `ocean`, captions for views 3 to 8 (plain words, no dashes); in the draft post's `hiddenViews` replace the `mate` entry with six (`wef-skills-mate25`, `-mate30`, `-ocean`, `-ocean-mate`, `-wef30-ocean`, `-ocean-wef30`). Edit only; **do not commit or push** there.
+2. **learn:** `_standards/mate-ocean-links.json`; `tools/build_skills_widget_data.py`; run `tools/sync_skills_widget.sh` (copies both widget files); update `render_mate_skills_match` in `tools/build_alignment.py` (eight tabs in the order above, defaultView `mate30`? see below; legend gains an Ocean entry; intro text); extend the sync check; `tools/check_mate_data.py` validates the new JSON (codes exist, strengths valid); run `tools/publish_standards.sh`; commit learn.
+3. Default tab on this site: **"2030 MATE match-up"** (the forward-looking one), unless you prefer 2025.
+
+### Verify
+`check_mate_data.py` and the extended sync check pass. Regression: the post built locally from porttack.com shows its four tabs and unchanged CTE and CSTA views (13 left, 11 right, 16 lines for the CTE view), and each hidden anchor opens its view. On this site's chart page (headless Chrome, own port): eight tabs; each view draws the expected left and right counts and line counts (view 3: ten left, 18 right; view 4: ten left, 18 right; view 5: ten equal bars; view 6: ten left, 18 right; views 7 and 8: ten and ten, with equal numbers of lines); hover and tap show the right wording ("Matched Ocean Decade challenges", "Matched employer skills"); the tab bar with eight labels wraps cleanly (screenshot); readable in light and dark (white card).
+
+### Stages for this phase
+- **Stage A, plan mode: this section.** The judgment is Tables 2 and 3, the bars and the labels; change any before approving.
+- **Stage B, execute (Sonnet):** the Build steps.
+- **Stage C, plan mode (Opus): audit** the two mappings and the chart as a whole (is eight tabs too many? does the Ocean 10 side tell a clear story?).
+
+### Open items
+- Tables 2 and 3 are my drafts from the Ocean Decade page and Evaluate-Compete; neither source links employer skills to challenges, so every line is this project's reading.
+- Eight tabs may wrap awkwardly on a phone.
+- The Ocean Decade page and the roll-up are not changed in this phase (a line on each challenge listing its 2030 skills and MATE skills is an easy later addition).
+
 ## PHASE 2 (2026-11-20, after Stage 3 was built and committed as 2cd4b31): bubbles, more pages, employer-skills chart
 
 ### What you asked for (your words, condensed)

@@ -69,11 +69,37 @@ for l in wef["links"]:
         problems.append(f"WEF link names employer skill index {l['s']}")
     if l["w"] not in ("strong", "partial"):
         problems.append(f"WEF link weight {l['w']}")
+ocean = load(S / "mate-ocean-links.json")
+od_codes = {f"OD.{n}" for n in range(1, 11)}
+for l in ocean["wef30_ocean"]:
+    if l["a"] not in od_codes or not 0 <= l["s"] < n_wef or l["w"] not in ("strong", "partial"):
+        problems.append(f"wef30_ocean link is not valid: {l}")
+for l in ocean["ocean_mate"]:
+    if l["o"] not in od_codes or l["a"] not in skills or l["w"] not in ("strong", "partial"):
+        problems.append(f"ocean_mate link is not valid: {l}")
+backed = set()
+for g in comps["groups"]:
+    for i in g["items"]:
+        for n in i.get("ocean_decade", []):
+            for sk in i.get("skills", []):
+                backed.add((f"OD.{n}", sk))
+solid = {(l["o"], l["a"]) for l in ocean["ocean_mate"] if l["w"] == "strong"}
+for pair in sorted(solid - backed):
+    problems.append(f"ocean_mate solid line {pair} is not backed by MATE's tags through a competency")
+for pair in sorted(backed - solid):
+    problems.append(f"MATE's tags reach {pair} through a competency but the line is not solid")
+wef30_ranked = {w["index"] for w in wef["wef_skills"] if w["rank_2030"]}
+for l in ocean["wef30_ocean"]:
+    if l["s"] not in wef30_ranked:
+        problems.append(f"wef30_ocean uses a skill that is not on the 2030 list: {l['s']}")
+for n in range(1, 11):
+    if not any(l["a"] == f"OD.{n}" for l in ocean["wef30_ocean"]):
+        problems.append(f"no 2030 skill links to OD.{n}")
 for loc in {l for d in mate["coverage"].values() for e in d.values() for l in e["locators"]}:
     if loc not in comp_codes:
         problems.append(f"carrier locator {loc} is not a competency")
 for f in ("mate-rov.json", "mate-skills.json", "ocean-decade.json", "mate-classes.json", "mate-short-summaries.json",
-          "mate-wef-links.json", "carriers/mate-rov.json", "carriers/mate-missions.json"):
+          "mate-wef-links.json", "mate-ocean-links.json", "carriers/mate-rov.json", "carriers/mate-missions.json"):
     t = (S / f).read_text(encoding="utf-8")
     if "—" in t or "–" in t:
         problems.append(f"{f} contains an em or en dash")

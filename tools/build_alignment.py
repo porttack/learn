@@ -1035,7 +1035,7 @@ MATE_PAGES = [
     ("competencies", "Competencies in full", "MATE ROV Competencies in Full"),
     ("standards-map", "Standards map", "MATE ROV Competencies and the Standards They Draw On"),
     ("rollup", "Skill by skill", "MATE ROV Skill by Skill"),
-    ("skills-match", "Employer skills chart", "MATE Skills and the Employer Skills of 2025 and 2030"),
+    ("skills-match", "Skills and Ocean 10 chart", "MATE Skills, Employer Skills and the Ocean Decade"),
     ("ocean-decade", "The Ocean Decade", "MATE ROV and the UN Ocean Decade"),
     ("classes", "The classes", "MATE ROV Classes: Scout, Navigator, Ranger"),
 ]
@@ -1423,26 +1423,36 @@ def render_mate_rollup(ctx):
 
 
 def render_mate_skills_match(ctx):
-    body = ['<div class="xref-intro"><p>The World Economic Forum asked more than a thousand employers which skills matter most. This chart '
-            'lines the thirteen skills on its 2025 and 2030 lists up against the eighteen skills MATE marks in its manuals. Hover or tap a '
-            'skill, or a MATE skill on the right, to see the matches. The other two tabs show the two employer lists. It is the same chart as in '
-            'the post <em>Soft Skills Are Already in the Standards</em> on porttack.com, where it is matched against California\'s CTE standards.</p></div>',
+    body = ['<div class="xref-intro"><p>One chart, eight views. The first two are the World Economic Forum\'s lists of the ten skills employers '
+            'called most essential in 2025 and the ten growing fastest to 2030. The next two set each list against the eighteen skills MATE marks in '
+            'its manuals. <strong>Ocean 10</strong> is the ten challenges of the UN Ocean Decade, which MATE tags its mission tasks with, and the last '
+            'four views line the challenges up against MATE\'s skills and the 2030 skills, from each side. Hover or tap an item to light up its matches, '
+            'or an item on the right to read its full text. Solid lines are direct matches and dashed lines partial ones; none of these lists links '
+            'to another on its own, so every line is this project\'s reading. It is the same chart as in the post <em>Soft Skills Are Already in the '
+            'Standards</em> on porttack.com, where it is matched against California\'s CTE standards.</p></div>',
             '<script src="/assets/js/skills-widget/skills-widget.js"></script>',
             '<script src="/assets/js/skills-widget/skills-widget-data.js"></script>',
             '<div class="wef-card"><div id="wef-skills-widget" class="skills-widget">'
-            '<div class="wsw-head"><h3 class="wsw-title">Interactive Chart: Employer Skills &harr; MATE Skills</h3>'
+            '<div class="wsw-head"><h3 class="wsw-title">Interactive Chart: Employer Skills, MATE Skills and the Ocean Decade</h3>'
             '<div class="wsw-toggle" role="tablist" aria-label="Choose a view"></div></div>'
             '<p class="wsw-caption"></p><div class="wsw-chart" aria-live="polite"></div>'
             '<div class="wsw-legend"><span class="wsw-key"><i class="dot human"></i>Human / soft skill</span>'
             '<span class="wsw-key"><i class="dot tech"></i>Cognitive / technical</span>'
-            '<span class="wsw-key"><i class="dot ai"></i>AI &amp; big data</span></div>'
-            '<p class="wsw-source">Source: World Economic Forum, <em>Future of Jobs Report 2025</em> (Figs. 3.3 &amp; 3.4; global; n&gt;1,000 employers), and the '
-            'eighteen MATE ROV skills from Evaluate-Compete (SERC at Carleton College) as marked in MATE\'s manuals. The links are this project\'s reading.</p>'
+            '<span class="wsw-key"><i class="dot ai"></i>AI &amp; big data</span>'
+            '<span class="wsw-key"><i class="dot ocean"></i>Ocean Decade challenge</span></div>'
+            '<p class="wsw-source">Sources: World Economic Forum, <em>Future of Jobs Report 2025</em> (Figs. 3.3 &amp; 3.4; global; n&gt;1,000 employers); '
+            'the eighteen MATE ROV skills from Evaluate-Compete (SERC at Carleton College) as marked in MATE\'s manuals; the ten Challenges of the UN Decade of '
+            'Ocean Science for Sustainable Development (oceandecade.org); and the Ocean Decade tags in the 2024 to 2026 MATE manuals.</p>'
             '</div></div>',
-            '<script>SkillsWidget.init({el: "#wef-skills-widget", dataset: "wef-skills", defaultView: "mate", tabs: ['
-            '{view: "mate", label: "MATE match-up", anchor: "wef-skills-mate"},'
-            '{view: "now", label: "Most essential today (2025)", anchor: "wef-skills-now"},'
-            '{view: "growing", label: "Growing fastest by 2030", anchor: "wef-skills-growing"}]});</script>',
+            '<script>SkillsWidget.init({el: "#wef-skills-widget", dataset: "wef-skills", defaultView: "mate30", tabs: ['
+            '{view: "now", label: "Most essential 2025", anchor: "wef-skills-now"},'
+            '{view: "growing", label: "Growing fastest 2030", anchor: "wef-skills-growing"},'
+            '{view: "mate25", label: "2025 MATE match-up", anchor: "wef-skills-mate25"},'
+            '{view: "mate30", label: "2030 MATE match-up", anchor: "wef-skills-mate30"},'
+            '{view: "ocean", label: "Ocean 10", anchor: "wef-skills-ocean"},'
+            '{view: "ocean-mate", label: "Ocean 10 MATE match-up", anchor: "wef-skills-ocean-mate"},'
+            '{view: "wef30-ocean", label: "2030 Ocean 10 match-up", anchor: "wef-skills-wef30-ocean"},'
+            '{view: "ocean-wef30", label: "Ocean 10 to 2030 match-up", anchor: "wef-skills-ocean-wef30"}]});</script>',
             f'<p class="legend-note">To read this by MATE skill instead, see <a href="{mate_url("rollup")}">skill by skill</a>.</p>']
     return mate_wrap(ctx, "skills-match", "\n".join(body), hide_filter=True)
 

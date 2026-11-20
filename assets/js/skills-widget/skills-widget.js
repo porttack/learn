@@ -63,7 +63,7 @@
   var CSS = [
     ".skills-widget{",
     "  --ink:#1B2A3A; --sub:#5A6672; --line:#E6EAEE;",
-    "  --human:#0E7C86; --tech:#C2CBD3; --ai:#E0A100;",
+    "  --human:#0E7C86; --tech:#C2CBD3; --ai:#E0A100; --ocean:#2A6FB0;",
     "  font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif;",
     "  color:var(--ink); max-width:720px; margin:1.5rem 0; line-height:1.4;}",
     ".skills-widget *{box-sizing:border-box;}",
@@ -95,6 +95,7 @@
     ".skills-widget .wsw-bar.human{background:var(--human);}",
     ".skills-widget .wsw-bar.tech{background:var(--tech);}",
     ".skills-widget .wsw-bar.ai{background:var(--ai);}",
+    ".skills-widget .wsw-bar.ocean{background:var(--ocean);}",
     ".skills-widget .wsw-val{font-size:.84rem; font-weight:700; color:var(--ink);}",
     ".skills-widget .wsw-std{font-size:.8rem; color:var(--ink); line-height:1.3;}",
     ".skills-widget .wsw-std b{font-weight:700;}",
@@ -136,6 +137,7 @@
     ".skills-widget .wsw-mtag.human{background:#E0F1F2; color:var(--human);}",
     ".skills-widget .wsw-mtag.tech{background:#EEF1F4; color:var(--sub);}",
     ".skills-widget .wsw-mtag.ai{background:#FBF1D9; color:#8A6A00;}",
+    ".skills-widget .wsw-mtag.ocean{background:#E3EEF9; color:var(--ocean);}",
     ".skills-widget .wsw-detail-desc{font-size:.82rem; color:var(--ink); margin:0 0 .55rem;}",
     "/* Whole-anchor (strong) matches: the description itself is the covered text,",
     "   and every sub-standard gets a lighter tint than the specifically-mapped ones. */",
@@ -153,6 +155,7 @@
     ".skills-widget .dot.human{background:var(--human);}",
     ".skills-widget .dot.tech{background:var(--tech);}",
     ".skills-widget .dot.ai{background:var(--ai);}",
+    ".skills-widget .dot.ocean{background:var(--ocean);}",
     ".skills-widget .wsw-source{font-size:.74rem; color:#8A94A0; margin:.4rem 0 0; line-height:1.4;}",
     "@media (max-width:520px){",
     "  .skills-widget .wsw-row{grid-template-columns:22px 120px 1fr 40px; gap:.4rem;}",
@@ -184,7 +187,7 @@
   }
 
   // Line colors mirror the category dots but nudge "tech" darker so thin lines read.
-  var LINE_COLORS = { human: "#0E7C86", tech: "#9AA7B2", ai: "#E0A100" };
+  var LINE_COLORS = { human: "#0E7C86", tech: "#9AA7B2", ai: "#E0A100", ocean: "#2A6FB0" };
 
   function Widget(root, cfg) {
     this.root = root;
@@ -278,6 +281,9 @@
         width = ((rows.length - i) / rows.length) * 100;
         valText = "";
       }
+      // A row may fix its own width (equal-length bars) and its own value text.
+      if (d.w !== undefined && d.w !== null) width = d.w;
+      if (d.valText !== undefined && d.valText !== null) valText = d.valText;
       var barAttr = staticWidth ? 'style="width:' + width + '%"' : 'data-w="' + width + '"';
       var rankInner = "";
       if (d.rank2025 !== undefined) {
@@ -311,14 +317,18 @@
   };
 
   // The match-up view: skills on the left, standards on the right, SVG lines between.
+  // The left column of a match view: the view's own `left` list when it has one (links' `s` then index
+  // that list), otherwise the shared employer-skill list.
+  Widget.prototype.leftOf = function (mcfg) { return mcfg.left || this.SKILLS; };
+
   Widget.prototype.buildMatch = function (view) {
     var mcfg = this.MATCH_VIEWS[view];
     var linked = {};
     mcfg.links.forEach(function (l) { linked[l.s] = true; });
     var html = '<div class="wsw-match">'
       + '<svg class="wsw-match-svg" preserveAspectRatio="none"></svg>'
-      + '<div class="wsw-mcol left"><div class="wsw-mcol-h">WEF skills (2025 &amp; 2030)</div>';
-    this.SKILLS.forEach(function (d, i) {
+      + '<div class="wsw-mcol left"><div class="wsw-mcol-h">' + (mcfg.leftTitle || "WEF skills (2025 &amp; 2030)") + '</div>';
+    this.leftOf(mcfg).forEach(function (d, i) {
       html += '<div class="wsw-mitem' + (linked[i] ? '' : ' is-gap') + '" data-skill="' + i + '" role="button" tabindex="0">'
         + d.name + ' <i class="dot ' + d.cls + '"></i></div>';
     });
@@ -330,7 +340,7 @@
         + '<span class="wsw-minfo" aria-hidden="true">+</span></div>';
     });
     html += '</div></div>'
-      + '<p class="wsw-mhint">Hover or tap a skill on the left to light up its matches, or an item on the right to read its full text and see where the employer skills land.</p>'
+      + '<p class="wsw-mhint">' + (mcfg.hint || 'Hover or tap a skill on the left to light up its matches, or an item on the right to read its full text and see where the employer skills land.') + '</p>'
       + '<div class="wsw-detail"></div>';
     return html;
   };
@@ -347,7 +357,7 @@
     var br = box.getBoundingClientRect();
     if (br.width === 0) return;
     svg.setAttribute("viewBox", "0 0 " + br.width + " " + br.height);
-    var SKILLS = this.SKILLS, paths = "";
+    var SKILLS = this.leftOf(mcfg), paths = "";
     mcfg.links.forEach(function (l) {
       var s = box.querySelector('.wsw-mitem[data-skill="' + l.s + '"]');
       var t = box.querySelector('.wsw-mitem[data-anchor="' + l.a + '"]');
@@ -378,7 +388,7 @@
   };
 
   Widget.prototype.anchorMatches = function (mcfg, n) {
-    var SKILLS = this.SKILLS, out = [];
+    var SKILLS = this.leftOf(mcfg), out = [];
     mcfg.links.forEach(function (l) {
       if (l.a === n) out.push({ name: SKILLS[l.s].name, cls: SKILLS[l.s].cls, w: l.w });
     });
@@ -401,7 +411,7 @@
     matches.forEach(function (m) { if (m.w === "strong") strongNames.push(m.name); });
     var mhtml;
     if (matches.length) {
-      mhtml = "Matched employer skills: ";
+      mhtml = "Matched " + (mcfg.leftNoun || "employer skills") + ": ";
       matches.forEach(function (m) {
         mhtml += '<span class="wsw-mtag ' + m.cls + '">' + m.name + ' (' + m.w + ')</span>';
       });
@@ -410,7 +420,7 @@
           + strongNames.join(" and ") + ": the description and every item below count toward it.</span>";
       }
     } else {
-      mhtml = "No skill on the WEF employer list points here.";
+      mhtml = mcfg.leftNoun ? "None of the " + mcfg.leftNoun + " point here." : "No skill on the WEF employer list points here.";
     }
     var html = '<h4>' + a.disp + ' ' + a.name + '</h4>'
       + '<p class="wsw-detail-match">' + mhtml + '</p>'
