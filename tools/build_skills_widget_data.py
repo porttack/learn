@@ -175,9 +175,9 @@ hint_challenge = "Hover or tap a challenge on the left to light up its matches, 
 hint_skill = "Hover or tap a skill on the left to light up its matches, or an item on the right to read its full text."
 out.append("""  var MATE_OCEAN = {
     matchViews: {
-      mate25: {left: pick(WEF25_IDX), leftTitle: "WEF skills, 2025 most essential", leftNoun: "employer skills", anchors: MATE_ANCHORS, links: remap(MATE_LINKS, WEF25_IDX), details: MATE_DETAILS, covered: {}, rightTitle: "MATE ROV skills (Evaluate-Compete)", hint: %s},
-      mate30: {left: pick(WEF30_IDX), leftTitle: "WEF skills, growing fastest to 2030", leftNoun: "employer skills", anchors: MATE_ANCHORS, links: remap(MATE_LINKS, WEF30_IDX), details: MATE_DETAILS, covered: {}, rightTitle: "MATE ROV skills (Evaluate-Compete)", hint: %s},
-      "ocean-mate": {left: OCEAN_LEFT, leftTitle: "Ocean Decade challenges", leftNoun: "Ocean Decade challenges", anchors: MATE_ANCHORS, links: OCEAN_MATE_LINKS, details: MATE_DETAILS, covered: {}, rightTitle: "MATE ROV skills (Evaluate-Compete)", hint: %s},
+      mate25: {left: pick(WEF25_IDX), leftTitle: "WEF skills, 2025 most essential", leftNoun: "employer skills", anchors: MATE_ANCHORS, links: remap(MATE_LINKS, WEF25_IDX), details: MATE_DETAILS, covered: {}, rightTitle: "MATE ROV skills", hint: %s},
+      mate30: {left: pick(WEF30_IDX), leftTitle: "WEF skills, growing fastest to 2030", leftNoun: "employer skills", anchors: MATE_ANCHORS, links: remap(MATE_LINKS, WEF30_IDX), details: MATE_DETAILS, covered: {}, rightTitle: "MATE ROV skills", hint: %s},
+      "ocean-mate": {left: OCEAN_LEFT, leftTitle: "Ocean Decade challenges", leftNoun: "Ocean Decade challenges", anchors: MATE_ANCHORS, links: OCEAN_MATE_LINKS, details: MATE_DETAILS, covered: {}, rightTitle: "MATE ROV skills", hint: %s},
       "wef30-ocean": {left: pick(WEF30_IDX), leftTitle: "WEF skills, growing fastest to 2030", leftNoun: "employer skills", anchors: OCEAN_ANCHORS, links: remap(WEF30_OCEAN_LINKS, WEF30_IDX), details: OCEAN_DETAILS, covered: {}, rightTitle: "Ocean Decade challenges", hint: %s},
       "ocean-wef30": {left: OCEAN_LEFT, leftTitle: "Ocean Decade challenges", leftNoun: "Ocean Decade challenges", anchors: WEF30_ANCHORS, links: [], details: WEF30_DETAILS, covered: {}, rightTitle: "WEF skills, growing fastest to 2030", hint: %s}
     },
