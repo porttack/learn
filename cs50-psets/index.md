@@ -27,13 +27,20 @@ the same job and are what we use in class.
 
 ## Contents
 
+<p class="pset-key"><span class="pset-tile pset-tile-cs50-ap"></span> Slightly revised CS50 problems
+<span class="pset-tile pset-tile-original"></span> New CS50 problems
+<span class="pset-tile pset-tile-mate"></span> MATE CS50 problems</p>
+
 <ol class="lesson-list">
 {% assign lessons = site.cs50psets | sort: "order" %}
 {% for lesson in lessons %}
-  <li>
-    <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
-    {% if lesson.slides_link %}<a class="lesson-companion-link" href="{{ lesson.slides_link | relative_url }}">Slides</a>{% endif %}
-    {% if lesson.subtitle %}<p class="lesson-subtitle">{{ lesson.subtitle }}</p>{% endif %}
+  <li class="pset-row">
+    <a class="pset-tile-link" href="{{ lesson.url | relative_url }}" tabindex="-1" aria-hidden="true"><img class="pset-tile pset-tile-{{ lesson.series | default: lesson.source | default: 'original' }}" src="{{ '/assets/img/cs50psets/tiles/' | append: lesson.slug | append: '.svg' | relative_url }}" alt="" width="64" height="64"></a>
+    <div class="pset-row-text">
+      <a href="{{ lesson.url | relative_url }}">{{ lesson.title }}</a>
+      {% if lesson.slides_link %}<a class="lesson-companion-link" href="{{ lesson.slides_link | relative_url }}">Slides</a>{% endif %}
+      {% if lesson.subtitle %}<p class="lesson-subtitle">{{ lesson.subtitle }}</p>{% endif %}
+    </div>
   </li>
 {% endfor %}
 </ol>

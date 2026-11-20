@@ -3,6 +3,7 @@ title: "Profiling Float"
 order: 13
 chapter: 8
 source: original
+series: mate
 slides_link: /cs50-psets/float-profile-slides/
 subtitle: "Steer a profiling float and judge its data: did it hold its depth for 30 seconds, and did it touch the bottom?"
 ---

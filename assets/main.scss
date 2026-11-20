@@ -1568,6 +1568,48 @@ figure.figure-small img {
   margin-bottom: 0.9em;
 }
 
+// CS50 Problems contents (cs50-psets/index.md): a square circuit-board tile before each problem (made by
+// tools/make_pset_tiles.py, in the style of the pathway banner). Red = CS50 AP, blue = CS50 Python, green = written for this class.
+.pset-tile {
+  display: block;
+  flex: none;
+  width: 4em;
+  height: 4em;
+  border-radius: 10px;
+  background: #11452b;
+
+  &.pset-tile-cs50-ap { background: #6f0f18; }
+  &.pset-tile-cs50-python { background: #6f0f18; }
+  &.pset-tile-mate { background: #0b3a6e; }
+}
+
+.pset-tile-link { flex: none; line-height: 0; }
+
+.pset-row {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  break-inside: avoid;
+
+  .pset-row-text > a { font-weight: 600; }
+}
+
+.pset-key {
+  font-size: 0.85em;
+  color: $grey-color-dark;
+
+  .pset-tile {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    border-radius: 3px;
+    vertical-align: -0.1em;
+    margin-left: 0.8em;
+  }
+  .pset-tile:first-child { margin-left: 0; }
+  .pset-badge { vertical-align: -0.25em; margin-left: 0.8em; }
+}
+
 // TurtleLab Lessons contents page (turtle-lessons/index.md): four units, each a band with its own accent color, a
 // one line blurb, and its steps as numbered rows. A capstone (the step that ends a unit) is starred. Everything that
 // shows the unit is a border or text, never a background, so it still reads when printed in black and white.
