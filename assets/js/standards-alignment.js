@@ -48,7 +48,8 @@ var STANDARDS_FRAMEWORKS = {
   'ccss-ela': { file: 'ccss-ela-standards-reference.html', prefix: 'T', name: 'Common Core ELA (Speaking, Listening & Writing)', catalog: 'ccss-ela', category: 'ela' },
   ngss: { file: 'ngss-standards-reference.html', prefix: 'T', name: 'NGSS 2013 (Next Generation Science Standards)', catalog: 'ngss', category: 'sci' },
   'ca-epc': { file: 'ca-epc-standards-reference.html', prefix: 'T', name: 'California Environmental Principles and Concepts (EP&Cs)', catalog: 'ca-epc', category: 'sci' },
-  'mate-rov': { file: 'mate/competencies/', prefix: 'T', name: 'MATE ROV Competition (cross-reference, not a standard)', catalog: 'mate-rov', category: 'mate', hideCode: true }
+  'mate-rov': { file: 'mate/competencies/', prefix: 'T', name: 'MATE ROV Competition (cross-reference, not a standard)', catalog: 'mate-rov', category: 'mate', hideCode: true },
+  'mate-skills': { file: 'mate/rollup/', prefix: 'sub', name: 'MATE ROV skills (Evaluate-Compete, cross-reference, not a standard)', catalog: 'mate-skills', category: 'mate' }
 };
 
 // Fixed display order, local to this per-lesson widget (the main /standards/
@@ -105,6 +106,7 @@ function catalogLabel(fw, catalogData, code) {
     catalogData.groups.forEach(function (g) {
       (g.items || []).forEach(function (item) {
         if (item.code === code) label2 = item.paraphrase;
+        (item.components || []).forEach(function (c) { if (c.code === code) label2 = c.text; });
       });
     });
     return label2;
@@ -123,6 +125,7 @@ function catalogName(catalogData, code) {
   catalogData.groups.forEach(function (g) {
     (g.items || []).forEach(function (item) {
       if (item.code === code && item.name) name = item.name;
+      (item.components || []).forEach(function (c) { if (c.code === code) name = c.short; });
     });
   });
   return name;

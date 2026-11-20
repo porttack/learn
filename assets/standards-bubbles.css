@@ -64,3 +64,27 @@
 .cov-badge.skill .cov-badge-btn { font-family: inherit; font-size: .88rem; white-space: normal; text-align: left; max-width: 17rem; line-height: 1.25; }
 .cov-badge.skill .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .75em; color: var(--muted); margin-right: .35em; }
 .cov-tooltip { max-height: 70vh; overflow-y: auto; }
+
+/* Competency bubbles: the same label as a skill (number and a very short phrase) in a different shape, a leaf with two
+   rounded corners and two tight ones, so the two kinds read apart at a glance. */
+.cov-badge.comp .cov-badge-btn { font-family: inherit; font-size: .88rem; white-space: normal; text-align: left; max-width: 17rem; line-height: 1.25; border-radius: 1.15em .3em 1.15em .3em; }
+.cov-badge.comp .code, .comp-chip .code, .skill-chip .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .75em; color: var(--muted); margin-right: .35em; }
+.comp-chip, .skill-chip { display: inline-block; font-size: .84rem; padding: .2em .65em; border: 1px solid var(--border); background: var(--code-bg); color: var(--fg); text-decoration: none; line-height: 1.25; }
+.comp-chip { border-radius: 1em .3em 1em .3em; }
+.skill-chip { border-radius: 8px; }
+.comp-chip:hover, .skill-chip:hover, .comp-chip:focus-visible, .skill-chip:focus-visible { border-color: var(--accent); outline: none; }
+.tt-list { list-style: none; margin: .2em 0 .6em; padding: 0; }
+.tt-list li { margin: .18em 0; }
+
+/* Sub-skills: the skill's bubble made smaller and lighter, so a skill and its parts read as one family.
+   One row per skill on the start page: the skill first, its parts beside it. */
+.skill-row { margin: 0 0 .7rem; padding-bottom: .7rem; border-bottom: 1px dotted var(--border); }
+.cov-badge.sub .cov-badge-btn { font-family: inherit; font-size: .78rem; padding: .18em .65em; border-style: dashed; }
+.cov-badge.sub:not(.has-coverage) .cov-badge-btn { background: transparent; }
+.sub-chip { display: inline-block; font-size: .8rem; padding: .15em .6em; border: 1px dashed hsl(var(--group-hue, 0) 45% 45%); border-radius: 8px; color: var(--fg); text-decoration: none; line-height: 1.25; }
+.sub-chip .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .75em; color: var(--muted); margin-right: .3em; }
+.sub-chip:hover, .sub-chip:focus-visible { border-style: solid; outline: none; }
+.sub-built { margin: .15em 0 .45em 1em; }
+.sub-built .comp-chip { margin: 0 .25em .25em 0; }
+.sub-section { margin: .6rem 0 1rem 1rem; }
+.sub-section h5 { margin: 0 0 .2rem; font-size: .95rem; }

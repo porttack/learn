@@ -99,22 +99,22 @@
   "links": [
     {
       "s": 0,
-      "a": "GEN.7",
+      "a": "EMP.7",
       "w": "strong"
     },
     {
       "s": 0,
-      "a": "GEN.6",
+      "a": "EMP.6",
       "w": "partial"
     },
     {
       "s": 1,
-      "a": "GEN.5",
+      "a": "EMP.5",
       "w": "strong"
     },
     {
       "s": 1,
-      "a": "GEN.4",
+      "a": "EMP.4",
       "w": "partial"
     },
     {
@@ -124,22 +124,22 @@
     },
     {
       "s": 2,
-      "a": "GEN.9",
+      "a": "EMP.9",
       "w": "partial"
     },
     {
       "s": 3,
-      "a": "GEN.2",
+      "a": "EMP.2",
       "w": "strong"
     },
     {
       "s": 4,
-      "a": "GEN.4",
+      "a": "EMP.4",
       "w": "partial"
     },
     {
       "s": 4,
-      "a": "GEN.6",
+      "a": "EMP.6",
       "w": "partial"
     },
     {
@@ -164,27 +164,27 @@
     },
     {
       "s": 5,
-      "a": "GEN.8",
+      "a": "EMP.8",
       "w": "partial"
     },
     {
       "s": 6,
-      "a": "GEN.9",
+      "a": "EMP.9",
       "w": "partial"
     },
     {
       "s": 6,
-      "a": "GEN.1",
+      "a": "EMP.1",
       "w": "partial"
     },
     {
       "s": 7,
-      "a": "GEN.6",
+      "a": "EMP.6",
       "w": "strong"
     },
     {
       "s": 7,
-      "a": "GEN.8",
+      "a": "EMP.8",
       "w": "partial"
     },
     {
@@ -194,12 +194,12 @@
     },
     {
       "s": 8,
-      "a": "GEN.9",
+      "a": "EMP.9",
       "w": "partial"
     },
     {
       "s": 9,
-      "a": "GEN.3",
+      "a": "EMP.3",
       "w": "strong"
     },
     {

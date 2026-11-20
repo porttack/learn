@@ -5,7 +5,7 @@
     "year": "not tied to a year; read from the 2024 to 2026 manuals",
     "extracted": "2026-11-20",
     "scope_note": "This is a cross-reference catalog, not a standard. MATE publishes no standards of its own, so each entry is this project's inference of what the competition requires, scores and explains, written so a teacher can see what has to be taught and where. It was built from the 2024 Ranger, 2025 Scout, Navigator and Ranger and 2026 Scout manuals and the 2027 Floats description. Scope: Scout, Navigator and Ranger. Point totals, electrical limits, depths and timings change by year and class, so none is recorded as a competency; class differences are noted under each entry and compared in mate-classes.json. MATE's own list of 18 skills is mate-skills.json and each competency names the ones it develops.",
-    "codes_note": "Each competency has an internal key (ENG, PRO or UND with a number) that keeps the data, links and lesson alignments stable. The keys are this project's, are not MATE's, and are not shown on the public pages, where the competencies are an outline of plain names. MATE's 18 skills carry the visible codes (GEN.1 to GEN.9 and ROV.1 to ROV.9; see mate-skills.json).",
+    "codes_note": "Each competency has an internal key (ENG, PRO or UND with a number) that keeps the data, links and lesson alignments stable; the keys are this project's, are not MATE's, and are not shown. On the pages the competencies are an outline: areas numbered 1 to 3 and items numbered within them (1.1, 1.2, ...) in this file's order, each with a very short phrase (the short field) for its bubble. MATE's 18 skills carry the visible codes (EMP.1 to EMP.9 and ROV.1 to ROV.9; see mate-skills.json).",
     "license_note": "The competition manuals are (c) MATE ROV Competition under a Creative Commons Attribution NonCommercial NoDerivatives license, so nothing here copies their text; every entry is a paraphrase written for this project, with manual section names given as references only.",
     "stated_aims": [
       {
@@ -74,9 +74,10 @@
             "Scoring overview (every manual)"
           ],
           "skills": [
-            "GEN.7",
-            "GEN.3"
-          ]
+            "EMP.3a",
+            "EMP.7c"
+          ],
+          "short": "Plan from the RFP"
         },
         {
           "code": "ENG.2",
@@ -87,10 +88,11 @@
             "Engineering presentation (every manual)"
           ],
           "skills": [
-            "GEN.7",
-            "GEN.2",
-            "ROV.3"
-          ]
+            "EMP.7c",
+            "EMP.2a",
+            "ROV.3a"
+          ],
+          "short": "Compare designs"
         },
         {
           "code": "ENG.3",
@@ -101,10 +103,11 @@
             "Tips: how you arrived at your power budget"
           ],
           "skills": [
-            "ROV.4",
-            "ROV.6"
+            "ROV.4a",
+            "ROV.6a"
           ],
-          "class_note": "Current, voltage and fluid pressure limits are set per class and change; check the current manual."
+          "class_note": "Current, voltage and fluid pressure limits are set per class and change; check the current manual.",
+          "short": "Power budget"
         },
         {
           "code": "ENG.4",
@@ -115,13 +118,14 @@
             "Safety inspectors' stated emphasis on workmanship (2026 Scout)"
           ],
           "skills": [
-            "ROV.2",
-            "ROV.3",
-            "ROV.6"
+            "ROV.2a",
+            "ROV.6a",
+            "ROV.1b"
           ],
           "by_class": {
             "navigator": "Hydraulic and pneumatic power is allowed within pressure limits, with its own diagram."
-          }
+          },
+          "short": "Build it reliably"
         },
         {
           "code": "ENG.5",
@@ -132,9 +136,10 @@
             "Tips: what choices would matter in a less controlled environment"
           ],
           "skills": [
-            "ROV.1",
-            "GEN.7"
-          ]
+            "ROV.1b",
+            "EMP.7a"
+          ],
+          "short": "Test for real conditions"
         },
         {
           "code": "ENG.6",
@@ -145,14 +150,15 @@
             "Tips: where code executes and the flow of data"
           ],
           "skills": [
-            "ROV.4",
-            "ROV.5",
-            "ROV.2"
+            "ROV.4b",
+            "ROV.5a",
+            "ROV.2a"
           ],
           "by_class": {
             "navigator": "Cameras are required to pilot, surface equipment may use AC power, and lasers are allowed with safety rules.",
             "ranger": "Cameras are required to pilot."
-          }
+          },
+          "short": "Drive and control"
         },
         {
           "code": "ENG.7",
@@ -163,9 +169,10 @@
             "Floats task: a benchmark temperature to compare against (2027)"
           ],
           "skills": [
-            "ROV.5",
-            "GEN.8"
-          ]
+            "ROV.5a",
+            "EMP.8a"
+          ],
+          "short": "Sense and calibrate"
         },
         {
           "code": "ENG.8",
@@ -176,16 +183,17 @@
             "Non-ROV device rules and design document"
           ],
           "skills": [
-            "ROV.1",
-            "ROV.4",
-            "ROV.5"
+            "ROV.1a",
+            "ROV.4b",
+            "ROV.5b"
           ],
           "class_note": "Demand rises by year: temperature only and propellers allowed in 2025, depth holding, a buoyancy engine bonus and transmitted data in 2027.",
           "ocean_decade": [
             5,
             7,
             8
-          ]
+          ],
+          "short": "Run its own device"
         },
         {
           "code": "ENG.9",
@@ -197,9 +205,10 @@
             "Tips: the flow and format of data"
           ],
           "skills": [
-            "ROV.5",
-            "GEN.7"
-          ]
+            "ROV.5b",
+            "EMP.1b"
+          ],
+          "short": "Collect and graph data"
         },
         {
           "code": "ENG.10",
@@ -209,9 +218,10 @@
             "Product demonstration tasks every year, 2024 to 2026"
           ],
           "skills": [
-            "ROV.5",
-            "GEN.2"
-          ]
+            "ROV.5a",
+            "EMP.2c"
+          ],
+          "short": "Underwater tools"
         },
         {
           "code": "ENG.11",
@@ -221,9 +231,30 @@
             "Tips: record any problem that takes more than 20 minutes; project notebook"
           ],
           "skills": [
-            "GEN.5",
-            "GEN.7"
-          ]
+            "EMP.7b",
+            "EMP.5a",
+            "EMP.5c"
+          ],
+          "short": "Troubleshoot and record"
+        },
+        {
+          "code": "ENG.12",
+          "name": "Trim and propel the vehicle",
+          "short": "Float, trim and thrust",
+          "paraphrase": "Design the vehicle so it floats level, holds its depth and moves where the pilot wants: set buoyancy and ballast, place thrusters, and match thrust to the job while keeping weight and cost in check.",
+          "evidence": [
+            "Mechanical/Physical specifications: size, weight, sealing, propellers (every manual)",
+            "Propulsion and size limits every class works within",
+            "Floats task: buoyancy engine and depth hold (2025 to 2027)"
+          ],
+          "skills": [
+            "ROV.1a",
+            "ROV.1b",
+            "ROV.1c",
+            "ROV.3a"
+          ],
+          "class_note": null,
+          "ocean_decade": []
         }
       ]
     },
@@ -239,9 +270,10 @@
             "Overview: think of yourselves as entrepreneurs, company roles (every manual)"
           ],
           "skills": [
-            "GEN.9",
-            "ROV.7"
-          ]
+            "ROV.7a",
+            "EMP.9b"
+          ],
+          "short": "Run the team"
         },
         {
           "code": "PRO.2",
@@ -252,13 +284,16 @@
             "Organizational and operational effectiveness (Navigator, Ranger)"
           ],
           "skills": [
-            "ROV.7",
-            "GEN.3"
+            "ROV.7b",
+            "ROV.7c",
+            "ROV.7d",
+            "EMP.3c"
           ],
           "by_class": {
             "navigator": "Organizational and operational effectiveness is scored, including project management.",
             "ranger": "Organizational and operational effectiveness is scored, including project management."
-          }
+          },
+          "short": "Manage the project"
         },
         {
           "code": "PRO.3",
@@ -269,13 +304,17 @@
             "Tips: technical storytelling"
           ],
           "skills": [
-            "ROV.8",
-            "GEN.1"
+            "ROV.8a",
+            "ROV.8b",
+            "ROV.8d",
+            "EMP.1a",
+            "EMP.1c"
           ],
           "by_class": {
             "navigator": "The presentation is longer (15 minutes in the 2025 manual).",
             "ranger": "The presentation is longer (the Scout manual describes Ranger as 15 minutes)."
-          }
+          },
+          "short": "Explain the work"
         },
         {
           "code": "PRO.4",
@@ -285,9 +324,11 @@
             "Marketing display (every class)"
           ],
           "skills": [
-            "GEN.1",
-            "ROV.8"
-          ]
+            "ROV.8c",
+            "EMP.1a",
+            "EMP.1b"
+          ],
+          "short": "Reach the public"
         },
         {
           "code": "PRO.5",
@@ -297,9 +338,11 @@
             "Overview: the entrepreneurial skill set, business acumen, ESG (every manual)"
           ],
           "skills": [
-            "GEN.3",
-            "ROV.9"
-          ]
+            "EMP.3a",
+            "EMP.3b",
+            "ROV.9c"
+          ],
+          "short": "Think like a founder"
         },
         {
           "code": "PRO.6",
@@ -310,11 +353,12 @@
             "Jobsite Safety and Environment Analysis and safety pre-inspection (Ranger)"
           ],
           "skills": [
-            "ROV.6"
+            "ROV.6a"
           ],
           "by_class": {
             "ranger": "A jobsite safety analysis (job steps, hazards, safeguards in order of preference, named responsibility) is required and scored, with pre-inspection documents and a company safety review."
-          }
+          },
+          "short": "Work safely"
         },
         {
           "code": "PRO.7",
@@ -324,8 +368,9 @@
             "General and competition rules; the regulatory affairs role (every manual)"
           ],
           "skills": [
-            "GEN.8"
-          ]
+            "EMP.8c"
+          ],
+          "short": "Know the rules"
         },
         {
           "code": "PRO.8",
@@ -335,10 +380,11 @@
             "Notes on the use of AI (2026 Scout manual)"
           ],
           "skills": [
-            "GEN.6",
-            "GEN.4"
+            "EMP.6c",
+            "EMP.4a"
           ],
-          "class_note": "Stated in the 2026 Scout manual; not in the 2024 or 2025 manuals read."
+          "class_note": "Stated in the 2026 Scout manual; not in the 2024 or 2025 manuals read.",
+          "short": "Use AI honestly"
         },
         {
           "code": "PRO.9",
@@ -348,9 +394,10 @@
             "Corporate responsibility (every class)"
           ],
           "skills": [
-            "ROV.9",
-            "GEN.9"
-          ]
+            "ROV.9a",
+            "EMP.9c"
+          ],
+          "short": "Give back"
         }
       ]
     },
@@ -367,13 +414,15 @@
             "Ocean Decade tags 7 and 8"
           ],
           "skills": [
-            "ROV.9",
-            "GEN.8"
+            "ROV.9a",
+            "ROV.9b",
+            "EMP.8a"
           ],
           "ocean_decade": [
             7,
             8
-          ]
+          ],
+          "short": "Ocean observing"
         },
         {
           "code": "UND.2",
@@ -384,12 +433,14 @@
             "Ocean Decade tag 2"
           ],
           "skills": [
-            "ROV.9",
-            "GEN.8"
+            "ROV.9a",
+            "ROV.9b",
+            "EMP.8a"
           ],
           "ocean_decade": [
             2
-          ]
+          ],
+          "short": "Ecosystems"
         },
         {
           "code": "UND.3",
@@ -400,12 +451,14 @@
             "Ocean Decade tag 5"
           ],
           "skills": [
-            "ROV.9",
-            "GEN.8"
+            "ROV.9a",
+            "ROV.9b",
+            "EMP.8a"
           ],
           "ocean_decade": [
             5
-          ]
+          ],
+          "short": "Climate and ocean"
         },
         {
           "code": "UND.4",
@@ -416,13 +469,15 @@
             "Ocean Decade tag 4"
           ],
           "skills": [
-            "ROV.9",
-            "GEN.8"
+            "ROV.9a",
+            "ROV.9b",
+            "EMP.8a"
           ],
           "ocean_decade": [
             4,
             5
-          ]
+          ],
+          "short": "Ocean energy"
         },
         {
           "code": "UND.5",
@@ -433,13 +488,15 @@
             "Ocean Decade tags 2 and 6"
           ],
           "skills": [
-            "ROV.9",
-            "GEN.8"
+            "ROV.9a",
+            "ROV.9b",
+            "EMP.8a"
           ],
           "ocean_decade": [
             2,
             6
-          ]
+          ],
+          "short": "People and heritage"
         },
         {
           "code": "UND.6",
@@ -449,9 +506,10 @@
             "Overview: ESG, 'good for good', the ocean we have and the ocean we want; the 'client is us' (every manual)"
           ],
           "skills": [
-            "ROV.9",
-            "GEN.7"
-          ]
+            "ROV.9c",
+            "EMP.7c"
+          ],
+          "short": "Weigh the factors"
         }
       ]
     }

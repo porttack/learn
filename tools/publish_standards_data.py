@@ -26,7 +26,7 @@ CATALOG_FILES = [
 # Published to data/catalog/ so a lesson page's standards widget can read them, but not listed in
 # the manifest, so the main /standards/ map does not show them. The MATE material has its own
 # page (/standards/mate/), built by tools/build_alignment.py.
-EXTRA_CATALOG_FILES = ["mate-rov"]
+EXTRA_CATALOG_FILES = ["mate-rov", "mate-skills"]
 
 # Pairs of catalogs with a hand-built crosswalk file (see _standards/README.md).
 # "between" names the two frameworks in the order the crosswalk file's own row

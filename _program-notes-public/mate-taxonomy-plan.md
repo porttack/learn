@@ -1,5 +1,111 @@
 # MATE ROV taxonomies: rebuild around what MATE says it builds, on its own page
 
+## PHASE 4 (2026-11-20): sub-skills under the 18 skills
+
+### Context
+You asked whether the skills are granular enough and whether there are sub-skills. (You wrote "12 skills"; the set is 18, nine employability and nine ROV-specific. I am treating this as the 18.) The answer is in the primary source: **Evaluate-Compete lists "outcome components" under every one of its 18 outcome categories**, 48 in all, and our catalog skipped them on purpose (`mate-skills.json` scope note: "a few components under each outcome; those are not indexed here"). Read today from serc.carleton.edu/evaluateur/ecompete/using_ecompete/outcomes.html (revised 2024-11-25). They are unnumbered table rows; the page does not say how each is measured.
+
+So the sub-skills are MATE's (Evaluate-Compete's), not ours to invent. Recommendation: index them as sub-skills, link each competency to the sub-skills it builds instead of to the whole skill, and stop there (the competencies already give the finer, program-specific grain; inventing a third layer of our own would repeat the FLOAT mistake).
+
+### What the components show
+- General skills have exactly 3 components each (27). ROV skills vary: Vehicle Design 3, Systems Design 1, Structure 1, Control/Electrical 2, Sensors/Payload/Tools 2, Safety 1, Project Management 4, Technical Presentation 4, Technology and Society 3 (21).
+- So Systems Design, Structure and Safety have no sub-skills beyond the skill itself; Project Management and Technical Presentation split cleanly into four.
+- One near-duplicate in the source: Ability to Deal with Obstacles (b) "flexibility and a willingness to take risks and try again" repeats Autonomy (c). Keep both, with a note.
+- License: the page is CC BY-NC-SA 4.0. Our policy is paraphrase, not quote, so the ShareAlike term does not attach to our wording; cite the page.
+
+### Codes: GEN becomes EMP (decided by you, 2026-11-20)
+"GEN means nothing compared with other standards." Employability skills are **EMP.1 to EMP.9**; ROV-specific stay **ROV.1 to ROV.9**; sub-skills add a letter (EMP.3b, ROV.7d). Numbers keep Evaluate-Compete's order. Considered and rejected: MATE.1 to 18 (loses the split in the code) and a mnemonic per skill (18 are hard to tell apart; like the old SAFE/ELEC codes).
+
+### The sub-skills (codes ours: skill code plus a letter, in the page's order; wording is my paraphrase)
+| Skill | Sub-skills |
+|---|---|
+| EMP.1 Communication | a Explain the engineering process and design to any audience; b Use images, diagrams and data to show a design; c Write clearly and correctly |
+| EMP.2 Creativity | a Come at a problem from different angles; b Connect several ideas or approaches; c Apply what you know in new ways |
+| EMP.3 Entrepreneurship | a Make a product or service that meets a customer's need; b Understand business operations and budget; c Manage a project |
+| EMP.4 Autonomy | a Work on your own and know when to ask for help; b Take criticism and use feedback; c Take risks and try again after failing |
+| EMP.5 Deal with Obstacles | a Keep going through setbacks; b Stay flexible and try again (repeats EMP.4c in the source); c Improvise a quick fix to a design or equipment problem |
+| EMP.6 Intellectual Development | a See that problems are more complicated than they look; b Accept that more than one design can work; c Know the limits of what you know |
+| EMP.7 Critical Thinking and Problem Solving | a Stay open-minded but skeptical about solutions; b Find the root cause and the right fix; c Evaluate alternative designs or ways of operating |
+| EMP.8 Project Knowledge and Skills | a Understand the engineering and science behind the vehicle; b Have the skills to design and run it; c Master what it takes to compete |
+| EMP.9 Teamwork/Collaboration | a Be collegial and respectful; b Work well in a team; c Share knowledge in your team and with other teams |
+| ROV.1 Vehicle Design, Buoyancy, Propulsion | a Apply buoyancy and ballast to the design; b Apply the properties of water, such as pressure with depth; c Apply hydrodynamics and Newton's laws to propulsion |
+| ROV.2 Systems Design | a Apply engineering principles to designing the vehicle's systems |
+| ROV.3 Structure | a Explain the trade-offs behind cost, size and weight |
+| ROV.4 Control/Electrical | a Apply electrical concepts to the control and power system; b Integrate software and electronics into vehicle control |
+| ROV.5 Sensors/Payload/Tools | a Choose and evaluate sensors, tools and cameras for the mission; b Program control and sensing |
+| ROV.6 Safety | a Apply safety to people, equipment and operations |
+| ROV.7 Project Management | a Organize as a company with a role for everyone; b Plan and stay on task through every deliverable; c Create and track a budget; d Manage tasks and time |
+| ROV.8 Technical Presentation | a Write detailed documentation; b Present the documentation to support the design; c Make a marketing display that explains the design; d Explain the design's strengths and weaknesses |
+| ROV.9 Technology and Society | a Relate the theme to real-world issues; b Relate the mission tasks to real technical problems; c Know how organizations weigh ESG factors |
+
+### Decision table: competencies to sub-skills (replaces each competency's `skills` list)
+Same skills as today unless marked **changed**.
+| Competency | Sub-skills |
+|---|---|
+| 1.1 Plan from the RFP | EMP.3a, EMP.7c |
+| 1.2 Compare designs | EMP.7c, EMP.2a, ROV.3a |
+| 1.3 Power budget | ROV.4a, ROV.6a |
+| 1.4 Build it reliably | ROV.2a, ROV.6a, ROV.1b (**changed**: ROV.3 cost/size/weight dropped as a poor fit; water pressure and sealing added) |
+| 1.5 Test for real conditions | ROV.1b, EMP.7a |
+| 1.6 Drive and control | ROV.4b, ROV.5a, ROV.2a |
+| 1.7 Sense and calibrate | ROV.5a, EMP.8a |
+| 1.8 Run its own device | ROV.1a, ROV.4b, ROV.5b |
+| 1.9 Collect and graph data | ROV.5b, EMP.1b (**changed**: EMP.7 replaced by Communication's "use data to show"; graphing is communicating) |
+| 1.10 Underwater tools | ROV.5a, EMP.2c |
+| 1.11 Troubleshoot and record | EMP.7b, EMP.5a, EMP.5c |
+| 2.1 Run the team | ROV.7a, EMP.9b |
+| 2.2 Manage the project | ROV.7b, ROV.7c, ROV.7d, EMP.3c |
+| 2.3 Explain the work | ROV.8a, ROV.8b, ROV.8d, EMP.1a, EMP.1c |
+| 2.4 Reach the public | ROV.8c, EMP.1a, EMP.1b |
+| 2.5 Think like a founder | EMP.3a, EMP.3b, ROV.9c |
+| 2.6 Work safely | ROV.6a |
+| 2.7 Know the rules | EMP.8c |
+| 2.8 Use AI honestly | EMP.6c, EMP.4a |
+| 2.9 Give back | ROV.9a, EMP.9c |
+| 3.1 to 3.5 (ocean understanding) | ROV.9a, ROV.9b, EMP.8a |
+| 3.6 Weigh the factors | ROV.9c, EMP.7c |
+
+### What the finer grain exposes (the reason to do this)
+- **A real gap: ROV.1c (hydrodynamics and Newton's laws applied to propulsion) and most of ROV.1 have no competency.** We have nothing for designing the vehicle to float level and move: buoyancy and trim, ballast, thruster layout and thrust. That is central to every class. **Recommended: add competency 1.12 "Trim and propel the vehicle"** (short phrase "Float, trim and thrust"; sub-skills ROV.1a, ROV.1b, ROV.1c, ROV.3a; class all; standards: NGSS MS-ETS1-4 partial only, since the force-and-motion physics standards are not cataloged and you said physics standards can wait). Evidence: spec 3.2 Mechanical/Physical, propeller and size rules, the float task's buoyancy engine. It joins the manual map's Part 2 rows.
+- **Sub-skills no competency builds, by design**: EMP.2b, EMP.4b, EMP.4c, EMP.5b, EMP.6a, EMP.6b, EMP.8b, EMP.9a. These are dispositions (taking feedback, collegiality, accepting more than one answer) that come from doing the competition, not from a teachable unit. The pages say so rather than inventing competencies for them.
+
+### Display: sub-skills as small bubbles (agreed 2026-11-20)
+- **Skill bubble (EMP.1)**: as now; its box also lists its sub-skills, each with the competencies that build it.
+- **Sub-skill bubble (EMP.1a)**: same rounded rectangle and hue as its skill, smaller and tinted (not filled). Label = code plus a very short phrase (new `short` field per component, drafted by me, yours to edit; unique, at most 26 characters, checked). Box: the sub-skill in a sentence; the competencies that build it (leaf chips); the standards those competencies draw on; the lessons that cover it (below). The eight sub-skills no competency builds say "Built by doing the competition, not taught as a unit" and list no standards.
+- **Darker means covered**, as for skills and competencies: a lesson covers it directly or through a competency.
+
+### Carry-over, page by page
+| Page | Change |
+|---|---|
+| Start | One row per skill: the skill bubble, then its sub-skill bubbles. Competency bubbles below, unchanged except their boxes list sub-skill chips instead of skill chips. |
+| Competencies (outline) | Each row's "Develops" shows sub-skill chips (grouped under their skill). |
+| Skill by skill (roll-up) | Each skill section lists its sub-skills, each with competencies, standards (deduped, one-line summaries) and lessons; skill-level WEF and Ocean lines stay at the top of the section. |
+| Manual to skills | The skills column becomes sub-skill chips, derived through the competencies. |
+| Standards map | Adds a small sub-skill chip line per competency row; standards unchanged. |
+| Skills and Ocean 10 chart | Stays at skill level (the WEF and Ocean links are skill-level judgments). The detail panel's list under each MATE skill becomes its sub-skills instead of its competencies (generated data; porttack.com edit only, uncommitted). |
+| Aims, Ocean Decade, Classes | Unchanged. |
+| Lesson widget (`assets/js/standards-alignment.js`) | New entry `mate-skills` (file `mate/rollup/`, anchors `#sub-EMP.1a` and `#skill-EMP.1`), so a lesson that claims a skill or sub-skill shows it like any standard. |
+
+### Lessons and content: built for it now, filled in later
+How a lesson gets linked, two ways, both already the site's pattern:
+1. **Directly (preferred):** a lesson's own carrier lists `mate-skills` codes (a sub-skill such as `ROV.7c`, or a whole skill) with `strong` or `partial` and a note, exactly as `cs50psets` lists `mate-rov` ENG.8 today. A person decides each one.
+2. **Through a competency:** a lesson that claims a competency counts toward that competency's sub-skills, **never above partial** and labeled "through 1.8 Run its own device", the same never-above-partial rule `tools/mate_candidates.py` uses.
+Pages show both, direct first. This phase adds the carrier framework, the coverage roll-up and the display; it **claims no new lessons**. The only link today stays Profiling Float to 1.8 (so ROV.1a, ROV.4b and ROV.5b will show "through 1.8").
+Later stage (plan mode, its own phase): run an extended `tools/mate_candidates.py` that also suggests candidates per sub-skill (pico, picoprojects, electronics101, rovrobotics cards, cs50psets, Kagan, Socratic seminar, CS Unplugged), review them in a decision table, then write the confirmed links into each lesson's carrier.
+
+### Build (execute, mechanical)
+0. **Rename GEN to EMP** everywhere it is data or code: `_standards/mate-skills.json` (codes, group code, codes_note), `mate-rov.json`, `mate-wef-links.json`, `mate-ocean-links.json`; `tools/build_alignment.py` (`MATE_GROUP_HUE`, the manual-map sort); regenerate porttack.com's `assets/skills-widget-data.js` block with `tools/build_skills_widget_data.py` (44 GEN codes there, all in the generated block; still uncommitted, edit only), then `tools/sync_skills_widget.sh`. Update the plan copy in `_program-notes-public/mate-taxonomy-plan.md` (decision 23). The old codes were never pushed, so no redirects are needed.
+1. `_standards/mate-skills.json`: add `components: [{code: "EMP.1a", text: ...}]` to each skill from the table; update scope note (components now indexed, paraphrased, CC BY-NC-SA 4.0 source cited, near-duplicate noted).
+2. `_standards/mate-rov.json`: replace each competency's `skills` with sub-skill codes from the decision table; add competency ENG.12 (displayed 1.12) with paraphrase, evidence and short phrase. Parent skills are derived (code before the letter), so nothing else that reads `skills` breaks once a helper strips the letter.
+3. `tools/build_alignment.py`: helper `parent(code)`; sub-skill bubble (`mate_sub_bubble`) and chip helpers next to `mate_skill_bubble` and `mate_comp_chip`; coverage for skills and sub-skills computed from direct `mate-skills` claims plus competency claims (reuse `ctx["direct"]` / `Coverage` and `mate_lessons`); every page change in the carry-over table; CSS for the small tinted bubble and the one-row-per-skill layout in `assets/standards-bubbles.css`.
+3b. `tools/publish_standards_data.py` and `assets/js/standards-alignment.js`: publish `mate-skills` as a catalog the lesson widget can read, add the `mate-skills` entry. `tools/build_skills_widget_data.py`: detail `subs` = sub-skills.
+4. `tools/check_mate_data.py`: every competency sub-skill exists; every component code unique; report unbuilt components against the expected list above.
+5. `tools/build_skills_widget_data.py` and the sync check: run to confirm unchanged (details panel lists competencies by name; verify still parses with letter codes stripped).
+6. Republish; carrier for ENG.12 gets its one NGSS line.
+
+### Verify
+`check_mate_data.py`, `check_mate_wef_sync.mjs` pass; widget data unchanged; headless Chrome on scratch build: a skill tooltip shows its sub-skills and competencies; start page shows 27 competency bubbles; manual map still renders; no dashes. Commit learn only, no push.
+
 ## Record of decisions (2026-11-20)
 
 **Decided by you** (in your words where I have them):

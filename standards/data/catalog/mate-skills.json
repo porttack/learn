@@ -1,0 +1,395 @@
+{
+  "meta": {
+    "source": "Evaluate-Compete outcomes (SERC at Carleton College), the 18 skills the MATE ROV Competition marks with icons",
+    "url": "https://serc.carleton.edu/evaluateur/ecompete/using_ecompete/outcomes.html",
+    "year": "page revised November 2024",
+    "extracted": "2026-11-20",
+    "scope_note": "All 18 outcome categories: nine general (employability) and nine specific to the MATE ROV Competition. The MATE manuals show them as icons in their Overview and say the icons mark which competition requirements help develop each skill. This catalog uses Evaluate-Compete's own names; where the manual's icon label differs the label is recorded as icon_label. Each skill also carries its 'components' (48 in all), the outcome components Evaluate-Compete lists under it, read 2026-11-20 from the page revised November 25, 2024; each is paraphrased here with a letter code and a very short phrase. The page numbers none of them and does not say how they are measured. One component under Ability to Deal with Obstacles repeats one under Autonomy in the source; both are kept.",
+    "codes_note": "Codes are this project's: EMP.1 to EMP.9 (employability) and ROV.1 to ROV.9, in the order Evaluate-Compete lists them, with a letter for each of a skill's components (EMP.3b, ROV.7d). They are not MATE's or Evaluate-Compete's.",
+    "license_note": "The skill names are quoted as labels; every description and component is a paraphrase written for this project, not the page's text. The page is offered under CC BY-NC-SA 4.0 and is cited."
+  },
+  "groups": [
+    {
+      "code": "EMP",
+      "name": "Employability skills (Evaluate-Compete general outcomes)",
+      "items": [
+        {
+          "code": "EMP.1",
+          "name": "Communication",
+          "paraphrase": "Explains the engineering process and the design to a broad audience, uses images, diagrams and data well, and writes clearly.",
+          "components": [
+            {
+              "code": "EMP.1a",
+              "text": "Explain the engineering process and the design to any audience",
+              "short": "Explain to anyone"
+            },
+            {
+              "code": "EMP.1b",
+              "text": "Use images, diagrams and data to show a design or process",
+              "short": "Show it with data"
+            },
+            {
+              "code": "EMP.1c",
+              "text": "Write clearly and correctly",
+              "short": "Write clearly"
+            }
+          ]
+        },
+        {
+          "code": "EMP.2",
+          "name": "Creativity",
+          "paraphrase": "Looks at a problem from several angles, connects ideas and applies knowledge in new ways.",
+          "components": [
+            {
+              "code": "EMP.2a",
+              "text": "Come at a problem from different angles",
+              "short": "Try other angles"
+            },
+            {
+              "code": "EMP.2b",
+              "text": "Connect several ideas or approaches",
+              "short": "Connect ideas"
+            },
+            {
+              "code": "EMP.2c",
+              "text": "Apply what you know in new ways",
+              "short": "Use it a new way"
+            }
+          ]
+        },
+        {
+          "code": "EMP.3",
+          "name": "Entrepreneurship",
+          "paraphrase": "Builds a product or service that meets customer needs, understands operations and budgets, and manages a project.",
+          "components": [
+            {
+              "code": "EMP.3a",
+              "text": "Make a product or service that meets a customer's need",
+              "short": "Meet the customer"
+            },
+            {
+              "code": "EMP.3b",
+              "text": "Understand how a business runs and what it costs",
+              "short": "Business and budget"
+            },
+            {
+              "code": "EMP.3c",
+              "text": "Manage a project",
+              "short": "Manage a project"
+            }
+          ]
+        },
+        {
+          "code": "EMP.4",
+          "name": "Autonomy",
+          "paraphrase": "Works independently, knows when to ask for help, takes criticism well, and tries again after failing.",
+          "components": [
+            {
+              "code": "EMP.4a",
+              "text": "Work on your own and know when to ask for help",
+              "short": "Work alone, ask well"
+            },
+            {
+              "code": "EMP.4b",
+              "text": "Take criticism and use the feedback",
+              "short": "Use feedback"
+            },
+            {
+              "code": "EMP.4c",
+              "text": "Take risks and try again after failing",
+              "short": "Risk it, retry"
+            }
+          ]
+        },
+        {
+          "code": "EMP.5",
+          "name": "Ability to Deal with Obstacles",
+          "paraphrase": "Keeps going after setbacks, stays flexible and improvises a fix for a design or equipment problem.",
+          "icon_label": "Obstacles",
+          "components": [
+            {
+              "code": "EMP.5a",
+              "text": "Keep going through setbacks and surprises",
+              "short": "Persevere"
+            },
+            {
+              "code": "EMP.5b",
+              "text": "Stay flexible and willing to try again (the source repeats Autonomy here)",
+              "short": "Stay flexible"
+            },
+            {
+              "code": "EMP.5c",
+              "text": "Improvise a quick fix to a design or equipment problem",
+              "short": "Improvise a fix"
+            }
+          ]
+        },
+        {
+          "code": "EMP.6",
+          "name": "Intellectual Development",
+          "paraphrase": "Sees that problems are more complex than they first look, accepts that more than one design can be acceptable, and knows the limits of what they know.",
+          "components": [
+            {
+              "code": "EMP.6a",
+              "text": "See that problems are more complicated than they look",
+              "short": "It is complicated"
+            },
+            {
+              "code": "EMP.6b",
+              "text": "Accept that more than one design can work",
+              "short": "Many designs work"
+            },
+            {
+              "code": "EMP.6c",
+              "text": "Know the limits of what you know",
+              "short": "Know your limits"
+            }
+          ]
+        },
+        {
+          "code": "EMP.7",
+          "name": "Critical Thinking and Problem Solving",
+          "paraphrase": "Stays open-minded but skeptical about solutions, looks for root causes and compares alternative designs or ways of operating.",
+          "icon_label": "Critical Thinking/Problem Solving",
+          "components": [
+            {
+              "code": "EMP.7a",
+              "text": "Stay open-minded but skeptical about possible solutions",
+              "short": "Open but skeptical"
+            },
+            {
+              "code": "EMP.7b",
+              "text": "Find the root cause of a problem and the right fix",
+              "short": "Find the root cause"
+            },
+            {
+              "code": "EMP.7c",
+              "text": "Evaluate alternative designs or ways of operating",
+              "short": "Weigh alternatives"
+            }
+          ]
+        },
+        {
+          "code": "EMP.8",
+          "name": "Project Knowledge and Skills",
+          "paraphrase": "Understands the engineering and science behind the vehicle and its operation, and has the skills to do the work.",
+          "icon_label": "Content Knowledge",
+          "components": [
+            {
+              "code": "EMP.8a",
+              "text": "Understand the engineering and science behind the vehicle and how it runs",
+              "short": "Know the science"
+            },
+            {
+              "code": "EMP.8b",
+              "text": "Have the skills to design and run the vehicle",
+              "short": "Have the skills"
+            },
+            {
+              "code": "EMP.8c",
+              "text": "Master the skills it takes to compete well",
+              "short": "Master the craft"
+            }
+          ]
+        },
+        {
+          "code": "EMP.9",
+          "name": "Teamwork/Collaboration",
+          "paraphrase": "Treats others with respect, works well in a team and shares knowledge within and across teams.",
+          "components": [
+            {
+              "code": "EMP.9a",
+              "text": "Be collegial and treat others with respect",
+              "short": "Be respectful"
+            },
+            {
+              "code": "EMP.9b",
+              "text": "Work effectively in a team",
+              "short": "Work in a team"
+            },
+            {
+              "code": "EMP.9c",
+              "text": "Share knowledge in your team and with other teams",
+              "short": "Share knowledge"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "ROV",
+      "name": "ROV-specific skills (MATE ROV Evaluate-Compete outcomes)",
+      "items": [
+        {
+          "code": "ROV.1",
+          "name": "Vehicle Design, Buoyancy, Propulsion",
+          "paraphrase": "Applies buoyancy and ballast principles, the properties of water and the physics of propulsion to the vehicle's design.",
+          "components": [
+            {
+              "code": "ROV.1a",
+              "text": "Apply buoyancy and ballast to the vehicle's design",
+              "short": "Buoyancy and ballast"
+            },
+            {
+              "code": "ROV.1b",
+              "text": "Apply the properties of water, such as pressure rising with depth",
+              "short": "Water and pressure"
+            },
+            {
+              "code": "ROV.1c",
+              "text": "Apply hydrodynamics and Newton's laws to propulsion",
+              "short": "Thrust and motion"
+            }
+          ]
+        },
+        {
+          "code": "ROV.2",
+          "name": "Systems Design",
+          "paraphrase": "Understands the engineering principles behind the vehicle's systems and applies them to designing those systems.",
+          "icon_label": "System Design",
+          "components": [
+            {
+              "code": "ROV.2a",
+              "text": "Apply engineering principles to designing the vehicle's systems",
+              "short": "Design the systems"
+            }
+          ]
+        },
+        {
+          "code": "ROV.3",
+          "name": "Structure",
+          "paraphrase": "Can explain the trade-offs and reasoning behind the vehicle's cost, size and weight.",
+          "components": [
+            {
+              "code": "ROV.3a",
+              "text": "Explain the trade-offs behind cost, size and weight",
+              "short": "Cost, size, weight"
+            }
+          ]
+        },
+        {
+          "code": "ROV.4",
+          "name": "Control/Electrical",
+          "paraphrase": "Applies electrical concepts to the control and electrical systems and integrates software and electronics into vehicle control.",
+          "components": [
+            {
+              "code": "ROV.4a",
+              "text": "Apply electrical concepts to the control and power system",
+              "short": "Electrical concepts"
+            },
+            {
+              "code": "ROV.4b",
+              "text": "Integrate software and electronics into vehicle control",
+              "short": "Software meets hardware"
+            }
+          ]
+        },
+        {
+          "code": "ROV.5",
+          "name": "Sensors/Payload/Tools",
+          "paraphrase": "Can identify and evaluate sensors and tooling, cameras included, against the mission's needs, and applies programming to control and sensing.",
+          "components": [
+            {
+              "code": "ROV.5a",
+              "text": "Choose and evaluate sensors, tools and cameras for the mission",
+              "short": "Pick sensors and tools"
+            },
+            {
+              "code": "ROV.5b",
+              "text": "Program the control and sensing",
+              "short": "Program it"
+            }
+          ]
+        },
+        {
+          "code": "ROV.6",
+          "name": "Safety",
+          "paraphrase": "Understands safety principles and applies them to people, equipment and operations.",
+          "components": [
+            {
+              "code": "ROV.6a",
+              "text": "Apply safety principles to people, equipment and operations",
+              "short": "Apply safety"
+            }
+          ]
+        },
+        {
+          "code": "ROV.7",
+          "name": "Project Management",
+          "paraphrase": "Organizes the team as a company with defined roles, plans the deliverables, tracks a budget, and manages tasks and time.",
+          "components": [
+            {
+              "code": "ROV.7a",
+              "text": "Organize as a company with a role for everyone",
+              "short": "Roles for all"
+            },
+            {
+              "code": "ROV.7b",
+              "text": "Plan and stay on task through every deliverable",
+              "short": "Plan the deliverables"
+            },
+            {
+              "code": "ROV.7c",
+              "text": "Create and track a budget",
+              "short": "Track a budget"
+            },
+            {
+              "code": "ROV.7d",
+              "text": "Manage tasks and time",
+              "short": "Manage time"
+            }
+          ]
+        },
+        {
+          "code": "ROV.8",
+          "name": "Technical Presentation",
+          "paraphrase": "Produces detailed documentation, presents it to support the design, builds a display that explains the design, and can explain its strengths and weaknesses.",
+          "components": [
+            {
+              "code": "ROV.8a",
+              "text": "Write detailed documentation",
+              "short": "Document it"
+            },
+            {
+              "code": "ROV.8b",
+              "text": "Present the documentation to support the design",
+              "short": "Present the design"
+            },
+            {
+              "code": "ROV.8c",
+              "text": "Make a marketing display that explains the design",
+              "short": "Make the display"
+            },
+            {
+              "code": "ROV.8d",
+              "text": "Explain the design's strengths and weaknesses",
+              "short": "Strengths, weaknesses"
+            }
+          ]
+        },
+        {
+          "code": "ROV.9",
+          "name": "Technology and Society",
+          "paraphrase": "Connects the theme and mission tasks to real-world problems and is aware of environmental, social and governance factors in business decisions.",
+          "components": [
+            {
+              "code": "ROV.9a",
+              "text": "Relate the competition theme to real-world issues",
+              "short": "Theme to real world"
+            },
+            {
+              "code": "ROV.9b",
+              "text": "Relate the mission tasks to real technical problems",
+              "short": "Tasks to real problems"
+            },
+            {
+              "code": "ROV.9c",
+              "text": "Know how organizations weigh environmental, social and governance factors",
+              "short": "Weigh ESG factors"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

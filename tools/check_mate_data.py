@@ -34,7 +34,9 @@ def catalog_codes(fw):
 problems = []
 mate = load(S / "carriers" / "mate-rov.json")
 comps = load(S / "mate-rov.json")
-skills = {i["code"] for g in load(S / "mate-skills.json")["groups"] for i in g["items"]}
+skills_cat = load(S / "mate-skills.json")
+skills = {i["code"] for g in skills_cat["groups"] for i in g["items"]}
+subskills = {c["code"]: i["code"] for g in skills_cat["groups"] for i in g["items"] for c in i.get("components", [])}
 summ = load(S / "mate-short-summaries.json")["summaries"]
 wef = load(S / "mate-wef-links.json")
 
@@ -52,11 +54,34 @@ for g in comps["groups"]:
     for i in g["items"]:
         comp_codes.add(i["code"])
         for s in i.get("skills", []):
-            if s not in skills:
-                problems.append(f"{i['code']} names unknown skill {s}")
+            if s not in subskills:
+                problems.append(f"{i['code']} names unknown sub-skill {s}")
         for n in i.get("ocean_decade", []):
             if not 1 <= n <= 10:
                 problems.append(f"{i['code']} has Ocean Decade number {n}")
+seen_sub = {}
+for g in skills_cat["groups"]:
+    for i in g["items"]:
+        for k, c in enumerate(i.get("components", [])):
+            if c["code"] != i["code"] + chr(97 + k):
+                problems.append(f"component code {c['code']} is out of order under {i['code']}")
+            sh = c.get("short", "")
+            if not sh or len(sh) > 26:
+                problems.append(f"{c['code']} needs a short phrase of 1 to 26 characters (has {sh!r})")
+            if sh in seen_sub:
+                problems.append(f"sub-skill phrase {sh!r} is used by both {seen_sub[sh]} and {c['code']}")
+            seen_sub[sh] = c["code"]
+built = {s for g in comps["groups"] for i in g["items"] for s in i.get("skills", [])}
+print("sub-skills no competency builds (by design the dispositions):", ", ".join(sorted(set(subskills) - built)))
+shorts_seen = {}
+for g in comps["groups"]:
+    for i in g["items"]:
+        sh = i.get("short", "")
+        if not sh or len(sh) > 26:
+            problems.append(f"{i['code']} needs a short phrase of 1 to 26 characters (has {sh!r})")
+        if sh in shorts_seen:
+            problems.append(f"short phrase {sh!r} is used by both {shorts_seen[sh]} and {i['code']}")
+        shorts_seen[sh] = i["code"]
 for fw, codes in summ.items():
     for code in codes:
         if code not in catalog_codes(fw):
@@ -82,7 +107,7 @@ for g in comps["groups"]:
     for i in g["items"]:
         for n in i.get("ocean_decade", []):
             for sk in i.get("skills", []):
-                backed.add((f"OD.{n}", sk))
+                backed.add((f"OD.{n}", subskills.get(sk, sk)))
 solid = {(l["o"], l["a"]) for l in ocean["ocean_mate"] if l["w"] == "strong"}
 for pair in sorted(solid - backed):
     problems.append(f"ocean_mate solid line {pair} is not backed by MATE's tags through a competency")
@@ -99,10 +124,16 @@ for loc in {l for d in mate["coverage"].values() for e in d.values() for l in e[
     if loc not in comp_codes:
         problems.append(f"carrier locator {loc} is not a competency")
 for f in ("mate-rov.json", "mate-skills.json", "ocean-decade.json", "mate-classes.json", "mate-short-summaries.json",
-          "mate-wef-links.json", "mate-ocean-links.json", "carriers/mate-rov.json", "carriers/mate-missions.json"):
+          "mate-wef-links.json", "mate-ocean-links.json", "mate-manual-map.json", "carriers/mate-rov.json", "carriers/mate-missions.json"):
     t = (S / f).read_text(encoding="utf-8")
     if "—" in t or "–" in t:
         problems.append(f"{f} contains an em or en dash")
+
+mm = json.loads((S / "mate-manual-map.json").read_text(encoding="utf-8"))
+for r in mm["rows"]:
+    for c in r["competencies"]:
+        if c not in comp_codes:
+            problems.append(f"manual map row {r['section']} uses unknown competency {c}")
 
 if problems:
     print("\n".join(problems))

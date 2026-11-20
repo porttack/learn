@@ -54,10 +54,10 @@ out = [BEGIN]
 # ---- MATE's 18 skills as the right-hand anchors, with the competencies that develop each ----
 anch, det = [], []
 for g in skills["groups"]:
-    cls = "human" if g["code"] == "GEN" else "tech"
+    cls = "human" if g["code"] == "EMP" else "tech"
     for i in g["items"]:
         anch.append("    {id:%s, disp:%s, name:%s, cls:%s, unit:\"skill\"}" % (J(i["code"]), J(i["code"]), J(i["name"]), J(cls)))
-        subs = ",\n        ".join("{n:\"\", t:%s}" % J(n) for c, n in users.get(i["code"], []))
+        subs = ",\n        ".join("{n:%s, t:%s}" % (J(c["code"]), J(c["text"])) for c in i.get("components", []))
         det.append("    %s: {desc:%s, subs:[\n        %s\n    ]}" % (J(i["code"]), J(i["paraphrase"]), subs))
 out.append("  // MATE's 18 skills (Evaluate-Compete). The employer-skill links are authored in learn.porttack.com/_standards/mate-wef-links.json.")
 out.append("  var MATE_ANCHORS = [\n" + ",\n".join(anch) + "\n  ];")

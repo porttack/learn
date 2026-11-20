@@ -1,0 +1,213 @@
+{
+ "meta": {
+  "source": "2026 Scout manual table of contents and section text (Parts 1 to 5); Navigator and Ranger manuals use the same parts",
+  "note": "A locator, not a standard. Each row is this project's reading of what a manual section asks students to do, and the skills shown are those of the competencies listed. Which items count, and the points, differ by class and year; check the current manual."
+ },
+ "rows": [
+  {
+   "part": "Part 1: Product Demonstration",
+   "section": "Context & Need",
+   "asks": "Each year's real-world science story behind the missions.",
+   "competencies": [
+    "UND.1",
+    "UND.2",
+    "UND.3",
+    "UND.4",
+    "UND.5"
+   ]
+  },
+  {
+   "part": "Part 1: Product Demonstration",
+   "section": "Request for Proposals (RFP)",
+   "asks": "The client's requirements, point values and limits for the mission.",
+   "competencies": [
+    "ENG.1",
+    "PRO.2",
+    "PRO.7"
+   ]
+  },
+  {
+   "part": "Part 1: Product Demonstration",
+   "section": "Tasks 1 to 3 (recover, install, survey, sample)",
+   "asks": "The underwater jobs the vehicle must do.",
+   "competencies": [
+    "ENG.10",
+    "ENG.6",
+    "ENG.9",
+    "ENG.5"
+   ]
+  },
+  {
+   "part": "Part 1: Product Demonstration",
+   "section": "Task 4: MATE Floats",
+   "asks": "A device that sinks, rises and reports on its own.",
+   "competencies": [
+    "ENG.8",
+    "ENG.7",
+    "ENG.9"
+   ]
+  },
+  {
+   "part": "Part 1: Product Demonstration",
+   "section": "Prop building instructions and photos",
+   "asks": "Building the mission props to practice on.",
+   "competencies": [
+    "ENG.5",
+    "ENG.11"
+   ]
+  },
+  {
+   "part": "Part 2: Vehicle Design and Building Specifications",
+   "section": "1.0 General and 2.0 Safety (2.1 Safety inspection)",
+   "asks": "The inspection every vehicle passes, with a system interconnection diagram.",
+   "competencies": [
+    "PRO.6",
+    "PRO.7",
+    "ENG.3"
+   ]
+  },
+  {
+   "part": "Part 2: Vehicle Design and Building Specifications",
+   "section": "3.1 Operational and 3.2 Mechanical/Physical",
+   "asks": "Size, weight, sealing, propellers and how the vehicle is launched.",
+   "competencies": [
+    "ENG.4",
+    "ENG.5"
+   ]
+  },
+  {
+   "part": "Part 2: Vehicle Design and Building Specifications",
+   "section": "3.3 Electrical, 3.4 Onboard power and 3.5 Power shutdown",
+   "asks": "Fuses, wiring, power limits and the shutdown switch.",
+   "competencies": [
+    "ENG.3",
+    "ENG.4",
+    "PRO.6"
+   ]
+  },
+  {
+   "part": "Part 2: Vehicle Design and Building Specifications",
+   "section": "3.6 Fluid power",
+   "asks": "Hydraulics and pneumatics, with limits and a diagram.",
+   "competencies": [
+    "ENG.4",
+    "ENG.2",
+    "PRO.6"
+   ]
+  },
+  {
+   "part": "Part 2: Vehicle Design and Building Specifications",
+   "section": "3.7 Control systems, 3.8 Cameras and monitors",
+   "asks": "How the pilot drives and sees, and how the tether is built.",
+   "competencies": [
+    "ENG.6",
+    "ENG.7",
+    "ENG.4"
+   ]
+  },
+  {
+   "part": "Part 2: Vehicle Design and Building Specifications",
+   "section": "3.9 Lasers",
+   "asks": "What is allowed and what it takes to use one safely.",
+   "competencies": [
+    "PRO.6",
+    "PRO.7"
+   ]
+  },
+  {
+   "part": "Part 3: Competition Rules",
+   "section": "4.1 General and 4.2 Procedural",
+   "asks": "Roles at the pool, timing and how the run is scored.",
+   "competencies": [
+    "PRO.1",
+    "PRO.7",
+    "ENG.6"
+   ]
+  },
+  {
+   "part": "Part 3: Competition Rules",
+   "section": "4.3 Design and safety considerations",
+   "asks": "Pool safety, wireless interference and building for the real venue.",
+   "competencies": [
+    "PRO.6",
+    "ENG.5"
+   ]
+  },
+  {
+   "part": "Part 4: Engineering and Communication",
+   "section": "5.1 Company spec sheet",
+   "asks": "A one-page snapshot of the company and its vehicle.",
+   "competencies": [
+    "PRO.3",
+    "ENG.2"
+   ]
+  },
+  {
+   "part": "Part 4: Engineering and Communication",
+   "section": "5.2 Technical documentation",
+   "asks": "The engineering notebook or report: design choices, tests, troubleshooting.",
+   "competencies": [
+    "PRO.3",
+    "ENG.2",
+    "ENG.11",
+    "PRO.8"
+   ]
+  },
+  {
+   "part": "Part 4: Engineering and Communication",
+   "section": "5.3 Engineering presentation",
+   "asks": "Explaining the design to judges and answering their questions.",
+   "competencies": [
+    "PRO.3",
+    "PRO.1",
+    "PRO.8"
+   ]
+  },
+  {
+   "part": "Part 4: Engineering and Communication",
+   "section": "5.4 Marketing display",
+   "asks": "Telling a non-technical audience what the company does.",
+   "competencies": [
+    "PRO.4",
+    "PRO.5"
+   ]
+  },
+  {
+   "part": "Part 4: Engineering and Communication",
+   "section": "5.5 Corporate responsibility",
+   "asks": "Education, community engagement and measurable impact.",
+   "competencies": [
+    "PRO.9",
+    "PRO.5"
+   ]
+  },
+  {
+   "part": "Part 4: Engineering and Communication",
+   "section": "Tips for written and oral communication",
+   "asks": "How to tell the engineering story, compare options and record decisions.",
+   "competencies": [
+    "PRO.3",
+    "ENG.2",
+    "ENG.11"
+   ]
+  },
+  {
+   "part": "Part 5: Documentation",
+   "section": "6.1 Required documents (SID, tech documentation, spec sheet)",
+   "asks": "What to submit and bring.",
+   "competencies": [
+    "PRO.2",
+    "PRO.7",
+    "PRO.3"
+   ]
+  },
+  {
+   "part": "Part 5: Documentation",
+   "section": "6.2 Key deadlines",
+   "asks": "Due dates set by each regional.",
+   "competencies": [
+    "PRO.2"
+   ]
+  }
+ ]
+}

@@ -32,7 +32,8 @@
       "UND.3": "Climate and ocean change",
       "UND.4": "Ocean energy and the sustainable ocean economy",
       "UND.5": "People, heritage and risk",
-      "UND.6": "Weigh environmental, social and governance factors in a decision"
+      "UND.6": "Weigh environmental, social and governance factors in a decision",
+      "ENG.12": "Trim and propel the vehicle"
     },
     "caveat": "This carrier runs the other way from most: its content is the MATE competency catalog (mate-rov.json) and the standards are what each competency draws on. A strength is how fully that standard describes what the competency asks of a team, not how well anything we teach covers it. Where one standard is cited by several competencies the entry's own strength is the weakest among them, and by_locator keeps each competency's own strength and reason. Applied rule: one to three core standards per competency, no 'related'. All of it is this project's own reading of the manuals, adopted from drafts you did not review line by line; the Stage 4 audit is where it gets a real review.",
     "alignment_log": [
@@ -158,10 +159,11 @@
       "MS-ETS1-4": {
         "locators": [
           "ENG.5",
-          "ENG.10"
+          "ENG.10",
+          "ENG.12"
         ],
         "strength": "partial",
-        "note": "ENG.5: Testing a design under realistic conditions and using the results to improve it. ENG.10: Building and testing a tool for a mission task and improving it from the results.",
+        "note": "ENG.5: Testing a design under realistic conditions and using the results to improve it. ENG.10: Building and testing a tool for a mission task and improving it from the results. ENG.12: Modeling and testing buoyancy, trim and thrust, then adjusting the vehicle from what the tests show.",
         "by_locator": {
           "ENG.5": {
             "strength": "partial",
@@ -170,6 +172,10 @@
           "ENG.10": {
             "strength": "partial",
             "note": "Building and testing a tool for a mission task and improving it from the results."
+          },
+          "ENG.12": {
+            "strength": "partial",
+            "note": "Modeling and testing buoyancy, trim and thrust, then adjusting the vehicle from what the tests show."
           }
         }
       },
