@@ -1,10 +1,10 @@
 ---
 layout: default
-title: About
+title: About This Site
 permalink: /about/
 ---
 
-# About
+# About This Site
 
 Port Tack Learning is a set of free learning pathways in computer science and
 robotics for middle and high school students. It is written by

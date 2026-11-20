@@ -66,5 +66,7 @@
 - title: Standards
   url: /standards/
   icon: /assets/img/standards/favicon.svg
+- title: About this site
+  url: /about/
 - title: Licensing
   url: /license/
