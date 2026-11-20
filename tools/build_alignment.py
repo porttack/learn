@@ -1273,8 +1273,19 @@ def mate_comp_link(code, name):
 
 def mate_comp_chip(comp):
     """A competency as a short leaf-shaped chip (outline number and very short phrase) that links to its outline row."""
-    return (f'<a class="comp-chip" href="{mate_url("competencies")}#T-{comp["code"]}">'
+    return (f'<a class="comp-chip" style="--group-hue:{MATE_AREA_HUE[comp["code"].split(".")[0]]}deg" href="{mate_url("competencies")}#T-{comp["code"]}">'
             f'<span class="code">{MATE_NUM[comp["code"]]}</span> {esc(comp["short"])}</a>')
+
+
+def mate_comp_groups(ctx, comps, title):
+    """Competency chips under their category (the area's name), in catalog order, for a dropdown."""
+    codes = {c["code"] for c in comps}
+    out = [f'<div class="tt-line"><strong>{title}</strong></div>']
+    for g in ctx["comp_cat"]["groups"]:
+        mine = [i for i in g["items"] if i["code"] in codes]
+        if mine:
+            out.append(f'<div class="tt-cat">{esc(g["name"])}</div><ul class="tt-list">' + "".join(f"<li>{mate_comp_chip(i)}</li>" for i in mine) + "</ul>")
+    return "".join(out)
 
 
 def mate_comp_bubble(ctx, comp):
@@ -1352,15 +1363,9 @@ def mate_skill_bubble(ctx, skill, group):
     subs = skill.get("components", [])
     lessons = [x for c in subs for x in mate_sub_lessons(ctx, c["code"], [ctx["comp_by_code"][k] for k in ctx["sub_users"].get(c["code"], [])])]
     lessons += [ctx["direct_sk"]._carrier_clause(src, e, with_title=True) for src, e in ctx["direct_sk"].get(code)]
-    rows = []
-    for c in subs:
-        built = [ctx["comp_by_code"][k] for k in ctx["sub_users"].get(c["code"], [])]
-        what = "".join(mate_comp_chip(k) + " " for k in built) if built else f'<span class="legend-note">{UNBUILT}</span>'
-        rows.append(f'<li>{mate_sub_chip(ctx, c["code"])}<div class="sub-built">{what}</div></li>')
     tip = [f'<div class="tt-code">{esc(code)} &middot; {esc(skill["name"])}</div>',
            f'<div class="tt-paraphrase">{esc(skill["paraphrase"])}</div>',
-           '<div class="tt-line"><strong>Competencies that build it:</strong></div><ul class="tt-list">' + "".join(f"<li>{mate_comp_chip(c)}</li>" for c in comps) + "</ul>",
-           '<div class="tt-line"><strong>Its parts, and what builds each:</strong></div><ul class="tt-list">' + "".join(rows) + "</ul>"]
+           mate_comp_groups(ctx, comps, "Competencies that build it:")]
     wl = [l for l in ctx["wef"]["links"] if l["a"] == code]
     if wl:
         names = ", ".join(f'{esc(ctx["wef"]["wef_skills"][l["s"]]["name"])}' + (" (partial)" if l["w"] == "partial" else "")
@@ -1382,7 +1387,7 @@ def mate_sub_bubble(ctx, sub, group):
     tip = [f'<div class="tt-code">{esc(code)} &middot; part of {esc(ctx["skill_by_code"][mate_parent(code)]["name"])}</div>',
            f'<div class="tt-paraphrase">{esc(sub["text"])}.</div>']
     if comps:
-        tip.append('<div class="tt-line"><strong>Built by:</strong></div><ul class="tt-list">' + "".join(f"<li>{mate_comp_chip(c)}</li>" for c in comps) + "</ul>")
+        tip.append(mate_comp_groups(ctx, comps, "Competencies that build it:"))
         tip.append(mate_standards_tip(ctx, comps))
     else:
         tip.append(f'<div class="tt-line">{UNBUILT}</div>')
@@ -1679,7 +1684,7 @@ def mate_part_bubble(ctx, part, rows):
     tip = [f'<div class="tt-code">{part["code"]} &middot; {esc(part["name"])}</div>',
            f'<div class="tt-paraphrase">{esc(part["blurb"])}</div>',
            '<div class="tt-line"><strong>Sections:</strong></div><ul class="tt-list">' + "".join(f"<li>{esc(r['section'])}</li>" for r in rows) + "</ul>",
-           '<div class="tt-line"><strong>Competencies it builds:</strong></div><ul class="tt-list">' + "".join(f"<li>{mate_comp_chip(c)}</li>" for c in comps) + "</ul>",
+           mate_comp_groups(ctx, comps, "Competencies it builds:"),
            '<div class="tt-line"><strong>Skill parts it builds:</strong> ' + " ".join(
                f'<a class="chip" href="{mate_url("rollup")}#sub-{k}" title="{esc(ctx["sub_by_code"][k]["short"])}">{esc(k)}</a>' for k in subs) + "</div>",
            f'<div class="tt-line"><a href="{mate_url("manual-map")}#{part["code"]}">Manual to skills</a></div>']
