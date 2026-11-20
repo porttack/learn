@@ -352,7 +352,7 @@
     mcfg.anchors.forEach(function (a) {
       html += '<div class="wsw-mitem" data-anchor="' + a.id + '" role="button" tabindex="0" aria-expanded="false">'
         + '<i class="dot ' + a.cls + '"></i>'
-        + '<span class="wsw-mtext"><span class="wsw-mnum">' + a.disp + '</span>' + a.name + '</span>'
+        + '<span class="wsw-mtext"><span class="wsw-mnum">' + a.disp + '</span>' + String(a.name).replace(/\//g, "/<wbr>") + '</span>'
         + '<span class="wsw-minfo" aria-hidden="true">+</span></div>';
     });
     html += '</div></div>'
