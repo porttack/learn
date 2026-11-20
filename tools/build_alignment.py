@@ -1034,7 +1034,7 @@ MATE_GROUP_HUE = {"EMP": 28, "ROV": 150}
 
 # (slug, nav label, page title)
 MATE_PAGES = [
-    ("", "Overview: skills needed to skills taught", "From Skills Needed to Skills Taught: the MATE ROV Map"),
+    ("", "Overview", "Overview: MATE ROV Skills, Standards, and Lessons Catalog"),
     ("skills", "Skills and competencies", "MATE ROV Competition: What It Builds"),
     ("aims", "What MATE says it builds", "What MATE Says It Builds"),
     ("competencies", "Competencies, as an outline", "What MATE Builds: the Competencies"),
@@ -1048,6 +1048,11 @@ MATE_PAGES = [
 ]
 
 MATE_PAGE_CSS = """<style>
+.provenance:empty { display: none; }
+.mate-top { display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap; margin: .5rem 0 1.5rem; }
+.mate-top .xref-intro { flex: 2 1 22rem; }
+.mate-top .mate-hier { flex: 1 1 15rem; max-width: 19rem; margin: 0; }
+.mate-hier figcaption { font-size: .78rem; color: var(--muted); margin-top: .3rem; }
 .xref-intro { max-width: 46rem; }
 .xref-summary { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: .9rem; }
 .xref-summary th, .xref-summary td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--border); vertical-align: top; }
@@ -1652,7 +1657,7 @@ def render_mate_overview(ctx):
             'to another on its own, so every line is this project\'s reading. It is the same chart as in the post <em>Soft Skills Are Already in the '
             'Standards</em> on porttack.com, where it is matched against California\'s CTE standards.</p></div>',
             f'<p class="legend-note">To read this by MATE skill instead, see <a href="{mate_url("rollup")}">skill by skill</a>.</p>']
-    return mate_wrap(ctx, "", "\n".join(body), hide_filter=True, page_strip=False)
+    return mate_wrap(ctx, "", "\n".join(body), hide_filter=True, page_strip=False, prov="")
 
 
 def render_mate_ocean(ctx):
@@ -1762,43 +1767,41 @@ def mate_linked_lessons(ctx):
 
 
 def mate_hierarchy_svg(ctx):
-    """The ladder from skills needed down to lessons, with arrows both ways, each layer linking to its page."""
+    """The ladder from skills needed down to lessons, with arrows both ways, each layer linking to its page. Drawn narrow, to sit beside the intro."""
     stds = {(fw, std) for rows in ctx["draws"].values() for fw, items in rows.items() for std, _, _ in items}
     fws = len({fw for fw, _ in stds})
     lessons = len(mate_linked_lessons(ctx))
     layers = [
-        (190, "Skills the world asks for", f'{len(ctx["wef"]["wef_skills"])} employer skills (World Economic Forum, 2025 and 2030) and the UN Ocean Decade\'s 10 challenges', "#chart", "the chart below"),
-        (28, "Skills MATE builds", f'{len(ctx["skill_by_code"])} skills, {len(ctx["sub_by_code"])} parts, from MATE and Evaluate-Compete', mate_url("skills"), "skills and competencies"),
-        (225, "Competencies", f'{len(ctx["comps"])} things a team practices, in three areas', mate_url("competencies"), "the competency outline"),
-        (150, "Education standards", f'{len(stds)} standards from {fws} frameworks (AP CSP, CSTA, NGSS, CTE and others)', mate_url("standards-skill-map"), "the standards skill map"),
-        (345, "Lessons and curriculum", (f"{lessons} lesson linked so far" if lessons == 1 else f"{lessons} lessons linked so far") + "; middle school content is being built", mate_url("curriculum"), "lessons and curriculum"),
+        (190, "Skills the world asks for", f'{len(ctx["wef"]["wef_skills"])} employer skills, 10 ocean challenges', "#chart", "the chart below"),
+        (28, "Skills MATE builds", f'{len(ctx["skill_by_code"])} skills, {len(ctx["sub_by_code"])} parts', mate_url("skills"), "skills and competencies"),
+        (225, "Competencies", f'{len(ctx["comps"])} things a team practices', mate_url("competencies"), "the competency outline"),
+        (150, "Education standards", f'{len(stds)} standards, {fws} frameworks', mate_url("standards-skill-map"), "the standards skill map"),
+        (345, "Lessons and curriculum", f"{lessons} linked so far, more being built", mate_url("curriculum"), "lessons and curriculum"),
     ]
-    caps = ["MATE builds some of these", "built through", "drawn from", "taught by"]
-    H, G, W = 62, 26, 720
+    H, G, W = 50, 20, 300
     total = len(layers) * H + (len(layers) - 1) * G
     out = [f'<figure class="mate-hier"><svg viewBox="0 0 {W} {total}" role="img" aria-labelledby="hier-t" xmlns="http://www.w3.org/2000/svg">'
            '<title id="hier-t">The ladder from skills needed, to the skills MATE builds, to competencies, to education standards, to lessons and curriculum, with each layer mapped to the next in both directions.</title>']
     for n, (hue, title, detail, href, what) in enumerate(layers):
         y = n * (H + G)
-        out.append(f'<a href="{href}"><title>Go to {esc(what)}</title><rect x="2" y="{y}" width="{W - 4}" height="{H}" rx="10" '
+        out.append(f'<a href="{href}"><title>Go to {esc(what)}</title><rect x="1.5" y="{y}" width="{W - 3}" height="{H}" rx="9" '
                    f'fill="hsl({hue} 55% 55% / .14)" stroke="hsl({hue} 55% 50% / .7)" stroke-width="1.5"/>'
-                   f'<text x="20" y="{y + 26}" font-size="17" font-weight="700" fill="currentColor">{esc(title)}</text>'
-                   f'<text x="20" y="{y + 47}" font-size="13.5" fill="currentColor" opacity=".8">{esc(detail)}</text></a>')
+                   f'<text x="14" y="{y + 21}" font-size="14.5" font-weight="700" fill="currentColor">{esc(title)}</text>'
+                   f'<text x="14" y="{y + 39}" font-size="11.5" fill="currentColor" opacity=".8">{esc(detail)}</text></a>')
         if n < len(layers) - 1:
-            y1, y2 = y + H + 3, y + H + G - 3
-            cx = 360
-            out.append(f'<path d="M{cx} {y1 + 6} V{y2 - 6} M{cx - 5} {y1 + 6} L{cx} {y1} L{cx + 5} {y1 + 6} M{cx - 5} {y2 - 6} L{cx} {y2} L{cx + 5} {y2 - 6}" '
-                       'fill="none" stroke="currentColor" stroke-width="1.6" opacity=".55"/>'
-                       f'<text x="{cx + 14}" y="{(y1 + y2) / 2 + 4}" font-size="12" fill="currentColor" opacity=".7">{caps[n]}, and mapped back up</text>')
-    out.append("</svg></figure>")
+            y1, y2, cx = y + H + 2, y + H + G - 2, W / 2
+            out.append(f'<path d="M{cx} {y1 + 5} V{y2 - 5} M{cx - 4.5} {y1 + 5} L{cx} {y1} L{cx + 4.5} {y1 + 5} M{cx - 4.5} {y2 - 5} L{cx} {y2} L{cx + 4.5} {y2 - 5}" '
+                       'fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>')
+    out.append('</svg><figcaption>Each layer maps to the next, in both directions.</figcaption></figure>')
     return "".join(out)
 
 
 def mate_overview_intro(ctx):
-    return ('<div class="xref-intro"><p>Employers and the UN Ocean Decade say which skills people need. The MATE ROV competition builds many of them. '
+    return ('<div class="mate-top"><div class="xref-intro"><p>Employers and the UN Ocean Decade say which skills people need. The MATE ROV competition builds many of them. '
             'This site breaks those skills into the competencies a team practices, ties each one to the education standards it draws on, and then to '
-            'the lessons and curriculum that teach it. Every layer maps both ways, so you can start from a skill and find what teaches it, '
-            'or start from a lesson and see which skills and standards it builds. Click a layer to open it.</p></div>' + mate_hierarchy_svg(ctx))
+            'the lessons and curriculum that teach it.</p><p>Every layer maps both ways, so you can start from a skill and find what teaches it, '
+            'or start from a lesson and see which skills and standards it builds. Click a layer to open it, or use the chart below to see how the skills '
+            'employers name line up with the skills MATE builds.</p></div>' + mate_hierarchy_svg(ctx) + '</div>')
 
 
 def render_mate_curriculum(ctx):
