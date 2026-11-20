@@ -1034,7 +1034,7 @@ MATE_GROUP_HUE = {"EMP": 28, "ROV": 150}
 
 # (slug, nav label, page title)
 MATE_PAGES = [
-    ("", "Overview", "Overview: MATE ROV Skills, Standards, and Lessons Catalog"),
+    ("", "Overview", "MATE ROV Catalog"),
     ("skills", "Skills and competencies", "MATE ROV Competition: What It Builds"),
     ("aims", "What MATE says it builds", "What MATE Says It Builds"),
     ("competencies", "Competencies, as an outline", "What MATE Builds: the Competencies"),
@@ -1050,6 +1050,15 @@ MATE_PAGES = [
 MATE_PAGE_CSS = """<style>
 .provenance:empty { display: none; }
 .mate-top { margin: .5rem 0 1.5rem; }
+@media (max-width: 760px) {
+  /* On a phone the page list goes to the top as a wrapped row, and the rest of the sidebar is dropped. */
+  .layout { display: block; }
+  nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); padding: .6rem 1rem; }
+  nav.toc .mate-nav { display: flex; flex-wrap: wrap; gap: .15rem .9rem; margin: 0; }
+  nav.toc .mate-nav li { margin: 0; }
+  nav.toc > p ~ p, nav.toc > ul:not(.mate-nav) { display: none; }
+  main { padding: 1rem 1rem 4rem; }
+}
 .mate-top .mate-hier { margin: 1rem 0 0; }
 .mate-ladder { display: flex; align-items: stretch; list-style: none; margin: 1rem 0 0; padding: 0; }
 .mate-ladder li { display: flex; align-items: center; flex: 1 1 0; min-width: 0; margin: 0; }
@@ -1238,7 +1247,7 @@ def mate_short_prov():
             f'<a href="{mate_url("aims")}">About this catalog</a>.')
 
 
-def mate_wrap(ctx, slug, body, toc_extra="", prov=None, hide_filter=False, page_strip=True):
+def mate_wrap(ctx, slug, body, toc_extra="", prov=None, hide_filter=False, page_strip=False):
     title = next(t for s, _, t in MATE_PAGES if s == slug)
     side, top = mate_nav(slug)
     css = MATE_PAGE_CSS + '<link rel="stylesheet" href="/assets/standards-bubbles.css">'
