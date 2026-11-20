@@ -188,6 +188,10 @@
 
   // Line colors mirror the category dots but nudge "tech" darker so thin lines read.
   var LINE_COLORS = { human: "#0E7C86", tech: "#9AA7B2", ai: "#E0A100", ocean: "#2A6FB0" };
+  // Each item on the left gets its own line color (and the same color as a bar on its chip's right edge), so a line can be followed
+  // from one side to the other. The dots still show the kind of skill; the colors are only for telling lines apart.
+  var LINE_PALETTE = ["#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#4c9a1a", "#c79400", "#a6611a", "#1f78b4", "#b2182b", "#555555", "#12a4b6", "#8c564b", "#7b3fa0"];
+  function lineColor(i) { return LINE_PALETTE[i % LINE_PALETTE.length]; }
 
   function Widget(root, cfg) {
     this.root = root;
@@ -329,7 +333,8 @@
       + '<svg class="wsw-match-svg" preserveAspectRatio="none"></svg>'
       + '<div class="wsw-mcol left"><div class="wsw-mcol-h">' + (mcfg.leftTitle || "WEF skills (2025 &amp; 2030)") + '</div>';
     this.leftOf(mcfg).forEach(function (d, i) {
-      html += '<div class="wsw-mitem' + (linked[i] ? '' : ' is-gap') + '" data-skill="' + i + '" role="button" tabindex="0">'
+      html += '<div class="wsw-mitem' + (linked[i] ? '' : ' is-gap') + '" data-skill="' + i + '" role="button" tabindex="0"'
+        + (linked[i] ? ' style="box-shadow:inset -4px 0 0 ' + lineColor(i) + '"' : '') + '>'
         + d.name + ' <i class="dot ' + d.cls + '"></i></div>';
     });
     html += '</div><div class="wsw-mcol right"><div class="wsw-mcol-h">' + mcfg.rightTitle + '</div>';
@@ -357,18 +362,42 @@
     var br = box.getBoundingClientRect();
     if (br.width === 0) return;
     svg.setAttribute("viewBox", "0 0 " + br.width + " " + br.height);
-    var SKILLS = this.leftOf(mcfg), paths = "";
+    var recs = [], paths = "";
     mcfg.links.forEach(function (l) {
       var s = box.querySelector('.wsw-mitem[data-skill="' + l.s + '"]');
       var t = box.querySelector('.wsw-mitem[data-anchor="' + l.a + '"]');
       if (!s || !t) return;
       var sr = s.getBoundingClientRect(), tr = t.getBoundingClientRect();
-      var x1 = sr.right - br.left + 2, y1 = sr.top + sr.height / 2 - br.top;
-      var x2 = tr.left - br.left - 2, y2 = tr.top + tr.height / 2 - br.top;
+      recs.push({ l: l, sr: sr, tr: tr, y1: sr.top + sr.height / 2 - br.top, y2: tr.top + tr.height / 2 - br.top, d1: 0, d2: 0 });
+    });
+    // Where several lines meet one chip, fan them out along its edge, ordered by where they go, so they leave side by side
+    // instead of in one bundle and cross less.
+    function spread(key, other, off) {
+      var groups = {};
+      recs.forEach(function (r) { var k = key(r); (groups[k] = groups[k] || []).push(r); });
+      Object.keys(groups).forEach(function (k) {
+        var g = groups[k].sort(function (a, b) { return other(a) - other(b); });
+        var h = g[0].sr && key === keyS ? g[0].sr.height : g[0].tr.height;
+        var step = Math.min(4, Math.max(0, (h - 8) / Math.max(1, g.length - 1)));
+        g.forEach(function (r, n) { r[off] = (n - (g.length - 1) / 2) * step; });
+      });
+    }
+    function keyS(r) { return r.l.s; }
+    function keyA(r) { return r.l.a; }
+    spread(keyS, function (r) { return r.y2; }, "d1");
+    spread(keyA, function (r) { return r.y1; }, "d2");
+    // Partial (dashed) lines first, so the solid ones sit on top. Each line has a white casing underneath so a crossing is readable.
+    recs.sort(function (a, b) { return (a.l.w === "partial" ? 0 : 1) - (b.l.w === "partial" ? 0 : 1); });
+    recs.forEach(function (r) {
+      var l = r.l;
+      var x1 = r.sr.right - br.left + 2, y1 = r.y1 + r.d1;
+      var x2 = r.tr.left - br.left - 2, y2 = r.y2 + r.d2;
       var mx = (x1 + x2) / 2;
-      paths += '<path data-a="' + l.a + '" data-s="' + l.s + '" d="M' + x1 + ' ' + y1 + ' C ' + mx + ' ' + y1 + ', ' + mx + ' ' + y2 + ', ' + x2 + ' ' + y2 + '"'
-        + ' fill="none" stroke="' + LINE_COLORS[SKILLS[l.s].cls] + '" stroke-width="2"'
-        + (l.w === "partial" ? ' stroke-dasharray="5 4" opacity=".7"' : ' opacity=".9"') + '/>';
+      var d = 'M' + x1 + ' ' + y1 + ' C ' + mx + ' ' + y1 + ', ' + mx + ' ' + y2 + ', ' + x2 + ' ' + y2;
+      var attrs = ' data-a="' + l.a + '" data-s="' + l.s + '" d="' + d + '" fill="none"';
+      paths += '<path class="wsw-halo"' + attrs + ' stroke="#fff" stroke-width="5" opacity=".85"/>';
+      paths += '<path class="wsw-line"' + attrs + ' stroke="' + lineColor(l.s) + '" stroke-width="2.25"'
+        + (l.w === "partial" ? ' stroke-dasharray="6 4" opacity=".9"' : ' opacity="1"') + '/>';
     });
     svg.innerHTML = paths;
     if (this.shown !== null) this.highlightLines(this.shown);
@@ -381,9 +410,10 @@
     var attr = sel && sel.charAt(0) === "a" ? "data-a" : "data-s";
     var val = sel ? sel.slice(2) : null;
     Array.prototype.forEach.call(box.querySelectorAll(".wsw-match-svg path"), function (p) {
+      var halo = p.getAttribute("class") === "wsw-halo";
       if (sel === null) { p.style.opacity = ""; p.style.strokeWidth = ""; }
-      else if (p.getAttribute(attr) === val) { p.style.opacity = "1"; p.style.strokeWidth = "3"; }
-      else { p.style.opacity = ".12"; p.style.strokeWidth = ""; }
+      else if (p.getAttribute(attr) === val) { p.style.opacity = halo ? ".9" : "1"; p.style.strokeWidth = halo ? "6.5" : "3.5"; }
+      else { p.style.opacity = halo ? "0" : ".1"; p.style.strokeWidth = ""; }
     });
   };
 
