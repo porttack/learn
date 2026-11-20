@@ -1245,7 +1245,7 @@ def mate_sub_lessons(ctx, code, comps):
     for c in comps:
         got = mate_lessons(ctx, c["code"], False)
         if got:
-            parts.append(f'{got} <span class="legend-note">(through {MATE_NUM[c["code"]]} {esc(c["short"])})</span>')
+            parts.append(got)
     return parts
 
 
