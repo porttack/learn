@@ -1049,9 +1049,21 @@ MATE_PAGES = [
 
 MATE_PAGE_CSS = """<style>
 .provenance:empty { display: none; }
-.mate-top { display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap; margin: .5rem 0 1.5rem; }
-.mate-top .xref-intro { flex: 2 1 22rem; }
-.mate-top .mate-hier { flex: 1 1 15rem; max-width: 19rem; margin: 0; }
+.mate-top { margin: .5rem 0 1.5rem; }
+.mate-top .mate-hier { margin: 1rem 0 0; }
+.mate-ladder { display: flex; align-items: stretch; list-style: none; margin: 1rem 0 0; padding: 0; }
+.mate-ladder li { display: flex; align-items: center; flex: 1 1 0; min-width: 0; margin: 0; }
+.mate-ladder li + li::before { content: "\\2194"; padding: 0 .4rem; font-size: 1.15rem; opacity: .55; }
+.mate-ladder a { flex: 1; align-self: stretch; display: block; padding: .7rem .8rem; border-radius: 10px; color: inherit; text-decoration: none;
+  border: 1.5px solid hsl(var(--h) 55% 50% / .7); background: hsl(var(--h) 55% 55% / .14); }
+.mate-ladder a:hover, .mate-ladder a:focus-visible { border-width: 3px; padding: calc(.7rem - 1.5px) calc(.8rem - 1.5px); outline: none; }
+.mate-ladder b { display: block; font-size: .95rem; line-height: 1.2; }
+.mate-ladder span { display: block; margin-top: .25rem; font-size: .78rem; line-height: 1.3; opacity: .8; }
+@media (max-width: 760px) {
+  .mate-ladder { flex-direction: column; }
+  .mate-ladder li { flex-direction: column; align-items: stretch; }
+  .mate-ladder li + li::before { content: "\\2195"; text-align: center; padding: .15rem 0; }
+}
 .mate-term { position: relative; text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
 .mate-term:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 .mate-term-pop { display: none; position: absolute; left: 0; top: 1.6em; z-index: 20; width: min(22rem, 80vw); padding: .7rem .85rem; font-size: .85rem; line-height: 1.4;
@@ -1773,33 +1785,19 @@ def mate_linked_lessons(ctx):
 
 
 def mate_hierarchy_svg(ctx):
-    """The ladder from skills needed down to lessons, with arrows both ways, each layer linking to its page. Drawn narrow, to sit beside the intro."""
+    """The ladder from skills needed down to lessons, each layer a link, with arrows both ways: a row on a wide screen, a column on a narrow one."""
     stds = {(fw, std) for rows in ctx["draws"].values() for fw, items in rows.items() for std, _, _ in items}
     fws = len({fw for fw, _ in stds})
     lessons = len(mate_linked_lessons(ctx))
     layers = [
-        (190, "Skills the world asks for", f'{len(ctx["wef"]["wef_skills"])} employer skills, 10 ocean challenges', "#chart", "the chart below"),
-        (28, "Skills MATE builds", f'{len(ctx["skill_by_code"])} skills, {len(ctx["sub_by_code"])} parts', mate_url("skills"), "skills and competencies"),
-        (225, "Competencies", f'{len(ctx["comps"])} things a team practices', mate_url("competencies"), "the competency outline"),
-        (150, "Education standards", f'{len(stds)} standards, {fws} frameworks', mate_url("standards-skill-map"), "the standards skill map"),
-        (345, "Lessons and curriculum", f"{lessons} linked so far, more being built", mate_url("curriculum"), "lessons and curriculum"),
+        (190, "Skills the world asks for", f'{len(ctx["wef"]["wef_skills"])} employer skills, 10 ocean challenges', "#chart"),
+        (28, "Skills MATE builds", f'{len(ctx["skill_by_code"])} skills, {len(ctx["sub_by_code"])} parts', mate_url("skills")),
+        (225, "Competencies", f'{len(ctx["comps"])} things a team practices', mate_url("competencies")),
+        (150, "Education standards", f'{len(stds)} standards, {fws} frameworks', mate_url("standards-skill-map")),
+        (345, "Lessons and curriculum", f"{lessons} linked so far, more being built", mate_url("curriculum")),
     ]
-    H, G, W = 50, 20, 300
-    total = len(layers) * H + (len(layers) - 1) * G
-    out = [f'<figure class="mate-hier"><svg viewBox="0 0 {W} {total}" role="img" aria-labelledby="hier-t" xmlns="http://www.w3.org/2000/svg">'
-           '<title id="hier-t">The ladder from skills needed, to the skills MATE builds, to competencies, to education standards, to lessons and curriculum, with each layer mapped to the next in both directions.</title>']
-    for n, (hue, title, detail, href, what) in enumerate(layers):
-        y = n * (H + G)
-        out.append(f'<a href="{href}"><title>Go to {esc(what)}</title><rect x="1.5" y="{y}" width="{W - 3}" height="{H}" rx="9" '
-                   f'fill="hsl({hue} 55% 55% / .14)" stroke="hsl({hue} 55% 50% / .7)" stroke-width="1.5"/>'
-                   f'<text x="14" y="{y + 21}" font-size="14.5" font-weight="700" fill="currentColor">{esc(title)}</text>'
-                   f'<text x="14" y="{y + 39}" font-size="11.5" fill="currentColor" opacity=".8">{esc(detail)}</text></a>')
-        if n < len(layers) - 1:
-            y1, y2, cx = y + H + 2, y + H + G - 2, W / 2
-            out.append(f'<path d="M{cx} {y1 + 5} V{y2 - 5} M{cx - 4.5} {y1 + 5} L{cx} {y1} L{cx + 4.5} {y1 + 5} M{cx - 4.5} {y2 - 5} L{cx} {y2} L{cx + 4.5} {y2 - 5}" '
-                       'fill="none" stroke="currentColor" stroke-width="1.5" opacity=".55"/>')
-    out.append('</svg><figcaption>Each layer maps to the next, in both directions.</figcaption></figure>')
-    return "".join(out)
+    items = "".join(f'<li style="--h:{h}"><a href="{href}"><b>{esc(t)}</b><span>{esc(d)}</span></a></li>' for h, t, d, href in layers)
+    return f'<figure class="mate-hier"><ol class="mate-ladder">{items}</ol><figcaption>Each layer maps to the next, in both directions. Click a layer to open it.</figcaption></figure>'
 
 
 def mate_overview_intro(ctx):
