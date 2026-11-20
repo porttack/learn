@@ -59,3 +59,8 @@
 .tt-xref-detail .tt-xref-code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--accent); }
 .tt-xref-detail .tt-xref-text { margin: .25em 0; color: var(--fg); }
 .tt-xref-detail .tt-xref-note { color: var(--muted); font-style: italic; }
+
+/* Skill bubbles on the MATE start page: the skill's code and name, so the label reads without a legend. */
+.cov-badge.skill .cov-badge-btn { font-family: inherit; font-size: .88rem; white-space: normal; text-align: left; max-width: 17rem; line-height: 1.25; }
+.cov-badge.skill .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .75em; color: var(--muted); margin-right: .35em; }
+.cov-tooltip { max-height: 70vh; overflow-y: auto; }

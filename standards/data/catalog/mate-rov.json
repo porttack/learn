@@ -5,7 +5,7 @@
     "year": "not tied to a year; read from the 2024 to 2026 manuals",
     "extracted": "2026-11-20",
     "scope_note": "This is a cross-reference catalog, not a standard. MATE publishes no standards of its own, so each entry is this project's inference of what the competition requires, scores and explains, written so a teacher can see what has to be taught and where. It was built from the 2024 Ranger, 2025 Scout, Navigator and Ranger and 2026 Scout manuals and the 2027 Floats description. Scope: Scout, Navigator and Ranger. Point totals, electrical limits, depths and timings change by year and class, so none is recorded as a competency; class differences are noted under each entry and compared in mate-classes.json. MATE's own list of 18 skills is mate-skills.json and each competency names the ones it develops.",
-    "codes_note": "Codes are this project's: ENG (engineering practice), PRO (professional and team skills) and UND (ocean and environmental understanding), with a number. They are not MATE's.",
+    "codes_note": "Each competency has an internal key (ENG, PRO or UND with a number) that keeps the data, links and lesson alignments stable. The keys are this project's, are not MATE's, and are not shown on the public pages, where the competencies are an outline of plain names. MATE's 18 skills carry the visible codes (GEN.1 to GEN.9 and ROV.1 to ROV.9; see mate-skills.json).",
     "license_note": "The competition manuals are (c) MATE ROV Competition under a Creative Commons Attribution NonCommercial NoDerivatives license, so nothing here copies their text; every entry is a paraphrase written for this project, with manual section names given as references only.",
     "stated_aims": [
       {

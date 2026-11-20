@@ -521,7 +521,7 @@
           14
         ],
         "strength": "partial",
-        "note": "Profiling Float: PID has the student build the controller that holds a simulated float at its target depth for a required time in many simulated pools, and Profiling Float has the student judge whether a float held. Partial because the float is simulated: no buoyancy hardware, no real sensor, and the student does not build the device. It does not claim ENG.9: the student does not collect, transmit or graph data."
+        "note": "Profiling Float: PID has the student build the controller that holds a simulated float at its target depth for a required time in many simulated pools, and Profiling Float has the student judge whether a float held. Partial because the float is simulated: no buoyancy hardware, no real sensor, and the student does not build the device. It does not claim the data competency (collect, transmit, analyze and graph data): the student does not collect, transmit or graph data."
       }
     }
   }

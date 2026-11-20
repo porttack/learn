@@ -48,7 +48,7 @@ var STANDARDS_FRAMEWORKS = {
   'ccss-ela': { file: 'ccss-ela-standards-reference.html', prefix: 'T', name: 'Common Core ELA (Speaking, Listening & Writing)', catalog: 'ccss-ela', category: 'ela' },
   ngss: { file: 'ngss-standards-reference.html', prefix: 'T', name: 'NGSS 2013 (Next Generation Science Standards)', catalog: 'ngss', category: 'sci' },
   'ca-epc': { file: 'ca-epc-standards-reference.html', prefix: 'T', name: 'California Environmental Principles and Concepts (EP&Cs)', catalog: 'ca-epc', category: 'sci' },
-  'mate-rov': { file: 'mate/competencies/', prefix: 'T', name: 'MATE ROV Competition (cross-reference, not a standard)', catalog: 'mate-rov', category: 'mate' }
+  'mate-rov': { file: 'mate/competencies/', prefix: 'T', name: 'MATE ROV Competition (cross-reference, not a standard)', catalog: 'mate-rov', category: 'mate', hideCode: true }
 };
 
 // Fixed display order, local to this per-lesson widget (the main /standards/
@@ -262,9 +262,10 @@ document.querySelectorAll('.standards-alignment[data-carrier-url]').forEach(func
           var label = catalogLabel(g.fw, catalogData, item.code);
           var name = catalogName(catalogData, item.code);
           var competency = g.fw === 'casel' ? catalogGroupName(catalogData, item.code) : null;
-          frameworkHtml += '<li><a href="' + url + '">' + escapeHtml(item.code) + '</a>' +
+          // hideCode: the entry has no public code (MATE competencies are an outline), so link its name.
+          frameworkHtml += '<li><a href="' + url + '">' + escapeHtml(meta.hideCode ? (name || item.code) : item.code) + '</a>' +
             (competency ? ' ' + escapeHtml(competency) + ':' : '') +
-            (name ? ' <strong>' + escapeHtml(name) + '</strong>' : '') +
+            (name && !meta.hideCode ? ' <strong>' + escapeHtml(name) + '</strong>' : '') +
             (label ? ' — <em>' + escapeHtml(label) + '</em>' : '') +
             (item.note ? '<p class="standards-note">' + escapeHtml(item.note) + '</p>' : '') +
             '</li>';

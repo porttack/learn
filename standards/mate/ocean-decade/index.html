@@ -159,7 +159,7 @@ footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1p
 </div>
 <div class="layout">
 <nav class="toc" aria-label="Table of contents">
-<p class="legend-note"><strong>MATE ROV</strong></p><ul class="mate-nav"><li><a href="/standards/mate/">Start: skills and competencies</a></li><li><a href="/standards/mate/aims/">What MATE says it builds</a></li><li><a href="/standards/mate/competencies/">Competencies in full</a></li><li><a href="/standards/mate/standards-map/">Standards map</a></li><li><a href="/standards/mate/rollup/">Skill by skill</a></li><li><a href="/standards/mate/skills-match/">Skills and Ocean 10 chart</a></li><li><a class="here" href="/standards/mate/ocean-decade/">The Ocean Decade</a></li><li><a href="/standards/mate/classes/">The classes</a></li></ul>
+<p class="legend-note"><strong>MATE ROV</strong></p><ul class="mate-nav"><li><a href="/standards/mate/">Start: skills and competencies</a></li><li><a href="/standards/mate/aims/">What MATE says it builds</a></li><li><a href="/standards/mate/competencies/">Competencies, as an outline</a></li><li><a href="/standards/mate/standards-map/">Standards map</a></li><li><a href="/standards/mate/rollup/">Skill by skill</a></li><li><a href="/standards/mate/skills-match/">Skills and Ocean 10 chart</a></li><li><a class="here" href="/standards/mate/ocean-decade/">The Ocean Decade</a></li><li><a href="/standards/mate/classes/">The classes</a></li></ul>
 </nav>
 <main>
 <h1>MATE ROV and the UN Ocean Decade</h1>
@@ -199,6 +199,19 @@ footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1p
 .smap li { margin: .15rem 0; }
 .smap .fw { display: inline-block; min-width: 7.2em; color: var(--muted); font-size: .78rem; }
 .legend-note { font-size: .84rem; color: var(--muted); max-width: 46rem; }
+.comp-row { border: 1px solid var(--border); border-radius: 8px; margin: .45rem 0; background: var(--ek-bg); }
+.comp-row > summary { cursor: pointer; padding: .55rem .8rem; list-style: none; display: flex; flex-wrap: wrap; gap: .3rem .8rem; align-items: baseline; }
+.comp-row > summary::-webkit-details-marker { display: none; }
+.comp-row > summary::before { content: "▸"; color: var(--muted); }
+.comp-row[open] > summary::before { content: "▾"; }
+.comp-row .comp-name { font-weight: 600; }
+.comp-row .comp-chips { font-size: .8rem; }
+.comp-row .comp-count { font-size: .78rem; color: var(--muted); margin-left: auto; }
+.comp-row .comp-body { padding: 0 .8rem .8rem; }
+.comp-row .comp-body p { margin: .3rem 0; }
+.comp-tools { margin: .5rem 0 1rem; font-size: .88rem; }
+.comp-tools button { font: inherit; font-size: .85rem; padding: .2em .7em; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--fg); cursor: pointer; margin-right: .4rem; }
+.comp-mark { font-size: .75rem; color: var(--accent); }
 .wef-card { background: #ffffff; color: #1b2a3a; border: 1px solid #d0d7de; border-radius: 10px; padding: 1rem; margin: 1rem 0; }
 .skill-section { margin: 1.6rem 0; padding-top: .6rem; border-top: 1px solid var(--border); }
 .skill-section h3 { margin: 0 0 .3rem; }
@@ -208,11 +221,11 @@ footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1p
 @media print {
   .toc, #search, .page-toggles, .mate-nav-top { display: none !important; }
   .layout { display: block !important; }
-  .lo, .aim, .skill-section { break-inside: avoid; }
+  .lo, .aim, .skill-section, .comp-row { break-inside: avoid; }
   .xref-list li, .smap tr { break-inside: avoid; }
   .cov-tooltip { display: none !important; }
 }
-</style><link rel="stylesheet" href="/assets/standards-bubbles.css"><div class="mate-nav-top"><a href="/standards/mate/">Start: skills and competencies</a><a href="/standards/mate/aims/">What MATE says it builds</a><a href="/standards/mate/competencies/">Competencies in full</a><a href="/standards/mate/standards-map/">Standards map</a><a href="/standards/mate/rollup/">Skill by skill</a><a href="/standards/mate/skills-match/">Skills and Ocean 10 chart</a><a class="here" href="/standards/mate/ocean-decade/">The Ocean Decade</a><a href="/standards/mate/classes/">The classes</a></div><div class="xref-intro"><p>Every year MATE tags each mission task with the challenges of the UN Decade of Ocean Science for Sustainable Development. These are MATE's own tags, copied from the manuals, not an inference. Below, each challenge with the mission tasks that carry it.</p></div>
+</style><link rel="stylesheet" href="/assets/standards-bubbles.css"><div class="mate-nav-top"><a href="/standards/mate/">Start: skills and competencies</a><a href="/standards/mate/aims/">What MATE says it builds</a><a href="/standards/mate/competencies/">Competencies, as an outline</a><a href="/standards/mate/standards-map/">Standards map</a><a href="/standards/mate/rollup/">Skill by skill</a><a href="/standards/mate/skills-match/">Skills and Ocean 10 chart</a><a class="here" href="/standards/mate/ocean-decade/">The Ocean Decade</a><a href="/standards/mate/classes/">The classes</a></div><div class="xref-intro"><p>Every year MATE tags each mission task with the challenges of the UN Decade of Ocean Science for Sustainable Development. These are MATE's own tags, copied from the manuals, not an inference. Below, each challenge with the mission tasks that carry it.</p></div>
 <div class="topic"><h3><span class="code-badge">OD</span> The ten Ocean Decade Challenges</h3>
 <div class="lo" id="T-OD.1"><h4><span class="code-badge">OD.1</span> Understand and beat marine pollution</h4><p class="paraphrase">Find and map where pollution on land and at sea comes from, learn what it does to people and ocean life, and develop ways to remove it or reduce it.</p><div class="xref-where none">Not tagged by MATE in the manuals read.</div></div>
 <div class="lo" id="T-OD.2"><h4><span class="code-badge">OD.2</span> Protect and restore ecosystems and biodiversity</h4><p class="paraphrase">Understand how several pressures at once affect ocean ecosystems, and develop ways to monitor, protect, manage and restore ecosystems and their biodiversity as conditions change.</p><div class="xref-where">MATE tags it for: 2024 Task 3: From the Red Sea to Tennessee; 2025 Task 1: Shipwrecks, Spotter Buoys, and Flying Fish; 2025 Task 2: Marine Renewable Energy; 2026 Task 1: Seabed 2030, A Kaleidoscope of Corals in Cold Water; 2026 Task 2: SmartAtlantic Alliance</div></div>

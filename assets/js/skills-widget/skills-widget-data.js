@@ -565,94 +565,94 @@
   ];
   var MATE_DETAILS = {
     "GEN.1": {desc:"Explains the engineering process and the design to a broad audience, uses images, diagrams and data well, and writes clearly.", subs:[
-        {n:"PRO.3", t:"Communicate technical work in writing and in person"},
-        {n:"PRO.4", t:"Communicate with a non-technical audience"}
+        {n:"", t:"Communicate technical work in writing and in person"},
+        {n:"", t:"Communicate with a non-technical audience"}
     ]},
     "GEN.2": {desc:"Looks at a problem from several angles, connects ideas and applies knowledge in new ways.", subs:[
-        {n:"ENG.2", t:"Compare design alternatives and justify the choice"},
-        {n:"ENG.10", t:"Do underwater work with purpose-built tools"}
+        {n:"", t:"Compare design alternatives and justify the choice"},
+        {n:"", t:"Do underwater work with purpose-built tools"}
     ]},
     "GEN.3": {desc:"Builds a product or service that meets customer needs, understands operations and budgets, and manages a project.", subs:[
-        {n:"ENG.1", t:"Turn a request for proposals into criteria and constraints"},
-        {n:"PRO.2", t:"Manage the project"},
-        {n:"PRO.5", t:"Think like an entrepreneur"}
+        {n:"", t:"Turn a request for proposals into criteria and constraints"},
+        {n:"", t:"Manage the project"},
+        {n:"", t:"Think like an entrepreneur"}
     ]},
     "GEN.4": {desc:"Works independently, knows when to ask for help, takes criticism well, and tries again after failing.", subs:[
-        {n:"PRO.8", t:"Use AI as a tool, not a crutch, and say how"}
+        {n:"", t:"Use AI as a tool, not a crutch, and say how"}
     ]},
     "GEN.5": {desc:"Keeps going after setbacks, stays flexible and improvises a fix for a design or equipment problem.", subs:[
-        {n:"ENG.11", t:"Test, troubleshoot and keep a record of what you learned"}
+        {n:"", t:"Test, troubleshoot and keep a record of what you learned"}
     ]},
     "GEN.6": {desc:"Sees that problems are more complex than they first look, accepts that more than one design can be acceptable, and knows the limits of what they know.", subs:[
-        {n:"PRO.8", t:"Use AI as a tool, not a crutch, and say how"}
+        {n:"", t:"Use AI as a tool, not a crutch, and say how"}
     ]},
     "GEN.7": {desc:"Stays open-minded but skeptical about solutions, looks for root causes and compares alternative designs or ways of operating.", subs:[
-        {n:"ENG.1", t:"Turn a request for proposals into criteria and constraints"},
-        {n:"ENG.2", t:"Compare design alternatives and justify the choice"},
-        {n:"ENG.5", t:"Design for the real environment and test under realistic conditions"},
-        {n:"ENG.9", t:"Collect, transmit, analyze and graph data"},
-        {n:"ENG.11", t:"Test, troubleshoot and keep a record of what you learned"},
-        {n:"UND.6", t:"Weigh environmental, social and governance factors in a decision"}
+        {n:"", t:"Turn a request for proposals into criteria and constraints"},
+        {n:"", t:"Compare design alternatives and justify the choice"},
+        {n:"", t:"Design for the real environment and test under realistic conditions"},
+        {n:"", t:"Collect, transmit, analyze and graph data"},
+        {n:"", t:"Test, troubleshoot and keep a record of what you learned"},
+        {n:"", t:"Weigh environmental, social and governance factors in a decision"}
     ]},
     "GEN.8": {desc:"Understands the engineering and science behind the vehicle and its operation, and has the skills to do the work.", subs:[
-        {n:"ENG.7", t:"Sense, measure and calibrate"},
-        {n:"PRO.7", t:"Know and follow the rules and standards"},
-        {n:"UND.1", t:"Ocean observing and data"},
-        {n:"UND.2", t:"Ecosystems, biodiversity and invasive species"},
-        {n:"UND.3", t:"Climate and ocean change"},
-        {n:"UND.4", t:"Ocean energy and the sustainable ocean economy"},
-        {n:"UND.5", t:"People, heritage and risk"}
+        {n:"", t:"Sense, measure and calibrate"},
+        {n:"", t:"Know and follow the rules and standards"},
+        {n:"", t:"Ocean observing and data"},
+        {n:"", t:"Ecosystems, biodiversity and invasive species"},
+        {n:"", t:"Climate and ocean change"},
+        {n:"", t:"Ocean energy and the sustainable ocean economy"},
+        {n:"", t:"People, heritage and risk"}
     ]},
     "GEN.9": {desc:"Treats others with respect, works well in a team and shares knowledge within and across teams.", subs:[
-        {n:"PRO.1", t:"Run the team as a company"},
-        {n:"PRO.9", t:"Give back to the community"}
+        {n:"", t:"Run the team as a company"},
+        {n:"", t:"Give back to the community"}
     ]},
     "ROV.1": {desc:"Applies buoyancy and ballast principles, the properties of water and the physics of propulsion to the vehicle's design.", subs:[
-        {n:"ENG.5", t:"Design for the real environment and test under realistic conditions"},
-        {n:"ENG.8", t:"Design and run a non-ROV device that works on its own"}
+        {n:"", t:"Design for the real environment and test under realistic conditions"},
+        {n:"", t:"Design and run a non-ROV device that works on its own"}
     ]},
     "ROV.2": {desc:"Understands the engineering principles behind the vehicle's systems and applies them to designing those systems.", subs:[
-        {n:"ENG.4", t:"Build reliable electrical and mechanical systems"},
-        {n:"ENG.6", t:"Control and operate a vehicle"}
+        {n:"", t:"Build reliable electrical and mechanical systems"},
+        {n:"", t:"Control and operate a vehicle"}
     ]},
     "ROV.3": {desc:"Can explain the trade-offs and reasoning behind the vehicle's cost, size and weight.", subs:[
-        {n:"ENG.2", t:"Compare design alternatives and justify the choice"},
-        {n:"ENG.4", t:"Build reliable electrical and mechanical systems"}
+        {n:"", t:"Compare design alternatives and justify the choice"},
+        {n:"", t:"Build reliable electrical and mechanical systems"}
     ]},
     "ROV.4": {desc:"Applies electrical concepts to the control and electrical systems and integrates software and electronics into vehicle control.", subs:[
-        {n:"ENG.3", t:"Budget power and protect against overcurrent"},
-        {n:"ENG.6", t:"Control and operate a vehicle"},
-        {n:"ENG.8", t:"Design and run a non-ROV device that works on its own"}
+        {n:"", t:"Budget power and protect against overcurrent"},
+        {n:"", t:"Control and operate a vehicle"},
+        {n:"", t:"Design and run a non-ROV device that works on its own"}
     ]},
     "ROV.5": {desc:"Can identify and evaluate sensors and tooling, cameras included, against the mission's needs, and applies programming to control and sensing.", subs:[
-        {n:"ENG.6", t:"Control and operate a vehicle"},
-        {n:"ENG.7", t:"Sense, measure and calibrate"},
-        {n:"ENG.8", t:"Design and run a non-ROV device that works on its own"},
-        {n:"ENG.9", t:"Collect, transmit, analyze and graph data"},
-        {n:"ENG.10", t:"Do underwater work with purpose-built tools"}
+        {n:"", t:"Control and operate a vehicle"},
+        {n:"", t:"Sense, measure and calibrate"},
+        {n:"", t:"Design and run a non-ROV device that works on its own"},
+        {n:"", t:"Collect, transmit, analyze and graph data"},
+        {n:"", t:"Do underwater work with purpose-built tools"}
     ]},
     "ROV.6": {desc:"Understands safety principles and applies them to people, equipment and operations.", subs:[
-        {n:"ENG.3", t:"Budget power and protect against overcurrent"},
-        {n:"ENG.4", t:"Build reliable electrical and mechanical systems"},
-        {n:"PRO.6", t:"Work safely and manage hazards as industry does"}
+        {n:"", t:"Budget power and protect against overcurrent"},
+        {n:"", t:"Build reliable electrical and mechanical systems"},
+        {n:"", t:"Work safely and manage hazards as industry does"}
     ]},
     "ROV.7": {desc:"Organizes the team as a company with defined roles, plans the deliverables, tracks a budget, and manages tasks and time.", subs:[
-        {n:"PRO.1", t:"Run the team as a company"},
-        {n:"PRO.2", t:"Manage the project"}
+        {n:"", t:"Run the team as a company"},
+        {n:"", t:"Manage the project"}
     ]},
     "ROV.8": {desc:"Produces detailed documentation, presents it to support the design, builds a display that explains the design, and can explain its strengths and weaknesses.", subs:[
-        {n:"PRO.3", t:"Communicate technical work in writing and in person"},
-        {n:"PRO.4", t:"Communicate with a non-technical audience"}
+        {n:"", t:"Communicate technical work in writing and in person"},
+        {n:"", t:"Communicate with a non-technical audience"}
     ]},
     "ROV.9": {desc:"Connects the theme and mission tasks to real-world problems and is aware of environmental, social and governance factors in business decisions.", subs:[
-        {n:"PRO.5", t:"Think like an entrepreneur"},
-        {n:"PRO.9", t:"Give back to the community"},
-        {n:"UND.1", t:"Ocean observing and data"},
-        {n:"UND.2", t:"Ecosystems, biodiversity and invasive species"},
-        {n:"UND.3", t:"Climate and ocean change"},
-        {n:"UND.4", t:"Ocean energy and the sustainable ocean economy"},
-        {n:"UND.5", t:"People, heritage and risk"},
-        {n:"UND.6", t:"Weigh environmental, social and governance factors in a decision"}
+        {n:"", t:"Think like an entrepreneur"},
+        {n:"", t:"Give back to the community"},
+        {n:"", t:"Ocean observing and data"},
+        {n:"", t:"Ecosystems, biodiversity and invasive species"},
+        {n:"", t:"Climate and ocean change"},
+        {n:"", t:"Ocean energy and the sustainable ocean economy"},
+        {n:"", t:"People, heritage and risk"},
+        {n:"", t:"Weigh environmental, social and governance factors in a decision"}
     ]}
   };
   // The Ocean Decade's ten challenges (oceandecade.org), as a left list, as right-hand anchors and as bars.

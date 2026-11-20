@@ -1027,12 +1027,14 @@ MATE_FRAMEWORKS = {
 MATE_STRENGTH_ORDER = {"strong": 0, "partial": 1, "related": 2}
 MATE_CLASS_LABELS = [("navigator", "Navigator"), ("ranger", "Ranger")]
 MATE_AREA_HUE = {"ENG": 215, "PRO": 140, "UND": 175}
+# MATE colors its icons orange for the employability skills and green for the ROV-specific ones.
+MATE_GROUP_HUE = {"GEN": 28, "ROV": 150}
 
 # (slug, nav label, page title)
 MATE_PAGES = [
     ("", "Start: skills and competencies", "MATE ROV Competition: What It Builds"),
     ("aims", "What MATE says it builds", "What MATE Says It Builds"),
-    ("competencies", "Competencies in full", "MATE ROV Competencies in Full"),
+    ("competencies", "Competencies, as an outline", "What MATE Builds: the Competencies"),
     ("standards-map", "Standards map", "MATE ROV Competencies and the Standards They Draw On"),
     ("rollup", "Skill by skill", "MATE ROV Skill by Skill"),
     ("skills-match", "Skills and Ocean 10 chart", "MATE Skills, Employer Skills and the Ocean Decade"),
@@ -1073,6 +1075,19 @@ MATE_PAGE_CSS = """<style>
 .smap li { margin: .15rem 0; }
 .smap .fw { display: inline-block; min-width: 7.2em; color: var(--muted); font-size: .78rem; }
 .legend-note { font-size: .84rem; color: var(--muted); max-width: 46rem; }
+.comp-row { border: 1px solid var(--border); border-radius: 8px; margin: .45rem 0; background: var(--ek-bg); }
+.comp-row > summary { cursor: pointer; padding: .55rem .8rem; list-style: none; display: flex; flex-wrap: wrap; gap: .3rem .8rem; align-items: baseline; }
+.comp-row > summary::-webkit-details-marker { display: none; }
+.comp-row > summary::before { content: "▸"; color: var(--muted); }
+.comp-row[open] > summary::before { content: "▾"; }
+.comp-row .comp-name { font-weight: 600; }
+.comp-row .comp-chips { font-size: .8rem; }
+.comp-row .comp-count { font-size: .78rem; color: var(--muted); margin-left: auto; }
+.comp-row .comp-body { padding: 0 .8rem .8rem; }
+.comp-row .comp-body p { margin: .3rem 0; }
+.comp-tools { margin: .5rem 0 1rem; font-size: .88rem; }
+.comp-tools button { font: inherit; font-size: .85rem; padding: .2em .7em; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--fg); cursor: pointer; margin-right: .4rem; }
+.comp-mark { font-size: .75rem; color: var(--accent); }
 .wef-card { background: #ffffff; color: #1b2a3a; border: 1px solid #d0d7de; border-radius: 10px; padding: 1rem; margin: 1rem 0; }
 .skill-section { margin: 1.6rem 0; padding-top: .6rem; border-top: 1px solid var(--border); }
 .skill-section h3 { margin: 0 0 .3rem; }
@@ -1082,7 +1097,7 @@ MATE_PAGE_CSS = """<style>
 @media print {
   .toc, #search, .page-toggles, .mate-nav-top { display: none !important; }
   .layout { display: block !important; }
-  .lo, .aim, .skill-section { break-inside: avoid; }
+  .lo, .aim, .skill-section, .comp-row { break-inside: avoid; }
   .xref-list li, .smap tr { break-inside: avoid; }
   .cov-tooltip { display: none !important; }
 }
@@ -1214,61 +1229,72 @@ def mate_ref_url(fw, std):
     return f"/standards/{ref}#{prefix}-{esc(std)}"
 
 
-def mate_bubble(ctx, comp):
-    code = comp["code"]
-    area = code.split(".")[0]
-    has = bool(ctx["direct"].get(code))
-    tip = [f'<div class="tt-code">{esc(code)} &middot; {esc(comp["name"])}</div>',
-           f'<div class="tt-paraphrase">{esc(comp["paraphrase"])}</div>']
-    if comp.get("skills"):
-        tip.append('<div class="tt-line">Develops: ' + ", ".join(
-            f'<a href="#skill-{s}">{esc(ctx["skill_by_code"][s]["name"])}</a>' for s in comp["skills"]) + "</div>")
-    for key, label in MATE_CLASS_LABELS:
-        if comp.get("by_class", {}).get(key):
-            tip.append(f'<div class="tt-line"><strong>{label} adds:</strong> {esc(comp["by_class"][key])}</div>')
-    if comp.get("class_note"):
-        tip.append(f'<div class="tt-line">{esc(comp["class_note"])}</div>')
+def mate_comp_link(code, name):
+    return f'<a href="{mate_url("competencies")}#T-{code}">{esc(name)}</a>'
+
+
+def mate_skill_standards(ctx, comps):
+    """Standards the competencies behind a skill draw on, deduped: {(fw, code): (best strength, [(competency name, why)])}."""
+    agg = {}
+    for c in comps:
+        for fw, rows in ctx["draws"].get(c["code"], {}).items():
+            for std, strength, why in rows:
+                best, whys = agg.get((fw, std), (strength, []))
+                if MATE_STRENGTH_ORDER[strength] < MATE_STRENGTH_ORDER[best]:
+                    best = strength
+                whys.append((c["name"], why))
+                agg[(fw, std)] = (best, whys)
+    return agg
+
+
+def mate_skill_bubble(ctx, skill, group):
+    code = skill["code"]
+    comps = [ctx["comp_by_code"][c] for c in ctx["skill_users"].get(code, [])]
+    taught = any(ctx["direct"].get(c["code"]) for c in comps)
+    tip = [f'<div class="tt-code">{esc(code)} &middot; {esc(skill["name"])}</div>',
+           f'<div class="tt-paraphrase">{esc(skill["paraphrase"])}</div>',
+           '<div class="tt-line"><strong>Developed by:</strong> ' + "; ".join(mate_comp_link(c["code"], c["name"]) for c in comps) + "</div>"]
+    wl = [l for l in ctx["wef"]["links"] if l["a"] == code]
+    if wl:
+        names = ", ".join(f'{esc(ctx["wef"]["wef_skills"][l["s"]]["name"])}' + (" (partial)" if l["w"] == "partial" else "")
+                          for l in sorted(wl, key=lambda l: (l["w"] != "strong", l["s"])))
+        tip.append(f'<div class="tt-line"><strong>Employer skills:</strong> {names} (<a href="{mate_url("skills-match")}">chart</a>)</div>')
+    agg = mate_skill_standards(ctx, comps)
     xr = []
-    by_fw = ctx["draws"].get(code, {})
     for fw, (label, ref, prefix) in MATE_FRAMEWORKS.items():
-        for std, strength, why in sorted(by_fw.get(fw, []), key=lambda r: (MATE_STRENGTH_ORDER[r[1]], r[0])):
+        for (f, std), (strength, whys) in sorted(((k, v) for k, v in agg.items() if k[0] == fw), key=lambda kv: (MATE_STRENGTH_ORDER[kv[1][0]], kv[0][1])):
             title, para = mate_standard_text(ctx["catalogs"], fw, std)
             heading = esc(std) + (" &middot; " + esc(title) if title else "")
+            reasons = "".join(f"<div class=\"tt-xref-note\">{esc(n)}: {esc(w)}</div>" for n, w in whys)
             xr.append('<button type="button" class="tt-xref-toggle" aria-expanded="false">'
                       f'<span class="tt-xref-chevron">&#9656;</span> &harr; {esc(label)} {esc(std)} '
                       f'<span class="tt-xref-strength">({strength})</span></button>'
                       f'<div class="tt-xref-detail" hidden><div class="tt-xref-code">{heading}</div>'
-                      f'<div class="tt-xref-text">{esc(para)}</div><div class="tt-xref-note">{esc(why)}</div></div>')
+                      f'<div class="tt-xref-text">{esc(para)}</div>{reasons}</div>')
     if xr:
         tip.append('<div class="tt-crosswalk">' + "".join(xr) + "</div>")
-    where = mate_lessons(ctx, code, False)
-    tip.append('<div class="tt-source">' + (f"Taught here: {where}" if where else "Not yet linked to a lesson here.") + "</div>")
-    tip.append(f'<div class="tt-line"><a href="{mate_url("competencies")}#T-{code}">Full entry</a></div>')
-    return (f'<div class="cov-badge{" has-coverage" if has else ""}" data-tinted style="--group-hue:{MATE_AREA_HUE[area]}deg">'
-            f'<button class="cov-badge-btn" type="button" aria-expanded="false" aria-label="{esc(code)} {esc(comp["name"])}">{esc(code)}</button>'
+    lessons = sorted({mate_lessons(ctx, c["code"], False) for c in comps if ctx["direct"].get(c["code"])})
+    if lessons:
+        tip.append('<div class="tt-source">Taught here: ' + "; ".join(lessons) + "</div>")
+    tip.append(f'<div class="tt-line"><a href="{mate_url("rollup")}#skill-{code}">Skill by skill</a></div>')
+    return (f'<div class="cov-badge skill{" has-coverage" if taught else ""}" data-tinted style="--group-hue:{MATE_GROUP_HUE[group]}deg">'
+            f'<button class="cov-badge-btn" type="button" aria-expanded="false"><span class="code">{esc(code)}</span> {esc(skill["name"])}</button>'
             f'<div class="cov-tooltip" role="dialog">{"".join(tip)}</div></div>')
 
 
 def render_mate_start(ctx):
-    sk = ctx["skills_cat"]
-    body = [f'<div class="xref-intro"><p>MATE says its competition builds <strong>eighteen skills</strong>, nine for the workplace and nine '
-            'specific to ROVs. Under each skill below are the competencies this site finds behind it. Click a bubble for what it means, the '
-            'standards it draws on, and where this site teaches it.</p>'
-            '<p class="legend-note">Bubble colors: blue for engineering practice (ENG), green for professional and team skills (PRO), teal for '
-            'ocean and environmental understanding (UND). A darker bubble means a lesson here teaches it. One competency can sit under '
-            'several skills.</p></div>']
-    for g in sk["groups"]:
-        body.append(f'<h2>{esc(g["name"])}</h2>')
-        for s in g["items"]:
-            comps = [ctx["comp_by_code"][c] for c in ctx["skill_users"].get(s["code"], [])]
-            body.append(f'<div class="cov-group" id="skill-{s["code"]}"><div class="cov-group-title">{esc(s["name"])}</div>'
-                        f'<div class="cov-group-sub">{esc(s["paraphrase"])} <a href="{mate_url("rollup")}#skill-{s["code"]}">Skill by skill</a></div>'
-                        f'<div class="cov-grid">{"".join(mate_bubble(ctx, c) for c in comps)}</div></div>')
+    body = ['<div class="xref-intro"><p>MATE says its competition builds <strong>eighteen skills</strong>: nine for the workplace and nine specific to '
+            'ROVs. Click a skill for what it means, the competencies that develop it, the employer skills it matches, and the standards it draws on. '
+            f'The competencies themselves are on <a href="{mate_url("competencies")}">their own page, as an outline</a>.</p>'
+            '<p class="legend-note">Orange bubbles are the employability skills and green the ROV-specific ones, the same split MATE uses for its icons. '
+            'A darker bubble means a lesson here teaches one of the competencies behind it.</p></div>']
+    for g in ctx["skills_cat"]["groups"]:
+        body.append(f'<h2>{esc(g["name"])}</h2><div class="cov-group"><div class="cov-grid">'
+                    + "".join(mate_skill_bubble(ctx, s, g["code"]) for s in g["items"]) + "</div></div>")
     body.append('<h2>More pages</h2><ul class="xref-intro">' + "".join(
         f'<li><a href="{mate_url(slug)}">{esc(label)}</a></li>' for slug, label, _ in MATE_PAGES[1:]) + "</ul>")
     body.append('<script src="/assets/js/mate-bubbles.js"></script>')
-    toc = "<ul>" + "".join(f'<li class="topic-link"><a href="#skill-{c}">{esc(i["name"])}</a></li>' for c, i in ctx["skill_by_code"].items()) + "</ul>"
-    return mate_wrap(ctx, "", "\n".join(body), toc_extra="<p class=\"legend-note\"><strong>Skills</strong></p>" + toc, hide_filter=True)
+    return mate_wrap(ctx, "", "\n".join(body), hide_filter=True)
 
 
 def render_mate_aims(ctx):
@@ -1283,51 +1309,50 @@ def render_mate_competencies(ctx):
     comps, draws = ctx["comps"], ctx["draws"]
     linked = sum(1 for _, i in comps if ctx["direct"].get(i["code"]))
     n_links = sum(len(rows) for d in draws.values() for rows in d.values())
-    body = [f'<div class="xref-intro"><p>Every competency in full, with each standard it draws on, the standard\'s wording, how fully it fits, and why. '
-            f'<strong>{linked} of {len(comps)}</strong> competencies are linked to a lesson here so far, and {n_links} standards links are listed. '
-            'A strength says how well the <em>standard</em> matches the competency, not how well any lesson teaches it. '
-            f'For a shorter view see the <a href="{mate_url("standards-map")}">standards map</a>.</p></div>']
-    summary = ['<table class="xref-summary"><thead><tr><th>Competency</th><th>Standards</th><th>Taught on this site</th></tr></thead><tbody>']
-    for g, i in comps:
-        cnt = sum(len(r) for r in draws.get(i["code"], {}).values())
-        where = mate_lessons(ctx, i["code"], False)
-        summary.append(f'<tr><td><a href="#T-{i["code"]}"><span class="code-badge">{i["code"]}</span></a> {esc(i["name"])}</td>'
-                       f'<td>{cnt}</td><td>{where if where else "<span class=none>not yet linked</span>"}</td></tr>')
-    summary.append("</tbody></table>")
-    body.append("\n".join(summary))
+    body = [f'<div class="xref-intro"><p>What MATE builds, as an outline: three areas, and under each the things a team has to be able to do. '
+            'Open an item for what it means, where MATE shows it, the MATE skills it develops, and the standards it draws on, each with how fully it '
+            f'fits and why. <strong>{linked} of {len(comps)}</strong> are linked to a lesson here so far, and {n_links} standards links are listed. '
+            'A strength says how well the <em>standard</em> matches the item, not how well any lesson teaches it. '
+            f'For a shorter view see the <a href="{mate_url("standards-map")}">standards map</a>.</p></div>',
+            '<p class="comp-tools"><button type="button" data-mate-action="open-all">Open all</button>'
+            '<button type="button" data-mate-action="close-all">Close all</button></p>']
     for g in ctx["comp_cat"]["groups"]:
-        body.append(f'<div class="topic" id="grp-{g["code"]}"><h3><span class="code-badge">{g["code"]}</span> {esc(g["name"])}</h3>')
+        body.append(f'<h2 id="grp-{g["code"]}">{esc(g["name"])}</h2>')
         for i in g["items"]:
             code = i["code"]
-            body.append(f'<div class="lo" id="T-{code}"><h4><a class="anchor-link" href="#T-{code}">#</a>'
-                        f'<span class="code-badge">{code}</span> {esc(i["name"])}</h4>')
-            body.append(f'<p class="paraphrase">{esc(i["paraphrase"])}</p>')
-            body.append(f'<div class="item-meta">Where MATE shows it: {esc("; ".join(i.get("evidence", [])))}</div>')
+            n_std = sum(len(r) for r in draws.get(code, {}).values())
+            mark = ' <span class="comp-mark">taught here</span>' if ctx["direct"].get(code) else ""
+            chips = "".join(f'<a class="chip" href="{mate_url("rollup")}#skill-{c}">{esc(c)}</a>' for c in i.get("skills", []))
+            row = [f'<details class="comp-row lo" id="T-{code}"><summary><span class="comp-name">{esc(i["name"])}</span>{mark}'
+                   f'<span class="comp-chips">{chips}</span><span class="comp-count">{n_std} standard{"" if n_std == 1 else "s"}</span></summary><div class="comp-body">',
+                   f'<p class="paraphrase">{esc(i["paraphrase"])}</p>',
+                   f'<div class="item-meta">Where MATE shows it: {esc("; ".join(i.get("evidence", [])))}</div>']
             if i.get("skills"):
-                body.append(f'<div class="xref-where">MATE skills it develops: {mate_skill_chips(ctx, i["skills"], mate_url("rollup"))}</div>')
+                row.append(f'<div class="xref-where">MATE skills it develops: {mate_skill_chips(ctx, i["skills"], mate_url("rollup"))}</div>')
             for key, label in MATE_CLASS_LABELS:
                 if i.get("by_class", {}).get(key):
-                    body.append(f'<div class="xref-where"><strong>{label} adds:</strong> {esc(i["by_class"][key])}</div>')
+                    row.append(f'<div class="xref-where"><strong>{label} adds:</strong> {esc(i["by_class"][key])}</div>')
             if i.get("class_note"):
-                body.append(f'<div class="xref-where">{esc(i["class_note"])}</div>')
+                row.append(f'<div class="xref-where">{esc(i["class_note"])}</div>')
             by_fw = draws.get(code, {})
             for fw, (label, ref, prefix) in MATE_FRAMEWORKS.items():
                 rows = sorted(by_fw.get(fw, []), key=lambda r: (MATE_STRENGTH_ORDER[r[1]], r[0]))
                 if not rows:
                     continue
-                body.append(f'<div class="xref-fw">{esc(label)}</div><ul class="xref-list">')
+                row.append(f'<div class="xref-fw">{esc(label)}</div><ul class="xref-list">')
                 for std, strength, why in rows:
                     title, para = mate_standard_text(ctx["catalogs"], fw, std)
                     name = f" <strong>{esc(title)}</strong>" if title else ""
-                    body.append(f'<li><a class="code-badge" href="{mate_ref_url(fw, std)}">{esc(std)}</a>{name} '
-                                f'<span class="strength">({strength})</span> {esc(para)}'
-                                f'<div class="item-note">Why: {esc(why)}</div></li>')
-                body.append("</ul>")
+                    row.append(f'<li><a class="code-badge" href="{mate_ref_url(fw, std)}">{esc(std)}</a>{name} '
+                               f'<span class="strength">({strength})</span> {esc(para)}'
+                               f'<div class="item-note">Why: {esc(why)}</div></li>')
+                row.append("</ul>")
             where = mate_lessons(ctx, code, True)
-            body.append(f'<div class="xref-where">Taught on this site: {where}</div>' if where
-                        else '<div class="xref-where none">Not yet linked to a lesson on this site.</div>')
-            body.append("</div>")
-        body.append("</div>")
+            row.append(f'<div class="xref-where">Taught on this site: {where}</div>' if where
+                       else '<div class="xref-where none">Not yet linked to a lesson on this site.</div>')
+            row.append("</div></details>")
+            body.append("".join(row))
+    body.append('<script src="/assets/js/mate-bubbles.js"></script>')
     toc = "<ul>" + "".join(f'<li class="topic-link"><a href="#grp-{g["code"]}">{esc(g["name"])}</a></li>' for g in ctx["comp_cat"]["groups"]) + "</ul>"
     return mate_wrap(ctx, "competencies", "\n".join(body), toc_extra=toc)
 
@@ -1337,7 +1362,7 @@ def render_mate_standards_map(ctx):
     body = ['<div class="xref-intro"><p>One row per competency, with the standards it draws on and a line on what each standard says. '
             'Strength is how well the standard matches the competency. Click a competency for the full entry with the standard\'s own wording.</p></div>']
     for g in ctx["comp_cat"]["groups"]:
-        body.append(f'<div class="topic" id="grp-{g["code"]}"><h3><span class="code-badge">{g["code"]}</span> {esc(g["name"])}</h3>'
+        body.append(f'<div class="topic" id="grp-{g["code"]}"><h3>{esc(g["name"])}</h3>'
                     '<table class="smap"><thead><tr><th>Competency</th><th>Standards it draws on</th></tr></thead><tbody>')
         for i in g["items"]:
             code = i["code"]
@@ -1348,8 +1373,8 @@ def render_mate_standards_map(ctx):
                 for strength, summary, stds in mate_merge(rows, shorts, fw):
                     lis.append(f'<li><span class="fw">{esc(label)}</span>{mate_code_links(fw, stds)} '
                                f'<span class="strength">({strength})</span> {esc(summary)}</li>')
-            body.append(f'<tr class="lo"><td class="name"><a href="{mate_url("competencies")}#T-{code}"><span class="code-badge">{code}</span></a> '
-                        f'{esc(i["name"])}</td><td><ul>{"".join(lis)}</ul></td></tr>')
+            chips = "".join(f'<a class="chip" href="{mate_url("rollup")}#skill-{c}">{esc(c)}</a>' for c in i.get("skills", []))
+            body.append(f'<tr class="lo"><td class="name">{mate_comp_link(code, i["name"])}<div>{chips}</div></td><td><ul>{"".join(lis)}</ul></td></tr>')
         body.append("</tbody></table></div>")
     toc = "<ul>" + "".join(f'<li class="topic-link"><a href="#grp-{g["code"]}">{esc(g["name"])}</a></li>' for g in ctx["comp_cat"]["groups"]) + "</ul>"
     return mate_wrap(ctx, "standards-map", "\n".join(body), toc_extra=toc)
@@ -1393,11 +1418,11 @@ def render_mate_rollup(ctx):
             if ods:
                 sec.append("<ul>" + "".join(
                     f'<li><strong>OD.{n}</strong> {esc(od_name["OD.%d" % n])} <span class="strength">(through '
-                    + ", ".join(c["code"] for c in comps if n in c.get("ocean_decade", [])) + ")</span></li>" for n in ods) + "</ul>")
+                    + ", ".join(esc(c["name"]) for c in comps if n in c.get("ocean_decade", [])) + ")</span></li>" for n in ods) + "</ul>")
             else:
                 sec.append("<p>None of its competencies carries an Ocean Decade tag.</p>")
             sec.append("<h4>Competencies</h4><ul>" + "".join(
-                f'<li><a href="{mate_url("competencies")}#T-{c["code"]}"><span class="code-badge">{c["code"]}</span></a> {esc(c["name"])}</li>' for c in comps) + "</ul>")
+                f'<li>{mate_comp_link(c["code"], c["name"])}</li>' for c in comps) + "</ul>")
             best = {}
             for c in comps:
                 for fw, rows in ctx["draws"].get(c["code"], {}).items():

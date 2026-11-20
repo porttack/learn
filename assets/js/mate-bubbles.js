@@ -33,4 +33,25 @@
     if (!(e.target.closest && e.target.closest('.cov-tooltip'))) closeAll(null);
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(null); });
+
+  // The competencies page is an outline of <details> rows. A link or address that points at a row opens it.
+  function rows() { return Array.prototype.slice.call(document.querySelectorAll('details.comp-row')); }
+  function openFromHash() {
+    var h = window.location.hash;
+    if (h.length < 2) return;
+    var el = document.getElementById(decodeURIComponent(h.slice(1)));
+    if (el && el.tagName === 'DETAILS') { el.open = true; el.scrollIntoView(); }
+  }
+  window.addEventListener('hashchange', openFromHash);
+  document.addEventListener('DOMContentLoaded', openFromHash);
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('[data-mate-action]') : null;
+    if (!b) return;
+    var open = b.getAttribute('data-mate-action') === 'open-all';
+    rows().forEach(function (r) { r.open = open; });
+  });
+  // Printing a collapsed <details> prints nothing inside it, so open every row for the print and put them back.
+  var wasClosed = [];
+  window.addEventListener('beforeprint', function () { wasClosed = rows().filter(function (r) { return !r.open; }); wasClosed.forEach(function (r) { r.open = true; }); });
+  window.addEventListener('afterprint', function () { wasClosed.forEach(function (r) { r.open = false; }); wasClosed = []; });
 })();
