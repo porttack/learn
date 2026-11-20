@@ -1052,6 +1052,11 @@ MATE_PAGE_CSS = """<style>
 .mate-top { display: flex; gap: 2rem; align-items: flex-start; flex-wrap: wrap; margin: .5rem 0 1.5rem; }
 .mate-top .xref-intro { flex: 2 1 22rem; }
 .mate-top .mate-hier { flex: 1 1 15rem; max-width: 19rem; margin: 0; }
+.mate-term { position: relative; text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+.mate-term:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.mate-term-pop { display: none; position: absolute; left: 0; top: 1.6em; z-index: 20; width: min(22rem, 80vw); padding: .7rem .85rem; font-size: .85rem; line-height: 1.4;
+  background: var(--bg); color: var(--fg); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.18); text-decoration: none; cursor: auto; }
+.mate-term:hover .mate-term-pop, .mate-term:focus .mate-term-pop, .mate-term:focus-within .mate-term-pop, .mate-term.is-open .mate-term-pop { display: block; }
 .mate-hier figcaption { font-size: .78rem; color: var(--muted); margin-top: .3rem; }
 .xref-intro { max-width: 46rem; }
 .xref-summary { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: .9rem; }
@@ -1640,6 +1645,7 @@ def render_mate_overview(ctx):
             'Ocean Science for Sustainable Development (oceandecade.org); and the Ocean Decade tags in the 2024 to 2026 MATE manuals.</p>'
             '</div></div>',
             MATE_WEF_NOTE,
+            '<script src="/assets/js/mate-bubbles.js"></script>',
             '<script>SkillsWidget.init({el: "#wef-skills-widget", dataset: "wef-skills", defaultView: "mate30", tabs: ['
             '{view: "now", label: "Most essential 2025", anchor: "wef-skills-now"},'
             '{view: "growing", label: "Growing fastest 2030", anchor: "wef-skills-growing"},'
@@ -1797,7 +1803,11 @@ def mate_hierarchy_svg(ctx):
 
 
 def mate_overview_intro(ctx):
-    return ('<div class="mate-top"><div class="xref-intro"><p>Employers and the UN Ocean Decade say which skills people need. The MATE ROV competition builds many of them. '
+    wef = ('<span class="mate-term" tabindex="0" role="button" aria-expanded="false">World Economic Forum<span class="mate-term-pop" role="tooltip">'
+           'The World Economic Forum publishes the <em>Future of Jobs Report</em>. Its 2025 edition is a global survey of more than a thousand employers. '
+           'They name the ten skills they call most essential in 2025 and the ten growing fastest toward 2030. It shows what employers say they need, '
+           'not what any course teaches.</span></span>')
+    return ('<div class="mate-top"><div class="xref-intro"><p>Employers (surveyed by the ' + wef + ') and the UN Ocean Decade say which skills people need. The MATE ROV competition builds many of them. '
             'This site breaks those skills into the competencies a team practices, ties each one to the education standards it draws on, and then to '
             'the lessons and curriculum that teach it.</p><p>Every layer maps both ways, so you can start from a skill and find what teaches it, '
             'or start from a lesson and see which skills and standards it builds. Click a layer to open it, or use the chart below to see how the skills '

@@ -32,7 +32,23 @@
     }
     if (!(e.target.closest && e.target.closest('.cov-tooltip'))) closeAll(null);
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(null); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeAll(null); closeTerms(null); } });
+
+  // A defined term (underlined) shows its explanation on hover or focus; a tap toggles it, and a tap elsewhere closes it.
+  function closeTerms(except) {
+    Array.prototype.forEach.call(document.querySelectorAll('.mate-term.is-open'), function (t) {
+      if (t !== except) { t.classList.remove('is-open'); t.setAttribute('aria-expanded', 'false'); }
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var term = e.target.closest ? e.target.closest('.mate-term') : null;
+    closeTerms(term);
+    if (term && !(e.target.closest('.mate-term-pop'))) {
+      var open = !term.classList.contains('is-open');
+      term.classList.toggle('is-open', open);
+      term.setAttribute('aria-expanded', String(open));
+    }
+  });
 
   // The competencies page is an outline of <details> rows. A link or address that points at a row opens it.
   function rows() { return Array.prototype.slice.call(document.querySelectorAll('details.comp-row')); }
