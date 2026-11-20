@@ -1,0 +1,14 @@
+{
+ "meta": {
+  "built": "generated at publish time",
+  "method": "Generated from _standards/carriers/mate-rov.json (by_locator): each row is one MATE competency and one standard it draws on, with that competency's own strength and reason."
+ },
+ "crosswalk": [
+  {
+   "mate-rov": "TEAM.1",
+   "ca-epc": "V.A",
+   "strength": "related",
+   "note": "The ESG role weighs environmental, social and governance factors in a decision."
+  }
+ ]
+}

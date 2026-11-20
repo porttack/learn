@@ -1,0 +1,32 @@
+{
+ "meta": {
+  "built": "generated at publish time",
+  "method": "Generated from _standards/carriers/mate-rov.json (by_locator): each row is one MATE competency and one standard it draws on, with that competency's own strength and reason."
+ },
+ "crosswalk": [
+  {
+   "mate-rov": "CTRL.1",
+   "castandards": "9-12.AP.15",
+   "strength": "related",
+   "note": "A program that responds to events, such as a joystick moving, instead of running start to finish."
+  },
+  {
+   "mate-rov": "TEAM.1",
+   "castandards": "9-12.AP.21",
+   "strength": "strong",
+   "note": "Building as a team with defined roles and shared tools is different work from working alone."
+  },
+  {
+   "mate-rov": "COMM.2",
+   "castandards": "9-12.AP.22",
+   "strength": "strong",
+   "note": "Writing design decisions down is what makes the process readable to anyone later."
+  },
+  {
+   "mate-rov": "FLOAT.5",
+   "castandards": "9-12.DA.10",
+   "strength": "partial",
+   "note": "How a visualization is built shapes what a reader takes from it, for example which way depth runs."
+  }
+ ]
+}

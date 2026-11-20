@@ -16,7 +16,8 @@
   "ccss-ela",
   "ccss-math",
   "ngss",
-  "ca-epc"
+  "ca-epc",
+  "mate-rov"
  ],
  "sources": [
   {
@@ -242,6 +243,14 @@
    "abbrev": "MOVIES",
    "hue_light": "#51697f",
    "hue_dark": "#8aa2b8"
+  },
+  {
+   "slug": "mate_rov",
+   "file": "mate-rov.json",
+   "title": "MATE ROV Competition (cross-reference)",
+   "abbrev": "MATE",
+   "hue_light": "#9a7b4f",
+   "hue_dark": "#c4a574"
   }
  ],
  "crosswalks": [
@@ -258,6 +267,55 @@
     "cde-tsel"
    ],
    "file": "casel-cde-tsel.json"
+  },
+  {
+   "between": [
+    "mate-rov",
+    "ca-ict-anchor"
+   ],
+   "file": "mate-rov-ca-ict-anchor.json"
+  },
+  {
+   "between": [
+    "mate-rov",
+    "ngss"
+   ],
+   "file": "mate-rov-ngss.json"
+  },
+  {
+   "between": [
+    "mate-rov",
+    "csta2026"
+   ],
+   "file": "mate-rov-csta2026.json"
+  },
+  {
+   "between": [
+    "mate-rov",
+    "castandards"
+   ],
+   "file": "mate-rov-castandards.json"
+  },
+  {
+   "between": [
+    "mate-rov",
+    "apcsp"
+   ],
+   "file": "mate-rov-apcsp.json"
+  },
+  {
+   "between": [
+    "mate-rov",
+    "casel"
+   ],
+   "file": "mate-rov-casel.json"
+  },
+  {
+   "between": [
+    "mate-rov",
+    "ca-epc"
+   ],
+   "file": "mate-rov-ca-epc.json"
   }
  ]
 }

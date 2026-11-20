@@ -1,0 +1,38 @@
+{
+ "meta": {
+  "built": "generated at publish time",
+  "method": "Generated from _standards/carriers/mate-rov.json (by_locator): each row is one MATE competency and one standard it draws on, with that competency's own strength and reason."
+ },
+ "crosswalk": [
+  {
+   "mate-rov": "FLOAT.4",
+   "apcsp": "2.3",
+   "strength": "related",
+   "note": "Raw readings become information only once a program organizes them."
+  },
+  {
+   "mate-rov": "FLOAT.5",
+   "apcsp": "2.3",
+   "strength": "partial",
+   "note": "Finding the pattern in a data set."
+  },
+  {
+   "mate-rov": "FLOAT.2",
+   "apcsp": "3.6",
+   "strength": "partial",
+   "note": "The float's decision at each moment is a conditional on its depth."
+  },
+  {
+   "mate-rov": "FLOAT.2",
+   "apcsp": "3.8",
+   "strength": "related",
+   "note": "The decision repeats every reading until the hold is done."
+  },
+  {
+   "mate-rov": "FLOAT.4",
+   "apcsp": "3.8",
+   "strength": "partial",
+   "note": "Repeating the same measurement at every step of an ascent."
+  }
+ ]
+}

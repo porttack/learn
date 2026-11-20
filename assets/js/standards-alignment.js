@@ -47,7 +47,8 @@ var STANDARDS_FRAMEWORKS = {
   'via-character': { file: 'via-character-standards-reference.html', prefix: 'T', name: 'VIA Character Strengths', catalog: 'via-character', category: 'sel' },
   'ccss-ela': { file: 'ccss-ela-standards-reference.html', prefix: 'T', name: 'Common Core ELA (Speaking, Listening & Writing)', catalog: 'ccss-ela', category: 'ela' },
   ngss: { file: 'ngss-standards-reference.html', prefix: 'T', name: 'NGSS 2013 (Next Generation Science Standards)', catalog: 'ngss', category: 'sci' },
-  'ca-epc': { file: 'ca-epc-standards-reference.html', prefix: 'T', name: 'California Environmental Principles and Concepts (EP&Cs)', catalog: 'ca-epc', category: 'sci' }
+  'ca-epc': { file: 'ca-epc-standards-reference.html', prefix: 'T', name: 'California Environmental Principles and Concepts (EP&Cs)', catalog: 'ca-epc', category: 'sci' },
+  'mate-rov': { file: 'mate-rov-standards-reference.html', prefix: 'T', name: 'MATE ROV Competition (cross-reference, not a standard)', catalog: 'mate-rov', category: 'mate' }
 };
 
 // Fixed display order, local to this per-lesson widget (the main /standards/
@@ -60,7 +61,8 @@ var STANDARDS_CATEGORIES = [
   { id: 'lit', name: 'Digital Literacy' },
   { id: 'sel', name: 'SEL' },
   { id: 'ela', name: 'English Language Arts' },
-  { id: 'sci', name: 'Science and Environmental Literacy' }
+  { id: 'sci', name: 'Science and Environmental Literacy' },
+  { id: 'mate', name: 'MATE ROV Competition' }
 ];
 
 function escapeHtml(s) {

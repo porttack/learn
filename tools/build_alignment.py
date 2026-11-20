@@ -973,6 +973,7 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
         "via-character": [i["code"] for grp in catalogs["via-character"]["groups"] for i in grp["items"]],
         "ngss": [i["code"] for grp in catalogs["ngss"]["groups"] for i in grp["items"]],
         "ca-epc": [i["code"] for grp in catalogs["ca-epc"]["groups"] for i in grp["items"]],
+        "mate-rov": [i["code"] for grp in catalogs["mate-rov"]["groups"] for i in grp["items"]],
     }
     for fw, codes in fw_entries.items():
         carried = sum(1 for c in codes if covs[fw].get(c))
@@ -1000,6 +1001,160 @@ def build_markdown(catalogs, covs, carrier_files, scope_label):
     return "\n".join(lines)
 
 
+# ---------- MATE cross-reference page: one competency at a time, everything open ----------
+
+# framework -> (label, its reference page, that page's anchor prefix). Order is the
+# order standards are listed under each competency: CS first, then science, then SEL.
+MATE_FRAMEWORKS = {
+    "apcsp": ("AP CSP", "apcsp-standards-reference.html", "T"),
+    "csta2026": ("CSTA 2026", "csta2026-standards-reference.html", "T"),
+    "castandards": ("California CS", "ca-cs-standards-reference.html", "S"),
+    "ca-ict-anchor": ("CA CTE (ICT)", "ca-ict-anchor-standards-reference.html", "T"),
+    "ngss": ("NGSS 2013", "ngss-standards-reference.html", "T"),
+    "ca-epc": ("California EP&Cs", "ca-epc-standards-reference.html", "T"),
+    "casel": ("CASEL", "casel-standards-reference.html", "T"),
+}
+MATE_STRENGTH_ORDER = {"strong": 0, "partial": 1, "related": 2}
+
+MATE_PAGE_CSS = """<style>
+.xref-intro { max-width: 46rem; }
+.xref-summary { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: .9rem; }
+.xref-summary th, .xref-summary td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.xref-summary th { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+.xref-summary .none { color: var(--muted); }
+.xref-fw { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: .9rem 0 .2rem 1.1rem; }
+.xref-list { list-style: none; margin: 0; padding: 0; }
+.xref-list li { margin: .3rem 0 .3rem 1.1rem; padding: .35rem .6rem; background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px; font-size: .9rem; }
+.xref-where { margin: .6rem 0 0 1.1rem; font-size: .88rem; }
+.xref-where.none { color: var(--muted); }
+.strength { font-size: .78rem; color: var(--muted); }
+@media print {
+  .toc, #search, .page-toggles { display: none !important; }
+  .layout { display: block !important; }
+  .lo { break-inside: avoid; }
+  .xref-list li { break-inside: avoid; }
+}
+</style>"""
+
+
+def mate_standard_text(catalogs, fw, code):
+    """(short title or None, paraphrase) of a standard in any catalog shape."""
+    cat = catalogs[fw]
+    if fw == "apcsp":
+        for t in cat["topics"]:
+            if t["code"] == code:
+                return t.get("title"), t["paraphrase"]
+    elif "standards" in cat:
+        for s in cat["standards"]:
+            if s["code"] == code:
+                return None, s["paraphrase"]
+    elif fw == "ca-ict-anchor":
+        for g in cat["anchor_standards"] + cat["pathway"]["standards"]:
+            for i in g.get("items", []):
+                if i["code"] == code:
+                    return None, i["paraphrase"]
+    else:
+        for g in cat["groups"]:
+            for i in g["items"]:
+                if i["code"] == code:
+                    return i.get("name"), i["paraphrase"]
+    return None, ""
+
+
+def render_mate_crossref(catalogs, carrier_files):
+    catalog = catalogs["mate-rov"]
+    mate = carrier_files["mate_rov"]
+    # Lessons that name a MATE competency directly (a person checked them), never the
+    # MATE carrier itself, which only lists its own competencies.
+    others = {k: v for k, v in carrier_files.items() if k != "mate_rov"}
+    direct = Coverage(others, "mate-rov", scoped=False)
+
+    draws = {}  # competency -> framework -> [(code, strength, why)]
+    for fw, codes in mate["coverage"].items():
+        if fw == "mate-rov":
+            continue
+        for std, entry in codes.items():
+            for loc, row in entry.get("by_locator", {}).items():
+                draws.setdefault(loc, {}).setdefault(fw, []).append((std, row["strength"], row["note"]))
+
+    def lessons(code, with_note):
+        """Lessons that name this competency directly: a short clause per source, and,
+        for the full entry, the reason that lesson counts (its own note)."""
+        parts = []
+        for source, entry in direct.get(code):
+            clause = direct._carrier_clause(source, entry, with_title=True)
+            if with_note and entry.get("note"):
+                clause += f'<div class="item-note">{esc(entry["note"])}</div>'
+            parts.append(clause)
+        return "<br>".join(parts) if with_note else "; ".join(parts)
+
+    comps = [(g, i) for g in catalog["groups"] for i in g["items"]]
+    linked = sum(1 for _, i in comps if direct.get(i["code"]))
+    n_links = sum(len(rows) for d in draws.values() for rows in d.values())
+
+    summary = ['<table class="xref-summary"><thead><tr><th>Competency</th><th>Standards it draws on</th><th>Taught on this site</th></tr></thead><tbody>']
+    for g, i in comps:
+        cnt = sum(len(r) for r in draws.get(i["code"], {}).values())
+        where = lessons(i["code"], False)
+        summary.append(
+            f'<tr><td><a href="#T-{i["code"]}"><span class="code-badge">{i["code"]}</span></a> {esc(i["name"])}</td>'
+            f'<td>{cnt if cnt else "<span class=none>none</span>"}</td>'
+            f'<td>{where if where else "<span class=none>not yet linked</span>"}</td></tr>'
+        )
+    summary.append("</tbody></table>")
+
+    body = [MATE_PAGE_CSS,
+            '<div class="xref-intro"><p>Each competency below is something a MATE team has to be able to do. Under it are '
+            "the standards it draws on, with each standard's wording, how fully that standard describes the competency "
+            "(<strong>strong</strong>, <strong>partial</strong> or <strong>related</strong>), and why. Under that is where this "
+            "site teaches it, if a person has checked a lesson against it.</p>"
+            f"<p><strong>{linked} of {len(comps)}</strong> competencies are linked to a lesson here so far, and "
+            f"{n_links} standards links are listed. A strength says how well the <em>standard</em> matches the competency, not "
+            "how well any lesson teaches it.</p></div>",
+            "<h2>At a glance</h2>", "\n".join(summary)]
+    toc = ["<ul>"]
+    for gi, g in enumerate(catalog["groups"]):
+        toc.append(f'<li class="topic-link"><a href="#grp-{g["code"]}">{g["code"]} {esc(g["name"])}</a></li>')
+        out = [f'<div class="topic" id="grp-{g["code"]}"><h3><a class="anchor-link" href="#grp-{g["code"]}">#</a>'
+               f'<span class="code-badge">{g["code"]}</span> {esc(g["name"])}</h3>']
+        for i in g["items"]:
+            code = i["code"]
+            level = f' <span class="weight">({esc(i["level"])})</span>' if i.get("level") else ""
+            out.append(f'<div class="lo" id="T-{code}"><h4><a class="anchor-link" href="#T-{code}">#</a>'
+                       f'<span class="code-badge">{code}</span> {esc(i["name"])}{level}</h4>')
+            out.append(f'<p class="paraphrase">{esc(i["paraphrase"])}</p>')
+            by_fw = draws.get(code, {})
+            if not by_fw:
+                out.append('<div class="item-meta">No standards in the catalogs fit this competency.</div>')
+            for fw, (label, ref, prefix) in MATE_FRAMEWORKS.items():
+                rows = sorted(by_fw.get(fw, []), key=lambda r: (MATE_STRENGTH_ORDER[r[1]], r[0]))
+                if not rows:
+                    continue
+                out.append(f'<div class="xref-fw">{esc(label)}</div><ul class="xref-list">')
+                for std, strength, why in rows:
+                    title, para = mate_standard_text(catalogs, fw, std)
+                    name = f" <strong>{esc(title)}</strong>" if title else ""
+                    out.append(
+                        f'<li><a class="code-badge" href="{ref}#{prefix}-{esc(std)}">{esc(std)}</a>{name} '
+                        f'<span class="strength">({strength})</span> {esc(para)}'
+                        f'<div class="item-note">Why: {esc(why)}</div></li>'
+                    )
+                out.append("</ul>")
+            where = lessons(code, True)
+            if where:
+                out.append(f'<div class="xref-where">Taught on this site: {where}</div>')
+            else:
+                out.append('<div class="xref-where none">Not yet linked to a lesson on this site.</div>')
+            out.append("</div>")
+        out.append("</div>")
+        body.extend(out)
+    toc.append("</ul>")
+    provenance = grouped_provenance(catalog["meta"], None) + (
+        ' <strong>See also.</strong> <a href="mate-rov-standards-reference.html">The competency list</a> and '
+        '<a href="/standards/?report=mate_rov">the same links by standard</a>.')
+    return page("MATE ROV Competition: Cross-Reference by Competency", "\n".join(toc), "\n".join(body), provenance)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--catalog", required=True)
@@ -1015,7 +1170,7 @@ def main():
     catalogs = {name: load_json(Path(args.catalog) / f"{name}.json") for name in [
         "apcsp", "castandards", "csta2026", "csta2017", "ca-ict-anchor",
         "iste-digital-citizen", "unesco-mil", "unesco-ai-cfs", "aasl-engage",
-        "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math", "ngss", "ca-epc",
+        "casel", "cde-tsel", "ruler", "via-character", "ccss-ela", "ccss-math", "ngss", "ca-epc", "mate-rov",
     ]}
     sources = set(args.source) if args.source else None
     carrier_files = load_carrier_files(args.carriers, sources)
@@ -1098,6 +1253,23 @@ def main():
     (out / "ca-epc-standards-reference.html").write_text(
         render_grouped("California Environmental Principles and Concepts (EP&Cs) Reference", catalogs["ca-epc"], covs["ca-epc"], args.scope_label, provenance)
     )
+
+    # The MATE catalog is a cross-reference compiled by this project, not a standard
+    # (see its scope_note), so its see-also says what it is for.
+    mate_see_also = (
+        ' <strong>See also.</strong> <a href="/standards/">The full standards map</a>: each competency here '
+        "lists the standards it draws on, and other content can be linked to it from there. "
+        '<a href="mate-rov-cross-reference.html">Read it one competency at a time</a>.'
+    )
+    provenance = grouped_provenance(catalogs["mate-rov"]["meta"], args.scope_label) + mate_see_also
+    # The MATE source lists its own competencies as covered (so its report reads 29 of 29),
+    # which would put a line on every item here saying MATE covers itself; leave it out.
+    mate_cov = Coverage({k: v for k, v in carrier_files.items() if k != "mate_rov"}, "mate-rov", scoped=bool(sources))
+    (out / "mate-rov-standards-reference.html").write_text(
+        render_grouped("MATE ROV Competition Cross-Reference", catalogs["mate-rov"], mate_cov, args.scope_label, provenance)
+    )
+    if "mate_rov" in carrier_files:
+        (out / "mate-rov-cross-reference.html").write_text(render_mate_crossref(catalogs, carrier_files))
 
     (out / "standards-alignment.md").write_text(build_markdown(catalogs, {k: v.by_code for k, v in covs.items()}, carrier_files, args.scope_label))
 

@@ -1,0 +1,104 @@
+{
+ "meta": {
+  "built": "generated at publish time",
+  "method": "Generated from _standards/carriers/mate-rov.json (by_locator): each row is one MATE competency and one standard it draws on, with that competency's own strength and reason."
+ },
+ "crosswalk": [
+  {
+   "mate-rov": "TEAM.4",
+   "ngss": "HS-ETS1-1",
+   "strength": "partial",
+   "note": "Turning a large real-world challenge into specific requirements."
+  },
+  {
+   "mate-rov": "COMM.3",
+   "ngss": "HS-ETS1-3",
+   "strength": "related",
+   "note": "Explaining why one design was chosen over another, with the trade-offs."
+  },
+  {
+   "mate-rov": "ELEC.1",
+   "ngss": "HS-ETS1-3",
+   "strength": "related",
+   "note": "Choosing a fuse trades protection against nuisance trips."
+  },
+  {
+   "mate-rov": "MECH.3",
+   "ngss": "HS-ETS1-3",
+   "strength": "partial",
+   "note": "A safety criterion that has to be met before anything else is traded."
+  },
+  {
+   "mate-rov": "SAFE.1",
+   "ngss": "HS-ETS1-3",
+   "strength": "related",
+   "note": "Safety is the criterion that outranks the others when trade-offs are judged."
+  },
+  {
+   "mate-rov": "FLOAT.2",
+   "ngss": "HS-ETS1-4",
+   "strength": "related",
+   "note": "A computer simulation is a natural way to test a controller before the pool."
+  },
+  {
+   "mate-rov": "ELEC.1",
+   "ngss": "MS-ETS1-1",
+   "strength": "partial",
+   "note": "A hard limit on current is a constraint the design has to be built around and tested against."
+  },
+  {
+   "mate-rov": "ELEC.2",
+   "ngss": "MS-ETS1-1",
+   "strength": "partial",
+   "note": "Voltage, source and shutdown time are criteria and constraints to design inside."
+  },
+  {
+   "mate-rov": "ELEC.4",
+   "ngss": "MS-ETS1-1",
+   "strength": "related",
+   "note": "A conductive, wet operating environment is a constraint on every connection."
+  },
+  {
+   "mate-rov": "ELEC.5",
+   "ngss": "MS-ETS1-1",
+   "strength": "partial",
+   "note": "The float's power limits are constraints on its design."
+  },
+  {
+   "mate-rov": "FLUID.1",
+   "ngss": "MS-ETS1-1",
+   "strength": "related",
+   "note": "The rules are constraints on what a design may do."
+  },
+  {
+   "mate-rov": "MECH.1",
+   "ngss": "MS-ETS1-1",
+   "strength": "partial",
+   "note": "The venue's dimensions are constraints that set the design."
+  },
+  {
+   "mate-rov": "TEAM.4",
+   "ngss": "MS-ETS1-1",
+   "strength": "partial",
+   "note": "Spelling out the criteria and constraints a solution is tested against."
+  },
+  {
+   "mate-rov": "FLOAT.1",
+   "ngss": "MS-ETS1-2",
+   "strength": "partial",
+   "note": "The scoring asks a team to compare two ways of solving the same problem against stated criteria."
+  },
+  {
+   "mate-rov": "COMM.2",
+   "ngss": "MS-ETS1-3",
+   "strength": "partial",
+   "note": "Analyzing test data to see what each design does well or badly."
+  },
+  {
+   "mate-rov": "TEAM.5",
+   "ngss": "MS-ETS1-4",
+   "strength": "partial",
+   "note": "Practice runs are iterative testing, and each run's data improves the next."
+  }
+ ]
+}

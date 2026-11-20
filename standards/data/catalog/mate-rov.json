@@ -1,0 +1,208 @@
+{
+  "meta": {
+    "source": "MATE ROV Competition: skills a team needs, compiled from the competition manuals",
+    "url": "https://materovcompetition.org/",
+    "year": "not tied to a year; compiled from the 2026 Scout class manual and the 2027 MATE Floats! task description for the Ranger and Pioneer classes",
+    "extracted": "2026-11-20",
+    "scope_note": "This is a cross-reference catalog, not a standard. MATE publishes no standards of its own, so each entry is this project's reading of what the competition manuals require and score, written so a teacher can see what has to be taught. Each entry cites the manual's own spec codes where it has them. Built from the Scout manual and the Floats task description; Ranger, Navigator and Pioneer manuals have not been read yet, so limits that differ by class (current, onboard power, cameras, fluid power) are described for Scout and tagged 'Scout' where the Scout rule is the specific one. Mission tasks change every year, so no yearly mission task is cataloged except the vertical profiling float, which keeps coming back. Points are Scout points out of 400.",
+    "codes_note": "Codes are this project's own: an area (SAFE, ELEC, MECH, FLUID, CTRL, FLOAT, COMM, TEAM) and a number. They are not MATE's. MATE's own spec codes (ELEC-004S and so on) appear in each entry's text, and the 'S' on the end marks a Scout rule.",
+    "license_note": "The competition manuals are (c) MATE ROV Competition under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 license, so nothing here copies their text: every entry is a paraphrase written for this project, with the spec codes cited as identifiers only. Check the current manual for the real limits before building anything."
+  },
+  "groups": [
+    {
+      "code": "SAFE",
+      "name": "Safety and inspection",
+      "items": [
+        {
+          "code": "SAFE.1",
+          "name": "Pass the safety inspection",
+          "paraphrase": "Before the vehicle (or the float) goes in the water for practice or a run, an inspector checks it against a rubric. A company gets up to three tries, and failing the third means no underwater tasks, though the engineering and communication scores are still open. Worth 10 of 400 points, and the first thing every other rule serves. (Scout manual 2.0 and 2.1.)"
+        },
+        {
+          "code": "SAFE.2",
+          "name": "Draw the system interconnection diagram (SID)",
+          "paraphrase": "A one page electrical diagram, hand drawn or made in CAD, that separates the surface systems from the vehicle and shows the main fuse with a standard fuse symbol and its amperage. It must be the company's own, not a copy of a kit's. A float gets its own. Without it the vehicle does not pass. (Scout manual 2.1.1, DOC-001.)"
+        }
+      ]
+    },
+    {
+      "code": "ELEC",
+      "name": "Electrical",
+      "items": [
+        {
+          "code": "ELEC.1",
+          "name": "Size the fuse and keep to the current limit",
+          "paraphrase": "One blade fuse (ATO or mini, with the standard color codes) goes on the positive line within 30 centimeters of the power connector. The class sets the ceiling (15 amps in Scout), so a team has to add up what its motors and tools can draw and pick a real fuse. One spare is allowed during a run. (Scout manual ELEC-004S, ELEC-005S.)"
+        },
+        {
+          "code": "ELEC.2",
+          "name": "Connect to power the way the rules say",
+          "paraphrase": "All power comes through one point from the competition supply (nominal 12 volts, never stepped up inside the vehicle), joined with red and black Anderson Powerpoles that are attached to each other. Scout vehicles carry no onboard power, and a vehicle cut off from the surface must stop within 5 seconds. (Scout manual ELEC-001S, 002S, 003S, 006S, 009S, 010S.)"
+        },
+        {
+          "code": "ELEC.3",
+          "name": "Wire neatly and relieve the strain",
+          "paraphrase": "The control box is tidy, with nothing loose, and wires get abrasion protection and real strain relief where they enter the box and the vehicle, at both ends of the tether. Tape, glue and zip ties do not count. The vehicle should survive being lifted by its tether. Inspectors have called this out as an emphasis. (Scout manual ELEC-011S, ELEC-012S.)"
+        },
+        {
+          "code": "ELEC.4",
+          "name": "Waterproof every connection",
+          "paraphrase": "Everything electrical that goes in the water is sealed with something like silicone RTV, hot melt, epoxy, self-vulcanizing tape or a housing. Electrical tape alone is not a seal, and motors that are not waterproofed are not allowed. The water is treated as conductive. (Scout manual ELEC-008S, OPER-002.)"
+        },
+        {
+          "code": "ELEC.5",
+          "name": "Power a float from the surface",
+          "paraphrase": "A float (a non-ROV device) that uses electricity is powered from the surface down its tether, at up to 12 volts and 5 amps, through its own 5 amp fuse and attached Powerpoles. No cameras are allowed on it. (Scout manual ELEC-NRD-001 to 004.)"
+        }
+      ]
+    },
+    {
+      "code": "MECH",
+      "name": "Mechanical",
+      "items": [
+        {
+          "code": "MECH.1",
+          "name": "Size the tether and vehicle for the venue",
+          "paraphrase": "The vehicle must work in a pool up to 4 meters deep and reach tasks up to 6 meters from the poolside, and the power supply can sit up to 2 meters from the station, so the tether has to be long enough and its voltage drop has to be tolerable. (Scout manual MECH-001S, ELEC-007S.)"
+        },
+        {
+          "code": "MECH.2",
+          "name": "Launch and recover by hand",
+          "paraphrase": "The crew has to carry the whole vehicle, put it in the water and take it out by hand. No lifts or levers. (Scout manual MECH-002S.)"
+        },
+        {
+          "code": "MECH.3",
+          "name": "Guard the propellers",
+          "paraphrase": "Propellers are enclosed in the frame or shrouded. A vehicle with exposed propellers does not pass. (Scout manual MECH-003S.)"
+        }
+      ]
+    },
+    {
+      "code": "FLUID",
+      "name": "Fluid power",
+      "items": [
+        {
+          "code": "FLUID.1",
+          "name": "Use fluid power within the rules",
+          "level": "Scout",
+          "paraphrase": "A vehicle that uses hydraulics or pneumatics needs a diagram. In Scout only manual pumps (hand or foot) may push fluid down the tether, the fluid is water or air, there are no pressure accumulators, and pressure inside a container never exceeds the pool's, so air containers must be vented. (Scout manual FLUID-001S to 003S.)"
+        }
+      ]
+    },
+    {
+      "code": "CTRL",
+      "name": "Control and cameras",
+      "items": [
+        {
+          "code": "CTRL.1",
+          "name": "Build a control system a pilot can drive",
+          "paraphrase": "A surface control system (a control box, joystick or laptop) turns what the pilot does into signals for the thrusters and tools through the tether, and it is judged on workmanship. MATE sets no software requirement, so how it works is the company's design. (Scout manual 3.7.)"
+        },
+        {
+          "code": "CTRL.2",
+          "name": "Use cameras and monitors within the rules",
+          "level": "Scout optional",
+          "paraphrase": "Cameras are not required in Scout. If used, a company is limited to one monitor that it supplies, and every camera and the monitor run from the competition's 12 volt supply. No lasers in Scout. Regionals may not allow cameras at all. (Scout manual CAM-001S, CAM-002, 3.9.)"
+        }
+      ]
+    },
+    {
+      "code": "FLOAT",
+      "name": "The vertical profiling float",
+      "items": [
+        {
+          "code": "FLOAT.1",
+          "name": "Change depth with a buoyancy engine",
+          "paraphrase": "A float that moves fluid in and out to change its own density earns more points than one that uses another mechanism, and motors turning propellers do not count as a buoyancy engine. The task has appeared in the Scout and the Ranger and Pioneer manuals, with depths set by the venue. (Floats task description.)"
+        },
+        {
+          "code": "FLOAT.2",
+          "name": "Hold a depth",
+          "paraphrase": "The top of the float must stay within 0.33 meters of the target depth for 30 seconds, then continue the profile. If the depth sensor is not at the top, the program has to allow for the offset. (Floats task description.)"
+        },
+        {
+          "code": "FLOAT.3",
+          "name": "Send the defined data packet",
+          "paraphrase": "Each packet carries the company number, a time, pressure or depth, temperature and light, in stated units (kilopascals or meters, degrees Celsius, any light unit), all tied to one time. MATE says what the data is. The company designs how it is sent and the receiver that shows it, knowing other companies transmit at the same time. (Floats task description.)"
+        },
+        {
+          "code": "FLOAT.4",
+          "name": "Take readings on the way up",
+          "paraphrase": "On the ascent the float records depth, temperature and light at fixed steps (every 0.5 meters) all the way to the surface, within the allowed error, without touching the pool bottom, which costs points. (Floats task description.)"
+        },
+        {
+          "code": "FLOAT.5",
+          "name": "Graph the data",
+          "paraphrase": "Turn the float's data into a temperature versus depth graph and a light versus depth graph, with depth running down the page as it does in the water. If the float did not work, the company graphs data MATE provides, so the skill is worth points either way. (Floats task description.)"
+        },
+        {
+          "code": "FLOAT.6",
+          "name": "Document the float",
+          "paraphrase": "A non-ROV device document, sent ahead, describes the design and operation, the battery design, the fuse size and how the float talks to the company's receiver, and shows that no safety rule is broken. At some regionals it is optional. (Floats task description, DOC-004.)"
+        }
+      ]
+    },
+    {
+      "code": "COMM",
+      "name": "Engineering and communication",
+      "items": [
+        {
+          "code": "COMM.1",
+          "name": "Write the company spec sheet",
+          "paraphrase": "One page with the company's details and the vehicle's: name, cost including donated items, size and weight, student hours, safety and special features, and photos. Up to 20 points, called an easy 20 for following the format. (Scout manual 5.1.)"
+        },
+        {
+          "code": "COMM.2",
+          "name": "Write the technical documentation",
+          "paraphrase": "A reference for judges and future team members covering the technical and safety aspects of the vehicle, the reasons behind design decisions, and a critical look at testing and troubleshooting, organized so graphics and data add to the text. Up to 50 points from each judge. (Scout manual 5.2.)"
+        },
+        {
+          "code": "COMM.3",
+          "name": "Give the engineering presentation",
+          "paraphrase": "A 5 to 10 minute technical brief delivered with the vehicle, no slides, followed by questions to the whole company. Every member must be ready to speak, and mentors may not take part. Judges look for critical thinking, creativity, engineering reasoning including build versus buy, and each person's own contribution. Up to 50 points. (Scout manual 5.3.)"
+        },
+        {
+          "code": "COMM.4",
+          "name": "Make the marketing display",
+          "paraphrase": "A display that presents technical information so a non-technical audience understands and cares. Up to 50 points. (Scout manual 5.4.)"
+        },
+        {
+          "code": "COMM.5",
+          "name": "Show corporate responsibility",
+          "paraphrase": "Mentoring newer teams, supporting local schools, presenting to community groups and engaging the media, scored on how many events, how continuous they are, and the measurable impact on the people reached. Up to 20 points. (Scout manual 5.5.)"
+        }
+      ]
+    },
+    {
+      "code": "TEAM",
+      "name": "Running the company",
+      "items": [
+        {
+          "code": "TEAM.1",
+          "name": "Organize the team as a company",
+          "paraphrase": "The competition asks teams to act as a start-up with named roles: a CEO, a CFO who watches the budget, someone for government and regulatory affairs who reads the rules, research and development, systems engineering, testing, operations, fundraising and marketing, and an ESG (environmental, social, governance) analyst. One person can hold more than one role. (Scout manual, Think of yourselves as entrepreneurs.)"
+        },
+        {
+          "code": "TEAM.2",
+          "name": "Know the rules and ask in the right form",
+          "paraphrase": "Every company is responsible for reading and obeying the whole manual and every posted ruling. Questions go to the competition forum, naming the spec code and the class, and values in the manual are thresholds unless the text says otherwise. Regional events may change requirements. (Scout manual 1.0.)"
+        },
+        {
+          "code": "TEAM.3",
+          "name": "Run the deck crew and do the work yourselves",
+          "paraphrase": "A product demonstration team of three or four company members operates the vehicle on the pool deck. All work and maintenance during operations is done by students, never by mentors or advisors. (Scout manual OPER-005, OPER-006.)"
+        },
+        {
+          "code": "TEAM.4",
+          "name": "Plan from the request for proposals",
+          "paraphrase": "The mission arrives as a context and need and a request for proposals. The team reads it, decides what to build and which points to chase out of a 400 point total (200 for the product demonstration plus a time bonus, 190 for engineering and communication, 10 for safety), and manages time and budget to get there. (Scout manual Part 1 and the scoring overview.)"
+        },
+        {
+          "code": "TEAM.5",
+          "name": "Fly the product demonstration",
+          "paraphrase": "The demonstration is one timed run, in general a 3 minute set-up, a 10 minute performance and a 2 minute take-down. A company may bring the vehicle to the surface to adjust or troubleshoot mid-run. The tasks change every year and by class, so what stays the same is driving precisely, working as a deck crew, and adapting. Up to 200 points plus a time bonus. (Scout manual Part 1.)"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MATE ROV Competition: Cross-Reference by Competency</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/assets/img/standards/favicon.svg">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa;
+  --ek-bg: #fbfbfc;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+    --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+}
+:root[data-theme="dark"] { --bg: #0d1117; --fg: #e6edf3; --muted: #8b949e; --border: #30363d;
+  --accent: #4493f8; --code-bg: #161b22; --topic-bg: #161b22; --ek-bg: #11151a; }
+:root[data-theme="light"] { --bg: #ffffff; --fg: #1b1f23; --muted: #57606a; --border: #d0d7de;
+  --accent: #0969da; --code-bg: #f6f8fa; --topic-bg: #f6f8fa; --ek-bg: #fbfbfc; }
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.layout { display: flex; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto; flex: 0 0 260px;
+  padding: 1rem; border-right: 1px solid var(--border); font-size: 0.85rem;
+}
+nav.toc h2 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 1.2rem 0 .4rem; }
+nav.toc ul { list-style: none; margin: 0; padding: 0; }
+nav.toc li a { display: block; padding: .15rem 0; color: var(--fg); text-decoration: none; }
+nav.toc li a:hover { color: var(--accent); }
+nav.toc .topic-link { padding-left: .75rem; color: var(--muted); font-size: .82em; }
+main { flex: 1 1 auto; min-width: 0; padding: 1.5rem 2rem 6rem; }
+h1 { margin-top: 0; }
+.provenance {
+  border: 1px solid var(--border); background: var(--code-bg); border-radius: 8px;
+  padding: .9rem 1.1rem; font-size: .92rem; color: var(--muted);
+}
+.provenance strong { color: var(--fg); }
+#search {
+  width: 100%; padding: .6rem .8rem; font-size: 1rem; border: 1px solid var(--border);
+  border-radius: 8px; background: var(--bg); color: var(--fg); margin: 1rem 0;
+}
+.code-badge {
+  display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .78em; background: var(--code-bg); border: 1px solid var(--border);
+  border-radius: 5px; padding: .05em .4em; color: var(--accent); white-space: nowrap;
+}
+.weight { font-size: .78rem; color: var(--muted); font-weight: normal; }
+.topic-weight-estimate { cursor: help; border-bottom: 1px dotted var(--muted); }
+.page-toggles { display: flex; flex-wrap: wrap; gap: .4em 1.2em; margin: 0 0 1.2rem; }
+.page-toggle-label {
+  display: inline-flex; align-items: center; gap: .4em; font-size: .82rem; color: var(--muted);
+}
+.page-toggle-label input { margin: 0; }
+body.hide-topic-weights .topic-weight-estimate { display: none; }
+body.hide-carriers .meta, body.hide-carriers .meta-list { display: none; }
+body.hide-los .lo { display: none; }
+.anchor-link {
+  color: var(--muted); text-decoration: none; margin-right: .35em; font-weight: normal;
+  opacity: .5;
+}
+.anchor-link:hover { opacity: 1; color: var(--accent); }
+section.big-idea { margin-top: 3rem; padding-top: 1rem; border-top: 3px solid var(--border); }
+section.big-idea > h2 { font-size: 1.5rem; }
+.carrier-line { color: var(--muted); font-size: .85rem; margin: .2rem 0 1rem; }
+.subconcept-heading { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 2rem 0 .5rem; }
+.tier-heading { font-size: .82rem; font-weight: 600; color: var(--accent); margin: 1rem 0 .4rem 1rem; }
+.topic {
+  background: var(--topic-bg); border: 1px solid var(--border); border-radius: 10px;
+  padding: 1rem 1.25rem; margin: 1.25rem 0;
+}
+.topic h3 { margin: 0 0 .3rem; font-size: 1.1rem; }
+.topic .paraphrase { margin: .3rem 0; }
+.topic .meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; }
+.topic .meta-list { list-style: none; font-size: .8rem; color: var(--muted); margin: .2rem 0 .8rem; padding: 0; }
+.topic .meta-list li { margin: .3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+.topic .meta-list strong { color: var(--fg); }
+.meta-strength { font-style: italic; }
+.topic .meta-list .meta-note {
+  text-indent: 0; font-size: .92em; border-left: 3px solid var(--border);
+  padding-left: .6rem; margin: .35rem 0 .1rem;
+}
+.topic .note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .5rem 0; }
+.lo { margin: .9rem 0 .9rem .2rem; }
+.lo h4 { margin: 0 0 .25rem; font-size: 1rem; font-weight: 600; }
+.lo h4 .lo-text { font-weight: normal; color: var(--fg); }
+ul.ek-list { list-style: none; margin: .3rem 0 0; padding: 0; }
+ul.ek-list li {
+  background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: .35rem .6rem; margin: .3rem 0 .3rem 1.1rem; font-size: .92rem;
+}
+.item-meta { font-size: .8rem; color: var(--muted); margin: .2rem 0 .2rem 1.1rem; }
+.item-note { font-size: .82rem; color: var(--muted); border-left: 3px solid var(--border); padding-left: .6rem; margin: .3rem 0 .5rem 1.1rem; }
+.practice-table { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; }
+.practice-table th, .practice-table td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--border); }
+.practice-table th { color: var(--muted); font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+.hidden { display: none !important; }
+footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+:target { scroll-margin-top: 1rem; outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 6px; }
+
+.site-menu { position: absolute; top: 0.5em; right: 0.7em; z-index: 20; }
+.site-menu .site-menu-trigger { position: absolute; opacity: 0; pointer-events: none; }
+.site-menu .site-menu-icon {
+  position: relative; z-index: 2; display: block; font-size: 1.3em; line-height: 1;
+  padding: .2em .4em; border-radius: 4px; color: var(--fg); cursor: pointer; user-select: none;
+}
+.site-menu .site-menu-icon:hover { background: var(--code-bg); }
+.site-menu .site-menu-backdrop {
+  display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 1; cursor: default;
+}
+.site-menu .site-menu-trigger:checked ~ .site-menu-backdrop { display: block; }
+.site-menu .site-menu-panel {
+  display: none; position: absolute; top: 100%; right: 0; margin-top: .3em; min-width: 8em; z-index: 2; max-height: calc(100vh - 4rem); overflow-y: auto;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+.site-menu .site-menu-panel a {
+  display: flex; align-items: center; gap: .6em; padding: .5em 1em; color: var(--fg);
+  text-decoration: none; white-space: nowrap;
+}
+.site-menu .site-menu-panel a:hover { background: var(--code-bg); }
+.site-menu .site-menu-trigger:checked ~ .site-menu-panel { display: block; }
+.site-menu .site-menu-trigger:focus ~ .site-menu-icon { outline: 2px solid var(--accent); }
+.site-menu .site-menu-item-icon {
+  width: 1.1em; height: 1.1em; flex: 0 0 auto; display: inline-block; object-fit: contain;
+}
+</style>
+</head>
+<body>
+<div class="site-menu">
+<input type="checkbox" id="site-menu-trigger" class="site-menu-trigger">
+<label for="site-menu-trigger" class="site-menu-icon" aria-label="Menu">&#9776;</label>
+<label for="site-menu-trigger" class="site-menu-backdrop" aria-hidden="true"></label>
+<nav class="site-menu-panel">
+<a href="/"><img src="/assets/img/favicon.svg" class="site-menu-item-icon" alt="">Home (learn.porttack.com)</a>
+<a href="/turtlelab/"><img src="/turtlelab/images/favicon.svg" class="site-menu-item-icon" alt="">TurtleLab</a>
+<a href="/turtle-lessons/"><img src="/assets/img/turtlelessons/favicon.svg" class="site-menu-item-icon" alt="">TurtleLab Lessons</a>
+<a href="/python3d/studio/"><img src="/assets/img/python3d/studio-favicon.svg" class="site-menu-item-icon" alt="">Python in 3D Studio</a>
+<a href="/python3d/"><img src="/assets/img/python3d/lessons-favicon.svg" class="site-menu-item-icon" alt="">Python in 3D Lessons</a>
+<a href="/pico/"><img src="/assets/img/pico/favicon.svg" class="site-menu-item-icon" alt="">MicroPython on Pi Pico and Projects</a>
+<a href="/picoprojects/"><img src="/assets/img/pico/projects-favicon.svg" class="site-menu-item-icon" alt="">Pi Pico Projects</a>
+<a href="/electronics101/"><img src="/assets/img/electronics101/favicon.svg" class="site-menu-item-icon" alt="">Electronics 101</a>
+<a href="/working-in-python/"><img src="/assets/img/working-in-python/favicon.svg" class="site-menu-item-icon" alt="">Working in Python</a>
+<a href="/cs50-psets/"><img src="/assets/img/cs50psets/favicon.svg" class="site-menu-item-icon" alt="">CS50 Problems</a>
+<a href="/unplugged/"><img src="/assets/img/unplugged/favicon.png" class="site-menu-item-icon" alt="">CS Unplugged</a>
+<a href="/movies/"><img src="/assets/img/movies/favicon.svg" class="site-menu-item-icon" alt="">Student Movies</a>
+<a href="/rovrobotics/"><img src="/assets/img/rovrobotics/favicon.svg" class="site-menu-item-icon" alt="">ROV Robotics</a>
+<a href="/openscad/"><img src="/assets/img/openscad/favicon.svg" class="site-menu-item-icon" alt="">OpenSCAD</a>
+<a href="/logo/"><img src="/assets/img/jslogo/favicon.svg" class="site-menu-item-icon" alt="">Logo</a>
+<a href="/ap-csp-reference/"><img src="/assets/img/ap-csp-reference/favicon.svg" class="site-menu-item-icon" alt="">AP CSP Reference</a>
+<a href="/standards/"><img src="/assets/img/standards/favicon.svg" class="site-menu-item-icon" alt="">Standards</a>
+<a href="/about/"><span class="site-menu-item-icon" aria-hidden="true"></span>About this site</a>
+<a href="/license/"><span class="site-menu-item-icon" aria-hidden="true"></span>Licensing</a>
+</nav>
+</div>
+<div class="layout">
+<nav class="toc" aria-label="Table of contents">
+<ul>
+<li class="topic-link"><a href="#grp-SAFE">SAFE Safety and inspection</a></li>
+<li class="topic-link"><a href="#grp-ELEC">ELEC Electrical</a></li>
+<li class="topic-link"><a href="#grp-MECH">MECH Mechanical</a></li>
+<li class="topic-link"><a href="#grp-FLUID">FLUID Fluid power</a></li>
+<li class="topic-link"><a href="#grp-CTRL">CTRL Control and cameras</a></li>
+<li class="topic-link"><a href="#grp-FLOAT">FLOAT The vertical profiling float</a></li>
+<li class="topic-link"><a href="#grp-COMM">COMM Engineering and communication</a></li>
+<li class="topic-link"><a href="#grp-TEAM">TEAM Running the company</a></li>
+</ul>
+</nav>
+<main>
+<h1>MATE ROV Competition: Cross-Reference by Competency</h1>
+<div class="provenance"><strong>What this is.</strong> A locally built index of <em>MATE ROV Competition: skills a team needs, compiled from the competition manuals</em> (not tied to a year; compiled from the 2026 Scout class manual and the 2027 MATE Floats! task description for the Ranger and Pioneer classes). <strong>Scope.</strong> This is a cross-reference catalog, not a standard. MATE publishes no standards of its own, so each entry is this project's reading of what the competition manuals require and score, written so a teacher can see what has to be taught. Each entry cites the manual's own spec codes where it has them. Built from the Scout manual and the Floats task description; Ranger, Navigator and Pioneer manuals have not been read yet, so limits that differ by class (current, onboard power, cameras, fluid power) are described for Scout and tagged 'Scout' where the Scout rule is the specific one. Mission tasks change every year, so no yearly mission task is cataloged except the vertical profiling float, which keeps coming back. Points are Scout points out of 400. <strong>Codes.</strong> Codes are this project's own: an area (SAFE, ELEC, MECH, FLUID, CTRL, FLOAT, COMM, TEAM) and a number. They are not MATE's. MATE's own spec codes (ELEC-004S and so on) appear in each entry's text, and the 'S' on the end marks a Scout rule. <strong>What this is not.</strong> The competition manuals are (c) MATE ROV Competition under a Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 license, so nothing here copies their text: every entry is a paraphrase written for this project, with the spec codes cited as identifiers only. Check the current manual for the real limits before building anything. <strong>See also.</strong> <a href="mate-rov-standards-reference.html">The competency list</a> and <a href="/standards/?report=mate_rov">the same links by standard</a>.</div>
+<input id="search" type="search" placeholder="Filter by code or text…" aria-label="Filter standards">
+
+<style>
+.xref-intro { max-width: 46rem; }
+.xref-summary { width: 100%; border-collapse: collapse; margin: 1rem 0 2rem; font-size: .9rem; }
+.xref-summary th, .xref-summary td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+.xref-summary th { color: var(--muted); font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+.xref-summary .none { color: var(--muted); }
+.xref-fw { font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: .9rem 0 .2rem 1.1rem; }
+.xref-list { list-style: none; margin: 0; padding: 0; }
+.xref-list li { margin: .3rem 0 .3rem 1.1rem; padding: .35rem .6rem; background: var(--ek-bg); border: 1px solid var(--border); border-radius: 6px; font-size: .9rem; }
+.xref-where { margin: .6rem 0 0 1.1rem; font-size: .88rem; }
+.xref-where.none { color: var(--muted); }
+.strength { font-size: .78rem; color: var(--muted); }
+@media print {
+  .toc, #search, .page-toggles { display: none !important; }
+  .layout { display: block !important; }
+  .lo { break-inside: avoid; }
+  .xref-list li { break-inside: avoid; }
+}
+</style>
+<div class="xref-intro"><p>Each competency below is something a MATE team has to be able to do. Under it are the standards it draws on, with each standard's wording, how fully that standard describes the competency (<strong>strong</strong>, <strong>partial</strong> or <strong>related</strong>), and why. Under that is where this site teaches it, if a person has checked a lesson against it.</p><p><strong>4 of 29</strong> competencies are linked to a lesson here so far, and 67 standards links are listed. A strength says how well the <em>standard</em> matches the competency, not how well any lesson teaches it.</p></div>
+<h2>At a glance</h2>
+<table class="xref-summary"><thead><tr><th>Competency</th><th>Standards it draws on</th><th>Taught on this site</th></tr></thead><tbody>
+<tr><td><a href="#T-SAFE.1"><span class="code-badge">SAFE.1</span></a> Pass the safety inspection</td><td>3</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-SAFE.2"><span class="code-badge">SAFE.2</span></a> Draw the system interconnection diagram (SID)</td><td>3</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-ELEC.1"><span class="code-badge">ELEC.1</span></a> Size the fuse and keep to the current limit</td><td>2</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-ELEC.2"><span class="code-badge">ELEC.2</span></a> Connect to power the way the rules say</td><td>1</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-ELEC.3"><span class="code-badge">ELEC.3</span></a> Wire neatly and relieve the strain</td><td>2</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-ELEC.4"><span class="code-badge">ELEC.4</span></a> Waterproof every connection</td><td>2</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-ELEC.5"><span class="code-badge">ELEC.5</span></a> Power a float from the surface</td><td>1</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-MECH.1"><span class="code-badge">MECH.1</span></a> Size the tether and vehicle for the venue</td><td>1</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-MECH.2"><span class="code-badge">MECH.2</span></a> Launch and recover by hand</td><td>1</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-MECH.3"><span class="code-badge">MECH.3</span></a> Guard the propellers</td><td>1</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-FLUID.1"><span class="code-badge">FLUID.1</span></a> Use fluid power within the rules</td><td>1</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-CTRL.1"><span class="code-badge">CTRL.1</span></a> Build a control system a pilot can drive</td><td>3</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-CTRL.2"><span class="code-badge">CTRL.2</span></a> Use cameras and monitors within the rules</td><td><span class=none>none</span></td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-FLOAT.1"><span class="code-badge">FLOAT.1</span></a> Change depth with a buoyancy engine</td><td>1</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-FLOAT.2"><span class="code-badge">FLOAT.2</span></a> Hold a depth</td><td>4</td><td><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a>, <a href="https://learn.porttack.com/cs50-psets/float-pid/">Unit 14 (Profiling Float: PID)</a> <span class="meta-strength">(partial)</span></td></tr>
+<tr><td><a href="#T-FLOAT.3"><span class="code-badge">FLOAT.3</span></a> Send the defined data packet</td><td>3</td><td><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(related)</span></td></tr>
+<tr><td><a href="#T-FLOAT.4"><span class="code-badge">FLOAT.4</span></a> Take readings on the way up</td><td>3</td><td><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(related)</span></td></tr>
+<tr><td><a href="#T-FLOAT.5"><span class="code-badge">FLOAT.5</span></a> Graph the data</td><td>3</td><td><strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(related)</span></td></tr>
+<tr><td><a href="#T-FLOAT.6"><span class="code-badge">FLOAT.6</span></a> Document the float</td><td>2</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-COMM.1"><span class="code-badge">COMM.1</span></a> Write the company spec sheet</td><td>2</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-COMM.2"><span class="code-badge">COMM.2</span></a> Write the technical documentation</td><td>4</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-COMM.3"><span class="code-badge">COMM.3</span></a> Give the engineering presentation</td><td>3</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-COMM.4"><span class="code-badge">COMM.4</span></a> Make the marketing display</td><td>3</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-COMM.5"><span class="code-badge">COMM.5</span></a> Show corporate responsibility</td><td>2</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-TEAM.1"><span class="code-badge">TEAM.1</span></a> Organize the team as a company</td><td>6</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-TEAM.2"><span class="code-badge">TEAM.2</span></a> Know the rules and ask in the right form</td><td>1</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-TEAM.3"><span class="code-badge">TEAM.3</span></a> Run the deck crew and do the work yourselves</td><td>2</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-TEAM.4"><span class="code-badge">TEAM.4</span></a> Plan from the request for proposals</td><td>5</td><td><span class=none>not yet linked</span></td></tr>
+<tr><td><a href="#T-TEAM.5"><span class="code-badge">TEAM.5</span></a> Fly the product demonstration</td><td>2</td><td><span class=none>not yet linked</span></td></tr>
+</tbody></table>
+<div class="topic" id="grp-SAFE"><h3><a class="anchor-link" href="#grp-SAFE">#</a><span class="code-badge">SAFE</span> Safety and inspection</h3>
+<div class="lo" id="T-SAFE.1"><h4><a class="anchor-link" href="#T-SAFE.1">#</a><span class="code-badge">SAFE.1</span> Pass the safety inspection</h4>
+<p class="paraphrase">Before the vehicle (or the float) goes in the water for practice or a run, an inspector checks it against a rubric. A company gets up to three tries, and failing the third means no underwater tasks, though the engineering and communication scores are still open. Worth 10 of 400 points, and the first thing every other rule serves. (Scout manual 2.0 and 2.1.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-6.6">6.6</a> <span class="strength">(partial)</span> A safe, healthy workplace has to be actively maintained, not just assumed.<div class="item-note">Why: A safe workplace is something you actively keep up, and the inspection is the competition's version of that.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-10.2">10.2</a> <span class="strength">(related)</span> Every corner of the ICT sector comes with its own rules, regulations, and expectations to follow.<div class="item-note">Why: Following the rules and regulations of a technical field, here the competition's own rules.</div></li>
+</ul>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-HS-ETS1-3">HS-ETS1-3</a> <span class="strength">(related)</span> Judge a solution against prioritized criteria and the trade-offs among them (cost, safety, reliability, looks), including its social, cultural and environmental effects.<div class="item-note">Why: Safety is the criterion that outranks the others when trade-offs are judged.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-SAFE.2"><h4><a class="anchor-link" href="#T-SAFE.2">#</a><span class="code-badge">SAFE.2</span> Draw the system interconnection diagram (SID)</h4>
+<p class="paraphrase">A one page electrical diagram, hand drawn or made in CAD, that separates the surface systems from the vehicle and shows the main fuse with a standard fuse symbol and its amperage. It must be the company's own, not a copy of a kit's. A float gets its own. Without it the vehicle does not pass. (Scout manual 2.1.1, DOC-001.)</p>
+<div class="xref-fw">CSTA 2026</div><ul class="xref-list">
+<li><a class="code-badge" href="csta2026-standards-reference.html#T-HS-SYS-NT-34">HS-SYS-NT-34</a> <span class="strength">(related)</span> A network diagram shows both the physical pieces -- servers, routers, devices -- and the software running on them, and how all of it connects to get work done.<div class="item-note">Why: A diagram that shows both the physical parts and how they connect, as a network diagram does.</div></li>
+</ul>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-10.1">10.1</a> <span class="strength">(partial)</span> The ICT sector has its own terminology and practices worth being able to interpret and explain.<div class="item-note">Why: Reading and using the field's own terminology and symbols (ANSI, NEMA or IEC).</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C4.11">C4.11</a> <span class="strength">(related)</span> Development work needs documentation aimed at more than one audience -- comments for other programmers, manuals for users.<div class="item-note">Why: A diagram is documentation for a reader other than the person who built it.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+</div>
+<div class="topic" id="grp-ELEC"><h3><a class="anchor-link" href="#grp-ELEC">#</a><span class="code-badge">ELEC</span> Electrical</h3>
+<div class="lo" id="T-ELEC.1"><h4><a class="anchor-link" href="#T-ELEC.1">#</a><span class="code-badge">ELEC.1</span> Size the fuse and keep to the current limit</h4>
+<p class="paraphrase">One blade fuse (ATO or mini, with the standard color codes) goes on the positive line within 30 centimeters of the power connector. The class sets the ceiling (15 amps in Scout), so a team has to add up what its motors and tools can draw and pick a real fuse. One spare is allowed during a run. (Scout manual ELEC-004S, ELEC-005S.)</p>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-1">MS-ETS1-1</a> <span class="strength">(partial)</span> Spell out what a design problem has to achieve and what limits it (the criteria and constraints) in words precise enough that a solution can be tested against them, thinking about the people affected and the natural world.<div class="item-note">Why: A hard limit on current is a constraint the design has to be built around and tested against.</div></li>
+<li><a class="code-badge" href="ngss-standards-reference.html#T-HS-ETS1-3">HS-ETS1-3</a> <span class="strength">(related)</span> Judge a solution against prioritized criteria and the trade-offs among them (cost, safety, reliability, looks), including its social, cultural and environmental effects.<div class="item-note">Why: Choosing a fuse trades protection against nuisance trips.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-ELEC.2"><h4><a class="anchor-link" href="#T-ELEC.2">#</a><span class="code-badge">ELEC.2</span> Connect to power the way the rules say</h4>
+<p class="paraphrase">All power comes through one point from the competition supply (nominal 12 volts, never stepped up inside the vehicle), joined with red and black Anderson Powerpoles that are attached to each other. Scout vehicles carry no onboard power, and a vehicle cut off from the surface must stop within 5 seconds. (Scout manual ELEC-001S, 002S, 003S, 006S, 009S, 010S.)</p>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-1">MS-ETS1-1</a> <span class="strength">(partial)</span> Spell out what a design problem has to achieve and what limits it (the criteria and constraints) in words precise enough that a solution can be tested against them, thinking about the people affected and the natural world.<div class="item-note">Why: Voltage, source and shutdown time are criteria and constraints to design inside.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-ELEC.3"><h4><a class="anchor-link" href="#T-ELEC.3">#</a><span class="code-badge">ELEC.3</span> Wire neatly and relieve the strain</h4>
+<p class="paraphrase">The control box is tidy, with nothing loose, and wires get abrasion protection and real strain relief where they enter the box and the vehicle, at both ends of the tether. Tape, glue and zip ties do not count. The vehicle should survive being lifted by its tether. Inspectors have called this out as an emphasis. (Scout manual ELEC-011S, ELEC-012S.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-7.5">7.5</a> <span class="strength">(strong)</span> High-quality work applies to how a product or presentation is designed, not just built.<div class="item-note">Why: High quality work applies to how something is built and finished, not only whether it works.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C9.2">C9.2</a> <span class="strength">(partial)</span> Installing equipment and assembling hardware both call for the right tools and testing.<div class="item-note">Why: Assembling hardware takes the right tools and testing.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-ELEC.4"><h4><a class="anchor-link" href="#T-ELEC.4">#</a><span class="code-badge">ELEC.4</span> Waterproof every connection</h4>
+<p class="paraphrase">Everything electrical that goes in the water is sealed with something like silicone RTV, hot melt, epoxy, self-vulcanizing tape or a housing. Electrical tape alone is not a seal, and motors that are not waterproofed are not allowed. The water is treated as conductive. (Scout manual ELEC-008S, OPER-002.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C9.2">C9.2</a> <span class="strength">(partial)</span> Installing equipment and assembling hardware both call for the right tools and testing.<div class="item-note">Why: Assembling hardware takes the right tools and testing, here a seal that survives a season.</div></li>
+</ul>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-1">MS-ETS1-1</a> <span class="strength">(related)</span> Spell out what a design problem has to achieve and what limits it (the criteria and constraints) in words precise enough that a solution can be tested against them, thinking about the people affected and the natural world.<div class="item-note">Why: A conductive, wet operating environment is a constraint on every connection.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-ELEC.5"><h4><a class="anchor-link" href="#T-ELEC.5">#</a><span class="code-badge">ELEC.5</span> Power a float from the surface</h4>
+<p class="paraphrase">A float (a non-ROV device) that uses electricity is powered from the surface down its tether, at up to 12 volts and 5 amps, through its own 5 amp fuse and attached Powerpoles. No cameras are allowed on it. (Scout manual ELEC-NRD-001 to 004.)</p>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-1">MS-ETS1-1</a> <span class="strength">(partial)</span> Spell out what a design problem has to achieve and what limits it (the criteria and constraints) in words precise enough that a solution can be tested against them, thinking about the people affected and the natural world.<div class="item-note">Why: The float's power limits are constraints on its design.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+</div>
+<div class="topic" id="grp-MECH"><h3><a class="anchor-link" href="#grp-MECH">#</a><span class="code-badge">MECH</span> Mechanical</h3>
+<div class="lo" id="T-MECH.1"><h4><a class="anchor-link" href="#T-MECH.1">#</a><span class="code-badge">MECH.1</span> Size the tether and vehicle for the venue</h4>
+<p class="paraphrase">The vehicle must work in a pool up to 4 meters deep and reach tasks up to 6 meters from the poolside, and the power supply can sit up to 2 meters from the station, so the tether has to be long enough and its voltage drop has to be tolerable. (Scout manual MECH-001S, ELEC-007S.)</p>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-1">MS-ETS1-1</a> <span class="strength">(partial)</span> Spell out what a design problem has to achieve and what limits it (the criteria and constraints) in words precise enough that a solution can be tested against them, thinking about the people affected and the natural world.<div class="item-note">Why: The venue's dimensions are constraints that set the design.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-MECH.2"><h4><a class="anchor-link" href="#T-MECH.2">#</a><span class="code-badge">MECH.2</span> Launch and recover by hand</h4>
+<p class="paraphrase">The crew has to carry the whole vehicle, put it in the water and take it out by hand. No lifts or levers. (Scout manual MECH-002S.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-6.4">6.4</a> <span class="strength">(related)</span> Lifting, bending, and moving equipment safely protects the person doing it.<div class="item-note">Why: Lifting and moving equipment safely protects the person doing it.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-MECH.3"><h4><a class="anchor-link" href="#T-MECH.3">#</a><span class="code-badge">MECH.3</span> Guard the propellers</h4>
+<p class="paraphrase">Propellers are enclosed in the frame or shrouded. A vehicle with exposed propellers does not pass. (Scout manual MECH-003S.)</p>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-HS-ETS1-3">HS-ETS1-3</a> <span class="strength">(partial)</span> Judge a solution against prioritized criteria and the trade-offs among them (cost, safety, reliability, looks), including its social, cultural and environmental effects.<div class="item-note">Why: A safety criterion that has to be met before anything else is traded.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+</div>
+<div class="topic" id="grp-FLUID"><h3><a class="anchor-link" href="#grp-FLUID">#</a><span class="code-badge">FLUID</span> Fluid power</h3>
+<div class="lo" id="T-FLUID.1"><h4><a class="anchor-link" href="#T-FLUID.1">#</a><span class="code-badge">FLUID.1</span> Use fluid power within the rules <span class="weight">(Scout)</span></h4>
+<p class="paraphrase">A vehicle that uses hydraulics or pneumatics needs a diagram. In Scout only manual pumps (hand or foot) may push fluid down the tether, the fluid is water or air, there are no pressure accumulators, and pressure inside a container never exceeds the pool's, so air containers must be vented. (Scout manual FLUID-001S to 003S.)</p>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-1">MS-ETS1-1</a> <span class="strength">(related)</span> Spell out what a design problem has to achieve and what limits it (the criteria and constraints) in words precise enough that a solution can be tested against them, thinking about the people affected and the natural world.<div class="item-note">Why: The rules are constraints on what a design may do.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+</div>
+<div class="topic" id="grp-CTRL"><h3><a class="anchor-link" href="#grp-CTRL">#</a><span class="code-badge">CTRL</span> Control and cameras</h3>
+<div class="lo" id="T-CTRL.1"><h4><a class="anchor-link" href="#T-CTRL.1">#</a><span class="code-badge">CTRL.1</span> Build a control system a pilot can drive</h4>
+<p class="paraphrase">A surface control system (a control box, joystick or laptop) turns what the pilot does into signals for the thrusters and tools through the tether, and it is judged on workmanship. MATE sets no software requirement, so how it works is the company's design. (Scout manual 3.7.)</p>
+<div class="xref-fw">California CS</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-cs-standards-reference.html#S-9-12.AP.15">9-12.AP.15</a> <span class="strength">(related)</span> A program built around events -- a button press, a timer -- responds to things happening rather than running start to finish in one line.<div class="item-note">Why: A program that responds to events, such as a joystick moving, instead of running start to finish.</div></li>
+</ul>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C9.3">C9.3</a> <span class="strength">(partial)</span> Hardware is what actually captures input, processes it, and acts on it.<div class="item-note">Why: Hardware that captures input, processes it and acts on it.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C9.5">C9.5</a> <span class="strength">(partial)</span> A microcontroller can be programmed to run a device or a robot.<div class="item-note">Why: A microcontroller or computer programmed to run a device or a robot.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-CTRL.2"><h4><a class="anchor-link" href="#T-CTRL.2">#</a><span class="code-badge">CTRL.2</span> Use cameras and monitors within the rules <span class="weight">(Scout optional)</span></h4>
+<p class="paraphrase">Cameras are not required in Scout. If used, a company is limited to one monitor that it supplies, and every camera and the monitor run from the competition's 12 volt supply. No lasers in Scout. Regionals may not allow cameras at all. (Scout manual CAM-001S, CAM-002, 3.9.)</p>
+<div class="item-meta">No standards in the catalogs fit this competency.</div>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+</div>
+<div class="topic" id="grp-FLOAT"><h3><a class="anchor-link" href="#grp-FLOAT">#</a><span class="code-badge">FLOAT</span> The vertical profiling float</h3>
+<div class="lo" id="T-FLOAT.1"><h4><a class="anchor-link" href="#T-FLOAT.1">#</a><span class="code-badge">FLOAT.1</span> Change depth with a buoyancy engine</h4>
+<p class="paraphrase">A float that moves fluid in and out to change its own density earns more points than one that uses another mechanism, and motors turning propellers do not count as a buoyancy engine. The task has appeared in the Scout and the Ranger and Pioneer manuals, with depths set by the venue. (Floats task description.)</p>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-2">MS-ETS1-2</a> <span class="strength">(partial)</span> Compare several possible solutions to the same problem in a systematic way, judging how well each one meets the criteria and constraints.<div class="item-note">Why: The scoring asks a team to compare two ways of solving the same problem against stated criteria.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-FLOAT.2"><h4><a class="anchor-link" href="#T-FLOAT.2">#</a><span class="code-badge">FLOAT.2</span> Hold a depth</h4>
+<p class="paraphrase">The top of the float must stay within 0.33 meters of the target depth for 30 seconds, then continue the profile. If the depth sensor is not at the top, the program has to allow for the offset. (Floats task description.)</p>
+<div class="xref-fw">AP CSP</div><ul class="xref-list">
+<li><a class="code-badge" href="apcsp-standards-reference.html#T-3.6">3.6</a> <strong>Conditionals</strong> <span class="strength">(partial)</span> An if-statement lets a program take one path or another depending on whether a condition holds.<div class="item-note">Why: The float's decision at each moment is a conditional on its depth.</div></li>
+<li><a class="code-badge" href="apcsp-standards-reference.html#T-3.8">3.8</a> <strong>Iteration</strong> <span class="strength">(related)</span> Repeating a block of statements, either a fixed number of times or until some condition changes, is how a program does the same kind of work over and over.<div class="item-note">Why: The decision repeats every reading until the hold is done.</div></li>
+</ul>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C9.5">C9.5</a> <span class="strength">(partial)</span> A microcontroller can be programmed to run a device or a robot.<div class="item-note">Why: A microcontroller programmed to run a device.</div></li>
+</ul>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-HS-ETS1-4">HS-ETS1-4</a> <span class="strength">(related)</span> Use a computer simulation to see how a proposed solution behaves across the range of conditions it could face, as a way to test and refine it.<div class="item-note">Why: A computer simulation is a natural way to test a controller before the pool.</div></li>
+</ul>
+<div class="xref-where">Taught on this site: <strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a>, <a href="https://learn.porttack.com/cs50-psets/float-pid/">Unit 14 (Profiling Float: PID)</a> <span class="meta-strength">(partial)</span><div class="item-note">Profiling Float: PID has the student build the controller that holds the top of a float at 2.0 meters, within 0.33 meters, for 30 seconds in a row, tested in nine simulated pools with a bias, noise and a slow motor. Profiling Float has the student judge whether a float held. Partial because it is a simulated float: no buoyancy hardware, no real sensor, and no allowing for a sensor that is not at the top of the float (only a Going Further item in Profiling Float).</div></div>
+</div>
+<div class="lo" id="T-FLOAT.3"><h4><a class="anchor-link" href="#T-FLOAT.3">#</a><span class="code-badge">FLOAT.3</span> Send the defined data packet</h4>
+<p class="paraphrase">Each packet carries the company number, a time, pressure or depth, temperature and light, in stated units (kilopascals or meters, degrees Celsius, any light unit), all tied to one time. MATE says what the data is. The company designs how it is sent and the receiver that shows it, knowing other companies transmit at the same time. (Floats task description.)</p>
+<div class="xref-fw">CSTA 2026</div><ul class="xref-list">
+<li><a class="code-badge" href="csta2026-standards-reference.html#T-HS-DAT-DC-22">HS-DAT-DC-22</a> <span class="strength">(partial)</span> A data dictionary spells out, for every column in a dataset, its name, its type, and the values it's allowed to hold -- plus how columns depend on each other, like a skipped survey question leaving a related answer blank.<div class="item-note">Why: A data dictionary that names each field, its type and the values it may hold, which is what the packet definition is.</div></li>
+</ul>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C4.7">C4.7</a> <span class="strength">(partial)</span> Data structures, arrays, objects, files, and databases are all ways of organizing a program's data.<div class="item-note">Why: Records of values organized so a program can read them.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C4.2">C4.2</a> <span class="strength">(related)</span> Programming languages and protocols interact -- client-side code, server-side code, and a query language reaching into a database are all pieces of the same system.<div class="item-note">Why: Two programs, the float's and the receiver's, have to agree on a protocol.</div></li>
+</ul>
+<div class="xref-where">Taught on this site: <strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(related)</span><div class="item-note">Profiling Float: the student reads and judges a log of packets, but each packet has only a time and a depth. The company number, temperature, light and units of the real defined packet are not part of what the student writes, and nothing is transmitted.</div></div>
+</div>
+<div class="lo" id="T-FLOAT.4"><h4><a class="anchor-link" href="#T-FLOAT.4">#</a><span class="code-badge">FLOAT.4</span> Take readings on the way up</h4>
+<p class="paraphrase">On the ascent the float records depth, temperature and light at fixed steps (every 0.5 meters) all the way to the surface, within the allowed error, without touching the pool bottom, which costs points. (Floats task description.)</p>
+<div class="xref-fw">AP CSP</div><ul class="xref-list">
+<li><a class="code-badge" href="apcsp-standards-reference.html#T-3.8">3.8</a> <strong>Iteration</strong> <span class="strength">(partial)</span> Repeating a block of statements, either a fixed number of times or until some condition changes, is how a program does the same kind of work over and over.<div class="item-note">Why: Repeating the same measurement at every step of an ascent.</div></li>
+<li><a class="code-badge" href="apcsp-standards-reference.html#T-2.3">2.3</a> <strong>Extracting Information from Data</strong> <span class="strength">(related)</span> Raw data becomes information once a program finds the patterns in it, and real data sets are rarely clean enough to do that without some processing first.<div class="item-note">Why: Raw readings become information only once a program organizes them.</div></li>
+</ul>
+<div class="xref-fw">CSTA 2026</div><ul class="xref-list">
+<li><a class="code-badge" href="csta2026-standards-reference.html#T-HS-DAT-DC-24">HS-DAT-DC-24</a> <span class="strength">(related)</span> There's more than one way to check that a dataset's values are the right type and fall in a sensible range, and weighing those approaches against each other is its own skill.<div class="item-note">Why: Checking that readings are the right type and fall in a sensible range.</div></li>
+</ul>
+<div class="xref-where">Taught on this site: <strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(related)</span><div class="item-note">Profiling Float: reading the packets for the five depths on the way up is the extra credit item (rungs), not the main problem.</div></div>
+</div>
+<div class="lo" id="T-FLOAT.5"><h4><a class="anchor-link" href="#T-FLOAT.5">#</a><span class="code-badge">FLOAT.5</span> Graph the data</h4>
+<p class="paraphrase">Turn the float's data into a temperature versus depth graph and a light versus depth graph, with depth running down the page as it does in the water. If the float did not work, the company graphs data MATE provides, so the skill is worth points either way. (Floats task description.)</p>
+<div class="xref-fw">AP CSP</div><ul class="xref-list">
+<li><a class="code-badge" href="apcsp-standards-reference.html#T-2.3">2.3</a> <strong>Extracting Information from Data</strong> <span class="strength">(partial)</span> Raw data becomes information once a program finds the patterns in it, and real data sets are rarely clean enough to do that without some processing first.<div class="item-note">Why: Finding the pattern in a data set.</div></li>
+</ul>
+<div class="xref-fw">CSTA 2026</div><ul class="xref-list">
+<li><a class="code-badge" href="csta2026-standards-reference.html#T-HS-DAT-DI-25">HS-DAT-DI-25</a> <span class="strength">(strong)</span> Turning a dataset with several variables into a chart -- a scatter plot, a stacked bar chart -- is how a question about that data gets answered visually.<div class="item-note">Why: Turning a dataset into a chart to answer a question.</div></li>
+</ul>
+<div class="xref-fw">California CS</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-cs-standards-reference.html#S-9-12.DA.10">9-12.DA.10</a> <span class="strength">(partial)</span> Turning a data set into a visualization is itself a design choice that shapes what other people take away from it.<div class="item-note">Why: How a visualization is built shapes what a reader takes from it, for example which way depth runs.</div></li>
+</ul>
+<div class="xref-where">Taught on this site: <strong>CS50 Problems:</strong> <a href="https://learn.porttack.com/cs50-psets/float-profile/">Unit 13 (Profiling Float)</a> <span class="meta-strength">(related)</span><div class="item-note">Profiling Float: the student reads real temperature against depth graphs from Argo floats in the explorer but does not make a graph.</div></div>
+</div>
+<div class="lo" id="T-FLOAT.6"><h4><a class="anchor-link" href="#T-FLOAT.6">#</a><span class="code-badge">FLOAT.6</span> Document the float</h4>
+<p class="paraphrase">A non-ROV device document, sent ahead, describes the design and operation, the battery design, the fuse size and how the float talks to the company's receiver, and shows that no safety rule is broken. At some regionals it is optional. (Floats task description, DOC-004.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C4.11">C4.11</a> <span class="strength">(partial)</span> Development work needs documentation aimed at more than one audience -- comments for other programmers, manuals for users.<div class="item-note">Why: Documentation written for someone other than the builder.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C2.5">C2.5</a> <span class="strength">(related)</span> Requirements and possible solutions both need to be worked out and written down before they can be built.<div class="item-note">Why: Requirements and the solution both need to be written down.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+</div>
+<div class="topic" id="grp-COMM"><h3><a class="anchor-link" href="#grp-COMM">#</a><span class="code-badge">COMM</span> Engineering and communication</h3>
+<div class="lo" id="T-COMM.1"><h4><a class="anchor-link" href="#T-COMM.1">#</a><span class="code-badge">COMM.1</span> Write the company spec sheet</h4>
+<p class="paraphrase">One page with the company's details and the vehicle's: name, cost including donated items, size and weight, student hours, safety and special features, and photos. Up to 20 points, called an easy 20 for following the format. (Scout manual 5.1.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-2.4">2.4</a> <span class="strength">(partial)</span> Clean spelling, grammar, and formatting show up in both written and electronic communication.<div class="item-note">Why: Clean writing and formatting, and following a specified format.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-2.7">2.7</a> <span class="strength">(related)</span> Writing clearly and communicating well, especially with people outside your own background, is its own working skill.<div class="item-note">Why: Writing clearly for readers outside your group.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-COMM.2"><h4><a class="anchor-link" href="#T-COMM.2">#</a><span class="code-badge">COMM.2</span> Write the technical documentation</h4>
+<p class="paraphrase">A reference for judges and future team members covering the technical and safety aspects of the vehicle, the reasons behind design decisions, and a critical look at testing and troubleshooting, organized so graphics and data add to the text. Up to 50 points from each judge. (Scout manual 5.2.)</p>
+<div class="xref-fw">California CS</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-cs-standards-reference.html#S-9-12.AP.22">9-12.AP.22</a> <span class="strength">(strong)</span> As a program's design takes shape, writing the decisions down -- in whatever form fits -- is what makes the process legible to anyone else who looks at it later.<div class="item-note">Why: Writing design decisions down is what makes the process readable to anyone later.</div></li>
+</ul>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C4.11">C4.11</a> <span class="strength">(strong)</span> Development work needs documentation aimed at more than one audience -- comments for other programmers, manuals for users.<div class="item-note">Why: Documentation for readers other than the builder.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-2.7">2.7</a> <span class="strength">(related)</span> Writing clearly and communicating well, especially with people outside your own background, is its own working skill.<div class="item-note">Why: Writing clearly for people outside your group.</div></li>
+</ul>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-3">MS-ETS1-3</a> <span class="strength">(partial)</span> Read the data from tests of several solutions to see what each one does well or badly, and use that to pull the best features of each into a better design.<div class="item-note">Why: Analyzing test data to see what each design does well or badly.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-COMM.3"><h4><a class="anchor-link" href="#T-COMM.3">#</a><span class="code-badge">COMM.3</span> Give the engineering presentation</h4>
+<p class="paraphrase">A 5 to 10 minute technical brief delivered with the vehicle, no slides, followed by questions to the whole company. Every member must be ready to speak, and mentors may not take part. Judges look for critical thinking, creativity, engineering reasoning including build versus buy, and each person's own contribution. Up to 50 points. (Scout manual 5.3.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-2.5">2.5</a> <span class="strength">(partial)</span> The same information often needs to reach different audiences, which means adapting the medium and format each time.<div class="item-note">Why: Adapting what you say to the audience in front of you.</div></li>
+</ul>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-HS-ETS1-3">HS-ETS1-3</a> <span class="strength">(related)</span> Judge a solution against prioritized criteria and the trade-offs among them (cost, safety, reliability, looks), including its social, cultural and environmental effects.<div class="item-note">Why: Explaining why one design was chosen over another, with the trade-offs.</div></li>
+</ul>
+<div class="xref-fw">CASEL</div><ul class="xref-list">
+<li><a class="code-badge" href="casel-standards-reference.html#T-REL.1">REL.1</a> <strong>Communicating effectively</strong> <span class="strength">(partial)</span> Getting your actual meaning across, and listening well enough to receive someone else's, is the foundation every other relationship skill builds on.<div class="item-note">Why: Communicating effectively, including answering questions on the spot.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-COMM.4"><h4><a class="anchor-link" href="#T-COMM.4">#</a><span class="code-badge">COMM.4</span> Make the marketing display</h4>
+<p class="paraphrase">A display that presents technical information so a non-technical audience understands and cares. Up to 50 points. (Scout manual 5.4.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-2.5">2.5</a> <span class="strength">(strong)</span> The same information often needs to reach different audiences, which means adapting the medium and format each time.<div class="item-note">Why: The same information has to reach a different audience in a different form.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-2.8">2.8</a> <span class="strength">(related)</span> Serving a customer well starts from understanding what a customer-oriented approach actually looks like.<div class="item-note">Why: Serving someone starts with understanding what they need.</div></li>
+</ul>
+<div class="xref-fw">CASEL</div><ul class="xref-list">
+<li><a class="code-badge" href="casel-standards-reference.html#T-REL.1">REL.1</a> <strong>Communicating effectively</strong> <span class="strength">(related)</span> Getting your actual meaning across, and listening well enough to receive someone else's, is the foundation every other relationship skill builds on.<div class="item-note">Why: Communicating effectively with people who are not like you.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-COMM.5"><h4><a class="anchor-link" href="#T-COMM.5">#</a><span class="code-badge">COMM.5</span> Show corporate responsibility</h4>
+<p class="paraphrase">Mentoring newer teams, supporting local schools, presenting to community groups and engaging the media, scored on how many events, how continuous they are, and the measurable impact on the people reached. Up to 20 points. (Scout manual 5.5.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-9.3">9.3</a> <span class="strength">(partial)</span> Teamwork, leadership, and citizenship matter in school, community, and workplace settings alike.<div class="item-note">Why: Teamwork, leadership and citizenship in school and community.</div></li>
+</ul>
+<div class="xref-fw">CASEL</div><ul class="xref-list">
+<li><a class="code-badge" href="casel-standards-reference.html#T-RDM.6">RDM.6</a> <strong>Reflecting on one's role to promote personal, family, and community well-being</strong> <span class="strength">(partial)</span> Looking back at how your own choices affected the people and communities around you, not just yourself, is part of making better ones next time.<div class="item-note">Why: Reflecting on your own part in the well-being of the community.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+</div>
+<div class="topic" id="grp-TEAM"><h3><a class="anchor-link" href="#grp-TEAM">#</a><span class="code-badge">TEAM</span> Running the company</h3>
+<div class="lo" id="T-TEAM.1"><h4><a class="anchor-link" href="#T-TEAM.1">#</a><span class="code-badge">TEAM.1</span> Organize the team as a company</h4>
+<p class="paraphrase">The competition asks teams to act as a start-up with named roles: a CEO, a CFO who watches the budget, someone for government and regulatory affairs who reads the rules, research and development, systems engineering, testing, operations, fundraising and marketing, and an ESG (environmental, social, governance) analyst. One person can hold more than one role. (Scout manual, Think of yourselves as entrepreneurs.)</p>
+<div class="xref-fw">CSTA 2026</div><ul class="xref-list">
+<li><a class="code-badge" href="csta2026-standards-reference.html#T-HS-PRO-PD-15">HS-PRO-PD-15</a> <span class="strength">(strong)</span> Working on a program as a team goes better with some structure -- assigned roles, a shared design document, and a way to track who changed what.<div class="item-note">Why: Team programming goes better with assigned roles and a shared design document.</div></li>
+</ul>
+<div class="xref-fw">California CS</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-cs-standards-reference.html#S-9-12.AP.21">9-12.AP.21</a> <span class="strength">(strong)</span> Building something as a team, in defined roles, with shared tools, is different work from building it alone.<div class="item-note">Why: Building as a team with defined roles and shared tools is different work from working alone.</div></li>
+</ul>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C1.4">C1.4</a> <span class="strength">(partial)</span> Working on a development team means operating within that team's defined scope and boundaries.<div class="item-note">Why: Working on a team means working within a defined scope and boundaries.</div></li>
+</ul>
+<div class="xref-fw">California EP&amp;Cs</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-epc-standards-reference.html#T-V.A">V.A</a> <span class="strength">(related)</span> A wide range of factors goes into decisions about natural resources, and which factors are weighed changes what is decided.<div class="item-note">Why: The ESG role weighs environmental, social and governance factors in a decision.</div></li>
+</ul>
+<div class="xref-fw">CASEL</div><ul class="xref-list">
+<li><a class="code-badge" href="casel-standards-reference.html#T-REL.4">REL.4</a> <strong>Practicing teamwork and collaborative problem-solving</strong> <span class="strength">(strong)</span> Solving a problem as a team is a different skill from solving the same problem alone, and it has to be practiced on its own.<div class="item-note">Why: Practicing teamwork and collaboration.</div></li>
+<li><a class="code-badge" href="casel-standards-reference.html#T-REL.7">REL.7</a> <strong>Showing leadership in groups</strong> <span class="strength">(related)</span> Leading a group well means helping it function better, not just being the one in charge.<div class="item-note">Why: Showing leadership in groups.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-TEAM.2"><h4><a class="anchor-link" href="#T-TEAM.2">#</a><span class="code-badge">TEAM.2</span> Know the rules and ask in the right form</h4>
+<p class="paraphrase">Every company is responsible for reading and obeying the whole manual and every posted ruling. Questions go to the competition forum, naming the spec code and the class, and values in the manual are thresholds unless the text says otherwise. Regional events may change requirements. (Scout manual 1.0.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-10.2">10.2</a> <span class="strength">(partial)</span> Every corner of the ICT sector comes with its own rules, regulations, and expectations to follow.<div class="item-note">Why: A technical field has its own rules, regulations and expectations to follow.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-TEAM.3"><h4><a class="anchor-link" href="#T-TEAM.3">#</a><span class="code-badge">TEAM.3</span> Run the deck crew and do the work yourselves</h4>
+<p class="paraphrase">A product demonstration team of three or four company members operates the vehicle on the pool deck. All work and maintenance during operations is done by students, never by mentors or advisors. (Scout manual OPER-005, OPER-006.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-9.2">9.2</a> <span class="strength">(related)</span> Successful teams share traits: leadership, cooperation, collaboration, and sound decision-making.<div class="item-note">Why: Successful teams share leadership, cooperation and sound decision making.</div></li>
+</ul>
+<div class="xref-fw">CASEL</div><ul class="xref-list">
+<li><a class="code-badge" href="casel-standards-reference.html#T-REL.4">REL.4</a> <strong>Practicing teamwork and collaborative problem-solving</strong> <span class="strength">(partial)</span> Solving a problem as a team is a different skill from solving the same problem alone, and it has to be practiced on its own.<div class="item-note">Why: Practicing teamwork and collaboration under time pressure.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-TEAM.4"><h4><a class="anchor-link" href="#T-TEAM.4">#</a><span class="code-badge">TEAM.4</span> Plan from the request for proposals</h4>
+<p class="paraphrase">The mission arrives as a context and need and a request for proposals. The team reads it, decides what to build and which points to chase out of a 400 point total (200 for the product demonstration plus a time bonus, 190 for engineering and communication, 10 for safety), and manages time and budget to get there. (Scout manual Part 1 and the scoring overview.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C2.4">C2.4</a> <span class="strength">(strong)</span> Understanding a customer's needs is a distinct analytical step in development.<div class="item-note">Why: Understanding a customer's needs is its own analytical step.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-C2.5">C2.5</a> <span class="strength">(partial)</span> Requirements and possible solutions both need to be worked out and written down before they can be built.<div class="item-note">Why: Requirements and possible solutions both get worked out and written down.</div></li>
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-7.4">7.4</a> <span class="strength">(related)</span> Managing time efficiently is what actually lets responsibilities get fulfilled.<div class="item-note">Why: Managing time is what lets responsibilities get met.</div></li>
+</ul>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-HS-ETS1-1">HS-ETS1-1</a> <span class="strength">(partial)</span> Take a large real-world challenge and turn it into specific requirements, both qualitative and quantitative, that take the needs of the people involved and the wider effects into account.<div class="item-note">Why: Turning a large real-world challenge into specific requirements.</div></li>
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-1">MS-ETS1-1</a> <span class="strength">(partial)</span> Spell out what a design problem has to achieve and what limits it (the criteria and constraints) in words precise enough that a solution can be tested against them, thinking about the people affected and the natural world.<div class="item-note">Why: Spelling out the criteria and constraints a solution is tested against.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+<div class="lo" id="T-TEAM.5"><h4><a class="anchor-link" href="#T-TEAM.5">#</a><span class="code-badge">TEAM.5</span> Fly the product demonstration</h4>
+<p class="paraphrase">The demonstration is one timed run, in general a 3 minute set-up, a 10 minute performance and a 2 minute take-down. A company may bring the vehicle to the surface to adjust or troubleshoot mid-run. The tasks change every year and by class, so what stays the same is driving precisely, working as a deck crew, and adapting. Up to 200 points plus a time bonus. (Scout manual Part 1.)</p>
+<div class="xref-fw">CA CTE (ICT)</div><ul class="xref-list">
+<li><a class="code-badge" href="ca-ict-anchor-standards-reference.html#T-5.7">5.7</a> <span class="strength">(partial)</span> Some problems get solved by working through them repeatedly, refining the approach each pass.<div class="item-note">Why: Some problems are solved by working through them repeatedly and refining the approach.</div></li>
+</ul>
+<div class="xref-fw">NGSS 2013</div><ul class="xref-list">
+<li><a class="code-badge" href="ngss-standards-reference.html#T-MS-ETS1-4">MS-ETS1-4</a> <span class="strength">(partial)</span> Build and use a model of a proposed object, tool or process, and use the data from testing the model to improve the design again and again.<div class="item-note">Why: Practice runs are iterative testing, and each run's data improves the next.</div></li>
+</ul>
+<div class="xref-where none">Not yet linked to a lesson on this site.</div>
+</div>
+</div>
+<footer>Generated by build_alignment.py. Not an official framework document.</footer>
+</main>
+</div>
+<script>
+(function() {
+  var input = document.getElementById('search');
+  if (!input) return;
+  var los = Array.from(document.querySelectorAll('.lo'));
+  var topicsEls = Array.from(document.querySelectorAll('.topic'));
+  function normalize(s) { return s.toLowerCase(); }
+  input.addEventListener('input', function() {
+    var q = normalize(input.value.trim());
+    if (!q) {
+      los.forEach(function(el) { el.classList.remove('hidden'); });
+      topicsEls.forEach(function(el) { el.classList.remove('hidden'); });
+      return;
+    }
+    topicsEls.forEach(function(topicEl) {
+      var h = topicEl.querySelector('h3');
+      var topicMatches = h ? normalize(h.textContent).indexOf(q) !== -1 : false;
+      var anyVisible = false;
+      var los2 = topicEl.querySelectorAll('.lo');
+      if (los2.length === 0) {
+        topicEl.classList.toggle('hidden', !topicMatches && normalize(topicEl.textContent).indexOf(q) === -1);
+        return;
+      }
+      los2.forEach(function(loEl) {
+        var text = normalize(loEl.textContent);
+        var match = topicMatches || text.indexOf(q) !== -1;
+        loEl.classList.toggle('hidden', !match);
+        if (match) anyVisible = true;
+      });
+      topicEl.classList.toggle('hidden', !anyVisible && !topicMatches);
+    });
+  });
+})();
+</script>
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  document.querySelectorAll('.page-toggle').forEach(function(input) {
+    var hideClass = input.dataset.hideClass;
+    if (!hideClass) return;
+    // ?<param>=0 (or "false") forces it off, ?<param>=1 (or present/anything
+    // else) forces it on -- lets a link hand out a pre-set view, e.g.
+    // "...?los=1" to turn Learning Objectives/Essential Knowledge on despite
+    // the page's own default.
+    var paramKey = hideClass.replace(/^hide-/, "");
+    if (params.has(paramKey)) {
+      var v = params.get(paramKey);
+      input.checked = v !== "0" && v !== "false";
+    }
+    function sync() { document.body.classList.toggle(hideClass, !input.checked); }
+    input.addEventListener('change', sync);
+    sync();
+  });
+})();
+</script>
+</body>
+</html>
