@@ -564,89 +564,89 @@
     {s:12, a:"ROV.9", w:"strong"}
   ];
   var MATE_DETAILS = {
-    "EMP.1": {desc:"Explains the engineering process and the design to a broad audience, uses images, diagrams and data well, and writes clearly.", subs:[
-        {n:"EMP.1a", t:"Explain the engineering process and the design to any audience"},
-        {n:"EMP.1b", t:"Use images, diagrams and data to show a design or process"},
-        {n:"EMP.1c", t:"Write clearly and correctly"}
+    "EMP.1": {desc:"Explains the engineering process and the design to a broad audience, uses images, diagrams and data well, and writes clearly.<br><b>Competencies that build it:</b> Professional: Explain it; Professional: Reach the public; Engineering: Data and graphs. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-EMP.1\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"EMP.1a", t:"Explain the engineering process and the design to any audience<br><i>Built by: Professional: Explain it; Professional: Reach the public.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.1a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.1b", t:"Use images, diagrams and data to show a design or process<br><i>Built by: Engineering: Data and graphs; Professional: Reach the public.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.1b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.1c", t:"Write clearly and correctly<br><i>Built by: Professional: Explain it.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.1c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "EMP.2": {desc:"Looks at a problem from several angles, connects ideas and applies knowledge in new ways.", subs:[
-        {n:"EMP.2a", t:"Come at a problem from different angles"},
-        {n:"EMP.2b", t:"Connect several ideas or approaches"},
-        {n:"EMP.2c", t:"Apply what you know in new ways"}
+    "EMP.2": {desc:"Looks at a problem from several angles, connects ideas and applies knowledge in new ways.<br><b>Competencies that build it:</b> Engineering: Compare designs; Engineering: Underwater tools. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-EMP.2\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"EMP.2a", t:"Come at a problem from different angles<br><i>Built by: Engineering: Compare designs.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.2a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.2b", t:"Connect several ideas or approaches<br><i>Built by doing the competition, not taught as a unit.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.2b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.2c", t:"Apply what you know in new ways<br><i>Built by: Engineering: Underwater tools.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.2c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "EMP.3": {desc:"Builds a product or service that meets customer needs, understands operations and budgets, and manages a project.", subs:[
-        {n:"EMP.3a", t:"Make a product or service that meets a customer's need"},
-        {n:"EMP.3b", t:"Understand how a business runs and what it costs"},
-        {n:"EMP.3c", t:"Manage a project"}
+    "EMP.3": {desc:"Builds a product or service that meets customer needs, understands operations and budgets, and manages a project.<br><b>Competencies that build it:</b> Engineering: Plan from RFP; Professional: Be a founder; Professional: Manage project. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-EMP.3\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"EMP.3a", t:"Make a product or service that meets a customer's need<br><i>Built by: Engineering: Plan from RFP; Professional: Be a founder.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.3a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.3b", t:"Understand how a business runs and what it costs<br><i>Built by: Professional: Be a founder.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.3b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.3c", t:"Manage a project<br><i>Built by: Professional: Manage project.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.3c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "EMP.4": {desc:"Works independently, knows when to ask for help, takes criticism well, and tries again after failing.", subs:[
-        {n:"EMP.4a", t:"Work on your own and know when to ask for help"},
-        {n:"EMP.4b", t:"Take criticism and use the feedback"},
-        {n:"EMP.4c", t:"Take risks and try again after failing"}
+    "EMP.4": {desc:"Works independently, knows when to ask for help, takes criticism well, and tries again after failing.<br><b>Competencies that build it:</b> Professional: Use AI honestly. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-EMP.4\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"EMP.4a", t:"Work on your own and know when to ask for help<br><i>Built by: Professional: Use AI honestly.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.4a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.4b", t:"Take criticism and use the feedback<br><i>Built by doing the competition, not taught as a unit.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.4b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.4c", t:"Take risks and try again after failing<br><i>Built by doing the competition, not taught as a unit.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.4c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "EMP.5": {desc:"Keeps going after setbacks, stays flexible and improvises a fix for a design or equipment problem.", subs:[
-        {n:"EMP.5a", t:"Keep going through setbacks and surprises"},
-        {n:"EMP.5b", t:"Stay flexible and willing to try again (the source repeats Autonomy here)"},
-        {n:"EMP.5c", t:"Improvise a quick fix to a design or equipment problem"}
+    "EMP.5": {desc:"Keeps going after setbacks, stays flexible and improvises a fix for a design or equipment problem.<br><b>Competencies that build it:</b> Engineering: Troubleshoot. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-EMP.5\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"EMP.5a", t:"Keep going through setbacks and surprises<br><i>Built by: Engineering: Troubleshoot.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.5a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.5b", t:"Stay flexible and willing to try again (the source repeats Autonomy here)<br><i>Built by doing the competition, not taught as a unit.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.5b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.5c", t:"Improvise a quick fix to a design or equipment problem<br><i>Built by: Engineering: Troubleshoot.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.5c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "EMP.6": {desc:"Sees that problems are more complex than they first look, accepts that more than one design can be acceptable, and knows the limits of what they know.", subs:[
-        {n:"EMP.6a", t:"See that problems are more complicated than they look"},
-        {n:"EMP.6b", t:"Accept that more than one design can work"},
-        {n:"EMP.6c", t:"Know the limits of what you know"}
+    "EMP.6": {desc:"Sees that problems are more complex than they first look, accepts that more than one design can be acceptable, and knows the limits of what they know.<br><b>Competencies that build it:</b> Professional: Use AI honestly. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-EMP.6\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"EMP.6a", t:"See that problems are more complicated than they look<br><i>Built by doing the competition, not taught as a unit.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.6a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.6b", t:"Accept that more than one design can work<br><i>Built by doing the competition, not taught as a unit.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.6b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.6c", t:"Know the limits of what you know<br><i>Built by: Professional: Use AI honestly.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.6c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "EMP.7": {desc:"Stays open-minded but skeptical about solutions, looks for root causes and compares alternative designs or ways of operating.", subs:[
-        {n:"EMP.7a", t:"Stay open-minded but skeptical about possible solutions"},
-        {n:"EMP.7b", t:"Find the root cause of a problem and the right fix"},
-        {n:"EMP.7c", t:"Evaluate alternative designs or ways of operating"}
+    "EMP.7": {desc:"Stays open-minded but skeptical about solutions, looks for root causes and compares alternative designs or ways of operating.<br><b>Competencies that build it:</b> Engineering: Real-world tests; Engineering: Troubleshoot; Engineering: Plan from RFP; Engineering: Compare designs; Environmental: Weigh factors. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-EMP.7\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"EMP.7a", t:"Stay open-minded but skeptical about possible solutions<br><i>Built by: Engineering: Real-world tests.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.7a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.7b", t:"Find the root cause of a problem and the right fix<br><i>Built by: Engineering: Troubleshoot.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.7b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.7c", t:"Evaluate alternative designs or ways of operating<br><i>Built by: Engineering: Plan from RFP; Engineering: Compare designs; Environmental: Weigh factors.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.7c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "EMP.8": {desc:"Understands the engineering and science behind the vehicle and its operation, and has the skills to do the work.", subs:[
-        {n:"EMP.8a", t:"Understand the engineering and science behind the vehicle and how it runs"},
-        {n:"EMP.8b", t:"Have the skills to design and run the vehicle"},
-        {n:"EMP.8c", t:"Master the skills it takes to compete well"}
+    "EMP.8": {desc:"Understands the engineering and science behind the vehicle and its operation, and has the skills to do the work.<br><b>Competencies that build it:</b> Engineering: Sense, calibrate; Environmental: Ocean observing; Environmental: Ecosystems; Environmental: Climate, ocean; Environmental: Ocean energy; Environmental: People, heritage; Professional: Know the rules. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-EMP.8\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"EMP.8a", t:"Understand the engineering and science behind the vehicle and how it runs<br><i>Built by: Engineering: Sense, calibrate; Environmental: Ocean observing; Environmental: Ecosystems; Environmental: Climate, ocean; Environmental: Ocean energy; Environmental: People, heritage.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.8a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.8b", t:"Have the skills to design and run the vehicle<br><i>Built by doing the competition, not taught as a unit.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.8b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.8c", t:"Master the skills it takes to compete well<br><i>Built by: Professional: Know the rules.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.8c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "EMP.9": {desc:"Treats others with respect, works well in a team and shares knowledge within and across teams.", subs:[
-        {n:"EMP.9a", t:"Be collegial and treat others with respect"},
-        {n:"EMP.9b", t:"Work effectively in a team"},
-        {n:"EMP.9c", t:"Share knowledge in your team and with other teams"}
+    "EMP.9": {desc:"Treats others with respect, works well in a team and shares knowledge within and across teams.<br><b>Competencies that build it:</b> Professional: Run the team; Professional: Give back. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-EMP.9\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"EMP.9a", t:"Be collegial and treat others with respect<br><i>Built by doing the competition, not taught as a unit.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.9a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.9b", t:"Work effectively in a team<br><i>Built by: Professional: Run the team.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.9b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"EMP.9c", t:"Share knowledge in your team and with other teams<br><i>Built by: Professional: Give back.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-EMP.9c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "ROV.1": {desc:"Applies buoyancy and ballast principles, the properties of water and the physics of propulsion to the vehicle's design.", subs:[
-        {n:"ROV.1a", t:"Apply buoyancy and ballast to the vehicle's design"},
-        {n:"ROV.1b", t:"Apply the properties of water, such as pressure rising with depth"},
-        {n:"ROV.1c", t:"Apply hydrodynamics and Newton's laws to propulsion"}
+    "ROV.1": {desc:"Applies buoyancy and ballast principles, the properties of water and the physics of propulsion to the vehicle's design.<br><b>Competencies that build it:</b> Engineering: Run on its own; Engineering: Trim and thrust; Engineering: Build reliably; Engineering: Real-world tests. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-ROV.1\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"ROV.1a", t:"Apply buoyancy and ballast to the vehicle's design<br><i>Built by: Engineering: Run on its own; Engineering: Trim and thrust.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.1a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.1b", t:"Apply the properties of water, such as pressure rising with depth<br><i>Built by: Engineering: Build reliably; Engineering: Real-world tests; Engineering: Trim and thrust.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.1b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.1c", t:"Apply hydrodynamics and Newton's laws to propulsion<br><i>Built by: Engineering: Trim and thrust.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.1c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "ROV.2": {desc:"Understands the engineering principles behind the vehicle's systems and applies them to designing those systems.", subs:[
-        {n:"ROV.2a", t:"Apply engineering principles to designing the vehicle's systems"}
+    "ROV.2": {desc:"Understands the engineering principles behind the vehicle's systems and applies them to designing those systems.<br><b>Competencies that build it:</b> Engineering: Build reliably; Engineering: Drive, control. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-ROV.2\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"ROV.2a", t:"Apply engineering principles to designing the vehicle's systems<br><i>Built by: Engineering: Build reliably; Engineering: Drive, control.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.2a\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "ROV.3": {desc:"Can explain the trade-offs and reasoning behind the vehicle's cost, size and weight.", subs:[
-        {n:"ROV.3a", t:"Explain the trade-offs behind cost, size and weight"}
+    "ROV.3": {desc:"Can explain the trade-offs and reasoning behind the vehicle's cost, size and weight.<br><b>Competencies that build it:</b> Engineering: Compare designs; Engineering: Trim and thrust. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-ROV.3\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"ROV.3a", t:"Explain the trade-offs behind cost, size and weight<br><i>Built by: Engineering: Compare designs; Engineering: Trim and thrust.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.3a\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "ROV.4": {desc:"Applies electrical concepts to the control and electrical systems and integrates software and electronics into vehicle control.", subs:[
-        {n:"ROV.4a", t:"Apply electrical concepts to the control and power system"},
-        {n:"ROV.4b", t:"Integrate software and electronics into vehicle control"}
+    "ROV.4": {desc:"Applies electrical concepts to the control and electrical systems and integrates software and electronics into vehicle control.<br><b>Competencies that build it:</b> Engineering: Power budget; Engineering: Drive, control; Engineering: Run on its own. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-ROV.4\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"ROV.4a", t:"Apply electrical concepts to the control and power system<br><i>Built by: Engineering: Power budget.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.4a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.4b", t:"Integrate software and electronics into vehicle control<br><i>Built by: Engineering: Drive, control; Engineering: Run on its own.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.4b\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "ROV.5": {desc:"Can identify and evaluate sensors and tooling, cameras included, against the mission's needs, and applies programming to control and sensing.", subs:[
-        {n:"ROV.5a", t:"Choose and evaluate sensors, tools and cameras for the mission"},
-        {n:"ROV.5b", t:"Program the control and sensing"}
+    "ROV.5": {desc:"Can identify and evaluate sensors and tooling, cameras included, against the mission's needs, and applies programming to control and sensing.<br><b>Competencies that build it:</b> Engineering: Drive, control; Engineering: Sense, calibrate; Engineering: Underwater tools; Engineering: Run on its own; Engineering: Data and graphs. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-ROV.5\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"ROV.5a", t:"Choose and evaluate sensors, tools and cameras for the mission<br><i>Built by: Engineering: Drive, control; Engineering: Sense, calibrate; Engineering: Underwater tools.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.5a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.5b", t:"Program the control and sensing<br><i>Built by: Engineering: Run on its own; Engineering: Data and graphs.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.5b\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "ROV.6": {desc:"Understands safety principles and applies them to people, equipment and operations.", subs:[
-        {n:"ROV.6a", t:"Apply safety principles to people, equipment and operations"}
+    "ROV.6": {desc:"Understands safety principles and applies them to people, equipment and operations.<br><b>Competencies that build it:</b> Engineering: Power budget; Engineering: Build reliably; Professional: Work safely. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-ROV.6\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"ROV.6a", t:"Apply safety principles to people, equipment and operations<br><i>Built by: Engineering: Power budget; Engineering: Build reliably; Professional: Work safely.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.6a\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "ROV.7": {desc:"Organizes the team as a company with defined roles, plans the deliverables, tracks a budget, and manages tasks and time.", subs:[
-        {n:"ROV.7a", t:"Organize as a company with a role for everyone"},
-        {n:"ROV.7b", t:"Plan and stay on task through every deliverable"},
-        {n:"ROV.7c", t:"Create and track a budget"},
-        {n:"ROV.7d", t:"Manage tasks and time"}
+    "ROV.7": {desc:"Organizes the team as a company with defined roles, plans the deliverables, tracks a budget, and manages tasks and time.<br><b>Competencies that build it:</b> Professional: Run the team; Professional: Manage project. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-ROV.7\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"ROV.7a", t:"Organize as a company with a role for everyone<br><i>Built by: Professional: Run the team.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.7a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.7b", t:"Plan and stay on task through every deliverable<br><i>Built by: Professional: Manage project.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.7b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.7c", t:"Create and track a budget<br><i>Built by: Professional: Manage project.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.7c\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.7d", t:"Manage tasks and time<br><i>Built by: Professional: Manage project.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.7d\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "ROV.8": {desc:"Produces detailed documentation, presents it to support the design, builds a display that explains the design, and can explain its strengths and weaknesses.", subs:[
-        {n:"ROV.8a", t:"Write detailed documentation"},
-        {n:"ROV.8b", t:"Present the documentation to support the design"},
-        {n:"ROV.8c", t:"Make a marketing display that explains the design"},
-        {n:"ROV.8d", t:"Explain the design's strengths and weaknesses"}
+    "ROV.8": {desc:"Produces detailed documentation, presents it to support the design, builds a display that explains the design, and can explain its strengths and weaknesses.<br><b>Competencies that build it:</b> Professional: Explain it; Professional: Reach the public. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-ROV.8\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"ROV.8a", t:"Write detailed documentation<br><i>Built by: Professional: Explain it.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.8a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.8b", t:"Present the documentation to support the design<br><i>Built by: Professional: Explain it.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.8b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.8c", t:"Make a marketing display that explains the design<br><i>Built by: Professional: Reach the public.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.8c\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.8d", t:"Explain the design's strengths and weaknesses<br><i>Built by: Professional: Explain it.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.8d\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]},
-    "ROV.9": {desc:"Connects the theme and mission tasks to real-world problems and is aware of environmental, social and governance factors in business decisions.", subs:[
-        {n:"ROV.9a", t:"Relate the competition theme to real-world issues"},
-        {n:"ROV.9b", t:"Relate the mission tasks to real technical problems"},
-        {n:"ROV.9c", t:"Know how organizations weigh environmental, social and governance factors"}
+    "ROV.9": {desc:"Connects the theme and mission tasks to real-world problems and is aware of environmental, social and governance factors in business decisions.<br><b>Competencies that build it:</b> Professional: Give back; Environmental: Ocean observing; Environmental: Ecosystems; Environmental: Climate, ocean; Environmental: Ocean energy; Environmental: People, heritage; Professional: Be a founder; Environmental: Weigh factors. <a href=\"https://learn.porttack.com/standards/mate/rollup/#skill-ROV.9\" target=\"_blank\" rel=\"noopener\">Full entry: standards, lessons</a>", subs:[
+        {n:"ROV.9a", t:"Relate the competition theme to real-world issues<br><i>Built by: Professional: Give back; Environmental: Ocean observing; Environmental: Ecosystems; Environmental: Climate, ocean; Environmental: Ocean energy; Environmental: People, heritage.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.9a\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.9b", t:"Relate the mission tasks to real technical problems<br><i>Built by: Environmental: Ocean observing; Environmental: Ecosystems; Environmental: Climate, ocean; Environmental: Ocean energy; Environmental: People, heritage.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.9b\" target=\"_blank\" rel=\"noopener\">more</a>"},
+        {n:"ROV.9c", t:"Know how organizations weigh environmental, social and governance factors<br><i>Built by: Professional: Be a founder; Environmental: Weigh factors.</i> <a href=\"https://learn.porttack.com/standards/mate/rollup/#sub-ROV.9c\" target=\"_blank\" rel=\"noopener\">more</a>"}
     ]}
   };
   // The Ocean Decade's ten challenges (oceandecade.org), as a left list, as right-hand anchors and as bars.

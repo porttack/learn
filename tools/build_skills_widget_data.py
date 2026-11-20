@@ -12,6 +12,7 @@ copy the widget here and tools/check_mate_wef_sync.mjs to confirm the two agree.
 
 Usage: build_skills_widget_data.py [path-to-skills-widget-data.js]   (default ../porttack.com/assets/skills-widget-data.js)
 """
+import html
 import json
 import sys
 from pathlib import Path
@@ -24,6 +25,10 @@ END = "  // END MATE AND OCEAN VIEWS"
 
 def load(name):
     return json.loads((S / name).read_text(encoding="utf-8"))
+
+
+def esc(t):
+    return html.escape(t, quote=False)
 
 
 def J(x):
@@ -53,12 +58,35 @@ out = [BEGIN]
 
 # ---- MATE's 18 skills as the right-hand anchors, with the competencies that develop each ----
 anch, det = [], []
+BASE = "https://learn.porttack.com/standards/mate/rollup/"
+area_label = {g["code"]: g.get("short", g["name"]) for g in comps["groups"]}
+comp_label = {i["code"]: "%s: %s" % (area_label[g["code"]], i["short"]) for g in comps["groups"] for i in g["items"]}
+by_sub = {}  # sub-skill code -> competencies (catalog order) that build it
+for g in comps["groups"]:
+    for i in g["items"]:
+        for sk in i.get("skills", []):
+            by_sub.setdefault(sk, []).append(i["code"])
 for g in skills["groups"]:
     cls = "human" if g["code"] == "EMP" else "tech"
     for i in g["items"]:
         anch.append("    {id:%s, disp:%s, name:%s, cls:%s, unit:\"skill\"}" % (J(i["code"]), J(i["code"]), J(i["name"]), J(cls)))
-        subs = ",\n        ".join("{n:%s, t:%s}" % (J(c["code"]), J(c["text"])) for c in i.get("components", []))
-        det.append("    %s: {desc:%s, subs:[\n        %s\n    ]}" % (J(i["code"]), J(i["paraphrase"]), subs))
+        parts = [c["code"] for c in i.get("components", [])]
+        skill_comps = []
+        for pc in parts:
+            for k in by_sub.get(pc, []):
+                if k not in skill_comps:
+                    skill_comps.append(k)
+        desc = esc(i["paraphrase"])
+        if skill_comps:
+            desc += "<br><b>Competencies that build it:</b> " + "; ".join(esc(comp_label[k]) for k in skill_comps) + "."
+        desc += ' <a href="%s#skill-%s" target="_blank" rel="noopener">Full entry: standards, lessons</a>' % (BASE, i["code"])
+        subs = []
+        for c in i.get("components", []):
+            built = by_sub.get(c["code"], [])
+            t = esc(c["text"]) + "<br><i>" + ("Built by: " + "; ".join(esc(comp_label[k]) for k in built) + "." if built else "Built by doing the competition, not taught as a unit.") + "</i>"
+            t += ' <a href="%s#sub-%s" target="_blank" rel="noopener">more</a>' % (BASE, c["code"])
+            subs.append("{n:%s, t:%s}" % (J(c["code"]), J(t)))
+        det.append("    %s: {desc:%s, subs:[\n        %s\n    ]}" % (J(i["code"]), J(desc), ",\n        ".join(subs)))
 out.append("  // MATE's 18 skills (Evaluate-Compete). The employer-skill links are authored in learn.porttack.com/_standards/mate-wef-links.json.")
 out.append("  var MATE_ANCHORS = [\n" + ",\n".join(anch) + "\n  ];")
 out.append("  var MATE_LINKS = [\n    " + ",\n    ".join("{s:%d, a:%s, w:%s}" % (l["s"], J(l["a"]), J(l["w"])) for l in wef["links"]) + "\n  ];")
