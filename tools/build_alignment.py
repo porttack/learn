@@ -1035,12 +1035,12 @@ MATE_GROUP_HUE = {"EMP": 28, "ROV": 150}
 # (slug, nav label, page title)
 MATE_PAGES = [
     ("", "Start: skills and competencies", "MATE ROV Competition: What It Builds"),
+    ("skills-match", "Skills and Ocean 10 chart", "MATE Skills, Employer Skills and the Ocean Decade"),
     ("aims", "What MATE says it builds", "What MATE Says It Builds"),
     ("competencies", "Competencies, as an outline", "What MATE Builds: the Competencies"),
     ("standards-map", "Standards competency map", "MATE ROV Competencies and the Standards They Draw On"),
     ("standards-skill-map", "Standards skill map", "MATE ROV Skills and the Standards Behind Them"),
     ("rollup", "Skill by skill", "MATE ROV Skill by Skill"),
-    ("skills-match", "Skills and Ocean 10 chart", "MATE Skills, Employer Skills and the Ocean Decade"),
     ("ocean-decade", "The Ocean Decade", "MATE ROV and the UN Ocean Decade"),
     ("classes", "The classes", "MATE ROV Classes: Scout, Navigator, Ranger"),
     ("manual-map", "Manual to skills", "Where the Manual Builds Each Skill"),
@@ -1619,13 +1619,7 @@ def render_mate_rollup(ctx):
 
 
 def render_mate_skills_match(ctx):
-    body = ['<div class="xref-intro"><p>One chart, eight views. The first two are the World Economic Forum\'s lists of the ten skills employers '
-            'called most essential in 2025 and the ten growing fastest to 2030. The next two set each list against the eighteen skills MATE marks in '
-            'its manuals. <strong>Ocean 10</strong> is the ten challenges of the UN Ocean Decade, which MATE tags its mission tasks with, and the last '
-            'four views line the challenges up against MATE\'s skills and the 2030 skills, from each side. Hover or tap an item to light up its matches, '
-            'or an item on the right to read its full text. Solid lines are direct matches and dashed lines partial ones; none of these lists links '
-            'to another on its own, so every line is this project\'s reading. It is the same chart as in the post <em>Soft Skills Are Already in the '
-            'Standards</em> on porttack.com, where it is matched against California\'s CTE standards.</p></div>',
+    body = [
             '<script src="/assets/js/skills-widget/skills-widget.js"></script>',
             '<script src="/assets/js/skills-widget/skills-widget-data.js"></script>',
             '<div class="wef-card"><div id="wef-skills-widget" class="skills-widget">'
@@ -1649,6 +1643,13 @@ def render_mate_skills_match(ctx):
             '{view: "ocean-mate", label: "Ocean 10 MATE match-up", anchor: "wef-skills-ocean-mate"},'
             '{view: "wef30-ocean", label: "2030 Ocean 10 match-up", anchor: "wef-skills-wef30-ocean"},'
             '{view: "ocean-wef30", label: "Ocean 10 to 2030 match-up", anchor: "wef-skills-ocean-wef30"}]});</script>',
+            '<div class="xref-intro"><p>One chart, eight views. The first two are the World Economic Forum\'s lists of the ten skills employers '
+            'called most essential in 2025 and the ten growing fastest to 2030. The next two set each list against the eighteen skills MATE marks in '
+            'its manuals. <strong>Ocean 10</strong> is the ten challenges of the UN Ocean Decade, which MATE tags its mission tasks with, and the last '
+            'four views line the challenges up against MATE\'s skills and the 2030 skills, from each side. Hover or tap an item to light up its matches, '
+            'or an item on the right to read its full text. Solid lines are direct matches and dashed lines partial ones; none of these lists links '
+            'to another on its own, so every line is this project\'s reading. It is the same chart as in the post <em>Soft Skills Are Already in the '
+            'Standards</em> on porttack.com, where it is matched against California\'s CTE standards.</p></div>',
             f'<p class="legend-note">To read this by MATE skill instead, see <a href="{mate_url("rollup")}">skill by skill</a>.</p>']
     return mate_wrap(ctx, "skills-match", "\n".join(body), hide_filter=True)
 
