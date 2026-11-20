@@ -185,6 +185,20 @@ footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1p
 .mate-ladder a { flex: 1; align-self: stretch; display: block; padding: .7rem .8rem; border-radius: 10px; color: inherit; text-decoration: none;
   border: 1.5px solid hsl(var(--h) 55% 50% / .7); background: hsl(var(--h) 55% 55% / .14); }
 .mate-ladder a:hover, .mate-ladder a:focus-visible { border-width: 3px; padding: calc(.7rem - 1.5px) calc(.8rem - 1.5px); outline: none; }
+.mate-ladder li.is-here a { border-width: 3px; padding: calc(.7rem - 1.5px) calc(.8rem - 1.5px); background: hsl(var(--h) 55% 55% / .34); }
+.mate-ladder li.is-here b { text-decoration: underline; text-underline-offset: 3px; }
+.mate-hier.compact { margin: .2rem 0 1.2rem; }
+.mate-hier.compact .mate-ladder { margin: 0; }
+.mate-hier.compact .mate-ladder a { padding: .4rem .6rem; border-radius: 8px; }
+.mate-hier.compact .mate-ladder li.is-here a { padding: calc(.4rem - 1.5px) calc(.6rem - 1.5px); }
+.mate-hier.compact .mate-ladder b { font-size: .8rem; }
+.mate-hier.compact .mate-ladder span { display: none; }
+.mate-hier.compact .mate-ladder li + li::before { padding: 0 .25rem; font-size: .95rem; }
+@media (max-width: 760px) {
+  .mate-hier.compact .mate-ladder { flex-direction: row; flex-wrap: wrap; gap: .35rem; }
+  .mate-hier.compact .mate-ladder li { flex: 1 1 auto; flex-direction: row; }
+  .mate-hier.compact .mate-ladder li + li::before { display: none; }
+}
 .mate-ladder b { display: block; font-size: .95rem; line-height: 1.2; }
 .mate-ladder span { display: block; margin-top: .25rem; font-size: .78rem; line-height: 1.3; opacity: .8; }
 @media (max-width: 760px) {
@@ -251,13 +265,13 @@ footer { color: var(--muted); font-size: .8rem; margin-top: 3rem; border-top: 1p
 .skill-section ul { margin: .2rem 0; padding-left: 1.2rem; }
 .jump { font-size: .85rem; line-height: 1.9; }
 @media print {
-  .toc, #search, .page-toggles, .mate-nav-top { display: none !important; }
+  .toc, #search, .page-toggles, .mate-nav-top, .mate-hier.compact { display: none !important; }
   .layout { display: block !important; }
   .lo, .aim, .skill-section, .comp-row { break-inside: avoid; }
   .xref-list li, .smap tr { break-inside: avoid; }
   .cov-tooltip { display: none !important; }
 }
-</style><link rel="stylesheet" href="/assets/standards-bubbles.css"><div class="xref-intro"><p>One row per part of each MATE skill, with the standards that part draws on, through the competencies that build it, and a line on what each standard says. Strength is the best match among those competencies. A part no competency builds says so. For the standards competency by competency, see the <a href="/standards/mate/standards-map/">standards competency map</a>; for everything about a skill see <a href="/standards/mate/rollup/">skill by skill</a>.</p></div>
+</style><link rel="stylesheet" href="/assets/standards-bubbles.css"><figure class="mate-hier compact"><ol class="mate-ladder"><li style="--h:190"><a href="/standards/mate/#chart"><b>Skills the world asks for</b><span>13 employer skills, 10 ocean challenges</span></a></li><li style="--h:28"><a href="/standards/mate/skills/"><b>Skills MATE builds</b><span>18 skills, 48 parts</span></a></li><li style="--h:225"><a href="/standards/mate/competencies/"><b>Competencies</b><span>27 things a team practices</span></a></li><li style="--h:150" class="is-here"><a href="/standards/mate/standards-skill-map/" aria-current="page"><b>Education standards</b><span>53 standards, 8 frameworks</span></a></li><li style="--h:345"><a href="/standards/mate/curriculum/"><b>Lessons and curriculum</b><span>2 linked so far, more being built</span></a></li></ol></figure><div class="xref-intro"><p>One row per part of each MATE skill, with the standards that part draws on, through the competencies that build it, and a line on what each standard says. Strength is the best match among those competencies. A part no competency builds says so. For the standards competency by competency, see the <a href="/standards/mate/standards-map/">standards competency map</a>; for everything about a skill see <a href="/standards/mate/rollup/">skill by skill</a>.</p></div>
 <div class="topic" id="grp-EMP"><h3>Employability skills (Evaluate-Compete general outcomes)</h3><table class="smap"><thead><tr><th>Skill part</th><th>Standards it draws on</th></tr></thead><tbody>
 <tr class="skill-head"><th colspan="2" id="skill-EMP.1"><span class="code-badge">EMP.1</span> Communication</th></tr>
 <tr class="lo"><td class="name" id="sub-EMP.1a"><a class="sub-chip" href="/standards/mate/rollup/#sub-EMP.1a" style="--group-hue:28deg"><span class="code">EMP.1a</span> Explain to anyone</a><div><a class="comp-chip" style="--group-hue:285deg" href="/standards/mate/competencies/#T-PRO.3" title="2.3 Communicate technical work in writing and in person"><span class="cat">Professional:</span> Explain it</a> <a class="comp-chip" style="--group-hue:285deg" href="/standards/mate/competencies/#T-PRO.4" title="2.4 Communicate with a non-technical audience"><span class="cat">Professional:</span> Reach the public</a></div></td><td><ul><li><span class="fw">California CS</span><a class="code-badge" href="/standards/ca-cs-standards-reference.html#S-9-12.AP.22">9-12.AP.22</a> <span class="strength">(strong)</span> Write design decisions down so others can follow them.</li><li><span class="fw">CA CTE (ICT)</span><a class="code-badge" href="/standards/ca-ict-anchor-standards-reference.html#T-2.5">2.5</a> <span class="strength">(strong)</span> Fit the message and medium to each audience.</li><li><span class="fw">Common Core ELA</span><a class="code-badge" href="/standards/ccss-ela-standards-reference.html#T-SL.8.4">SL.8.4</a> <a class="code-badge" href="/standards/ccss-ela-standards-reference.html#T-SL.9-10.4">SL.9-10.4</a> <span class="strength">(strong)</span> Present findings clearly, with evidence.</li><li><span class="fw">Common Core ELA</span><a class="code-badge" href="/standards/ccss-ela-standards-reference.html#T-W.8.2">W.8.2</a> <a class="code-badge" href="/standards/ccss-ela-standards-reference.html#T-W.9-10.2">W.9-10.2</a> <span class="strength">(strong)</span> Write clear informative texts that explain ideas.</li><li><span class="fw">Common Core ELA</span><a class="code-badge" href="/standards/ccss-ela-standards-reference.html#T-SL.8.5">SL.8.5</a> <a class="code-badge" href="/standards/ccss-ela-standards-reference.html#T-SL.9-10.5">SL.9-10.5</a> <span class="strength">(partial)</span> Use visuals and media to strengthen a presentation.</li></ul></td></tr>

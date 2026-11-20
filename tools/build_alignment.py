@@ -1066,6 +1066,20 @@ MATE_PAGE_CSS = """<style>
 .mate-ladder a { flex: 1; align-self: stretch; display: block; padding: .7rem .8rem; border-radius: 10px; color: inherit; text-decoration: none;
   border: 1.5px solid hsl(var(--h) 55% 50% / .7); background: hsl(var(--h) 55% 55% / .14); }
 .mate-ladder a:hover, .mate-ladder a:focus-visible { border-width: 3px; padding: calc(.7rem - 1.5px) calc(.8rem - 1.5px); outline: none; }
+.mate-ladder li.is-here a { border-width: 3px; padding: calc(.7rem - 1.5px) calc(.8rem - 1.5px); background: hsl(var(--h) 55% 55% / .34); }
+.mate-ladder li.is-here b { text-decoration: underline; text-underline-offset: 3px; }
+.mate-hier.compact { margin: .2rem 0 1.2rem; }
+.mate-hier.compact .mate-ladder { margin: 0; }
+.mate-hier.compact .mate-ladder a { padding: .4rem .6rem; border-radius: 8px; }
+.mate-hier.compact .mate-ladder li.is-here a { padding: calc(.4rem - 1.5px) calc(.6rem - 1.5px); }
+.mate-hier.compact .mate-ladder b { font-size: .8rem; }
+.mate-hier.compact .mate-ladder span { display: none; }
+.mate-hier.compact .mate-ladder li + li::before { padding: 0 .25rem; font-size: .95rem; }
+@media (max-width: 760px) {
+  .mate-hier.compact .mate-ladder { flex-direction: row; flex-wrap: wrap; gap: .35rem; }
+  .mate-hier.compact .mate-ladder li { flex: 1 1 auto; flex-direction: row; }
+  .mate-hier.compact .mate-ladder li + li::before { display: none; }
+}
 .mate-ladder b { display: block; font-size: .95rem; line-height: 1.2; }
 .mate-ladder span { display: block; margin-top: .25rem; font-size: .78rem; line-height: 1.3; opacity: .8; }
 @media (max-width: 760px) {
@@ -1132,7 +1146,7 @@ MATE_PAGE_CSS = """<style>
 .skill-section ul { margin: .2rem 0; padding-left: 1.2rem; }
 .jump { font-size: .85rem; line-height: 1.9; }
 @media print {
-  .toc, #search, .page-toggles, .mate-nav-top { display: none !important; }
+  .toc, #search, .page-toggles, .mate-nav-top, .mate-hier.compact { display: none !important; }
   .layout { display: block !important; }
   .lo, .aim, .skill-section, .comp-row { break-inside: avoid; }
   .xref-list li, .smap tr { break-inside: avoid; }
@@ -1255,7 +1269,8 @@ def mate_wrap(ctx, slug, body, toc_extra="", prov=None, hide_filter=False, page_
         css += "<style>#search { display: none; }</style>"
     if toc_extra and not toc_extra.lstrip().startswith("<p"):
         toc_extra = '<p class="legend-note"><strong>On this page</strong></p>' + toc_extra
-    return page(title, side + toc_extra, css + (top if page_strip else "") + body, prov if prov is not None else mate_short_prov())
+    ladder = mate_hierarchy_svg(ctx, MATE_PAGE_LAYER.get(slug), compact=True) if slug != "" else ""
+    return page(title, side + toc_extra, css + (top if page_strip else "") + ladder + body, prov if prov is not None else mate_short_prov())
 
 
 def mate_sub_chip(ctx, code):
@@ -1793,20 +1808,29 @@ def mate_linked_lessons(ctx):
     return sorted({(src, str(loc)) for code in ctx["direct"].by_code for src, e in ctx["direct"].by_code[code] for loc in e.get("locators", [])})
 
 
-def mate_hierarchy_svg(ctx):
-    """The ladder from skills needed down to lessons, each layer a link, with arrows both ways: a row on a wide screen, a column on a narrow one."""
+# Which layer of the ladder each page belongs to (0 skills the world asks for, 1 skills MATE builds, 2 competencies, 3 standards, 4 lessons).
+MATE_PAGE_LAYER = {"": 0, "ocean-decade": 0, "skills": 1, "aims": 1, "rollup": 1, "classes": 1, "competencies": 2, "manual-map": 2,
+                   "standards-map": 3, "standards-skill-map": 3, "curriculum": 4}
+
+
+def mate_hierarchy_svg(ctx, current=None, compact=False):
+    """The ladder from skills needed down to lessons, each layer a link, with arrows both ways: a row on a wide screen, a column on a narrow one.
+    On every MATE page it is also the map: the layer the page belongs to is highlighted. compact drops the detail lines."""
     stds = {(fw, std) for rows in ctx["draws"].values() for fw, items in rows.items() for std, _, _ in items}
     fws = len({fw for fw, _ in stds})
     lessons = len(mate_linked_lessons(ctx))
     layers = [
-        (190, "Skills the world asks for", f'{len(ctx["wef"]["wef_skills"])} employer skills, 10 ocean challenges', "#chart"),
+        (190, "Skills the world asks for", f'{len(ctx["wef"]["wef_skills"])} employer skills, 10 ocean challenges', mate_url("") + "#chart"),
         (28, "Skills MATE builds", f'{len(ctx["skill_by_code"])} skills, {len(ctx["sub_by_code"])} parts', mate_url("skills")),
         (225, "Competencies", f'{len(ctx["comps"])} things a team practices', mate_url("competencies")),
         (150, "Education standards", f'{len(stds)} standards, {fws} frameworks', mate_url("standards-skill-map")),
         (345, "Lessons and curriculum", f"{lessons} linked so far, more being built", mate_url("curriculum")),
     ]
-    items = "".join(f'<li style="--h:{h}"><a href="{href}"><b>{esc(t)}</b><span>{esc(d)}</span></a></li>' for h, t, d, href in layers)
-    return f'<figure class="mate-hier"><ol class="mate-ladder">{items}</ol><figcaption>Each layer maps to the next, in both directions. Click a layer to open it.</figcaption></figure>'
+    items = "".join(
+        f'<li style="--h:{h}"{" class=\"is-here\"" if n == current else ""}><a href="{href}"{" aria-current=\"page\"" if n == current else ""}>'
+        f'<b>{esc(t)}</b><span>{esc(d)}</span></a></li>' for n, (h, t, d, href) in enumerate(layers))
+    cap = '' if compact else '<figcaption>Each layer maps to the next, in both directions. Click a layer to open it.</figcaption>'
+    return f'<figure class="mate-hier{" compact" if compact else ""}"><ol class="mate-ladder">{items}</ol>{cap}</figure>'
 
 
 def mate_overview_intro(ctx):
@@ -1817,7 +1841,7 @@ def mate_overview_intro(ctx):
     return ('<div class="mate-top"><div class="xref-intro"><p>Employers (surveyed by the ' + wef + ') name the skills they need, and the challenges of the '
             '<a href="https://oceandecade.org/challenges/" target="_blank" rel="noopener">UN Ocean Decade</a> imply the skills needed to meet them. '
             'This site breaks the skills MATE builds into the competencies a team practices, ties each one to the education standards it draws on, '
-            'and then to the lessons and curriculum that teach it.</p></div>' + mate_hierarchy_svg(ctx) + '</div>')
+            'and then to the lessons and curriculum that teach it.</p></div>' + mate_hierarchy_svg(ctx, current=0) + '</div>')
 
 
 def render_mate_curriculum(ctx):
