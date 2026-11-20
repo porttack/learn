@@ -77,7 +77,7 @@
             "EMP.3a",
             "EMP.7c"
           ],
-          "short": "Plan from the RFP"
+          "short": "Plan from RFP"
         },
         {
           "code": "ENG.2",
@@ -125,7 +125,7 @@
           "by_class": {
             "navigator": "Hydraulic and pneumatic power is allowed within pressure limits, with its own diagram."
           },
-          "short": "Build it reliably"
+          "short": "Build reliably"
         },
         {
           "code": "ENG.5",
@@ -139,7 +139,7 @@
             "ROV.1b",
             "EMP.7a"
           ],
-          "short": "Test for real conditions"
+          "short": "Real-world tests"
         },
         {
           "code": "ENG.6",
@@ -158,7 +158,7 @@
             "navigator": "Cameras are required to pilot, surface equipment may use AC power, and lasers are allowed with safety rules.",
             "ranger": "Cameras are required to pilot."
           },
-          "short": "Drive and control"
+          "short": "Drive, control"
         },
         {
           "code": "ENG.7",
@@ -172,7 +172,7 @@
             "ROV.5a",
             "EMP.8a"
           ],
-          "short": "Sense and calibrate"
+          "short": "Sense, calibrate"
         },
         {
           "code": "ENG.8",
@@ -193,7 +193,7 @@
             7,
             8
           ],
-          "short": "Run its own device"
+          "short": "Run on its own"
         },
         {
           "code": "ENG.9",
@@ -208,7 +208,7 @@
             "ROV.5b",
             "EMP.1b"
           ],
-          "short": "Collect and graph data"
+          "short": "Data and graphs"
         },
         {
           "code": "ENG.10",
@@ -235,12 +235,12 @@
             "EMP.5a",
             "EMP.5c"
           ],
-          "short": "Troubleshoot and record"
+          "short": "Troubleshoot"
         },
         {
           "code": "ENG.12",
           "name": "Trim and propel the vehicle",
-          "short": "Float, trim and thrust",
+          "short": "Trim and thrust",
           "paraphrase": "Design the vehicle so it floats level, holds its depth and moves where the pilot wants: set buoyancy and ballast, place thrusters, and match thrust to the job while keeping weight and cost in check.",
           "evidence": [
             "Mechanical/Physical specifications: size, weight, sealing, propellers (every manual)",
@@ -293,7 +293,7 @@
             "navigator": "Organizational and operational effectiveness is scored, including project management.",
             "ranger": "Organizational and operational effectiveness is scored, including project management."
           },
-          "short": "Manage the project"
+          "short": "Manage project"
         },
         {
           "code": "PRO.3",
@@ -314,7 +314,7 @@
             "navigator": "The presentation is longer (15 minutes in the 2025 manual).",
             "ranger": "The presentation is longer (the Scout manual describes Ranger as 15 minutes)."
           },
-          "short": "Explain the work"
+          "short": "Explain it"
         },
         {
           "code": "PRO.4",
@@ -342,7 +342,7 @@
             "EMP.3b",
             "ROV.9c"
           ],
-          "short": "Think like a founder"
+          "short": "Be a founder"
         },
         {
           "code": "PRO.6",
@@ -458,7 +458,7 @@
           "ocean_decade": [
             5
           ],
-          "short": "Climate and ocean"
+          "short": "Climate, ocean"
         },
         {
           "code": "UND.4",
@@ -496,7 +496,7 @@
             2,
             6
           ],
-          "short": "People and heritage"
+          "short": "People, heritage"
         },
         {
           "code": "UND.6",
@@ -509,7 +509,7 @@
             "ROV.9c",
             "EMP.7c"
           ],
-          "short": "Weigh the factors"
+          "short": "Weigh factors"
         }
       ]
     }

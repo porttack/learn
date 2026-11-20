@@ -1,11 +1,11 @@
 {
  "meta": {
   "source": "2026 Scout manual table of contents and section text (Parts 1 to 5); Navigator and Ranger manuals use the same parts",
-  "note": "A locator, not a standard. Each row is this project's reading of what a manual section asks students to do, and the skills shown are those of the competencies listed. Which items count, and the points, differ by class and year; check the current manual."
+  "note": "A locator, not a standard. Each row is this project's reading of what a manual section asks students to do; the skills shown are those of the competencies listed. Props and Leadership are added here: Props is a subsection of Part 1, and Leadership is not a section at all. Which items count, and the points, differ by class and year; check the current manual."
  },
  "rows": [
   {
-   "part": "Part 1: Product Demonstration",
+   "part": "MAN.1",
    "section": "Context & Need",
    "asks": "Each year's real-world science story behind the missions.",
    "competencies": [
@@ -17,7 +17,7 @@
    ]
   },
   {
-   "part": "Part 1: Product Demonstration",
+   "part": "MAN.1",
    "section": "Request for Proposals (RFP)",
    "asks": "The client's requirements, point values and limits for the mission.",
    "competencies": [
@@ -27,7 +27,7 @@
    ]
   },
   {
-   "part": "Part 1: Product Demonstration",
+   "part": "MAN.1",
    "section": "Tasks 1 to 3 (recover, install, survey, sample)",
    "asks": "The underwater jobs the vehicle must do.",
    "competencies": [
@@ -38,7 +38,7 @@
    ]
   },
   {
-   "part": "Part 1: Product Demonstration",
+   "part": "MAN.1",
    "section": "Task 4: MATE Floats",
    "asks": "A device that sinks, rises and reports on its own.",
    "competencies": [
@@ -48,7 +48,7 @@
    ]
   },
   {
-   "part": "Part 1: Product Demonstration",
+   "part": "MAN.6",
    "section": "Prop building instructions and photos",
    "asks": "Building the mission props to practice on.",
    "competencies": [
@@ -57,7 +57,7 @@
    ]
   },
   {
-   "part": "Part 2: Vehicle Design and Building Specifications",
+   "part": "MAN.2",
    "section": "1.0 General and 2.0 Safety (2.1 Safety inspection)",
    "asks": "The inspection every vehicle passes, with a system interconnection diagram.",
    "competencies": [
@@ -67,7 +67,7 @@
    ]
   },
   {
-   "part": "Part 2: Vehicle Design and Building Specifications",
+   "part": "MAN.2",
    "section": "3.1 Operational and 3.2 Mechanical/Physical",
    "asks": "Size, weight, sealing, propellers and how the vehicle is launched.",
    "competencies": [
@@ -76,7 +76,7 @@
    ]
   },
   {
-   "part": "Part 2: Vehicle Design and Building Specifications",
+   "part": "MAN.2",
    "section": "3.3 Electrical, 3.4 Onboard power and 3.5 Power shutdown",
    "asks": "Fuses, wiring, power limits and the shutdown switch.",
    "competencies": [
@@ -86,7 +86,7 @@
    ]
   },
   {
-   "part": "Part 2: Vehicle Design and Building Specifications",
+   "part": "MAN.2",
    "section": "3.6 Fluid power",
    "asks": "Hydraulics and pneumatics, with limits and a diagram.",
    "competencies": [
@@ -96,7 +96,7 @@
    ]
   },
   {
-   "part": "Part 2: Vehicle Design and Building Specifications",
+   "part": "MAN.2",
    "section": "3.7 Control systems, 3.8 Cameras and monitors",
    "asks": "How the pilot drives and sees, and how the tether is built.",
    "competencies": [
@@ -106,7 +106,7 @@
    ]
   },
   {
-   "part": "Part 2: Vehicle Design and Building Specifications",
+   "part": "MAN.2",
    "section": "3.9 Lasers",
    "asks": "What is allowed and what it takes to use one safely.",
    "competencies": [
@@ -115,7 +115,7 @@
    ]
   },
   {
-   "part": "Part 3: Competition Rules",
+   "part": "MAN.3",
    "section": "4.1 General and 4.2 Procedural",
    "asks": "Roles at the pool, timing and how the run is scored.",
    "competencies": [
@@ -125,7 +125,7 @@
    ]
   },
   {
-   "part": "Part 3: Competition Rules",
+   "part": "MAN.3",
    "section": "4.3 Design and safety considerations",
    "asks": "Pool safety, wireless interference and building for the real venue.",
    "competencies": [
@@ -134,7 +134,7 @@
    ]
   },
   {
-   "part": "Part 4: Engineering and Communication",
+   "part": "MAN.4",
    "section": "5.1 Company spec sheet",
    "asks": "A one-page snapshot of the company and its vehicle.",
    "competencies": [
@@ -143,7 +143,7 @@
    ]
   },
   {
-   "part": "Part 4: Engineering and Communication",
+   "part": "MAN.4",
    "section": "5.2 Technical documentation",
    "asks": "The engineering notebook or report: design choices, tests, troubleshooting.",
    "competencies": [
@@ -154,7 +154,7 @@
    ]
   },
   {
-   "part": "Part 4: Engineering and Communication",
+   "part": "MAN.4",
    "section": "5.3 Engineering presentation",
    "asks": "Explaining the design to judges and answering their questions.",
    "competencies": [
@@ -164,7 +164,7 @@
    ]
   },
   {
-   "part": "Part 4: Engineering and Communication",
+   "part": "MAN.4",
    "section": "5.4 Marketing display",
    "asks": "Telling a non-technical audience what the company does.",
    "competencies": [
@@ -173,7 +173,7 @@
    ]
   },
   {
-   "part": "Part 4: Engineering and Communication",
+   "part": "MAN.4",
    "section": "5.5 Corporate responsibility",
    "asks": "Education, community engagement and measurable impact.",
    "competencies": [
@@ -182,7 +182,7 @@
    ]
   },
   {
-   "part": "Part 4: Engineering and Communication",
+   "part": "MAN.4",
    "section": "Tips for written and oral communication",
    "asks": "How to tell the engineering story, compare options and record decisions.",
    "competencies": [
@@ -192,7 +192,7 @@
    ]
   },
   {
-   "part": "Part 5: Documentation",
+   "part": "MAN.5",
    "section": "6.1 Required documents (SID, tech documentation, spec sheet)",
    "asks": "What to submit and bring.",
    "competencies": [
@@ -202,12 +202,69 @@
    ]
   },
   {
-   "part": "Part 5: Documentation",
+   "part": "MAN.5",
    "section": "6.2 Key deadlines",
    "asks": "Due dates set by each regional.",
    "competencies": [
     "PRO.2"
    ]
+  },
+  {
+   "part": "MAN.7",
+   "section": "Start-up company roles (CEO, CFO, R&D, testing, operations, marketing)",
+   "asks": "Run the team as a company, with a person responsible for each job.",
+   "competencies": [
+    "PRO.1",
+    "PRO.2",
+    "PRO.5"
+   ]
+  },
+  {
+   "part": "MAN.7",
+   "section": "Organizational and operational effectiveness (scored, Navigator and Ranger)",
+   "asks": "Show teamwork, communication, project management and problem solving across the whole project.",
+   "competencies": [
+    "PRO.1",
+    "PRO.2",
+    "ENG.11"
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "code": "MAN.1",
+   "name": "Product Demonstration",
+   "blurb": "The year's science story, the client's request and the underwater tasks, including the profiling float."
+  },
+  {
+   "code": "MAN.2",
+   "name": "Vehicle Design and Building",
+   "blurb": "The safety inspection and the specifications for size, sealing, power, fluid power, control, cameras and lasers."
+  },
+  {
+   "code": "MAN.3",
+   "name": "Competition Rules",
+   "blurb": "Roles and timing at the pool, how a run is scored, and building for the real venue."
+  },
+  {
+   "code": "MAN.4",
+   "name": "Engineering and Communication",
+   "blurb": "The spec sheet, technical documentation, presentation, marketing display and corporate responsibility."
+  },
+  {
+   "code": "MAN.5",
+   "name": "Documentation",
+   "blurb": "The documents to submit and bring, and the deadlines."
+  },
+  {
+   "code": "MAN.6",
+   "name": "Props",
+   "blurb": "Building the mission props so the team can practice the tasks. In the manual this sits at the end of Part 1; it is its own item here because it is real engineering work."
+  },
+  {
+   "code": "MAN.7",
+   "name": "Leadership",
+   "blurb": "Not a section of the manual. It runs through the start-up framing, with titles such as CEO and CFO, and through the scored organizational effectiveness of Navigator and Ranger teams."
   }
  ]
 }

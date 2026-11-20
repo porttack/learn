@@ -77,8 +77,8 @@ shorts_seen = {}
 for g in comps["groups"]:
     for i in g["items"]:
         sh = i.get("short", "")
-        if not sh or len(sh) > 26:
-            problems.append(f"{i['code']} needs a short phrase of 1 to 26 characters (has {sh!r})")
+        if not sh or len(sh) > 16:
+            problems.append(f"{i['code']} needs a short phrase of 1 to 16 characters (has {sh!r})")
         if sh in shorts_seen:
             problems.append(f"short phrase {sh!r} is used by both {shorts_seen[sh]} and {i['code']}")
         shorts_seen[sh] = i["code"]
@@ -130,7 +130,10 @@ for f in ("mate-rov.json", "mate-skills.json", "ocean-decade.json", "mate-classe
         problems.append(f"{f} contains an em or en dash")
 
 mm = json.loads((S / "mate-manual-map.json").read_text(encoding="utf-8"))
+part_codes = {p["code"] for p in mm["parts"]}
 for r in mm["rows"]:
+    if r["part"] not in part_codes:
+        problems.append(f"manual map row {r['section']} has unknown part {r['part']}")
     for c in r["competencies"]:
         if c not in comp_codes:
             problems.append(f"manual map row {r['section']} uses unknown competency {c}")

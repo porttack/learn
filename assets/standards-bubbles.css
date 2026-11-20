@@ -67,10 +67,8 @@
 
 /* Competency bubbles: the same label as a skill (number and a very short phrase) in a different shape, a leaf with two
    rounded corners and two tight ones, so the two kinds read apart at a glance. */
-.cov-badge.comp .cov-badge-btn { font-family: inherit; font-size: .88rem; white-space: normal; text-align: left; max-width: 17rem; line-height: 1.25; border-radius: 1.15em .3em 1.15em .3em; }
 .cov-badge.comp .code, .comp-chip .code, .skill-chip .code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .75em; color: var(--muted); margin-right: .35em; }
 .comp-chip, .skill-chip { display: inline-block; font-size: .84rem; padding: .2em .65em; border: 1px solid var(--border); background: var(--code-bg); color: var(--fg); text-decoration: none; line-height: 1.25; }
-.comp-chip { border-radius: 1em .3em 1em .3em; }
 .skill-chip { border-radius: 8px; }
 .comp-chip:hover, .skill-chip:hover, .comp-chip:focus-visible, .skill-chip:focus-visible { border-color: var(--accent); outline: none; }
 .tt-list { list-style: none; margin: .2em 0 .6em; padding: 0; }
@@ -88,3 +86,24 @@
 .sub-built .comp-chip { margin: 0 .25em .25em 0; }
 .sub-section { margin: .6rem 0 1rem 1rem; }
 .sub-section h5 { margin: 0 0 .2rem; font-size: .95rem; }
+
+/* Competencies: a wavy top edge, like the surface of the water, drawn as two masked layers (an edge color, then the fill 1px inside)
+   so the wave has an outline. Skills stay plain rounded rectangles, sub-skills are dashed, manual parts are tab shaped. */
+:root { --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='6' viewBox='0 0 14 6'%3E%3Cpath d='M0 3 Q3.5 -0.6 7 3 T14 3 V6 H0Z'/%3E%3C/svg%3E"); }
+.cov-badge.comp .cov-badge-btn, .comp-chip {
+  position: relative; isolation: isolate; border: 0; box-shadow: none; background: none; border-radius: 0 0 .6em .6em; padding: .75em .75em .35em;
+  --wedge: hsl(var(--group-hue, 215) 50% 55% / .75); --wfill: var(--code-bg);
+}
+.comp-chip { --wedge: color-mix(in oklch, var(--muted) 60%, var(--bg)); padding: .65em .7em .25em; }
+.cov-badge.comp.has-coverage .cov-badge-btn { --wfill: color-mix(in oklch, var(--muted) 22%, var(--bg)); }
+.cov-badge.comp .cov-badge-btn::before, .cov-badge.comp .cov-badge-btn::after, .comp-chip::before, .comp-chip::after {
+  content: ""; position: absolute; z-index: -1; border-radius: 0 0 .6em .6em;
+  -webkit-mask: var(--wave) 0 0 / 14px 6px repeat-x, linear-gradient(#000, #000) 0 5px / 100% calc(100% - 5px) no-repeat;
+  mask: var(--wave) 0 0 / 14px 6px repeat-x, linear-gradient(#000, #000) 0 5px / 100% calc(100% - 5px) no-repeat;
+}
+.cov-badge.comp .cov-badge-btn::before, .comp-chip::before { inset: 0; background: var(--wedge); }
+.cov-badge.comp .cov-badge-btn::after, .comp-chip::after { inset: 1px; background: var(--wfill); }
+.cov-badge.comp .cov-badge-btn { font-family: inherit; font-size: .88rem; white-space: normal; text-align: left; max-width: 17rem; line-height: 1.25; }
+.comp-chip:hover, .comp-chip:focus-visible { --wedge: var(--accent); outline: none; }
+/* Manual parts: a tab, rounded on top, square at the bottom, like the tab of a manual page. */
+.cov-badge.part .cov-badge-btn { font-family: inherit; font-size: .88rem; white-space: normal; text-align: left; max-width: 17rem; line-height: 1.25; border-radius: .9em .9em .15em .15em; border-bottom-width: 3px; }

@@ -1359,7 +1359,8 @@ def mate_skill_bubble(ctx, skill, group):
         rows.append(f'<li>{mate_sub_chip(ctx, c["code"])}<div class="sub-built">{what}</div></li>')
     tip = [f'<div class="tt-code">{esc(code)} &middot; {esc(skill["name"])}</div>',
            f'<div class="tt-paraphrase">{esc(skill["paraphrase"])}</div>',
-           '<div class="tt-line"><strong>Its parts, and what builds them:</strong></div><ul class="tt-list">' + "".join(rows) + "</ul>"]
+           '<div class="tt-line"><strong>Competencies that build it:</strong></div><ul class="tt-list">' + "".join(f"<li>{mate_comp_chip(c)}</li>" for c in comps) + "</ul>",
+           '<div class="tt-line"><strong>Its parts, and what builds each:</strong></div><ul class="tt-list">' + "".join(rows) + "</ul>"]
     wl = [l for l in ctx["wef"]["links"] if l["a"] == code]
     if wl:
         names = ", ".join(f'{esc(ctx["wef"]["wef_skills"][l["s"]]["name"])}' + (" (partial)" if l["w"] == "partial" else "")
@@ -1411,6 +1412,10 @@ def render_mate_start(ctx):
     for gi, g in enumerate(ctx["comp_cat"]["groups"], start=1):
         body.append(f'<h3>{gi}. {esc(g["name"])}</h3><div class="cov-group"><div class="cov-grid">'
                     + "".join(mate_comp_bubble(ctx, i) for i in g["items"]) + "</div></div>")
+    mm = mate_manual_data()
+    body.append('<h2>The manual, part by part</h2><div class="xref-intro"><p>The manual itself is organized in five parts, with props and leadership added here. '
+                f'Click one for its sections and what it builds, or see the <a href="{mate_url("manual-map")}">full table</a>.</p></div><div class="cov-group"><div class="cov-grid">'
+                + "".join(mate_part_bubble(ctx, p, [r for r in mm["rows"] if r["part"] == p["code"]]) for p in mm["parts"]) + "</div></div>")
     body.append('<h2>More pages</h2><ul class="xref-intro">' + "".join(
         f'<li><a href="{mate_url(slug)}">{esc(label)}</a></li>' for slug, label, _ in MATE_PAGES[1:]) + "</ul>")
     body.append('<script src="/assets/js/mate-bubbles.js"></script>')
@@ -1648,29 +1653,59 @@ def render_mate_classes(ctx):
     return mate_wrap(ctx, "classes", "\n".join(body))
 
 
+MATE_PART_HUE = 345  # manual parts: rose, clear of the skills' orange and green and the competencies' blue, violet and teal
+
+
+def mate_manual_data():
+    return json.loads((Path(__file__).resolve().parent.parent / "_standards" / "mate-manual-map.json").read_text(encoding="utf-8"))
+
+
+def mate_part_stuff(ctx, rows):
+    """Competencies (catalog order) and sub-skill codes (EMP first) the given manual rows build."""
+    codes = {k for r in rows for k in r["competencies"]}
+    comps = [c for _, c in ctx["comps"] if c["code"] in codes]
+    subs = []
+    for c in comps:
+        for k in c["skills"]:
+            if k not in subs:
+                subs.append(k)
+    subs.sort(key=lambda k: (k.split(".")[0] != "EMP", int(k.split(".")[1].rstrip("abcdefghijklmnopqrstuvwxyz")), k))
+    return comps, subs
+
+
+def mate_part_bubble(ctx, part, rows):
+    comps, subs = mate_part_stuff(ctx, rows)
+    taught = any(ctx["direct"].get(c["code"]) for c in comps)
+    tip = [f'<div class="tt-code">{part["code"]} &middot; {esc(part["name"])}</div>',
+           f'<div class="tt-paraphrase">{esc(part["blurb"])}</div>',
+           '<div class="tt-line"><strong>Sections:</strong></div><ul class="tt-list">' + "".join(f"<li>{esc(r['section'])}</li>" for r in rows) + "</ul>",
+           '<div class="tt-line"><strong>Competencies it builds:</strong></div><ul class="tt-list">' + "".join(f"<li>{mate_comp_chip(c)}</li>" for c in comps) + "</ul>",
+           '<div class="tt-line"><strong>Skill parts it builds:</strong> ' + " ".join(
+               f'<a class="chip" href="{mate_url("rollup")}#sub-{k}" title="{esc(ctx["sub_by_code"][k]["short"])}">{esc(k)}</a>' for k in subs) + "</div>",
+           f'<div class="tt-line"><a href="{mate_url("manual-map")}#{part["code"]}">Manual to skills</a></div>']
+    return (f'<div class="cov-badge part{" has-coverage" if taught else ""}" data-tinted style="--group-hue:{MATE_PART_HUE}deg">'
+            f'<button class="cov-badge-btn" type="button" aria-expanded="false"><span class="code">{part["code"]}</span> {esc(part["name"])}</button>'
+            f'<div class="cov-tooltip" role="dialog">{"".join(tip)}</div></div>')
+
+
 def render_mate_manual_map(ctx):
-    data = json.loads((Path(__file__).resolve().parent.parent / "_standards" / "mate-manual-map.json").read_text(encoding="utf-8"))
+    data = mate_manual_data()
     body = ['<div class="xref-intro"><p>The manual is laid out in five parts. This page shows what each part asks a team to do and which skills and '
-            'competencies that builds. It is a pointer for finding things, not a standard. ' + esc(data["meta"]["note"]) + '</p></div>']
-    part = None
-    for r in data["rows"]:
-        if r["part"] != part:
-            if part is not None:
-                body.append("</tbody></table>")
-            part = r["part"]
-            body.append(f'<h2>{esc(part)}</h2><table class="xref-summary"><thead><tr><th>Section</th><th>What it asks</th><th>Competencies</th><th>Skills it builds</th></tr></thead><tbody>')
-        comps = [c for _, c in ctx["comps"] if c["code"] in r["competencies"]]
-        skills = []
-        for c in comps:
-            for k in c["skills"]:
-                if k not in skills:
-                    skills.append(k)
-        skills.sort(key=lambda k: (k.split(".")[0] != "EMP", int(k.split(".")[1].rstrip("abcdefghijklmnopqrstuvwxyz")), k))
-        comp_cells = "".join("<div>" + mate_comp_chip(c) + "</div>" for c in comps)
-        skill_cells = "".join("<div>" + mate_sub_chip(ctx, k) + "</div>" for k in skills)
-        body.append("<tr><td>" + esc(r["section"]) + "</td><td>" + esc(r["asks"]) + "</td><td>" + comp_cells + "</td><td>" + skill_cells + "</td></tr>")
-    body.append("</tbody></table>")
-    return mate_wrap(ctx, "manual-map", "\n".join(body))
+            'competencies that builds, plus two items that are not parts: props and leadership. It is a pointer for finding things, not a standard. '
+            + esc(data["meta"]["note"]) + '</p></div>']
+    for part in data["parts"]:
+        rows = [r for r in data["rows"] if r["part"] == part["code"]]
+        body.append(f'<h2 id="{part["code"]}"><span class="code-badge">{part["code"]}</span> {esc(part["name"])}</h2><p>{esc(part["blurb"])}</p>'
+                    '<table class="xref-summary"><thead><tr><th>Section</th><th>What it asks</th><th>Competencies</th><th>Skills it builds</th></tr></thead><tbody>')
+        for r in rows:
+            comps, subs = mate_part_stuff(ctx, [r])
+            comp_cells = "".join("<div>" + mate_comp_chip(c) + "</div>" for c in comps)
+            skill_cells = "".join("<div>" + mate_sub_chip(ctx, k) + "</div>" for k in subs)
+            body.append("<tr><td>" + esc(r["section"]) + "</td><td>" + esc(r["asks"]) + "</td><td>" + comp_cells + "</td><td>" + skill_cells + "</td></tr>")
+        body.append("</tbody></table>")
+    toc = "<ul>" + "".join(f'<li class="topic-link"><a href="#{p["code"]}">{esc(p["name"])}</a></li>' for p in data["parts"]) + "</ul>"
+    body.append('<script src="/assets/js/mate-bubbles.js"></script>')
+    return mate_wrap(ctx, "manual-map", "\n".join(body), toc_extra=toc)
 
 
 MATE_RENDERERS = {"": render_mate_start, "aims": render_mate_aims, "competencies": render_mate_competencies,
