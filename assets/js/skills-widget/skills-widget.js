@@ -145,6 +145,17 @@
     ".skills-widget .wsw-detail li.is-covered-whole{background:#F0F7F8; color:var(--ink);}",
     ".skills-widget .wsw-mwhole{display:block; margin-top:.3rem; font-style:italic;}",
     ".skills-widget .wsw-detail ul{list-style:none; margin:0; padding:0;}",
+    // Competency chips in a detail panel: one color per area, a breaking-wave top edge (a masked layer), the category as a prefix.
+    ".skills-widget{--wave:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='9' viewBox='0 0 24 9'%3E%3Cpath d='M0 6 C4 6 8 4.2 11 2.4 C13 1.2 16 0.6 17.2 2 C18 3 16.9 3.9 15.9 3.6 C16.8 4.8 18.6 6 24 6 V9 H0Z'/%3E%3C/svg%3E\");}",
+    ".skills-widget .wsw-comps{margin:.1rem 0 .6rem; line-height:1.2; font-size:.78rem; color:var(--sub);} .skills-widget .wsw-comps > b{display:block; margin-bottom:.2rem; color:var(--ink);}",
+    ".skills-widget .wsw-mtext{min-width:0; overflow-wrap:anywhere;}",
+    ".skills-widget .wsw-comp{display:inline-block; position:relative; isolation:isolate; margin:0 .3rem .3rem 0; padding:.75em .65em .28em; font-size:.74rem; color:var(--ink); text-decoration:none; --h:215;}",
+    ".skills-widget .wsw-comp::before{content:''; position:absolute; inset:0; z-index:-1; border-radius:0 0 .6em .6em; background:hsl(var(--h) 55% 86%);",
+    "  -webkit-mask:var(--wave) 0 0/24px 9px repeat-x, linear-gradient(#000,#000) 0 8px/100% calc(100% - 8px) no-repeat; mask:var(--wave) 0 0/24px 9px repeat-x, linear-gradient(#000,#000) 0 8px/100% calc(100% - 8px) no-repeat;}",
+    ".skills-widget .wsw-comp[data-area=ENG]{--h:225;} .skills-widget .wsw-comp[data-area=PRO]{--h:285;} .skills-widget .wsw-comp[data-area=UND]{--h:185;}",
+    ".skills-widget .wsw-comp:hover::before{filter:brightness(.94);}",
+    ".skills-widget .wsw-stds{margin:.6rem 0 .2rem; font-size:.78rem;} .skills-widget .wsw-stds summary{cursor:pointer; color:var(--ink); font-weight:600;}",
+    ".skills-widget .wsw-stds li{padding:.15rem 0; margin:.15rem 0;} .skills-widget .wsw-stds li i{color:var(--sub);}",
     ".skills-widget .wsw-detail li{font-size:.78rem; color:var(--sub); margin:.22rem 0; padding:.24rem .45rem; border-radius:5px; line-height:1.35;}",
     ".skills-widget .wsw-detail li b{color:var(--ink); margin-right:.3rem;}",
     ".skills-widget .wsw-detail li.is-covered{background:#E0F1F2; color:var(--ink); box-shadow:inset 3px 0 0 var(--human);}",
@@ -452,9 +463,10 @@
     } else {
       mhtml = mcfg.leftNoun ? "None of the " + mcfg.leftNoun + " point here." : "No skill on the WEF employer list points here.";
     }
-    var html = '<h4>' + a.disp + ' ' + a.name + '</h4>'
+    var html = '<h4>' + (a.head || (a.disp + ' ' + a.name)) + '</h4>'
       + '<p class="wsw-detail-match">' + mhtml + '</p>'
-      + '<p class="wsw-detail-desc' + (strongNames.length ? ' is-covered' : '') + '">' + d.desc + '</p>';
+      + '<p class="wsw-detail-desc' + (strongNames.length ? ' is-covered' : '') + '">' + d.desc + '</p>'
+      + (d.comps ? '<div class="wsw-comps">' + d.comps + '</div>' : '');
     if (d.subs.length) {
       html += '<ul>';
       d.subs.forEach(function (s) {
@@ -465,6 +477,7 @@
       });
       html += '</ul>';
     }
+    if (d.more) html += d.more;
     panel.innerHTML = html;
     panel.style.display = "block";
     this.shown = "a:" + n;
