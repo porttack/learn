@@ -55,6 +55,15 @@ nothing to install and no account to make.
   you send it to can change the code and save it back with their own token.
   **Copy link to the GitHub file** makes a link that opens the file as it is on
   GitHub right now.
+- <a id="gists"></a>**Share as a public gist.** **File, Share as public gist** puts your drawing in a new
+  [gist](https://gist.github.com/) on your GitHub account (a gist is one file with its own address,
+  with no repository to set up) and copies a link that opens it here: `/openscad/#gist=<id>`.
+  Anyone can open that link, or paste a gist address into **File, Open from GitHub**, and it
+  becomes their own drawing. **File, Save to gist** saves their changes. If the gist is yours it is
+  updated. If it belongs to someone else, GitHub makes **your own copy** of it (a fork) and the
+  changes go there, so nobody can change a gist that is not theirs. Your drawing is then tied to
+  your copy, and **Copy link to the gist** gives the link to share it. If the gist changed after you
+  opened it, you are told before anything is replaced.
 - **Move a drawing to Python.** **File, Open in Python 3D Studio** turns the drawing into
   Python code and opens it in [Python in 3D Studio](/python3d/studio/) in a new tab. Python 3D
   has fewer features than OpenSCAD, so it converts what it can (shapes, moving, turning,
@@ -166,12 +175,11 @@ finished model, they are not part of OpenSCAD.
 - Your code and drawings are never sent to a server. They live in this
   browser's local storage, on this computer, and are gone if the site's data is
   cleared. Use **File, My drawings, Back up all** for anything you care about.
-- GitHub is only contacted when you use Open from GitHub, Save to GitHub, or an address like
-  `/openscad/owner/repo/branch/part.scad`. Saving needs a personal access token, and so does
+- Saving to GitHub or to a gist needs a personal access token, and so does
   opening a file from a private repository (a public one needs no token). The token is sent only
   to GitHub. Once GitHub accepts it, this browser's local storage remembers it for that one
   `owner/repo` on this site, so you are not asked again. **Forget saved token** in the Open and
-  Save dialogs removes it, and so does clearing the site's data. Anyone who can use this browser
+  Save dialogs removes it (the gist dialog keeps one token for all gists), and so does clearing the site's data. Anyone who can use this browser
   profile can use the token, so do not save one on a shared computer. Make the token for
   one repository only, with permission to write contents, and a one year expiry.
 

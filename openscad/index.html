@@ -129,10 +129,13 @@ permalink: /openscad/
       <button id="saveFile" title="Write this drawing back to the .scad file it was opened from (Ctrl or Cmd and S). Only for files opened from Finder or your computer by the installed app.">Save to the file</button>
       <button id="download" disabled>Download STL</button>
       <button id="ghSave">Save to GitHub&hellip;</button>
+      <button id="gistMake" title="Put this drawing in a new public gist on GitHub, so anyone with the link can open it">Share as public gist&hellip;</button>
+      <button id="gistSave" title="Save changes to the gist this drawing came from. If the gist is someone else's, your changes go to your own copy of it.">Save to gist&hellip;</button>
       <button id="ghHist" title="The commits that changed this drawing's GitHub file, with dates and notes">History on GitHub&hellip;</button>
       <hr>
       <button id="share" title="A link with this exact code. If it came from GitHub, the link also says which file.">Copy share link</button>
       <button id="shareGh" title="A link that opens the file as it is on GitHub right now">Copy link to the GitHub file</button>
+      <button id="shareGist" title="A link that opens the gist as it is on GitHub right now">Copy link to the gist</button>
       <hr>
       <button id="toPython" title="Turn this drawing into Python code and open it in Python in 3D Studio, in a new tab. Python 3D has fewer features, so parts it cannot do are left as NOTE comments.">Open in Python 3D Studio&hellip;</button>
       <hr>
@@ -180,7 +183,7 @@ permalink: /openscad/
 </header>
 <dialog id="ghOpenDlg" aria-labelledby="ghOpenTitle">
   <div class="dlghead"><h2 id="ghOpenTitle">Open from GitHub</h2><span></span><button class="secondary" data-close aria-label="Close">Close</button></div>
-  <label class="fld">Link to a .scad file, or to a whole repository to see its .scad files
+  <label class="fld">Link to a .scad file, a gist, or a whole repository to see its .scad files
     <input id="ghOpenUrl" type="url" spellcheck="false" placeholder="you/repo   or   https://github.com/you/repo/blob/main/part.scad" autocomplete="off">
   </label>
   <label class="fld">Personal access token (only for a private repository)
@@ -206,6 +209,25 @@ permalink: /openscad/
   <label id="ghForceRow" class="hint" hidden><input id="ghForce" type="checkbox"> Replace the newer version on GitHub anyway</label>
   <div id="ghSaveOut" class="ghmsg" role="status"></div>
   <div class="dlgfoot"><button id="ghForgetSave" class="secondary" type="button">Forget saved token</button><button id="ghSaveGo">Save to GitHub</button></div>
+</dialog>
+<dialog id="gistDlg" aria-labelledby="gistTitle">
+  <div class="dlghead"><h2 id="gistTitle">Share as public gist</h2><span></span><button class="secondary" data-close aria-label="Close">Close</button></div>
+  <div class="hint" id="gistIntro"></div>
+  <label class="fld" id="gistNameRow">File name in the gist
+    <input id="gistFile" type="text" spellcheck="false" autocomplete="off">
+  </label>
+  <label class="fld" id="gistDescRow">Description (optional)
+    <input id="gistDesc" type="text" autocomplete="off">
+  </label>
+  <label class="fld">Personal access token
+    <input id="gistToken" type="password" spellcheck="false" autocomplete="off" placeholder="github_pat_...">
+  </label>
+  <div class="hint">The token is sent only to GitHub. Once it works, this browser remembers it so you are not asked again (<b>Forget saved token</b> removes it). Make one with
+    <a href="https://github.com/settings/personal-access-tokens/new?name=openscad-gists&amp;expires_in=365&amp;gists=write" target="_blank" rel="noopener">a fine-grained token</a> that has <b>Gists: Read and write</b> (the link fills it in), or
+    <a href="https://github.com/settings/tokens/new?scopes=gist&amp;description=openscad-gists" target="_blank" rel="noopener">a classic token</a> with the <b>gist</b> box ticked. <a href="/openscad/about/#gists" target="_blank" rel="noopener">More about gists</a>.</div>
+  <label id="gistForceRow" class="hint" hidden><input id="gistForce" type="checkbox"> Replace the newer version on GitHub anyway</label>
+  <div id="gistOut" class="ghmsg" role="status"></div>
+  <div class="dlgfoot"><button id="gistForget" class="secondary" type="button">Forget saved token</button><button id="gistGo">Create gist</button></div>
 </dialog>
 <dialog id="ghHistDlg" aria-labelledby="ghHistTitle">
   <div class="dlghead"><h2 id="ghHistTitle">History on GitHub</h2><span id="ghHistFile"></span><button class="secondary" data-close aria-label="Close">Close</button></div>
@@ -260,18 +282,6 @@ import { createEditor } from "./editor.js";
 import { scadToPython } from "./scad2py.js";
 import { findRefs, collectFiles, fetchGitHubFile } from "/assets/js/scad-deps.js";
 
-const SAMPLE = `// A washer with a bolt hole circle. Edit it and press Render.
-$fn = 64;
-n = 6;
-difference() {
-  cylinder(d = 40, h = 5);
-  translate([0, 0, -1]) cylinder(d = 12, h = 7);
-  for (i = [0 : n - 1])
-    rotate(i * 360 / n)
-      translate([14, 0, -1]) cylinder(d = 4, h = 7);
-}
-echo(str("holes: ", n));
-`;
 const PREFIX = "openscad:doc:", CURRENT = "openscad:current";
 const $ = (id) => document.getElementById(id);
 const logEl = $("log"), statusEl = $("status");
@@ -305,7 +315,7 @@ function saveNow(touch = true) {
   store(false, CURRENT, currentName);
   if (touch || !store(true, TIME + currentName)) store(false, TIME + currentName, String(Date.now()));
 }
-function removeDoc(name) { try { localStorage.removeItem(PREFIX + name); localStorage.removeItem(TIME + name); localStorage.removeItem(SRC + name); localStorage.removeItem(BASE + name); } catch (e) {} }
+function removeDoc(name) { try { localStorage.removeItem(PREFIX + name); localStorage.removeItem(TIME + name); localStorage.removeItem(SRC + name); localStorage.removeItem(BASE + name); localStorage.removeItem("openscad:gist:" + name); localStorage.removeItem("openscad:gistbase:" + name); } catch (e) {} }
 function openDrawing(n) {
   const text = store(true, PREFIX + n);
   if (text === null) return false;
@@ -336,7 +346,7 @@ else {
   const legacy = store(true, "openscad:code");
   if (last && store(true, PREFIX + last) !== null) { currentName = last; initial = store(true, PREFIX + last); }
   else if (legacy) { currentName = "untitled"; initial = legacy; }
-  else initial = SAMPLE;
+  else initial = "";   // a first visit starts with an empty drawing, no example
 }
 nameEl.value = currentName;
 const editor = createEditor($("editor"), initial, {
@@ -359,6 +369,7 @@ nameEl.addEventListener("change", () => {
   if (existing !== null) {
     openDrawing(n);
     statusEl.textContent = `Opened "${n}"`;
+    renderOpened();
   } else {
     const t = store(true, TIME + currentName);
     const src = store(true, SRC + currentName), base = store(true, BASE + currentName);
@@ -487,7 +498,7 @@ $("toPython").onclick = () => {
       nm.append(b, sm);
       const mk = (label, cls, fn) => { const x = document.createElement("button"); x.className = "secondary " + cls; x.textContent = label; x.onclick = fn; return x; };
       row.append(nm,
-        mk("Open", "", () => { openDrawing(d.n); dlg.close(); statusEl.textContent = `Opened "${d.n}"`; }),
+        mk("Open", "", () => { openDrawing(d.n); dlg.close(); statusEl.textContent = `Opened "${d.n}"`; renderOpened(); }),
         mk(".scad", "", () => saveText(d.c, fileBase(d.n) + ".scad", "text/plain")),
         mk("Delete", "del", () => {
           if (!confirm(`Delete "${d.n}" from this browser? This cannot be undone.`)) return;
@@ -605,7 +616,7 @@ $("toPython").onclick = () => {
     if (text.length > 1500000) { say(msgEl, "That file is too big to open here.", "err"); return false; }
     // Already opened from this file, and GitHub still has the same version? Go back to that copy (it may hold unsaved edits).
     const same = baseSha && savedNames().find((n) => store(true, SRC + n) === blobUrl(g) && store(true, BASE + n) === baseSha);
-    if (same) { openDrawing(same); setRoute(g); statusEl.textContent = `Opened your copy of ${g.path} (GitHub has not changed)`; return true; }
+    if (same) { openDrawing(same); setRoute(g); statusEl.textContent = `Opened your copy of ${g.path} (GitHub has not changed)`; renderOpened(); return true; }
     saveNow();
     currentName = freeName(g.path.split("/").pop().replace(/\.scad$/i, "") || "from github");
     nameEl.value = currentName;
@@ -616,6 +627,7 @@ $("toPython").onclick = () => {
     if (baseSha) store(false, BASE + currentName, baseSha);
     fillNames();
     statusEl.textContent = `Opened ${g.path} from GitHub`;
+    renderOpened();
     return true;
   }
 
@@ -687,6 +699,8 @@ $("toPython").onclick = () => {
   $("ghOpen").onclick = () => { $("ghOpenUrl").value = store(true, LAST_OPEN) || ""; $("ghOpenToken").value = openToken; fillOpenToken(); $("ghList").hidden = true; say($("ghOpenMsg"), ""); ghOpenDlg.showModal(); $("ghOpenUrl").focus(); };
   const goOpen = async () => {
     const tokenEl = $("ghOpenToken"), link = $("ghOpenUrl").value, listEl = $("ghList");
+    const gid = parseGist(link);
+    if (gid) { listEl.hidden = true; if (await openGist(gid, $("ghOpenMsg"), "")) ghOpenDlg.close(); return; }
     if (!parseGitHub(link) && parseRepo(link)) {
       if (await listScad(parseRepo(link), tokenEl.value.trim(), $("ghOpenMsg"), listEl)) { openToken = tokenEl.value.trim(); store(false, LAST_OPEN, link.trim()); }
       return;
@@ -813,6 +827,7 @@ $("toPython").onclick = () => {
             nameEl.value = currentName; editor.set(text, false); saveNow(); fillNames();
             statusEl.textContent = `Opened the ${when.toLocaleDateString()} version as "${currentName}"`;
             ghHistDlg.close();
+            renderOpened();
           } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); }
           finally { open.disabled = false; }
         };
@@ -823,6 +838,162 @@ $("toPython").onclick = () => {
       }
     } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); }
   };
+
+  // ---- Gists: share a drawing as a public gist; anyone can open it and save (to their own copy if it is not theirs) ----
+  const GIST = "openscad:gist:", GBASE = "openscad:gistbase:", GTOKEN = "openscad:ghtoken:gist";
+  const parseGist = (input) => {
+    const t = (input || "").trim();
+    const m = t.match(/^(?:https?:\/\/)?gist\.(?:github|githubusercontent)\.com\/(?:[^\/\s]+\/)?([0-9a-f]{20,40})(?:[\/#?].*)?$/i) || t.match(/^gist:([0-9a-f]{20,40})$/i);
+    return m ? m[1].toLowerCase() : null;
+  };
+  const gistHeaders = (token) => ({ Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", ...(token ? { Authorization: "Bearer " + token } : {}) });
+  const gistTie = (name) => { try { return JSON.parse(store(true, GIST + name)); } catch (e) { return null; } };
+  const gistUrl = (t) => `https://gist.github.com/${t.id}`;
+  const pickGistFile = (files) => { const l = Object.values(files || {}); return l.find((f) => /\.scad$/i.test(f.filename)) || l[0]; };
+  const gistText = async (f) => { if (!f.truncated) return f.content; const r = await fetch(f.raw_url); if (!r.ok) throw new Error("raw"); return r.text(); };
+  const gistVersion = (d) => (d.history && d.history[0] && d.history[0].version) || null;
+  const tieDrawing = (name, d, file) => {
+    store(false, GIST + name, JSON.stringify({ id: d.id, file, owner: d.owner && d.owner.login || "" }));
+    const v = gistVersion(d); if (v) store(false, GBASE + name, v);
+  };
+
+  async function openGist(id, msgEl, token) {
+    say(msgEl, "Opening...");
+    token = token || store(true, GTOKEN) || "";
+    let d, text, file;
+    try {
+      const r = await fetch(`https://api.github.com/gists/${id}`, { headers: gistHeaders(token) });
+      if (!r.ok) { say(msgEl, r.status === 404 ? "GitHub cannot find that gist." : r.status === 403 ? "GitHub is limiting requests from this computer for now. Wait a while, or save a token by using Share as public gist once." : `GitHub answered ${r.status}.`, "err"); return false; }
+      d = await r.json();
+      file = pickGistFile(d.files);
+      if (!file) { say(msgEl, "That gist has no files.", "err"); return false; }
+      text = await gistText(file);
+    } catch (e) { say(msgEl, "Could not reach GitHub. Are you online?", "err"); return false; }
+    if (text.length > 1500000) { say(msgEl, "That file is too big to open here.", "err"); return false; }
+    const v = gistVersion(d);
+    const same = v && savedNames().find((n) => { const t = gistTie(n); return t && t.id === d.id && store(true, GBASE + n) === v; });
+    if (same) { openDrawing(same); statusEl.textContent = "Opened your copy of that gist (GitHub has not changed)"; renderOpened(); return true; }
+    saveNow();
+    currentName = freeName(file.filename.replace(/\.scad$/i, "") || "gist");
+    nameEl.value = currentName;
+    window.clearRoute && window.clearRoute();
+    editor.set(text, false);
+    saveNow();
+    tieDrawing(currentName, d, file.filename);
+    fillNames();
+    const n = Object.keys(d.files).length;
+    statusEl.textContent = `Opened ${file.filename} from a gist by ${d.owner ? d.owner.login : "someone"}` + (n > 1 ? ` (${n - 1} other file${n > 2 ? "s" : ""} in it not opened)` : "");
+    renderOpened();
+    return true;
+  }
+
+  const gistDlg = $("gistDlg");
+  gistDlg.querySelector("[data-close]").onclick = () => gistDlg.close();
+  gistDlg.addEventListener("close", () => { $("gistToken").value = ""; });
+  gistDlg.addEventListener("click", (e) => { if (e.target === gistDlg) gistDlg.close(); });
+  let gistMode = "make";
+  const showGist = (mode) => {
+    gistMode = mode;
+    const tie = gistTie(currentName), out = $("gistOut");
+    $("gistTitle").textContent = mode === "make" ? "Share as public gist" : "Save to gist";
+    $("gistGo").textContent = mode === "make" ? "Create gist" : "Save";
+    $("gistNameRow").hidden = $("gistDescRow").hidden = mode !== "make";
+    $("gistIntro").textContent = mode === "make"
+      ? "This puts a copy of your drawing in a new gist on your GitHub account. A public gist is visible to everyone and anyone with the link can open it here. Do not put anything private in it."
+      : tie && tie.owner ? `This drawing came from a gist by ${tie.owner}. If it is yours, the gist is updated. If it is someone else's, GitHub makes your own copy of it (a fork) and your changes are saved there. Their gist is not changed.`
+      : "This drawing came from a gist.";
+    $("gistFile").value = (cleanName(currentName).replace(/[\\/]/g, "-") || "drawing") + ".scad";
+    $("gistDesc").value = "";
+    $("gistToken").value = store(true, GTOKEN) || "";
+    $("gistForce").checked = false; $("gistForceRow").hidden = true;
+    say(out, "");
+    gistDlg.showModal();
+    ($("gistToken").value ? $("gistGo") : $("gistToken")).focus();
+  };
+  $("gistMake").onclick = () => showGist("make");
+  $("gistSave").onclick = () => {
+    if (!gistTie(currentName)) { statusEl.textContent = "This drawing is not from a gist yet. Use Share as public gist first."; return; }
+    showGist("save");
+  };
+  $("shareGist").onclick = () => {
+    const t = gistTie(currentName);
+    if (!t) { statusEl.textContent = "This drawing is not tied to a gist yet. Use Share as public gist first."; return; }
+    copyLink(location.origin + "/openscad/#gist=" + t.id);
+  };
+  $("gistForget").onclick = () => { try { localStorage.removeItem(GTOKEN); } catch (e) {} $("gistToken").value = ""; say($("gistOut"), "Forgot the saved token."); };
+
+  const gistBad = (out, status, what) => say(out,
+    status === 401 ? "GitHub did not accept that token. Check that you copied all of it and that it has not expired."
+    : status === 403 ? "That token is not allowed to use gists. It needs Gists: Read and write (or the gist box for a classic token)."
+    : status === 404 ? `GitHub cannot find ${what}, or the token cannot see it.`
+    : status === 422 ? "GitHub refused that. Is the drawing empty?"
+    : `GitHub answered ${status}.`, "err");
+  const gistDone = (out, text, url) => {
+    out.className = "ghmsg ok"; out.textContent = text + " ";
+    out.append(Object.assign(document.createElement("a"), { href: url, target: "_blank", rel: "noopener", textContent: "View it on GitHub" }));
+  };
+  const goGist = async () => {
+    const out = $("gistOut"), tokenEl = $("gistToken"), go = $("gistGo");
+    const token = tokenEl.value.trim();
+    if (!token) return say(out, "Paste your personal access token. (Saving a gist always needs one. This browser will remember it.)", "err");
+    const content = editor.get();
+    if (!content.trim()) return say(out, "The drawing is empty. Write something first.", "err");
+    go.disabled = true; say(out, gistMode === "make" ? "Creating..." : "Saving...");
+    const headers = { ...gistHeaders(token), "Content-Type": "application/json" };
+    try {
+      if (gistMode === "make") {
+        const fname = $("gistFile").value.trim().replace(/[\\/]/g, "-") || "drawing.scad";
+        const r = await fetch("https://api.github.com/gists", { method: "POST", headers,
+          body: JSON.stringify({ description: $("gistDesc").value.trim() || `OpenSCAD drawing: ${fileBase(currentName)}`, public: true, files: { [fname]: { content } } }) });
+        if (!r.ok) return gistBad(out, r.status, "your account");
+        const d = await r.json();
+        store(false, GTOKEN, token);
+        tieDrawing(currentName, d, fname);
+        const link = location.origin + "/openscad/#gist=" + d.id;
+        copyLink(link);
+        gistDone(out, "Created. The link that opens it here is copied.", d.html_url || `https://gist.github.com/${d.id}`);
+        out.append(document.createElement("br"), document.createTextNode(link));
+        return;
+      }
+      const tie = gistTie(currentName);
+      const me = await fetch("https://api.github.com/user", { headers });
+      if (!me.ok) return gistBad(out, me.status, "your account");
+      const login = (await me.json()).login;
+      const cur = await fetch(`https://api.github.com/gists/${tie.id}`, { headers });
+      if (!cur.ok) return gistBad(out, cur.status, "that gist");
+      const gd = await cur.json();
+      const base = store(true, GBASE + currentName), v = gistVersion(gd);
+      if (base && v && base !== v && !$("gistForce").checked) {
+        $("gistForceRow").hidden = false;
+        return say(out, "Someone changed this gist after you opened it. Saving now would erase their change. Open the latest version (File, Open from GitHub, paste the gist link), put your changes into it, and save again. Or tick the box below to replace it anyway.", "err");
+      }
+      let target = gd, forked = false;
+      if (gd.owner && gd.owner.login.toLowerCase() !== login.toLowerCase()) {
+        const f = await fetch(`https://api.github.com/gists/${tie.id}/forks`, { method: "POST", headers });
+        if (!f.ok) return gistBad(out, f.status, "that gist");
+        target = await f.json(); forked = true;
+      }
+      const fname = pickGistFile(target.files) ? (target.files[tie.file] ? tie.file : pickGistFile(target.files).filename) : tie.file;
+      const p = await fetch(`https://api.github.com/gists/${target.id}`, { method: "PATCH", headers, body: JSON.stringify({ files: { [fname]: { content } } }) });
+      if (!p.ok) return gistBad(out, p.status, "that gist");
+      const d = await p.json();
+      store(false, GTOKEN, token);
+      tieDrawing(currentName, d, fname);
+      statusEl.textContent = forked ? "Saved to your own copy of the gist" : "Saved to the gist";
+      gistDone(out, forked ? `That gist is ${gd.owner.login}'s, so this went to your own copy of it. Your drawing is now tied to your copy.` : "Saved.", d.html_url || `https://gist.github.com/${d.id}`);
+      if (forked) out.append(document.createElement("br"), document.createTextNode(location.origin + "/openscad/#gist=" + d.id));
+    } catch (e) { say(out, "Could not reach GitHub. Are you online?", "err"); }
+    finally { go.disabled = false; }
+  };
+  $("gistGo").onclick = goGist;
+  $("gistToken").addEventListener("keydown", (e) => { if (e.key === "Enter") goGist(); });
+
+  // A link like /openscad/#gist=<id> opens that gist.
+  const gm = location.hash.match(/[#&]gist=([0-9a-f]{20,40})/i);
+  if (gm) {
+    const msg = document.createElement("div");
+    openGist(gm[1].toLowerCase(), msg).then((ok) => { if (!ok) { $("ghOpenUrl").value = "https://gist.github.com/" + gm[1]; say($("ghOpenMsg"), msg.textContent, "err"); ghOpenDlg.showModal(); } });
+  }
 
   ghTools = { parseGitHub, savedToken };
 
@@ -845,7 +1016,7 @@ $("toPython").onclick = () => {
   // The branch is the first thing after the repository. A branch name with a slash in it will not work here,
   // and a file in a folder of the main branch has its first folder tried as a branch first, then as a folder.
   const route = (() => {
-    if (/[#&](code|gh)=/.test(location.hash)) return null;
+    if (/[#&](code|gh|gist)=/.test(location.hash)) return null;
     const raw = location.hash.startsWith("#/") ? location.hash.slice(2)
       : location.pathname.startsWith("/openscad/") ? location.pathname.slice("/openscad/".length) : "";
     const parts = raw.split("?")[0].split("/").filter(Boolean).map((x) => { try { return decodeURIComponent(x); } catch (e) { return x; } });
@@ -1295,6 +1466,21 @@ async function gatherDeps(code) {
   for (const m of res.missing) addLog(`NOTE: could not get "${m}" from ${g.owner}/${g.repo} (${g.ref}).`);
   return { files: res.files, main: "/" + g.path };
 }
+// After a file is opened: render it at once (dropping a render of the old drawing that is still going), and give
+// it about 10 seconds. A slower one is stopped with a message, not left spinning; the Render button has no limit.
+const AUTO_RENDER_MS = 10000;
+function renderOpened() {
+  if (!editor.get().trim()) return;
+  if (running) { renderJob++; worker.terminate(); spawn(); finish(); }
+  render();
+  const job = renderJob;
+  setTimeout(() => {
+    if (!running || job !== renderJob) return;
+    renderJob++; worker.terminate(); spawn(); finish();
+    statusEl.textContent = `Still rendering after ${AUTO_RENDER_MS / 1000} seconds, so I stopped. Press Render to run it in full.`;
+    addLog("NOTE: opening a file only tries to render it for a few seconds. Press Render to run it with no time limit.");
+  }, AUTO_RENDER_MS);
+}
 async function render() {
   if (running) return;
   running = true;
@@ -1340,6 +1526,7 @@ $("file").onchange = async (e) => {
   if (!f) return;
   editor.set(await f.text());
   e.target.value = "";
+  renderOpened();
 };
 // When the page is installed as an app, Finder can open a .scad file in it: Chrome hands the file
 // to launchQueue, and it opens as its own drawing (Save to the file writes it back).
@@ -1355,6 +1542,7 @@ if ("launchQueue" in window) {
         editor.set(await f.text(), false);
         saveNow(); fillNames();
         statusEl.textContent = `Opened "${f.name}"`;
+        renderOpened();
       } catch (e) { statusEl.textContent = "Could not open that file"; }
     }
   });
@@ -1399,7 +1587,9 @@ $("shareGh").onclick = () => {
 
 spawn();
 statusEl.textContent = "Ready";
-render();
+// Do not render when there is nothing to draw, or when a link is about to open a file (it renders that file itself).
+const linkOpening = /[#&](gist|gh)=/.test(location.hash) || location.hash.startsWith("#/") || /^\/openscad\/[^\/]+\/[^\/]+/.test(location.pathname);
+if (!linkOpening) renderOpened();
 </script>
 </body>
 </html>
